@@ -1,0 +1,12 @@
+*.pyc
+store/*
+*.egg-info/*
+.*.swp
+sandbox/*
+src*
+.DS_Store
+.Python
+lastintid
+lastintbatch
+artemis/lastidid
+extra/*
