@@ -22,7 +22,7 @@ virtualenv .
 
 . ./bin/activate
 
-git clone https://github.com/cottagelabs/portality
+git clone https://github.com/CottageLabs/portality.git
 
 cd portality
 
