@@ -5,19 +5,27 @@ Install
 =======
 
 sudo apt-get install python-pip python-dev build-essential
+
 sudo pip install --upgrade pip
+
 sudo pip install --upgrade virtualenv
+
 sudo apt-get install git
 
 wget https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-0.18.2.tar.gz
+
 tar -xzvf elasticsearch-0.18.2.tar.gz
+
 ./elasticsearch-0.18.2/bin/elasticsearch start
 
 virtualenv .
+
 . ./bin/activate
 
 git clone https://github.com/cottagelabs/portality
+
 cd portality
+
 pip install -e .
 
 python portality/web.py
