@@ -5,8 +5,7 @@ from flask import render_template
 from flask.ext.login import login_user, logout_user
 from flask.ext.wtf import Form, TextField, TextAreaField, PasswordField, validators, ValidationError
 
-from artemis.config import config
-import artemis.dao as dao
+import portality.dao as dao
 
 blueprint = Blueprint('account', __name__)
 

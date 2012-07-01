@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = 'artemis',
+    name = 'portality',
     version = '0.4',
     packages = find_packages(),
     install_requires = [
@@ -9,13 +9,12 @@ setup(
         "Flask-Login",
         "Flask-WTF",
         "pyes==0.16",
-        "chardet",
         "requests",
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',
-    description = 'Artemis parts tracking system.',
+    description = 'All the bits for a web frontend',
     license = 'AGPL',
     classifiers = [
         'Development Status :: 3 - Alpha',

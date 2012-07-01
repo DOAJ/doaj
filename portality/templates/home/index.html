@@ -5,40 +5,16 @@
       <div class="row-fluid">
         <div class="span7">
           <div class="hero-unit" style="height:120px;">
-            <p><img src="/static/logo.png" /></p>
-            <p>parts tracking database</p>
+            <h3>some great website</h3>
           </div>
         </div>
 
         <div class="span5">
           <div class="hero-unit" style="height:120px;">
-              <div class="row"><a class="btn span1" href="/record/create/part">New part</a>
-              <a class="btn span2" href="/record/create/batch">Batch of new parts</a></div>
-              <div class="row"><br /><a class="btn span2" href="/record/create/assembly">New assembly</a>
-              <a class="btn btn-info span1" href="/help">Help</a></div>
+            <p>Some options</p>
           </div>
         </div>
 
       </div>
 
-      <div class="row-fluid">
-        <div class="span4">
-          <div class="hero-unit" style="height:300px;">
-            <h2>Overview</h2>
-            <h3><br />There are <a class="label label-info" style="font-size:20px;" href="/type/part">{{records}}</a> parts 
-            <br /><br />and <a class="label label-info" style="font-size:20px;" href="/type/assembly">{{assemblies}}</a> assemblies</h3>
-            <p><br /><br /><a class="btn btn-info span2" href="/search">search everything</a></p>
-          </div>
-        </div>
-
-        <div class="span8">
-          <div class="hero-unit" style="min-height:300px;">
-            <h2>Recent additions</h2>
-            {% for row in recent %}
-                <h4 style="margin-bottom:7px;">{{row['type']}} <a href="/record/{{row['id']}}">{{row['id']}}</a> {% if row['name'] %} - {{row['name']}}{% endif %}{% if row['batch'] %} (in batch <a href="/batch/{{row['batch']}}">{{row['batch']}}</a>){% endif %}</h4>
-            {% endfor %}
-          </div>
-        </div>
-
-      </div>
 {% endblock %}

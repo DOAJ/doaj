@@ -5,7 +5,7 @@ import portality.dao
 from portality import auth
 from datetime import datetime
 import json, httplib, StringIO
-from portality.config import config
+from portality.core import app
 import portality.util as util
 
 
@@ -20,8 +20,8 @@ class Search(object):
             'search_index': 'elasticsearch',
             'paging': { 'from': 0, 'size': 10 },
             'predefined_filters': {},
-            'facets': config['search_facet_fields'],
-            'result_display': config['search_result_display']#,
+            'facets': app.config['SEARCH_FACET_FIELDS'],
+            'result_display': app.config['SEARCH_RESULT_DISPLAY']#,
             #'addremovefacets': []      # (full list could also be pulled from DAO)
         }
 
@@ -57,10 +57,10 @@ class Search(object):
         
 
     def implicit_facet(self):
-        self.search_options['predefined_filters'][self.parts[0]+config['facet_field']] = self.parts[1]
+        self.search_options['predefined_filters'][self.parts[0]+app.config['FACET_FIELD']] = self.parts[1]
         # remove the implicit facet from facets
         for count,facet in enumerate(self.search_options['facets']):
-            if facet['field'] == self.parts[0]+config['facet_field']:
+            if facet['field'] == self.parts[0]+app.config['FACET_FIELD']:
                 del self.search_options['facets'][count]
         if util.request_wants_json():
             res = portality.dao.Record.query(terms=self.search_options['predefined_filters'])
@@ -77,7 +77,7 @@ class Search(object):
 
 
     def account(self):
-        self.search_options['predefined_filters']['owner'+config['facet_field']] = self.parts[0]
+        self.search_options['predefined_filters']['owner'+app.config['FACET_FIELD']] = self.parts[0]
         acc = portality.dao.Account.get(self.parts[0])
 
         if request.method == 'DELETE':

@@ -7,7 +7,6 @@ from flask.ext.login import login_user, current_user
 
 import portality.dao
 import portality.util as util
-from portality.config import config
 from portality.core import app, login_manager
 from portality.view.account import blueprint as account
 from portality import auth
@@ -84,6 +83,7 @@ def home():
         recent = [i['_source'] for i in res['hits']['hits']]
     )
 
+
 @app.route('/users')
 @app.route('/users.json')
 def users():
@@ -122,5 +122,5 @@ def default(path):
 
 if __name__ == "__main__":
     portality.dao.init_db()
-    app.run(host='0.0.0.0', debug=config['debug'], port=config['port'])
+    app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'])
 

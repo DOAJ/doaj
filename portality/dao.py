@@ -11,8 +11,7 @@ import pyes
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-from portality.core import current_user
-from portality.config import config
+from portality.core import current_user, app
 import portality.util, portality.auth
 
 
@@ -31,10 +30,10 @@ def init_db():
         conn.create_index(db)
     except:
         pass
-    mappings = config["mappings"]
+    mappings = app.config["MAPPINGS"]
     for mapping in mappings:
-        host = str(config['ELASTIC_SEARCH_HOST']).rstrip('/')
-        db_name = config['ELASTIC_SEARCH_DB']
+        host = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
+        db_name = app.config['ELASTIC_SEARCH_DB']
         fullpath = '/' + db_name + '/' + mapping + '/_mapping'
         c =  httplib.HTTPConnection(host)
         c.request('GET', fullpath)
@@ -48,8 +47,8 @@ def init_db():
 
 
 def get_conn():
-    host = str(config["ELASTIC_SEARCH_HOST"])
-    db_name = config["ELASTIC_SEARCH_DB"]
+    host = str(app.config["ELASTIC_SEARCH_HOST"])
+    db_name = app.config["ELASTIC_SEARCH_DB"]
     conn = pyes.ES([host])
     return conn, db_name
 
@@ -127,7 +126,7 @@ class DomainObject(UserDict.IterableUserDict):
             if mapping[item].has_key('fields'):
                 for item in mapping[item]['fields'].keys():
                     if item != 'exact' and not item.startswith('_'):
-                        keys.append(prefix + item + config['facet_field'])
+                        keys.append(prefix + item + app.config['FACET_FIELD'])
             else:
                 keys = keys + cls.get_facets_from_mapping(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
         keys.sort()
@@ -187,8 +186,8 @@ class DomainObject(UserDict.IterableUserDict):
     
     @classmethod
     def delete_by_query(cls, query):
-        url = str(config['ELASTIC_SEARCH_HOST'])
-        loc = config['ELASTIC_SEARCH_DB'] + "/" + cls.__type__ + "/_query?q=" + urllib.quote_plus(query)
+        url = str(app.config['ELASTIC_SEARCH_HOST'])
+        loc = app.config['ELASTIC_SEARCH_DB'] + "/" + cls.__type__ + "/_query?q=" + urllib.quote_plus(query)
         conn = httplib.HTTPConnection(url)
         conn.request('DELETE', loc)
         resp = conn.getresponse()
@@ -230,8 +229,8 @@ class DomainObject(UserDict.IterableUserDict):
 
     @classmethod
     def raw_query(self, query_string):
-        host = str(config['ELASTIC_SEARCH_HOST']).rstrip('/')
-        db_path = config['ELASTIC_SEARCH_DB']
+        host = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
+        db_path = app.config['ELASTIC_SEARCH_DB']
         fullpath = '/' + db_path + '/' + self.__type__ + '/_search' + '?' + query_string
         c = httplib.HTTPConnection(host)
         c.request('GET', fullpath)
@@ -254,8 +253,8 @@ class Record(DomainObject):
             k = Record.get(kid.id)
             k.data['assembly'] = ''
             k.save()
-        url = str(config['ELASTIC_SEARCH_HOST'])
-        loc = config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
+        url = str(app.config['ELASTIC_SEARCH_HOST'])
+        loc = app.config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
         conn = httplib.HTTPConnection(url)
         conn.request('DELETE', loc)
         resp = conn.getresponse()
@@ -294,8 +293,8 @@ class Note(DomainObject):
     __type__ = 'note'
 
     def delete(self):
-        url = str(config['ELASTIC_SEARCH_HOST'])
-        loc = config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
+        url = str(app.config['ELASTIC_SEARCH_HOST'])
+        loc = app.config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
         conn = httplib.HTTPConnection(url)
         conn.request('DELETE', loc)
         resp = conn.getresponse()
@@ -333,8 +332,8 @@ class Account(DomainObject, UserMixin):
         return allnotes
         
     def delete(self):
-        url = str(config['ELASTIC_SEARCH_HOST'])
-        loc = config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
+        url = str(app.config['ELASTIC_SEARCH_HOST'])
+        loc = app.config['ELASTIC_SEARCH_DB'] + "/" + self.__type__ + "/" + self.id
         conn = httplib.HTTPConnection(url)
         conn.request('DELETE', loc)
         resp = conn.getresponse()
