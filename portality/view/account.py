@@ -25,7 +25,7 @@ def login():
     if request.method == 'POST' and form.validate():
         password = form.password.data
         username = form.username.data
-        user = dao.Account.get(username)
+        user = dao.Account.pull(username)
         if user and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back', 'success')
@@ -45,7 +45,7 @@ def logout():
 
 
 def existscheck(form, field):
-    test = dao.Account.get(form.w.data)
+    test = dao.Account.pull(form.w.data)
     if test:
         raise ValidationError('Taken! Please try another.')
 

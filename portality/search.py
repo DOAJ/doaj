@@ -29,7 +29,7 @@ class Search(object):
 
 
     def find(self):
-        if portality.dao.Account.get(self.parts[0]):
+        if portality.dao.Account.pull(self.parts[0]):
             if len(self.parts) == 1:
                 return self.account() # user account
         elif len(self.parts) == 1:
@@ -63,7 +63,7 @@ class Search(object):
             if facet['field'] == self.parts[0]+app.config['FACET_FIELD']:
                 del self.search_options['facets'][count]
         if util.request_wants_json():
-            res = portality.dao.Record.query(terms=self.search_options['predefined_filters'])
+            res = portality.dao.Record.query({"terms":self.search_options['predefined_filters']})
             resp = make_response( json.dumps([i['_source'] for i in res['hits']['hits']], sort_keys=True, indent=4) )
             resp.mimetype = "application/json"
             return resp
@@ -78,7 +78,7 @@ class Search(object):
 
     def account(self):
         self.search_options['predefined_filters']['owner'+app.config['FACET_FIELD']] = self.parts[0]
-        acc = portality.dao.Account.get(self.parts[0])
+        acc = portality.dao.Account.pull(self.parts[0])
 
         if request.method == 'DELETE':
             if not auth.user.update(self.current_user,acc):
@@ -91,7 +91,7 @@ class Search(object):
             info = request.json
             if info.get('_id',False):
                 if info['_id'] != self.parts[0]:
-                    acc = portality.dao.Account.get(info['_id'])
+                    acc = portality.dao.Account.pull(info['_id'])
                 else:
                     info['api_key'] = acc.data['api_key']
                     info['_created'] = acc.data['_created']
@@ -113,7 +113,7 @@ class Search(object):
                 return resp
             else:
                 admin = True if auth.user.update(self.current_user,acc) else False
-                recordcount = portality.dao.Record.query(terms={'owner':acc.id})['hits']['total']
+                recordcount = portality.dao.Record.query({"terms":{'owner':acc.id}})['hits']['total']
                 return render_template('account/view.html', 
                     current_user=self.current_user, 
                     search_options=json.dumps(self.search_options), 

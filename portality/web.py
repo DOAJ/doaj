@@ -16,7 +16,7 @@ app.register_blueprint(account, url_prefix='/account')
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
-    out = portality.dao.Account.get(userid)
+    out = portality.dao.Account.pull(userid)
     return out
 
 @app.context_processor
@@ -29,14 +29,14 @@ def standard_authentication():
     """Check remote_user on a per-request basis."""
     remote_user = request.headers.get('REMOTE_USER', '')
     if remote_user:
-        user = portality.dao.Account.get(remote_user)
+        user = portality.dao.Account.pull(remote_user)
         if user:
             login_user(user, remember=False)
     # add a check for provision of api key
     elif 'api_key' in request.values:
         res = portality.dao.Account.query(q='api_key:"' + request.values['api_key'] + '"')['hits']['hits']
         if len(res) == 1:
-            user = portality.dao.Account.get(res[0]['_source']['id'])
+            user = portality.dao.Account.pull(res[0]['_source']['id'])
             if user:
                 login_user(user, remember=False)
 
@@ -59,29 +59,21 @@ def query(path='Record'):
     if subpath.lower() == 'account':
         abort(401)
     klass = getattr(portality.dao, subpath[0].capitalize() + subpath[1:] )
-    qs = request.query_string
     if request.method == "POST":
-        qs += "&source=" + json.dumps(dict(request.form).keys()[-1])
-    if len(pathparts) > 1 and pathparts[1] == '_mapping':
-        resp = make_response( json.dumps(klass().get_mapping()) )
+        qs = request.json
     else:
-        resp = make_response( klass().raw_query(qs) )
+        qs = request.query_string
+    if len(pathparts) > 1 and pathparts[1] == '_mapping':
+        resp = make_response( json.dumps(klass().mapping()) )
+    else:
+        resp = make_response( json.dumps(klass().query(qs=qs)) )
     resp.mimetype = "application/json"
     return resp
         
 
 @app.route('/')
 def home():
-    try:
-        res = portality.dao.Record.query(sort={'created_date':{'order':'desc'}})
-    except:
-        res = portality.dao.Record.query()
-    return render_template(
-        'home/index.html',
-        assemblies = portality.dao.Record.query(terms={'type':'assembly'})['hits']['total'],
-        records = portality.dao.Record.query(terms={'type':'part'})['hits']['total'],
-        recent = [i['_source'] for i in res['hits']['hits']]
-    )
+    return render_template('home/index.html')
 
 
 @app.route('/users')
@@ -89,13 +81,13 @@ def home():
 def users():
     if current_user.is_anonymous():
         abort(401)
-    users = portality.dao.Account.query(sort={'id':{'order':'asc'}},size=1000000)
+    users = portality.dao.Account.query({"sort":{'id':{'order':'asc'}}},size=1000000)
     if users['hits']['total'] != 0:
-        accs = [portality.dao.Account.get(i['_source']['id']) for i in users['hits']['hits']]
+        accs = [portality.dao.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
         # explicitly mapped to ensure no leakage of sensitive data. augment as necessary
         users = []
         for acc in accs:
-            user = {"collections":len(acc.collections),"id":acc["id"]}
+            user = {"id":acc["id"]}
             try:
                 user['created_date'] = acc['created_date']
                 user['description'] = acc['description']
@@ -121,6 +113,6 @@ def default(path):
 
 
 if __name__ == "__main__":
-    portality.dao.init_db()
+    portality.dao.initialise()
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'])
 

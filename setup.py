@@ -8,19 +8,19 @@ setup(
         "Flask==0.8",
         "Flask-Login",
         "Flask-WTF",
-        "pyes==0.16",
         "requests",
+        "markdown"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',
-    description = 'All the bits for a web frontend',
-    license = 'AGPL',
+    description = 'Basic web frontend',
+    license = 'Copyheart',
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: Copyheart',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Topic :: Software Development :: Libraries :: Python Modules'
