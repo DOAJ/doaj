@@ -1,4 +1,4 @@
-Portality - everything you need to build a web frontend.
+Portality - a web frontend based on elasticsearch by default.
 
 
 Install
@@ -26,6 +26,10 @@ git clone https://github.com/CottageLabs/portality.git
 
 cd portality
 
+git submodule init
+git submodule update
+
+# python setup.py install
 pip install -e .
 
 python portality/web.py
@@ -44,5 +48,12 @@ search.py catches all other web routes. Add to that too when it needs to be flex
 
 There are default templates and useful javascript plugins in static. Add or alter 
 them as necessary.
+
+
+Run it
+======
+
+Use your preferred web server setup to expose your website. For example, nginx
+proxy passing to the python script, which itself can be run using supervisord.
 
 
