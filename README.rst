@@ -1,5 +1,6 @@
 Portality - a web frontend based on elasticsearch by default.
 
+This repo uses submodules - for more info: http://git-scm.com/book/en/Git-Tools-Submodules
 
 Install
 =======
