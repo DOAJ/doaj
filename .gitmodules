@@ -1,0 +1,3 @@
+[submodule "portality/static/vendor/facetview"]
+	path = portality/static/vendor/facetview
+	url = git://github.com/okfn/facetview.git
