@@ -5,6 +5,50 @@ from unicodedata import normalize
 from functools import wraps
 from flask import request, current_app
 
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEBase import MIMEBase
+from email.MIMEText import MIMEText
+from email.Utils import COMMASPACE, formatdate
+from email import Encoders
+from topia.termextract import extract
+from html2text import html2text
+         
+
+def term_extractor(content):
+    # http://pypi.python.org/pypi/topia.termextract/
+    # remove html first
+    text = html2text(content)
+    extractor = extract.TermExtractor()
+    extractor.filter = extract.DefaultFilter(singleStrengthMinOccur=2)
+    terms = extractor(text)
+    return terms
+
+
+def send_mail(to, fro, subject, text, files=[],server="localhost"):
+    assert type(to)==list
+    assert type(files)==list
+ 
+    msg = MIMEMultipart()
+    msg['From'] = fro
+    msg['To'] = COMMASPACE.join(to)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = subject
+ 
+    msg.attach( MIMEText(text) )
+ 
+    for file in files:
+        part = MIMEBase('application', "octet-stream")
+        part.set_payload( open(file,"rb").read() )
+        Encoders.encode_base64(part)
+        part.add_header('Content-Disposition', 'attachment; filename="%s"'
+                       % os.path.basename(file))
+        msg.attach(part)
+ 
+    smtp = smtplib.SMTP(server)
+    smtp.sendmail(fro, to, msg.as_string() )
+    smtp.close()
+
 
 def jsonp(f):
     """Wraps JSONified output for JSONP"""

@@ -1,4 +1,4 @@
-Portality - a web frontend based on elasticsearch by default.
+Portality - a web frontend based on elasticsearch.
 
 This repo uses submodules - for more info: http://git-scm.com/book/en/Git-Tools-Submodules
 
@@ -44,8 +44,6 @@ Check out the Flask docs for further info
 Customise dao.py to work with a different backend if you need to.
 
 web.py controls the main routes. Add more if necessary. But note:
-
-search.py catches all other web routes. Add to that too when it needs to be flexible.
 
 There are default templates and useful javascript plugins in static. Add or alter 
 them as necessary.

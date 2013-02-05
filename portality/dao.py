@@ -1,35 +1,17 @@
-import json, UserDict, requests, uuid
+import os, json, UserDict, requests, uuid
+
 from datetime import datetime
-from werkzeug import generate_password_hash, check_password_hash
-from flask.ext.login import UserMixin
+
 from portality.core import app, current_user
-import portality.util, portality.auth
 
-
-def makeid():
-    '''Create a new id for data object based on the idgen utility
-    customise this if specific ID types are required'''
-    return uuid.uuid4().hex
-    
-    
-def initialise():
-    # may need to PUT the indices first
-    mappings = app.config['MAPPINGS']
-    for mapping in mappings:
-        t = 'http://' + str(app.config['ELASTIC_SEARCH_HOST']).lstrip('http://').rstrip('/')
-        t += '/' + app.config['ELASTIC_SEARCH_DB'] + '/' + mapping + '/_mapping'
-        r = requests.get(t)
-        if r.status_code == 404:
-            r = requests.put(t, data=json.dumps(mappings[mapping]) )
-            print r.text
-
-
-class InvalidDAOIDException(Exception):
-    pass
+'''
+All models in models.py should inherig this DomainObject to know how to save themselves in the index and so on.
+You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
+'''
     
     
 class DomainObject(UserDict.IterableUserDict):
-    __type__ = None
+    __type__ = None # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
         if '_source' in kwargs:
@@ -45,6 +27,11 @@ class DomainObject(UserDict.IterableUserDict):
         t += app.config['ELASTIC_SEARCH_DB'] + '/' + cls.__type__ + '/'
         return t
     
+    def makeid():
+        '''Create a new id for data object
+        overwrite this in specific model types if required'''
+        return uuid.uuid4().hex
+
     @property
     def id(self):
         return self.data.get('id', None)
@@ -61,29 +48,20 @@ class DomainObject(UserDict.IterableUserDict):
         if 'id' in self.data:
             id_ = self.data['id'].strip()
         else:
-            id_ = makeid()
+            id_ = self.makeid()
             self.data['id'] = id_
         
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%d %H%M")
 
         if 'created_date' not in self.data:
             self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+            
+        if 'author' not in self.data:
+            try:
+                self.data['author'] = current_user.id
+            except:
+                self.data['author'] = "anonymous"
 
-        if 'history' not in self.data:
-            self.data['history'] = []
-        previous = Record.pull(self.data['id'])
-        if previous:
-            for key,val in previous.items():
-                if key not in ['history','access','last_updated']:
-                    if val != data[key]:
-                        data['history'].insert(0, {
-                            'date': data['last_updated'],
-                            'field': key,
-                            'previous': val,
-                            'current': data[key],
-                            'user': get_user()
-                        })
-        
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
 
     @classmethod
@@ -96,20 +74,15 @@ class DomainObject(UserDict.IterableUserDict):
             if out.status_code == 404:
                 return None
             else:
-                return cls(**out.json)
+                return cls(**out.json())
         except:
             return None
 
     @classmethod
-    def mapping(cls):
-        r = requests.get(cls.target() + '_mapping')
-        return r.json
-        
-    @classmethod
     def keys(cls,mapping=False,prefix=''):
         # return a sorted list of all the keys in the index
         if not mapping:
-            mapping = cls.mapping()[cls.__type__]['properties']
+            mapping = cls.query(endpoint='_mapping')[cls.__type__]['properties']
         keys = []
         for item in mapping:
             if mapping[item].has_key('fields'):
@@ -122,38 +95,68 @@ class DomainObject(UserDict.IterableUserDict):
         return keys
         
     @classmethod
-    def query(cls, qs='q=*'):
-        if isinstance(qs,dict):
-            r = requests.post(cls.target() + '_search', data=json.dumps(qs))
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+        '''Perform a query on backend.
+
+        :param recid: needed if endpoint is about a record, e.g. mlt
+        :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
+        :param q: maps to query_string parameter if string, or query dict if dict.
+        :param terms: dictionary of terms to filter on. values should be lists. 
+        :param facets: dict of facets to return from the query.
+        :param kwargs: any keyword args as per
+            http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
+        '''
+        if recid and not recid.endswith('/'): recid += '/'
+        if isinstance(q,dict):
+            query = q
+        elif q:
+            query = {'query': {'query_string': { 'query': q }}}
         else:
-            r = requests.get(cls.target() + '_search?' + qs)
-        return r.json
+            query = {'query': {'match_all': {}}}
+
+        if facets:
+            if 'facets' not in query:
+                query['facets'] = {}
+            for k, v in facets.items():
+                query['facets'][k] = {"terms":v}
+
+        if terms:
+            boolean = {'must': [] }
+            for term in terms:
+                if not isinstance(terms[term],list): terms[term] = [terms[term]]
+                for val in terms[term]:
+                    obj = {'term': {}}
+                    obj['term'][ term ] = val
+                    boolean['must'].append(obj)
+            if q and not isinstance(q,dict):
+                boolean['must'].append( {'query_string': { 'query': q } } )
+            elif q and 'query' in q:
+                boolean['must'].append( query['query'] )
+            query['query'] = {'bool': boolean}
+
+        for k,v in kwargs.items():
+            if k == '_from':
+                query['from'] = v
+            else:
+                query[k] = v
+
+        if endpoint in ['_mapping']:
+            r = requests.get(cls.target() + recid + endpoint)
+        else:
+            r = requests.post(cls.target() + recid + endpoint, data=json.dumps(query))
+        return r.json()
 
     def accessed(self):
-        if 'access' not in self.data:
-            self.data['access'] = []
-        self.data['access'].insert(0, { 'user':get_user(), 'date':datetime.now().strftime("%Y-%m-%d %H%M") } )        
+        if 'last_access' not in self.data:
+            self.data['last_access'] = []
+        try:
+            usr = current_user.id
+        except:
+            usr = "anonymous"
+        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%d %H%M") } )
         r = requests.put(self.target() + self.data['id'], data=json.dumps(self.data))
 
     def delete(self):        
         r = requests.delete(self.target() + self.id)
 
-
-class Record(DomainObject):
-    __type__ = 'record'
-    
-    
-class Account(DomainObject, UserMixin):
-    __type__ = 'account'
-
-    def set_password(self, password):
-        self.data['password'] = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.data['password'], password)
-
-    @property
-    def is_super(self):
-        return portality.auth.user.is_super(self)
-    
 

@@ -6,7 +6,10 @@ sandbox/*
 src*
 .DS_Store
 .Python
-lastintid
-lastintbatch
-artemis/lastidid
 extra/*
+media/*
+build/*
+dist/*
+gallery/*
+app.cfg
+

@@ -1,18 +1,89 @@
-import uuid
+import uuid, json
+from copy import deepcopy
 
-from flask import Blueprint, request, url_for, flash, redirect
+from flask import Blueprint, request, url_for, flash, redirect, abort
 from flask import render_template
-from flask.ext.login import login_user, logout_user
-from flask.ext.wtf import Form, TextField, TextAreaField, PasswordField, validators, ValidationError
+from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.wtf import Form, TextField, TextAreaField, SelectField, PasswordField, validators, ValidationError
 
+from portality import auth
+from portality.core import app
 import portality.dao as dao
+import portality.util as util
 
 blueprint = Blueprint('account', __name__)
 
+jsite_config = deepcopy(app.config['JSITE_OPTIONS'])
+jsite_config['data'] = False
+jsite_config['editable'] = False
+jsite_config['facetview']['initialsearch'] = False
 
 @blueprint.route('/')
 def index():
-    return 'Accounts'
+    if current_user.is_anonymous():
+        abort(401)
+    users = dao.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
+    if users['hits']['total'] != 0:
+        accs = [dao.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
+        # explicitly mapped to ensure no leakage of sensitive data. augment as necessary
+        users = []
+        for acc in accs:
+            user = {'id':acc.id}
+            if 'created_date' in acc.data:
+                user['created_date'] = acc.data['created_date']
+            users.append(user)
+    if util.request_wants_json():
+        resp = make_response( json.dumps(users, sort_keys=True, indent=4) )
+        resp.mimetype = "application/json"
+        return resp
+    else:
+        return render_template('account/all.html', users=users, superuser=current_user.is_super, jsite_options=json.dumps(jsite_config))
+
+
+@blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
+def username(username):
+    acc = dao.Account.pull(username)
+
+    if request.method == 'DELETE':
+        if not auth.user.update(acc,current_user):
+            abort(401)
+        if acc: acc.delete()
+        return ''
+    elif request.method == 'POST':
+        if not auth.user.update(acc,current_user):
+            abort(401)
+        info = request.json
+        if info.get('id',False):
+            if info['id'] != username:
+                acc = dao.Account.pull(info['id'])
+            else:
+                info['api_key'] = acc.data['api_key']
+        acc.data = info
+        if 'password' in info and not info['password'].startswith('sha1'):
+            acc.set_password(info['password'])
+        acc.save()
+        resp = make_response( json.dumps(acc.data, sort_keys=True, indent=4) )
+        resp.mimetype = "application/json"
+        return resp
+    else:
+        if not acc:
+            abort(404)
+        if util.request_wants_json():
+            if not auth.user.update(acc,current_user):
+                abort(401)
+            resp = make_response( json.dumps(acc.data, sort_keys=True, indent=4) )
+            resp.mimetype = "application/json"
+            return resp
+        else:
+            admin = True if auth.user.update(acc,current_user) else False
+            return render_template('account/view.html', 
+                current_user=current_user, 
+                record=acc.json, 
+                admin=admin,
+                account=acc,
+                superuser=auth.user.is_super(current_user), 
+                jsite_options=json.dumps(jsite_config)
+            )
 
 
 class LoginForm(Form):
@@ -28,20 +99,20 @@ def login():
         user = dao.Account.pull(username)
         if user and user.check_password(password):
             login_user(user, remember=True)
-            flash('Welcome back', 'success')
-            return redirect('/'+user.id)
+            flash('Welcome back. You can access your account information via the <strong>options</strong> menu.', 'success')
+            return redirect('/')
         else:
             flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
         flash('Invalid form', 'error')
-    return render_template('account/login.html', form=form)
+    return render_template('account/login.html', form=form, jsite_options=json.dumps(jsite_config))
 
 
 @blueprint.route('/logout')
 def logout():
     logout_user()
     flash('You are now logged out', 'success')
-    return redirect(url_for('home'))
+    return redirect('/')
 
 
 def existscheck(form, field):
@@ -57,24 +128,28 @@ class RegisterForm(Form):
         validators.EqualTo('c', message='Passwords must match')
     ])
     c = PasswordField('Repeat Password')
+    p = SelectField('Partner?', choices=[('no','No'),('yes','Yes')])
+    sn = SelectField('Senior partner?', choices=[('no','No'),('yes','Yes')])
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    # TODO: re-enable csrf
+    if current_user.is_anonymous() or not auth.user.is_super(current_user):
+        abort(401)
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
         api_key = str(uuid.uuid4())
         account = dao.Account(
             id=form.w.data, 
             email=form.n.data,
+            partner=form.p.data,
+            senior=form.sn.data,
             api_key=api_key
         )
         account.set_password(form.s.data)
         account.save()
-        login_user(account, remember=True)
-        flash('Thanks for registering', 'success')
-        return redirect('/'+account.id)
+        flash('Account created for ' + account.id + '. If not listed below, refresh the page to catch up.', 'success')
+        return redirect('/account')
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
-    return render_template('account/register.html', form=form)
+    return render_template('account/register.html', form=form, jsite_options=json.dumps(jsite_config))
 

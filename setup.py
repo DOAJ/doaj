@@ -2,18 +2,22 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'portality',
-    version = '0.4',
+    version = '0.7',
     packages = find_packages(),
     install_requires = [
         "Flask==0.8",
         "Flask-Login",
         "Flask-WTF",
-        "requests"
+        "requests==1.1.0",
+        "markdown",
+        "topia.termextract",
+        "xhtml2pdf",
+        "html2text"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',
-    description = 'Basic web frontend',
+    description = 'A web API layer over an ES backend',
     license = 'Copyheart',
     classifiers = [
         'Development Status :: 3 - Alpha',
@@ -25,4 +29,3 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
 )
-

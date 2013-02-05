@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="utf-8">
+	<title>jQuery plugin: Tablesorter 2.0 - Writing custom parsers</title>
+
+	<!-- jQuery -->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+
+	<!-- Demo stuff -->
+	<link rel="stylesheet" href="css/jq.css">
+	<script src="js/chili/jquery.chili-2.2.js"></script>
+	<script src="js/chili/recipes.js"></script>
+	<script src="js/docs.js"></script>
+
+	<!-- Tablesorter: required -->
+	<link rel="stylesheet" href="../css/blue/style.css">
+	<script src="../js/jquery.tablesorter.js"></script>
+	<script src="../addons/pager/jquery.tablesorter.pager.js"></script>
+
+	<script id="js">// add parser through the tablesorter addParser method
+$.tablesorter.addParser({
+	// set a unique id
+	id: 'grades',
+	is: function(s) {
+		// return false so this parser is not auto detected
+		return false;
+	},
+	format: function(s, table, cell, cellIndex) {
+		// format your data for normalization
+		return s.toLowerCase()
+			.replace(/good/,2)
+			.replace(/medium/,1)
+			.replace(/bad/,0);
+	},
+	// set type, either numeric or text
+	type: 'numeric'
+});
+
+$(function() {
+	$("table").tablesorter({
+		// "sorter-grades" added as a class name in the HTML (new in v2.0.11)
+		// or un-comment out the option below
+		// headers: { 6: { sorter: 'grades' } }
+	});
+
+});</script>
+</head>
+<body>
+
+<div id="banner">
+	<h1>table<em>sorter</em></h1>
+	<h2>Writing custom parsers</h2>
+	<h3>Flexible client-side table sorting</h3>
+	<a href="index.html">Back to documentation</a>
+</div>
+
+<div id="main">
+
+	<p class="tip">
+		<em>NOTE!</em> Assigning the parser using a class name was added in version 2.0.11 (it is not part of the original plugin).
+	</p>
+
+	<h1>Demo</h1>
+	<div id="demo"><table class="tablesorter">
+	<thead>
+		<tr>
+			<th class="sorter-text">Name</th>
+			<th>Major</th>
+			<th>Gender</th>
+			<th>English</th>
+			<th>Japanese</th>
+			<th>Calculus</th>
+			<th class="sorter-grades">Overall grades</th> <!-- set the column parser using a class name -->
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Student01</td>
+			<td>Languages</td>
+			<td>male</td>
+			<td>80</td>
+			<td>70</td>
+			<td>75</td>
+			<td>bad</td>
+		</tr>
+		<tr>
+			<td>Student02</td>
+			<td>Mathematics</td>
+			<td>male</td>
+			<td>90</td>
+			<td>88</td>
+			<td>100</td>
+			<td>good</td>
+		</tr>
+		<tr>
+			<td>Student03</td>
+			<td>Languages</td>
+			<td>female</td>
+			<td>85</td>
+			<td>95</td>
+			<td>80</td>
+			<td>medium</td>
+		</tr>
+	</tbody>
+</table></div>
+
+	<h1>Javascript</h1>
+	<div id="javascript">
+		<pre class="js"></pre>
+	</div>
+	<h1>HTML</h1>
+	<div id="html">
+		<pre class="html"></pre>
+	</div>
+
+<div class="next-up">
+	<hr />
+	Next up: <a href="example-parsers-advanced.html">Writing custom parsers, advanced &rsaquo;&rsaquo;</a>
+</div>
+
+</div>
+
+</body>
+</html>
+
