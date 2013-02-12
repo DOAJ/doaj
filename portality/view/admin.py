@@ -5,7 +5,7 @@ from flask import Blueprint, request, flash, abort, make_response, render_templa
 from flask.ext.login import current_user
 
 from portality.core import app
-import portality.dao as dao
+import portality.models as models
 
 
 blueprint = Blueprint('admin', __name__)

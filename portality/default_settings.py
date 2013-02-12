@@ -1,4 +1,4 @@
-SECRET_KEY = "default-key"
+SECRET_KEY = "default-key" # make this something secret in your overriding app.cfg
 
 # contact info
 ADMIN_NAME = "Cottage Labs"
@@ -13,6 +13,12 @@ PORT = 5004
 
 # list of superuser account names
 SUPER_USER = ["test"]
+
+PUBLIC_REGISTER = True # Can people register publicly? If false, only the superuser can create new accounts
+SHOW_LOGIN = True # if this is false the login link is not shown in the default template, but login is not necessarily disabled
+
+# if you make remote calls e.g. to google fonts or js plugins but have to run offline, then wrap those parts of your templates with a check for this, and then you can set it to true if you need to run your system without online access
+OFFLINE = False 
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "127.0.0.1:9200"
@@ -41,7 +47,6 @@ JSITE_OPTIONS = {
     "pads_baseurl": "/p/",
     "comments": "",
     "twitter": "",
-    "offline": False, # set to true to disable google fonts and analytics etc useful for offline dev
     "sharethis": False,
     "editable": True,
     "richtextedit": False,

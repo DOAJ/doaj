@@ -1,0 +1,16 @@
+{% extends "/base.html" %}
+
+{% block content %}
+
+    <script type="text/javascript">
+    jQuery(document).ready(function($) {
+        $('#panel').facetview( {{ search_options | safe }} )
+    
+    });
+    </script>
+    
+    <div id="panel"></div>
+
+{% endblock %}
+
+

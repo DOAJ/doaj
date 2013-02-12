@@ -3,7 +3,7 @@ from datetime import datetime
 
 from portality.core import app
 
-import DomainObject from portality.dao as DomainObject
+from portality.dao import DomainObject as DomainObject
 
 '''
 Define models in here. They should all inherit from the DomainObject.

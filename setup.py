@@ -11,13 +11,12 @@ setup(
         "requests==1.1.0",
         "markdown",
         "topia.termextract",
-        "xhtml2pdf",
         "html2text"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',
-    description = 'A web API layer over an ES backend',
+    description = 'A web API layer over an ES backend, with various useful plugins',
     license = 'Copyheart',
     classifiers = [
         'Development Status :: 3 - Alpha',

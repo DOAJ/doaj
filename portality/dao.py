@@ -27,6 +27,7 @@ class DomainObject(UserDict.IterableUserDict):
         t += app.config['ELASTIC_SEARCH_DB'] + '/' + cls.__type__ + '/'
         return t
     
+    @classmethod
     def makeid():
         '''Create a new id for data object
         overwrite this in specific model types if required'''

@@ -128,12 +128,10 @@ class RegisterForm(Form):
         validators.EqualTo('c', message='Passwords must match')
     ])
     c = PasswordField('Repeat Password')
-    p = SelectField('Partner?', choices=[('no','No'),('yes','Yes')])
-    sn = SelectField('Senior partner?', choices=[('no','No'),('yes','Yes')])
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_anonymous() or not auth.user.is_super(current_user):
+    if not app.config.get('PUBLIC_REGISTER',False) and not auth.user.is_super(current_user):
         abort(401)
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
@@ -141,8 +139,6 @@ def register():
         account = dao.Account(
             id=form.w.data, 
             email=form.n.data,
-            partner=form.p.data,
-            senior=form.sn.data,
             api_key=api_key
         )
         account.set_password(form.s.data)

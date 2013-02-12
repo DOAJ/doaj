@@ -26,7 +26,7 @@
     <link rel="stylesheet" type="text/css" href="/static/portality/css/portality.css">
     <script type="text/javascript" src="/static/portality/js/portality.js"></script>
                 
-    <!-- extra includes for facetview - linkify, jquery-ui, d3 and facetview js and css -->
+    <!-- extra includes for facetview - linkify, jquery-ui, and facetview js and css -->
     <script type="text/javascript" src="/static/portality/vendor/facetview/vendor/linkify/1.0/jquery.linkify-1.0-min.js"></script>  
     <link rel="stylesheet" href="/static/portality/vendor/facetview/vendor/jquery-ui-1.8.18.custom/jquery-ui-1.8.18.custom.css">
     <script type="text/javascript" src="/portality/static/vendor/facetview/vendor/jquery-ui-1.8.18.custom/jquery-ui-1.8.18.custom.min.js"></script>
@@ -57,19 +57,23 @@
           <ul class="nav pull-right">
             <li>
               <form class="navbar-search" id="topsearch" name="topsearch" action="/search" method="GET">
-                <input class="search-query" type="text" name="q" placeholder="search the database" />
+                <input class="search-query" type="text" name="q" placeholder="search" />
               </form>
             </li>
             {% if current_user.is_anonymous() %}
+            {% if app.config.get('PUBLIC_REGISTER',False) %}
             <li>
               <a href="{{url_for('account.register')}}">Register</a>
             </li>
+            {% endif %}
+            {% if app.config.get('SHOW_LOGIN',False) %}
             <li>
               <a href="{{url_for('account.login')}}">Login</a>
             </li>
+            {% endif %}
             {% else %}
             <li>
-              <a alt="view your account" title="view your account" href="/{{current_user.id}}"><strong><input type="hidden" id="current_user" value="{{current_user.id}}" />{{current_user.id}}</strong></a>
+              <a alt="view your account" title="view your account" href="/account/{{current_user.id}}"><strong>{{current_user.id}}</strong></a>
             </li>
             <li>
               <a href="{{ url_for('account.logout') }}">Logout</a>

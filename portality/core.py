@@ -1,4 +1,4 @@
-import os
+import os, requests, json
 from flask import Flask
 
 from portality import default_settings
@@ -7,8 +7,8 @@ login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    if app.config['INITIALISE_INDEX']: initialise_index(app)
     configure_app(app)
+    if app.config['INITIALISE_INDEX']: initialise_index(app)
     setup_error_email(app)
     login_manager.setup_app(app)
     return app
