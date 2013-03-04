@@ -5,7 +5,7 @@ and use the usual ES params for paging and querying. Returns back a list of valu
 '''
 
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, make_response
 
 from portality.core import app
 import portality.models as models
