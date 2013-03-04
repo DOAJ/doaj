@@ -4,6 +4,7 @@ autocompletes and things like that on your front end. Just access indextype/key,
 and use the usual ES params for paging and querying. Returns back a list of values.
 '''
 
+import json
 
 from flask import Blueprint, request, abort, make_response
 
@@ -22,8 +23,6 @@ blueprint = Blueprint('stream', __name__)
 @blueprint.route('/<index>')
 @blueprint.route('/<index>/<key>')
 def stream(index='record',key='tags'):
-
-    t = 'http://' + str(app.config['ELASTIC_SEARCH_HOST']).lstrip('http://').rstrip('/') + '/' + app.config['ELASTIC_SEARCH_DB'] + '/'
 
     if index in app.config['NO_QUERY_VIA_API']: abort(401)
     indices = []
