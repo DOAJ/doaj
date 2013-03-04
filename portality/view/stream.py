@@ -50,10 +50,10 @@ def stream(index='record',key='tags'):
     res = []
     if request.values.get('counts',False):
         for k in keys:
-            res = res + [[i['term'],i['count']] for i in r.json()['facets'][k]["terms"]]
+            res = res + [[i['term'],i['count']] for i in r['facets'][k]["terms"]]
     else:
         for k in keys:
-            res = res + [i['term'] for i in r.json()['facets'][k]["terms"]]
+            res = res + [i['term'] for i in r['facets'][k]["terms"]]
 
     resp = make_response( json.dumps(res) )
     resp.mimetype = "application/json"
