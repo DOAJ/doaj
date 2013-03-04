@@ -3,7 +3,7 @@ An elasticsearch query pass-through.
 Has auth control, so it is better than exposing your ES index directly.
 '''
 
-import json 
+import json, urllib2
 
 from flask import Blueprint, request, abort, make_response
 from flask.ext.login import current_user
