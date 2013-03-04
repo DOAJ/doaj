@@ -7,7 +7,7 @@ import os
 from flask import Blueprint, request, abort
 
 from portality.core import app
-import portality.dao as dao
+import portality.models as models
 
 blueprint = Blueprint('deduplicate', __name__)
 
@@ -24,10 +24,10 @@ def deduplicate(path='',duplicates=[],target='/'):
         for k,v in request.values.items():
             if v and k not in ['url', 'submit']:
                 if k.startswith('delete_'):
-                    rec = dao.Record.pull(k.replace('delete_',''))
+                    rec = models.Record.pull(k.replace('delete_',''))
                     if rec is not None: rec.delete()
                 else:
-                    rec = dao.Record.pull(k)
+                    rec = models.Record.pull(k)
                     rec.data['url'] = v
                     rec.save()
         if 'url' in request.values: target = request.values['url']

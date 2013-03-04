@@ -13,7 +13,7 @@ from flask.ext.login import current_user
 
 from portality.core import app
 import portality.util as util
-import portality.dao as dao
+import portality.models as models
 
 
 blueprint = Blueprint('sitemap', __name__)
@@ -98,7 +98,7 @@ def refresh():
     out = open('portality/templates/sitemap/sitemap.json','w')
     out.write('{}')
     out.close()
-    records = dao.Record.query(size=1000000)
+    records = models.Record.query(size=1000000)
     for record in [rec['_source'] for rec in records['hits']['hits']]:
         request.json = record
         update(path=record['url'])

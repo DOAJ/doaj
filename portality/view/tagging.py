@@ -11,7 +11,7 @@ from flask import Blueprint, request, render_template, flash
 from flask.ext.login import current_user
 
 from portality.core import app
-import portality.dao as dao
+import portality.models as models
 
 
 blueprint = Blueprint('tagging', __name__)
@@ -34,7 +34,7 @@ def index():
         for k,v in request.values.items():
             if k.startswith('id_'):
                 kid = k.replace('id_','')
-                rec = dao.Record.pull(kid)
+                rec = models.Record.pull(kid)
                 if rec is not None:
                     if 'delete_'+kid in request.values:
                         rec.delete()
@@ -73,7 +73,7 @@ def index():
 
         flash("Updated. If you don't see your updates yet, <a href=\"/tagging\">refresh</a> the page.")
         
-    records = [i['_source'] for i in dao.Record.query(size=100000,sort={'url.exact':{'order':'asc'}}).get('hits',{}).get('hits',[])]
+    records = [i['_source'] for i in models.Record.query(size=100000,sort={'url.exact':{'order':'asc'}}).get('hits',{}).get('hits',[])]
     return render_template('tagging.html', jsite_options=json.dumps(js), records=records, offline=js['offline'])
 
 

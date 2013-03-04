@@ -28,7 +28,7 @@ class DomainObject(UserDict.IterableUserDict):
         return t
     
     @classmethod
-    def makeid():
+    def makeid(cls):
         '''Create a new id for data object
         overwrite this in specific model types if required'''
         return uuid.uuid4().hex

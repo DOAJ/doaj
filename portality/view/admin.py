@@ -30,14 +30,14 @@ paid "the money to pay this cost has left our bank account"}
 def dropdowns():
     dropdowns = {
         "vat": ['UK','EU','Other'],
-        "projects": [i['_source']['id'] for i in dao.Project.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
-        "internals": [i['_source']['id'] for i in dao.Project.query(terms={"internal":"yes"},size=1000000).get('hits',{}).get('hits',[])],
-        "clpeople": [str(i['_source']['id']) for i in dao.Account.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
-        "partners": [i['_source']['id'] for i in dao.Account.query(terms={"partner":"yes"},size=1000000).get('hits',{}).get('hits',[])],
-        "seniors": [i['_source']['id'] for i in dao.Account.query(terms={"senior":"yes"},size=1000000).get('hits',{}).get('hits',[])],
-        "contacts": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in dao.Contact.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
-        "billables": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in dao.Contact.query(terms={"billable":"yes"},size=1000000).get('hits',{}).get('hits',[])],
-        "contractors": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in dao.Contractor.query(q="*",size=1000000).get('hits',{}).get('hits',[])]
+        "projects": [i['_source']['id'] for i in models.Project.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
+        "internals": [i['_source']['id'] for i in models.Project.query(terms={"internal":"yes"},size=1000000).get('hits',{}).get('hits',[])],
+        "clpeople": [str(i['_source']['id']) for i in models.Account.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
+        "partners": [i['_source']['id'] for i in models.Account.query(terms={"partner":"yes"},size=1000000).get('hits',{}).get('hits',[])],
+        "seniors": [i['_source']['id'] for i in models.Account.query(terms={"senior":"yes"},size=1000000).get('hits',{}).get('hits',[])],
+        "contacts": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in models.Contact.query(q="*",size=1000000).get('hits',{}).get('hits',[])],
+        "billables": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in models.Contact.query(terms={"billable":"yes"},size=1000000).get('hits',{}).get('hits',[])],
+        "contractors": [(i['_source']['id'],i['_source']['name'],i['_source']['companyname']) for i in models.Contractor.query(q="*",size=1000000).get('hits',{}).get('hits',[])]
     }
     return dropdowns
     
@@ -59,7 +59,7 @@ def geteverything(q=False,person=False,project=False,contact=False,contractor=Fa
             qryobj = {'query':{'bool':{'must':[]}}}
         if contact: qryobj['query']['bool']['must'].append({'term':{'id': contact}})
         if q: qryobj['query']['bool']['must'].append({'query_string':{'query':'*' + q.lstrip('*').rstrip('*') + '*'}})
-        contacts = [i['_source'] for i in dao.Contact.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
+        contacts = [i['_source'] for i in models.Contact.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
         qryobj = {'query':{'match_all':{}}}
         for item in contacts:
             item['id'] = item['name']
@@ -75,7 +75,7 @@ def geteverything(q=False,person=False,project=False,contact=False,contractor=Fa
             qryobj = {'query':{'bool':{'must':[]}}}
         if contractor: qryobj['query']['bool']['must'].append({'term':{'id': contractor}})
         if q: qryobj['query']['bool']['must'].append({'query_string':{'query':'*' + q.lstrip('*').rstrip('*') + '*'}})
-        contractors = [i['_source'] for i in dao.Contractor.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
+        contractors = [i['_source'] for i in models.Contractor.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
         qryobj = {'query':{'match_all':{}}}
         for item in contractors:
             item['id'] = item['name']
@@ -91,7 +91,7 @@ def geteverything(q=False,person=False,project=False,contact=False,contractor=Fa
             qryobj = {'query':{'bool':{'must':[]}}}
         if person: qryobj['query']['bool']['must'].append({'term':{'id': person}})
         if q: qryobj['query']['bool']['must'].append({'query_string':{'query':'*' + q.lstrip('*').rstrip('*') + '*'}})
-        people = [i['_source'] for i in dao.Account.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
+        people = [i['_source'] for i in models.Account.query(q=qryobj,size=10000).get('hits',{}).get('hits',[])]
         qryobj = {'query':{'match_all':{}}}
         for item in people:
             item["name"] = item["id"]
@@ -162,9 +162,9 @@ def geteverything(q=False,person=False,project=False,contact=False,contractor=Fa
         finqryobj['query']['bool']['must'].append(qry)
     
     linkables = {
-        "projects": [i['_source'] for i in dao.Project.query(q=projqryobj,size=10000).get('hits',{}).get('hits',[])],
-        "commitments": [i['_source'] for i in dao.Commitment.query(q=commqryobj,size=10000).get('hits',{}).get('hits',[])],
-        "financials": [i['_source'] for i in dao.Financial.query(q=finqryobj,size=10000).get('hits',{}).get('hits',[])]
+        "projects": [i['_source'] for i in models.Project.query(q=projqryobj,size=10000).get('hits',{}).get('hits',[])],
+        "commitments": [i['_source'] for i in models.Commitment.query(q=commqryobj,size=10000).get('hits',{}).get('hits',[])],
+        "financials": [i['_source'] for i in models.Financial.query(q=finqryobj,size=10000).get('hits',{}).get('hits',[])]
     }
     for each in linkables:
         if each not in ignore:
@@ -179,7 +179,7 @@ def geteverything(q=False,person=False,project=False,contact=False,contractor=Fa
                         item['budget'] = item['cost']
                         if not item['budget']: item['budget'] = 1000
                     if 'share' in item:
-                        project = dao.Project.pull(item['project'])
+                        project = models.Project.pull(item['project'])
                         pb = project.data.get('budget',0)
                         if not pb: pb = 0
                         sh = item.get('share',0)
@@ -265,7 +265,7 @@ def index():
 @blueprint.route('/<itype>/<iid>', methods=['GET','POST'])
 def adminitem(itype,iid=False):
     if itype in ['project','financial','commitment','contact','contractor']:
-        klass = getattr(dao, itype[0].capitalize() + itype[1:] )
+        klass = getattr(models, itype[0].capitalize() + itype[1:] )
         if not iid and request.json:
             iid = request.json.get("id",False)
             if not iid:
@@ -279,7 +279,7 @@ def adminitem(itype,iid=False):
                     if exists:
                         iid = False
             if not iid:
-                iid = dao.makeid()
+                iid = models.makeid()
 
         if iid:
             rec = klass.pull(iid)
@@ -306,7 +306,7 @@ def adminitem(itype,iid=False):
 # return a status report for a given project
 '''@blueprint.route('/project/<projectid>/report')
 def report(projectid):
-    project = dao.Project.pull(projectid)
+    project = models.Project.pull(projectid)
     resp = make_response( json.dumps(project.report) )
     resp.mimetype = "application/json"
     return resp'''
@@ -321,7 +321,7 @@ def project(project=''):
     opts['data'] = {"editable":False}
         
     if request.method == 'GET':
-        p = dao.Project.pull(project)
+        p = models.Project.pull(project)
         if p is not None:
             return render_template('admin/project/index.html', jsite_options=json.dumps(opts), nosettings=True)
         else:
@@ -332,13 +332,13 @@ def project(project=''):
         finance = proj['finance']
         del proj['commitments']
         del proj['finance']
-        p = dao.Project(**proj)
+        p = models.Project(**proj)
         p.save()
         for item in commits:
-            t = dao.Commitment(**item)
+            t = models.Commitment(**item)
             t.save()
         for item in finance:
-            f = dao.Finance(**item)
+            f = models.Finance(**item)
             f.save()
         return ""
 '''
@@ -348,7 +348,7 @@ def project(project=''):
 # save a particular type of object
 @blueprint.route('/<itype>', methods=['GET','POST'])
 def save(itype):
-    klass = getattr(dao, itype[0].capitalize() + subpath[1:] )
+    klass = getattr(models, itype[0].capitalize() + subpath[1:] )
     new = klass(**request.json)
     new.save()
     return ""

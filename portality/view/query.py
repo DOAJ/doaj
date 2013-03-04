@@ -6,7 +6,7 @@ Has auth control, so it is better than exposing your ES index directly.
 from flask import Blueprint, request, abort, make_response
 from flask.ext.login import current_user
 
-import portality.dao as dao
+import portality.models as models
 from portality.core import app
 import portality.util as util
 
@@ -23,7 +23,7 @@ def query(path='Record'):
     subpath = pathparts[0]
     if subpath.lower() in app.config['NO_QUERY_VIA_API']:
         abort(401)
-    klass = getattr(dao, subpath[0].capitalize() + subpath[1:] )
+    klass = getattr(models, subpath[0].capitalize() + subpath[1:] )
     
     if len(pathparts) > 1 and pathparts[1] == '_mapping':
         resp = make_response( json.dumps(klass().query(endpoint='_mapping')) )

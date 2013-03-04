@@ -8,7 +8,7 @@ from flask.ext.wtf import Form, TextField, TextAreaField, SelectField, PasswordF
 
 from portality import auth
 from portality.core import app
-import portality.dao as dao
+import portality.models as models
 import portality.util as util
 
 blueprint = Blueprint('account', __name__)
@@ -22,9 +22,9 @@ jsite_config['facetview']['initialsearch'] = False
 def index():
     if current_user.is_anonymous():
         abort(401)
-    users = dao.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
+    users = models.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
     if users['hits']['total'] != 0:
-        accs = [dao.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
+        accs = [models.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
         # explicitly mapped to ensure no leakage of sensitive data. augment as necessary
         users = []
         for acc in accs:
@@ -42,7 +42,7 @@ def index():
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
 def username(username):
-    acc = dao.Account.pull(username)
+    acc = models.Account.pull(username)
 
     if request.method == 'DELETE':
         if not auth.user.update(acc,current_user):
@@ -55,7 +55,7 @@ def username(username):
         info = request.json
         if info.get('id',False):
             if info['id'] != username:
-                acc = dao.Account.pull(info['id'])
+                acc = models.Account.pull(info['id'])
             else:
                 info['api_key'] = acc.data['api_key']
         acc.data = info
@@ -96,7 +96,7 @@ def login():
     if request.method == 'POST' and form.validate():
         password = form.password.data
         username = form.username.data
-        user = dao.Account.pull(username)
+        user = models.Account.pull(username)
         if user and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back. You can access your account information via the <strong>options</strong> menu.', 'success')
@@ -116,7 +116,7 @@ def logout():
 
 
 def existscheck(form, field):
-    test = dao.Account.pull(form.w.data)
+    test = models.Account.pull(form.w.data)
     if test:
         raise ValidationError('Taken! Please try another.')
 
@@ -136,7 +136,7 @@ def register():
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
         api_key = str(uuid.uuid4())
-        account = dao.Account(
+        account = models.Account(
             id=form.w.data, 
             email=form.n.data,
             api_key=api_key
