@@ -8,7 +8,7 @@ from copy import deepcopy
 import requests, urllib, urllib2, markdown
 from copy import deepcopy
 
-from flask import Blueprint, request, abort, make_response, render_template
+from flask import Blueprint, request, abort, make_response, render_template, redirect
 from flask.ext.login import current_user
 
 import portality.util as util
