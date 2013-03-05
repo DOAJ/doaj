@@ -19,6 +19,28 @@ import portality.models as models
 blueprint = Blueprint('jsite', __name__)
 
 
+# handles deduplications, does not need a specific routing, just gets passed to from jsite
+def deduplicate(path='',duplicates=[],target='/'):
+    if current_user.is_anonymous():
+        abort(401)
+    elif request.method == 'GET':
+        jsitem = deepcopy(app.config['JSITE_OPTIONS'])
+        jsitem['facetview']['initialsearch'] = False
+        return render_template('deduplicate.html', jsite_options=json.dumps(jsitem), duplicates=duplicates, url=target)
+    elif request.method == 'POST':
+        for k,v in request.values.items():
+            if v and k not in ['url', 'submit']:
+                if k.startswith('delete_'):
+                    rec = models.Record.pull(k.replace('delete_',''))
+                    if rec is not None: rec.delete()
+                else:
+                    rec = models.Record.pull(k)
+                    rec.data['url'] = v
+                    rec.save()
+        if 'url' in request.values: target = request.values['url']
+        return redirect(target)
+
+
 # this is a catch-all that allows us to present everything as a search
 @blueprint.route('/', methods=['GET','POST','DELETE'])
 @blueprint.route('/<path:path>', methods=['GET','POST','DELETE'])

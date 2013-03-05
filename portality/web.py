@@ -23,7 +23,6 @@ from portality.view.graph import blueprint as graph
 from portality.view.contact import blueprint as contact
 from portality.view.query import blueprint as query
 from portality.view.stream import blueprint as stream
-from portality.view.deduplicate import blueprint as deduplicate
 from portality.view.package import blueprint as package
 from portality.view.padthru import blueprint as padthru
 from portality.view.search import blueprint as search
@@ -39,7 +38,6 @@ app.register_blueprint(graph, url_prefix='/graph')
 app.register_blueprint(contact, url_prefix='/contact')
 app.register_blueprint(query, url_prefix='/query')
 app.register_blueprint(stream, url_prefix='/stream')
-app.register_blueprint(deduplicate, url_prefix='/deduplicate')
 app.register_blueprint(package, url_prefix='/package')
 app.register_blueprint(padthru, url_prefix='/padthru')
 app.register_blueprint(search, url_prefix='/search')
