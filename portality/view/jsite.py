@@ -66,7 +66,7 @@ def jsite(path=''):
 
     if request.method == 'GET':
         if util.request_wants_json():
-            if not rec or current_user.is_anonymous():
+            if not rec or not (current_user.is_anonymous() and app.config['PUBLIC_ACCESSIBLE_JSON']):
                 abort(404)
             resp = make_response( rec.json )
             resp.mimetype = "application/json"
