@@ -99,7 +99,7 @@ def login():
         user = models.Account.pull(username)
         if user and user.check_password(password):
             login_user(user, remember=True)
-            flash('Welcome back. You can access your account information via the <strong>options</strong> menu.', 'success')
+            flash('Welcome back.', 'success')
             return redirect('/')
         else:
             flash('Incorrect username/password', 'error')
