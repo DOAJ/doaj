@@ -21,9 +21,9 @@ blueprint = Blueprint('query', __name__)
 @blueprint.route('/', methods=['GET','POST'])
 @util.jsonp
 def query(path='Record'):
-    pathparts = path.split('/')
+    pathparts = path.strip('/').split('/')
     subpath = pathparts[0]
-    if subpath.lower() in app.config['NO_QUERY_VIA_API']:
+    if subpath.lower() in app.config.get('NO_QUERY_VIA_API',[]):
         abort(401)
     klass = getattr(models, subpath[0].capitalize() + subpath[1:] )
     
@@ -35,7 +35,7 @@ def query(path='Record'):
         else:
             rec = klass().pull(pathparts[1])
             if rec:
-                if ( not app.config['ANONYMOUS_SEARCH_FILTER'] ) or ( app.config['ANONYMOUS_SEARCH_FILTER'] and rec['visible'] and rec['accessible'] ):
+                if ( not app.config.get('ANONYMOUS_SEARCH_FILTER',False) ) or ( app.config.get('ANONYMOUS_SEARCH_FILTER',False) and rec.get('visible',False) and rec.get('accessible',False) ):
                     resp = make_response( rec.json )
                 else:
                     abort(401)
@@ -56,9 +56,9 @@ def query(path='Record'):
         for item in request.values:
             if item not in ['q','source','callback','_'] and isinstance(qs,dict):
                 qs[item] = request.values[item]
-        if 'sort' not in qs and app.config['SEARCH_SORT']:
+        if 'sort' not in qs and app.config.get('SEARCH_SORT',False):
             qs['sort'] = {app.config['SEARCH_SORT'].rstrip(app.config['FACET_FIELD']) + app.config['FACET_FIELD'] : {"order":app.config.get('SEARCH_SORT_ORDER','asc')}}
-        if app.config['ANONYMOUS_SEARCH_FILTER'] and current_user.is_anonymous():
+        if app.config.get('ANONYMOUS_SEARCH_FILTER',False) and current_user.is_anonymous():
             terms = {'visible':True,'accessible':True}
         else:
             terms = ''

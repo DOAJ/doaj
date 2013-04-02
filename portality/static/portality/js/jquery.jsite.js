@@ -20,7 +20,9 @@
         // READY THE DEFAULTS
 
         // specify the defaults - currently pushed from Flask settings
-        var defaults = {};
+        var defaults = {
+            "post_pagebuild_callback": false
+        };
 
         // and add in any overrides from the call
         $.fn.jsite.options = $.extend(defaults,options);
@@ -68,10 +70,18 @@
             this.into.append(content);
             this.into.attr('id',data['id']);
             this.into.addClass('expanded');
+            var children = [];
             this.into.find('.dynamic').each(function() {
+                children.push($(this).attr('data-source').replace('.json',''));
                 var src = $(this).attr('data-source').replace('.json','') + '.json';
                 $.ajax({"url": src, "success": embed, "into": $(this)});
             });
+            if ( $('.dynamic').not('.expanded').length == 0 && typeof options.post_pagebuild_callback == 'function') {
+                // add any action events to all the things in the page now
+                // - the facetview builder should probably happen now for example
+                // put in an option to edit the embedded page directly, if logged in?
+                options.post_pagebuild_callback.call(this);
+            };
         };        
         // VIEW A PAGE AS NORMAL
         var viewpage = function(event) {

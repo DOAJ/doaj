@@ -65,6 +65,17 @@ class DomainObject(UserDict.IterableUserDict):
 
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
 
+
+    @classmethod
+    def bulk(cls, bibjson_list, idkey='id'):
+        data = ''
+        for r in bibjson_list:
+            data += json.dumps( {'index':{'_id':r[idkey]}} ) + '\n'
+            data += json.dumps( r ) + '\n'
+        r = requests.post(cls.target() + '_bulk', data=data)
+        return r.json()
+
+
     @classmethod
     def pull(cls, id_):
         '''Retrieve object by id.'''
