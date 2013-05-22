@@ -1,7 +1,7 @@
 import uuid, json
 from copy import deepcopy
 
-from flask import Blueprint, request, url_for, flash, redirect, abort
+from flask import Blueprint, request, url_for, flash, redirect, abort, make_response
 from flask import render_template
 from flask.ext.login import login_user, logout_user, current_user
 from flask.ext.wtf import Form, TextField, TextAreaField, SelectField, PasswordField, validators, ValidationError
