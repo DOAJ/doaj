@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+jQuery(document).ready(function() {    
+
+    // NOTE validation requires parsley to be available
+    $("[data-required]").attr('data-required-message',"");
+
+    // add a datepicker to all datepicker classes
+    var opts = {
+        inline: true,
+        dateFormat: 'dd/mm/yy',
+        changeYear: true
+    }
+    $('.datepicker').datepicker(opts);
+    opts.yearRange = "-22:+0";
+    opts.defaultDate = '-17y';
+    opts.minDate = '-22y';
+    opts.maxDate = '-12y';
+    $('.dobdatepicker').datepicker(opts);
+    
+    // hide survey sections and add prev/next nav-throughs
+    var doprevnext = function(event) {
+        event.preventDefault();
+        // TODO: validate the currently visible parts
+        $('#survey').parsley('validate');
+        $('.part').hide();
+        $(this).hasClass('prev') ? $(this).closest('.part').prev().show() : $(this).closest('.part').next().show();
+    }
+    var prevnext = '<div style="margin:20px 0 20px 0;"><button class="btn btn-info prev">previous</button> <button class="btn btn-info next">next</button></div>';
+    $('.part').append(prevnext);
+    $('.part:first').find('.prev').remove();
+    $('.part:last').find('.next').remove();
+    $('.prev').bind('click',doprevnext);
+    $('.next').bind('click',doprevnext);
+    $('.part').hide();
+    $('.part:first').show();
+
+    // review button show all
+    var showall = function(event) {
+        event.preventDefault();
+        $('#activealert').hide();
+        $('.part').show();
+        $("html, body").animate({ scrollTop: 0 }, "fast");
+    }
+    $('.review').bind('click',showall);
+
+    // add / remove rows to list items
+    var first = true;
+    $('table.multi').find('tbody').children('tr').each(function() {
+        $(this).children('td').first().prepend('<a class="btn btn-warning delete-row" style="margin:-10px 2px 0 0;" href="#">delete</a>').children('select, input').addClass('narrow');
+    });
+    $('table.multi').find('tbody').append('<tr><td><a class="btn btn-success add-row" href="#">add</a></td></tr>');
+
+
+    // do row addition and deletion where multiple lines of inputs are required, like a list of quals
+    var addrow = function(event) {
+        event.preventDefault();
+        $(this).closest('tr').siblings().length == 5 ? $(this).hide() : false;
+        if ( $(this).closest('tr').siblings().length < 6 ) {
+            var row = $(this).closest('tr').prev().clone(true).get(0);
+            $(row).find('.noclone').remove();
+            $(row).insertBefore($(this).closest('tr'));
+            $(row).find('.delete-row').bind('click',deleterow);
+            $(row).find('select').val("");
+            $(row).find('input').val("");
+            $(row).find('textarea').html("");
+            $(row).find('.datepicker').datepicker("destroy");
+            $(row).find('.datepicker').removeClass("hasDatepicker").removeAttr('id');
+            $(row).find('.datepicker').datepicker(opts);
+        }
+    }
+    $('.add-row').bind('click',addrow);
+    var deleterow = function(event) {
+        event.preventDefault();
+        var row = $(this).closest('tr').clone(true).get(0);
+        $(this).closest('tr').siblings().length == 6 ? $(this).closest('tr').siblings().find('.add-row').show() : false;
+        if ( $(this).closest('tr').siblings().length == 1 ) {
+            $(row).find('.noclone').remove();
+            $(row).insertBefore($(this).closest('tr'));
+            $(row).find('.delete-row').bind('click',deleterow);
+            $(row).find('select').val("");
+            $(row).find('input').val("");
+            $(row).find('textarea').html("");
+            $(row).find('.datepicker').datepicker("destroy");
+            $(row).find('.datepicker').removeClass("hasDatepicker").removeAttr('id');
+            $(row).find('.datepicker').datepicker(opts);
+        }
+        $(this).closest('tr').remove();
+    }
+    $('.delete-row').bind('click',deleterow);
+
+    var triggersave = function(event) {
+        if ( !$('#survey').parsley('validate') ) {
+            event.preventDefault();
+            $('#activealert').show();
+        }
+    };
+    $('#triggersave').bind('click',triggersave);
+
+});
+</script>
+
+<style>
+.part .well{
+    margin-top:50px;
+}
+.part .hero-unit{
+    margin-top:50px;
+}
+.narrow{
+    width:180px;
+}
+.narrow.datepicker{
+    width:100px;
+}
+input, textarea {
+    width:200px;
+}
+select {
+    width:210px;
+}
+.add-row, .delete-row {
+    width:35px;
+}
+textarea.bigfield{
+    width:400px;
+    height:150px;
+}
+input.bigfield{
+    width:360px;
+    height:150px;
+}
+</style>
+
+<form action="" id="survey" name="survey" method="post" data-validate="parsley">
+<fieldset>
+
+
+<!-- the intro part -->
+<div class="part intro">
+
+	<div class="row-fluid">
+	    <div class="span12">
+	        <div class="well">
+	            <h1>Welcome to the form</h1>
+	        </div>
+	    </div>
+	</div>
+
+	<div class="row-fluid">
+	    <div class="span12">
+	        <p>I am a description of the form that explains what people should expect to have to do.</p>
+        </div>
+	</div>
+
+</div>
+
+
+
+<!-- the personal details page -->
+<div class="part details">
+
+	<div class="row-fluid">
+	    <div class="span12">
+	        <div class="well">
+	            <h2>Your details</h2>
+	            <p>Please provide your personal details below, to create your record.</p>
+	        </div>
+	    </div>
+	</div>
+
+	<div class="row-fluid">
+	    <div class="span12">		
+	        <table>
+	            <tbody>
+        	        <tr>
+	                    <td style="text-align:right;padding:6px 10px 0 0;">First name</td>
+                		<td><input type="text" name="first_name" data-required="true"></td>
+
+	                    <td style="text-align:right;padding:6px 10px 0 100px;">Last name</td>
+                		<td><input type="text" name="last_name" data-required="true"></td>
+                    </tr>
+        	        <tr>
+	                    <td style="text-align:right;padding:6px 10px 0 0;">Date of birth</td>
+                		<td><input type="text" class="dobdatepicker" name="date_of_birth" data-required="true" data-trigger="keyup change focusout"></td>
+
+                    </tr>
+                </tbody>
+	        </table>
+	    </div>
+	</div>
+
+</div>
+
+
+
+<!-- the example of lists of rows page -->
+<div class="part qualifications">
+
+	<div class="row-fluid">
+	    <div class="span12">
+	        <div class="well">
+	            <h2>Qualifications</h2>
+	            <p>Please provide details of your qualifications</p>
+	        </div>
+	    </div>
+	</div>
+
+	<div class="row-fluid">
+	    <div class="span12">		
+	        <table class="multi">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>School year taken</th>
+                        <th>Level of qualification</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                		<td><select name="qualification_subject">
+                		    <option></option>
+                		    {% for opt in selections.subjects %}
+                		        <option>{{ opt }}</option>
+                		    {% endfor %}
+                		</select></td>
+                		<td><select name="qualification_year">
+                		    <option></option>
+                		    <option>Third year</option>
+                		    <option>Fourth year</option>
+                		    <option>Fifth year</option>
+                		    <option>Sixth year</option>
+                		    <option>Other</option>
+                		</select></td>
+                		<td><select name="qualification_level">
+                		    <option></option>
+                		    {% for opt in selections.levels %}
+                		        <option>{{ opt }}</option>
+                		    {% endfor %}
+                		</select></td>
+                		<td><select name="qualification_grade">
+                		    <option></option>
+                		    {% for opt in selections.grades %}
+                		        <option>{{ opt }}</option>
+                		    {% endfor %}
+                		</select></td>
+                    </tr>
+                </tbody>
+	        </table>
+	    </div>
+	</div>
+
+</div>
+
+
+
+
+
+
+
+<!-- the form submission button -->
+<div class="part submit">
+
+	<div class="row-fluid">
+	    <div class="span12">
+	        <div class="hero-unit">
+	            <h2>Ready to submit</h2>
+	            <p>You cannot edit your responses once you submit them.</p>
+	        </div>
+	    </div>
+	</div>
+
+	<div class="row-fluid" style="margin-top:30px;">
+	    <div class="span6">
+	        <div class="alert alert-success">
+            	<input id="triggersave" class="btn btn-success span2" style="margin-left:100px;" type="submit" name="submit" value="Submit your survey" />
+	        </div>
+	    </div>
+	    <div class="span6">
+	        <div id="activealert" class="alert alert-warning clearfix" style="display:none;">
+	            <p>There are errors with your responses. Please click below to review your responses, then you can scroll through or use the previous / next buttons to check them. Any errors will be highlighted in red. Once there are no errors, please try to submit once again.</p>
+	        </div>
+	        <div class="alert alert-warning clearfix">
+        	    <p><button class="btn btn-warning span2 review" style="margin-left:100px;">Review your responses</button></p>
+	        </div>
+	    </div>
+    </div>
+
+</div>
+
+
+
+
+</fieldset>
+</form>
+
+{% endblock %}
+
+
+    
+
