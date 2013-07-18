@@ -13,7 +13,6 @@ from flask.ext.login import login_user, current_user
 import portality.models as models
 from portality.core import app, login_manager
 
-from portality.view.wikipedia import wikiparse
 from portality.view.account import blueprint as account
 from portality.view.sitemap import blueprint as sitemap
 from portality.view.tagging import blueprint as tagging
@@ -24,9 +23,8 @@ from portality.view.contact import blueprint as contact
 from portality.view.query import blueprint as query
 from portality.view.stream import blueprint as stream
 from portality.view.package import blueprint as package
-from portality.view.padthru import blueprint as padthru
-from portality.view.search import blueprint as search
 from portality.view.jsite import blueprint as jsite
+#from cl.view.feed import blueprint as feed, get_feed_resp
 
 
 app.register_blueprint(account, url_prefix='/account')
@@ -39,9 +37,8 @@ app.register_blueprint(contact, url_prefix='/contact')
 app.register_blueprint(query, url_prefix='/query')
 app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(package, url_prefix='/package')
-app.register_blueprint(padthru, url_prefix='/padthru')
-app.register_blueprint(search, url_prefix='/search')
 app.register_blueprint(jsite)
+#app.register_blueprint(feed, url_prefix="/feed")
 
 
 @login_manager.user_loader

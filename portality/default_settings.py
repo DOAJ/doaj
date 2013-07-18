@@ -21,7 +21,7 @@ SHOW_LOGIN = True # if this is false the login link is not shown in the default 
 OFFLINE = False 
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "127.0.0.1:9200"
+ELASTIC_SEARCH_HOST = "http://127.0.0.1:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "portality"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 NO_QUERY_VIA_API = ['account'] # list index types that should not be queryable via the API

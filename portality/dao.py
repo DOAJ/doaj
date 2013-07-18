@@ -23,7 +23,7 @@ class DomainObject(UserDict.IterableUserDict):
             
     @classmethod
     def target(cls):
-        t = 'http://' + str(app.config['ELASTIC_SEARCH_HOST']).lstrip('http://').rstrip('/') + '/'
+        t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
         t += app.config['ELASTIC_SEARCH_DB'] + '/' + cls.__type__ + '/'
         return t
     

@@ -1,0 +1,451 @@
+{% extends "base.html" %}
+
+{% block subnav %}
+
+    <div id="subnav" class="subnav">
+        <div class="container">
+            <ul class="nav nav-pills">
+                <li><a href="/admin#dashboard">Dashboard</a></li>
+                <li><a href="/admin#reports">Reports</a></li>
+                <li><a href="/admin#projects">Projects</a></li>
+                <li><a href="/media">Media</a></li>
+                <li><a href="/sitemap">Sitemap</a></li>
+                <li><a href="/tagging">Tagging</a></li>
+                {% if current_user.is_super %}<li><a href="/account">Users</a></li>{% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    jQuery(document).ready(function() {
+        var dropdowns = {{jdropdowns|safe}};
+        $('#tags').select2({
+            'tags':dropdowns.tags,
+            'tokenSeparators':[","],
+            'width':"element"
+        });
+        $('#externals').select2({
+            'tags':dropdowns.contacts,
+            'width':"element"
+        });
+        $('#customer').select2({
+            'tags':dropdowns.contacts,
+            'width':"element"
+        });
+        $('#funder').select2({
+            'tags':dropdowns.contacts,
+            'width':"element"
+        });
+        // add some customisation to select2 css
+        $('.select2-choices').css({
+            "-webkit-border-radius":"3px",
+            "-moz-border-radius":"3px",
+            "border-radius":"3px",
+            "border":"1px solid #ccc",
+            "margin-bottom": "5px"
+        });
+        
+        // add / remove rows to list items
+        var first = true;
+        $('table.multi').find('tbody').children('tr').each(function() {
+            $(this).children('td').first().prepend('<a class="btn btn-warning delete-row" style="margin:-10px 2px 0 0;" href="#">delete</a>');
+        });
+        var btns = '<tr><td><a class="btn btn-success add-row" href="#">add</a>';
+        btns += ' <input type="submit" name="submit" class="btn" value="save">';
+        btns += '</td></tr>';
+        $('table.multi').find('tbody').append(btns);
+
+        var addrow = function(event) {
+            event.preventDefault();
+            $(this).closest('tr').siblings().length == 19 ? $(this).hide() : false;
+            if ( $(this).closest('tr').siblings().length < 20 ) {
+                var row = $(this).closest('tr').prev().clone(true).get(0);
+                $(row).find('.noclone').remove();
+                $(row).insertBefore($(this).closest('tr'));
+                $(row).find('.delete-row').bind('click',deleterow);
+                $(row).find('select').val("");
+                $(row).find('input').val("");
+                $(row).find('textarea').html("");
+                $(row).find('.datepicker').datepicker("destroy");
+                $(row).find('.datepicker').removeClass("hasDatepicker").removeAttr('id');
+                $(row).find('.datepicker').datepicker({"dateFormat":"dd/mm/yy"});
+            }
+        }
+        $('.add-row').bind('click',addrow);
+        var deleterow = function(event) {
+            event.preventDefault();
+            var row = $(this).closest('tr').clone(true).get(0);
+            $(this).closest('tr').siblings().length == 20 ? $(this).closest('tr').siblings().find('.add-row').show() : false;
+            if ( $(this).closest('tr').siblings().length == 1 ) {
+                $(row).find('.noclone').remove();
+                $(row).insertBefore($(this).closest('tr'));
+                $(row).find('.delete-row').bind('click',deleterow);
+                $(row).find('select').val("");
+                $(row).find('input').val("");
+                $(row).find('textarea').html("");
+                $(row).find('.datepicker').datepicker("destroy");
+                $(row).find('.datepicker').removeClass("hasDatepicker").removeAttr('id');
+                $(row).find('.datepicker').datepicker({"dateFormat":"dd/mm/yy"});
+            }
+            $(this).closest('tr').remove();
+        }
+        $('.delete-row').bind('click',deleterow);
+        
+        var beyonddraftreqs = function(event) {
+            $('#project').parsley('destroy');
+            $('#project').parsley();
+            if ( $(this).val() != "draft" ) {
+                $('.beyonddraftreqs').each(function() {
+                    $('#project').parsley('addItem','#' + $(this).attr('id'));
+                    $(this).parsley('addConstraint',{'required':true});
+                });                
+            }
+            $('#project').parsley('validate');
+        }
+        $('#status').bind('change',beyonddraftreqs);
+        
+        $('#status').trigger('change');
+        $('#project').parsley('validate');
+
+        var budgetvat = function() {
+            var standardvat = $('#budget').val() * .2;
+            $('#vat').val(standardvat);
+        }
+        $('#budget').bind('change',budgetvat);
+
+    });    
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+
+<form method="POST" name="project" id="project" action="">
+
+<div class="row-fluid">
+
+    <div class="span6">
+        <div class="well">
+                                            
+            <div><span class="upload_label">title:</span> <input type="text" name="title" id="title" data-required="true"
+       		{% if record %} value="{{record.data.title}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">status:</span> 
+                <select name="status" id="status" data-required="true">
+                    <option
+                    {% if record %}{% if record.data.status == "draft" %} selected="selected"{% endif %}{% endif %}
+                    >draft</option>
+                    <option
+                    {% if record %}{% if record.data.status == "proposed" %} selected="selected"{% endif %}{% endif %}
+                    >proposed</option>
+                    <option
+                    {% if record %}{% if record.data.status == "abandoned" %} selected="selected"{% endif %}{% endif %}
+                    >abandoned</option>
+                    <option
+                    {% if record %}{% if record.data.status == "rejected" %} selected="selected"{% endif %}{% endif %}
+                    >rejected</option>
+                    <option
+                    {% if record %}{% if record.data.status == "accepted" %} selected="selected"{% endif %}{% endif %}
+                    >accepted</option>
+                    <option
+                    {% if record %}{% if record.data.status == "current" %} selected="selected"{% endif %}{% endif %}
+                    >current</option>
+                    <option
+                    {% if record %}{% if record.data.status == "late" %} selected="selected"{% endif %}{% endif %}
+                    >late</option>
+                    <option
+                    {% if record %}{% if record.data.status == "complete" %} selected="selected"{% endif %}{% endif %}
+                    >complete</option>
+                </select>
+            </div>
+
+            <div><span class="upload_label">description:</span> <textarea name="description" data-required="true">{% if record %}{{record.data.description}}{% endif %}</textarea></div>
+
+            <div><span class="upload_label" data-required="true">proposer</span> 
+                <select name="proposer">
+                    <option></option>
+                    {% for name in dropdowns["partners"] %}
+                    <option
+                    {% if record %}{% if record.data.proposer == name %} selected="selected"{% endif %}{% endif %}
+                    >{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div><span class="upload_label">senior +1</span> 
+                <select name="seniorplusone" id="seniorplusone" class="beyonddraftreqs">
+                    <option></option>
+                    {% for name in dropdowns["seniors"] %}
+                    <option
+                    {% if record %}{% if record.data.seniorplusone == name %} selected="selected"{% endif %}{% endif %}                    
+                    >{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div><span class="upload_label">additional +1</span> 
+                <select name="plusone" id="plusone" class="beyonddraftreqs">
+                    <option></option>
+                    {% for name in dropdowns["partners"] %}
+                    <option
+                    {% if record %}{% if record.data.plusone == name %} selected="selected"{% endif %}{% endif %}
+                    >{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div><span class="upload_label">QC partner</span> 
+                <select name="qc" id="qc" class="beyonddraftreqs">
+                    <option></option>
+                    {% for name in dropdowns["partners"] %}
+                    <option
+                    {% if record %}{% if record.data.qc == name %} selected="selected"{% endif %}{% endif %}
+                    >{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div><span class="upload_label">project lead</span>
+                <select name="lead" id="lead" class="beyonddraftreqs">
+                    <option></option>
+                    {% for name in dropdowns["partners"] %}
+                    <option
+                    {% if record %}{% if record.data.lead == name %} selected="selected"{% endif %}{% endif %}
+                    >{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div><span class="upload_label">start date:</span> <input type="text" name="datefrom" id="datefrom" class="datepicker beyonddraftreqs"
+            {% if record %} value="{{record.data.datefrom}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">end date:</span> <input type="text" name="dateto" id="dateto" class="datepicker beyonddraftreqs"
+            {% if record %} value="{{record.data.dateto}}"{% endif %}
+            ></div>
+
+        </div>
+    </div>
+    
+    <div class="span6">
+        <div class="well">
+
+            <div><span class="upload_label">project tags:</span> <input type="text" name="tags" id="tags"
+            {% if record %} value="{{record.data.tags}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">external participants:</span> <input type="text" name="externals" id="externals"
+            {% if record %} value="{{record.data.externals}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">customer:</span> 
+                <input type="text" name="customer" id="customer"
+                {% if record %} value="{{record.data.customer}}"{% endif %}
+                >
+            </div>
+
+            <div><span class="upload_label">funder (if not customer):</span> 
+                <input type="text" name="funder" id="funder"
+                {% if record %} value="{{record.data.funder}}"{% endif %}
+                >
+            </div>
+
+            <div><span class="upload_label">biling name and address:</span> 
+                <textarea name="billing" id="billing">{% if record %}{{record.data.billing}}{% endif %}</textarea>
+            </div>
+
+            <div><span class="upload_label">Total budget ex VAT:</span> <input type="text" name="budget" id="budget" class="beyonddraftreqs" data-type="number"
+            {% if record %} value="{{record.data.budget}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">Total VAT to charge:</span> <input type="text" id="vat" class="beyonddraftreqs" name="vat" data-type="number"
+            {% if record %} value="{{record.data.vat}}"{% endif %}
+            ></div>
+
+            <div><span class="upload_label">Total expenses budget:</span> <input type="text" id="expenses" class="beyonddraftreqs" name="expenses" data-type="number"
+            {% if record %} value="{{record.data.expenses}}"{% endif %}
+            ></div>
+
+            <hr></hr>
+
+            <div style="margin-top:10px;">
+                <span class="upload_label"></span>
+                <input type="submit" name="submit" class="btn" style="margin:-10px 5px 20px 0;" value="save"> <input type="submit" name="submit" class="btn btn-danger" style="margin:-10px 0 20px 5px;" value="delete">
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+
+<hr></hr>
+
+<div class="row-fluid">
+    <div class="span12">
+        <h2>Notes</h2>
+
+        <table class="multi">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Written by</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if record and record.data.notes|length > 0 %}
+                    {% for rec in record.data.notes %}
+                <tr>
+            		<td><input type="text" name="note_date" class="datepicker" value="{{rec.date}}"></td>
+            		<td><input type="text" name="note_author" class="datepicker" value="{{rec.author}}" disabled="disabled"></td>
+                    <td><textarea name="note_note" style="width:300px;height:70px;">{{rec.note}}</textarea></td>
+                </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+            		<td><input type="text" name="note_date" class="datepicker"></td>
+            		<td>{{current_user.id}}</td>
+                    <td><textarea name="note_note" style="width:300px;height:70px;"></textarea></td>
+                </tr>
+                {% endif %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<hr></hr>
+
+<div class="row-fluid">
+    <div class="span12">
+        <h2>Partner commitments</h2>
+
+        <table class="multi">
+            <thead>
+                <tr>
+                    <th>Partner</th>
+                    <th>Date from</th>
+                    <th>Date to</th>
+                    <th>% time</th>
+                    <th>% share</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if record and record.data.commitments|length > 0 %}
+                    {% for rec in record.data.commitments %}
+                <tr>
+            		<td><select name="commitment_name" style="width:150px;">
+                        <option></option>
+                        {% for name in dropdowns["partners"] %}
+                        <option
+                        {% if rec.name == name %} selected="selected"{% endif %}
+                        >{{ name }}</option>
+                        {% endfor %}
+            		</select></td>
+            		<td><input type="text" name="commitment_datefrom" class="datepicker" value="{{rec.datefrom}}"></td>
+            		<td><input type="text" name="commitment_dateto" class="datepicker" value="{{rec.dateto}}"></td>
+                    <td><input type="text" name="commitment_time" value="{{rec.time}}"></td>
+                    <td><input type="text" name="commitment_share" value="{{rec.share}}"></td>
+                </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+            		<td><select name="commitment_name" style="width:150px;">
+                        <option></option>
+                        {% for name in dropdowns["partners"] %}
+                        <option>{{ name }}</option>
+                        {% endfor %}
+            		</select></td>
+            		<td><input type="text" name="commitment_datefrom" class="datepicker" /></td>
+            		<td><input type="text" name="commitment_dateto" class="datepicker" /></td>
+                    <td><input type="text" name="commitment_time"></td>
+                    <td><input type="text" name="commitment_share"></td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<hr></hr>
+
+<div class="row-fluid">
+    <div class="span12">
+
+        <h2>Financial planning</h2>
+
+        <table class="multi">
+            <thead>
+                <tr>
+                    <th>Event type</th>
+                    <th>Description</th>
+                    <th>Reference</th>
+                    <th>Date expected</th>
+                    <th>Amount (£) ex VAT</th>
+                    <th>VAT (£)</th>
+                    <th>Date approved</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% if record and record.data.financials|length > 0 %}
+                    {% for rec in record.data.financials %}
+                <tr>
+            		<td><select name="financial_type" style="width:150px;">
+                        <option></option>
+                        <option value="cost"
+                        {% if rec.type == "cost" %} selected="selected"{% endif %}
+                        >a cost: something this project has to pay for e.g. contractors, servers, Cl overheads</option>
+                        <option value="payment"
+                        {% if rec.type == "payment" %} selected="selected"{% endif %}
+                        >a payment: income we expect to receive on this project e.g. if a payment schedule is agreed with the customer during project proposal, there will be expected payment amounts and dates</option>
+                        <option value="expense"
+                        {% if rec.type == "expense" %} selected="selected"{% endif %}
+                        >an expense: something a project member will incur during the course of this project, which is not simply a project cost, and which the project member is allowed to claim back from the project budget</option>
+                        <option value="partner"
+                        {% if rec.type == "partner" %} selected="selected"{% endif %}
+                        >partner share: to be paid at a time when such funds are available on the project budget, as part or total payment of the defined partner commitments on this project</option>
+                    </select></td>
+            		<td><textarea name="financial_description">{{ rec.description }}</textarea></td>
+            		<td><input type="text" name="financial_reference" style="width:150px;" value="{{ rec.reference }}"></td>
+            		<td><input type="text" name="financial_datedue" style="width:100px;" class="datepicker" value="{{ rec.datedue }}"></td>
+                    <td><input type="text" name="financial_cost" style="width:100px;" value="{{ rec.cost }}"></td>
+                    <td><input type="text" name="financial_vat" style="width:100px;" value="{{ rec.vat }}"></td>
+            		<td><input type="text" name="financial_dateapproved" class="datepicker" style="width:100px;" value="{{ rec.dateapproved }}"></td>
+                </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+            		<td><select name="financial_type" style="width:150px;">
+                        <option></option>
+                        <option value="cost">a cost: something this project has to pay for e.g. contractors, servers, CL overheads</option>
+                        <option value="payment">a payment: income we expect to receive on this project e.g. if a payment schedule is agreed with the customer during project proposal, there will be expected payment amounts and dates</option>
+                        <option value="expense">an expense: something a project member will incur during the course of this project, which is not simply a project cost, and which the project member is allowed to claim back from the project budget</option>
+                        <option value="partner">partner share: to be paid at a time when such funds are available on the project budget, as part or total payment of the defined partner commitments on this project</option>
+
+                    </select></td>
+            		<td><textarea name="financial_description"></textarea></td>
+            		<td><input type="text" name="financial_reference" style="width:150px;"></td>
+            		<td><input type="text" name="financial_datedue" style="width:100px;" class="datepicker" /></td>
+                    <td><input type="text" name="financial_cost" style="width:100px;"></td>
+                    <td><input type="text" name="financial_vat" style="width:100px;"></td>
+            		<td><input type="text" name="financial_dateapproved" class="datepicker" style="width:100px;" /></td>
+                </tr>
+                {% endif %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+</form>
+
+{% endblock %}
+

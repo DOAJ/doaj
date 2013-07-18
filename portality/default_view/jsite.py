@@ -26,7 +26,7 @@ def deduplicate(path='',duplicates=[],target='/'):
     elif request.method == 'GET':
         jsitem = deepcopy(app.config['JSITE_OPTIONS'])
         jsitem['facetview']['initialsearch'] = False
-        return render_template('deduplicate.html', jsite_options=json.dumps(jsitem), duplicates=duplicates, url=target)
+        return render_template('jsite/deduplicate.html', jsite_options=json.dumps(jsitem), duplicates=duplicates, url=target)
     elif request.method == 'POST':
         for k,v in request.values.items():
             if v and k not in ['url', 'submit']:
@@ -127,7 +127,7 @@ def jsite(path=''):
         if rec:
             title = rec.data.get('title','')
 
-        return render_template('index.html', content=content, title=title, jsite_options=json.dumps(jsite))
+        return render_template('jsite/index.html', content=content, title=title, jsite_options=json.dumps(jsite))
 
     elif request.method == 'POST':
         if rec:

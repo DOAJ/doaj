@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block subnav %}
+
+    <div id="subnav" class="subnav">
+        <div class="container">
+            <ul class="nav nav-pills">
+                <li><a href="/admin#dashboard">Dashboard</a></li>
+                <li><a href="#reports">Reports</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="/media">Media</a></li>
+                <li><a href="/sitemap">Nav / Sitemap</a></li>
+                <li><a href="/tagging">Pages / Tags</a></li>
+                {% if current_user.is_super %}<li><a href="/account">Users</a></li>{% endif %}
+            </ul>
+        </div>
+    </div>
+
+<script type="text/javascript" charset="utf-8">
+jQuery(document).ready(function() {
+
+
+
+});
+</script>            
+
+{% endblock %}
+
+{% block content %}
+
+
+<a name="dashboard"></a>
+<div class="row-fluid" style="margin-top:40px;">
+    <div class="span12">
+        <div id="graphview"></div>
+    </div>
+</div>
+
+
+
+<hr></hr>
+
+<a name="reports"></a>
+<div class="row-fluid">
+    <div class="span12">
+        <h2 style="margin-bottom:10px;">Reports</h2>
+        <p>quarterly, annual, vat, clx report... perhaps generatable from the above vis.</p>
+    </div>
+</div>
+
+<hr></hr>
+
+<a name="projects"></a>
+<div class="row-fluid">
+    <div class="span12">
+        <h2 style="margin-bottom:10px;">All projects</h2>
+        <div class="row-fluid" id="projectsfacet">
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

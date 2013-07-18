@@ -2,16 +2,15 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'portality',
-    version = '0.7',
+    version = '0.7.1',
     packages = find_packages(),
     install_requires = [
         "Flask==0.8",
         "Flask-Login",
         "Flask-WTF",
         "requests==1.1.0",
-        "markdown",
-        "topia.termextract",
-        "html2text"
+        "markdown"#,
+        #"lxml"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

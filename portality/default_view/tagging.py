@@ -1,21 +1,15 @@
-'''
-Presents a page by which to bulk control tags applied to records.
-Also handles submission of updates to those tags for the records.
-'''
-
-
-import json
-from copy import deepcopy
+import json, time
 
 from flask import Blueprint, request, render_template, flash
 from flask.ext.login import current_user
+from copy import deepcopy
 
 from portality.core import app
-import portality.models as models
+import portality.util as util
+import portality.models
 
 
 blueprint = Blueprint('tagging', __name__)
-
 
 # restrict everything to logged in users
 @blueprint.before_request
@@ -29,15 +23,20 @@ def index():
     js['facetview']['initialsearch'] = False
     js['editable'] = False
     js['data'] = {}
-        
+    
     if request.method == 'POST':
+        print request.values
+        updatecount = 0
         for k,v in request.values.items():
             if k.startswith('id_'):
                 kid = k.replace('id_','')
-                rec = models.Record.pull(kid)
+                rec = portality.models.Record.pull(kid)
+                print kid
                 if rec is not None:
-                    if 'delete_'+kid in request.values:
+                    print rec.data
+                    if request.values['submit'] == 'Delete selected' and request.values.get('selected_' + kid,False):
                         rec.delete()
+                        updatecount += 1
                     else:
                         update = False
                         if 'title_'+kid in request.values:
@@ -53,13 +52,6 @@ def index():
                                 update = True
                                 rec.data['url'] = request.values['url_'+kid]
 
-                        if 'accessible_'+kid in request.values and not rec.data.get('accessible',False):
-                            update = True
-                            rec.data['accessible'] = True
-                        elif rec.data.get('accessible',False) and not 'accessible_'+kid in request.values:
-                            update = True
-                            rec.data['accessible'] = False
-
                         # check if the tag values are in the box from select2
                         if 'tags_'+kid in request.values:
                             tgs = []
@@ -69,11 +61,17 @@ def index():
                                 update = True
                                 rec.data['tags'] = tgs
 
-                        if update: rec.save()
+                        if update:
+                            rec.save()
+                            updatecount += 1
 
-        flash("Updated. If you don't see your updates yet, <a href=\"/tagging\">refresh</a> the page.")
+        time.sleep(1)
+        if request.values['submit'] == 'Delete selected':
+            method = 'deleted'
+        else:
+            method = 'updated'
+        flash(str(updatecount) + " records have been " + method + ".")
         
-    records = [i['_source'] for i in models.Record.query(size=100000,sort={'url.exact':{'order':'asc'}}).get('hits',{}).get('hits',[])]
-    return render_template('tagging.html', jsite_options=json.dumps(js), records=records, offline=js['offline'])
+    return render_template('tagging/tagging.html', jsite_options=json.dumps(js), offline=js['offline'])
 
 
