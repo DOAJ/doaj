@@ -166,11 +166,6 @@ without conflicting with your local changes.
 NOTE that if you do overwrite any of the other files in your own repo copy, you 
 will need to check for conflicts after a fetch and merge, and fix them.
 
-ALSO NOTE that the portality .gitignore file sets the non-default versions of 
-templates, view, auth and models.py to be ignored, so to ensure you CAN save 
-changes you make to them in your own repo, you should edit the .gitignore file 
-to allow your repo to track those.
-
 If you want to add your own javascript includes and things like that, put them 
 in the static folder, but not in the portality folder
 

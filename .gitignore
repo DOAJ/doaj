@@ -9,7 +9,4 @@ dist/*
 media/*
 app.cfg
 
-portality/templates/*
-portality/auth/*
-portality/view/*
 portality/models.py
