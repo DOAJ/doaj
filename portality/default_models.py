@@ -14,7 +14,6 @@ When using portality in your own flask app, perhaps better to make your own mode
 
 # an example account object, which requires the further additional imports
 # There is a more complex example below that also requires these imports
-import portality.auth as auth
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
@@ -29,8 +28,13 @@ class Account(DomainObject, UserMixin):
 
     @property
     def is_super(self):
-        return auth.user.is_super(self)
+        return not self.is_anonymous() and self.id in app.config['SUPER_USER']
     
+
+# a typical record object, with no special abilities
+class Record(DomainObject):
+    __type__ = 'record'
+
     
 # a special object that allows a search onto all index types - FAILS TO CREATE INSTANCES
 class Everything(DomainObject):
@@ -43,25 +47,45 @@ class Everything(DomainObject):
         return t
 
 
-# a typical record object, with a couple of extra methods
-class Record(DomainObject):
-    __type__ = 'record'
+# a page manager object, with a couple of extra methods
+class Pages(DomainObject):
+    __type__ = 'pages'
 
     @classmethod
     def pull_by_url(cls,url):
-        res = cls.query(q='url.exact:' + url)
+        res = cls.query(q={"query":{"term":{'url.exact':url}}})
         if res.get('hits',{}).get('total',0) == 1:
             return cls(**res['hits']['hits'][0]['_source'])
         else:
             return None
 
-    @classmethod
-    def check_duplicate(cls,url):
-        res = cls.query(q='url.exact:' + url,size=1000000)
-        if res.get('hits',{}).get('total',0) > 1:
-            return [i['_source'] for i in res['hits']['hits']]
-        else:
-            return None
+    def update_from_form(self, request):
+        newdata = request.json if request.json else request.values
+        self.data['editable'] = False
+        self.data['accessible'] = False
+        self.data['visible'] = False
+        self.data['comments'] = False
+        for k, v in newdata.items():
+            if k == 'tags':
+                tags = []
+                for tag in v.split(','):
+                    if len(tag) > 0: tags.append(tag)
+                self.data[k] = tags
+            elif k in ['editable','accessible','visible','comments']:
+                if v == "on":
+                    self.data[k] = True
+                else:
+                    self.data[k] = False
+            elif k not in ['submit']:
+                self.data[k] = v
+        if not self.data['url'].startswith('/'):
+            self.data['url'] = '/' + self.data['url']
+        if 'title' not in self.data or self.data['title'] == "":
+            self.data['title'] = 'untitled'
+
+    def save_from_form(self, request):
+        self.update_from_form(request)
+        self.save()
     
 
 # You can make simple models that just reside in their own index type.

@@ -18,9 +18,12 @@ blueprint = Blueprint('media', __name__)
 
 
 mediadir = os.path.dirname(os.path.abspath(__file__)).replace('/portality/view','/') + app.config['MEDIA_FOLDER']
+if not os.path.exists(mediadir):
+    os.makedirs(mediadir)
 
 @blueprint.route('/')
 def media():
+
     jsite = deepcopy(app.config['JSITE_OPTIONS'])
     jsite['data'] = False
     jsite['editable'] = False

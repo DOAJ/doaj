@@ -32,28 +32,15 @@
 //------------------------------------------------------------------------------
         // BUILD THE PAGE DEPENDING ON SETTINGS AND PERMISSIONS
         var makepage = function() {
-            options.loggedin ? editoptions() : "";
             var singleedit = function(event) {
                 event.preventDefault();
                 editpage();
             };
-            $('.edit_page').bind('click',singleedit);
             
             if ( !options.newrecord && !options.data['editable'] ) {
                 viewpage();
             } else if ( options.editable ) {
-                if ( options.newrecord && options.loggedin ) {
-                    var nothere = '<div class="alert alert-info"> \
-                        <button class="close" data-dismiss="alert">x</button> \
-                        <p><strong>There is no page here yet - create one.</strong></p> \
-                        <p><strong>NOTE</strong>: creating a page does not list it in the site navigation.</p> \
-                        <p><strong>PLUS</strong>: You need to set some settings for new pages first...</p>';
-                    $('.alert-messages').prepend(nothere);
-                    $('.edit_page').parent().next().remove();
-                    $('.edit_page').parent().remove();
-                    showopts();
-                    editpage();
-                } else if ( !options.newrecord && options.data['editable'] && options.loggedin ) {
+                if ( options.data['editable'] && options.loggedin ) {
                     editpage();
                 }
             } else {
@@ -200,142 +187,8 @@
                 $('#form_content').val(record['content'])
             }
 
-            if ( options.loggedin ) {
-                $('#mainnavlist').append('<li><a class="pagemedia" href="">media</a></li>')
-                var showmedia = function(event) {
-                    event.preventDefault()
-                    !$('#absolute_media_gallery').length ? $('body').media_gallery() : ""
-                }
-                $('.pagemedia').bind('click',showmedia)
-            }
         }
 
-
-        // EDIT OPTION BUTTON FUNCTIONS
-        var showopts = function(event) {
-            event ? event.preventDefault() : ""
-            $('#metaopts').toggle()
-        }
-        var editoptions = function() {
-            $('#metaopts').remove()
-            
-            // for convenience
-            var record = options.data
-            
-            // create page settings options panel
-            var metaopts = '\
-                <div id="metaopts" class="row-fluid" style="background:#eee; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; margin-bottom:10px;"> \
-                    <div class="row-fluid"> \
-                        <div class="span8" style="padding:5px;"><h2>page settings</h2></div> \
-                        <div class="span4" style="padding:5px;"> \
-                            <button class="pagesettings close">x</button> \
-                            <button class="save_option_edits close">save</button> \
-                        </div> \
-                    </div> \
-                    <div class="row-fluid"> \
-                        <div class="span6" id="page_info" style="padding:5px;"> \
-                            <h3>page info</h3> \
-                            <div class="row-fluid"><div class="span3"><strong>navigation title:</strong></div><div class="span9"><input type="text" class="span12 jtedit_value" data-path="title" /></div></div> \
-                            <div class="row-fluid"><div class="span3"><strong>page address:</strong></div><div class="span9"><input type="text" class="span12 jtedit_value" data-path="url" /></div></div> \
-                            <div class="row-fluid"><div class="span3"><strong>primary author:</strong></div><div class="span9"><input type="text" class="span12 jtedit_value" data-path="author" /></div></div> \
-                            <div class="row-fluid"><div class="span3"><strong>brief summary:</strong></div><div class="span9"><textarea class="span12 jtedit_value" data-path="excerpt"></textarea></div></div> \
-                            <div class="row-fluid"><div class="span3"><strong>tags:</strong></div><div class="span9"><textarea class="span12 page_options page_tags"></textarea></div></div> \
-                            <div class="row-fluid"> \
-                                <div class="span3"></div> \
-                                <div class="span9"> \
-                                    <a class="btn btn-primary save_option_edits">Save these settings</a> \
-                                    <a class="btn btn-danger delete_page" href="#">Delete this page</a> \
-                                </div> \
-                            </div> \
-                        </div> \
-                        <div class="span6" id="access_settings" style="padding:5px;"> \
-                            <h3>access settings</h3> \
-                            <input type="checkbox" class="page_options access_page" /> <strong>anyone can access</strong> this page without login <br> \
-                            <input type="checkbox" class="page_options mode_page" /> <strong>editable by default</strong>, to anyone that can view it <br> \
-                            <input type="checkbox" class="page_options nav_page" /> <strong>list this page</strong> in public search results <br> \
-                            <input type="checkbox" class="page_options page_comments" /> <strong>page comments</strong> enabled on this page<br> \
-                            <br>\
-                            <h3>embed content</h3> \
-                            <div class="row-fluid"><div class="span3"><strong>file url:</strong></div><div class="span9"><input type="text" class="span12 page_options jtedit_value" data-path="embed" /></div></div> \
-                            <h3>featured image</h3> \
-                            <div class="row-fluid"><div class="span3"><strong>featured image url:</strong></div><div class="span9"><input type="text" class="span12 jtedit_value" data-path="image" /></div></div> \
-                        </div> \
-                    </div> \
-                    <div id="jtedit_space"></div> \
-                </div>'
-            
-            $('#article').before(metaopts);
-            $('#metaopts').hide();
-            $('.pagesettings').bind('click',showopts);
-            
-            // set pre-existing values into page settings
-            options.data['editable'] ? $('.mode_page').attr('checked',true) : "";
-            options.data['accessible'] ? $('.access_page').attr('checked',true) : "";
-            options.data['visible'] ? $('.nav_page').attr('checked',true) : "";
-            options.data['comments'] ? $('.page_comments').attr('checked',true) : "";
-            options.data['tags'] ? $('.page_tags').val(options.data['tags']) : "";
-
-            // enable tagselect on the tags box
-            var tagify = function(data) {
-                $('.page_tags').select2({
-                    "tags":data,
-                    "tokenSeparators":[","],
-                    "width":"element",
-                });
-                $('.page_tags').css({
-                    "margin-bottom":"8px",
-                    "width":"100%"
-                });
-                $('.select2-choices').css({
-                    "-webkit-border-radius":"3px",
-                    "-moz-border-radius":"3px",
-                    "border-radius":"3px",
-                    "border":"1px solid #ccc"
-                });            
-            };
-            $.ajax({
-                "url": "/stream/record/tags?size=1000",
-                "success": function(data) {
-                    tagify(data);
-                }
-            });
-
-
-            // handle changes to page settings
-            var save = function(event) {
-                var record = $.parseJSON($('#jtedit_json').val());
-                $('.mode_page').attr('checked') == 'checked' ? record['editable'] = true : record['editable'] = false;
-                $('.page_comments').attr('checked') == 'checked' ? record['comments'] = true : record['comments'] = false;
-                $('.access_page').attr('checked') == 'checked' ? record['accessible'] = true : record['accessible'] = false;
-                $('.nav_page').attr('checked') == 'checked' ? record['visible'] = true : record['visible'] = false;
-                var tags = $('.page_tags').val().split(',');
-                record['tags'] = [];
-                var tags = $('.page_tags').select2("data");
-                for ( var key in tags ) {
-                    record.tags.push(tags[key].text);
-                };
-                $('#jtedit_json').val(JSON.stringify(record,"","    "));
-                $.fn.jtedit.saveit(false,false,record);
-                record.url != window.location.pathname ? setTimeout(function() {window.location = record.url;},300) : showopts();
-            }
-            $('.save_option_edits').bind('click',save);
-            
-            var deletepage = function(event) {
-                event ? event.preventDefault() : false;
-                $.fn.jtedit.deleteit();
-            }
-            $('.delete_page').bind('click',deletepage);
-
-            $('#jtedit_space').jtedit({'data':options.data, 
-                                        'makeform': false, 
-                                        'actionbuttons': false,
-                                        'jsonbutton': false,
-                                        'delmsg':"", 
-                                        'savemsg':"", 
-                                        'reloadondelete': "/",
-                                        //"saveonupdate":true, 
-                                        "reloadonsave":""});
-        }
         
 
 //------------------------------------------------------------------------------

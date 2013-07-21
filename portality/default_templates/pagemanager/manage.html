@@ -1,20 +1,6 @@
-{% extends "/base.html" %}
+{% extends "base.html" %}
 
-{% block subnav %}
-
-    <div id="subnav" class="subnav">
-        <div class="container">
-            <ul class="nav nav-pills">
-                <li><a href="/admin#dashboard">Dashboard</a></li>
-                <li><a href="/admin#reports">Reports</a></li>
-                <li><a href="/admin#projects">Projects</a></li>
-                <li><a href="/media">Media</a></li>
-                <li><a href="/sitemap">Nav / Sitemap</a></li>
-                <li><a href="/tagging">Pages / Tags</a></li>
-                {% if current_user.is_super %}<li><a href="/account">Users</a></li>{% endif %}
-            </ul>
-        </div>
-    </div>
+{% block content %}
 
 <script type="text/javascript">
 jQuery(document).ready(function() {
@@ -193,7 +179,7 @@ jQuery(document).ready(function() {
                 }
             ]
         ],
-        "search_url":"/query",
+        "search_url":"/query/pages",
         "datatype":"jsonp",
         "fields": false,
         "sort":[{'url.exact':{'order':'asc'}}],
@@ -212,7 +198,7 @@ jQuery(document).ready(function() {
         "post_search_callback": function () {
             $('.selectall').bind('change',selectall);
             $.ajax({
-                "url": "/stream/record/tags?size=10000",
+                "url": "/stream/pages/tags?size=10000",
                 "success": function(data) {
                     tagify(data);
                 }
@@ -224,9 +210,6 @@ jQuery(document).ready(function() {
 });
 </script>
 
-{% endblock %}
-
-{% block content %}
 
 <div class="row-fluid">
     <div class="span12">

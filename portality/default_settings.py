@@ -14,11 +14,7 @@ PORT = 5004
 # list of superuser account names
 SUPER_USER = ["test"]
 
-PUBLIC_REGISTER = True # Can people register publicly? If false, only the superuser can create new accounts
-SHOW_LOGIN = True # if this is false the login link is not shown in the default template, but login is not necessarily disabled
-
-# if you make remote calls e.g. to google fonts or js plugins but have to run offline, then wrap those parts of your templates with a check for this, and then you can set it to true if you need to run your system without online access
-OFFLINE = False 
+PUBLIC_REGISTER = False # Can people register publicly? If false, only the superuser can create new accounts
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://127.0.0.1:9200" # remember the http:// or https://
@@ -30,58 +26,22 @@ PUBLIC_ACCESSIBLE_JSON = True # can not logged in people get JSON versions of pa
 # location of media storage folder
 MEDIA_FOLDER = "media"
 
-# if search filter is true, anonymous users only see visible and accessible pages in query results
+# location for where page content should be written to disk, if anywhere
+CONTENT_FOLDER = "content"
+
+# etherpad endpoint if available for collaborative editing
+COLLABORATIVE = 'http://pads.cottagelabs.com'
+
+# disqus account shortname if available for page comments
+COMMENTS = 'cottagelabs'
+
+# if search filter is not false, anonymous users only see visible and accessible pages in query results
 # if search sort and order are set, all queries from /query will return with default search unless one is provided
 # placeholder image can be used in search result displays
-ANONYMOUS_SEARCH_FILTER = True
+ANONYMOUS_SEARCH_FILTER_TERMS = False #{'visible':True,'accessible':True}
 SEARCH_SORT = ''
 SEARCH_SORT_ORDER = ''
 
-# jsite settings
-JSITE_OPTIONS = {
-    "searchurl": "/query/record/_search?",
-    "recordurl": "/query/record/",
-    "savetourl": "",
-    "datatype": "json",
-    "collaborative": False,
-    "pads_address": '',
-    "pads_baseurl": "/p/",
-    "comments": "",
-    "twitter": "",
-    "sharethis": False,
-    "editable": True,
-    "richtextedit": False,
-    "facetview": {
-        "search_url": "/query/record/_search?",
-        "datatype": "json",
-        "display_images": False
-    },
-    "facetview_displays": {
-        "titles": {
-            'result_display': [
-                [
-                    {
-                        "pre": '<h4><a href="',
-                        "field": "url",
-                        "post": '">'
-                    },
-                    {
-                        "field": "title",
-                        "post": "</a></h4>"
-                    }
-                ]
-            ],
-            'searchwrap_start': '<table id="facetview_results" class="table table-bordered table-striped table-condensed">',
-            'searchwrap_end': '</table>',
-            'resultwrap_start': '<tr><td>',
-            'resultwrap_end': '</td></tr>',
-            "paging":{
-                "from":0,
-                "size":10
-            }
-        }
-    }
-}
 
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
@@ -107,4 +67,6 @@ MAPPINGS = {
         }
     }
 }
+
+MAPPINGS['pages'] = {'pages':MAPPINGS['record']['record']}
 

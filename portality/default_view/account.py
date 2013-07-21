@@ -1,22 +1,27 @@
 import uuid, json
-from copy import deepcopy
 
-from flask import Blueprint, request, url_for, flash, redirect, abort, make_response
-from flask import render_template
+from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import render_template, abort
 from flask.ext.login import login_user, logout_user, current_user
-from flask.ext.wtf import Form, TextField, TextAreaField, SelectField, PasswordField, validators, ValidationError
+from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
+from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
-from portality import auth
 from portality.core import app
 import portality.models as models
 import portality.util as util
 
 blueprint = Blueprint('account', __name__)
 
-jsite_config = deepcopy(app.config['JSITE_OPTIONS'])
-jsite_config['data'] = False
-jsite_config['editable'] = False
-jsite_config['facetview']['initialsearch'] = False
+
+if len(app.config.get('SUPER_USER',[])) > 0:
+    firstsu = app.config['SUPER_USER'][0]
+    if not models.Account.pull(firstsu):
+        su = models.Account(id=firstsu)
+        su.set_password(firstsu)
+        su.save()
+        print 'superuser account named - ' + firstsu + ' created.'
+        print 'default password matches username. Change it.'
+
 
 @blueprint.route('/')
 def index():
@@ -37,56 +42,73 @@ def index():
         resp.mimetype = "application/json"
         return resp
     else:
-        return render_template('account/all.html', users=users, superuser=current_user.is_super, jsite_options=json.dumps(jsite_config))
+        return render_template('account/users.html', users=users)
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
 def username(username):
     acc = models.Account.pull(username)
 
-    if request.method == 'DELETE':
-        if not auth.user.update(acc,current_user):
+    if acc is None:
+        abort(404)
+    elif ( request.method == 'DELETE' or 
+            ( request.method == 'POST' and 
+            request.values.get('submit',False) == 'Delete' ) ):
+        if current_user.id != acc.id and not current_user.is_super():
             abort(401)
-        if acc: acc.delete()
-        return ''
+        else:
+            acc.delete()
+            flash('Account ' + acc.id + ' deleted')
+            return redirect(url_for('.index'))
     elif request.method == 'POST':
-        if not auth.user.update(acc,current_user):
+        if current_user.id != acc.id and not current_user.is_super():
             abort(401)
-        info = request.json
-        if info.get('id',False):
-            if info['id'] != username:
-                acc = models.Account.pull(info['id'])
+        newdata = request.json if request.json else request.values
+        if newdata.get('id',False):
+            if newdata['id'] != username:
+                acc = models.Account.pull(newdata['id'])
             else:
-                info['api_key'] = acc.data['api_key']
-        acc.data = info
-        if 'password' in info and not info['password'].startswith('sha1'):
-            acc.set_password(info['password'])
+                newdata['api_key'] = acc.data['api_key']
+        for k, v in newdata:
+            if k not in ['submit','password']:
+                acc.data[k] = v
+        if 'password' in newdata and not newdata['password'].startswith('sha1'):
+            acc.set_password(newdata['password'])
         acc.save()
-        resp = make_response( json.dumps(acc.data, sort_keys=True, indent=4) )
-        resp.mimetype = "application/json"
-        return resp
+        flash("Record updated")
+        return render_template('account/view.html', account=acc)
     else:
-        if not acc:
-            abort(404)
         if util.request_wants_json():
-            if not auth.user.update(acc,current_user):
-                abort(401)
-            resp = make_response( json.dumps(acc.data, sort_keys=True, indent=4) )
+            resp = make_response( 
+                json.dumps(acc.data, sort_keys=True, indent=4) )
             resp.mimetype = "application/json"
             return resp
         else:
-            admin = True if auth.user.update(acc,current_user) else False
-            return render_template('account/view.html', 
-                current_user=current_user, 
-                record=acc.json, 
-                admin=admin,
-                account=acc,
-                superuser=auth.user.is_super(current_user), 
-                jsite_options=json.dumps(jsite_config)
-            )
+            return render_template('account/view.html', account=acc)
 
 
-class LoginForm(Form):
+def get_redirect_target():
+    for target in request.args.get('next'), request.referrer:
+        if not target:
+            continue
+        if target == util.is_safe_url(target):
+            return target
+
+class RedirectForm(Form):
+    next = HiddenField()
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+        if not self.next.data:
+            self.next.data = get_redirect_target() or ''
+
+    def redirect(self, endpoint='index', **values):
+        if self.next.data == util.is_safe_url(self.next.data):
+            return redirect(self.next.data)
+        target = get_redirect_target()
+        return redirect(target or url_for(endpoint, **values))
+
+class LoginForm(RedirectForm):
     username = TextField('Username', [validators.Required()])
     password = PasswordField('Password', [validators.Required()])
 
@@ -100,12 +122,12 @@ def login():
         if user and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
-            return redirect('/')
+            return form.redirect('index')
         else:
             flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
         flash('Invalid form', 'error')
-    return render_template('account/login.html', form=form, jsite_options=json.dumps(jsite_config))
+    return render_template('account/login.html', form=form)
 
 
 @blueprint.route('/logout')
@@ -122,7 +144,10 @@ def existscheck(form, field):
 
 class RegisterForm(Form):
     w = TextField('Username', [validators.Length(min=3, max=25),existscheck])
-    n = TextField('Email Address', [validators.Length(min=3, max=35), validators.Email(message='Must be a valid email address')])
+    n = TextField('Email Address', [
+        validators.Length(min=3, max=35), 
+        validators.Email(message='Must be a valid email address')
+    ])
     s = PasswordField('Password', [
         validators.Required(),
         validators.EqualTo('c', message='Passwords must match')
@@ -131,7 +156,7 @@ class RegisterForm(Form):
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    if not app.config.get('PUBLIC_REGISTER',False) and not auth.user.is_super(current_user):
+    if not app.config.get('PUBLIC_REGISTER',False) and not current_user.is_super:
         abort(401)
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
@@ -147,5 +172,5 @@ def register():
         return redirect('/account')
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
-    return render_template('account/register.html', form=form, jsite_options=json.dumps(jsite_config))
+    return render_template('account/register.html', form=form)
 

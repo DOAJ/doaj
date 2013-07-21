@@ -5,6 +5,8 @@ from unicodedata import normalize
 from functools import wraps
 from flask import request, current_app
 
+from urlparse import urlparse, urljoin
+
 import smtplib
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
@@ -12,6 +14,15 @@ from email.MIMEText import MIMEText
 from email.Utils import COMMASPACE, formatdate
 from email import Encoders
          
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    if ( test_url.scheme in ('http', 'https') and 
+            ref_url.netloc == test_url.netloc ):
+        return target
+    else:
+        return '/'
 
 def send_mail(to, fro, subject, text, files=[],server="localhost"):
     assert type(to)==list

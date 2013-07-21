@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style type="text/css">
+label{
+    display:inline-block;
+    width:150px;
+    text-align:right;
+}
+input{
+    width:300px;
+}
+textarea{
+    width:300px;
+    height:100px;
+}
+</style>
+
+<script>
+jQuery(document).ready(function() {
+    var tags = {{tags|safe}};
+    $('.page_tags').select2({
+        "tags":tags,
+        "tokenSeparators":[","],
+        "width":"element",
+    });
+    $('.page_tags').css({
+        "margin-bottom":"8px"
+    });
+    $('.select2-choices').css({
+        "-webkit-border-radius":"3px",
+        "-moz-border-radius":"3px",
+        "border-radius":"3px",
+        "border":"1px solid #ccc"
+    });
+    var urls = {{urls|safe}};
+    $('.page_urls').autocomplete({
+        "source":urls,
+        "minLength":0
+    });
+});
+</script>
+
+<form method="POST" action="">
+    <div class="row-fluid">
+        <div class="span6">
+            <h3>page settings</h3>
+            <label for="title"><strong>navigation title:</strong></label> <input type="text" name="title" value="{{record.title}}"><br>
+            <label for="url"><strong>page address:</strong></label> <input name="url" type="text" value="{{record.url}}" class="page_urls"><br>
+            <label for="author"><strong>primary author:</strong></label> <input name="author" type="text" value="{{record.author}}"><br>
+            <label for="excerpt"><strong>brief summary:</strong></label> <textarea name="excerpt" value="{{record.excerpt}}"></textarea><br>
+            <label for="tags"><strong>tags:</strong></label> <input type="text" class="page_tags" name="tags" value="{{",".join(record.tags)}}"><br>
+        </div>
+        <div class="span6">
+            <h3>access settings</h3>
+            <input type="checkbox" name="accessible" {% if record.accessible %}checked="checked"{% endif %}> <strong>anyone can access</strong> this page without login <br>
+            <input type="checkbox" name="editable" {% if record.editable %}checked="checked"{% endif %}> <strong>editable</strong>, to anyone that can view it <br>
+            <input type="checkbox" name="visible" {% if record.visbile %}checked="checked"{% endif %}> <strong>list this page</strong> in public search results <br>
+            <input type="checkbox" name="comments" {% if record.comments %}checked="checked"{% endif %}> <strong>page comments</strong> enabled on this page<br>
+            <br>
+            <h3>content settings</h3>
+            <label for="embed"><strong>embed file from url:</strong></label> <input name="embed" type="text" value="{{record.embed}}"><br>
+            <label for="image"><strong>featured image url:</strong></label> <input type="text" name="image" value="{{record.image}}"><br>
+            <label for="feed"><strong>feed search terms:</strong></label> <input name="feed" type="text" value="{{record.feed}}"><br>
+            {% if not record.id %}
+            <label for="template"><strong>use page as template:</strong></label> <input name="template" type="text" class="page_urls"><br>
+            {% endif %}
+            <label for=""></label> 
+                <input type="submit" name="submit" class="btn btn-primary" value="Save these settings">
+            {% if record.id %}
+                <input type="submit" name="submit" class="btn btn-danger" value="Delete">
+            {% endif %}
+        </div>
+    </div>
+    
+</form>
+
+{% endblock %}

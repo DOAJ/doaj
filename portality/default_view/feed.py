@@ -1,20 +1,36 @@
 from flask import Blueprint, request, abort, make_response
-from cl import dao
-from cl.core import app
+from portality import models as models
+from portality.core import app
 
 from lxml import etree
 from datetime import datetime, timedelta
 
 blueprint = Blueprint('feed', __name__)
 
-@blueprint.route('/<title>')
-def feed(title):
+
+@blueprint.route('/<path:path>/feed')
+@blueprint.route('/feed')
+@blueprint.route('/feed/<title>')
+def feed(path=None, title=None):
     # atom feeds require query strings, even if it is just "*"
-    if 'q' not in request.values:
+    if path or request.path == '/feed':
+        if request.path == '/feed':
+            path = '/'
+        else:
+            path = '/' + path
+        rec = models.Pages.pull_by_url(path)
+        if rec is not None and 'feed' in rec.data and rec.data['feed'] != "":
+            title = rec.data.get("title", "untitled")
+            return get_feed_resp(title, rec.data["feed"], request)
+        else:
+            abort(404)
+            
+    elif title and 'q' in request.values:
+        return get_feed_resp(title, request.values['q'], request)
+        
+    else:
         abort(404)
-    
-    return get_feed_resp(title, request.values['q'], request)
-    
+
 
 def get_feed_resp(title, query, req):
     # build an elastic search query, which gives us all accessible, visible pages 
@@ -22,14 +38,14 @@ def get_feed_resp(title, query, req):
     # or the amount in the configuration
     qs = {'query': {'query_string': { 'query': "accessible:true AND visible:true AND (" + query + ")"}}}
     qs['sort'] = [{"last_updated.exact" : {"order" : "desc"}}]
-    qs['size'] = app.config['MAX_FEED_ENTRIES'] if app.config['MAX_FEED_ENTRIES'] else 20
+    qs['size'] = app.config.get('MAX_FEED_ENTRIES',20)
     
     # get the records from elasticsearch
-    resp = dao.Record.query(q=qs)
+    resp = models.Pages.query(q=qs)
     records = [r.get("_source") for r in resp.get("hits", {}).get("hits", []) if "_source" in r]
     
     # reconstruct the original request url (urgh, why is this always such a pain)
-    url = app.config["BASE_URL"] + req.path + "?q=" + query
+    url = app.config.get("BASE_URL","") + req.path + "?q=" + query
     
     # make a new atom feed object
     af = AtomFeed(title, url)
@@ -38,7 +54,7 @@ def get_feed_resp(title, query, req):
     # the feed.  Since all the objects are in the correct order, as soon as we
     # hit a date that's out of range we can stop processing all the rest.
     newer_than = None
-    if app.config['MAX_FEED_ENTRY_AGE']:
+    if app.config.get('MAX_FEED_ENTRY_AGE',False):
         newer_than = datetime.now() - timedelta(seconds=app.config['MAX_FEED_ENTRY_AGE'])
     for record in records:
         lu = record.get("last_updated")
@@ -62,11 +78,11 @@ class AtomFeed(object):
     def __init__(self, title, url):
         self.title = title + " - " + app.config['SERVICE_NAME']
         self.url = url
-        self.generator = app.config['FEED_GENERATOR']
-        self.icon = app.config['BASE_URL'] + "/static/favicon.ico"
-        self.logo = app.config["FEED_LOGO"]
-        self.link = app.config['BASE_URL']
-        self.rights = app.config['FEED_LICENCE']
+        self.generator = app.config.get('FEED_GENERATOR',"")
+        self.icon = app.config.get('BASE_URL',"") + "/static/favicon.ico"
+        self.logo = app.config.get("FEED_LOGO","")
+        self.link = app.config.get('BASE_URL',"")
+        self.rights = app.config.get('FEED_LICENCE',"")
         self.last_updated = None
         
         self.entries = {}

@@ -147,6 +147,20 @@ sudo apt-get install lib32z1-dev
 sudo apt-get install python-lxml
 
 
+And if you get a weird error even then, note this particular problem with some 
+versions of virtualenv on ubuntu - which I had even after upgrading virtualenv 
+to the most recent version:
+
+http://stackoverflow.com/questions/15608236/eclipse-and-google-app-engine-importerror-no-module-named-sysconfigdata-nd-u
+
+
+Doing the symlink mentioned in the first answer solved it for me.
+
+cd /usr/lib/python2.7
+
+sudo ln -s plat-x86_64-linux-gnu/_sysconfigdata_nd.py .
+
+
 Customise
 =========
 

@@ -23,7 +23,7 @@ def configure_app(app):
 
 def initialise_index(app):
     mappings = app.config["MAPPINGS"]
-    i = 'http://' + str(app.config['ELASTIC_SEARCH_HOST']).lstrip('http://').rstrip('/')
+    i = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     i += '/' + app.config['ELASTIC_SEARCH_DB']
     for key, mapping in mappings.iteritems():
         im = i + '/' + key + '/_mapping'
