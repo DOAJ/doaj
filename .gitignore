@@ -6,7 +6,7 @@ src*
 build/*
 dist/*
 
-media/*
 app.cfg
 
-portality/models.py
+media/*
+portality/default_templates/pagemanager/content/*

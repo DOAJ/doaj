@@ -65,6 +65,12 @@ class DomainObject(UserDict.IterableUserDict):
 
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
 
+    def save_from_form(self,request):
+        newdata = request.json if request.json else request.values
+        for k, v in newdata.items():
+            if k not in ['submit']:
+                self.data[k] = v
+        self.save()
 
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
@@ -97,6 +103,15 @@ class DomainObject(UserDict.IterableUserDict):
                 return cls(**out.json())
         except:
             return None
+
+    @classmethod
+    def pull_by_key(cls,key,value):
+        res = cls.query(q={"query":{"term":{key+app.config['FACET_FIELD']:value}}})
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        else:
+            return None
+
 
     @classmethod
     def keys(cls,mapping=False,prefix=''):
@@ -179,4 +194,8 @@ class DomainObject(UserDict.IterableUserDict):
     def delete(self):        
         r = requests.delete(self.target() + self.id)
 
+    @classmethod
+    def delete_all(cls):
+        r = requests.delete(cls.target())
+        r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
 

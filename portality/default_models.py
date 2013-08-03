@@ -61,10 +61,6 @@ class Pages(DomainObject):
 
     def update_from_form(self, request):
         newdata = request.json if request.json else request.values
-        self.data['editable'] = False
-        self.data['accessible'] = False
-        self.data['visible'] = False
-        self.data['comments'] = False
         for k, v in newdata.items():
             if k == 'tags':
                 tags = []

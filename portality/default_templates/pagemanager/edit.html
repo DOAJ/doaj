@@ -2,7 +2,7 @@
 
 <body>
 
-{% if not app.config['COLLABORATIVE'] %}
+{% if app.config['COLLABORATIVE'] and padsavailable %}
 <form action="{{record.data.url}}" method="POST">
 {% endif %}
 
@@ -12,15 +12,29 @@
             <a class="brand" href="/">{{ app.config['SERVICE_NAME'] }}</a>
             <ul class="nav">
                 <li><a href="{{record.data.url}}">Exit</a></li>
-                {% if not app.config['COLLABORATIVE'] %}
+                {% if app.config['COLLABORATIVE'] and padsavailable %}
+                <li><a href="{{record.data.url}}/sync">Sync</a></li>
+                {% else %}
                 <li><input type="submit" name="submit" value="Save" style="background:none;border:none;color:#aaa;margin-top:7px;"></li>
                 {% endif %}
+                <li class="alert-messages" style="padding-bottom:0;margin-bottom:0;">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {%if messages %}
+                  {% for category, message in messages %}
+                    <div class="alert alert-{{category}} fade in" data-alert="alert" style="padding-top:5px;padding-bottom:0;margin-top:5px;margin-bottom:0;">
+                      <a class="close" data-dismiss="alert" href="#">&times;</a>
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+                {% endwith %}
+                </li>
             </ul>
         </div>
     </div>
 </div>
 
-{% if app.config['COLLABORATIVE'] %}
+{% if app.config['COLLABORATIVE'] and padsavailable %}
 <style type="text/css">
 #collab_edit{
     padding: 0;

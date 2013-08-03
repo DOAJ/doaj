@@ -22,7 +22,7 @@ blueprint = Blueprint('stream', __name__)
 @blueprint.route('/')
 @blueprint.route('/<index>')
 @blueprint.route('/<index>/<key>')
-def stream(index='record',key='tags'):
+def stream(index='record',key='tags',size=1000):
 
     if index in app.config['NO_QUERY_VIA_API']: abort(401)
     indices = []
@@ -30,7 +30,8 @@ def stream(index='record',key='tags'):
         if idx not in app.config['NO_QUERY_VIA_API']:
             indices.append(idx)
 
-    keys = key.split(',')
+    if not isinstance(key,list):
+        keys = key.split(',')
 
     q = request.values.get('q','*')
     if not q.endswith("*"): q += "*"
@@ -42,17 +43,21 @@ def stream(index='record',key='tags'):
         'facets':{}
     }
     for ky in keys:
-        qry['facets'][ky] = {"terms":{"field":ky+app.config['FACET_FIELD'],"order":request.values.get('order','term'), "size":request.values.get('size',100)}}
+        qry['facets'][ky] = {"terms":{"field":ky+app.config['FACET_FIELD'],"order":request.values.get('order','term'), "size":request.values.get('size',size)}}
     
-    r = models.Everything.query(q=qry)
+    klass = getattr(models, index[0].capitalize() + index[1:] )
+    r = klass().query(q=qry)
 
     res = []
-    if request.values.get('counts',False):
-        for k in keys:
-            res = res + [[i['term'],i['count']] for i in r['facets'][k]["terms"]]
-    else:
-        for k in keys:
-            res = res + [i['term'] for i in r['facets'][k]["terms"]]
+    try:
+        if request.values.get('counts',False):
+            for k in keys:
+                res = res + [[i['term'],i['count']] for i in r['facets'][k]["terms"]]
+        else:
+            for k in keys:
+                res = res + [i['term'] for i in r['facets'][k]["terms"]]
+    except:
+        pass
 
     resp = make_response( json.dumps(res) )
     resp.mimetype = "application/json"

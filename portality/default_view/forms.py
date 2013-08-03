@@ -69,7 +69,8 @@ def form(ftype='record'):
             # else default behavious is just to overwrite the record
             # you probably want at least some validation here
             for k, v in request.values.items():
-                f.data[k] = v
+                if k not in ['submit']:
+                    f.data[k] = v
             f.save()
         return redirect(url_for('.complete'))
 

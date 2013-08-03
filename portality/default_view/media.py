@@ -3,7 +3,6 @@ An auth-controlled access and retrieval mechanism for a media folder
 '''
 
 import json, os
-from copy import deepcopy
 
 from flask import Blueprint, request, abort, make_response, render_template
 from flask.ext.login import current_user
@@ -24,10 +23,6 @@ if not os.path.exists(mediadir):
 @blueprint.route('/')
 def media():
 
-    jsite = deepcopy(app.config['JSITE_OPTIONS'])
-    jsite['data'] = False
-    jsite['editable'] = False
-    jsite['facetview']['initialsearch'] = False
     listing = os.listdir( mediadir )
     if util.request_wants_json():
         response = make_response( json.dumps(listing,"","    ") )
@@ -43,7 +38,7 @@ def media():
             else:
                 files += '<div class="span2 thumbnail"><h3><a _target="blank" href="/' 
                 files += app.config['MEDIA_FOLDER'] + '/' + f + '">' + f + '</a></h3></div>'
-        return render_template('media/media.html', jsite_options=json.dumps(jsite), files=files, nosettings=True)
+        return render_template('media/media.html', files=files)
 
 
 @blueprint.route('/<path:path>', methods=['GET','POST'])

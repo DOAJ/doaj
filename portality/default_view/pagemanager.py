@@ -1,7 +1,7 @@
 
 # this runs the Pagemanager endpoint for standard display of web pages
 
-import json, time, requests, urllib, markdown
+import json, time, requests, markdown, os
 
 from flask import Blueprint, request, url_for, abort, make_response, flash
 from flask import render_template, redirect
@@ -16,25 +16,44 @@ from portality.view.forms import dropdowns
 blueprint = Blueprint('Pagemanager', __name__)
 
 
+if app.config.get('CONTENT_FOLDER',False):
+    contentdir = os.path.dirname(os.path.abspath(__file__)).replace('/view','/templates/pagemanager/') + app.config['CONTENT_FOLDER']
+    if not os.path.exists(contentdir):
+        os.makedirs(contentdir)
+
+
 # a method for editing the page
-@blueprint.route('/edit', methods=['GET','POST'])
 @blueprint.route('/<path:path>/edit', methods=['GET','POST'])
 def edit(path='/'):
     if path != '/': path = '/' + path
     record = models.Pages.pull_by_url(path)
+
     if record is None:
         if current_user.is_anonymous():
             abort(404)
         else:
             return redirect('/' + path)
-    elif current_user.is_anonymous():
-        pass # check permissions to edit here
     else:
-        return render_template('pagemanager/edit.html', record=record)
+        if current_user.is_anonymous():
+            pass # TODO: check permissions to edit here
+        else:
+            if app.config.get('COLLABORATIVE',False):
+                try:
+                    test = requests.get(app.config['COLLABORATIVE'])
+                    if test.status_code == 200:
+                        padsavailable = True
+                    else:
+                        padsavailable = False
+                except:
+                    padsavailable = False
+                
+            return render_template(
+                'pagemanager/edit.html',
+                padsavailable=padsavailable, 
+                record=record)
 
 
 # a method for managing page settings and creating / deleting pages
-@blueprint.route('/settings', methods=['GET','POST'])
 @blueprint.route('/<path:path>/settings', methods=['GET','POST','DELETE'])
 def settings(path='/'):
     if current_user.is_anonymous():
@@ -159,41 +178,46 @@ def manage():
 @blueprint.route('/<path:path>', methods=['GET','POST','DELETE'])
 def pagemanager(path=''):
 
-    url = '/' + path.lstrip('/').rstrip('/')
+    url = '/' + path.lstrip('/').rstrip('/').replace('../',"")
+    if url == '/': url = '/index'
     if url.endswith('.json'): url = url.replace('.json','')
     rec = models.Pages.pull_by_url(url)
         
-    if request.method == 'GET':
-        if util.request_wants_json():
-            if ( not rec or ( current_user.is_anonymous() and 
-                    not app.config.get('PUBLIC_ACCESSIBLE_JSON',True) ) ):
-                abort(404)
+    if ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
+        if rec is None:
+            abort(404)
+        else:
+            rec.delete()
+            return ""
+    elif request.method == 'POST' and not current_user.is_anonymous():
+        if rec is None: rec = models.Pages()
+        rec.save_from_form(request)
+        # TODO: and save to file on disk - or is that only via sync?
+        if app.config.get('CONTENT_FOLDER',False):
+            pass
+        return redirect(rec.data.get('url','/'))
+    elif rec is None:
+        if current_user.is_anonymous():
+            abort(404)
+        else:
+            return redirect(url_for('.settings', path=path))
+    elif request.method == 'GET':
+        if current_user.is_anonymous() and not rec.data.get('accessible',True):
+            abort(401)
+        elif util.request_wants_json():
             resp = make_response( rec.json )
             resp.mimetype = "application/json"
             return resp
+        else:
+            try:
+                content = render_template(
+                    'pagemanager/content' + url,
+                    record=rec
+                )
+            except:
+                content = rec.data.get('content',"")
 
-        # build the content
-        if rec is not None:
-            if ( not rec.data.get('accessible',False) and 
-                    current_user.is_anonymous() ):
-                abort(401)
-
-            content = ''
-
-            # TODO: retrieve from file on disk
-            # TODO: pass through jinja processor
-            # can be done by passing the file as a render param called child and having an include child statement in the template
-            # would need to check last modified of es record, file on disk, and etherpad page
-            
-            # update content from collaborative pad
-            if app.config.get('COLLABORATIVE',False):
-                a = app.config['COLLABORATIVE'].rstrip('/') + '/p/'
-                a += rec.id + '/export/txt'
-                c = requests.get(a)
-                if rec.data.get('content',False) != c.text:
-                    rec.data['content'] = c.text
-                    rec.save()
-            content += markdown.markdown( rec.data.get('content','') )
+            content = markdown.markdown(content)
 
             # if an embedded file url has been provided, embed it in content
             if rec.data.get('embed', False):
@@ -208,40 +232,86 @@ def pagemanager(path=''):
                     content += urllib.quote_plus(rec.data['embed']) 
                     content += '&embedded=true" width="100%" height="1000" '
                     content += 'style="border:none;"></iframe>'
-            
-            if 'content' in rec.data: del rec.data['content']
+
+            # TODO: try adding js dynamic includes server-side?
             return render_template(
-                'pagemanager/index.html', 
-                content=content, 
+                'pagemanager/index.html',
+                content=content,
                 record=rec
             )
-
-        elif current_user.is_anonymous():
-            abort(404)
-        else:
-            if url == '/':
-                return redirect(url_for('.settings'))
-            else:
-                return redirect(url + url_for('.settings'))
-        
-    elif request.method == 'POST' and not current_user.is_anonymous():
-        if rec is None:
-            rec = models.Pages()
-
-        rec.save_from_form(request)
-        return redirect(rec.data['url'])
-    
-    elif ( request.method == 'DELETE' and 
-            not current_user.is_anonymous() and rec is not None ):
-        rec.delete()
-        return ""
 
     else:
         abort(401)
         
-        
-        
-        
+
+# this synchronises page content across different sources
+@blueprint.route('/<path:path>/sync')
+def sync(path=''):            
+
+    url = '/' + path.lstrip('/').rstrip('/')
+    if url == '/': url = '/index'
+    if url.endswith('.json'): url = url.replace('.json','')
+    rec = models.Pages.pull_by_url(url)
+
+    if current_user.is_anonymous():
+        abort(401)
+    elif rec is None:
+        abort(404)
+    else:
+        # update ES from EP
+        if app.config.get('COLLABORATIVE',False):
+            a = app.config['COLLABORATIVE'].rstrip('/') + '/p/'
+            a += rec.id + '/export/txt'
+            c = requests.get(a)
+            if rec.data.get('content',False) != c.text:
+                rec.data['content'] = c.text
+                rec.save()
+            
+        # save to FS
+        if app.config.get('CONTENT_FOLDER',False):
+#            try:
+            fn = contentdir + url
+            sdir = os.path.dirname(fn)
+            print sdir
+            if not os.path.exists(sdir):
+                print "making"
+                os.makedirs(sdir)
+            out = open(fn, 'w')
+            out.write(rec.data['content'])
+            out.close()
+            flash("The page has been synchronised")
+#            except:
+#                flash("Error synchronising. Please try again.")
+            
+        return redirect(url_for('.edit', path=path))
+
+
+'''
+sync the ES instance with the filesystem and with etherpads if available
+separately sync the filesystem with git or dropbox
+
+ES - FS - EP
+
+On page GET, update ES if FS last_modified is newer than last_updated
+and also in this case push content to the EP if available
+
+If page exists in ES on GET but not on FS, create it on FS. BUT need to check 
+after git pull that if a page is deleted it should be removed from ES.
+Also perhaps offer a config option to delete on FS instead of create in these
+cases.
+
+On page POST, if FS last_modified is newer than ES last_updated, reject
+and trigger a normal sync
+
+If page URL changes in POST, move file on FS to alternate location
+
+on page DELETE, only remove from ES
+
+have a specific function in "manage" to remove pages from FS and EP that are no 
+longer present in ES
+
+
+'''     
         
         
         

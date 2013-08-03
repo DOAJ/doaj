@@ -26,7 +26,8 @@ PUBLIC_ACCESSIBLE_JSON = True # can not logged in people get JSON versions of pa
 # location of media storage folder
 MEDIA_FOLDER = "media"
 
-# location for where page content should be written to disk, if anywhere
+# folder name for storing page content
+# will be added under the templates/pagemanager route
 CONTENT_FOLDER = "content"
 
 # etherpad endpoint if available for collaborative editing
@@ -67,6 +68,6 @@ MAPPINGS = {
         }
     }
 }
-
+MAPPINGS['account'] = {'account':MAPPINGS['record']['record']}
 MAPPINGS['pages'] = {'pages':MAPPINGS['record']['record']}
 
