@@ -56,8 +56,8 @@ def query(path='Pages'):
         for item in request.values:
             if item not in ['q','source','callback','_'] and isinstance(qs,dict):
                 qs[item] = request.values[item]
-        if 'sort' not in qs and app.config.get('DEFAULT_QUERY_SORT',False):
-            qs['sort'] = 
+        if 'sort' not in qs and app.config.get('DEFAULT_SORT',False):
+            qs['sort'] = app.config['DEFAULT_SORT']
         if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
             terms = app.config['ANONYMOUS_SEARCH_TERMS']
         else:
