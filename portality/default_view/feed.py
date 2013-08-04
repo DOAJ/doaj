@@ -54,7 +54,7 @@ def get_feed_resp(title, query, req):
     records = [r.get("_source") for r in resp.get("hits", {}).get("hits", []) if "_source" in r]
     
     # reconstruct the original request url (urgh, why is this always such a pain)
-    url = app.config.get("SERVER_NAME","") + req.path + "?q=" + query
+    url = app.config.get("BASE_URL","") + req.path + "?q=" + query
     
     # make a new atom feed object
     af = AtomFeed(title, url)
@@ -88,9 +88,9 @@ class AtomFeed(object):
         self.title = title + " - " + app.config['SERVICE_NAME']
         self.url = url
         self.generator = app.config.get('FEED_GENERATOR',"")
-        self.icon = app.config.get('SERVER_NAME',"") + "/static/favicon.ico"
+        self.icon = app.config.get('BASE_URL',"") + "/static/favicon.ico"
         self.logo = app.config.get("FEED_LOGO","")
-        self.link = app.config.get('SERVER_NAME',"")
+        self.link = app.config.get('BASE_URL',"")
         self.rights = app.config.get('FEED_LICENCE',"")
         self.last_updated = None
         
@@ -108,9 +108,9 @@ class AtomFeed(object):
         entry = {}
         entry['author'] = page.get("author", app.config["SERVICE_NAME"])
         entry["categories"] = page.get("tags", [])
-        entry["content_src"] = app.config['SERVER_NAME'] + page.get("url")
+        entry["content_src"] = app.config['BASE_URL'] + page.get("url")
         entry["id"] = "urn:uuid:" + page.get("id")
-        entry['alternate'] = app.config['SERVER_NAME'] + page.get("url")
+        entry['alternate'] = app.config['BASE_URL'] + page.get("url")
         entry['rights'] = app.config['FEED_LICENCE']
         entry['summary'] = page.get("excerpt") if page.get("excerpt") is not None and page.get("excerpt") != "" else "No summary available"
         entry['title'] = page.get("title", "untitled")
@@ -174,7 +174,7 @@ class AtomFeed(object):
         name.text = e['author']
         if e['author'] != app.config['SERVICE_NAME']:
             puri = etree.SubElement(author, self.ATOM + "uri")
-            puri.text = app.config["SERVER_NAME"] + "/people/" + e['author']
+            puri.text = app.config["BASE_URL"] + "/people/" + e['author']
         
         for cat in e.get("categories", []):
             c = etree.SubElement(entry, self.ATOM + "category")

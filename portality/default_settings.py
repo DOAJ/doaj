@@ -9,7 +9,6 @@ ADMIN_NAME = "Cottage Labs"
 ADMIN_EMAIL = ""
 
 # service info
-SERVER_NAME = "http://portality.com"
 SERVICE_NAME = "Portality"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
@@ -124,6 +123,8 @@ REPOS = {
 
 # ========================
 # FEED SETTINGS
+
+BASE_URL = "http://portality.com"
 
 # Maximum number of feed entries to be given in a single response.  If this is omitted, it will
 # default to 20

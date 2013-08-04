@@ -65,7 +65,7 @@ def hooks():
 # pull from the identified repo when necessary
 # just a simple pull that will run if local commit is not equal to latest one
 # see http://pythonhosted.org/GitPython/0.3.1/tutorial.html
-def _pull(message)
+def _pull(message):
     which = message['repository']['name']
     repo = Repo(app.config['REPOS'][which]['path'])
     assert repo.bare == False

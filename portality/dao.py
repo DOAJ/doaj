@@ -145,8 +145,8 @@ class DomainObject(UserDict.IterableUserDict):
         if isinstance(q,dict):
             query = q
             if 'bool' not in query['query']:
-                boolean = {'must': [] }
-                boolean['must'].append( query['query'] )
+                boolean = {'bool':{'must': [] }}
+                boolean['bool']['must'].append( query['query'] )
                 query['query'] = boolean
             if 'must' not in query['query']['bool']:
                 query['query']['bool']['must'] = []
