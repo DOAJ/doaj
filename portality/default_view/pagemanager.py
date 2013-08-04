@@ -185,7 +185,7 @@ def pagemanager(path=''):
     rec = models.Pages.pull_by_url(url)
     
     if rec is not None and rec.data.get('editable',False):
-        return redirect(url_for('.edit',path=path))
+        return redirect(url_for('.edit',path=url))
     elif ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
         if rec is None:
             abort(404)
@@ -201,7 +201,7 @@ def pagemanager(path=''):
         if current_user.is_anonymous():
             abort(404)
         else:
-            return redirect(url_for('.settings', path=path))
+            return redirect(url_for('.settings', path=url))
     elif request.method == 'GET':
         if current_user.is_anonymous() and not rec.data.get('accessible',True):
             abort(401)
