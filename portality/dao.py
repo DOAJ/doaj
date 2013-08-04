@@ -144,10 +144,32 @@ class DomainObject(UserDict.IterableUserDict):
         if recid and not recid.endswith('/'): recid += '/'
         if isinstance(q,dict):
             query = q
+            if 'bool' not in query['query']:
+                boolean = {'must': [] }
+                boolean['must'].append( query['query'] )
+                query['query'] = boolean
+            if 'must' not in query['query']['bool']:
+                query['query']['bool']['must'] = []
         elif q:
-            query = {'query': {'query_string': { 'query': q }}}
+            query = {
+                'query': {
+                    'bool': {
+                        'must': [
+                            {'query_string': { 'query': q }}
+                        ]
+                    }
+                }
+            }
         else:
-            query = {'query': {'match_all': {}}}
+            query = {
+                'query': {
+                    'bool': {
+                        'must': [
+                            {'query': {'match_all': {}}}
+                        ]
+                    }
+                }
+            }
 
         if facets:
             if 'facets' not in query:
@@ -174,6 +196,14 @@ class DomainObject(UserDict.IterableUserDict):
                 query['from'] = v
             else:
                 query[k] = v
+
+        if 'sort' not in query and app.config.get('DEFAULT_SORT',False):
+            if cls.__type__ in app.config['DEFAULT_SORT'].keys():
+                query['sort'] = app.config['DEFAULT_SORT'][cls.__type__]
+
+        if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
+            if cls.__type__ in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
+                query['query']['bool']['must'] = query['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][cls.__type__]
 
         if endpoint in ['_mapping']:
             r = requests.get(cls.target() + recid + endpoint)

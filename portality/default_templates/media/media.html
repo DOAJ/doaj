@@ -1,25 +1,5 @@
 {% extends "base.html" %}
 
-{% block subnav %}
-
-{% if not current_user.is_anonymous() %}
-    <div id="subnav" class="subnav">
-        <div class="container">
-            <ul class="nav nav-pills">
-                <li><a href="/admin#dashboard">Dashboard</a></li>
-                <li><a href="/admin#reports">Reports</a></li>
-                <li><a href="/admin#projects">Projects</a></li>
-                <li><a href="/media">Media</a></li>
-                <li><a href="/sitemap">Nav / Sitemap</a></li>
-                <li><a href="/tagging">Pages / Tags</a></li>
-                {% if current_user.is_super %}<li><a href="/account">Users</a></li>{% endif %}
-            </ul>
-        </div>
-    </div>
-{% endif %}
-
-{% endblock %}
-
 {% block content %}
 
 {% if not current_user.is_anonymous() %}

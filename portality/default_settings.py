@@ -9,6 +9,7 @@ ADMIN_NAME = "Cottage Labs"
 ADMIN_EMAIL = ""
 
 # service info
+SERVER_NAME = "http://portality.com"
 SERVICE_NAME = "Portality"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
@@ -67,13 +68,20 @@ NO_QUERY = ['account']
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
-# additional terms to impose on anonymous users of query endpoint
-# for example {'visible':True,'accessible':True}
-ANONYMOUS_SEARCH_TERMS = False
+# list additional terms to impose on anonymous users of query endpoint
+# for each index type that you wish to have some
+# must be a list of objects that can be appended to an ES query.bool.must
+# for example [{'term':{'visible':True}},{'term':{'accessible':True}}]
+ANONYMOUS_SEARCH_TERMS = {
+    "pages": [{'term':{'visible':True}},{'term':{'accessible':True}}]
+}
 
 # a default sort to apply to query endpoint searches
+# for each index type that you wish to have one
 # for example {'created_date' + FACET_FIELD : {"order":"desc"}}
-DEFAULT_SORT = False 
+DEFAULT_SORT = {
+    "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
+}
 
 
 # ========================
@@ -124,6 +132,9 @@ MAX_FEED_ENTRIES = 20
 # Maximum age of feed entries (in seconds) (default value here is 3 months).  If this is omitted
 # then we will always supply up to the MAX_FEED_ENTRIES above
 MAX_FEED_ENTRY_AGE = 7776000
+
+# Which index to run feeds from
+FEED_INDEX = "Pages"
 
 # Licensing terms for feed content
 FEED_LICENCE = "(c) Cottage Labs LLP 2012.  All content Copyheart: http://copyheart.org"
