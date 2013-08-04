@@ -71,6 +71,7 @@ def _pull(message)
     assert repo.bare == False
     if repo.heads.master.commit != message['after']:
         repo.remotes.origin.pull()
+        # TODO: need a submodule update call
 
 
 
