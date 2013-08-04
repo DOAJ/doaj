@@ -24,10 +24,10 @@ blueprint = Blueprint('stream', __name__)
 @blueprint.route('/<index>/<key>')
 def stream(index='record',key='tags',size=1000):
 
-    if index in app.config['NO_QUERY_VIA_API']: abort(401)
+    if index in app.config['NO_QUERY']: abort(401)
     indices = []
     for idx in index.split(','):
-        if idx not in app.config['NO_QUERY_VIA_API']:
+        if idx not in app.config['NO_QUERY']:
             indices.append(idx)
 
     if not isinstance(key,list):

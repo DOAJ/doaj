@@ -131,7 +131,7 @@ def get(
     ):
 
     # ensure that nothing set to be hidden via the settings gets exposed
-    for item in app.config.get('NO_QUERY_VIA_API',[]):
+    for item in app.config.get('NO_QUERY',[]):
         if item not in ignore: ignore.append(item)
         if item in only: only = [ x for x in only if x != item ]
 

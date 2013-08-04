@@ -33,24 +33,25 @@ def edit(path='/'):
             abort(404)
         else:
             return redirect('/' + path)
+    elif current_user.is_anonymous() and not (rec.data.get('editable',False) and rec.data.get('accessible',False)):
+        abort(401)
     else:
-        if current_user.is_anonymous():
-            pass # TODO: check permissions to edit here
-        else:
-            if app.config.get('COLLABORATIVE',False):
-                try:
-                    test = requests.get(app.config['COLLABORATIVE'])
-                    if test.status_code == 200:
-                        padsavailable = True
-                    else:
-                        padsavailable = False
-                except:
+        if app.config.get('COLLABORATIVE',False):
+            try:
+                test = requests.get(app.config['COLLABORATIVE'])
+                if test.status_code == 200:
+                    padsavailable = True
+                else:
                     padsavailable = False
-                
-            return render_template(
-                'pagemanager/edit.html',
-                padsavailable=padsavailable, 
-                record=record)
+            except:
+                padsavailable = False
+            
+        # TODO: add a check - if index has more recent content than pad content, show a warning to sync the pad to index
+        return render_template(
+            'pagemanager/edit.html',
+            padsavailable=padsavailable, 
+            record=record
+        )
 
 
 # a method for managing page settings and creating / deleting pages
@@ -86,7 +87,7 @@ def settings(path='/'):
         if record is None:
             abort(404)
         else:
-            record.delete()
+            _sync_delete(record)
             flash('Page deleted')
             return redirect("/")
 
@@ -133,7 +134,7 @@ def manage():
                 if rec is not None:
                     print rec.data
                     if request.values['submit'] == 'Delete selected' and request.values.get('selected_' + kid,False):
-                        rec.delete()
+                        _sync_delete(rec)
                         updatecount += 1
                     else:
                         update = False
@@ -182,19 +183,19 @@ def pagemanager(path=''):
     if url == '/': url = '/index'
     if url.endswith('.json'): url = url.replace('.json','')
     rec = models.Pages.pull_by_url(url)
-        
-    if ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
+    
+    if rec is not None and rec.data.get('editable',False):
+        return redirect(url_for('.edit',path=path))
+    elif ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
         if rec is None:
             abort(404)
         else:
-            rec.delete()
+            _sync_delete(rec)
             return ""
     elif request.method == 'POST' and not current_user.is_anonymous():
         if rec is None: rec = models.Pages()
         rec.save_from_form(request)
-        # TODO: and save to file on disk - or is that only via sync?
-        if app.config.get('CONTENT_FOLDER',False):
-            pass
+        if app.config.get('CONTENT_FOLDER',False): _sync_fs_from_es(rec)
         return redirect(rec.data.get('url','/'))
     elif rec is None:
         if current_user.is_anonymous():
@@ -244,7 +245,7 @@ def pagemanager(path=''):
         abort(401)
         
 
-# this synchronises page content across different sources
+# synchronise from EP to ES, then from ES to FS
 @blueprint.route('/<path:path>/sync')
 def sync(path=''):            
 
@@ -258,39 +259,91 @@ def sync(path=''):
     elif rec is None:
         abort(404)
     else:
-        # update ES from EP
+        # save to ES
         if app.config.get('COLLABORATIVE',False):
-            a = app.config['COLLABORATIVE'].rstrip('/') + '/p/'
-            a += rec.id + '/export/txt'
-            c = requests.get(a)
-            if rec.data.get('content',False) != c.text:
-                rec.data['content'] = c.text
-                rec.save()
+            done1 = _sync_es_from_ep(rec)
+            if done1:
+                flash("Synchronised")
+            else:
+                flash("Error syncing")
             
         # save to FS
         if app.config.get('CONTENT_FOLDER',False):
-#            try:
-            fn = contentdir + url
-            sdir = os.path.dirname(fn)
-            print sdir
-            if not os.path.exists(sdir):
-                print "making"
-                os.makedirs(sdir)
-            out = open(fn, 'w')
-            out.write(rec.data['content'])
-            out.close()
-            flash("The page has been synchronised")
-#            except:
-#                flash("Error synchronising. Please try again.")
+            done2 = _sync_fs_from_es(rec)
+            if done2:
+                flash("Saved to disk")
+            else:
+                flash("Error saving to disk")                
             
         return redirect(url_for('.edit', path=path))
 
 
-'''
-sync the ES instance with the filesystem and with etherpads if available
-separately sync the filesystem with git or dropbox
+def _sync_es_from_ep(rec):
+    try:
+        a = app.config['COLLABORATIVE'].rstrip('/') + '/p/'
+        a += rec.id + '/export/txt'
+        c = requests.get(a)
+        if rec.data.get('content',False) != c.text:
+            rec.data['content'] = c.text
+            rec.save()
+        return True
+    except:
+        return False
 
-ES - FS - EP
+
+def _sync_fs_from_es(rec):
+    try:
+        fn = contentdir + rec.data['url']
+        sdir = os.path.dirname(fn)
+        if not os.path.exists(sdir):
+            os.makedirs(sdir)
+        out = open(fn, 'w')
+        out.write(rec.data['content'])
+        out.close()
+        return True
+    except:
+        return False
+
+
+def _sync_ep_from_es(rec):
+    try:
+        target = app.config['COLLABORATIVE'] + '/api/1/setText?apikey='
+        target += app.config['DELETE_REMOVES_EP'] + '&padID='
+        target += str(record.id)
+        target += '&text=' + rec.data["content"]
+        requests.get(target)
+        return True
+    except:
+        return False
+
+
+def _sync_delete(rec):
+    if app.config.get('DELETE_REMOVES_FS',False) and app.config.get('CONTENT_FOLDER',False):
+        _sync_delete_fs(rec)
+    if app.config.get('DELETE_REMOVES_EP',False) and app.config.get('COLLABORATIVE',False):
+        _sync_delete_ep(rec)
+    rec.delete()
+    
+def _sync_delete_fs(rec):
+    fn = contentdir + rec.data['url']
+    try:
+        os.remove(fn)
+        return True
+    except:
+        return False
+
+def _sync_delete_ep(rec):
+    try:
+        target = app.config['COLLABORATIVE'] + '/api/1/deletePad?apikey='
+        target += app.config['DELETE_REMOVES_EP'] + '&padID='
+        target += str(record.id)
+        requests.get(target)
+        return True
+    except:
+        return False
+
+
+'''
 
 On page GET, update ES if FS last_modified is newer than last_updated
 and also in this case push content to the EP if available
@@ -304,8 +357,6 @@ On page POST, if FS last_modified is newer than ES last_updated, reject
 and trigger a normal sync
 
 If page URL changes in POST, move file on FS to alternate location
-
-on page DELETE, only remove from ES
 
 have a specific function in "manage" to remove pages from FS and EP that are no 
 longer present in ES

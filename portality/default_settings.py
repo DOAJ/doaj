@@ -1,4 +1,8 @@
-SECRET_KEY = "default-key" # make this something secret in your overriding app.cfg
+# ========================
+# MAIN SETTINGS
+
+# make this something secret in your overriding app.cfg
+SECRET_KEY = "default-key"
 
 # contact info
 ADMIN_NAME = "Cottage Labs"
@@ -11,38 +15,20 @@ HOST = "0.0.0.0"
 DEBUG = True
 PORT = 5004
 
-# list of superuser account names
-SUPER_USER = ["test"]
-
-PUBLIC_REGISTER = False # Can people register publicly? If false, only the superuser can create new accounts
-
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://127.0.0.1:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "portality"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
-NO_QUERY_VIA_API = ['account'] # list index types that should not be queryable via the API
-PUBLIC_ACCESSIBLE_JSON = True # can not logged in people get JSON versions of pages by querying for them?
 
-# location of media storage folder
-MEDIA_FOLDER = "media"
+# list of superuser account names
+SUPER_USER = ["test"]
 
-# folder name for storing page content
-# will be added under the templates/pagemanager route
-CONTENT_FOLDER = "content"
+# Can people register publicly? If false, only the superuser can create new accounts
+PUBLIC_REGISTER = False
 
-# etherpad endpoint if available for collaborative editing
-COLLABORATIVE = 'http://pads.cottagelabs.com'
 
-# disqus account shortname if available for page comments
-COMMENTS = 'cottagelabs'
-
-# if search filter is not false, anonymous users only see visible and accessible pages in query results
-# if search sort and order are set, all queries from /query will return with default search unless one is provided
-# placeholder image can be used in search result displays
-ANONYMOUS_SEARCH_FILTER_TERMS = False #{'visible':True,'accessible':True}
-SEARCH_SORT = ''
-SEARCH_SORT_ORDER = ''
-
+# ========================
+# MAPPING SETTINGS
 
 # a dict of the ES mappings. identify by name, and include name as first object name
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
@@ -70,4 +56,81 @@ MAPPINGS = {
 }
 MAPPINGS['account'] = {'account':MAPPINGS['record']['record']}
 MAPPINGS['pages'] = {'pages':MAPPINGS['record']['record']}
+
+
+# ========================
+# QUERY SETTINGS
+
+# list index types that should not be queryable via the query endpoint
+NO_QUERY = ['account']
+
+# can anonymous users get raw JSON records via the query endpoint?
+PUBLIC_ACCESSIBLE_JSON = True 
+
+# additional terms to impose on anonymous users of query endpoint
+# for example {'visible':True,'accessible':True}
+ANONYMOUS_SEARCH_TERMS = False
+
+# a default sort to apply to query endpoint searches
+# for example {'created_date' + FACET_FIELD : {"order":"desc"}}
+DEFAULT_SORT = False 
+
+
+# ========================
+# MEDIA SETTINGS
+
+# location of media storage folder
+MEDIA_FOLDER = "media"
+
+
+# ========================
+# PAGEMANAGER SETTINGS
+
+# folder name for storing page content
+# will be added under the templates/pagemanager route
+CONTENT_FOLDER = "content"
+
+# etherpad endpoint if available for collaborative editing
+COLLABORATIVE = 'http://localhost:9001'
+
+# when a page is deleted from the index should it also be removed from 
+# filesystem and etherpad (if they are available in the first place)
+DELETE_REMOVES_FS = False # True / False
+DELETE_REMOVES_EP = False # MUST BE THE ETHERPAD API-KEY OR DELETES WILL FAIL
+
+# disqus account shortname if available for page comments
+COMMENTS = ''
+
+
+# ========================
+# HOOK SETTINGS
+
+REPOS = {
+    "portality": {
+        "path": "/opt/portality/src/portality"
+    },
+    "content": {
+        "path": "/opt/portality/src/portality/portality/templates/pagemanager/content"
+    }
+}
+
+# ========================
+# FEED SETTINGS
+
+# Maximum number of feed entries to be given in a single response.  If this is omitted, it will
+# default to 20
+MAX_FEED_ENTRIES = 20
+
+# Maximum age of feed entries (in seconds) (default value here is 3 months).  If this is omitted
+# then we will always supply up to the MAX_FEED_ENTRIES above
+MAX_FEED_ENTRY_AGE = 7776000
+
+# Licensing terms for feed content
+FEED_LICENCE = "(c) Cottage Labs LLP 2012.  All content Copyheart: http://copyheart.org"
+
+# name of the feed generator (goes in the atom:generator element)
+FEED_GENERATOR = "CottageLabs feed generator"
+
+# Larger image to use as the logo for all of the feeds
+FEED_LOGO = "http://cottagelabs.com/media/cottage_hill_bubble_small.jpg"
 
