@@ -13,7 +13,12 @@
         <table class="table table-striped table-bordered">
             {% for file in files %}
             <tr>
-                <td><a href="/media/{{file}}">{{file}}</a></td>
+                <td><a class="screenshot" href="/media/{{file}}">{{file}}</a></td>
+                <td><p>
+                {% for u in usedin[file] %}
+                    <a target="_blank" href="{{u}}">{{u}}</a><br>
+                {% endif %}
+                </p></td>
                 {% if not current_user.is_anonymous() %}
                 <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
                 {% endif %}
@@ -22,6 +27,9 @@
         </table>
     </div>
 </div>
+
+<!-- get screenshot -->
+<script type="text/javascript" src="/static/portality/vendor/screenshot.js"></script>
 
 <script>
 
@@ -58,6 +66,7 @@
             });
         })
     
+    screenshotPreview();
 }(jQuery));
 
 </script>

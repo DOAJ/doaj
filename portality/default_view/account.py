@@ -15,7 +15,7 @@ blueprint = Blueprint('account', __name__)
 
 if len(app.config.get('SUPER_USER',[])) > 0:
     firstsu = app.config['SUPER_USER'][0]
-    if not models.Account.pull(firstsu):
+    if models.Account.pull(firstsu) is None:
         su = models.Account(id=firstsu)
         su.set_password(firstsu)
         su.save()
@@ -119,7 +119,9 @@ def login():
         password = form.password.data
         username = form.username.data
         user = models.Account.pull(username)
-        if user and user.check_password(password):
+        if user is None:
+            user = models.Account.pull_by_email(username)
+        if user is not None and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
             return form.redirect('index')
@@ -128,6 +130,39 @@ def login():
     if request.method == 'POST' and not form.validate():
         flash('Invalid form', 'error')
     return render_template('account/login.html', form=form)
+
+@blueprint.route('/forgot', methods=['GET', 'POST'])
+def forgot():
+    if request.method == 'POST':
+        un = request.form.get('un',"")
+        account = models.Account.pull(un)
+        if account is None: account = models.Account.pull_by_email(un)
+        if account is None:
+            flash('Sorry, your account username / email address is not recognised. Please contact us.')
+        else:
+            newpass = util.generate_password()
+            account.set_password(newpass)
+            account.save()
+
+            to = [account.data['email'],app.config['ADMIN_EMAIL']]
+            fro = app.config['ADMIN_EMAIL']
+            subject = app.config.get("SERVICE_NAME","") + "password reset"
+            text = "A password reset request for account " + account.id + " has been received and processed.\n\n"
+            text += "The new password for this account is " + newpass + ".\n\n"
+            text += "If you are the user " + account.id + " and you requested this change, please login now and change the password again to something of your preference.\n\n"
+            
+            text += "If you are the user " + account.id + " and you did NOT request this change, please contact us immediately.\n\n"
+            try:
+                util.send_mail(to=to, fro=fro, subject=subject, text=text)
+                flash('Your password has been reset. Please check your emails.')
+                if app.config.get('DEBUG',False):
+                    flash('Debug mode - new password was set to ' + newpass)
+            except:
+                flash('Email failed.')
+                if app.config.get('DEBUG',False):
+                    flash('Debug mode - new password was set to ' + newpass)
+
+    return render_template('account/forgot.html')
 
 
 @blueprint.route('/logout')

@@ -25,7 +25,11 @@ def query(path='Pages'):
     subpath = pathparts[0]
     if subpath.lower() in app.config.get('NO_QUERY',[]):
         abort(401)
-    klass = getattr(models, subpath[0].capitalize() + subpath[1:] )
+
+    try:
+        klass = getattr(models, subpath[0].capitalize() + subpath[1:] )
+    except:
+        abort(404)
     
     if len(pathparts) > 1 and pathparts[1] == '_mapping':
         resp = make_response( json.dumps(klass().query(endpoint='_mapping')) )
