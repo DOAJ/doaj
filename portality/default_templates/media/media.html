@@ -11,19 +11,29 @@
 <div class="row-fluid">
     <div class="span12">
         <table class="table table-striped table-bordered">
-            {% for file in files %}
-            <tr>
-                <td><a class="screenshot" href="/media/{{file}}">{{file}}</a></td>
-                <td>
-                {% for u in usedin[file] %}
-                    <a target="_blank" href="{{u}}">{{u}}</a><br>
+            <thead>
+                <tr>
+                    <th>Filename</th><th>Page usage</th>
+                    {% if not current_user.is_anonymous() %}
+                        <th></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td><a class="screenshot" href="/media/{{file}}">{{file}}</a></td>
+                    <td>
+                    {% for u in usedin[file] %}
+                        <a target="_blank" href="{{u}}">{{u}}</a><br>
+                    {% endfor %}
+                    </td>
+                    {% if not current_user.is_anonymous() %}
+                    <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
+                    {% endif %}
+                </tr>
                 {% endfor %}
-                </td>
-                {% if not current_user.is_anonymous() %}
-                <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
-                {% endif %}
-            </tr>
-            {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>
