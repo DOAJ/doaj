@@ -6,6 +6,7 @@ from flask.ext.login import current_user
 
 from portality.core import app
 import portality.models as models
+import portality.util as util
 
 
 blueprint = Blueprint('admin', __name__)
