@@ -36,11 +36,11 @@ def media():
         usedin = {}
         for f in listing:
             # see if it is used in any records
-            try:
-                r = models.Pages().query(q=f)
-                usedin[f] = [i['_source']['url'] for i in r.json()['hits']['hits']]
-            except:
-                usedin[f] = []
+            #try:
+            r = models.Pages().query(q='*' + f + '*')
+            usedin[f] = [i['_source']['url'] for i in r.json().get('hits',{}).get('hits',[])]
+            #except:
+            #    usedin[f] = []
         return render_template('media/media.html', files=listing, usedin=usedin)
 
 
