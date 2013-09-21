@@ -14,11 +14,11 @@
             {% for file in files %}
             <tr>
                 <td><a class="screenshot" href="/media/{{file}}">{{file}}</a></td>
-                <td><p>
+                <td>
                 {% for u in usedin[file] %}
                     <a target="_blank" href="{{u}}">{{u}}</a><br>
                 {% endfor %}
-                </p></td>
+                </td>
                 {% if not current_user.is_anonymous() %}
                 <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
                 {% endif %}
