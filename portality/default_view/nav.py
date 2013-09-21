@@ -15,26 +15,26 @@ import portality.util as util
 import portality.models as models
 
 
-blueprint = Blueprint('sitemap', __name__)
+blueprint = Blueprint('nav', __name__)
 
 
 @blueprint.route('/', methods=['GET','POST'])
 def index():
 
     if current_user.is_anonymous():
-        return render_template('sitemap/sitemap.html')
+        return render_template('nav/index.html')
     else:
-        if request.method == 'POST' and request.values.get('sitenav','') != '':
-            out = open('cl/templates/sitemap/sitenav.html','w')
-            out.write(request.values['sitenav'])
+        if request.method == 'POST' and request.values.get('nav','') != '':
+            out = open('portality/templates/nav/nav.html','w')
+            out.write(request.values['nav'])
             out.close()
             flash('Site navigation has been updated')
 
-        return render_template('sitemap/sitemap.html', public=False)
+        return render_template('nav/index.html', public=False)
 
 @blueprint.route('.xml')
 def xml():
-    resp = render_template('sitemap/sitemap.xml')
+    resp = render_template('nav/sitemap.xml')
     resp.mimetype = "application/xml"
     return resp
 
