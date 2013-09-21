@@ -17,7 +17,7 @@
                 <td><p>
                 {% for u in usedin[file] %}
                     <a target="_blank" href="{{u}}">{{u}}</a><br>
-                {% endif %}
+                {% endfor %}
                 </p></td>
                 {% if not current_user.is_anonymous() %}
                 <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
