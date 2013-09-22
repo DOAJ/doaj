@@ -79,7 +79,7 @@ def query(path='Pages'):
                     }
                 if 'must' not in qs['query']['bool']:
                     qs['query']['bool']['must'] = []
-                qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()])
+                qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()]
 
         resp = make_response( json.dumps(klass().query(q=qs)) )
 

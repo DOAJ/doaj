@@ -58,7 +58,7 @@ def get_feed_resp(title, query, req):
 
     if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
         if qtype.lower() in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
-            qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()])
+            qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()]
 
     resp = klass().query(q=qs)
     records = [r.get("_source") for r in resp.get("hits", {}).get("hits", []) if "_source" in r]
