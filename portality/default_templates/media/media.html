@@ -70,8 +70,9 @@
             e = e.originalEvent;
             e.preventDefault();
             $.ajax({
-                type: 'DELETE', 
+                type: 'POST', 
                 url: $(this).attr('href'),
+                data: {'submit':'Delete'},
                 success: function() {window.location=window.location;}
             });
         })

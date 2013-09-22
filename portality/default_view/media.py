@@ -58,21 +58,21 @@ def medias(path=''):
         else:
             abort(404)
     
-    elif request.method == 'POST' and not current_user.is_anonymous():
-        # TODO: check the file type meets the allowed ones, and if so put it in media dir
-        filename = werkzeug.secure_filename(path)
-        out = open(mediadir + '/' + filename, 'w')
-        out.write(request.data)
-        out.close()
-        return ''
-
-    elif request.method == 'DELETE' and not current_user.is_anonymous():
+    elif ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
         try:
             loc = mediadir + '/' + path
             if os.path.isfile(loc):
                 os.remove(loc)
         except:
             pass
+        return ''
+
+    elif request.method == 'POST' and not current_user.is_anonymous():
+        # TODO: check the file type meets the allowed ones, and if so put it in media dir
+        filename = werkzeug.secure_filename(path)
+        out = open(mediadir + '/' + filename, 'w')
+        out.write(request.data)
+        out.close()
         return ''
 
     else:
