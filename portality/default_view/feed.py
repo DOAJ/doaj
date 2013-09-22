@@ -39,7 +39,8 @@ def get_feed_resp(title, query, req):
     # build an elastic search query, which gives us all accessible, visible pages 
     # which conform to the supplied query string.  We obtain a maximum of 20 entries
     # or the amount in the configuration
-    klass = getattr(models, app.config.get('FEED_INDEX',"Pages")[0].capitalize() + app.config.get('FEED_INDEX',"Pages")[1:] )
+    qtype = app.config.get('FEED_INDEX',"Pages")[0].capitalize() + app.config.get('FEED_INDEX',"Pages")[1:]
+    klass = getattr(models, qtype )
     qs = {
         "query": {
             "bool": {
@@ -50,6 +51,15 @@ def get_feed_resp(title, query, req):
         },
         "size": app.config.get('MAX_FEED_ENTRIES',20)
     }
+
+    if 'sort' not in qs and app.config.get('DEFAULT_SORT',False):
+        if qtype.lower() in app.config['DEFAULT_SORT'].keys():
+            qs['sort'] = app.config['DEFAULT_SORT'][qtype.lower()]
+
+    if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
+        if qtype.lower() in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
+            qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()])
+
     resp = klass().query(q=qs)
     records = [r.get("_source") for r in resp.get("hits", {}).get("hits", []) if "_source" in r]
     

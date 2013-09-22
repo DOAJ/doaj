@@ -197,14 +197,6 @@ class DomainObject(UserDict.IterableUserDict):
             else:
                 query[k] = v
 
-        if 'sort' not in query and app.config.get('DEFAULT_SORT',False):
-            if cls.__type__ in app.config['DEFAULT_SORT'].keys():
-                query['sort'] = app.config['DEFAULT_SORT'][cls.__type__]
-
-        if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
-            if cls.__type__ in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
-                query['query']['bool']['must'] = query['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][cls.__type__]
-
         if endpoint in ['_mapping']:
             r = requests.get(cls.target() + recid + endpoint)
         else:

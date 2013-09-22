@@ -56,11 +56,33 @@ def query(path='Pages'):
         elif 'source' in request.values:
             qs = json.loads(urllib2.unquote(request.values['source']))
         else: 
-            qs = ''
+            qs = {'query': {'match_all': {}}}
+
         for item in request.values:
             if item not in ['q','source','callback','_'] and isinstance(qs,dict):
                 qs[item] = request.values[item]
+
+        if 'sort' not in qs and app.config.get('DEFAULT_SORT',False):
+            if path.lower() in app.config['DEFAULT_SORT'].keys():
+                qs['sort'] = app.config['DEFAULT_SORT'][path.lower()]
+
+        if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
+            if path.lower() in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
+                if 'bool' not in qs['query']:
+                    pq = qs['query']
+                    qs['query'] = {
+                        'bool':{
+                            'must': [
+                                pq
+                            ]
+                        }
+                    }
+                if 'must' not in qs['query']['bool']:
+                    qs['query']['bool']['must'] = []
+                qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][qtype.lower()])
+
         resp = make_response( json.dumps(klass().query(q=qs)) )
+
     resp.mimetype = "application/json"
     return resp
 

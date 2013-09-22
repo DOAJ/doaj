@@ -26,6 +26,9 @@ SUPER_USER = ["test"]
 # Can people register publicly? If false, only the superuser can create new accounts
 PUBLIC_REGISTER = False
 
+# can anonymous users get raw JSON records via the query endpoint?
+PUBLIC_ACCESSIBLE_JSON = True 
+
 
 # ========================
 # MAPPING SETTINGS
@@ -63,9 +66,6 @@ MAPPINGS['pages'] = {'pages':MAPPINGS['record']['record']}
 
 # list index types that should not be queryable via the query endpoint
 NO_QUERY = ['account']
-
-# can anonymous users get raw JSON records via the query endpoint?
-PUBLIC_ACCESSIBLE_JSON = True 
 
 # list additional terms to impose on anonymous users of query endpoint
 # for each index type that you wish to have some
