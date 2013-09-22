@@ -58,7 +58,7 @@ def medias(path=''):
         else:
             abort(404)
     
-    elif ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form['submit'] == 'Delete' ) ) and not current_user.is_anonymous() ):
+    elif ( ( request.method == 'DELETE' or ( request.method == 'POST' and request.form.get('submit',False) == 'Delete' ) ) and not current_user.is_anonymous() ):
         try:
             loc = mediadir + '/' + path
             if os.path.isfile(loc):
