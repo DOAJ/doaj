@@ -54,14 +54,14 @@ def username(username):
     elif ( request.method == 'DELETE' or 
             ( request.method == 'POST' and 
             request.values.get('submit',False) == 'Delete' ) ):
-        if current_user.id != acc.id and not current_user.is_super():
+        if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
     elif request.method == 'POST':
-        if current_user.id != acc.id and not current_user.is_super():
+        if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         newdata = request.json if request.json else request.values
         if newdata.get('id',False):
