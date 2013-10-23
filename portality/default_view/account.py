@@ -69,7 +69,7 @@ def username(username):
                 acc = models.Account.pull(newdata['id'])
             else:
                 newdata['api_key'] = acc.data['api_key']
-        for k, v in newdata:
+        for k, v in newdata.items():
             if k not in ['submit','password']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
