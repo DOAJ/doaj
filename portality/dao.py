@@ -165,7 +165,7 @@ class DomainObject(UserDict.IterableUserDict):
                 'query': {
                     'bool': {
                         'must': [
-                            {'query': {'match_all': {}}}
+                            {'match_all': {}}
                         ]
                     }
                 }
