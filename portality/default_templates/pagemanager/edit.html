@@ -1,0 +1,101 @@
+{% include "head.html" %}
+
+<body>
+
+{% if app.config['COLLABORATIVE'] and padsavailable %}
+<form action="{{record.data.url}}" method="POST">
+{% endif %}
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="/">{{ app.config['SERVICE_NAME'] }}</a>
+            <ul class="nav">
+                <li><a href="{{record.data.url}}">Exit</a></li>
+                {% if app.config['COLLABORATIVE'] and padsavailable %}
+                <li><a href="{{record.data.url}}/sync">Sync</a></li>
+                {% else %}
+                <li><input type="submit" name="submit" value="Save" style="background:none;border:none;color:#aaa;margin-top:7px;"></li>
+                {% endif %}
+                <li class="alert-messages" style="padding-bottom:0;margin-bottom:0;">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {%if messages %}
+                  {% for category, message in messages %}
+                    <div class="alert alert-{{category}} fade in" data-alert="alert" style="padding-top:5px;padding-bottom:0;margin-top:5px;margin-bottom:0;">
+                      <a class="close" data-dismiss="alert" href="#">&times;</a>
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+                {% endwith %}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% if app.config['COLLABORATIVE'] and padsavailable %}
+<style type="text/css">
+#collab_edit{
+    padding: 0;
+    margin: 40px 0 0 0';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+}
+</style>
+
+<script>
+jQuery(document).ready(function() {
+    $('#collab_edit').pad({
+        'padId'             : '{{record.id}}',
+        'host'              : '{{app.config["COLLABORATIVE"]}}',
+        'baseUrl'           : '/p/',
+        'showControls'      : true,
+        'showChat'          : true,
+        'showLineNumbers'   : true,
+        'userName'          : '{{current_user.id}}',
+        'useMonospaceFont'  : false,
+        'noColors'          : false,
+        'hideQRCode'        : false,
+        'height'            : '100%',
+        'border'            : 0,
+        'borderStyle'       : 'solid'
+    });
+    $('#collab_edit').height( $(window).height() - 44 );
+});
+</script>
+
+<div id="collab_edit" style="margin-top:40px;"></div>
+{% else %}
+
+<script>
+jQuery(document).ready(function() {
+    $('textarea.tinymce').tinymce({
+        script_url : '/static/portality/vendor/tinymce/jscripts/tiny_mce/tiny_mce.js',
+        theme : "advanced",
+        plugins : "autolink,lists,style,layer,table,advimage,advlink,inlinepopups,media,searchreplace,contextmenu,paste,fullscreen,noneditable,nonbreaking,xhtmlxtras,advlist",
+        theme_advanced_buttons1 : "bold,italic,underline,|,justifyleft,justifycenter,justifyright,justifyfull,formatselect,fontselect,fontsizeselect,|,forecolor,backcolor,|,bullist,numlist,|,outdent,indent,blockquote,|,sub,sup,|,styleprops",
+        theme_advanced_buttons2 : "undo,redo,|,cut,copy,paste,|,search,replace,|,hr,link,unlink,anchor,image,charmap,media,table,|,insertlayer,moveforward,movebackward,absolute,|,cleanup,code,help,visualaid,fullscreen",
+        theme_advanced_toolbar_location : "top",
+        theme_advanced_toolbar_align : "left",
+        theme_advanced_statusbar_location : "bottom",
+        theme_advanced_resizing : true
+    });
+    $('#form_content').height( $(window).height() - 35 );
+
+});
+</script>
+
+<textarea class="tinymce" id="form_content" name="content" style="width:100%;height:100%;margin-top:40px;" placeholder="write content here. text, markdown or html will work.">{{record.data.content}}</textarea>
+
+</form>
+
+{% endif %}
+
+</body>
+</html>
+
+

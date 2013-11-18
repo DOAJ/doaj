@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+jQuery(document).ready(function() {
+
+    // do things once page is fully built
+    var pageready = function() {
+    }
+
+    // do the nested embed of dynamic divs
+    var embed = function(data) {
+        var content = data['content'];
+        this.into.html('');
+        this.into.append(content);
+        this.into.attr('id',data['id']);
+        this.into.addClass('expanded');
+        var children = [];
+        this.into.find('.dynamic').each(function() {
+            children.push($(this).attr('data-source').replace('.json',''));
+            var src = $(this).attr('data-source').replace('.json','') + '.json';
+            $.ajax({"url": src, "success": embed, "into": $(this)});
+        });
+        if ( $('.dynamic').not('.expanded').length == 0) {
+            pageready(this);
+        };
+    };        
+
+    // replace any dynamic content divs with the actual content
+    $('.dynamic').each(function() {
+        var src = $(this).attr('data-source').replace('.json','') + '.json';
+        $.ajax({"url": src, "success": embed, "into": $(this)});
+    });
+
+    // put any facetviews into any facetview divs
+    var facetview_opts = {
+        "search_url": "/query/pages/_search?",
+        "datatype": "json",
+        "display_images": false,
+        "pushstate":false
+    };
+    $('.facetview').each(function() {
+        var opts = jQuery.extend(true, {}, facetview_opts); // clone the options
+        for ( var style in options.facetview_displays ) {
+            $(this).hasClass('facetview-' + style) ? opts = $.extend(opts, options.facetview_displays[style] ) : "";
+        };
+        $(this).hasClass('facetview-slider') ? opts.pager_slider = true : "";
+        $(this).hasClass('facetview-descending') ? opts['sort'] = [{"created_date.exact":{"order":"desc"}}] : "";
+        $(this).hasClass('facetview-ascending') ? opts['sort'] = [{"created_date.exact":{"order":"asc"}}] : "";
+        if ( $(this).hasClass('facetview-searchable') ) {
+            opts.embedded_search = true;
+        } else {
+            opts.embedded_search = false;
+        };
+        $(this).attr('data-search') ? opts.q = $(this).attr('data-search') : "";
+        $(this).attr('data-size') ? opts.paging.size = $(this).attr('data-size') : "";
+        $(this).attr('data-from') ? opts.paging.from = $(this).attr('data-from') : "";
+        $(this).facetview(opts);
+    });
+
+});
+</script>
+
+{{ content|safe }}
+
+{% if record.data['comments'] and app.config['COMMENTS'] %}
+<div id="comments" class="container">
+    <div class="comments">
+        <div class="row-fluid" id="disqus_thread"></div>
+    </div>
+</div>
+<script type="text/javascript">
+var disqus_shortname = "{{app.config['COMMENTS']}}";
+(function() {
+    var dsq = document.createElement("script"); dsq.type = "text/javascript"; dsq.async = true;
+    dsq.src = "http://" + disqus_shortname + ".disqus.com/embed.js";
+    (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(dsq);
+})();
+</script>
+{% endif %}
+
+{% endblock %}
+
+
+
+
+

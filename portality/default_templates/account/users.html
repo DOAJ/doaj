@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if current_user.is_super %}<p><a href="/account/register">create new user</a></p>{% endif %}
+
+    {% for user in users %}
+
+    <div style="padding:20px; margin:20px; border:2px solid #ccc; width:300px; height:80px; float:left; overflow:hidden;">
+        <h2><a href="/{{ user.id }}">{{ user.id }}</a></h2>
+        <p>created : {{ user.created_date }}</p>
+    </div>
+
+    {% endfor %}
+
+    <div class="clearfix"></div>
+
+{% endblock %}
+

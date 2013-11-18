@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row-fluid">
+    <div class="span6">
+        <div class="well">
+            <h3>Forgot your password</h3>
+            <p>If you forgot your password, provide your username or email on the right and click "reset your password now".</p>
+            <p>NOTE that you must know your correct username or email, and you must have access to the account associated 
+            to the email address you used, as your new password will be sent there.</p>
+            <p>If you do not know these things, contact us directly for further help.</p>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="hero-unit">
+            <form method="POST" action="">
+                <p>Provide your username or email:</p>
+                <input type="text" name="un">
+                <input type="submit" value="Reset your password now" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

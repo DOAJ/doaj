@@ -1,0 +1,12 @@
+*.pyc
+*.egg-info/*
+.*.swp
+src*
+.Python
+build/*
+dist/*
+
+app.cfg
+
+media/*
+portality/default_templates/pagemanager/content/*

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if not current_user.is_anonymous() %}
+<div id="uploadsection" class="hero-unit well" style="height:100px;">
+<p style="color:#aaa;">Drag and drop here to upload new files</p>
+</div>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Filename</th><th>Page usage</th>
+                    {% if not current_user.is_anonymous() %}
+                        <th></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr>
+                    <td><a class="screenshot" href="/media/{{file}}">{{file}}</a></td>
+                    <td>
+                    {% for u in usedin[file] %}
+                        <a target="_blank" href="{{u}}">{{u}}</a><br>
+                    {% endfor %}
+                    </td>
+                    {% if not current_user.is_anonymous() %}
+                    <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- get screenshot -->
+<script type="text/javascript" src="/static/portality/vendor/screenshot.js"></script>
+
+<script>
+
+(function ($) {
+    var savethis = function(event) {
+        event = event.originalEvent;
+        event.preventDefault();
+        var upfile = event.dataTransfer.files[0];
+        $.ajax({
+            type: 'POST', 
+            url: '/media/' + upfile.name, 
+            data: upfile,
+            processData: false,
+            contentType: false,
+            success: function() {window.location=window.location;}
+        });
+    };
+    $('#uploadsection')
+        .on('dragover', function (e) {
+            e = e.originalEvent;
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        })
+        .on('drop', savethis);
+    
+    $('.deleteme')
+        .on('click', function (e) {
+            e = e.originalEvent;
+            e.preventDefault();
+            $.ajax({
+                type: 'POST', 
+                url: $(this).attr('href'),
+                data: {'submit':'Delete'},
+                success: function() {window.location=window.location;}
+            });
+        })
+    
+    screenshotPreview();
+}(jQuery));
+
+</script>
+
+
+{% endblock %}

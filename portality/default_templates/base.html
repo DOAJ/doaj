@@ -1,0 +1,65 @@
+{% include 'head.html' %}
+
+<body data-spy="scroll" data-target=".subnav" data-offset="50">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">{{ app.config['SERVICE_NAME'] }}</a>
+          <ul class="nav">
+            <li><a href="">page 1</a></li>
+            <li><a href="">page 2</a></li>
+          </ul>
+          <ul class="nav pull-right">
+            <li>
+              <form class="navbar-search" id="topsearch" name="topsearch" action="/search" method="GET">
+                <input class="search-query" type="text" name="q" placeholder="search" />
+              </form>
+            </li>
+            {% if current_user.is_anonymous() %}
+            <li>
+              <a href="{{url_for('account.register')}}">Register</a>
+            </li>
+            <li>
+              <a href="{{url_for('account.login')}}">Login</a>
+            </li>
+            {% else %}
+            <li>
+              <a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}"><strong>{{current_user.id}}</strong></a>
+            </li>
+            <li>
+              <a href="{{ url_for('account.logout') }}">Logout</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+
+    <div class="alert-messages">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {%if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{category}} fade in" data-alert="alert">
+          <a class="close" data-dismiss="alert" href="#">&times;</a>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+    </div>
+
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div> <!-- /content -->
+
+    <footer>
+    </footer>
+
+    </div> <!-- /container -->
+
+</body>
+</html>
