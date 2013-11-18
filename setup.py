@@ -11,8 +11,8 @@ setup(
         "Flask-WTF==0.8.3",
         "requests==1.1.0",
         "markdown",
-        "gitpython"
-        #"lxml"
+        "gitpython",
+        "lxml"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

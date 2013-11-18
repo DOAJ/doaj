@@ -7,8 +7,11 @@
         <div class="container">
           <a class="brand" href="/">{{ app.config['SERVICE_NAME'] }}</a>
           <ul class="nav">
-            <li><a href="">page 1</a></li>
-            <li><a href="">page 2</a></li>
+            <li><a href="">suggest</a></li>
+            <li><a href="">support</a></li>
+            <li><a href="">publishers</a></li>
+            <li><a href="">about</a></li>
+            <li><a href="">contact</a></li>
           </ul>
           <ul class="nav pull-right">
             <li>
@@ -16,6 +19,7 @@
                 <input class="search-query" type="text" name="q" placeholder="search" />
               </form>
             </li>
+            {#
             {% if current_user.is_anonymous() %}
             <li>
               <a href="{{url_for('account.register')}}">Register</a>
@@ -31,6 +35,7 @@
               <a href="{{ url_for('account.logout') }}">Logout</a>
             </li>
             {% endif %}
+            #}
           </ul>
         </div>
       </div>
