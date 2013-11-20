@@ -29,3 +29,6 @@ class Account(DomainObject, UserMixin):
     @property
     def is_super(self):
         return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+
+class Journal(DomainObject):
+    __type__ = 'journal'
