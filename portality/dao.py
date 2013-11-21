@@ -221,3 +221,21 @@ class DomainObject(UserDict.IterableUserDict):
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
 
+    def csv(self, multival_sep=','):
+        row = []
+        sorted_fields = sorted(self.data.keys())
+        for field in sorted_fields:
+            value = self.data[field]
+
+            if isinstance(value, list):
+                strval = multival_sep.join(value)
+            else:
+                strval = str(value)  # strings remain strings, other things are converted
+                
+            strval.replace('"','""')  # escape quotes in CSV cells by doubling them
+            row.append(strval)
+        return row
+
+    @classmethod
+    def csv_header(cls):
+        pass
