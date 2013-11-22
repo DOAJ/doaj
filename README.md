@@ -24,6 +24,7 @@ Install into a virtual env, and then start with
             "country" : "<country of journal publication>",
             "license" : [
                 {
+                    "title" : "<name of licence>",
                     "type" : "<type>", 
                     "url" : "<url>", 
                     "version" : "<version>",
@@ -42,7 +43,7 @@ Install into a virtual env, and then start with
                 "volume" : "<volume>", 
                 "number" : "<issue number>"
             },
-            "provider" : "<journal provider if different from publisher",
+            "provider" : "<journal provider if different from publisher>",
             "active" : true|false
             "for_free" : true|false
             "subject" : [
@@ -74,7 +75,7 @@ Install into a virtual env, and then start with
                     "date" : "<date>"
                 }
             ],
-            owner_correspondance : [
+            owner_correspondence : [
                 {
                     "note" : "<note>", 
                     "date" : "<date>"
@@ -87,8 +88,8 @@ Install into a virtual env, and then start with
             "issn" : [<list of all print and electronic issns for all time>],
             "title" : [<list of all titles the journal has been known by>]
         },
-        "created" : "<date created>",
-        "last_modified" : "<date record last modified>"
+        "created_date" : "<date created>",
+        "last_updated" : "<date record last modified>"
     }
 
 ### A Note on the History
