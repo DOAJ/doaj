@@ -38,17 +38,17 @@ class Journal(DomainObject):
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
-        return BibJSON(self.data.get("bibjson"))
+        return JournalBibJSON(self.data.get("bibjson"))
 
     def set_bibjson(self, bibjson):
-        bibjson = bibjson.bibjson if isinstance(bibjson, BibJSON) else bibjson
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         self.data["bibjson"] = bibjson
     
     def history(self):
         hs = self.data.get("history", [])
         tuples = []
         for h in hs:
-            tuples.append((h.get("date"), BibJSON(h.get("bibjson"))))
+            tuples.append((h.get("date"), JournalBibJSON(h.get("bibjson"))))
         return tuples
     
     def snapshot(self):
@@ -56,7 +56,7 @@ class Journal(DomainObject):
         self.add_history(snap)
     
     def add_history(self, bibjson, date=None):
-        bibjson = bibjson.bibjson if isinstance(bibjson, BibJSON) else bibjson
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         if date is None:
             date = datetime.now().isoformat()
         snobj = {"date" : date, "bibjson" : bibjson}
@@ -178,13 +178,12 @@ class Suggestion(Journal):
     def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
     
     def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
-        
 
-class BibJSON(object):
-    
+class GenericBibJSON(object):
     # vocab of known identifier types
     P_ISSN = "pissn"
     E_ISSN = "eissn"
+    DOI = "doi"
     
     # constructor
     def __init__(self, bibjson={}):
@@ -197,54 +196,14 @@ class BibJSON(object):
     def set_property(self, prop, value):
         self.bibjson[prop] = value
     
-    # simple property getter and setters
-    
+    # shared simple property getter and setters
+        
     @property
     def title(self): return self.bibjson.get("title")
     @title.setter
     def title(self, val) : self.bibjson["title"] = val
     
-    @property
-    def language(self): return self.bibjson.get("language")
-    @language.setter
-    def language(self, val) : self.bibjson["language"] = val
-    
-    @property
-    def author_pays_url(self): return self.bibjson.get("author_pays_url")
-    @author_pays_url.setter
-    def author_pays_url(self, val) : self.bibjson["author_pays_url"] = val
-    
-    @property
-    def author_pays(self): return self.bibjson.get("author_pays")
-    @author_pays.setter
-    def author_pays(self, val) : self.bibjson["author_pays"] = val
-    
-    @property
-    def country(self): return self.bibjson.get("country")
-    @country.setter
-    def country(self, val) : self.bibjson["country"] = val
-    
-    @property
-    def publisher(self): return self.bibjson.get("publisher")
-    @publisher.setter
-    def publisher(self, val) : self.bibjson["publisher"] = val
-    
-    @property
-    def provider(self): return self.bibjson.get("provider")
-    @provider.setter
-    def provider(self, val) : self.bibjson["provider"] = val
-    
-    @property
-    def active(self): return self.bibjson.get("active")
-    @active.setter
-    def active(self, val) : self.bibjson["active"] = val
-    
-    @property
-    def for_free(self): return self.bibjson.get("for_free")
-    @for_free.setter
-    def for_free(self, val) : self.bibjson["for_free"] = val
-    
-    # complex part getters and setters
+    # complex getters and setters
     
     def add_identifier(self, idtype, value):
         if "identifier" not in self.bibjson:
@@ -296,6 +255,59 @@ class BibJSON(object):
     def set_keywords(self, keywords):
         self.bibjson["keywords"] = keywords
     
+    def add_url(self, url, urltype=None):
+        if "link" not in self.bibjson:
+            self.bibjson["link"] = []
+        urlobj = {"url" : url}
+        if urltype is not None:
+            urlobj["type"] = urltype
+        self.bibjson["link"].append(urlobj)
+    
+class JournalBibJSON(GenericBibJSON):
+    
+    # journal-specific simple property getter and setters
+    @property
+    def language(self): return self.bibjson.get("language")
+    @language.setter
+    def language(self, val) : self.bibjson["language"] = val
+    
+    @property
+    def author_pays_url(self): return self.bibjson.get("author_pays_url")
+    @author_pays_url.setter
+    def author_pays_url(self, val) : self.bibjson["author_pays_url"] = val
+    
+    @property
+    def author_pays(self): return self.bibjson.get("author_pays")
+    @author_pays.setter
+    def author_pays(self, val) : self.bibjson["author_pays"] = val
+    
+    @property
+    def country(self): return self.bibjson.get("country")
+    @country.setter
+    def country(self, val) : self.bibjson["country"] = val
+    
+    @property
+    def publisher(self): return self.bibjson.get("publisher")
+    @publisher.setter
+    def publisher(self, val) : self.bibjson["publisher"] = val
+    
+    @property
+    def provider(self): return self.bibjson.get("provider")
+    @provider.setter
+    def provider(self, val) : self.bibjson["provider"] = val
+    
+    @property
+    def active(self): return self.bibjson.get("active")
+    @active.setter
+    def active(self, val) : self.bibjson["active"] = val
+    
+    @property
+    def for_free(self): return self.bibjson.get("for_free")
+    @for_free.setter
+    def for_free(self, val) : self.bibjson["for_free"] = val
+    
+    # journal-specific complex part getters and setters
+    
     def set_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
@@ -318,11 +330,6 @@ class BibJSON(object):
             self.bibjon["license"].append(lobj)
         else:
             self.bibjson["license"][0]["open_access"] = open_access
-    
-    def add_url(self, url):
-        if "link" not in self.bibjson:
-            self.bibjson["link"] = []
-        self.bibjson["link"].append({"url" : url})
     
     def set_oa_start(self, year=None, volume=None, number=None):
         oaobj = {}
@@ -351,12 +358,145 @@ class BibJSON(object):
         self.bibjson["subject"].append(sobj)
 
 
+class Article(DomainObject):
+    __type__ = "article"
+    
+    def bibjson(self):
+        if "bibjson" not in self.data:
+            self.data["bibjson"] = {}
+        return ArticleBibJSON(self.data.get("bibjson"))
 
-
-
-
-
-
+    def set_bibjson(self, bibjson):
+        bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
+        self.data["bibjson"] = bibjson
+    
+    def history(self):
+        hs = self.data.get("history", [])
+        tuples = []
+        for h in hs:
+            tuples.append((h.get("date"), ArticleBibJSON(h.get("bibjson"))))
+        return tuples
+    
+    def snapshot(self):
+        snap = deepcopy(self.data.get("bibjson"))
+        self.add_history(snap)
+    
+    def add_history(self, bibjson, date=None):
+        bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
+        if date is None:
+            date = datetime.now().isoformat()
+        snobj = {"date" : date, "bibjson" : bibjson}
+        if "history" not in self.data:
+            self.data["history"] = []
+        self.data["history"].append(snobj)
+    
+    def _generate_index(self):
+        # the index fields we are going to generate
+        issns = []
+        
+        # the places we're going to get those fields from
+        cbib = self.bibjson()
+        hist = self.history()
+        
+        # get the issns out of the current bibjson
+        issns += cbib.get_identifiers(cbib.P_ISSN)
+        issns += cbib.get_identifiers(cbib.E_ISSN)
+        
+        # now get the issns out of the historic records
+        for date, hbib in hist:
+            issns += hbib.get_identifiers(hbib.P_ISSN)
+            issns += hbib.get_identifiers(hbib.E_ISSN)
+        
+        # deduplicate the list
+        issns = list(set(issns))
+        
+        # work out what the date of publication is
+        date = ""
+        if cbib.year is not None:
+            date += str(cbib.year)
+            if cbib.month is not None:
+                if int(cbib.month) < 10:
+                    date += "-0" + str(cbib.month)
+                else:
+                    date += "-" + str(cbib.month)
+            else:
+                date += "-01"
+            date += "-01"
+        
+        # build the index part of the object
+        self.data["index"] = {}
+        if len(issns) > 0:
+            self.data["index"]["issn"] = issns
+        if date != "":
+            self.data["index"]["date"] = date
+        
+    def save(self):
+        self._generate_index()
+        super(Article, self).save()
+    
+class ArticleBibJSON(GenericBibJSON):
+    
+    # article-specific simple getters and setters
+    @property
+    def year(self): return self.bibjson.get("year")
+    @year.setter
+    def year(self, val) : self.bibjson["year"] = val
+    
+    @property
+    def month(self): return self.bibjson.get("month")
+    @month.setter
+    def month(self, val) : self.bibjson["month"] = val
+    
+    @property
+    def start_page(self): return self.bibjson.get("start_page")
+    @start_page.setter
+    def start_page(self, val) : self.bibjson["start_page"] = val
+    
+    @property
+    def end_page(self): return self.bibjson.get("end_page")
+    @end_page.setter
+    def end_page(self, val) : self.bibjson["end_page"] = val
+    
+    @property
+    def abstract(self): return self.bibjson.get("abstract")
+    @abstract.setter
+    def abstract(self, val) : self.bibjson["abstract"] = val
+    
+    # article-specific complex part getters and setters
+    
+    def _set_journal_property(self, prop, value):
+        if "journal" not in self.bibjson:
+            self.bibjson["journal"] = {}
+        self.bibjson["journal"][prop] = value
+    
+    @property
+    def volume(self):
+        self.bibjson.get("journal", {}).get("volume")
+    
+    @volume.setter
+    def volume(self, value):
+        self._set_journal_property("volume", value)
+    
+    @property
+    def number(self):
+        self.bibjson.get("journal", {}).get("number")
+    
+    @number.setter
+    def number(self, value):
+        self._set_journal_property("number", value)
+        
+    @property
+    def publisher(self):
+        self.bibjson.get("journal", {}).get("publisher")
+    
+    @publisher.setter
+    def publisher(self, value):
+        self._set_journal_property("publisher", value)
+        
+    def add_author(self, name):
+        if "author" not in self.bibjson:
+            self.bibjson["author"] = []
+        self.bibjson["author"].append({"name" : name})
 
 
 
