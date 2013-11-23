@@ -10,7 +10,7 @@ You can overwrite and add to the DomainObject functions as required. See models.
 '''
     
     
-class DomainObject(UserDict.IterableUserDict):
+class DomainObject(UserDict.IterableUserDict, object):
     __type__ = None # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
@@ -56,13 +56,15 @@ class DomainObject(UserDict.IterableUserDict):
 
         if 'created_date' not in self.data:
             self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
-            
+        
+        """
         if 'author' not in self.data:
             try:
                 self.data['author'] = current_user.id
             except:
                 self.data['author'] = "anonymous"
-
+        """
+        
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
 
     def save_from_form(self,request):
