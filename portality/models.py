@@ -34,6 +34,7 @@ class Account(DomainObject, UserMixin):
 # so we can't use them here
 class Journal(DomainObject):
     __type__ = "journal"
+    CSV_HEADER = ["Title","Title Alternative","Identifier","Publisher","Language","ISSN","EISSN","Keyword","Start Year","End Year","Added on date","Subjects","Country","Publication fee","Further Information","CC License","Content in DOAJ"]
     
     def bibjson(self):
         if "bibjson" not in self.data:
@@ -150,6 +151,43 @@ class Journal(DomainObject):
     def save(self):
         self._generate_index()
         super(Journal, self).save()
+
+    def csv(self, multival_sep=','):
+        YES_NO = {True: 'Yes', False: 'No', None: None}
+        row = []
+        c = self.data['bibjson']
+        row.append(c.get('title', ''))
+        row.append('') # in place of Title Alternative
+        row.append( multival_sep.join(c.get('link', '')) )
+        row.append(c.get('publisher', ''))
+        row.append(c.get('language', ''))
+
+        # we're following the old CSV format strictly for now, so only 1
+        # ISSN allowed - below is the code for handling multiple ones
+
+        # ISSN taken from Print ISSN
+        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
+        row.append( [id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn'][0] ) # just the 1st one
+
+        # EISSN - the same as ISSN applies
+        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
+        row.append( [id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn'][0] ) # just the 1st one
+
+        row.append( multival_sep.join(c.get('keywords', '')) )
+        row.append(c.get('oa_start', '')['year'])
+        row.append(c.get('oa_end', '')['year'])
+        row.append(self.data['created_date'])
+        row.append( multival_sep.join([subject['term'] for subject in c['subject']]) )
+        row.append(c.get('country', ''))
+        row.append(YES_NO[c.get('author_pays', '')])
+        row.append(c.get('author_pays_url', ''))
+
+        # for now, follow the strange format of the CC License column
+        # that the old CSV had. Also, only take the first CC license we see!
+        row.append( [lic['type'][3:] for lic in c['license'] if lic['type'].startswith('cc-')][0] )
+        
+        row.append(YES_NO[c['active']])
+        return row
 
 class Suggestion(Journal):
     __type__ = "suggestion"
