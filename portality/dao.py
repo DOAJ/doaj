@@ -225,7 +225,3 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     def csv(self, multival_sep=','):
         raise NotImplementedError
-
-    @classmethod
-    def csv_header(cls):
-        pass

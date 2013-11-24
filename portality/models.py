@@ -153,7 +153,7 @@ class Journal(DomainObject):
         super(Journal, self).save()
 
     def csv(self, multival_sep=','):
-        YES_NO = {True: 'Yes', False: 'No', None: None}
+        YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
         row = []
         c = self.data['bibjson']
         row.append(c.get('title', ''))
@@ -167,26 +167,29 @@ class Journal(DomainObject):
 
         # ISSN taken from Print ISSN
         # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
-        row.append( [id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn'][0] ) # just the 1st one
+        pissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'pissn']
+        row.append(pissns[0] if len(pissns) > 0 else '') # just the 1st one
 
         # EISSN - the same as ISSN applies
         # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
-        row.append( [id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn'][0] ) # just the 1st one
+        eissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'eissn']
+        row.append(eissns[0] if len(eissns) > 0 else '') # just the 1st one
 
         row.append( multival_sep.join(c.get('keywords', '')) )
-        row.append(c.get('oa_start', '')['year'])
-        row.append(c.get('oa_end', '')['year'])
-        row.append(self.data['created_date'])
-        row.append( multival_sep.join([subject['term'] for subject in c['subject']]) )
+        row.append(c.get('oa_start', {}).get('year'))
+        row.append(c.get('oa_end', {}).get('year'))
+        row.append(self.data.get('created_date', ''))
+        row.append( multival_sep.join([subject['term'] for subject in c.get('subject', [])]) )
         row.append(c.get('country', ''))
         row.append(YES_NO[c.get('author_pays', '')])
         row.append(c.get('author_pays_url', ''))
 
         # for now, follow the strange format of the CC License column
         # that the old CSV had. Also, only take the first CC license we see!
-        row.append( [lic['type'][3:] for lic in c['license'] if lic['type'].startswith('cc-')][0] )
+        cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
+        row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
         
-        row.append(YES_NO[c['active']])
+        row.append(YES_NO[c.get('active')])
         return row
 
 class Suggestion(Journal):
