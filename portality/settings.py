@@ -59,6 +59,7 @@ MAPPINGS = {
 }
 MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
 MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
+MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
 
 
 # ========================

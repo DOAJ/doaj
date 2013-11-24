@@ -118,6 +118,8 @@ class Journal(DomainObject):
         # the index fields we are going to generate
         issns = []
         titles = []
+        subjects = []
+        schema_subjects = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -130,6 +132,16 @@ class Journal(DomainObject):
         # get the title out of the current bibjson
         titles.append(cbib.title)
         
+        # get the subjects and concatenate them with their schemes from the current bibjson
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            subjects.append(term)
+            schema_subjects.append(scheme + ":" + term)
+        
+        # add the keywords to the non-schema subjects
+        subjects += cbib.keywords
+        
         # now get the issns and titles out of the historic records
         for date, hbib in hist:
             issns += hbib.get_identifiers(hbib.P_ISSN)
@@ -139,6 +151,8 @@ class Journal(DomainObject):
         # deduplicate the lists
         issns = list(set(issns))
         titles = list(set(titles))
+        subjects = list(set(subjects))
+        schema_subjects = list(set(schema_subjects))
         
         # build the index part of the object
         self.data["index"] = {}
@@ -146,6 +160,10 @@ class Journal(DomainObject):
             self.data["index"]["issn"] = issns
         if len(titles) > 0:
             self.data["index"]["title"] = titles
+        if len(subjects) > 0:
+            self.data["index"]["subjects"] = subjects
+        if len(schema_subjects) > 0:
+            self.data["index"]["schema_subjects"] = schema_subjects
     
     def save(self):
         self._generate_index()
@@ -186,8 +204,8 @@ class GenericBibJSON(object):
     DOI = "doi"
     
     # constructor
-    def __init__(self, bibjson={}):
-        self.bibjson = bibjson
+    def __init__(self, bibjson=None):
+        self.bibjson = bibjson if bibjson is not None else {}
     
     # generic property getter and setter for ad-hoc extensions
     def get_property(self, prop):
@@ -205,10 +223,21 @@ class GenericBibJSON(object):
     
     # complex getters and setters
     
+    def _normalise_identifier(self, idtype, value):
+        if idtype in [self.P_ISSN, self.E_ISSN]:
+            return self._normalise_issn(value)
+        return value
+    
+    def _normalise_issn(self, issn):
+        if len(issn) == 8:
+            # i.e. it is not hyphenated
+            return issn[:4] + "-" + issn[4:]
+        return issn
+    
     def add_identifier(self, idtype, value):
         if "identifier" not in self.bibjson:
             self.bibjson["identifier"] = []
-        idobj = {"type" : idtype, "id" : value}
+        idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
         self.bibjson["identifier"].append(idobj)
     
     def get_identifiers(self, idtype):
@@ -247,6 +276,10 @@ class GenericBibJSON(object):
         for i in remove:
             del self.bibjson["identifier"][i]
     
+    @property
+    def keywords(self):
+        return self.bibjson.get("keywords", [])
+    
     def add_keyword(self, keyword):
         if "keywords" not in self.bibjson:
             self.bibjson["keywords"] = []
@@ -266,11 +299,6 @@ class GenericBibJSON(object):
 class JournalBibJSON(GenericBibJSON):
     
     # journal-specific simple property getter and setters
-    @property
-    def language(self): return self.bibjson.get("language")
-    @language.setter
-    def language(self, val) : self.bibjson["language"] = val
-    
     @property
     def author_pays_url(self): return self.bibjson.get("author_pays_url")
     @author_pays_url.setter
@@ -308,6 +336,21 @@ class JournalBibJSON(GenericBibJSON):
     
     # journal-specific complex part getters and setters
     
+    @property
+    def language(self): 
+        return self.bibjson.get("language")
+    
+    def set_language(self, language):
+        if isinstance(language, list):
+            self.bibjson["language"] = language
+        else:
+            self.bibjson["language"] = [language]
+    
+    def add_language(self, language):
+        if "language" not in self.bibjson:
+            self.bibjson["language"] = []
+        self.bibjson["language"].append(language)
+    
     def set_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
@@ -327,7 +370,7 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["license"] = []
         if len(self.bibjson["license"]) == 0:
             lobj = {"open_access" : open_access}
-            self.bibjon["license"].append(lobj)
+            self.bibjson["license"].append(lobj)
         else:
             self.bibjson["license"][0]["open_access"] = open_access
     
@@ -356,6 +399,9 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["subject"] = []
         sobj = {"scheme" : scheme, "term" : term}
         self.bibjson["subject"].append(sobj)
+    
+    def subjects(self):
+        return self.bibjson.get("subject", [])
 
 
 class Article(DomainObject):

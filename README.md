@@ -18,7 +18,7 @@ Install into a virtual env, and then start with
                 {"type" : "eissn", "id" : "<electronic issn>"},
             ],
             "keywords" : [<list of free-text keywords>],
-            "language" : "The language of the journal",
+            "language" : ["The language of the journal"],
             "author_pays_url" : "<charging link>",
             "author_pays" : true|false,
             "country" : "<country of journal publication>",
@@ -86,7 +86,9 @@ Install into a virtual env, and then start with
         },
         "index" : {
             "issn" : [<list of all print and electronic issns for all time>],
-            "title" : [<list of all titles the journal has been known by>]
+            "title" : [<list of all titles the journal has been known by>],
+            "subjects" : [<all possible subject keywords>],
+            "schema_subjects" : [<all subject keywords with schema prefixes>]
         },
         "created_date" : "<date created>",
         "last_updated" : "<date record last modified>"
