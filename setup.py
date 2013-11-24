@@ -12,7 +12,8 @@ setup(
         "requests==1.1.0",
         "markdown",
         "gitpython",
-        "lxml"
+        "lxml",
+        "nose"
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',

@@ -223,3 +223,5 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
 
+    def csv(self, multival_sep=','):
+        raise NotImplementedError
