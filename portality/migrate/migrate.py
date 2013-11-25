@@ -1,5 +1,7 @@
+import os
 from lxml import etree
-from portality.models import Journal, JournalBibJSON, Suggestion
+from datetime import datetime
+from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON
 
 IN_DIR = "/home/richard/Dropbox/Documents/DOAJ/data/"
 
@@ -7,6 +9,8 @@ JOURNALS = IN_DIR + "journals"
 SUBJECTS = IN_DIR + "subjects"
 LCC = IN_DIR + "lccSubjects"
 SUGGESTIONS = IN_DIR + "suggestions"
+
+ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd"]
 
 ################################################################
 ## Preliminary data loading functions
@@ -146,7 +150,7 @@ def migrate_journals(source):
         # pick over any old or next ISSNs which are asserted but which don't appear
         # in the overall dataset, and record them as stripped down historic records
         issn_units = list(set(issn_units))
-        hbib = [bib for date, bib in j.history()]
+        hbib = [h for d, r, irb, h in j.history()]
         for unit in issn_units:
             found = False
             if _issn_unit_in_bibjson(unit, cb):
@@ -157,6 +161,7 @@ def migrate_journals(source):
             if not found:
                 j.add_history(_issn_unit_to_bibjson(unit))
         
+        j.set_created(_created_date(element))
         # save the result
         j.save() # FIXME: we may want to bulk this
         # print j.data
@@ -229,6 +234,10 @@ def _to_journal_bibjson(element):
     if title is not None and title.text is not None and title.text != "":
         b.title = title.text
     
+    alt = element.find("alternativeTitle")
+    if alt is not None and alt.text is not None and alt.text != "":
+        b.alternative_title = alt.text
+    
     issn = element.find("issn")
     if issn is not None and issn.text is not None and issn.text != "":
         b.add_identifier(b.P_ISSN, issn.text)
@@ -250,8 +259,6 @@ def _to_journal_bibjson(element):
     chargingLink = element.find("chargingLink")
     if chargingLink is not None and chargingLink.text is not None and chargingLink != "":
         b.author_pays_url = chargingLink.text
-    
-    # QUESTION: do we need to preserve created_date and last_updated date?
     
     charging = element.find("charging")
     if charging is not None and charging.text is not None and charging.text != "":
@@ -399,12 +406,17 @@ def _to_suggestion(element, suggestion):
         suggestion.set_description(desc.text)
     
     sn = element.find("userName")
-    if sn is not None and sn.text is not None and sn.text != "":
-        suggestion.set_suggester_name(sn.text)
-    
     se = element.find("userEmail")
+    if sn is not None and sn.text is not None and sn.text != "":
+        sn = sn.text
+    else:
+        sn = None
     if se is not None and se.text is not None and se.text != "":
-        suggestion.set_suggester_email(se.text)
+        se = se.text
+    else:
+        se = None
+    if sn is not None or se is not None:
+        suggestion.set_suggester(sn, se)
     
     status = element.find("status")
     if status is not None and status.text is not None and status.text != "":
@@ -423,12 +435,17 @@ def _to_suggestion(element, suggestion):
         suggestion.add_note(note2.text)
     
     ce = element.find("contactEmail")
-    if ce is not None and ce.text is not None and ce.text != "":
-        suggestion.set_contact_email(ce.text)
-    
     cn = element.find("contactName")
+    if ce is not None and ce.text is not None and ce.text != "":
+        ce = ce.text
+    else:
+        ce = None
     if cn is not None and cn.text is not None and cn.text != "":
-        suggestion.set_contact_name(cn.text)
+        cn = cn.text
+    else:
+        cn = None
+    if cn is not None or ce is not None:
+        suggestion.add_contact(cn, ce)
     
     bo = element.find("byOwner")
     if bo is not None:
@@ -441,10 +458,107 @@ def _to_suggestion(element, suggestion):
 
 #################################################################
 
+#################################################################
+## Functions to migrate articles
+#################################################################
+
+def migrate_articles(source):
+    # read in the content
+    f = open(source)
+    xml = etree.parse(f)
+    f.close()
+    articles = xml.getroot()
+    print "migrating", str(len(articles)), "article records from", source
+    
+    for element in articles:
+        a = Article()
+        b = _to_article_bibjson(element)
+        a.set_bibjson(b)
+        a.set_created(_created_date(element))
+        a.save()
+
+def _created_date(element):
+    cd = element.find("addedOn")
+    if cd is not None and cd.text is not None and cd.text != "":
+        return cd.text
+    return datetime.now().isoformat()
+
+def _to_article_bibjson(element):
+    b = ArticleBibJSON()
+    
+    title = element.find("title")
+    if title is not None and title.text is not None and title.text != "":
+        b.title = title.text
+    
+    doi = element.find("doi")
+    if doi is not None and doi.text is not None and doi.text != "":
+        b.add_identifier(b.DOI, doi.text)
+    
+    issn = element.find("issn")
+    if issn is not None and issn.text is not None and issn.text != "":
+        b.add_identifier(b.P_ISSN, issn.text)
+    
+    eissn = element.find("eissn")
+    if eissn is not None and eissn.text is not None and eissn.text != "":
+        b.add_identifier(b.E_ISSN, eissn.text)
+    
+    volume = element.find("volume")
+    if volume is not None and volume.text is not None and volume.text != "":
+        b.volume = volume.text
+    
+    issue = element.find("issue")
+    if issue is not None and issue.text is not None and issue.text != "":
+        b.number = issue.text
+    
+    year = element.find("year")
+    if year is not None and year.text is not None and year.text != "":
+        b.year = year.text
+    
+    month = element.find("month")
+    if month is not None and month.text is not None and month.text != "":
+        b.month = month.text
+    
+    pages = element.find("pages")
+    if pages is not None and pages.text is not None and pages.text != "":
+        bits = [bit.strip() for bit in pages.text.split("-")]
+        if len(bits) > 0:
+            b.start_page = bits[0]
+        if len(bits) > 1:
+            b.end_page = bits[1]
+    
+    ftxt = element.find("ftxt")
+    if ftxt is not None and ftxt.text is not None and ftxt.text != "":
+        b.add_url(ftxt.text, "fulltext")
+    
+    abstract = element.find("abstract")
+    if abstract is not None and abstract.text is not None and abstract.text != "":
+        b.abstract = abstract.text
+    
+    authors = element.find("authors")
+    if authors is not None and authors.text is not None and authors.text != "":
+        people = [p.strip() for p in authors.text.split("---")]
+        for person in people:
+            b.add_author(person)
+    
+    publisher = element.find("publisher")
+    if publisher is not None and publisher.text is not None and publisher.text != "":
+        b.publisher = publisher.text
+    
+    keywords = element.find("keywords")
+    if keywords is not None and keywords.text is not None and keywords.text != "":
+        words = [w.strip() for w in keywords.text.split("---")]
+        b.set_keywords(words)
+        
+    return b
+
+#################################################################
+
 if __name__ == "__main__":
     load_subjects(SUBJECTS, LCC)
-    migrate_suggestions(SUGGESTIONS)
+    # migrate_suggestions(SUGGESTIONS)
     migrate_journals(JOURNALS)
+    #for a in ARTICLES:
+    #    migrate_articles(a)
 
 
 
