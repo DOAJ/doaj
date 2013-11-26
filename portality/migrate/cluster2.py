@@ -1,7 +1,9 @@
 from lxml import etree
 from copy import deepcopy
+import csv
 
 IN = "/home/richard/Dropbox/Documents/DOAJ/data/journals"
+OUT = "/home/richard/tmp/doaj/equiv.csv"
 
 def extract_issns(element):
     issn = j.find("issn").text
@@ -232,9 +234,30 @@ for k in ordertables.keys():
     print k, "->", ordertables.get(k)
     print "    ->", sorttable.get(k)
     print "    ->", canontable.get(k)
-    
-    
 
+
+def get_cell(jid):
+    element = journaltable.get(jid)
+    issn = element.find("issn").text
+    eissn = element.find("eissn").text
+    issns = []
+    if issn is not None: issns.append(issn)
+    if eissn is not None: issns.append(eissn)
+    cell = ", ".join(issns)
+    return cell
+    
+f = open(OUT, "wb")    
+writer = csv.writer(f)
+writer.writerow(["Equivalence Number", "Proposed Current", "Proposed History"])
+for e, data in canontable.iteritems():
+    canon, rest = data
+    cells = [e]
+    canon_issn_cell = get_cell(canon)
+    cells.append(canon_issn_cell)
+    for r in rest:
+        r_issn_cell = get_cell(r)
+        cells.append(r_issn_cell)
+    writer.writerow(cells)
 
 
 
