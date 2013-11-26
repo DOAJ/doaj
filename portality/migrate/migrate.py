@@ -1,6 +1,7 @@
 import os
 from lxml import etree
 from datetime import datetime
+from copy import deepcopy
 from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON
 
 IN_DIR = "/home/richard/Dropbox/Documents/DOAJ/data/"
@@ -68,158 +69,202 @@ def migrate_journals(source):
     journals = xml.getroot()
     print "migrating", str(len(journals)), "journal records"
     
-    # registries for the various issns
-    all_map = {}
-    all_cluster = {}
-    all_clusters = []
-    pissn_counter = 0
-    eissn_counter = 0
-
-    # populate the registries - a map of issns to xml records
-    # and a map of issns to next and previous issns
-    for j in journals:
-        issn = j.find("issn").text
-        nissn = j.find("nextIssn").text
-        pissn = j.find("previousIssn").text
-        
-        eissn = j.find("eissn").text
-        neissn = j.find("nextEissn").text
-        peissn = j.find("previousEissn").text
-        
-        if issn is not None:
-            pissn_counter += 1
-            all_map[issn] = j
-            all_cluster[issn] = {"p" : pissn, "n" : nissn}
-            if eissn is not None:
-                all_cluster[issn]["s"] = eissn
-        if eissn is not None:
-            eissn_counter += 1
-            all_map[eissn] = j
-            all_cluster[eissn] = {"p" : peissn, "n" : neissn}
-            if pissn is not None:
-                all_cluster[eissn]["s"] = pissn
+    clusters = _get_journal_clusters(journals)
     
-    print pissn_counter, "issns, and", eissn_counter, "e-issns (some may be duplicated, or in the wrong fields)"
-    print len(all_map.keys()), "unique issn and pissn values in source dataset"
-    
-    # now do the clusters of issns - so we should wind up with a list of 
-    # groups of issns that all represent the same journal
-    checkbox = []
-    for issn, rels in all_cluster.iteritems():
-        if issn in checkbox:
-            continue
-        register = []
-        _do_issn_cluster(issn, rels, register, all_cluster)
-        all_clusters.append(register)
-        checkbox += register
-    
-    print (len(all_clusters)), "groups of issns detected"
-    print (len(checkbox)), "issns checked off"
-    print (len(list(set(checkbox)))), "deduplicated checkbox"
-    
-    size = 0
-    size_register = {}
-    for cs in all_clusters:
-        length = len(cs)
-        if length in size_register:
-            size_register[length] += 1
-        else:
-            size_register[length] = 1
-        size += length
-        
-    print size, "total unduplicated issns in cluster map"
-    print "counts of cluster sizes", size_register
-    
-    for cs in all_clusters:
-        # work out which is the main record, and which are historic
-        current, previous = _get_current_previous(cs, all_cluster)
-        
-        # make a journal object, and map the main and historic records to it
+    # make a journal object, and map the main and historic records to it
+    for canon, rest in clusters:
         j = Journal()
-        element = all_map.get(current)
-        if element is None:
-            print "No entry for ", current
-        cb = _to_journal_bibjson(element)
-        issn_units = _get_other_issn_units(element)
+        
+        cb = _to_journal_bibjson(canon)
         j.set_bibjson(cb)
-        j.set_in_doaj(_is_in_doaj(element))
-        for p in previous:
-            j.add_history(_to_journal_bibjson(all_map.get(p)))
-            issn_units += _get_other_issn_units(all_map.get(p))
         
-        # pick over any old or next ISSNs which are asserted but which don't appear
-        # in the overall dataset, and record them as stripped down historic records
-        issn_units = list(set(issn_units))
-        hbib = [h for d, r, irb, h in j.history()]
-        for unit in issn_units:
-            found = False
-            if _issn_unit_in_bibjson(unit, cb):
-                found = True
-            for hb in hbib:
-                if _issn_unit_in_bibjson(unit, hb):
-                    found = True
-            if not found:
-                j.add_history(_issn_unit_to_bibjson(unit))
+        j.set_in_doaj(_is_in_doaj(canon))
+        j.set_created(_created_date(canon))
         
-        j.set_created(_created_date(element))
-        # save the result
-        j.save() # FIXME: we may want to bulk this
-        # print j.data
-
-def _issn_unit_in_bibjson(unit, bibjson):
-    pissn, eissn = unit
-    thisp = bibjson.get_identifiers(bibjson.P_ISSN)
-    thise = bibjson.get_identifiers(bibjson.E_ISSN)
+        for p in rest:
+            replaces = _get_replaces(p)
+            isreplacedby = _get_isreplacedby(p)
+            j.add_history(_to_journal_bibjson(p), replaces=replaces, isreplacedby=isreplacedby)
+            
+        j.save()
     
-    success = True
-    if pissn is not None and pissn != thisp:
-        success = False
-    if eissn is not None and eissn != thise:
-        success = False
-    
-    return success
+def _normalise_issn(issn):
+    if len(issn) == 8:
+        # i.e. it is not hyphenated
+        return issn[:4] + "-" + issn[4:]
+    return issn
 
-def _issn_unit_to_bibjson(unit):
-    pissn, eissn = unit
-    if pissn is None and eissn is None:
-        return
-    b = JournalBibJSON()
+def _get_replaces(element):
+    pissn = element.find("previousIssn").text
+    peissn = element.find("previousEissn").text
+    replaces = []
     if pissn is not None:
-        b.add_identifier(b.P_ISSN, pissn)
+        replaces.append(_normalise_issn(pissn))
+    if peissn is not None:
+        replaces.append(_normalise_issn(peissn))
+    return replaces
+
+def _get_isreplacedby(element):
+    nissn = element.find("nextIssn").text
+    neissn = element.find("nextEissn").text
+    irb = []
+    if nissn is not None:
+        irb.append(_normalise_issn(nissn))
+    if neissn is not None:
+        irb.append(_normalise_issn(neissn))
+    return irb
+
+def _extract_issns(element):
+    issn = element.find("issn").text
+    nissn = element.find("nextIssn").text
+    pissn = element.find("previousIssn").text
+    
+    eissn = element.find("eissn").text
+    neissn = element.find("nextEissn").text
+    peissn = element.find("previousEissn").text
+    
+    issns = []
+    if issn is not None:
+        issns.append(issn)
+    if nissn is not None:
+        issns.append(nissn)
+    if pissn is not None:
+        issns.append(pissn)
     if eissn is not None:
-        b.add_identifier(b.E_ISSN, eissn)
-    return b
-
-def _get_other_issn_units(element):
-    ppissn = element.find("previousIssn")
-    npissn = element.find("nextIssn")
-    peissn = element.find("previousEissn")
-    neissn = element.find("nextEissn")
+        issns.append(eissn)
+    if neissn is not None:
+        issns.append(neissn)
+    if peissn is not None:
+        issns.append(peissn)
     
-    pp = ppissn.text if ppissn is not None and ppissn.text is not None and ppissn.text != "" else None
-    np = npissn.text if npissn is not None and npissn.text is not None and npissn.text != "" else None
-    pe = peissn.text if peissn is not None and peissn.text is not None and peissn.text != "" else None
-    ne = neissn.text if neissn is not None and neissn.text is not None and neissn.text != "" else None
-    
-    return [(pp, pe), (np, ne)]
+    return issns
 
-def _do_issn_cluster(issn, rels, cluster_register, cluster_data):
-    cluster_register.append(issn)
-    prev = rels["p"]
-    next = rels["n"]
-    sibling = rels.get("s")
-    if prev is not None and prev not in cluster_register:
-        prevrels = cluster_data.get(prev)
-        if prevrels is not None:
-            _do_issn_cluster(prev, prevrels, cluster_register, cluster_data)
-    if next is not None and next not in cluster_register:
-        nextrels = cluster_data.get(next)
-        if nextrels is not None:
-            _do_issn_cluster(next, nextrels, cluster_register, cluster_data)
-    if sibling is not None and sibling not in cluster_register:
-        sibrels = cluster_data.get(sibling)
-        if sibrels is not None:
-            _do_issn_cluster(sibling, sibrels, cluster_register, cluster_data)
+def _process_journal_id(id, register, idtable, reltable):
+    if id in register:
+        return
+    register.append(id)
+    queue = []
+    issns = idtable.get(id, [])
+    for issn in issns:
+        ids = reltable.get(issn, [])
+        for i in ids:
+            if i in register: continue
+            if i not in queue: queue.append(i)
+    for q in queue:
+        _process_journal_id(q, register, idtable, reltable)
+
+def _get_journal_clusters(journals):
+    journaltable = {}
+    idtable = {}
+    reltable = {}
+
+    # first job is to separate the journals and the issns, joined by a common id
+    # and to index each issn to the id in which it appears
+    id = 0
+    for j in journals:
+        journaltable[id] = j
+        idtable[id] = _extract_issns(j)
+        for issn in idtable[id]:
+            if issn in reltable:
+                reltable[issn].append(id)
+            else:
+                reltable[issn] = [id]
+        id += 1
+    
+    print len(journals), "journal records; ", len(idtable.keys()), "join identifiers; ", len(reltable.keys()), "unique issns"
+    
+    # now calculate the equivalence table.  This groups all of the journals
+    # which share issns of any kind into a single batch
+    equiv_table = {}
+    processed = []
+    i = 0
+    for id in idtable.keys():
+        if id in processed:
+            continue
+        
+        register = []
+        _process_journal_id(id, register, idtable, reltable)
+        processed += deepcopy(register)
+        equiv_table[i] = deepcopy(register)
+        i += 1
+    
+    # Next go through each equivalence, and build a table of the next/previous
+    # links in each of the journals
+    ordertables = {}
+    for e, jids in equiv_table.iteritems():
+        ordertable = {}
+        for jid in jids:
+            ordertable[jid] = {"n" : [], "p": []}
+            element = journaltable.get(jid)
+            ne = element.find("nextEissn").text
+            np = element.find("nextIssn").text
+            pe = element.find("previousEissn").text
+            pp = element.find("previousIssn").text
+            if ne is not None: ne = ne.upper()
+            if np is not None: np = np.upper()
+            if pe is not None: pe = pe.upper()
+            if pp is not None: pp = pp.upper()
+            for jid2 in jids:
+                if jid2 == jid: continue
+                e2 = journaltable.get(jid2)
+                eissn = e2.find("issn").text
+                pissn = e2.find("eissn").text
+                if eissn is not None: eissn = eissn.upper()
+                if pissn is not None: pissn = pissn.upper()
+                if (ne is not None and ne in [pissn, eissn]) or (np is not None and np in [pissn, eissn]):
+                    ordertable[jid]["n"].append(jid2)
+                if (pe is not None and pe in [pissn, eissn]) or (pp is not None and pp in [pissn, eissn]):
+                    ordertable[jid]["p"].append(jid2)
+        ordertables[e] = ordertable
+    
+    # Now analyse the previous/next status of each cluster, and organise
+    # them in an array in descending order (head of the chain first)
+    sorttable = {}
+    for e, ot in ordertables.iteritems():
+        first = []
+        last = []
+        middle = []
+        for k, r in ot.iteritems():
+            if len(r.get("n")) == 0:
+                first.append(k)
+            elif len(r.get("p")) == 0:
+                last.append(k)
+            else:
+                middle.append(k)
+        sorttable[e] = first + middle + last
+    
+    # finally (for the clustering algorithm), select the canonical record
+    # and the older historical records
+    canontable = {}
+    for e, sort in sorttable.iteritems():
+        canon = None
+        i = 0
+        found = False
+        for s in sort:
+            element = journaltable.get(s)
+            doaj = element.find("doaj").text
+            if doaj is not None and doaj.upper() == "Y":
+                canon = s
+                found = True
+                break
+            i += 1
+        if not found:
+            i = 0
+            canon = sort[0]
+        rest = deepcopy(sort)
+        del rest[i]
+        canontable[e] = (canon, rest)
+    
+    # now, in preparation for returning to the caller, substitute everything in the canon table
+    # for the xml elements they represent
+    clusters = []
+    for e, data in canontable.iteritems():
+        canon, rest = data
+        celement = journaltable.get(canon)
+        relements = [journaltable.get(r) for r in rest]
+        clusters.append((celement, relements))
+    
+    return clusters
 
 def _is_in_doaj(element):
     doaj = element.find("doaj")
@@ -347,23 +392,6 @@ def _recurse_parents(subject, tree, register, scheme):
         register.append((scheme, parent))
         _recurse_parents(parent, tree, register, scheme)
 
-def _get_current_previous(cluster, all_cluster):
-    # trivial case of a single-element cluster
-    if len(cluster) == 1:
-        return cluster[0], []
-    
-    # else, workout which one is at the head of the chain
-    current = None
-    previous = []
-    for c in cluster:
-        rels = all_cluster.get(c)
-        if rels.get("n") is None:
-            current = c
-        else:
-            previous.append(c)
-    # print current, previous, cluster
-    return current, previous
-
 #################################################################
 
 #################################################################
@@ -462,7 +490,7 @@ def _to_suggestion(element, suggestion):
 ## Functions to migrate articles
 #################################################################
 
-def migrate_articles(source):
+def migrate_articles(source, batch_size=5000):
     # read in the content
     f = open(source)
     xml = etree.parse(f)
@@ -470,12 +498,22 @@ def migrate_articles(source):
     articles = xml.getroot()
     print "migrating", str(len(articles)), "article records from", source
     
+    batch = []
     for element in articles:
         a = Article()
         b = _to_article_bibjson(element)
         a.set_bibjson(b)
         a.set_created(_created_date(element))
-        a.save()
+        a.set_id()
+        batch.append(a.data)
+        
+        if len(batch) >= batch_size:
+            Article.bulk(batch, refresh=True)
+            del batch[:]
+    
+    if len(batch) > 0:
+        Article.bulk(batch)
+        
 
 def _created_date(element):
     cd = element.find("addedOn")
@@ -556,9 +594,9 @@ def _to_article_bibjson(element):
 if __name__ == "__main__":
     load_subjects(SUBJECTS, LCC)
     # migrate_suggestions(SUGGESTIONS)
-    migrate_journals(JOURNALS)
-    #for a in ARTICLES:
-    #    migrate_articles(a)
+    #migrate_journals(JOURNALS)
+    for a in ARTICLES:
+        migrate_articles(a)
 
 
 

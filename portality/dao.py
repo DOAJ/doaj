@@ -36,7 +36,12 @@ class DomainObject(UserDict.IterableUserDict, object):
     @property
     def id(self):
         return self.data.get('id', None)
-        
+    
+    def set_id(self, id=None):
+        if id is None:
+            id = self.makeid()
+        self.data["id"] = id
+    
     @property
     def version(self):
         return self.meta.get('_version', None)
