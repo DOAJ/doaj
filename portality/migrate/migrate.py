@@ -1,17 +1,8 @@
-import os
+import os, sys
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
 from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON
-
-IN_DIR = "/home/richard/Dropbox/Documents/DOAJ/data/"
-
-JOURNALS = IN_DIR + "journals"
-SUBJECTS = IN_DIR + "subjects"
-LCC = IN_DIR + "lccSubjects"
-SUGGESTIONS = IN_DIR + "suggestions"
-
-ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd"]
 
 ################################################################
 ## Preliminary data loading functions
@@ -592,9 +583,23 @@ def _to_article_bibjson(element):
 #################################################################
 
 if __name__ == "__main__":
+    # get the data in directory
+    IN_DIR = None
+    if len(sys.argv) > 1:
+        IN_DIR = sys.argv[1]
+    else:
+        print "you must specify a data directory to migrate from"
+        exit()
+
+    JOURNALS = IN_DIR + "journals"
+    SUBJECTS = IN_DIR + "subjects"
+    LCC = IN_DIR + "lccSubjects"
+    SUGGESTIONS = IN_DIR + "suggestions"
+    ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd"]
+
     load_subjects(SUBJECTS, LCC)
-    # migrate_suggestions(SUGGESTIONS)
-    #migrate_journals(JOURNALS)
+    migrate_suggestions(SUGGESTIONS)
+    migrate_journals(JOURNALS)
     for a in ARTICLES:
         migrate_articles(a)
 
