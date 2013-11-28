@@ -1,0 +1,116 @@
+/* Changing the styles of whole elements */
+
+body {
+    padding-top: inherit;
+}
+
+/* Classes */
+.pull-right {
+    float: right !important;
+}
+
+.orange {
+    color: #F68B1F;
+}
+
+.centre-text-container {
+    text-align: center;
+}
+
+.shaded-container {
+    border: 1px solid #F68B1F;
+    /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);*/
+    border-radius: 6px;
+}
+
+.main-content {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.navbar-inner {
+    background-color: #F68B1F;
+    background-image: none;
+}
+
+.navbar .nav > li > a {
+    color: #FFF;
+    text-shadow: none;
+}
+
+.sidebar-nav {
+    margin-top: 1em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.side > .sidebar-nav:first-child {
+    margin-top: 0;
+}
+
+.sidebar-nav .nav > li > a:hover {
+    background-color: rgba(246, 139, 31, 1); /*inherit;*/
+    color: white;
+    text-shadow: none;
+}
+
+.search-query:focus {
+    border-color: rgba(246, 139, 31, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
+.input-append button.add-on {
+    height: inherit !important;
+}
+
+label > .label-text {
+    padding-left: 0.25em;
+}
+
+
+
+#header-announcement-title {
+    font-size: 1.5em;
+}
+
+#header-announcement-text {
+    font-size: 110%;
+}
+
+#header-support-doaj {
+    font-size: 120%;
+    font-weight: bold;
+    color: #F68B1F;
+    border-bottom: 1px solid #F68B1F;
+}
+
+#header-support-doaj:hover {
+    text-decoration: none;
+    border-bottom: 1px dotted #F68B1F;
+}
+
+#homepage-search-container {
+    margin-bottom: 0.5em;
+}
+
+#homepage-search-input {
+    width: 85%;
+}
+
+/* Custom responsive bits - elements, classes and id-s in that order */
+
+@media (min-width: 768px) {
+    /* Apply the following only to desktops and high-res tablets */
+    body {
+        padding-top: 1em;
+    }
+
+    .more-heading-padding {
+        padding-top: 3em;
+    }
+
+    #header-right-container.more-heading-padding {
+        padding-bottom: 1em;
+    }
+}
+
