@@ -14,7 +14,17 @@ blueprint = Blueprint('doaj', __name__)
 
 @blueprint.route("/")
 def home():
-    return render_template('doaj/index.html')
+    heading_title = 'Heading Title - 100 word example'
+    heading_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent arcu tortor, hendrerit eget sapien quis, ultricies commodo diam. Nunc semper magna id urna sollicitudin aliquam. Vivamus in nisi sed tellus blandit varius. Fusce quis lectus turpis. Ut et condimentum libero. Donec orci risus, cursus vel dui a, rhoncus aliquet tellus. Sed dui lacus, convallis ut congue eu, gravida nec leo. Duis vel massa at enim mattis ullamcorper sed varius nulla. Nullam eget leo vel est consequat suscipit. Nulla porttitor dapibus nulla at vulputate. Sed cursus, augue quis rutrum adipiscing, lectus arcu tincidunt arcu, sit amet convallis urna nunc luctus nisi.'
+    return render_template('doaj/index.html', heading_title=heading_title, heading_text=heading_text)
+
+@blueprint.route("/search")
+def search():
+    return ''
+
+@blueprint.route("/about")
+def about():
+    return render_template('doaj/about.html')
 
 @blueprint.route("/csv")
 def csv_data():
