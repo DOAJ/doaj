@@ -107,6 +107,14 @@ label > .label-text {
     width: 85%;
 }
 
+#main-nav.more-padding {
+    margin-top: 1em;
+}
+
+#header-right-container {
+    padding-bottom: 1em;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
@@ -119,8 +127,5 @@ label > .label-text {
         padding-top: 3em;
     }
 
-    #header-right-container.more-heading-padding {
-        padding-bottom: 1em;
-    }
 }
 
