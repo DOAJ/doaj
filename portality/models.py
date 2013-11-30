@@ -34,7 +34,10 @@ class Account(DomainObject, UserMixin):
 # so we can't use them here
 class Journal(DomainObject):
     __type__ = "journal"
-    CSV_HEADER = ["Title","Title Alternative","Identifier","Publisher","Language","ISSN","EISSN","Keyword","Start Year","End Year","Added on date","Subjects","Country","Publication fee","Further Information","CC License","Content in DOAJ"]
+    CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
+                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
+                    "Subjects", "Country", "Publication fee", "Further Information", 
+                    "CC License", "Content in DOAJ"]
     
     def bibjson(self):
         if "bibjson" not in self.data:
@@ -46,21 +49,28 @@ class Journal(DomainObject):
         self.data["bibjson"] = bibjson
     
     def history(self):
-        hs = self.data.get("history", [])
-        tuples = []
-        for h in hs:
-            tuples.append((h.get("date"), JournalBibJSON(h.get("bibjson"))))
-        return tuples
+        histories = self.data.get("history", [])
+        return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
     
-    def snapshot(self):
+    def snapshot(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
-        self.add_history(snap)
+        self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
     
-    def add_history(self, bibjson, date=None):
+    def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
         bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         if date is None:
             date = datetime.now().isoformat()
         snobj = {"date" : date, "bibjson" : bibjson}
+        if replaces is not None:
+            if isinstance(replaces, list):
+                snobj["replaces"] = replaces
+            else:
+                snobj["replaces"] = [replaces]
+        if isreplacedby is not None:
+            if isinstance(isreplacedby, list):
+                snobj["isreplacedby"] = isreplacedby
+            else:
+                snobj["isreplacedby"] = [replaces]
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
@@ -81,21 +91,15 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["application_status"] = value
     
-    def contact_email(self):
-        return self.data.get("admin", {}).get("contact_email")
-    
-    def set_contact_email(self, value):
+    def contacts(self):
+        return self.data.get("admin", {}).get("contact", [])
+        
+    def add_contact(self, name, email):
         if "admin" not in self.data:
             self.data["admin"] = {}
-        self.data["admin"]["contact_email"] = value
-    
-    def contact_name(self):
-        return self.data.get("admin", {}).get("contact_name")
-    
-    def set_contact_name(self, value):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["contact_name"] = value
+        if "contact" not in self.data["admin"]:
+            self.data["admin"]["contact"] = []
+        self.data["admin"]["contact"].append({"name" : name, "email" : email})
     
     def add_note(self, note, date=None):
         if date is None:
@@ -144,7 +148,7 @@ class Journal(DomainObject):
         subjects += cbib.keywords
         
         # now get the issns and titles out of the historic records
-        for date, hbib in hist:
+        for date, r, irb, hbib in hist:
             issns += hbib.get_identifiers(hbib.P_ISSN)
             issns += hbib.get_identifiers(hbib.E_ISSN)
             titles.append(hbib.title)
@@ -222,14 +226,6 @@ class Suggestion(Journal):
     
     def set_description(self, value): self._set_suggestion_property("description", value)
     
-    def suggester_name(self): return self.data.get("suggestion", {}).get("suggester_name")
-    
-    def set_suggester_name(self, value): self._set_suggestion_property("suggester_name", value)
-    
-    def suggester_email(self): return self.data.get("suggestion", {}).get("suggester_email")
-    
-    def set_suggester_email(self, value): self._set_suggestion_property("suggester_email", value)
-    
     def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
     
     def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
@@ -237,6 +233,14 @@ class Suggestion(Journal):
     def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
     
     def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
+    
+    def suggester(self):
+        return self.data.get("suggestion", {}).get("suggester")
+        
+    def set_suggester(self, name, email):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
 
 class GenericBibJSON(object):
     # vocab of known identifier types
@@ -340,6 +344,11 @@ class GenericBibJSON(object):
 class JournalBibJSON(GenericBibJSON):
     
     # journal-specific simple property getter and setters
+    @property
+    def alternative_title(self): return self.bibjson.get("alternative_title")
+    @alternative_title.setter
+    def alternative_title(self, val) : self.bibjson["alternative_title"] = val
+    
     @property
     def author_pays_url(self): return self.bibjson.get("author_pays_url")
     @author_pays_url.setter
@@ -502,10 +511,15 @@ class Article(DomainObject):
         if cbib.year is not None:
             date += str(cbib.year)
             if cbib.month is not None:
-                if int(cbib.month) < 10:
-                    date += "-0" + str(cbib.month)
-                else:
-                    date += "-" + str(cbib.month)
+                try:
+                    if int(cbib.month) < 10:
+                        date += "-0" + str(cbib.month)
+                    else:
+                        date += "-" + str(cbib.month)
+                except:
+                    # FIXME: months are in all sorts of forms, we can only handle 
+                    # numeric ones right now
+                    date += "-01" 
             else:
                 date += "-01"
             date += "-01"

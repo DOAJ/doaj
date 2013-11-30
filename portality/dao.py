@@ -36,7 +36,12 @@ class DomainObject(UserDict.IterableUserDict, object):
     @property
     def id(self):
         return self.data.get('id', None)
-        
+    
+    def set_id(self, id=None):
+        if id is None:
+            id = self.makeid()
+        self.data["id"] = id
+    
     @property
     def version(self):
         return self.meta.get('_version', None)
@@ -44,6 +49,12 @@ class DomainObject(UserDict.IterableUserDict, object):
     @property
     def json(self):
         return json.dumps(self.data)
+    
+    def set_created(self, date=None):
+        if date is None:
+            self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+        else:
+            self.data['created_date'] = date
 
     def save(self):
         if 'id' in self.data:

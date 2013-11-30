@@ -13,6 +13,7 @@ Install into a virtual env, and then start with
         "id" : "<some opaque identifier>",
         "bibjson" : {
             "title" : "The title of the journal",
+            "alternative_title" : "An alternative title for the journal",
             "identifier": [
                 {"type" : "pissn", "id" : "<print issn>"},
                 {"type" : "eissn", "id" : "<electronic issn>"},
@@ -56,13 +57,17 @@ Install into a virtual env, and then start with
         "history" : [
             {
                 "date" : "<date history object created>",
+                "replaces" : [<list of p/e-issns this record immediately supersedes than>],
+                "isreplacedby" : [<list of p/e-issns that this record is immediately superseded by>]
                 "bibjson" : { <snapshot of historic bibjson record> }
             }
         ]
         "suggestion" : {
             "description" : "description of the journal's activities",
-            "suggester_name" : "name of person suggesting journal",
-            "suggester_email" : "email of person suggesting journal",
+            "suggester" : { 
+                "name" : "name of person suggesting journal",
+                "email" : "email of person suggesting journal"
+            },
             "suggested_by_owner" : true|false,
             "suggested_on" : "<date of suggestion>"
         },
@@ -81,8 +86,12 @@ Install into a virtual env, and then start with
                     "date" : "<date>"
                 }
             ],
-            "contact_email" : "<email of journal contact>",
-            "contact_name" : "<name of journal contact>"
+            "contact" : [
+                { 
+                    "email" : "<email of journal contact>",
+                    "name" : "<name of journal contact>"
+                }
+            ]
         },
         "index" : {
             "issn" : [<list of all print and electronic issns for all time>],
