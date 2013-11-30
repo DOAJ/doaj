@@ -32,7 +32,7 @@
             <li><a href="">Suggest</a></li>
           </ul>
           <ul class="nav pull-right">
-            <li><a href="">Publishers</a></li>
+            <li><a href="{{url_for('doaj.publishers')}}">Publishers</a></li>
             {#
             {% if current_user.is_anonymous() %}
             <li>
