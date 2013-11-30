@@ -4,6 +4,12 @@ body {
     padding-top: inherit;
 }
 
+footer {
+    margin-top: 2em;
+    padding: 1em;
+    margin-bottom: 1em;
+}
+
 /* Classes */
 .pull-right {
     float: right !important;
@@ -46,6 +52,10 @@ body {
 
 .side > .sidebar-nav:first-child {
     margin-top: 0;
+}
+
+.side > [class*="span"] {
+    margin-left: 0;
 }
 
 .sidebar-nav .nav > li > a:hover {
