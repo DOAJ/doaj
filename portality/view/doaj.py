@@ -25,6 +25,10 @@ def search():
 @blueprint.route("/about")
 def about():
     return render_template('doaj/about.html')
+    
+@blueprint.route("/publishers")
+def publishers():
+    return render_template('doaj/publishers.html')
 
 @blueprint.route("/csv")
 def csv_data():
