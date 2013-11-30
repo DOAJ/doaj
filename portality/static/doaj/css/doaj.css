@@ -6,7 +6,6 @@ body {
 
 footer {
     margin-top: 2em;
-    padding: 1em;
     margin-bottom: 1em;
 }
 
@@ -77,6 +76,13 @@ label > .label-text {
     padding-left: 0.25em;
 }
 
+footer > .shaded-container {
+    padding: 0.5em;
+}
+
+footer > .shaded-container + .shaded-container {
+    margin-top: 1em;
+}
 
 
 #header-announcement-title {
