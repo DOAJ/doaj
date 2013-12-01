@@ -43,6 +43,11 @@ footer {
     text-shadow: none;
 }
 
+.navbar .nav .active > a, .navbar .nav .active > a:hover, .navbar .nav > li:hover, .navbar .nav > li > a:hover {
+    color: #F68B1F;
+    background-color: white;
+}
+
 .sidebar-nav {
     margin-top: 1em;
     padding-top: 0.5em;

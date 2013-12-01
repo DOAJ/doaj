@@ -54,7 +54,7 @@ def home():
 
 @blueprint.route("/search")
 def search():
-    return ''
+    return render_template('doaj/search.html')
 
 @blueprint.route("/about")
 def about():
