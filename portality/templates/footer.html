@@ -1,4 +1,17 @@
 <footer>
+    {% if request.path == '/' %}
+    <div class="shaded-container">
+        <div class="row-fluid">
+            <div class="span12 centre-text-container" id="footer-sponsors">
+                {% for s in sponsors.values() %}
+                    <a href="{{ s['url'] }}" target="_blank">
+                        <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo'])  }}" />
+                    </a> 
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="shaded-container">
         <div class="row-fluid">
             <div class="span12 centre-text-container"><img src="{{ url_for('static', filename='doaj/images/cc-by-sa.png') }}" alt="Creative Commons Attribution ShareAlike license icon"/></div>
@@ -16,9 +29,11 @@
             </div>
         </div>
     </div>
+    {% if request.path == '/' %}
     <div class="shaded-container">
         <div class="row-fluid">
             <div class="span12 centre-text-container">&copy; 2013 DOAJ. <a href="">Terms of Use</a>.</div>
         </div>
     </div>
+    {% endif %}
 </footer>

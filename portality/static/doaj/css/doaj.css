@@ -121,6 +121,11 @@ footer > .shaded-container + .shaded-container {
     padding-bottom: 1em;
 }
 
+#footer-sponsors > a > img {
+    margin-top: 0.5em;
+    margin-right: 2em;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
