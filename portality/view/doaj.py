@@ -12,11 +12,22 @@ from datetime import datetime
 
 blueprint = Blueprint('doaj', __name__)
 
+@blueprint.context_processor
+def additional_context():
+    '''
+    Inserts variables into every template this blueprint renders.  This
+    one deals with the announcement in the header, which can't be built
+    into the template directly, as various styles are applied only if a
+    header is present on the page.
+    '''
+    return {
+        'heading_title': 'Heading Title - 100 word example',
+        'heading_text': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent arcu tortor, hendrerit eget sapien quis, ultricies commodo diam. Nunc semper magna id urna sollicitudin aliquam. Vivamus in nisi sed tellus blandit varius. Fusce quis lectus turpis. Ut et condimentum libero. Donec orci risus, cursus vel dui a, rhoncus aliquet tellus. Sed dui lacus, convallis ut congue eu, gravida nec leo. Duis vel massa at enim mattis ullamcorper sed varius nulla. Nullam eget leo vel est consequat suscipit. Nulla porttitor dapibus nulla at vulputate. Sed cursus, augue quis rutrum adipiscing, lectus arcu tincidunt arcu, sit amet convallis urna nunc luctus nisi.',
+        }
+
 @blueprint.route("/")
 def home():
-    heading_title = 'Heading Title - 100 word example'
-    heading_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent arcu tortor, hendrerit eget sapien quis, ultricies commodo diam. Nunc semper magna id urna sollicitudin aliquam. Vivamus in nisi sed tellus blandit varius. Fusce quis lectus turpis. Ut et condimentum libero. Donec orci risus, cursus vel dui a, rhoncus aliquet tellus. Sed dui lacus, convallis ut congue eu, gravida nec leo. Duis vel massa at enim mattis ullamcorper sed varius nulla. Nullam eget leo vel est consequat suscipit. Nulla porttitor dapibus nulla at vulputate. Sed cursus, augue quis rutrum adipiscing, lectus arcu tincidunt arcu, sit amet convallis urna nunc luctus nisi.'
-    return render_template('doaj/index.html', heading_title=heading_title, heading_text=heading_text)
+    return render_template('doaj/index.html')
 
 @blueprint.route("/search")
 def search():
