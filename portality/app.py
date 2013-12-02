@@ -27,6 +27,7 @@ from portality.view.forms import blueprint as forms
 from portality.view.feed import blueprint as feed
 #from portality.view.hooks import blueprint as hooks
 from portality.view.doaj import blueprint as doaj
+from portality.view.oaipmh import blueprint as oaipmh
 
 
 app.register_blueprint(account, url_prefix='/account')
@@ -42,6 +43,7 @@ app.register_blueprint(forms, url_prefix='/forms')
 #app.register_blueprint(hooks, url_prefix='/hooks')
 app.register_blueprint(feed)
 #app.register_blueprint(pagemanager)
+app.register_blueprint(oaipmh)
 app.register_blueprint(doaj)
 
 

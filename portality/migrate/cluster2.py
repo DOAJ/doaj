@@ -248,7 +248,7 @@ def get_issn_cell(jid):
 
 def get_title_cell(jid):
     element = journaltable.get(jid)
-    title = element.find("title").text
+    title = element.find("title").text.encode("ascii", "ignore")
     return title
 
 f = open(OUT, "wb")    
@@ -258,12 +258,12 @@ for e, data in canontable.iteritems():
     canon, rest = data
     cells = [e]
     canon_issn_cell = get_issn_cell(canon)
+    cells.append(get_title_cell(canon))
     cells.append(canon_issn_cell)
-    cells.append(get_title_cell(jid))
     for r in rest:
         r_issn_cell = get_issn_cell(r)
-        cells.append(r_issn_cell)
         cells.append(get_title_cell(r))
+        cells.append(r_issn_cell)
     writer.writerow(cells)
 
 

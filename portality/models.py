@@ -600,7 +600,40 @@ class ArticleBibJSON(GenericBibJSON):
         self.bibjson["author"].append({"name" : name})
 
 
+####################################################################
+## OAI-PMH Record Objects
+####################################################################
 
+class OAIPMHRecord(object):
+    earliest = {
+	        "query" : {
+            	"match_all" : {}
+            },
+            "size" : 0,
+            "facets" : {
+            	"earliest" : {
+                	"terms" : {
+                    	"field" : "created_date.exact",
+                        "order" : "term"
+                    }
+                }
+            }
+        }
+    
+    def earliest_datestamp(self):
+        result = self.query(q=self.earliest)
+        dates = [t.get("term") for t in result.get("facets", {}).get("earliest", {}).get("terms", [])]
+        for d in dates:
+            if d.startswith("19") or d.startswith("20"):
+                # format is like : 2002-05-01 20:12:30
+                return "T".join(d.split(" ")) + "Z" # fudge the format
+        return None
+
+class OAIPMHArticle(OAIPMHRecord, Article):
+    pass
+
+class OAIPMHJournal(OAIPMHRecord, Journal):
+    pass
 
 
 
