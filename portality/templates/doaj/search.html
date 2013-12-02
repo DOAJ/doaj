@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+  $('.facet-view-simple').each(function() {
+  $(this).facetview({
+    search_url: 'http://ooz.cottagelabs.com:9200/doaj/journal,article/_search?',
+    search_index: 'elasticsearch',
+    datatype: 'json',
+    facets: [
+        {'field': '_type', 'display': 'Journals vs. Articles'},
+        {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
+        {'field': 'bibjson.publisher.exact', 'display': 'Publisher'},
+        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
+        {'field': 'bibjson.author_pays.exact', 'display': 'Publishing charge (APC)?'},
+        {'field': 'bibjson.for_free', 'display': 'For free?'},
+        {'field': 'bibjson.language.exact', 'display': 'Language'},
+        {'field': 'bibjson.country.exact', 'display': 'Country'},
+        {'field': 'bibjson.oa_start.year.exact', 'display': 'Started publishing OA in..'}, // sort this alphabetically descending by default
+        {'field': 'bibjson.oa_end.year.exact', 'display': 'Stopped publishing OA in..'}, // sort this alphabetically descending by default
+        {'field': 'bibjson.title', 'display': 'Words in the title'},
+    ],
+    search_sortby: [{'display':'Date added to DOAJ','field':'created_date'},{'display':'Publisher', 'field':'bibjson.publisher.exact'},
+{'display':'Subject','field':'bibjson.subject.term.exact'},],
+    searchbox_fieldselect: [{'display':'author','field':'author.name'},{'display':'journal','field':'journal.name'}],
+    paging: {
+      size: 10
+    },
+    /*
+    predefined_filters: {
+        'bibjson.active': {'term':{'bibjson.active':true}},
+        'bibjson.for_free': {'term':{'bibjson.for_free':true}},
+    },
+    */
+    default_operator: "AND",
+    default_freetext_fuzzify: "*",
+    result_display: [
+        [
+            {
+                "pre": "<strong><span style=\"font-size:120%\">",
+                "field": "bibjson.title",
+                "post": "</span></strong>"
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Subjects</strong>: ",
+                "field": "bibjson.subject.term",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Publisher</strong>: ",
+                "field": "bibjson.publisher",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Provider</strong>: ",
+                "field": "bibjson.provider",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Publishing charge (APC)?</strong>: ",
+                "field": "bibjson.author_pays",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>More information on publishing charges</strong>: ",
+                "field": "bibjson.author_pays_url",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Started publishing Open Access content in</strong>: ",
+                "field": "bibjson.oa_start.year",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
+                "field": "bibjson.oa_end.year",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Country</strong>: ",
+                "field": "bibjson.country",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Language</strong>: ",
+                "field": "bibjson.language",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>More information - ",
+                "field": "bibjson.link.type",
+                "post": "</strong>: ",
+            },
+            {
+                "field": "bibjson.link.url",
+            },
+        ],
+        [
+            {
+                "pre": "<strong>Date added to DOAJ</strong>: ",
+                "field": "created_date",
+            }
+        ],
+    ],
+  });
+  });
+});
+  </script>
+
+    <div class="facet-view-simple"></div>
+{% endblock %}
