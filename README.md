@@ -2,14 +2,16 @@
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
-## Elasticsearch
+## Setting up the software
+
+### Elasticsearch
 Elasticsearch is the datastore we use.
 
 Install elasticsearch as per [its documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup.html#setup-installation).
 
 You can check whether its running by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
-## The DOAJ Python app
+### The DOAJ Python app
 
 Install Python 2.7 . Not tested with Python 3.x . Python 2.6.x usable, but you will need to use the [drop-in OrderedDict replacement](https://pypi.python.org/pypi/ordereddict).
 
