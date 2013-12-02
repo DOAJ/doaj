@@ -147,3 +147,24 @@ FEED_GENERATOR = "CottageLabs feed generator"
 # Larger image to use as the logo for all of the feeds
 FEED_LOGO = "http://cottagelabs.com/media/cottage_hill_bubble_small.jpg"
 
+
+# ============================
+# OAI-PMH SETTINGS
+
+OAIPMH_METADATA_FORMATS = [
+    {
+        "metadataPrefix" : "oai_dc",
+        "schema" : "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+        "metadataNamespace" : "http://www.openarchives.org/OAI/2.0/oai_dc/"
+    }
+]
+
+OAIPMH_IDENTIFIER_NAMESPACE = "doaj.org"
+
+
+
+
+
+
+
+

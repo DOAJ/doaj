@@ -285,7 +285,10 @@ class GenericBibJSON(object):
         idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
         self.bibjson["identifier"].append(idobj)
     
-    def get_identifiers(self, idtype):
+    def get_identifiers(self, idtype=None):
+        if idtype is None:
+            return self.bibjson.get("identifier", [])
+        
         ids = []
         for identifier in self.bibjson.get("identifier", []):
             if identifier.get("type") == idtype and identifier.get("id") not in ids:
@@ -340,6 +343,16 @@ class GenericBibJSON(object):
         if urltype is not None:
             urlobj["type"] = urltype
         self.bibjson["link"].append(urlobj)
+    
+    def get_urls(self, urltype=None):
+        if urltype is None:
+            return self.bibjson.get("link", [])
+        
+        urls = []
+        for link in self.bibjson.get("link", []):
+            if link.get("type") == urltype:
+                urls.append(link.get("url"))
+        return urls
     
 class JournalBibJSON(GenericBibJSON):
     
@@ -414,6 +427,9 @@ class JournalBibJSON(GenericBibJSON):
             lobj["open_access"] = open_access
         
         self.bibjson["license"].append(lobj)
+    
+    def get_license(self):
+        return self.bibjson.get("license", [None])[0]
     
     def set_open_access(self, open_access):
         if "license" not in self.bibjson:
@@ -507,22 +523,7 @@ class Article(DomainObject):
         issns = list(set(issns))
         
         # work out what the date of publication is
-        date = ""
-        if cbib.year is not None:
-            date += str(cbib.year)
-            if cbib.month is not None:
-                try:
-                    if int(cbib.month) < 10:
-                        date += "-0" + str(cbib.month)
-                    else:
-                        date += "-" + str(cbib.month)
-                except:
-                    # FIXME: months are in all sorts of forms, we can only handle 
-                    # numeric ones right now
-                    date += "-01" 
-            else:
-                date += "-01"
-            date += "-01"
+        date = self.bibjson.get_publication_date()
         
         # build the index part of the object
         self.data["index"] = {}
@@ -598,6 +599,30 @@ class ArticleBibJSON(GenericBibJSON):
         if "author" not in self.bibjson:
             self.bibjson["author"] = []
         self.bibjson["author"].append({"name" : name})
+    
+    @property
+    def author(self):
+        return self.bibjson.get("author", [])
+    
+    def get_publication_date(self):
+        # work out what the date of publication is
+        date = ""
+        if self.year is not None:
+            date += str(self.year)
+            if self.month is not None:
+                try:
+                    if int(self.month) < 10:
+                        date += "-0" + str(self.month)
+                    else:
+                        date += "-" + str(self.month)
+                except:
+                    # FIXME: months are in all sorts of forms, we can only handle 
+                    # numeric ones right now
+                    date += "-01" 
+            else:
+                date += "-01"
+            date += "-01"
+        return date
 
 
 ####################################################################
@@ -628,6 +653,10 @@ class OAIPMHRecord(object):
                 # format is like : 2002-05-01 20:12:30
                 return "T".join(d.split(" ")) + "Z" # fudge the format
         return None
+    
+    def identifier_exists(self, identifier):
+        obj = self.pull(identifier)
+        return obj is not None
 
 class OAIPMHArticle(OAIPMHRecord, Article):
     pass

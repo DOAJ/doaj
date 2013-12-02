@@ -56,6 +56,10 @@ class DomainObject(UserDict.IterableUserDict, object):
         else:
             self.data['created_date'] = date
 
+    @property
+    def created_date(self):
+        return self.data.get("created_date")
+
     def save(self):
         if 'id' in self.data:
             id_ = self.data['id'].strip()
