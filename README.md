@@ -2,9 +2,32 @@
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
-Install into a virtual env, and then start with
+## Setting up the software
 
-    portality/app.py
+### Elasticsearch
+Elasticsearch is the datastore we use.
+
+Install elasticsearch as per [its documentation](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/setup.html#setup-installation).
+
+You can check whether its running by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
+
+### The DOAJ Python app
+
+Install Python 2.7 . Not tested with Python 3.x . Python 2.6.x usable, but you will need to use the [drop-in OrderedDict replacement](https://pypi.python.org/pypi/ordereddict).
+
+Install pip using [pip's very robust instructions](http://www.pip-installer.org/en/latest/installing.html).
+    
+    pip install virtualenv  # won't upgrade it if you already have it. pip install -- upgrade virtualenv for that.
+    virtualenv -p <path/to/python 2.7 executable> doajenv
+    cd doajenv
+    . bin/activate
+    mkdir src
+    cd src
+    git clone https://github.com/DOAJ/doaj.git  # SSH URL: git@github.com:DOAJ/doaj.git
+    cd doaj
+    git submodule init
+    git submodule update
+    python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
     
 
 ## Journal Data Model
