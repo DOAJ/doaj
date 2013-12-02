@@ -236,7 +236,7 @@ for k in ordertables.keys():
     print "    ->", canontable.get(k)
 
 
-def get_cell(jid):
+def get_issn_cell(jid):
     element = journaltable.get(jid)
     issn = element.find("issn").text
     eissn = element.find("eissn").text
@@ -245,18 +245,25 @@ def get_cell(jid):
     if eissn is not None: issns.append(eissn)
     cell = ", ".join(issns)
     return cell
-    
+
+def get_title_cell(jid):
+    element = journaltable.get(jid)
+    title = element.find("title").text
+    return title
+
 f = open(OUT, "wb")    
 writer = csv.writer(f)
-writer.writerow(["Equivalence Number", "Proposed Current", "Proposed History"])
+writer.writerow(["Equivalence Number", "Proposed Current Title", "Proposed Current ISSNs", "Proposed History: Title/ISSNs"])
 for e, data in canontable.iteritems():
     canon, rest = data
     cells = [e]
-    canon_issn_cell = get_cell(canon)
+    canon_issn_cell = get_issn_cell(canon)
     cells.append(canon_issn_cell)
+    cells.append(get_title_cell(jid))
     for r in rest:
-        r_issn_cell = get_cell(r)
+        r_issn_cell = get_issn_cell(r)
         cells.append(r_issn_cell)
+        cells.append(get_title_cell(r))
     writer.writerow(cells)
 
 
