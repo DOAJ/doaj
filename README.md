@@ -13,7 +13,7 @@ You can check whether its running by pointing your browser to [http://localhost:
 
 ### The DOAJ Python app
 
-Install Python 2.7 . Not tested with Python 3.x . Python 2.6.x usable, but you will need to use the [drop-in OrderedDict replacement](https://pypi.python.org/pypi/ordereddict).
+Install Python 2.6.6 or more recent . Not tested with Python 3.x .
 
 Install pip using [pip's very robust instructions](http://www.pip-installer.org/en/latest/installing.html).
     

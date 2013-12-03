@@ -8,40 +8,18 @@
 
     <div class="content">
         <div class="row-fluid">
-            <div class="span9">
+                {# Let facetview fill the whole screen on the search
+                page, but keep space for the sidebar on other pages #}
+            <div class="span{%- if request.path == '/search' -%}
+                    12
+                {%- else -%}
+                    9
+                {%- endif -%}">
             {% block content %}{% endblock %}
             </div>
-            <div class="span3 side pull-right">
-                <div class="span3 shaded-container sidebar-nav">
-                    <ul class="nav nav-list">
-                        <li><a href="">News</a></li>
-                        <li><a href="">FAQs</a></li>
-                        <li><a href="">Get metadata</a></li>
-                    </ul>
-                </div>
-                <div class="span3 shaded-container sidebar-nav">
-                    <ul class="nav nav-list">
-                        <li><a href="">Our sponsors</a></li>
-                        <li><a href="">Our members</a></li>
-                        <li><a href="">Our publisher members</a></li>
-                    </ul>
-                </div>
-                <div class="span3 shaded-container sidebar-nav">
-                    <div id="social-bar">
-                    <!-- Based on http://opensourcehacker.com/2013/04/22/charming-social-media-icons-with-font-awesome-and-css3/
-                    with the related code hosted at: https://github.com/miohtama/FontAwesome-and-Bootstrap-social-icons-example/ -->
-                        <a href="http://www.facebook.com/DirectoryofOpenAccessJournals" target="_blank" title="DOAJ Facebook page">
-                            <i class="icon icon-facebook"></i>
-                        </a>
-                        <a href="http://twitter.com/doajplus" target="_blank" title="DOAJ Twitter account">
-                            <i class="icon icon-twitter"></i>
-                        </a>
-                        <a href="http://www.linkedin.com/company/directory-of-open-access-journals-doaj-" target="_blank" title="DOAJ LinkedIn profile">
-                            <i class="icon icon-linkedin"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            {% if request.path != '/search' %}
+                {% include 'sidebar.html' %}
+            {% endif %}
         </div>
     </div> <!-- /content -->
 

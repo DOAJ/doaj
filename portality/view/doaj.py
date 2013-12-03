@@ -9,7 +9,18 @@ from portality import settings
 from StringIO import StringIO
 import csv
 from datetime import datetime
-from collections import OrderedDict
+
+import sys
+try:
+    if sys.version_info.major == 2 and sys.version_info.minor < 7:
+        from portality.ordereddict import OrderedDict
+except AttributeError:
+    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+        from portality.ordereddict import OrderedDict
+    else:
+        from collections import OrderedDict
+else:
+    from collections import OrderedDict
 
 blueprint = Blueprint('doaj', __name__)
 
