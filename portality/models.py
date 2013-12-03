@@ -1,5 +1,6 @@
 from datetime import datetime
 from copy import deepcopy
+import json
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -661,6 +662,28 @@ class OAIPMHRecord(object):
         }
     }
     
+    records = {
+	    "query" : {
+        	"bool" : {
+            	"must" : []
+            }
+        },
+        "from" : 0,
+        "size" : 25
+    }
+    
+    all_records = {
+	    "query" : {
+        	"match_all" : {}
+        },
+        "from" : 0,
+        "size" : 25,
+    }
+    
+    set_limit = {"term" : { "index.schema_subjects.exact" : "<set name>" }}
+    range_limit = { "range" : { "created_date.exact" : {"gte" : "<from date>", "lte" : "<until date>"} } }
+    created_sort = {"created_date.exact" : {"order" : "desc"}}
+    
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
         dates = [t.get("term") for t in result.get("facets", {}).get("earliest", {}).get("terms", [])]
@@ -678,12 +701,60 @@ class OAIPMHRecord(object):
         result = self.query(q=self.sets)
         sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
         return sets
+    
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        q = None
+        if from_date is None and until_date is None and oai_set is None:
+            q = deepcopy(self.all_records)
+        else:
+            q = deepcopy(self.records)
+            
+            if oai_set is not None:
+                s = deepcopy(self.set_limit)
+                s["term"]["index.schema_subjects.exact"] = oai_set
+                q["query"]["bool"]["must"].append(s)
+            
+            if until_date is not None or from_date is not None:
+                d = deepcopy(self.range_limit)
+                
+                if until_date is not None:
+                    d["range"]["created_date.exact"]["lte"] = until_date
+                else:
+                    del d["range"]["created_date.exact"]["lte"]
+                
+                if from_date is not None:
+                    d["range"]["created_date.exact"]["gte"] = from_date
+                else:
+                    del d["range"]["created_date.exact"]["gte"]
+                
+                q["query"]["bool"]["must"].append(d)
+        
+        if list_size is not None:
+            q["size"] = list_size
+            
+        if start_number is not None:
+            q["from"] = start_number
+        
+        q["sort"] = [deepcopy(self.created_sort)]
+        
+        # do the query
+        results = self.query(q=q)
+        
+        total = results.get("hits", {}).get("total", 0)
+        return total, [hit.get("_source") for hit in results.get("hits", {}).get("hits", [])]
+        
 
 class OAIPMHArticle(OAIPMHRecord, Article):
-    pass
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        total, results = super(OAIPMHArticle, self).list_records(from_date=from_date, 
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+        return total, [Article(**r) for r in results]
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
-    pass
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        total, results = super(OAIPMHJournal, self).list_records(from_date=from_date, 
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+        return total, [Journal(**r) for r in results]
 
 
 

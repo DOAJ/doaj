@@ -1,3 +1,4 @@
+import json, base64
 from lxml import etree
 from datetime import datetime
 from flask import Blueprint, request, abort, make_response
@@ -39,15 +40,17 @@ def oaipmh(specified=None):
     # GetRecord
     elif verb.lower() == "getrecord":
         params = get_record_params(request)
-        if params.get("identifier") is None or params.get("metadata_prefix") is None:
-            result = BadArgument(request.base_url)
-        else:
-            result = get_record(dao, request.base_url, **params)
+        result = get_record(dao, request.base_url, **params)
     
     # ListSets
     elif verb.lower() == "listsets":
         params = list_sets_params(request)
         result = list_sets(dao, request.base_url, **params)
+    
+    # ListRecords
+    elif verb.lower() == "listrecords":
+        params = list_records_params(request)
+        result = list_records(dao, request.base_url, **params)
     
     # A verb we didn't understand
     else:
@@ -61,6 +64,33 @@ def oaipmh(specified=None):
 #####################################################################
 ## Utility methods
 #####################################################################
+
+def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
+    d = {}
+    if metadata_prefix is not None:
+        d["m"] = metadata_prefix
+    if from_date is not None:
+        d["f"] = from_date
+    if until_date is not None:
+        d["u"] = until_date
+    if oai_set is not None:
+        d["s"] = oai_set
+    if start_number is not None:
+        d["n"] = start_number
+    j = json.dumps(d)
+    b = base64.urlsafe_b64encode(j)
+    return b
+
+def decode_resumption_token(resumption_token):
+    j = base64.urlsafe_b64decode(str(resumption_token))
+    d = json.loads(j)
+    params = {}
+    if "m" in d: params["metadata_prefix"] = d.get("m")
+    if "f" in d: params["from_date"] = d.get("f")
+    if "u" in d: params["until_date"] = d.get("u")
+    if "s" in d: params["oai_set"] = d.get("s")
+    if "n" in d: params["start_number"] = d.get("n")
+    return params
 
 def make_oai_identifier(identifier, qualifier):
     return "oai:" + app.config.get("OAIPMH_IDENTIFIER_NAMESPACE") + "/" + qualifier + ":" + identifier
@@ -93,6 +123,20 @@ def get_record_params(req):
 def list_sets_params(req):
     resumption = req.values.get("resumptionToken")
     return {"resumption_token" : resumption}
+
+def list_records_params(req):
+    from_date = req.values.get("from")
+    until_date = req.values.get("until")
+    oai_set = req.values.get("set")
+    resumption_token = req.values.get("resumptionToken")
+    metadata_prefix = req.values.get("metadataPrefix")
+    return {
+        "from_date" : from_date,
+        "until_date" : until_date,
+        "oai_set" : oai_set,
+        "resumption_token" : resumption_token,
+        "metadata_prefix" : metadata_prefix
+    }
 
 #####################################################################
 ## OAI-PMH protocol operations implemented
@@ -157,10 +201,84 @@ def list_metadata_formats(dao, base_url, identifier=None):
         lmf.add_format(f.get("metadataPrefix"), f.get("schema"), f.get("metadataNamespace"))
     return lmf
 
-def list_records(metadata_prefix, from_date=None, until_date=None,
+def list_records(dao, base_url, metadata_prefix=None, from_date=None, until_date=None,
                     oai_set=None, resumption_token=None):
-    pass
     
+    if resumption_token is None:
+        # do an initial list records
+        return _parameterised_list_records(dao, base_url, metadata_prefix=metadata_prefix,
+                    from_date=from_date, until_date=until_date, oai_set=oai_set)
+    else:
+        # resumption of previous request
+        if (metadata_prefix is not None or from_date is not None or until_date is not None
+                or oai_set is not None):
+            return BadArgument(base_url)
+        return _resume_list_records(dao, base_url, resumption_token=resumption_token)
+
+def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+    # metadata prefix is required
+    if metadata_prefix is None:
+        return BadArgument(base_url)
+    
+    # get the formats and check that we have formats that we can disseminate
+    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    if formats is None or len(formats) == 0:
+        return CannotDisseminateFormat(base_url)
+    
+    # check that the dates are formatted correctly
+    try:
+        if from_date is not None:
+            datetime.strptime(from_date, "%Y-%m-%d")
+        if until_date is not None:
+            datetime.strptime(until_date, "%Y-%m-%d")
+    except:
+        return BadArgument(base_url)
+    
+    # get the result set size
+    list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
+    
+    for f in formats:
+        if f.get("metadataPrefix") == metadata_prefix:
+            # do the query and set up the response object
+            total, results = dao.list_records(from_date, until_date, oai_set, list_size, start_number)
+            
+            # if there are no results, PMH requires us to throw an error
+            if len(results) == 0:
+                return NoRecordsMatch(base_url)
+            
+            # work out if we need a resumption token.  It can have one of 3 values:
+            # - None = do not include the rt in the response
+            # - some value = include in the response
+            # - the empty string = include in the response
+            resumption_token = None
+            if total > start_number + len(results):
+                new_start = start_number + len(results)
+                resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
+                                        until_date=until_date, oai_set=oai_set, start_number=new_start)
+            else:
+                resumption_token = ""
+            
+            lr = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
+            if resumption_token is not None:
+                lr.set_resumption(resumption_token, complete_list_size=total, cursor=start_number)
+            
+            for r in results:
+                # do the crosswalk
+                xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
+                metadata = xwalk.crosswalk(r)
+                header = xwalk.header(r)
+                
+                # add to the response
+                lr.add_record(metadata, header)
+            return lr
+    
+    # if we have not returned already, this means we can't disseminate this format
+    return CannotDisseminateFormat(base_url)
+    
+def _resume_list_records(dao, base_url, resumption_token=None):
+    params = decode_resumption_token(resumption_token)
+    return _parameterised_list_records(dao, base_url, **params)
+
 def list_sets(dao, base_url, resumption_token=None):
     # This implementation does not support resumption tokens for this operation
     if resumption_token is not None:
@@ -272,7 +390,7 @@ class Identify(OAI_PMH):
         deletes.text = "transient" # keep the door open
         
         granularity = etree.SubElement(identify, self.PMH + "granularity")
-        granularity.text = "YYYY-MM-DDThh:mm:ssZ"
+        granularity.text = "YYYY-MM-DD"
         
         if app.config.get("ADMIN_EMAIL") not in ["", None]:
             admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
@@ -321,7 +439,53 @@ class ListMetadataFormats(OAI_PMH):
         return lmf
 
 class ListRecords(OAI_PMH):
-    pass
+    def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
+        super(ListRecords, self).__init__(base_url)
+        self.verb = "ListRecords"
+        self.from_date = from_date
+        self.until_date = until_date
+        self.oai_set = oai_set
+        self.metadata_prefix = metadata_prefix
+        self.records = []
+        self.resumption = None
+
+    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None):
+        self.resumption = {"resumption_token" : resumption_token}
+        if complete_list_size is not None:
+            self.resumption["complete_list_size"] = complete_list_size
+        if cursor is not None:
+            self.resumption["cursor"] = cursor
+
+    def add_record(self, metadata, header):
+        self.records.append((metadata, header))
+
+    def add_request_attributes(self, element):
+        if self.from_date is not None:
+            element.set("from", self.from_date)
+        if self.until_date is not None:
+            element.set("until", self.until_date)
+        if self.oai_set is not None:
+            element.set("set", self.oai_set)
+        if self.metadata_prefix is not None:
+            element.set("metadataPrefix", self.metadata_prefix)
+        
+    def get_element(self):
+        lr = etree.Element(self.PMH + "ListRecords", nsmap=self.NSMAP)
+        
+        for metadata, header in self.records:
+            r = etree.SubElement(lr, self.PMH + "record")
+            r.append(header)
+            r.append(metadata)
+        
+        if self.resumption is not None:
+            rt = etree.SubElement(lr, self.PMH + "resumptionToken")
+            if "complete_list_size" in self.resumption:
+                rt.set("completeListSize", str(self.resumption.get("complete_list_size")))
+            if "cursor" in self.resumption:
+                rt.set("cursor", str(self.resumption.get("cursor")))
+            rt.text = self.resumption.get("resumption_token")
+        
+        return lr
 
 class ListSets(OAI_PMH):
     def __init__(self, base_url):
@@ -544,7 +708,7 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         
         if bibjson.get_license() is not None:
             rights = etree.SubElement(oai_dc, self.DC + "rights")
-            rights.text = bibjson.license.get("title")
+            rights.text = bibjson.get_license().get("title")
         
         if bibjson.publisher is not None:
             pub = etree.SubElement(oai_dc, self.DC + "publisher")
