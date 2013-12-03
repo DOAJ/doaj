@@ -52,6 +52,11 @@ def oaipmh(specified=None):
         params = list_records_params(request)
         result = list_records(dao, request.base_url, **params)
     
+    # ListIdentifiers
+    elif verb.lower() == "listidentifiers":
+        params = list_identifiers_params(request)
+        result = list_identifiers(dao, request.base_url, **params)
+    
     # A verb we didn't understand
     else:
         result = BadVerb(request.base_url)
@@ -138,6 +143,29 @@ def list_records_params(req):
         "metadata_prefix" : metadata_prefix
     }
 
+def list_identifiers_params(req):
+    from_date = req.values.get("from")
+    until_date = req.values.get("until")
+    oai_set = req.values.get("set")
+    resumption_token = req.values.get("resumptionToken")
+    metadata_prefix = req.values.get("metadataPrefix")
+    return {
+        "from_date" : from_date,
+        "until_date" : until_date,
+        "oai_set" : oai_set,
+        "resumption_token" : resumption_token,
+        "metadata_prefix" : metadata_prefix
+    }
+
+def list_identifiers_crosswalk_controller(li, xwalk, record):
+    header = xwalk.header(record)
+    lr.add_record(header)
+
+def list_records_crosswalk_controller(li, xwalk, record):
+    metadata = xwalk.metadata(record)
+    header = xwalk.header(record)
+    lr.add_record(metadata, header)
+
 #####################################################################
 ## OAI-PMH protocol operations implemented
 #####################################################################
@@ -178,9 +206,81 @@ def identify(dao, base_url):
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj
     
-def list_identifiers(metadata_prefix, from_date=None, until_date=None, 
+def list_identifiers(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, 
                     oai_set=None, resumption_token=None):
-    pass
+    if resumption_token is None:
+        # do an initial list records
+        return _parameterised_list_identifiers(dao, base_url, metadata_prefix=metadata_prefix,
+                    from_date=from_date, until_date=until_date, oai_set=oai_set)
+    else:
+        # resumption of previous request
+        if (metadata_prefix is not None or from_date is not None or until_date is not None
+                or oai_set is not None):
+            return BadArgument(base_url)
+        return _resume_list_identifiers(dao, base_url, resumption_token=resumption_token)
+
+def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+    # metadata prefix is required
+    if metadata_prefix is None:
+        return BadArgument(base_url)
+    
+    # get the formats and check that we have formats that we can disseminate
+    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    if formats is None or len(formats) == 0:
+        return CannotDisseminateFormat(base_url)
+    
+    # check that the dates are formatted correctly
+    try:
+        if from_date is not None:
+            datetime.strptime(from_date, "%Y-%m-%d")
+        if until_date is not None:
+            datetime.strptime(until_date, "%Y-%m-%d")
+    except:
+        return BadArgument(base_url)
+    
+    # get the result set size
+    list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
+    
+    for f in formats:
+        if f.get("metadataPrefix") == metadata_prefix:
+            # do the query and set up the response object
+            total, results = dao.list_records(from_date, until_date, oai_set, list_size, start_number)
+            
+            # if there are no results, PMH requires us to throw an error
+            if len(results) == 0:
+                return NoRecordsMatch(base_url)
+            
+            # work out if we need a resumption token.  It can have one of 3 values:
+            # - None = do not include the rt in the response
+            # - some value = include in the response
+            # - the empty string = include in the response
+            resumption_token = None
+            if total > start_number + len(results):
+                new_start = start_number + len(results)
+                resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
+                                        until_date=until_date, oai_set=oai_set, start_number=new_start)
+            else:
+                resumption_token = ""
+            
+            li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
+            if resumption_token is not None:
+                li.set_resumption(resumption_token, complete_list_size=total, cursor=start_number)
+            
+            for r in results:
+                # do the crosswalk (header only in this operation)
+                xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
+                header = xwalk.header(r)
+                
+                # add to the response
+                li.add_record(header)
+            return li
+    
+    # if we have not returned already, this means we can't disseminate this format
+    return CannotDisseminateFormat(base_url)
+
+def _resume_list_identifiers(dao, base_url, resumption_token=None):
+    params = decode_resumption_token(resumption_token)
+    return _parameterised_list_identifiers(dao, base_url, **params)
 
 def list_metadata_formats(dao, base_url, identifier=None):
     # if we are given an identifier, it has to be valid
@@ -399,7 +499,51 @@ class Identify(OAI_PMH):
         return identify
 
 class ListIdentifiers(OAI_PMH):
-    pass
+    def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
+        super(ListIdentifiers, self).__init__(base_url)
+        self.verb = "ListRecords"
+        self.from_date = from_date
+        self.until_date = until_date
+        self.oai_set = oai_set
+        self.metadata_prefix = metadata_prefix
+        self.records = []
+        self.resumption = None
+
+    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None):
+        self.resumption = {"resumption_token" : resumption_token}
+        if complete_list_size is not None:
+            self.resumption["complete_list_size"] = complete_list_size
+        if cursor is not None:
+            self.resumption["cursor"] = cursor
+
+    def add_record(self, header):
+        self.records.append(header)
+
+    def add_request_attributes(self, element):
+        if self.from_date is not None:
+            element.set("from", self.from_date)
+        if self.until_date is not None:
+            element.set("until", self.until_date)
+        if self.oai_set is not None:
+            element.set("set", self.oai_set)
+        if self.metadata_prefix is not None:
+            element.set("metadataPrefix", self.metadata_prefix)
+        
+    def get_element(self):
+        lr = etree.Element(self.PMH + "ListIdentifiers", nsmap=self.NSMAP)
+        
+        for header in self.records:
+            lr.append(header)
+        
+        if self.resumption is not None:
+            rt = etree.SubElement(lr, self.PMH + "resumptionToken")
+            if "complete_list_size" in self.resumption:
+                rt.set("completeListSize", str(self.resumption.get("complete_list_size")))
+            if "cursor" in self.resumption:
+                rt.set("cursor", str(self.resumption.get("cursor")))
+            rt.text = self.resumption.get("resumption_token")
+        
+        return lr
 
 class ListMetadataFormats(OAI_PMH):
     def __init__(self, base_url, identifier=None):
