@@ -20,7 +20,7 @@
         <div class="container">
           <ul class="nav">
             <li{% if request.path == '/' %} class="active"{% endif %}><a href="{{ url_for('doaj.home') }}">Home</a></li>
-            <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}">Search &amp; Browse</a></li>
+            <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}">Search</a></li>
             <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}">About</a></li>
           </ul>
           <ul class="nav pull-right">
