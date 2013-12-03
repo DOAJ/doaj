@@ -26,17 +26,30 @@ def oaipmh(specified=None):
     
     # call the appropriate protocol operation
     result = None
+    
+    # Identify
     if verb.lower() == "identify":
         result = identify(dao, request.base_url)
+    
+    # ListMetadataFormats
     elif verb.lower() == "listmetadataformats":
         params = list_metadata_formats_params(request)
         result = list_metadata_formats(dao, request.base_url, **params)
+    
+    # GetRecord
     elif verb.lower() == "getrecord":
         params = get_record_params(request)
         if params.get("identifier") is None or params.get("metadata_prefix") is None:
             result = BadArgument(request.base_url)
         else:
             result = get_record(dao, request.base_url, **params)
+    
+    # ListSets
+    elif verb.lower() == "listsets":
+        params = list_sets_params(request)
+        result = list_sets(dao, request.base_url, **params)
+    
+    # A verb we didn't understand
     else:
         result = BadVerb(request.base_url)
     
@@ -76,6 +89,10 @@ def get_record_params(req):
     if identifier is not None:
         identifier = extract_internal_id(identifier)
     return {"identifier" : identifier, "metadata_prefix" : metadata_prefix}
+
+def list_sets_params(req):
+    resumption = req.values.get("resumptionToken")
+    return {"resumption_token" : resumption}
 
 #####################################################################
 ## OAI-PMH protocol operations implemented
@@ -144,8 +161,18 @@ def list_records(metadata_prefix, from_date=None, until_date=None,
                     oai_set=None, resumption_token=None):
     pass
     
-def list_sets(resumption_token=None):
-    pass
+def list_sets(dao, base_url, resumption_token=None):
+    # This implementation does not support resumption tokens for this operation
+    if resumption_token is not None:
+        return BadResumptionToken(base_url)
+    
+    # just ask the DAO to get a list of all the sets for us, then we
+    # give the set spec and set name as the same string
+    ls = ListSets(base_url)
+    sets = dao.list_sets()
+    for s in sets:
+        ls.add_set(s, s)
+    return ls
 
 #####################################################################
 ## Objects
@@ -297,7 +324,26 @@ class ListRecords(OAI_PMH):
     pass
 
 class ListSets(OAI_PMH):
-    pass
+    def __init__(self, base_url):
+        super(ListSets, self).__init__(base_url)
+        self.verb = "ListSets"
+        self.sets = []
+    
+    def add_set(self, spec, name):
+        self.sets.append((spec, name))
+    
+    def get_element(self):
+        ls = etree.Element(self.PMH + "ListSets", nsmap=self.NSMAP)
+        
+        for spec, name in self.sets:
+            s = etree.SubElement(ls, self.PMH + "set")
+            specel = etree.SubElement(s, self.PMH + "setSpec")
+            specel.text = spec
+            nameel = etree.SubElement(s, self.PMH + "setName")
+            nameel.text = name
+        
+        return ls
+        
 
 #####################################################################
 ## Error Handling

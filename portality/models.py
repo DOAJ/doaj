@@ -645,6 +645,22 @@ class OAIPMHRecord(object):
             }
         }
     
+    sets = {
+	    "query" : {
+        	"match_all" : {}
+        },
+        "size" : 0,
+        "facets" : {
+        	"sets" : {
+            	"terms" : {
+                	"field" : "index.schema_subjects.exact",
+                    "order" : "term",
+                    "size" : 100000
+                }
+            }
+        }
+    }
+    
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
         dates = [t.get("term") for t in result.get("facets", {}).get("earliest", {}).get("terms", [])]
@@ -657,6 +673,11 @@ class OAIPMHRecord(object):
     def identifier_exists(self, identifier):
         obj = self.pull(identifier)
         return obj is not None
+    
+    def list_sets(self):
+        result = self.query(q=self.sets)
+        sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
+        return sets
 
 class OAIPMHArticle(OAIPMHRecord, Article):
     pass
