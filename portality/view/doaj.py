@@ -13,10 +13,10 @@ from datetime import datetime
 import sys
 try:
     if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality import OrderedDict
+        from portality.ordereddict import OrderedDict
 except AttributeError:
     if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality import OrderedDict
+        from portality.ordereddict import OrderedDict
     else:
         from collections import OrderedDict
 else:
