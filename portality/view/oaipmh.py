@@ -295,7 +295,9 @@ def list_metadata_formats(dao, base_url, identifier=None):
         return NoMetadataFormats(base_url)
     
     # create and return the list metadata formats response
-    oai_id = make_oai_identifier(identifier, dao.__type__)
+    oai_id = None
+    if identifier is not None:
+        oai_id = make_oai_identifier(identifier, dao.__type__)
     lmf = ListMetadataFormats(base_url=base_url, identifier=oai_id)
     for f in formats:
         lmf.add_format(f.get("metadataPrefix"), f.get("schema"), f.get("metadataNamespace"))
