@@ -14,12 +14,17 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publishing charge (APC)?'},
-        {'field': 'bibjson.for_free', 'display': 'For free?'},
         {'field': 'bibjson.language.exact', 'display': 'Language'},
         {'field': 'bibjson.country.exact', 'display': 'Country'},
+        {'field': 'bibjson.license.title.exact', 'display': 'License'},
         {'field': 'bibjson.oa_start.year.exact', 'display': 'Started publishing OA in..'}, // sort this alphabetically descending by default
         {'field': 'bibjson.oa_end.year.exact', 'display': 'Stopped publishing OA in..'}, // sort this alphabetically descending by default
-        {'field': 'bibjson.title', 'display': 'Words in the title'},
+        {'field': 'bibjson.for_free', 'display': 'For free?'},
+        // Articles
+        {'field': 'bibjson.keywords.exact', 'display': 'Keywords'},
+        {'field': 'bibjson.author.exact', 'display': 'Author'},
+        {'field': 'bibjson.year.exact', 'display': 'Year'},
+        {'field': 'bibjson.journal.publisher.exact', 'display': 'Publisher'},
     ],
     search_sortby: [{'display':'Date added to DOAJ','field':'created_date'},{'display':'Publisher', 'field':'bibjson.publisher.exact'},
 {'display':'Subject','field':'bibjson.subject.term.exact'},],
@@ -36,11 +41,12 @@ jQuery(document).ready(function($) {
     default_operator: "AND",
     default_freetext_fuzzify: "*",
     result_display: [
+    // Journals
         [
             {
-                "pre": "<strong><span style=\"font-size:120%\">",
+                "pre": "<span style=\"font-size:120%\">",
                 "field": "bibjson.title",
-                "post": "</span></strong>"
+                "post": "</span>"
             }
         ],
         [
@@ -106,6 +112,55 @@ jQuery(document).ready(function($) {
             {
                 "field": "bibjson.link.url",
             },
+        ],
+// Articles
+        [
+            {
+                "pre": "<strong>Authors</strong>: ",
+                "field": "bibjson.author.name",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Publisher</strong>: ",
+                "field": "bibjson.journal.publisher",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Published in</strong>: ",
+                "field": "bibjson.journal.year",
+            },
+            {
+                "pre":"-",
+                "field": "bibjson.journal.month",
+            },
+            {
+                "pre":" <strong>in</strong> ",
+                "field": "bibjson.journal.title",
+            },
+            {
+                "pre": ", Volume ",
+                "field": "bibjson.journal.volume",
+            },
+            {
+                "pre": ", Issue ",
+                "field": "bibjson.journal.number",
+            },
+            {
+                "pre": ", Pages ",
+                "field": "bibjson.start_page",
+            },
+            {
+                "pre": "-",
+                "field": "bibjson.end_page",
+            },
+        ],
+        [
+            {
+                "pre": "<strong>Keywords</strong>: ",
+                "field": "bibjson.keywords",
+            }
         ],
         [
             {
