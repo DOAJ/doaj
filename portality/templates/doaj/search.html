@@ -7,7 +7,6 @@ jQuery(document).ready(function($) {
   $(this).facetview({
     search_url: 'http://ooz.cottagelabs.com:9200/doaj/journal,article/_search?',
     search_index: 'elasticsearch',
-    datatype: 'json',
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
