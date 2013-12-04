@@ -1,6 +1,6 @@
 import json, base64
 from lxml import etree
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import Blueprint, request, abort, make_response
 from portality.core import app
 from portality.dao import DomainObject
@@ -167,15 +167,6 @@ def list_identifiers_params(req):
         "metadata_prefix" : metadata_prefix
     }
 
-def list_identifiers_crosswalk_controller(li, xwalk, record):
-    header = xwalk.header(record)
-    lr.add_record(header)
-
-def list_records_crosswalk_controller(li, xwalk, record):
-    metadata = xwalk.metadata(record)
-    header = xwalk.header(record)
-    lr.add_record(metadata, header)
-
 #####################################################################
 ## OAI-PMH protocol operations implemented
 #####################################################################
@@ -279,7 +270,8 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
             
             li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
-                li.set_resumption(resumption_token, complete_list_size=total, cursor=start_number)
+                expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
+                li.set_resumption(resumption_token, complete_list_size=total, cursor=start_number, expiry=expiry)
             
             for r in results:
                 # do the crosswalk (header only in this operation)
@@ -380,7 +372,8 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
             
             lr = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
-                lr.set_resumption(resumption_token, complete_list_size=total, cursor=start_number)
+                expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
+                lr.set_resumption(resumption_token, complete_list_size=total, cursor=start_number, expiry=expiry)
             
             for r in results:
                 # do the crosswalk
@@ -532,8 +525,8 @@ class ListIdentifiers(OAI_PMH):
         self.records = []
         self.resumption = None
 
-    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None):
-        self.resumption = {"resumption_token" : resumption_token}
+    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None, expiry=-1):
+        self.resumption = {"resumption_token" : resumption_token, "expiry" : expiry}
         if complete_list_size is not None:
             self.resumption["complete_list_size"] = complete_list_size
         if cursor is not None:
@@ -564,6 +557,11 @@ class ListIdentifiers(OAI_PMH):
                 rt.set("completeListSize", str(self.resumption.get("complete_list_size")))
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
+            expiry = self.resumption.get("expiry", -1)
+            expire_date = None
+            if expiry >= 0:
+                expire_date = (datetime.now() + timedetla(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         
         return lr
@@ -615,9 +613,10 @@ class ListRecords(OAI_PMH):
         self.metadata_prefix = metadata_prefix
         self.records = []
         self.resumption = None
+        self.resumption_expiry = -1
 
-    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None):
-        self.resumption = {"resumption_token" : resumption_token}
+    def set_resumption(self, resumption_token, complete_list_size=None, cursor=None, expiry=-1):
+        self.resumption = {"resumption_token" : resumption_token, "expiry" : expiry}
         if complete_list_size is not None:
             self.resumption["complete_list_size"] = complete_list_size
         if cursor is not None:
@@ -650,6 +649,11 @@ class ListRecords(OAI_PMH):
                 rt.set("completeListSize", str(self.resumption.get("complete_list_size")))
             if "cursor" in self.resumption:
                 rt.set("cursor", str(self.resumption.get("cursor")))
+            expiry = self.resumption.get("expiry", -1)
+            expire_date = None
+            if expiry >= 0:
+                expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         
         return lr
