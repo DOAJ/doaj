@@ -823,6 +823,9 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             subj = etree.SubElement(oai_dc, self.DC + "subject")
             subj.text = keyword
         
+        objecttype = etree.SubElement(oai_dc, self.DC + "type")
+        objecttype.text = "article"
+        
         return metadata
         
     def header(self, record):
@@ -896,6 +899,9 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         
         created = etree.SubElement(oai_dc, self.DC + "date")
         created.text = normalise_date(record.created_date)
+        
+        objecttype = etree.SubElement(oai_dc, self.DC + "type")
+        objecttype.text = "journal"
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")

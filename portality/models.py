@@ -738,6 +738,7 @@ class OAIPMHRecord(object):
         q["sort"] = [deepcopy(self.created_sort)]
         
         # do the query
+        # print json.dumps(q)
         results = self.query(q=q)
         
         total = results.get("hits", {}).get("total", 0)
