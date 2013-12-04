@@ -12,8 +12,8 @@ blueprint = Blueprint('oaipmh', __name__)
 ## Web API endpoints
 #####################################################################
 
-@blueprint.route("/oai")
-@blueprint.route("/oai.<specified>")
+@blueprint.route("/oai", methods=["GET", "POST"])
+@blueprint.route("/oai.<specified>", methods=["GET", "POST"])
 def oaipmh(specified=None):
     # work out which endpoint we're going to
     dao = None
@@ -73,6 +73,12 @@ def oaipmh(specified=None):
 #####################################################################
 ## Utility methods
 #####################################################################
+
+def make_set_spec(setspec):
+    return base64.urlsafe_b64encode(setspec)
+
+def decode_set_spec(setspec):
+    return base64.urlsafe_b64decode(str(setspec))
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
     d = {}
@@ -206,7 +212,9 @@ def get_record(dao, base_url, identifier=None, metadata_prefix=None):
     return CannotDisseminateFormat(base_url)
 
 def identify(dao, base_url):
-    idobj = Identify(base_url=base_url)
+    repo_name = app.config.get("SERVICE_NAME")
+    admin_email = app.config.get("ADMIN_EMAIL")
+    idobj = Identify(base_url, repo_name, admin_email)
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj
     
@@ -245,10 +253,13 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
     
+    # decode the oai_set to something we can query with
+    decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, oai_set, list_size, start_number)
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number)
             
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:
@@ -343,10 +354,13 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
     
+    # decode the oai_set to something we can query with
+    decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, oai_set, list_size, start_number)
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number)
             
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:
@@ -395,7 +409,7 @@ def list_sets(dao, base_url, resumption_token=None):
     ls = ListSets(base_url)
     sets = dao.list_sets()
     for s in sets:
-        ls.add_set(s, s)
+        ls.add_set(make_set_spec(s), s)
     return ls
 
 #####################################################################
@@ -471,16 +485,18 @@ class GetRecord(OAI_PMH):
             element.set("metadataPrefix", self.metadata_prefix)
 
 class Identify(OAI_PMH):
-    def __init__(self, base_url):
+    def __init__(self, base_url, repo_name, admin_email):
         super(Identify, self).__init__(base_url)
         self.verb = "Identify"
+        self.repo_name = repo_name
+        self.admin_email = admin_email
         self.earliest_datestamp = None
     
     def get_element(self):
         identify = etree.Element(self.PMH + "Identify", nsmap=self.NSMAP)
         
         repo_name = etree.SubElement(identify, self.PMH + "repositoryName")
-        repo_name.text = app.config.get("SERVICE_NAME")
+        repo_name.text = self.repo_name
         
         base = etree.SubElement(identify, self.PMH + "baseURL")
         base.text = self.base_url
@@ -488,9 +504,11 @@ class Identify(OAI_PMH):
         protocol = etree.SubElement(identify, self.PMH + "protocolVersion")
         protocol.text = self.VERSION
         
+        earliest = etree.SubElement(identify, self.PMH + "earliestDatestamp")
         if self.earliest_datestamp is not None:
-            earliest = etree.SubElement(identify, self.PMH + "earliestDatestamp")
             earliest.text = self.earliest_datestamp
+        else:
+            earliest.text = "1970-01-01T00:00:00Z" # beginning of the unix epoch
         
         deletes = etree.SubElement(identify, self.PMH + "deletedRecord")
         deletes.text = "transient" # keep the door open
@@ -498,9 +516,8 @@ class Identify(OAI_PMH):
         granularity = etree.SubElement(identify, self.PMH + "granularity")
         granularity.text = "YYYY-MM-DD"
         
-        if app.config.get("ADMIN_EMAIL") not in ["", None]:
-            admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
-            admin_email.text = app.config.get("ADMIN_EMAIL")
+        admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
+        admin_email.text = self.admin_email
         
         return identify
 
@@ -821,7 +838,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             term = subs.get("term")
             
             subel = etree.SubElement(head, self.PMH + "setSpec")
-            subel.text = scheme + ":" + term
+            subel.text = make_set_spec(scheme + ":" + term)
         """
         
         return head
@@ -900,7 +917,7 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
             term = subs.get("term")
             
             subel = etree.SubElement(head, self.PMH + "setSpec")
-            subel.text = scheme + ":" + term
+            subel.text = make_set_spec(scheme + ":" + term)
         
         return head
 
