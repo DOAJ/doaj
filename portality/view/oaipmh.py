@@ -497,6 +497,9 @@ class Identify(OAI_PMH):
         protocol = etree.SubElement(identify, self.PMH + "protocolVersion")
         protocol.text = self.VERSION
         
+        admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
+        admin_email.text = self.admin_email
+        
         earliest = etree.SubElement(identify, self.PMH + "earliestDatestamp")
         if self.earliest_datestamp is not None:
             earliest.text = self.earliest_datestamp
@@ -508,9 +511,6 @@ class Identify(OAI_PMH):
         
         granularity = etree.SubElement(identify, self.PMH + "granularity")
         granularity.text = "YYYY-MM-DD"
-        
-        admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
-        admin_email.text = self.admin_email
         
         return identify
 
