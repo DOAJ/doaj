@@ -2,7 +2,7 @@ import os, sys
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
-from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON
+from portality.models import Journal, JournalBibJSON, Suggestion, Article, ArticleBibJSON, Account
 
 ################################################################
 ## Preliminary data loading functions
@@ -582,6 +582,80 @@ def _to_article_bibjson(element):
 
 #################################################################
 
+#################################################################
+# Functions to migrate contacts
+#################################################################
+
+def migrate_contacts(source, batch_size=1000):
+    # read in the content
+    f = open(source)
+    xml = etree.parse(f)
+    f.close()
+    contacts = xml.getroot()
+    print "migrating", str(len(contacts)), "contact records from", source
+    
+    batch = []
+    counter = 0
+    record = []
+    for element in contacts:
+        login = element.find("login")
+        password = element.find("password")
+        name = element.find("name")
+        email = element.find("email")
+        issns = element.findall("issn")
+        
+        if login is None or login.text is None or login.text == "":
+            print "ERROR: contact without login"
+            continue
+        
+        if password is None or password.text is None or password.text == "":
+            print "ERROR: contact without password", login.text
+            continue
+        
+        if login.text in record:
+            print "WARN: duplicate user id", login.text
+        
+        #counter += 1
+        #print counter, login.text
+        record.append(login.text)
+        
+        a = Account()
+        a.set_id(login.text)
+        a.set_password(password.text)
+        
+        if name is not None and name.text is not None and name.text != "":
+            a.set_name(name.text)
+        
+        if email is not None and email.text is not None and email.text != "":
+            a.set_email(email.text)
+        
+        for issn in issns:
+            if issn is not None and issn.text is not None and issn.text != "":
+                jid = _get_journal_id_from_issn(issn.text)
+                a.add_journal(jid)
+        
+        batch.append(a.data)
+        
+        if len(batch) >= batch_size:
+            Account.bulk(batch, refresh=True)
+            del batch[:]
+    
+    if len(batch) > 0:
+        Account.bulk(batch)
+        
+
+def _get_journal_id_from_issn(issn):
+    issn = _normalise_issn(issn)
+    journals = Journal.find_by_issn(issn)
+    if len(journals) > 1:
+        print "WARN: issn", issn, "maps to multiple journals:", ", ".join([j.id for j in journals])
+    if len(journals) == 0:
+        print "WARN: issn", issn, "does not map to any journals"
+    if len(journals) > 0:
+        return journals[0].id
+
+#################################################################
+
 if __name__ == "__main__":
     # get the data in directory
     IN_DIR = None
@@ -596,10 +670,13 @@ if __name__ == "__main__":
     LCC = IN_DIR + "lccSubjects"
     SUGGESTIONS = IN_DIR + "suggestions"
     ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd"]
+    CONTACTS = IN_DIR + "contacts"
 
     load_subjects(SUBJECTS, LCC)
+    
     migrate_suggestions(SUGGESTIONS)
     migrate_journals(JOURNALS)
+    migrate_contacts(CONTACTS) # contacts have to come after journals, as they will search for matches
     for a in ARTICLES:
         migrate_articles(a)
 

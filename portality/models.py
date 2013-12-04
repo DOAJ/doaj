@@ -5,10 +5,131 @@ import json
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
 
-
-# The default Portality account object.  We don't need this yet, but we will soon
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
+
+############################################################################
+# Generic/Utility classes and functions
+############################################################################
+
+class GenericBibJSON(object):
+    # vocab of known identifier types
+    P_ISSN = "pissn"
+    E_ISSN = "eissn"
+    DOI = "doi"
+    
+    # constructor
+    def __init__(self, bibjson=None):
+        self.bibjson = bibjson if bibjson is not None else {}
+    
+    # generic property getter and setter for ad-hoc extensions
+    def get_property(self, prop):
+        return self.bibjson.get(prop)
+    
+    def set_property(self, prop, value):
+        self.bibjson[prop] = value
+    
+    # shared simple property getter and setters
+        
+    @property
+    def title(self): return self.bibjson.get("title")
+    @title.setter
+    def title(self, val) : self.bibjson["title"] = val
+    
+    # complex getters and setters
+    
+    def _normalise_identifier(self, idtype, value):
+        if idtype in [self.P_ISSN, self.E_ISSN]:
+            return self._normalise_issn(value)
+        return value
+    
+    def _normalise_issn(self, issn):
+        if len(issn) == 8:
+            # i.e. it is not hyphenated
+            return issn[:4] + "-" + issn[4:]
+        return issn
+    
+    def add_identifier(self, idtype, value):
+        if "identifier" not in self.bibjson:
+            self.bibjson["identifier"] = []
+        idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
+        self.bibjson["identifier"].append(idobj)
+    
+    def get_identifiers(self, idtype=None):
+        if idtype is None:
+            return self.bibjson.get("identifier", [])
+        
+        ids = []
+        for identifier in self.bibjson.get("identifier", []):
+            if identifier.get("type") == idtype and identifier.get("id") not in ids:
+                ids.append(identifier.get("id"))
+        return ids
+    
+    def remove_identifiers(self, idtype=None, id=None):
+        # if we are to remove all identifiers, this is easy
+        if idtype is None and id is None:
+            self.bibjson["identifier"] = []
+            return
+        
+        # else, find all the identifiers positions that we need to remove
+        idx = 0
+        remove = []
+        for identifier in self.bibjson.get("identifier", []):
+            if idtype is not None and id is None:
+                if identifier.get("type") == idtype:
+                    remove.append(idx)
+            elif idtype is None and id is not None:
+                if identifier.get("id") == id:
+                    remove.append(idx)
+            else:
+                if identifier.get("type") == idtype and identifier.get("id") == id:
+                    remove.append(idx)
+            idx += 1
+        
+        # sort the positions of the ids to remove, largest first
+        remove.sort(reverse=True)
+        
+        # now remove them one by one (having the largest first means the lower indices
+        # are not affected
+        for i in remove:
+            del self.bibjson["identifier"][i]
+    
+    @property
+    def keywords(self):
+        return self.bibjson.get("keywords", [])
+    
+    def add_keyword(self, keyword):
+        if "keywords" not in self.bibjson:
+            self.bibjson["keywords"] = []
+        self.bibjson["keywords"].append(keyword)
+    
+    def set_keywords(self, keywords):
+        self.bibjson["keywords"] = keywords
+    
+    def add_url(self, url, urltype=None):
+        if "link" not in self.bibjson:
+            self.bibjson["link"] = []
+        urlobj = {"url" : url}
+        if urltype is not None:
+            urlobj["type"] = urltype
+        self.bibjson["link"].append(urlobj)
+    
+    def get_urls(self, urltype=None):
+        if urltype is None:
+            return self.bibjson.get("link", [])
+        
+        urls = []
+        for link in self.bibjson.get("link", []):
+            if link.get("type") == urltype:
+                urls.append(link.get("url"))
+        return urls
+
+############################################################################
+
+
+####################################################################
+## Account object and related classes
+####################################################################
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
@@ -20,16 +141,53 @@ class Account(DomainObject, UserMixin):
             return cls(**res['hits']['hits'][0]['_source'])
         else:
             return None
+    
+    @property
+    def name(self):
+        return self.data.get("name")
+    
+    def set_name(self, name):
+        self.data["name"] = name
+    
+    @property
+    def email(self):
+        return self.data.get("email")
+
+    def set_email(self, email):
+        self.data["email"] = email
 
     def set_password(self, password):
         self.data['password'] = generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.data['password'], password)
+        
+    @property
+    def journal(self):
+        return self.data.get("journal")
+    
+    def add_journal(self, jid):
+        if jid in self.data.get("journal", []):
+            return
+        if "journal" not in self.data:
+            self.data["journal"] = []
+        self.data["journal"].append(jid)
+    
+    def remove_journal(self, jid):
+        if "journal" not in self.data:
+            return
+        self.data["journal"].remove(jid)
 
     @property
     def is_super(self):
         return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+
+#########################################################################
+
+
+#########################################################################
+## Journal object and related classes
+#########################################################################
 
 # NOTE: DomainObject interferes with new style @property getter/setter
 # so we can't use them here
@@ -39,6 +197,14 @@ class Journal(DomainObject):
                     "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
                     "Subjects", "Country", "Publication fee", "Further Information", 
                     "CC License", "Content in DOAJ"]
+    
+    @classmethod
+    def find_by_issn(self, issn):
+        q = JournalQuery()
+        q.find_by_issn(issn)
+        result = self.query(q=q.query)
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
     
     def bibjson(self):
         if "bibjson" not in self.data:
@@ -215,146 +381,6 @@ class Journal(DomainObject):
         row.append(YES_NO[c.get('active')])
         return row
 
-class Suggestion(Journal):
-    __type__ = "suggestion"
-    
-    def _set_suggestion_property(self, name, value):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"][name] = value
-    
-    def description(self): return self.data.get("suggestion", {}).get("description")
-    
-    def set_description(self, value): self._set_suggestion_property("description", value)
-    
-    def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
-    
-    def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
-    
-    def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
-    
-    def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
-    
-    def suggester(self):
-        return self.data.get("suggestion", {}).get("suggester")
-        
-    def set_suggester(self, name, email):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
-
-class GenericBibJSON(object):
-    # vocab of known identifier types
-    P_ISSN = "pissn"
-    E_ISSN = "eissn"
-    DOI = "doi"
-    
-    # constructor
-    def __init__(self, bibjson=None):
-        self.bibjson = bibjson if bibjson is not None else {}
-    
-    # generic property getter and setter for ad-hoc extensions
-    def get_property(self, prop):
-        return self.bibjson.get(prop)
-    
-    def set_property(self, prop, value):
-        self.bibjson[prop] = value
-    
-    # shared simple property getter and setters
-        
-    @property
-    def title(self): return self.bibjson.get("title")
-    @title.setter
-    def title(self, val) : self.bibjson["title"] = val
-    
-    # complex getters and setters
-    
-    def _normalise_identifier(self, idtype, value):
-        if idtype in [self.P_ISSN, self.E_ISSN]:
-            return self._normalise_issn(value)
-        return value
-    
-    def _normalise_issn(self, issn):
-        if len(issn) == 8:
-            # i.e. it is not hyphenated
-            return issn[:4] + "-" + issn[4:]
-        return issn
-    
-    def add_identifier(self, idtype, value):
-        if "identifier" not in self.bibjson:
-            self.bibjson["identifier"] = []
-        idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
-        self.bibjson["identifier"].append(idobj)
-    
-    def get_identifiers(self, idtype=None):
-        if idtype is None:
-            return self.bibjson.get("identifier", [])
-        
-        ids = []
-        for identifier in self.bibjson.get("identifier", []):
-            if identifier.get("type") == idtype and identifier.get("id") not in ids:
-                ids.append(identifier.get("id"))
-        return ids
-    
-    def remove_identifiers(self, idtype=None, id=None):
-        # if we are to remove all identifiers, this is easy
-        if idtype is None and id is None:
-            self.bibjson["identifier"] = []
-            return
-        
-        # else, find all the identifiers positions that we need to remove
-        idx = 0
-        remove = []
-        for identifier in self.bibjson.get("identifier", []):
-            if idtype is not None and id is None:
-                if identifier.get("type") == idtype:
-                    remove.append(idx)
-            elif idtype is None and id is not None:
-                if identifier.get("id") == id:
-                    remove.append(idx)
-            else:
-                if identifier.get("type") == idtype and identifier.get("id") == id:
-                    remove.append(idx)
-            idx += 1
-        
-        # sort the positions of the ids to remove, largest first
-        remove.sort(reverse=True)
-        
-        # now remove them one by one (having the largest first means the lower indices
-        # are not affected
-        for i in remove:
-            del self.bibjson["identifier"][i]
-    
-    @property
-    def keywords(self):
-        return self.bibjson.get("keywords", [])
-    
-    def add_keyword(self, keyword):
-        if "keywords" not in self.bibjson:
-            self.bibjson["keywords"] = []
-        self.bibjson["keywords"].append(keyword)
-    
-    def set_keywords(self, keywords):
-        self.bibjson["keywords"] = keywords
-    
-    def add_url(self, url, urltype=None):
-        if "link" not in self.bibjson:
-            self.bibjson["link"] = []
-        urlobj = {"url" : url}
-        if urltype is not None:
-            urlobj["type"] = urltype
-        self.bibjson["link"].append(urlobj)
-    
-    def get_urls(self, urltype=None):
-        if urltype is None:
-            return self.bibjson.get("link", [])
-        
-        urls = []
-        for link in self.bibjson.get("link", []):
-            if link.get("type") == urltype:
-                urls.append(link.get("url"))
-        return urls
-    
 class JournalBibJSON(GenericBibJSON):
     
     # journal-specific simple property getter and setters
@@ -470,6 +496,68 @@ class JournalBibJSON(GenericBibJSON):
     def subjects(self):
         return self.bibjson.get("subject", [])
 
+class JournalQuery(object):
+    """
+    wrapper around the kinds of queries we want to do against the journal type
+    """
+    issn_query = {
+        "query": {
+        	"bool": {
+            	"must": [
+                	{
+                    	"term" :  { "index.issn.exact" : "<issn>" }
+                    }
+                ]
+            }
+        }
+    }
+    
+    def __init__(self):
+        self.query = None
+    
+    def find_by_issn(self, issn):
+        self.query = deepcopy(self.issn_query)
+        self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
+
+############################################################################
+
+############################################################################
+## Suggestion object and related classes
+############################################################################
+
+class Suggestion(Journal):
+    __type__ = "suggestion"
+    
+    def _set_suggestion_property(self, name, value):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        self.data["suggestion"][name] = value
+    
+    def description(self): return self.data.get("suggestion", {}).get("description")
+    
+    def set_description(self, value): self._set_suggestion_property("description", value)
+    
+    def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
+    
+    def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
+    
+    def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
+    
+    def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
+    
+    def suggester(self):
+        return self.data.get("suggestion", {}).get("suggester")
+        
+    def set_suggester(self, name, email):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
+
+############################################################################
+
+####################################################################
+# Article and related classes
+####################################################################
 
 class Article(DomainObject):
     __type__ = "article"
@@ -625,6 +713,7 @@ class ArticleBibJSON(GenericBibJSON):
             date += "-01"
         return date
 
+####################################################################
 
 ####################################################################
 ## OAI-PMH Record Objects

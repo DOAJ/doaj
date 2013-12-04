@@ -181,7 +181,18 @@ This applies to the Article Data Model too
     }
 
 
+## Contact Data Model
 
+NOTE: this is just for the purposes of holding them over until the new year.  We should actually have each document
+assert the user(s) they can be administered by
+
+    {
+        "id" : "<the username of the user>",
+        "password" : "<hashed password>",
+        "name" : "<user's actual name>",
+        "email" : "<user's email address>",
+        "journal" : [<list of journal ids the user can administer>]
+    }
 
 
 
