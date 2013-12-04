@@ -28,8 +28,12 @@ def oaipmh(specified=None):
     # call the appropriate protocol operation
     result = None
     
+    # if no verb supplied
+    if verb is None:
+        result = BadVerb(request.base_url)
+    
     # Identify
-    if verb.lower() == "identify":
+    elif verb.lower() == "identify":
         result = identify(dao, request.base_url)
     
     # ListMetadataFormats
