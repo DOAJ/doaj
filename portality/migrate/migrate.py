@@ -809,11 +809,11 @@ if __name__ == "__main__":
 
     # load the subjects and then migrate suggestions and journals
     load_subjects(SUBJECTS, LCC)
-    #migrate_suggestions(SUGGESTIONS)
-    #migrate_journals(JOURNALS)
+    migrate_suggestions(SUGGESTIONS)
+    migrate_journals(JOURNALS)
     
     # contacts have to come after journals, as they will search for matches
-    #migrate_contacts(CONTACTS)
+    migrate_contacts(CONTACTS)
     
     # load a map of issns to journals, which is used in article migration
     load_issn_journal_map()
