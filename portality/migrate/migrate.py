@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, codecs
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
@@ -80,10 +80,16 @@ def migrate_journals(source):
         j.save()
     
 def _normalise_issn(issn):
+    issn = issn.upper()
+    if len(issn) > 8: return issn
     if len(issn) == 8:
-        # i.e. it is not hyphenated
-        return issn[:4] + "-" + issn[4:]
-    return issn
+        if "-" in issn: return "0" + issn
+        else: return issn[:4] + "-" + issn[4:]
+    if len(issn) < 8:
+        if "-" in issn: return ("0" * (9 - len(issn))) + issn
+        else:
+            issn = ("0" * (8 - len(issn))) + issn
+            return issn[:4] + "-" + issn[4:]
 
 def _get_replaces(element):
     pissn = element.find("previousIssn").text
@@ -481,6 +487,9 @@ def _to_suggestion(element, suggestion):
 ## Functions to migrate articles
 #################################################################
 
+journal_data_registry = {}
+error_counter = 0
+
 def migrate_articles(source, batch_size=5000):
     # read in the content
     f = open(source)
@@ -489,28 +498,40 @@ def migrate_articles(source, batch_size=5000):
     articles = xml.getroot()
     print "migrating", str(len(articles)), "article records from", source
     
+    error = codecs.open(source + ".errors", "wb", "utf8")
+    counter = 0
     batch = []
     for element in articles:
         a = Article()
         b = _to_article_bibjson(element)
+        _add_journal_info(b, error)
         a.set_bibjson(b)
         a.set_created(_created_date(element))
         a.set_id()
+        a.prep() # prepare the thing to be saved, which is necessary since we're not actually going to save()
         batch.append(a.data)
         
         if len(batch) >= batch_size:
+            counter += len(batch)
+            print "Writing batch, size", len(batch)
             Article.bulk(batch, refresh=True)
+            print "batch written, total so far", counter
             del batch[:]
     
     if len(batch) > 0:
-        Article.bulk(batch)
+        counter += len(batch)
+        print "Writing final batch, size", len(batch)
+        Article.bulk(batch, refresh=True)
+        print "batch written, total written", counter
+    
+    error.close()
         
 
 def _created_date(element):
     cd = element.find("addedOn")
     if cd is not None and cd.text is not None and cd.text != "":
-        return cd.text
-    return datetime.now().isoformat()
+        return "T".join(cd.text.split(" ")) + "Z" # fudge the date format
+    return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def _to_article_bibjson(element):
     b = ArticleBibJSON()
@@ -565,7 +586,7 @@ def _to_article_bibjson(element):
     
     authors = element.find("authors")
     if authors is not None and authors.text is not None and authors.text != "":
-        people = [p.strip() for p in authors.text.split("---")]
+        people = [p.strip() for p in authors.text.split("---") if p.strip() != ""]
         for person in people:
             b.add_author(person)
     
@@ -575,10 +596,84 @@ def _to_article_bibjson(element):
     
     keywords = element.find("keywords")
     if keywords is not None and keywords.text is not None and keywords.text != "":
-        words = [w.strip() for w in keywords.text.split("---")]
+        # this filters the string "keyword" and "keywords" at the same time
+        words = [w.strip() for w in keywords.text.split("---") if w.strip().lower() not in ["keyword", "keywords"]]
         b.set_keywords(words)
-        
+    
     return b
+
+def _add_journal_info(bibjson, error_register):
+    global journal_data_registry
+    
+    # first, get the ISSNs associated with the record
+    pissns = bibjson.get_identifiers(bibjson.P_ISSN)
+    eissns = bibjson.get_identifiers(bibjson.E_ISSN)
+    
+    # find a matching journal record either from the registry cache
+    # or directly from the index
+    journal = None
+    
+    # first check the registry
+    for issn in pissns:
+        if issn in journal_data_registry:
+            journal = journal_data_registry.get(issn)
+    
+    if journal is None:
+        for issn in eissns:
+            if issn in journal_data_registry:
+                journal = journal_data_registry.get(issn)
+    
+    # next check the index
+    if journal is None:
+        possibilities = {}
+        for issn in pissns:
+            options = Journal.find_by_issn(issn)
+            if len(options) > 1:
+                print "WARN: more than one journal found for", issn
+            for option in options:
+                possibilities[option.id] = option
+        if len(possibilities.keys()) > 1:
+            print "WARN: multiple possibilities for ", issn, ":", possibilities
+        if len(possibilities.keys()) > 0:
+            journal = possibilities[possibilities.keys()[0]]
+    
+    if journal is None:
+        possibilities = {}
+        for issn in eissns:
+            options = Journal.find_by_issn(issn)
+            if len(options) > 1:
+                print "WARN: more than one journal found for", issn
+            for option in options:
+                possibilities[option.id] = option
+        if len(possibilities.keys()) > 1:
+            print "WARN: multiple possibilities for ", issn, ":", possibilities
+        if len(possibilities.keys()) > 0:
+            journal = possibilities[possibilities.keys()[0]]
+    
+    if journal is None:
+        error_register.write(bibjson.title + "\n\n")
+        return
+    
+    # if we get to here, we have a journal record we want to pull data from
+    jbib = journal.bibjson()
+    
+    subjects = jbib.subjects()
+    for s in subjects:
+        bibjson.add_subject(s.get("scheme"), s.get("term"))
+    
+    if jbib.title is not None:
+        bibjson.journal_title = jbib.title
+    
+    lic = jbib.get_license()
+    if lic is not None:
+        bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
+    
+    if jbib.language is not None:
+        bibjson.journal_language = jbib.language
+    
+    if jbib.country is not None:
+        bibjson.journal_country = jbib.country
+    
 
 #################################################################
 
@@ -634,6 +729,7 @@ def migrate_contacts(source, batch_size=1000):
                 jid = _get_journal_id_from_issn(issn.text)
                 a.add_journal(jid)
         
+        a.prep() # prep for saving, since we're not actually going to call save()
         batch.append(a.data)
         
         if len(batch) >= batch_size:
@@ -665,12 +761,12 @@ if __name__ == "__main__":
         print "you must specify a data directory to migrate from"
         exit()
 
-    JOURNALS = IN_DIR + "journals"
-    SUBJECTS = IN_DIR + "subjects"
-    LCC = IN_DIR + "lccSubjects"
-    SUGGESTIONS = IN_DIR + "suggestions"
-    ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd"]
-    CONTACTS = IN_DIR + "contacts"
+    JOURNALS = os.path.join(IN_DIR, "journals")
+    SUBJECTS = os.path.join(IN_DIR, "subjects")
+    LCC = os.path.join(IN_DIR, "lccSubjects")
+    SUGGESTIONS = os.path.join(IN_DIR, "suggestions")
+    ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd" and not f.endswith(".errors")]
+    CONTACTS = os.path.join(IN_DIR, "contacts")
 
     load_subjects(SUBJECTS, LCC)
     

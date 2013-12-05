@@ -52,7 +52,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         else:
             self.data['created_date'] = date
 
@@ -67,10 +67,10 @@ class DomainObject(UserDict.IterableUserDict, object):
             id_ = self.makeid()
             self.data['id'] = id_
         
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%d %H%M")
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if 'created_date' not in self.data:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         
         """
         if 'author' not in self.data:
@@ -227,7 +227,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             usr = current_user.id
         except:
             usr = "anonymous"
-        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%d %H%M") } )
+        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") } )
         r = requests.put(self.target() + self.data['id'], data=json.dumps(self.data))
 
     def delete(self):        

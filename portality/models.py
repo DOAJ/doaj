@@ -44,10 +44,16 @@ class GenericBibJSON(object):
         return value
     
     def _normalise_issn(self, issn):
+        issn = issn.upper()
+        if len(issn) > 8: return issn
         if len(issn) == 8:
-            # i.e. it is not hyphenated
-            return issn[:4] + "-" + issn[4:]
-        return issn
+            if "-" in issn: return "0" + issn
+            else: return issn[:4] + "-" + issn[4:]
+        if len(issn) < 8:
+            if "-" in issn: return ("0" * (9 - len(issn))) + issn
+            else:
+                issn = ("0" * (8 - len(issn))) + issn
+                return issn[:4] + "-" + issn[4:]
     
     def add_identifier(self, idtype, value):
         if "identifier" not in self.bibjson:
@@ -123,6 +129,15 @@ class GenericBibJSON(object):
             if link.get("type") == urltype:
                 urls.append(link.get("url"))
         return urls
+    
+    def add_subject(self, scheme, term):
+        if "subject" not in self.bibjson:
+            self.bibjson["subject"] = []
+        sobj = {"scheme" : scheme, "term" : term}
+        self.bibjson["subject"].append(sobj)
+    
+    def subjects(self):
+        return self.bibjson.get("subject", [])
 
 ############################################################################
 
@@ -181,6 +196,9 @@ class Account(DomainObject, UserMixin):
     @property
     def is_super(self):
         return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        
+    def prep(self):
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 #########################################################################
 
@@ -226,7 +244,7 @@ class Journal(DomainObject):
     def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
         bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         if date is None:
-            date = datetime.now().isoformat()
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         snobj = {"date" : date, "bibjson" : bibjson}
         if replaces is not None:
             if isinstance(replaces, list):
@@ -270,7 +288,7 @@ class Journal(DomainObject):
     
     def add_note(self, note, date=None):
         if date is None:
-            date = datetime.now().isoformat()
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         if "admin" not in self.data:
             self.data["admin"] = {}
         if "notes" not in self.data.get("admin"):
@@ -279,7 +297,7 @@ class Journal(DomainObject):
     
     def add_correspondence(self, message, date=None):
         if date is None:
-            date = datetime.now().isoformat()
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         if "admin" not in self.data:
             self.data["admin"] = {}
         if "owner_correspondence" not in self.data.get("admin"):
@@ -292,6 +310,7 @@ class Journal(DomainObject):
         titles = []
         subjects = []
         schema_subjects = []
+        classification = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -310,8 +329,9 @@ class Journal(DomainObject):
             term = subs.get("term")
             subjects.append(term)
             schema_subjects.append(scheme + ":" + term)
+            classification.append(term)
         
-        # add the keywords to the non-schema subjects
+        # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
         
         # now get the issns and titles out of the historic records
@@ -325,6 +345,7 @@ class Journal(DomainObject):
         titles = list(set(titles))
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
+        classification = list(set(classification))
         
         # build the index part of the object
         self.data["index"] = {}
@@ -333,12 +354,18 @@ class Journal(DomainObject):
         if len(titles) > 0:
             self.data["index"]["title"] = titles
         if len(subjects) > 0:
-            self.data["index"]["subjects"] = subjects
+            self.data["index"]["subject"] = subjects
         if len(schema_subjects) > 0:
-            self.data["index"]["schema_subjects"] = schema_subjects
+            self.data["index"]["schema_subject"] = schema_subjects
+        if len(classification) > 0:
+            self.data["index"]["classification"] = classification
+    
+    def prep(self):
+        self._generate_index()
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     
     def save(self):
-        self._generate_index()
+        self.prep()
         super(Journal, self).save()
 
     def csv(self, multival_sep=','):
@@ -487,15 +514,6 @@ class JournalBibJSON(GenericBibJSON):
             oaobj["number"] = number
         self.bibjson["oa_end"] = oaobj
 
-    def add_subject(self, scheme, term):
-        if "subject" not in self.bibjson:
-            self.bibjson["subject"] = []
-        sobj = {"scheme" : scheme, "term" : term}
-        self.bibjson["subject"].append(sobj)
-    
-    def subjects(self):
-        return self.bibjson.get("subject", [])
-
 class JournalQuery(object):
     """
     wrapper around the kinds of queries we want to do against the journal type
@@ -585,7 +603,7 @@ class Article(DomainObject):
     def add_history(self, bibjson, date=None):
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().isoformat()
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         snobj = {"date" : date, "bibjson" : bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -594,6 +612,9 @@ class Article(DomainObject):
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
+        subjects = []
+        schema_subjects = []
+        classification = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -608,11 +629,22 @@ class Article(DomainObject):
             issns += hbib.get_identifiers(hbib.P_ISSN)
             issns += hbib.get_identifiers(hbib.E_ISSN)
         
+        # get the subjects and concatenate them with their schemes from the current bibjson
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            subjects.append(term)
+            schema_subjects.append(scheme + ":" + term)
+            classification.append(term)
+        
         # deduplicate the list
         issns = list(set(issns))
+        subjects = list(set(subjects))
+        schema_subjects = list(set(schema_subjects))
+        classification = list(set(classification))
         
         # work out what the date of publication is
-        date = self.bibjson.get_publication_date()
+        date = cbib.get_publication_date()
         
         # build the index part of the object
         self.data["index"] = {}
@@ -620,7 +652,17 @@ class Article(DomainObject):
             self.data["index"]["issn"] = issns
         if date != "":
             self.data["index"]["date"] = date
-        
+        if len(subjects) > 0:
+            self.data["index"]["subject"] = subjects
+        if len(schema_subjects) > 0:
+            self.data["index"]["schema_subject"] = schema_subjects
+        if len(classification) > 0:
+            self.data["index"]["classification"] = classification
+    
+    def prep(self):
+        self._generate_index()
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    
     def save(self):
         self._generate_index()
         super(Article, self).save()
@@ -662,7 +704,7 @@ class ArticleBibJSON(GenericBibJSON):
     
     @property
     def volume(self):
-        self.bibjson.get("journal", {}).get("volume")
+        return self.bibjson.get("journal", {}).get("volume")
     
     @volume.setter
     def volume(self, value):
@@ -670,12 +712,36 @@ class ArticleBibJSON(GenericBibJSON):
     
     @property
     def number(self):
-        self.bibjson.get("journal", {}).get("number")
+        return self.bibjson.get("journal", {}).get("number")
     
     @number.setter
     def number(self, value):
         self._set_journal_property("number", value)
-        
+    
+    @property
+    def journal_title(self):
+        return self.bibjson.get("journal", {}).get("title")
+    
+    @journal_title.setter
+    def journal_title(self, title):
+        self._set_journal_property("title", title)
+    
+    @property
+    def journal_language(self):
+        return self.bibjson.get("journal", {}).get("language")
+    
+    @journal_language.setter
+    def journal_language(self, lang):
+        self._set_journal_property("language", lang)
+    
+    @property
+    def journal_country(self):
+        return self.bibjson.get("journal", {}).get("country")
+    
+    @journal_country.setter
+    def journal_country(self, country):
+        self._set_journal_property("country", country)
+    
     @property
     def publisher(self):
         self.bibjson.get("journal", {}).get("publisher")
@@ -693,14 +759,40 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self):
         return self.bibjson.get("author", [])
     
+    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        lobj = {"title" : licence_title, "type" : licence_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
+        
+        self._set_journal_property("license", [lobj])
+    
+    def get_journal_license(self):
+        return self.bibjson.get("journal", {}).get("license", [None])[0]
+    
     def get_publication_date(self):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
+            # fix 2 digit years
+            if len(self.year) == 2:
+                if int(self.year) <=13:
+                    self.year = "20" + self.year
+                else:
+                    self.year = "19" + self.year
+                    
+            # if we still don't have a 4 digit year, forget it
+            if len(self.year) != 4:
+                return date
+            
+            # build up our proposed datestamp
             date += str(self.year)
             if self.month is not None:
                 try:
-                    if int(self.month) < 10:
+                    if len(self.month) == 1:
                         date += "-0" + str(self.month)
                     else:
                         date += "-" + str(self.month)
@@ -710,7 +802,13 @@ class ArticleBibJSON(GenericBibJSON):
                     date += "-01" 
             else:
                 date += "-01"
-            date += "-01"
+            date += "-01T00:00:00Z"
+            
+            # attempt to confirm the format of our datestamp
+            try:
+                datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+            except:
+                return ""
         return date
 
 ####################################################################
