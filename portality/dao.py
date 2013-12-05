@@ -1,5 +1,5 @@
 import os, json, UserDict, requests, uuid
-
+from copy import deepcopy
 from datetime import datetime
 
 from portality.core import app, current_user
@@ -237,6 +237,42 @@ class DomainObject(UserDict.IterableUserDict, object):
     def delete_all(cls):
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
-
+    
+    @classmethod
+    def iterate(cls, q, page_size=1000, limit=None):
+        q["size"] = page_size
+        q["from"] = 0
+        counter = 0
+        while True:
+            # apply the limit
+            if limit is not None and counter >= limit:
+                break
+            
+            res = cls.query(q=q)
+            rs = [r.get("_source") for r in res.get("hits", {}).get("hits", [])]
+            if len(rs) == 0:
+                break
+            for r in rs:
+                # apply the limit (again)
+                if limit is not None and counter >= limit:
+                    break
+                counter += 1
+                yield cls(**r)
+            q["from"] += page_size   
+    
+    @classmethod
+    def iterall(cls, page_size=1000, limit=None):
+        return cls.iterate(deepcopy(all_query), page_size, limit)
+    
     def csv(self, multival_sep=','):
         raise NotImplementedError
+
+########################################################################
+## Some useful ES queries
+########################################################################
+
+all_query = { 
+    "query" : { 
+        "match_all" : { }
+    }
+}

@@ -10,6 +10,7 @@ from portality.models import Journal, JournalBibJSON, Suggestion, Article, Artic
 
 smap = {}
 lccmap = {}
+issnmap = {}
 
 def load_subjects(subject_path, lcc_path):
     f = open(subject_path)
@@ -45,6 +46,26 @@ def load_subjects(subject_path, lcc_path):
         for m in lccmappings:
             lccmap[m.text]["d"] = name
         smap[name] = {"p" : parent}
+
+def load_issn_journal_map():
+    # we need to go over every journal in the index
+    for j in Journal.iterall():
+        obj = {}
+        jbib = j.bibjson()
+        
+        # store only the data we want for the article migration
+        obj["subjects"] = jbib.subjects()
+        obj["title"] = jbib.title
+        obj["license"] = jbib.get_license()
+        obj["language"] = jbib.language
+        obj["country"] = jbib.country
+        
+        # get the issns that map to this journal (or any previous version of it)
+        issns = j.data.get("index", {}).get("issn", [])
+        
+        # register pointers to the object for each issn
+        for issn in issns:
+            issnmap[issn] = obj
 
 ################################################################
 
@@ -487,9 +508,6 @@ def _to_suggestion(element, suggestion):
 ## Functions to migrate articles
 #################################################################
 
-journal_data_registry = {}
-error_counter = 0
-
 def migrate_articles(source, batch_size=5000):
     # read in the content
     f = open(source)
@@ -603,7 +621,6 @@ def _to_article_bibjson(element):
     return b
 
 def _add_journal_info(bibjson):
-    global journal_data_registry
     
     # first, get the ISSNs associated with the record
     pissns = bibjson.get_identifiers(bibjson.P_ISSN)
@@ -615,15 +632,16 @@ def _add_journal_info(bibjson):
     
     # first check the registry
     for issn in pissns:
-        if issn in journal_data_registry:
-            journal = journal_data_registry.get(issn)
+        if issn in issnmap:
+            journal = issnmap.get(issn)
     
     if journal is None:
         for issn in eissns:
-            if issn in journal_data_registry:
-                journal = journal_data_registry.get(issn)
+            if issn in issnmap:
+                journal = issnmap.get(issn)
     
     # next check the index
+    """
     if journal is None:
         possibilities = {}
         for issn in pissns:
@@ -649,12 +667,15 @@ def _add_journal_info(bibjson):
             print "WARN: multiple possibilities for ", issn, ":", possibilities
         if len(possibilities.keys()) > 0:
             journal = possibilities[possibilities.keys()[0]]
+    """
     
     if journal is None:
+        print "WARN: no journal for ", pissns, eissns
         # error_register.write(bibjson.title + "\n\n")
         return
     
     # if we get to here, we have a journal record we want to pull data from
+    """
     jbib = journal.bibjson()
     
     subjects = jbib.subjects()
@@ -673,6 +694,24 @@ def _add_journal_info(bibjson):
     
     if jbib.country is not None:
         bibjson.journal_country = jbib.country
+    """
+    
+    for s in journal.get("subjects", []):
+        bibjson.add_subject(s.get("scheme"), s.get("term"))
+    
+    if journal.get("title") is not None:
+        bibjson.journal_title = journal.get("title")
+    
+    if journal.get("license") is not None:
+        lic = journal.get("license")
+        bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
+    
+    if journal.get("language") is not None:
+        bibjson.journal_language = journal.get("language")
+    
+    if journal.get("country") is not None:
+        bibjson.journal_country = journal.get("country")
+    
     
 
 #################################################################
@@ -768,11 +807,16 @@ if __name__ == "__main__":
     ARTICLES = [os.path.join(IN_DIR, f) for f in os.listdir(IN_DIR) if f.startswith("articles") and f != "articles.xsd" and not f.endswith(".errors")]
     CONTACTS = os.path.join(IN_DIR, "contacts")
 
+    # load the subjects and then migrate suggestions and journals
     load_subjects(SUBJECTS, LCC)
+    #migrate_suggestions(SUGGESTIONS)
+    #migrate_journals(JOURNALS)
     
-    migrate_suggestions(SUGGESTIONS)
-    migrate_journals(JOURNALS)
-    migrate_contacts(CONTACTS) # contacts have to come after journals, as they will search for matches
+    # contacts have to come after journals, as they will search for matches
+    #migrate_contacts(CONTACTS)
+    
+    # load a map of issns to journals, which is used in article migration
+    load_issn_journal_map()
     for a in ARTICLES:
         migrate_articles(a)
 
