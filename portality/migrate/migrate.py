@@ -498,13 +498,13 @@ def migrate_articles(source, batch_size=5000):
     articles = xml.getroot()
     print "migrating", str(len(articles)), "article records from", source
     
-    error = codecs.open(source + ".errors", "wb", "utf8")
+    #error = codecs.open(source + ".errors", "wb", "utf8")
     counter = 0
     batch = []
     for element in articles:
         a = Article()
         b = _to_article_bibjson(element)
-        _add_journal_info(b, error)
+        _add_journal_info(b)
         a.set_bibjson(b)
         a.set_created(_created_date(element))
         a.set_id()
@@ -524,7 +524,7 @@ def migrate_articles(source, batch_size=5000):
         Article.bulk(batch, refresh=True)
         print "batch written, total written", counter
     
-    error.close()
+    #error.close()
         
 
 def _created_date(element):
@@ -602,7 +602,7 @@ def _to_article_bibjson(element):
     
     return b
 
-def _add_journal_info(bibjson, error_register):
+def _add_journal_info(bibjson):
     global journal_data_registry
     
     # first, get the ISSNs associated with the record
@@ -651,7 +651,7 @@ def _add_journal_info(bibjson, error_register):
             journal = possibilities[possibilities.keys()[0]]
     
     if journal is None:
-        error_register.write(bibjson.title + "\n\n")
+        # error_register.write(bibjson.title + "\n\n")
         return
     
     # if we get to here, we have a journal record we want to pull data from
