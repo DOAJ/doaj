@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.oa_end.year.exact', 'display': 'Stopped publishing OA in..'}, // sort this alphabetically descending by default
         {'field': 'bibjson.for_free', 'display': 'For free?'},
         // Articles
-        {'field': 'bibjson.keywords.exact', 'display': 'Keywords'},
+        {'field': 'bibjson.keywords', 'display': 'Keywords'},
         {'field': 'bibjson.author.exact', 'display': 'Author'},
         {'field': 'bibjson.year.exact', 'display': 'Year'},
         {'field': 'bibjson.journal.publisher.exact', 'display': 'Publisher'},
@@ -165,6 +165,12 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Date added to DOAJ</strong>: ",
                 "field": "created_date",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>ID</strong>: ",
+                "field": "id",
             }
         ],
     ],
