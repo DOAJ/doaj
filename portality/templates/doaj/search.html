@@ -26,8 +26,10 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.year.exact', 'display': 'Year'},
         {'field': 'bibjson.journal.publisher.exact', 'display': 'Publisher'},
     ],
-    search_sortby: [{'display':'Date added to DOAJ','field':'created_date'},{'display':'Publisher', 'field':'bibjson.publisher.exact'},
-{'display':'Subject','field':'bibjson.subject.term.exact'},],
+    search_sortby: [
+        {'display':'Date added to DOAJ','field':'created_date'},
+        {'display':'Articles - Year','field':'bibjson.year.exact'},
+    ],
     searchbox_fieldselect: [{'display':'author','field':'author.name'},{'display':'journal','field':'journal.name'}],
     paging: {
       size: 10
