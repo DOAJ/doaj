@@ -1,5 +1,5 @@
 import os, json, UserDict, requests, uuid
-
+from copy import deepcopy
 from datetime import datetime
 
 from portality.core import app, current_user
@@ -52,9 +52,13 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     def set_created(self, date=None):
         if date is None:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         else:
             self.data['created_date'] = date
+
+    @property
+    def created_date(self):
+        return self.data.get("created_date")
 
     def save(self):
         if 'id' in self.data:
@@ -63,10 +67,10 @@ class DomainObject(UserDict.IterableUserDict, object):
             id_ = self.makeid()
             self.data['id'] = id_
         
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%d %H%M")
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if 'created_date' not in self.data:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%d %H%M")
+            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         
         """
         if 'author' not in self.data:
@@ -223,7 +227,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             usr = current_user.id
         except:
             usr = "anonymous"
-        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%d %H%M") } )
+        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") } )
         r = requests.put(self.target() + self.data['id'], data=json.dumps(self.data))
 
     def delete(self):        
@@ -233,6 +237,42 @@ class DomainObject(UserDict.IterableUserDict, object):
     def delete_all(cls):
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
-
+    
+    @classmethod
+    def iterate(cls, q, page_size=1000, limit=None):
+        q["size"] = page_size
+        q["from"] = 0
+        counter = 0
+        while True:
+            # apply the limit
+            if limit is not None and counter >= limit:
+                break
+            
+            res = cls.query(q=q)
+            rs = [r.get("_source") for r in res.get("hits", {}).get("hits", [])]
+            if len(rs) == 0:
+                break
+            for r in rs:
+                # apply the limit (again)
+                if limit is not None and counter >= limit:
+                    break
+                counter += 1
+                yield cls(**r)
+            q["from"] += page_size   
+    
+    @classmethod
+    def iterall(cls, page_size=1000, limit=None):
+        return cls.iterate(deepcopy(all_query), page_size, limit)
+    
     def csv(self, multival_sep=','):
         raise NotImplementedError
+
+########################################################################
+## Some useful ES queries
+########################################################################
+
+all_query = { 
+    "query" : { 
+        "match_all" : { }
+    }
+}

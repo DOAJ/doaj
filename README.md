@@ -35,8 +35,17 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     git submodule update
     python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
     
+## Data Models
 
-## Journal Data Model
+Notes on the data model
+
+* All dates are provided in ISO 8601, which are of the form yyyy-mm-ddTHH:MM:SSZ
+
+The objective of the "history" section of the records is to record old versions of the bibliographic metadata.  This is not to say, a version history of the record, but actual snapshots of data that was accurate at the time it was created, but which has changed.  So, erroneous metadata should still not be present in the history records, and it should be possible to amend history records if errors are found.  Repeat: it is not like version control, it is a legitimate historic record.
+
+It is likely that history records will only be created upon request by the administrator.
+
+### Journal Data Model
 
     {
         "id" : "<some opaque identifier>",
@@ -125,22 +134,17 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
         "index" : {
             "issn" : [<list of all print and electronic issns for all time>],
             "title" : [<list of all titles the journal has been known by>],
-            "subjects" : [<all possible subject keywords>],
-            "schema_subjects" : [<all subject keywords with schema prefixes>]
+            "subject" : [<all possible subject keywords>],
+            "schema_subject" : [<all subject keywords with schema prefixes>],
+            "classification" : [<list of classification terms without prefixes>]
         },
         "created_date" : "<date created>",
         "last_updated" : "<date record last modified>"
     }
 
-### A Note on the History
 
-The objective of the "history" section of the record is to record old versions of the bibliographic metadata.  This is not to say, a version history of the record, but actual snapshots of data that was accurate at the time it was created, but which has changed.  So, erroneous metadata should still not be present in the history records, and it should be possible to amend history records if errors are found.  Repeat: it is not like version control, it is a legitimate historic record.
 
-It is likely that history records will only be created upon request by the administrator.
-
-This applies to the Article Data Model too
-
-## Article Data Model
+### Article Data Model
 
     {
         "id" : "<some opaque identifier>",
@@ -154,7 +158,19 @@ This applies to the Article Data Model too
             "journal" : {
                 "volume" : "journal volume number",
                 "number" : "journal issue number",
-                "publisher" : "<publisher>"
+                "publisher" : "<publisher>",
+                "title" : "<journal title (taken from journal record)>"
+                "license" : [
+                    {
+                        "title" : "<name of licence>",
+                        "type" : "<type>", 
+                        "url" : "<url>", 
+                        "version" : "<version>",
+                        "open_access": true|false,
+                    }
+                ],
+                "language" : "<language of journal as a whole>",
+                "country" : "<country of publication>"
             },
             "year" : "<year of publication>",
             "month" : "<month of publicaiton>",
@@ -170,7 +186,13 @@ This applies to the Article Data Model too
             "author" : [
                 {"name" : "<author name>"},
             ],
-            "keywords" : [<list of free text keywords>]
+            "keywords" : [<list of free text keywords>],
+            "subject" : [
+                {
+                    "scheme" : "<subject scheme>",
+                    "term" : "<subject term>"
+                }
+            ]
         },
         "history" : [
             {
@@ -181,13 +203,28 @@ This applies to the Article Data Model too
         "index" : {
             "date" : "<date of publication>"
             "issn" : [<list of all issns that this item pertains to>],
+            "subject" : [<all possible subject keywords>],
+            "schema_subject" : [<all subject keywords with schema prefixes>],
+            "classification" : [<list of classification terms without prefixes>]
         },
         "created" : "<date created>",
         "last_modified" : "<date record last modified>"
     }
 
+NOTE: there's an argument for putting the issn identifiers inside the journal part of the bibjson, rather than at the root of the bibliographic record, but this creates some annoying complexities in the software implementation and its API for interacting with identifiers, so it has not yet been done.  Sould it be?  The same goes for the subject, which currently comes from the journal record, but which can effectively be applied the the article too.
 
+### Contact Data Model
 
+NOTE: this is just for the purposes of holding them over until the new year.  We should actually have each document
+assert the user(s) they can be administered by
+
+    {
+        "id" : "<the username of the user>",
+        "password" : "<hashed password>",
+        "name" : "<user's actual name>",
+        "email" : "<user's email address>",
+        "journal" : [<list of journal ids the user can administer>]
+    }
 
 
 

@@ -1,246 +1,16 @@
 from datetime import datetime
 from copy import deepcopy
+import json
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
 
-
-# The default Portality account object.  We don't need this yet, but we will soon
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-class Account(DomainObject, UserMixin):
-    __type__ = 'account'
-
-    @classmethod
-    def pull_by_email(cls,email):
-        res = cls.query(q='email:"' + email + '"')
-        if res.get('hits',{}).get('total',0) == 1:
-            return cls(**res['hits']['hits'][0]['_source'])
-        else:
-            return None
-
-    def set_password(self, password):
-        self.data['password'] = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.data['password'], password)
-
-    @property
-    def is_super(self):
-        return not self.is_anonymous() and self.id in app.config['SUPER_USER']
-
-# NOTE: DomainObject interferes with new style @property getter/setter
-# so we can't use them here
-class Journal(DomainObject):
-    __type__ = "journal"
-    CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
-                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
-                    "Subjects", "Country", "Publication fee", "Further Information", 
-                    "CC License", "Content in DOAJ"]
-    
-    def bibjson(self):
-        if "bibjson" not in self.data:
-            self.data["bibjson"] = {}
-        return JournalBibJSON(self.data.get("bibjson"))
-
-    def set_bibjson(self, bibjson):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
-        self.data["bibjson"] = bibjson
-    
-    def history(self):
-        histories = self.data.get("history", [])
-        return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
-    
-    def snapshot(self, replaces=None, isreplacedby=None):
-        snap = deepcopy(self.data.get("bibjson"))
-        self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
-    
-    def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
-        if date is None:
-            date = datetime.now().isoformat()
-        snobj = {"date" : date, "bibjson" : bibjson}
-        if replaces is not None:
-            if isinstance(replaces, list):
-                snobj["replaces"] = replaces
-            else:
-                snobj["replaces"] = [replaces]
-        if isreplacedby is not None:
-            if isinstance(isreplacedby, list):
-                snobj["isreplacedby"] = isreplacedby
-            else:
-                snobj["isreplacedby"] = [replaces]
-        if "history" not in self.data:
-            self.data["history"] = []
-        self.data["history"].append(snobj)
-    
-    def is_in_doaj(self):
-        return self.data.get("admin", {}).get("in_doaj", False)
-    
-    def set_in_doaj(self, value):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["in_doaj"] = value
-    
-    def application_status(self):
-        return self.data.get("admin", {}).get("application_status")
-    
-    def set_application_status(self, value):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["application_status"] = value
-    
-    def contacts(self):
-        return self.data.get("admin", {}).get("contact", [])
-        
-    def add_contact(self, name, email):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        if "contact" not in self.data["admin"]:
-            self.data["admin"]["contact"] = []
-        self.data["admin"]["contact"].append({"name" : name, "email" : email})
-    
-    def add_note(self, note, date=None):
-        if date is None:
-            date = datetime.now().isoformat()
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        if "notes" not in self.data.get("admin"):
-            self.data["admin"]["notes"] = []
-        self.data["admin"]["notes"].append({"date" : date, "note" : note})
-    
-    def add_correspondence(self, message, date=None):
-        if date is None:
-            date = datetime.now().isoformat()
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        if "owner_correspondence" not in self.data.get("admin"):
-            self.data["admin"]["owner_correspondence"] = []
-        self.data["admin"]["owner_correspondence"].append({"date" : date, "note" : message})
-    
-    def _generate_index(self):
-        # the index fields we are going to generate
-        issns = []
-        titles = []
-        subjects = []
-        schema_subjects = []
-        
-        # the places we're going to get those fields from
-        cbib = self.bibjson()
-        hist = self.history()
-        
-        # get the issns out of the current bibjson
-        issns += cbib.get_identifiers(cbib.P_ISSN)
-        issns += cbib.get_identifiers(cbib.E_ISSN)
-        
-        # get the title out of the current bibjson
-        titles.append(cbib.title)
-        
-        # get the subjects and concatenate them with their schemes from the current bibjson
-        for subs in cbib.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            subjects.append(term)
-            schema_subjects.append(scheme + ":" + term)
-        
-        # add the keywords to the non-schema subjects
-        subjects += cbib.keywords
-        
-        # now get the issns and titles out of the historic records
-        for date, r, irb, hbib in hist:
-            issns += hbib.get_identifiers(hbib.P_ISSN)
-            issns += hbib.get_identifiers(hbib.E_ISSN)
-            titles.append(hbib.title)
-        
-        # deduplicate the lists
-        issns = list(set(issns))
-        titles = list(set(titles))
-        subjects = list(set(subjects))
-        schema_subjects = list(set(schema_subjects))
-        
-        # build the index part of the object
-        self.data["index"] = {}
-        if len(issns) > 0:
-            self.data["index"]["issn"] = issns
-        if len(titles) > 0:
-            self.data["index"]["title"] = titles
-        if len(subjects) > 0:
-            self.data["index"]["subjects"] = subjects
-        if len(schema_subjects) > 0:
-            self.data["index"]["schema_subjects"] = schema_subjects
-    
-    def save(self):
-        self._generate_index()
-        super(Journal, self).save()
-
-    def csv(self, multival_sep=','):
-        YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
-        row = []
-        c = self.data['bibjson']
-        row.append(c.get('title', ''))
-        row.append('') # in place of Title Alternative
-        row.append( multival_sep.join(c.get('link', '')) )
-        row.append(c.get('publisher', ''))
-        row.append(c.get('language', ''))
-
-        # we're following the old CSV format strictly for now, so only 1
-        # ISSN allowed - below is the code for handling multiple ones
-
-        # ISSN taken from Print ISSN
-        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
-        pissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'pissn']
-        row.append(pissns[0] if len(pissns) > 0 else '') # just the 1st one
-
-        # EISSN - the same as ISSN applies
-        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
-        eissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'eissn']
-        row.append(eissns[0] if len(eissns) > 0 else '') # just the 1st one
-
-        row.append( multival_sep.join(c.get('keywords', '')) )
-        row.append(c.get('oa_start', {}).get('year'))
-        row.append(c.get('oa_end', {}).get('year'))
-        row.append(self.data.get('created_date', ''))
-        row.append( multival_sep.join([subject['term'] for subject in c.get('subject', [])]) )
-        row.append(c.get('country', ''))
-        row.append(YES_NO[c.get('author_pays', '')])
-        row.append(c.get('author_pays_url', ''))
-
-        # for now, follow the strange format of the CC License column
-        # that the old CSV had. Also, only take the first CC license we see!
-        cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
-        row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
-        
-        row.append(YES_NO[c.get('active')])
-        return row
-
-class Suggestion(Journal):
-    __type__ = "suggestion"
-    
-    def _set_suggestion_property(self, name, value):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"][name] = value
-    
-    def description(self): return self.data.get("suggestion", {}).get("description")
-    
-    def set_description(self, value): self._set_suggestion_property("description", value)
-    
-    def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
-    
-    def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
-    
-    def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
-    
-    def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
-    
-    def suggester(self):
-        return self.data.get("suggestion", {}).get("suggester")
-        
-    def set_suggester(self, name, email):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
+############################################################################
+# Generic/Utility classes and functions
+############################################################################
 
 class GenericBibJSON(object):
     # vocab of known identifier types
@@ -274,10 +44,16 @@ class GenericBibJSON(object):
         return value
     
     def _normalise_issn(self, issn):
+        issn = issn.upper()
+        if len(issn) > 8: return issn
         if len(issn) == 8:
-            # i.e. it is not hyphenated
-            return issn[:4] + "-" + issn[4:]
-        return issn
+            if "-" in issn: return "0" + issn
+            else: return issn[:4] + "-" + issn[4:]
+        if len(issn) < 8:
+            if "-" in issn: return ("0" * (9 - len(issn))) + issn
+            else:
+                issn = ("0" * (8 - len(issn))) + issn
+                return issn[:4] + "-" + issn[4:]
     
     def add_identifier(self, idtype, value):
         if "identifier" not in self.bibjson:
@@ -285,7 +61,10 @@ class GenericBibJSON(object):
         idobj = {"type" : idtype, "id" : self._normalise_identifier(idtype, value)}
         self.bibjson["identifier"].append(idobj)
     
-    def get_identifiers(self, idtype):
+    def get_identifiers(self, idtype=None):
+        if idtype is None:
+            return self.bibjson.get("identifier", [])
+        
         ids = []
         for identifier in self.bibjson.get("identifier", []):
             if identifier.get("type") == idtype and identifier.get("id") not in ids:
@@ -341,6 +120,294 @@ class GenericBibJSON(object):
             urlobj["type"] = urltype
         self.bibjson["link"].append(urlobj)
     
+    def get_urls(self, urltype=None):
+        if urltype is None:
+            return self.bibjson.get("link", [])
+        
+        urls = []
+        for link in self.bibjson.get("link", []):
+            if link.get("type") == urltype:
+                urls.append(link.get("url"))
+        return urls
+    
+    def add_subject(self, scheme, term):
+        if "subject" not in self.bibjson:
+            self.bibjson["subject"] = []
+        sobj = {"scheme" : scheme, "term" : term}
+        self.bibjson["subject"].append(sobj)
+    
+    def subjects(self):
+        return self.bibjson.get("subject", [])
+
+############################################################################
+
+
+####################################################################
+## Account object and related classes
+####################################################################
+
+class Account(DomainObject, UserMixin):
+    __type__ = 'account'
+
+    @classmethod
+    def pull_by_email(cls,email):
+        res = cls.query(q='email:"' + email + '"')
+        if res.get('hits',{}).get('total',0) == 1:
+            return cls(**res['hits']['hits'][0]['_source'])
+        else:
+            return None
+    
+    @property
+    def name(self):
+        return self.data.get("name")
+    
+    def set_name(self, name):
+        self.data["name"] = name
+    
+    @property
+    def email(self):
+        return self.data.get("email")
+
+    def set_email(self, email):
+        self.data["email"] = email
+
+    def set_password(self, password):
+        self.data['password'] = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.data['password'], password)
+        
+    @property
+    def journal(self):
+        return self.data.get("journal")
+    
+    def add_journal(self, jid):
+        if jid in self.data.get("journal", []):
+            return
+        if "journal" not in self.data:
+            self.data["journal"] = []
+        self.data["journal"].append(jid)
+    
+    def remove_journal(self, jid):
+        if "journal" not in self.data:
+            return
+        self.data["journal"].remove(jid)
+
+    @property
+    def is_super(self):
+        return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        
+    def prep(self):
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+#########################################################################
+
+
+#########################################################################
+## Journal object and related classes
+#########################################################################
+
+# NOTE: DomainObject interferes with new style @property getter/setter
+# so we can't use them here
+class Journal(DomainObject):
+    __type__ = "journal"
+    CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
+                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
+                    "Subjects", "Country", "Publication fee", "Further Information", 
+                    "CC License", "Content in DOAJ"]
+    
+    @classmethod
+    def find_by_issn(self, issn):
+        q = JournalQuery()
+        q.find_by_issn(issn)
+        result = self.query(q=q.query)
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+    
+    def bibjson(self):
+        if "bibjson" not in self.data:
+            self.data["bibjson"] = {}
+        return JournalBibJSON(self.data.get("bibjson"))
+
+    def set_bibjson(self, bibjson):
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        self.data["bibjson"] = bibjson
+    
+    def history(self):
+        histories = self.data.get("history", [])
+        return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
+    
+    def snapshot(self, replaces=None, isreplacedby=None):
+        snap = deepcopy(self.data.get("bibjson"))
+        self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
+    
+    def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        snobj = {"date" : date, "bibjson" : bibjson}
+        if replaces is not None:
+            if isinstance(replaces, list):
+                snobj["replaces"] = replaces
+            else:
+                snobj["replaces"] = [replaces]
+        if isreplacedby is not None:
+            if isinstance(isreplacedby, list):
+                snobj["isreplacedby"] = isreplacedby
+            else:
+                snobj["isreplacedby"] = [replaces]
+        if "history" not in self.data:
+            self.data["history"] = []
+        self.data["history"].append(snobj)
+    
+    def is_in_doaj(self):
+        return self.data.get("admin", {}).get("in_doaj", False)
+    
+    def set_in_doaj(self, value):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["in_doaj"] = value
+    
+    def application_status(self):
+        return self.data.get("admin", {}).get("application_status")
+    
+    def set_application_status(self, value):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["application_status"] = value
+    
+    def contacts(self):
+        return self.data.get("admin", {}).get("contact", [])
+        
+    def add_contact(self, name, email):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        if "contact" not in self.data["admin"]:
+            self.data["admin"]["contact"] = []
+        self.data["admin"]["contact"].append({"name" : name, "email" : email})
+    
+    def add_note(self, note, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        if "notes" not in self.data.get("admin"):
+            self.data["admin"]["notes"] = []
+        self.data["admin"]["notes"].append({"date" : date, "note" : note})
+    
+    def add_correspondence(self, message, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        if "owner_correspondence" not in self.data.get("admin"):
+            self.data["admin"]["owner_correspondence"] = []
+        self.data["admin"]["owner_correspondence"].append({"date" : date, "note" : message})
+    
+    def _generate_index(self):
+        # the index fields we are going to generate
+        issns = []
+        titles = []
+        subjects = []
+        schema_subjects = []
+        classification = []
+        
+        # the places we're going to get those fields from
+        cbib = self.bibjson()
+        hist = self.history()
+        
+        # get the issns out of the current bibjson
+        issns += cbib.get_identifiers(cbib.P_ISSN)
+        issns += cbib.get_identifiers(cbib.E_ISSN)
+        
+        # get the title out of the current bibjson
+        titles.append(cbib.title)
+        
+        # get the subjects and concatenate them with their schemes from the current bibjson
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            subjects.append(term)
+            schema_subjects.append(scheme + ":" + term)
+            classification.append(term)
+        
+        # add the keywords to the non-schema subjects (but not the classification)
+        subjects += cbib.keywords
+        
+        # now get the issns and titles out of the historic records
+        for date, r, irb, hbib in hist:
+            issns += hbib.get_identifiers(hbib.P_ISSN)
+            issns += hbib.get_identifiers(hbib.E_ISSN)
+            titles.append(hbib.title)
+        
+        # deduplicate the lists
+        issns = list(set(issns))
+        titles = list(set(titles))
+        subjects = list(set(subjects))
+        schema_subjects = list(set(schema_subjects))
+        classification = list(set(classification))
+        
+        # build the index part of the object
+        self.data["index"] = {}
+        if len(issns) > 0:
+            self.data["index"]["issn"] = issns
+        if len(titles) > 0:
+            self.data["index"]["title"] = titles
+        if len(subjects) > 0:
+            self.data["index"]["subject"] = subjects
+        if len(schema_subjects) > 0:
+            self.data["index"]["schema_subject"] = schema_subjects
+        if len(classification) > 0:
+            self.data["index"]["classification"] = classification
+    
+    def prep(self):
+        self._generate_index()
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    def save(self):
+        self.prep()
+        super(Journal, self).save()
+
+    def csv(self, multival_sep=','):
+        YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
+        row = []
+        c = self.data['bibjson']
+        row.append(c.get('title', ''))
+        row.append('') # in place of Title Alternative
+        row.append( multival_sep.join(c.get('link', '')) )
+        row.append(c.get('publisher', ''))
+        row.append(c.get('language', ''))
+
+        # we're following the old CSV format strictly for now, so only 1
+        # ISSN allowed - below is the code for handling multiple ones
+
+        # ISSN taken from Print ISSN
+        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
+        pissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'pissn']
+        row.append(pissns[0] if len(pissns) > 0 else '') # just the 1st one
+
+        # EISSN - the same as ISSN applies
+        # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
+        eissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'eissn']
+        row.append(eissns[0] if len(eissns) > 0 else '') # just the 1st one
+
+        row.append( multival_sep.join(c.get('keywords', '')) )
+        row.append(c.get('oa_start', {}).get('year'))
+        row.append(c.get('oa_end', {}).get('year'))
+        row.append(self.data.get('created_date', ''))
+        row.append( multival_sep.join([subject['term'] for subject in c.get('subject', [])]) )
+        row.append(c.get('country', ''))
+        row.append(YES_NO[c.get('author_pays', '')])
+        row.append(c.get('author_pays_url', ''))
+
+        # for now, follow the strange format of the CC License column
+        # that the old CSV had. Also, only take the first CC license we see!
+        cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
+        row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
+        
+        row.append(YES_NO[c.get('active')])
+        return row
+
 class JournalBibJSON(GenericBibJSON):
     
     # journal-specific simple property getter and setters
@@ -415,6 +482,9 @@ class JournalBibJSON(GenericBibJSON):
         
         self.bibjson["license"].append(lobj)
     
+    def get_license(self):
+        return self.bibjson.get("license", [None])[0]
+    
     def set_open_access(self, open_access):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
@@ -444,15 +514,68 @@ class JournalBibJSON(GenericBibJSON):
             oaobj["number"] = number
         self.bibjson["oa_end"] = oaobj
 
-    def add_subject(self, scheme, term):
-        if "subject" not in self.bibjson:
-            self.bibjson["subject"] = []
-        sobj = {"scheme" : scheme, "term" : term}
-        self.bibjson["subject"].append(sobj)
+class JournalQuery(object):
+    """
+    wrapper around the kinds of queries we want to do against the journal type
+    """
+    issn_query = {
+        "query": {
+        	"bool": {
+            	"must": [
+                	{
+                    	"term" :  { "index.issn.exact" : "<issn>" }
+                    }
+                ]
+            }
+        }
+    }
     
-    def subjects(self):
-        return self.bibjson.get("subject", [])
+    def __init__(self):
+        self.query = None
+    
+    def find_by_issn(self, issn):
+        self.query = deepcopy(self.issn_query)
+        self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
 
+############################################################################
+
+############################################################################
+## Suggestion object and related classes
+############################################################################
+
+class Suggestion(Journal):
+    __type__ = "suggestion"
+    
+    def _set_suggestion_property(self, name, value):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        self.data["suggestion"][name] = value
+    
+    def description(self): return self.data.get("suggestion", {}).get("description")
+    
+    def set_description(self, value): self._set_suggestion_property("description", value)
+    
+    def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
+    
+    def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
+    
+    def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
+    
+    def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
+    
+    def suggester(self):
+        return self.data.get("suggestion", {}).get("suggester")
+        
+    def set_suggester(self, name, email):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
+
+############################################################################
+
+####################################################################
+# Article and related classes
+####################################################################
 
 class Article(DomainObject):
     __type__ = "article"
@@ -480,7 +603,7 @@ class Article(DomainObject):
     def add_history(self, bibjson, date=None):
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
-            date = datetime.now().isoformat()
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         snobj = {"date" : date, "bibjson" : bibjson}
         if "history" not in self.data:
             self.data["history"] = []
@@ -489,6 +612,9 @@ class Article(DomainObject):
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
+        subjects = []
+        schema_subjects = []
+        classification = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -503,26 +629,22 @@ class Article(DomainObject):
             issns += hbib.get_identifiers(hbib.P_ISSN)
             issns += hbib.get_identifiers(hbib.E_ISSN)
         
+        # get the subjects and concatenate them with their schemes from the current bibjson
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            subjects.append(term)
+            schema_subjects.append(scheme + ":" + term)
+            classification.append(term)
+        
         # deduplicate the list
         issns = list(set(issns))
+        subjects = list(set(subjects))
+        schema_subjects = list(set(schema_subjects))
+        classification = list(set(classification))
         
         # work out what the date of publication is
-        date = ""
-        if cbib.year is not None:
-            date += str(cbib.year)
-            if cbib.month is not None:
-                try:
-                    if int(cbib.month) < 10:
-                        date += "-0" + str(cbib.month)
-                    else:
-                        date += "-" + str(cbib.month)
-                except:
-                    # FIXME: months are in all sorts of forms, we can only handle 
-                    # numeric ones right now
-                    date += "-01" 
-            else:
-                date += "-01"
-            date += "-01"
+        date = cbib.get_publication_date()
         
         # build the index part of the object
         self.data["index"] = {}
@@ -530,7 +652,17 @@ class Article(DomainObject):
             self.data["index"]["issn"] = issns
         if date != "":
             self.data["index"]["date"] = date
-        
+        if len(subjects) > 0:
+            self.data["index"]["subject"] = subjects
+        if len(schema_subjects) > 0:
+            self.data["index"]["schema_subject"] = schema_subjects
+        if len(classification) > 0:
+            self.data["index"]["classification"] = classification
+    
+    def prep(self):
+        self._generate_index()
+        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    
     def save(self):
         self._generate_index()
         super(Article, self).save()
@@ -572,7 +704,7 @@ class ArticleBibJSON(GenericBibJSON):
     
     @property
     def volume(self):
-        self.bibjson.get("journal", {}).get("volume")
+        return self.bibjson.get("journal", {}).get("volume")
     
     @volume.setter
     def volume(self, value):
@@ -580,12 +712,36 @@ class ArticleBibJSON(GenericBibJSON):
     
     @property
     def number(self):
-        self.bibjson.get("journal", {}).get("number")
+        return self.bibjson.get("journal", {}).get("number")
     
     @number.setter
     def number(self, value):
         self._set_journal_property("number", value)
-        
+    
+    @property
+    def journal_title(self):
+        return self.bibjson.get("journal", {}).get("title")
+    
+    @journal_title.setter
+    def journal_title(self, title):
+        self._set_journal_property("title", title)
+    
+    @property
+    def journal_language(self):
+        return self.bibjson.get("journal", {}).get("language")
+    
+    @journal_language.setter
+    def journal_language(self, lang):
+        self._set_journal_property("language", lang)
+    
+    @property
+    def journal_country(self):
+        return self.bibjson.get("journal", {}).get("country")
+    
+    @journal_country.setter
+    def journal_country(self, country):
+        self._set_journal_property("country", country)
+    
     @property
     def publisher(self):
         self.bibjson.get("journal", {}).get("publisher")
@@ -598,7 +754,64 @@ class ArticleBibJSON(GenericBibJSON):
         if "author" not in self.bibjson:
             self.bibjson["author"] = []
         self.bibjson["author"].append({"name" : name})
+    
+    @property
+    def author(self):
+        return self.bibjson.get("author", [])
+    
+    def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+        lobj = {"title" : licence_title, "type" : licence_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
+        
+        self._set_journal_property("license", [lobj])
+    
+    def get_journal_license(self):
+        return self.bibjson.get("journal", {}).get("license", [None])[0]
+    
+    def get_publication_date(self):
+        # work out what the date of publication is
+        date = ""
+        if self.year is not None:
+            # fix 2 digit years
+            if len(self.year) == 2:
+                if int(self.year) <=13:
+                    self.year = "20" + self.year
+                else:
+                    self.year = "19" + self.year
+                    
+            # if we still don't have a 4 digit year, forget it
+            if len(self.year) != 4:
+                return date
+            
+            # build up our proposed datestamp
+            date += str(self.year)
+            if self.month is not None:
+                try:
+                    if len(self.month) == 1:
+                        date += "-0" + str(self.month)
+                    else:
+                        date += "-" + str(self.month)
+                except:
+                    # FIXME: months are in all sorts of forms, we can only handle 
+                    # numeric ones right now
+                    date += "-01" 
+            else:
+                date += "-01"
+            date += "-01T00:00:00Z"
+            
+            # attempt to confirm the format of our datestamp
+            try:
+                datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+            except:
+                return ""
+        return date
 
+####################################################################
 
 ####################################################################
 ## OAI-PMH Record Objects
@@ -620,6 +833,44 @@ class OAIPMHRecord(object):
             }
         }
     
+    sets = {
+	    "query" : {
+        	"match_all" : {}
+        },
+        "size" : 0,
+        "facets" : {
+        	"sets" : {
+            	"terms" : {
+                	"field" : "index.schema_subjects.exact",
+                    "order" : "term",
+                    "size" : 100000
+                }
+            }
+        }
+    }
+    
+    records = {
+	    "query" : {
+        	"bool" : {
+            	"must" : []
+            }
+        },
+        "from" : 0,
+        "size" : 25
+    }
+    
+    all_records = {
+	    "query" : {
+        	"match_all" : {}
+        },
+        "from" : 0,
+        "size" : 25,
+    }
+    
+    set_limit = {"term" : { "index.schema_subjects.exact" : "<set name>" }}
+    range_limit = { "range" : { "created_date.exact" : {"gte" : "<from date>", "lte" : "<until date>"} } }
+    created_sort = {"created_date.exact" : {"order" : "desc"}}
+    
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
         dates = [t.get("term") for t in result.get("facets", {}).get("earliest", {}).get("terms", [])]
@@ -628,12 +879,70 @@ class OAIPMHRecord(object):
                 # format is like : 2002-05-01 20:12:30
                 return "T".join(d.split(" ")) + "Z" # fudge the format
         return None
+    
+    def identifier_exists(self, identifier):
+        obj = self.pull(identifier)
+        return obj is not None
+    
+    def list_sets(self):
+        result = self.query(q=self.sets)
+        sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
+        return sets
+    
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        q = None
+        if from_date is None and until_date is None and oai_set is None:
+            q = deepcopy(self.all_records)
+        else:
+            q = deepcopy(self.records)
+            
+            if oai_set is not None:
+                s = deepcopy(self.set_limit)
+                s["term"]["index.schema_subjects.exact"] = oai_set
+                q["query"]["bool"]["must"].append(s)
+            
+            if until_date is not None or from_date is not None:
+                d = deepcopy(self.range_limit)
+                
+                if until_date is not None:
+                    d["range"]["created_date.exact"]["lte"] = until_date
+                else:
+                    del d["range"]["created_date.exact"]["lte"]
+                
+                if from_date is not None:
+                    d["range"]["created_date.exact"]["gte"] = from_date
+                else:
+                    del d["range"]["created_date.exact"]["gte"]
+                
+                q["query"]["bool"]["must"].append(d)
+        
+        if list_size is not None:
+            q["size"] = list_size
+            
+        if start_number is not None:
+            q["from"] = start_number
+        
+        q["sort"] = [deepcopy(self.created_sort)]
+        
+        # do the query
+        # print json.dumps(q)
+        results = self.query(q=q)
+        
+        total = results.get("hits", {}).get("total", 0)
+        return total, [hit.get("_source") for hit in results.get("hits", {}).get("hits", [])]
+        
 
 class OAIPMHArticle(OAIPMHRecord, Article):
-    pass
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        total, results = super(OAIPMHArticle, self).list_records(from_date=from_date, 
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+        return total, [Article(**r) for r in results]
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
-    pass
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+        total, results = super(OAIPMHJournal, self).list_records(from_date=from_date, 
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+        return total, [Journal(**r) for r in results]
 
 
 
