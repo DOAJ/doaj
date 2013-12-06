@@ -17,7 +17,7 @@ PORT = 5004
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://127.0.0.1:9200" # remember the http:// or https://
-ELASTIC_SEARCH_DB = "doaj"
+ELASTIC_SEARCH_DB = "doaj2"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
 # list of superuser account names
