@@ -146,17 +146,13 @@ class DomainObject(UserDict.IterableUserDict, object):
         keys.sort()
         return keys
         
-    @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
-        '''Perform a query on backend.
-
-        :param recid: needed if endpoint is about a record, e.g. mlt
-        :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
-        :param q: maps to query_string parameter if string, or query dict if dict.
-        :param terms: dictionary of terms to filter on. values should be lists. 
-        :param facets: dict of facets to return from the query.
-        :param kwargs: any keyword args as per
-            http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
+    @staticmethod
+    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+        '''
+        Generate a query object based on parameters but don't sent to
+        backend - return it instead. Must always have the same
+        parameters as the query method. See query method for explanation
+        of parameters.
         '''
         if recid and not recid.endswith('/'): recid += '/'
         if isinstance(q,dict):
@@ -213,6 +209,22 @@ class DomainObject(UserDict.IterableUserDict, object):
                 query['from'] = v
             else:
                 query[k] = v
+        
+        return query
+
+    @classmethod
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+        '''Perform a query on backend.
+
+        :param recid: needed if endpoint is about a record, e.g. mlt
+        :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
+        :param q: maps to query_string parameter if string, or query dict if dict.
+        :param terms: dictionary of terms to filter on. values should be lists. 
+        :param facets: dict of facets to return from the query.
+        :param kwargs: any keyword args as per
+            http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
+        '''
+        query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
 
         if endpoint in ['_mapping']:
             r = requests.get(cls.target() + recid + endpoint)
