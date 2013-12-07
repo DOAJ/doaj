@@ -5,7 +5,7 @@
 jQuery(document).ready(function($) {
   $('.facet-view-simple').each(function() {
   $(this).facetview({
-    search_url: 'http://ooz.cottagelabs.com:9200/doaj/journal,article/_search?',
+    search_url: 'http://ooz.cottagelabs.com:9200/{{ settings.ELASTIC_SEARCH_DB }}/journal,article/_search?',
     search_index: 'elasticsearch',
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},

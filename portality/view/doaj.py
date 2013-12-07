@@ -59,6 +59,7 @@ def additional_context():
         'heading_title': 'Heading Title - 100 word example',
         'heading_text': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent arcu tortor, hendrerit eget sapien quis, ultricies commodo diam. Nunc semper magna id urna sollicitudin aliquam. Vivamus in nisi sed tellus blandit varius. Fusce quis lectus turpis. Ut et condimentum libero. Donec orci risus, cursus vel dui a, rhoncus aliquet tellus. Sed dui lacus, convallis ut congue eu, gravida nec leo. Duis vel massa at enim mattis ullamcorper sed varius nulla. Nullam eget leo vel est consequat suscipit. Nulla porttitor dapibus nulla at vulputate. Sed cursus, augue quis rutrum adipiscing, lectus arcu tincidunt arcu, sit amet convallis urna nunc luctus nisi.',
         'sponsors': SPONSORS,
+        'settings': settings,
         }
 
 @blueprint.route("/")
