@@ -5,3 +5,7 @@
 #facetview_results .alt_title {
     color: gray;
 }
+
+.facetview_searchfield {
+    width: auto;
+}

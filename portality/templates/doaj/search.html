@@ -7,6 +7,7 @@ jQuery(document).ready(function($) {
   $(this).facetview({
     search_url: 'http://ooz.cottagelabs.com:9200/{{ settings.ELASTIC_SEARCH_DB }}/journal,article/_search?',
     search_index: 'elasticsearch',
+    sharesave_link: false,
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
@@ -31,7 +32,26 @@ jQuery(document).ready(function($) {
         {'display':'Title','field':'bibjson.title.exact'},
         {'display':'Articles - Year','field':'bibjson.year.exact'},
     ],
-    searchbox_fieldselect: [{'display':'author','field':'author.name'},{'display':'journal','field':'journal.name'}],
+    searchbox_fieldselect: [
+        {'display':'Title','field':'bibjson.title'},
+        {'display':'Keywords','field':'bibjson.keywords'},
+        {'display':'Subject','field':'bibjson.subject'},
+        {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
+
+        {'display':'Article: Abstract','field':'bibjson.abstract'},
+        {'display':'Article: Author','field':'bibjson.author'},
+        {'display':'Article: Year','field':'bibjson.year'},
+        {'display':'Article: Country','field':'bibjson.journal.country'},
+        {'display':'Article: Language','field':'bibjson.journal.language'},
+        {'display':'Article: Publisher','field':'bibjson.journal.publisher'},
+        {'display':'Article: Journal Title','field':'bibjson.journal.publisher'},
+
+        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
+        {'display':'Journal: Country','field':'bibjson.country'},
+        {'display':'Journal: Language','field':'bibjson.language'},
+        {'display':'Journal: Publisher','field':'bibjson.publisher'},
+        {'display':'Journal: Provider','field':'bibjson.provider'},
+    ],
     paging: {
       size: 10
     },
