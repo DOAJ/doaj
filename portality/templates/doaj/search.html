@@ -47,8 +47,15 @@ jQuery(document).ready(function($) {
     // Journals
         [
             {
-                "pre": "<span style=\"font-size:120%\">",
+                "pre": '<span class="title">',
                 "field": "bibjson.title",
+                "post": "</span>"
+            }
+        ],
+        [
+            {
+                "pre": '<span class="alt_title">Alternative title: ',
+                "field": "bibjson.alternative_title",
                 "post": "</span>"
             }
         ],
