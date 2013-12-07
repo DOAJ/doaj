@@ -1,7 +1,8 @@
 from flask import Blueprint, request, abort, make_response, Response
-from flask import render_template, abort
+from flask import render_template, abort, redirect, url_for
 from flask.ext.login import current_user
 
+from portality import dao
 from portality import models as models
 from portality.core import app
 from portality import settings
@@ -9,6 +10,7 @@ from portality import settings
 from StringIO import StringIO
 import csv
 from datetime import datetime
+import json
 
 import sys
 try:
@@ -63,9 +65,25 @@ def additional_context():
 def home():
     return render_template('doaj/index.html')
 
-@blueprint.route("/search")
+@blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html')
+
+@blueprint.route("/search", methods=['POST'])
+def search_post():
+    if request.form.get('origin') != 'ui':
+        abort(501)  # not implemented
+
+    terms = {'_type': []}
+    if request.form.get('include_journals') and request.form.get('include_articles'):
+        terms = {}  # the default anyway
+    elif request.form.get('include_journals'):
+        terms['_type'].append('journal')
+    elif request.form.get('include_articles'):
+        terms['_type'].append('article')
+
+    qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
+    return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
 @blueprint.route("/about")
 def about():
