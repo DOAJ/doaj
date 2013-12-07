@@ -8,6 +8,7 @@ jQuery(document).ready(function($) {
     search_url: 'http://ooz.cottagelabs.com:9200/{{ settings.ELASTIC_SEARCH_DB }}/journal,article/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
+    searchbox_shade: 'none',
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
