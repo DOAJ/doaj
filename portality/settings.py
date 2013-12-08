@@ -16,7 +16,7 @@ DEBUG = True
 PORT = 5004
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "http://127.0.0.1:9200" # remember the http:// or https://
+ELASTIC_SEARCH_HOST = "http://doaj.cottagelabs.com:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj2"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
@@ -125,27 +125,29 @@ REPOS = {
 # ========================
 # FEED SETTINGS
 
+FEED_TITLE = "Directory of Open Access Journals"
+
 BASE_URL = "http://doaj.org"
 
 # Maximum number of feed entries to be given in a single response.  If this is omitted, it will
 # default to 20
-MAX_FEED_ENTRIES = 20
+MAX_FEED_ENTRIES = 100
 
-# Maximum age of feed entries (in seconds) (default value here is 3 months).  If this is omitted
-# then we will always supply up to the MAX_FEED_ENTRIES above
-MAX_FEED_ENTRY_AGE = 7776000
+# Maximum age of feed entries (in seconds) (default value here is 30 days).
+MAX_FEED_ENTRY_AGE = 2592000
 
+# NOT USED IN THIS IMPLEMENTATION
 # Which index to run feeds from
-FEED_INDEX = "journal"
+#FEED_INDEX = "journal"
 
 # Licensing terms for feed content
-FEED_LICENCE = "(c) DOAJ 2013."
+FEED_LICENCE = "(c) DOAJ 2013. CC-BY-SA."
 
 # name of the feed generator (goes in the atom:generator element)
 FEED_GENERATOR = "CottageLabs feed generator"
 
 # Larger image to use as the logo for all of the feeds
-FEED_LOGO = "http://cottagelabs.com/media/cottage_hill_bubble_small.jpg"
+FEED_LOGO = "http://www.doaj.org/static/doaj/images/favicon.ico"
 
 
 # ============================
