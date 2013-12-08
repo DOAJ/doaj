@@ -609,6 +609,10 @@ class Article(DomainObject):
             self.data["history"] = []
         self.data["history"].append(snobj)
     
+    def is_in_doaj(self):
+        # FIXME: this won't work yet, as the data is not in the right shape
+        return self.data.get("admin", {}).get("in_doaj", False)
+    
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
@@ -830,7 +834,7 @@ class OAIPMHRecord(object):
             "facets" : {
             	"earliest" : {
                 	"terms" : {
-                    	"field" : "created_date",
+                    	"field" : "last_updated",
                         "order" : "term"
                     }
                 }
@@ -860,24 +864,18 @@ class OAIPMHRecord(object):
     records = {
 	    "query" : {
         	"bool" : {
-            	"must" : []
+            	"must" : [
+            	    {"term" : {"admin.in_doaj" : True}}
+            	]
             }
         },
         "from" : 0,
         "size" : 25
     }
     
-    all_records = {
-	    "query" : {
-        	"match_all" : {}
-        },
-        "from" : 0,
-        "size" : 25,
-    }
-    
     set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
-    range_limit = { "range" : { "created_date.exact" : {"gte" : "<from date>", "lte" : "<until date>"} } }
-    created_sort = {"created_date.exact" : {"order" : "desc"}}
+    range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
+    created_sort = {"last_updated" : {"order" : "desc"}}
     
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
@@ -897,29 +895,26 @@ class OAIPMHRecord(object):
         return sets
     
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
-        q = None
-        if from_date is None and until_date is None and oai_set is None:
-            q = deepcopy(self.all_records)
-        else:
-            q = deepcopy(self.records)
+        q = deepcopy(self.records)
+        if from_date is not None or until_date is not None or oai_set is not None:
             
             if oai_set is not None:
                 s = deepcopy(self.set_limit)
-                s["term"]["index.schema_subjects.exact"] = oai_set
+                s["term"]["index.schema_subject.exact"] = oai_set
                 q["query"]["bool"]["must"].append(s)
             
             if until_date is not None or from_date is not None:
                 d = deepcopy(self.range_limit)
                 
                 if until_date is not None:
-                    d["range"]["created_date.exact"]["lte"] = until_date
+                    d["range"]["last_updated"]["lte"] = until_date
                 else:
-                    del d["range"]["created_date.exact"]["lte"]
+                    del d["range"]["last_updated"]["lte"]
                 
                 if from_date is not None:
-                    d["range"]["created_date.exact"]["gte"] = from_date
+                    d["range"]["last_updated"]["gte"] = from_date
                 else:
-                    del d["range"]["created_date.exact"]["gte"]
+                    del d["range"]["last_updated"]["gte"]
                 
                 q["query"]["bool"]["must"].append(d)
         
@@ -944,12 +939,26 @@ class OAIPMHArticle(OAIPMHRecord, Article):
         total, results = super(OAIPMHArticle, self).list_records(from_date=from_date, 
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
         return total, [Article(**r) for r in results]
+    
+    def pull(self, identifier):
+        # override the default pull, as we care about whether the item is in_doaj
+        record = super(OAIPMHArticle, self).pull(identifier)
+        if record.is_in_doaj():
+            return record
+        return None
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
     def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
         total, results = super(OAIPMHJournal, self).list_records(from_date=from_date, 
             until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
         return total, [Journal(**r) for r in results]
+    
+    def pull(self, identifier):
+        # override the default pull, as we care about whether the item is in_doaj
+        record = super(OAIPMHJournal, self).pull(identifier)
+        if record.is_in_doaj():
+            return record
+        return None
 
 
 

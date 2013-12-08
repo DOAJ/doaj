@@ -111,6 +111,7 @@ def make_oai_identifier(identifier, qualifier):
     return "oai:" + app.config.get("OAIPMH_IDENTIFIER_NAMESPACE") + "/" + qualifier + ":" + identifier
     
 def extract_internal_id(oai_identifier):
+    # most of the identifier is for show - we only care about the hex string at the end
     return oai_identifier.split(":")[-1]
 
 def get_response_date():
@@ -841,7 +842,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         identifier.text = make_oai_identifier(record.id, "article")
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.created_date)
+        datestamp.text = normalise_date(record.last_updated)
         
         """
         FIXME: we need to sort out the subject classifications for articles
@@ -925,7 +926,7 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         identifier.text = make_oai_identifier(record.id, "journal")
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.created_date)
+        datestamp.text = normalise_date(record.last_updated)
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
