@@ -523,7 +523,7 @@ class Identify(OAI_PMH):
 class ListIdentifiers(OAI_PMH):
     def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
         super(ListIdentifiers, self).__init__(base_url)
-        self.verb = "ListRecords"
+        self.verb = "ListIdentifiers"
         self.from_date = from_date
         self.until_date = until_date
         self.oai_set = oai_set
@@ -566,7 +566,7 @@ class ListIdentifiers(OAI_PMH):
             expiry = self.resumption.get("expiry", -1)
             expire_date = None
             if expiry >= 0:
-                expire_date = (datetime.now() + timedetla(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         
