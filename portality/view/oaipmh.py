@@ -75,10 +75,10 @@ def oaipmh(specified=None):
 #####################################################################
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec)
+    return base64.urlsafe_b64encode(setspec).replace("=", "~")
 
 def decode_set_spec(setspec):
-    return base64.urlsafe_b64decode(str(setspec))
+    return base64.urlsafe_b64decode(str(setspec).replace("~", "="))
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
     d = {}
@@ -111,13 +111,19 @@ def make_oai_identifier(identifier, qualifier):
     return "oai:" + app.config.get("OAIPMH_IDENTIFIER_NAMESPACE") + "/" + qualifier + ":" + identifier
     
 def extract_internal_id(oai_identifier):
+    # most of the identifier is for show - we only care about the hex string at the end
     return oai_identifier.split(":")[-1]
 
 def get_response_date():
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def normalise_date(date):
-    return "T".join(date.split(" ")) + "Z" # fudge the format for the time being
+    # FIXME: do we need a more powerful date normalisation routine?
+    try:
+        datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        return date
+    except:
+        return "T".join(date.split(" ")) + "Z"
 
 def get_crosswalk(prefix, datatype):
     return CROSSWALKS.get(prefix, {}).get(datatype)()
@@ -445,7 +451,7 @@ class OAI_PMH(object):
     
     def serialise(self):
         xml = self._to_xml()
-        return etree.tostring(xml)
+        return etree.tostring(xml, xml_declaration=True, encoding="UTF-8")
         
     def get_element(self):
         raise NotImplementedError()
@@ -517,7 +523,7 @@ class Identify(OAI_PMH):
 class ListIdentifiers(OAI_PMH):
     def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
         super(ListIdentifiers, self).__init__(base_url)
-        self.verb = "ListRecords"
+        self.verb = "ListIdentifiers"
         self.from_date = from_date
         self.until_date = until_date
         self.oai_set = oai_set
@@ -560,7 +566,7 @@ class ListIdentifiers(OAI_PMH):
             expiry = self.resumption.get("expiry", -1)
             expire_date = None
             if expiry >= 0:
-                expire_date = (datetime.now() + timedetla(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         
@@ -836,7 +842,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         identifier.text = make_oai_identifier(record.id, "article")
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.created_date)
+        datestamp.text = normalise_date(record.last_updated)
         
         """
         FIXME: we need to sort out the subject classifications for articles
@@ -920,7 +926,7 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         identifier.text = make_oai_identifier(record.id, "journal")
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.created_date)
+        datestamp.text = normalise_date(record.last_updated)
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")

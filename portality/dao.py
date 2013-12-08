@@ -59,6 +59,10 @@ class DomainObject(UserDict.IterableUserDict, object):
     @property
     def created_date(self):
         return self.data.get("created_date")
+    
+    @property
+    def last_updated(self):
+        return self.data.get("last_updated")
 
     def save(self):
         if 'id' in self.data:

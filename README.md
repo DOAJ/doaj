@@ -112,13 +112,13 @@ It is likely that history records will only be created upon request by the admin
         "admin" : {
             "in_doaj" : true|false,
             "application_status" : "state of journal application",
-            notes : [
+            "notes" : [
                 {
                     "note" : "<note>", 
                     "date" : "<date>"
                 }
             ],
-            owner_correspondence : [
+            "owner_correspondence" : [
                 {
                     "note" : "<note>", 
                     "date" : "<date>"
