@@ -451,7 +451,7 @@ class OAI_PMH(object):
     
     def serialise(self):
         xml = self._to_xml()
-        return etree.tostring(xml)
+        return etree.tostring(xml, xml_declaration=True, encoding="UTF-8")
         
     def get_element(self):
         raise NotImplementedError()
