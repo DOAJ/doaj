@@ -122,6 +122,11 @@ footer > .shaded-container + .shaded-container {
     margin-bottom: 0;
 }
 
+#homepage-search-input:focus {
+    border-color: rgba(246, 139, 31, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
 #main-nav.more-padding {
     margin-top: 1em;
 }
@@ -148,7 +153,7 @@ footer > .shaded-container + .shaded-container {
     }
 
     #homepage-search-input {
-        width: 99%;
+        width: 97%;
     }
 }
 
