@@ -2,6 +2,12 @@
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
+## Deployment
+We're running supervisord on our server. Every time you push changes, do
+    
+    git pull  # obviously
+    sudo supervisorctl restart doaj
+
 ## Setting up the software
 
 ### Elasticsearch
