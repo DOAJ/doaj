@@ -117,7 +117,12 @@ def get_response_date():
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def normalise_date(date):
-    return "T".join(date.split(" ")) + "Z" # fudge the format for the time being
+    # FIXME: do we need a more powerful date normalisation routine?
+    try:
+        datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+        return date
+    except:
+        return "T".join(date.split(" ")) + "Z"
 
 def get_crosswalk(prefix, datatype):
     return CROSSWALKS.get(prefix, {}).get(datatype)()
