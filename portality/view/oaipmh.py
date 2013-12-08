@@ -75,10 +75,10 @@ def oaipmh(specified=None):
 #####################################################################
 
 def make_set_spec(setspec):
-    return base64.urlsafe_b64encode(setspec)
+    return base64.urlsafe_b64encode(setspec).replace("=", "~")
 
 def decode_set_spec(setspec):
-    return base64.urlsafe_b64decode(str(setspec))
+    return base64.urlsafe_b64decode(str(setspec).replace("~", "="))
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
     d = {}

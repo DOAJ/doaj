@@ -839,13 +839,17 @@ class OAIPMHRecord(object):
     
     sets = {
 	    "query" : {
-        	"match_all" : {}
+        	"bool" : {
+            	"must" : [
+            	    {"term" : {"admin.in_doaj" : True}}
+            	]
+            }
         },
         "size" : 0,
         "facets" : {
         	"sets" : {
             	"terms" : {
-                	"field" : "index.schema_subjects.exact",
+                	"field" : "index.schema_subject.exact",
                     "order" : "term",
                     "size" : 100000
                 }
@@ -871,7 +875,7 @@ class OAIPMHRecord(object):
         "size" : 25,
     }
     
-    set_limit = {"term" : { "index.schema_subjects.exact" : "<set name>" }}
+    set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
     range_limit = { "range" : { "created_date.exact" : {"gte" : "<from date>", "lte" : "<until date>"} } }
     created_sort = {"created_date.exact" : {"order" : "desc"}}
     
