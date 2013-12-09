@@ -1070,12 +1070,6 @@ class AtomRecord(Journal):
         
         return [AtomRecord(**hit.get("_source")) for hit in results.get("hits", {}).get("hits", [])]
 
-
-####################################################################
-
-
-
-
-
-
-    
+class JournalArticle(DomainObject):
+    __type__ = 'journal,article'
+    __readonly__ = True  # TODO actually heed this attribute in all DomainObject methods which modify data
