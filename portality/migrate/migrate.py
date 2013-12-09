@@ -285,10 +285,23 @@ def _get_journal_clusters(journals):
     return clusters
 
 def _is_in_doaj(element):
+    # an item is in the DOAJ if the following things hold true:
+    # - doaj = True
+    # - active = True
+    # - for_free = True
+    
+    # lift the elements
     doaj = element.find("doaj")
-    if doaj is not None:
-        return doaj.text == "Y"
-    return False
+    active = element.find("active")
+    for_free = element.find("forFree")
+    
+    # work out whether each is True or False
+    d = doaj is not None and doaj.text == "Y"
+    a = active is not None and active.text == "Y"
+    f = for_free is not None and for_free.text == "Y"
+    
+    # all 3 have to be true for the element to be in DOAJ
+    return d and a and f
 
 def _to_journal_bibjson(element):
     b = JournalBibJSON()
@@ -373,9 +386,11 @@ def _to_journal_bibjson(element):
     if active is not None and active.text is not None and active.text != "":
         b.active = active.text == "Y"
     
+    """
     for_free = element.find("forFree")
     if for_free is not None and for_free.text is not None and for_free.text != "":
         b.for_free = for_free.text == "Y"
+    """
     
     subject_elements = element.findall("subject")
     for subject in subject_elements:
@@ -548,7 +563,16 @@ def migrate_articles(source, batch_size=5000):
 def _created_date(element):
     cd = element.find("addedOn")
     if cd is not None and cd.text is not None and cd.text != "":
-        return "T".join(cd.text.split(" ")) + "Z" # fudge the date format
+        fudge = "T".join(cd.text.split(" ")) + "Z" # fudge the date format
+        # check that it parses
+        try:
+            datetime.strptime(fudge, "%Y-%m-%dT%H:%M:%SZ")
+            return fudge
+        except:
+            # do nothing, we'll just fall back to "created now"
+            print "failed on", cd.text
+            pass
+        
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def _to_article_bibjson(element):
@@ -776,12 +800,12 @@ if __name__ == "__main__":
     CONTACTS = os.path.join(IN_DIR, "contacts")
 
     # load the subjects and then migrate suggestions and journals
-    #load_subjects(SUBJECTS, LCC)
+    load_subjects(SUBJECTS, LCC)
     #migrate_suggestions(SUGGESTIONS)
-    #migrate_journals(JOURNALS)
+    migrate_journals(JOURNALS)
     
     # contacts have to come after journals, as they will search for matches
-    migrate_contacts(CONTACTS)
+    #migrate_contacts(CONTACTS)
     
     # load a map of issns to journals, which is used in article migration
     #load_issn_journal_map()
