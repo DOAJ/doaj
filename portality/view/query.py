@@ -23,14 +23,28 @@ blueprint = Blueprint('query', __name__)
 def query(path='Pages'):
     pathparts = path.strip('/').split('/')
     subpath = pathparts[0]
-    if subpath.lower() in app.config.get('NO_QUERY',[]):
-        abort(401)
 
+    if ',' in subpath:
+        subpaths = subpath.split(',')
+        subpaths = [clean_item for clean_item in [item.strip() for item in subpaths] if clean_item]  # strip whitespace
+    else:
+        subpaths = [subpath]
+
+    if not subpaths:
+        abort(400)
+
+    for subpath in subpaths:
+        if subpath.lower() in app.config.get('NO_QUERY',[]):
+            abort(401)
+
+    modelname = ''
+    for s in subpaths:
+        modelname += s.capitalize()
     try:
-        klass = getattr(models, subpath[0].capitalize() + subpath[1:] )
+        klass = getattr(models, modelname)
     except:
         abort(404)
-    
+
     if len(pathparts) > 1 and pathparts[1] == '_mapping':
         resp = make_response( json.dumps(klass().query(endpoint='_mapping')) )
     elif len(pathparts) == 2 and pathparts[1] not in ['_mapping','_search']:
