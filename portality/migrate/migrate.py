@@ -1,4 +1,4 @@
-import os, sys, codecs
+import os, sys, codecs, random, string
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
@@ -615,7 +615,7 @@ def _to_article_bibjson(element):
     keywords = element.find("keywords")
     if keywords is not None and keywords.text is not None and keywords.text != "":
         # this filters the string "keyword" and "keywords" at the same time
-        words = [w.strip() for w in keywords.text.split("---") if w.strip().lower() not in ["keyword", "keywords"]]
+        words = [w.strip() for w in keywords.text.split("---") if w.strip().lower() not in ["keyword", "keywords", "no keywords", "</keyword><keyword>"]]
         b.set_keywords(words)
     
     return b
@@ -640,62 +640,12 @@ def _add_journal_info(bibjson):
             if issn in issnmap:
                 journal = issnmap.get(issn)
     
-    # next check the index
-    """
-    if journal is None:
-        possibilities = {}
-        for issn in pissns:
-            options = Journal.find_by_issn(issn)
-            if len(options) > 1:
-                print "WARN: more than one journal found for", issn
-            for option in options:
-                possibilities[option.id] = option
-        if len(possibilities.keys()) > 1:
-            print "WARN: multiple possibilities for ", issn, ":", possibilities
-        if len(possibilities.keys()) > 0:
-            journal = possibilities[possibilities.keys()[0]]
-    
-    if journal is None:
-        possibilities = {}
-        for issn in eissns:
-            options = Journal.find_by_issn(issn)
-            if len(options) > 1:
-                print "WARN: more than one journal found for", issn
-            for option in options:
-                possibilities[option.id] = option
-        if len(possibilities.keys()) > 1:
-            print "WARN: multiple possibilities for ", issn, ":", possibilities
-        if len(possibilities.keys()) > 0:
-            journal = possibilities[possibilities.keys()[0]]
-    """
-    
     if journal is None:
         print "WARN: no journal for ", pissns, eissns
         # error_register.write(bibjson.title + "\n\n")
         return
     
     # if we get to here, we have a journal record we want to pull data from
-    """
-    jbib = journal.bibjson()
-    
-    subjects = jbib.subjects()
-    for s in subjects:
-        bibjson.add_subject(s.get("scheme"), s.get("term"))
-    
-    if jbib.title is not None:
-        bibjson.journal_title = jbib.title
-    
-    lic = jbib.get_license()
-    if lic is not None:
-        bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
-    
-    if jbib.language is not None:
-        bibjson.journal_language = jbib.language
-    
-    if jbib.country is not None:
-        bibjson.journal_country = jbib.country
-    """
-    
     for s in journal.get("subjects", []):
         bibjson.add_subject(s.get("scheme"), s.get("term"))
     
@@ -711,8 +661,6 @@ def _add_journal_info(bibjson):
     
     if journal.get("country") is not None:
         bibjson.journal_country = journal.get("country")
-    
-    
 
 #################################################################
 
@@ -728,9 +676,18 @@ def migrate_contacts(source, batch_size=1000):
     contacts = xml.getroot()
     print "migrating", str(len(contacts)), "contact records from", source
     
-    batch = []
-    counter = 0
+    # first thing to do is locate all the duplicates in the logins
     record = []
+    duplicates = []
+    for element in contacts:
+        login = element.find("login")
+        if login is not None and login.text is not None and login.text != "":
+            if login.text in record:
+                duplicates.append(login.text)
+            record.append(login.text)
+    
+    # now go through and load all the user accounts
+    batch = []
     for element in contacts:
         login = element.find("login")
         password = element.find("password")
@@ -739,23 +696,34 @@ def migrate_contacts(source, batch_size=1000):
         issns = element.findall("issn")
         
         if login is None or login.text is None or login.text == "":
-            print "ERROR: contact without login"
-            continue
+            print "ERROR: contact without login - providing login"
+            if len(issns) == 0:
+                # make a random 8 character login name
+                login = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
+            else:
+                # select the first issn
+                login = issns[0].text
+        else:
+            login = login.text
         
         if password is None or password.text is None or password.text == "":
-            print "ERROR: contact without password", login.text
-            continue
+            print "ERROR: contact without password", login, "- providing one"
+            # make a random 8 character password
+            password = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
+        else:
+            password = password.text
         
-        if login.text in record:
-            print "WARN: duplicate user id", login.text
-        
-        #counter += 1
-        #print counter, login.text
-        record.append(login.text)
-        
+        # check to see if this is a duplicate
+        if login in duplicates:
+            if len(issns) == 0:
+                print "INFO: duplicate detected, has no ISSNs, so skipping", login
+                continue
+            else:
+                print "INFO: duplicate detected, with ISSNs, so keeping", login
+                
         a = Account()
-        a.set_id(login.text)
-        a.set_password(password.text)
+        a.set_id(login)
+        a.set_password(password)
         
         if name is not None and name.text is not None and name.text != "":
             a.set_name(name.text)
@@ -808,17 +776,17 @@ if __name__ == "__main__":
     CONTACTS = os.path.join(IN_DIR, "contacts")
 
     # load the subjects and then migrate suggestions and journals
-    load_subjects(SUBJECTS, LCC)
-    migrate_suggestions(SUGGESTIONS)
-    migrate_journals(JOURNALS)
+    #load_subjects(SUBJECTS, LCC)
+    #migrate_suggestions(SUGGESTIONS)
+    #migrate_journals(JOURNALS)
     
     # contacts have to come after journals, as they will search for matches
     migrate_contacts(CONTACTS)
     
     # load a map of issns to journals, which is used in article migration
-    load_issn_journal_map()
-    for a in ARTICLES:
-        migrate_articles(a)
+    #load_issn_journal_map()
+    #for a in ARTICLES:
+    #    migrate_articles(a)
 
 
 

@@ -16,8 +16,8 @@ DEBUG = True
 PORT = 5004
 
 # elasticsearch settings
-ELASTIC_SEARCH_HOST = "http://doaj.cottagelabs.com:9200" # remember the http:// or https://
-ELASTIC_SEARCH_DB = "doaj2"
+ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+ELASTIC_SEARCH_DB = "doaj"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
 # list of superuser account names
