@@ -59,6 +59,7 @@ def load_issn_journal_map():
         obj["license"] = jbib.get_license()
         obj["language"] = jbib.language
         obj["country"] = jbib.country
+        obj["in_doaj"] = j.is_in_doaj()
         
         # get the issns that map to this journal (or any previous version of it)
         issns = j.data.get("index", {}).get("issn", [])
@@ -531,14 +532,20 @@ def migrate_articles(source, batch_size=5000):
     articles = xml.getroot()
     print "migrating", str(len(articles)), "article records from", source
     
-    #error = codecs.open(source + ".errors", "wb", "utf8")
     counter = 0
+    omissions = 0
     batch = []
     for element in articles:
         a = Article()
         b = _to_article_bibjson(element)
-        _add_journal_info(b)
         a.set_bibjson(b)
+        hasjournal = _add_journal_info(a)
+        
+        if not hasjournal:
+            print "INFO: omitting article"
+            omissions += 1
+            continue
+        
         a.set_created(_created_date(element))
         a.set_id()
         a.prep() # prepare the thing to be saved, which is necessary since we're not actually going to save()
@@ -557,8 +564,7 @@ def migrate_articles(source, batch_size=5000):
         Article.bulk(batch, refresh=True)
         print "batch written, total written", counter
     
-    #error.close()
-        
+    print "wrote", counter, "articles, omitted", omissions
 
 def _created_date(element):
     cd = element.find("addedOn")
@@ -644,7 +650,8 @@ def _to_article_bibjson(element):
     
     return b
 
-def _add_journal_info(bibjson):
+def _add_journal_info(article):
+    bibjson = article.bibjson()
     
     # first, get the ISSNs associated with the record
     pissns = bibjson.get_identifiers(bibjson.P_ISSN)
@@ -666,8 +673,7 @@ def _add_journal_info(bibjson):
     
     if journal is None:
         print "WARN: no journal for ", pissns, eissns
-        # error_register.write(bibjson.title + "\n\n")
-        return
+        return False
     
     # if we get to here, we have a journal record we want to pull data from
     for s in journal.get("subjects", []):
@@ -685,6 +691,9 @@ def _add_journal_info(bibjson):
     
     if journal.get("country") is not None:
         bibjson.journal_country = journal.get("country")
+    
+    article.set_in_doaj(journal.get("in_doaj", False))
+    return True
 
 #################################################################
 
@@ -801,16 +810,16 @@ if __name__ == "__main__":
 
     # load the subjects and then migrate suggestions and journals
     load_subjects(SUBJECTS, LCC)
-    #migrate_suggestions(SUGGESTIONS)
+    migrate_suggestions(SUGGESTIONS)
     migrate_journals(JOURNALS)
     
     # contacts have to come after journals, as they will search for matches
-    #migrate_contacts(CONTACTS)
+    migrate_contacts(CONTACTS)
     
     # load a map of issns to journals, which is used in article migration
-    #load_issn_journal_map()
-    #for a in ARTICLES:
-    #    migrate_articles(a)
+    load_issn_journal_map()
+    for a in ARTICLES:
+        migrate_articles(a)
 
 
 
