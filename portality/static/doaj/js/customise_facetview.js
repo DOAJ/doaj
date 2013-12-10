@@ -3,7 +3,6 @@ function customise_facetview_init() {
 }
 
 function customise_facetview_results() {
-    //$('#facetview_filters .table-striped tbody tr:nth-child(2n+1) td, .table-striped tbody tr:nth-child(2n+1) th').css('background-color', '#ffeece');
     $('.facetview_filtershow').bind('click', toggle_bottom_border);
     $('.facetview_orderby').css('background-color', 'white');
     $('.facetview_orderby').css('width', 'auto');
@@ -43,5 +42,5 @@ function expand_month() {
 }
 
 function insert_progress_bar() {
-        $('#facetview_selectedfilters').append('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
+    $('#facetview_selectedfilters').prepend('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
 }
