@@ -165,3 +165,23 @@ def oainfo():
 @blueprint.route("/members")
 def members():
     return render_template("doaj/members.html")
+
+@blueprint.route("/membership")
+def membership():
+    return render_template("doaj/membership.html")
+
+@blueprint.route("/sponsors")
+def sponsors():
+    return render_template("doaj/our_sponsors.html")
+
+@blueprint.route("/support")
+def support():
+    return render_template("doaj/support.html")
+
+@blueprint.route("/publishermembers")
+def publishermembers():
+    return render_template("doaj/publishermembers.html")
+
+@blueprint.route("/suggest")
+def suggest():
+    return render_template("doaj/suggest.html")

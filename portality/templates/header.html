@@ -11,7 +11,7 @@
                 {% endif %}
             </div>
             <div class="span2 centre-text-container{% if heading_title %} more-heading-padding{% endif %}" id="header-right-container">
-                <a id="header-support-doaj" href="">SUPPORT DOAJ</a>
+                <a id="header-support-doaj" href="/membership">SUPPORT DOAJ</a>
             </div>
         </div>
     </div>
@@ -25,6 +25,7 @@
           </ul>
           <ul class="nav pull-right">
             <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}">Publishers</a></li>
+            <li{% if request.path == '/suggest' %} class="active"{% endif %}><a href="{{url_for('doaj.suggest')}}">Suggest</a></li>
             {#
             {% if current_user.is_anonymous() %}
             <li>

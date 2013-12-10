@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Become a DOAJ member or supporter</h3>
+
+<div class="alert alert-danger">DECIDE HOW THIS LINK WILL HAPPEN</div>
+
+<p>If you are a publisher <a href="/support">go here</a></p>
+
+<p>The fastest and most secure way to pay is via PayPal. To become a 
+Member, you can either make a non-recurring payment or an annually 
+recurring payment by selecting the most appropriate category below. You 
+may of course donate your own amount and be a DOAJ Supporter. For all 
+payments over £5500, or if you would rather do a bank transfer, please <a href="/contact">contact us</a>.</p>
+
+<!-- HERE STARTS MEMBERSHIP -->
+
+<p><b>Membership</b></p>
+
+<li>
+Individuals: GBPs £100 per year
+</li>
+<li>
+Academic Libraries, Universities, Research Centers: GBPs £400 per year
+</li>
+<li>
+Library Consortia, Library Associations, up to 40 members: GBPs £4000 per year
+</li>
+<li>
+Library Consortia, Library Associations, 40 to 80 members: GBPs £8000 per year
+</li>
+<li>
+Library Consortia, Library Associations, 80+ members: <a href="/contact">request a quote</a></li>
+<li>
+Aggregators and other Service Providers: GBPs £5000 per year
+</li>
+
+
+<br>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="PDKWBTFHT9JMN" type="hidden">
+<table>
+<tbody><tr><td><input name="on0" value="Membership options" type="hidden">Non-recurring payment:</td></tr><tr><td><select name="os0">
+	<option selected="selected" value="Academic Library">Academic Library: £400.00 GBP - yearly</option>
+	<option value="Library Consortium (up to 40 members)">Library Consortium (up to 40 members): £4,000.00 GBP - yearly</option>
+	<option value="Aggregator">Aggregator: £5,000.00 GBP - yearly</option>
+	<option value="Individual">Individual: £100.00 GBP - yearly</option>
+</select> </td></tr>
+</tbody></table>
+<input name="currency_code" value="GBP" type="hidden">
+<input src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_subscribeCC_LG.gif" name="submit" alt="PayPal – The safer, easier way to pay online." border="0" type="image">
+</form>
+
+
+
+<br>
+<br>
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="PDKWBTFHT9JMN" type="hidden">
+<table>
+<tbody><tr><td><input name="on0" value="Membership options" type="hidden">Annually recurring payment:</td></tr><tr><td><select name="os0">
+		<option selected="selected" value="Academic Library">Academic Library: £400.00 GBP - yearly</option>
+	<option value="Library Consortium">Library Consortium (up to 40 members): £4,000.00 GBP - yearly</option>
+	<option value="Aggregator">Aggregator: £5,000.00 GBP - yearly</option>
+<option value="Individual">Individual: £100.00 GBP - yearly</option>
+</select> </td></tr>
+</tbody></table>
+<input name="currency_code" value="GBP" type="hidden">
+<input src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_subscribeCC_LG.gif" name="submit" alt="PayPal — The safer, easier way to pay online." border="0" type="image">
+</form>
+<br>
+<br>
+
+<!-- HERE STARTS SUPPORT -->
+
+<p><b>Supporter</b></p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="M4PM4R9PSJ63G" type="hidden">
+<input src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal — The safer, easier way to pay online." border="0" type="image">
+</form>
+<br>
+<br>
+
+{#
+<!-- HERE STARTS BANK TRANSFER -->
+
+<a name="form"></a>
+<p><b>Bank transfer</b></p>
+
+
+<a name="form"></a>
+<form method="post" action="doaj">
+<input name="func" value="membership" type="hidden">
+<input name="uiLanguage" value="en" type="hidden">
+<input name="already" value="1" type="hidden">
+
+<table border="0" cellpadding="5">
+<tbody><tr>
+  <td class="text">Organisation</td>
+  <td class="text"><input size="50" name="organization"></td>
+</tr>
+<tr>
+  <td class="text">URL</td>
+  <td class="text"><input size="50" name="url"></td>
+</tr>
+<tr>
+  <td class="text">*Contact name</td>
+  <td class="text"><input size="50" name="contactPerson"></td>
+</tr>
+<tr>
+  <td class="text">*Contact email</td>
+  <td class="text"><input size="50" name="email"></td>
+</tr>
+<tr>
+  <td class="text">*Category:</td>
+  <td class="text"><input name="category" value="individual" type="radio">Individual
+      <br>
+      <input name="category" value="library" type="radio">Libraries, Universities, Research Centers
+      <br>
+      <input name="category" value="consortia" type="radio">Library Consortia, Library Associations
+      <br>
+      <input name="category" value="aggregators" type="radio">Aggregators and other Service Providers
+  </td>
+</tr>
+<tr>
+ <td class="text">*Payment:
+</td>
+<td class="text">
+<br>
+ Please select one. Invoicing only available for amounts greater than £100.<br>
+
+
+
+<input name="payment" value="bankTransfer" onclick="javascript:toggleVisibility()" type="radio">Bank Transfer
+ <input name="payment" value="invoiceMe" onclick="javascript:toggleVisibility()" checked="checked" type="radio">Invoice me
+
+
+<br>
+
+<div id="invoice" style="display:block">
+*Invoicing address:<br>
+<textarea name="invoicingAddress" cols="40" rows="7"></textarea>
+<br>
+VAT Number:
+<br>
+<input name="vatNumber" size="40">
+<br>
+</div>
+
+
+<div id="bank" style="display:none">
+<br>
+<textarea name="address" cols="60" rows="10" readonly="readonly">Account name: Infrastructure Services for Open Access C.I.C.
+Bank name: Royal Bank of Scotland - Exeter Branch
+Address: Broadwalk House, Southernhay West, EXETER EX1 1TZ, United Kingdom
+Account number: 11099915
+Sort code: 16-19-25
+IBAN number: GB24RBOS16192511099915
+SWIFT/BIC code: RBOSGB2L
+
+</textarea>
+</div>
+ <br>
+</td>
+</tr>
+<tr>
+<td class="text">*Security</td>
+<td class="text" valign="middle">
+Type in the word displayed in the image <img src="membership_files/captcha.html" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
+<br>
+<input name="cWord" size="4">
+<input name="cKey" value="" type="hidden">
+</td>
+</tr>
+<tr>
+<td class="text">Comments
+</td>
+<td><input name="comment" size="50"></td>
+</tr>
+<tr>
+<td class="text" colspan="2" align="center">
+<input value="Submit" type="submit">
+</td>
+</tr>
+</tbody></table>
+</form>
+<br><br>
+#}
+
+{% endblock %}
