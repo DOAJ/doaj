@@ -155,7 +155,7 @@ def faq():
     return render_template("doaj/faq.html")
 
 @blueprint.route("/features")
-def faq():
+def features():
     return render_template("doaj/features.html")
 
 @blueprint.route("/oainfo")
