@@ -153,3 +153,15 @@ def publishers():
 @blueprint.route("/faq")
 def faq():
     return render_template("doaj/faq.html")
+
+@blueprint.route("/features")
+def faq():
+    return render_template("doaj/features.html")
+
+@blueprint.route("/oainfo")
+def oainfo():
+    return render_template("doaj/oainfo.html")
+
+@blueprint.route("/members")
+def members():
+    return render_template("doaj/members.html")
