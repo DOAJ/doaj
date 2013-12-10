@@ -1,0 +1,825 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+</head>
+
+<body>
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScritp is disabled.  The site is not able to function
+         properly without the browser having JavaScript enabled.
+         <br><a href="http://www.iatn.net/help/javascript">
+              How to Enable JavaScript in Your Browser
+          </a>
+      </div>
+    </noscript>
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=pt"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+              selected="selected"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="faq">
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=pt">Search</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=pt">Browse</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=pt">Suggest</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=pt">Support DOAJ</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=pt">For publishers</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=pt">About</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=pt">Contact us</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+    </span>
+
+    <div id="subMenu">
+       <a href="/doaj?func=loadTemplate&template=about&uiLanguage=pt">About DOAJ</a>
+       <span class="menuSeparator"></span>
+       FAQ
+       <span class="menuSeparator"></span>
+       <a href="/doaj?func=loadTempl&templ=links&uiLanguage=pt">Open Access info</a>
+    </div>
+
+
+<h3>
+InformaÃ§Ã£o geral
+</h3>
+
+<ul>
+<li><a href="#whatis">O que Ã© o DOAJ? </a>
+</li>
+<li>
+<a href="#whoisresponsible">Quem Ã© responsÃ¡vel por este serviÃ§o?</a>
+</li>
+<li>
+<a href="#definition">Como definimos Acesso Aberto, revista cientÃ­fica, controlo de qualidade...?</a>
+</li><li>
+<a href="#selectioncriteria">Quais os critÃ©rios de seleÃ§Ã£o deste serviÃ§o?</a>
+</li>
+<li>
+<a href="#journalsway">Quais os procedimentos para inserir uma revista no DOAJ?</a>
+</li>
+<li>
+<a href="#oai">Que significa OAI? </a>
+</li>
+<li>
+<a href="#seal">O que Ã© o SPARC Europe Seal para revistas em acesso aberto?</a>
+</li>
+<li>
+<a href="#sealedJournals">Que revistas tÃªm, neste momento, o SPARC Europe Seal for Open Access Journals?</a>
+</li>
+<li>
+<a href="#licensedJournals">Quais as revistas no DOAJ que tÃªm uma licenÃ§a Creative Commons?</a>
+</li>
+<li>
+<a href="#archived">Que significa o sÃ­mbolo "Archived"?</a>
+</li>
+<li> 
+<a href="#support">Como posso apoiar/patrocinar o DOAJ?</a>
+</li>
+</ul>
+<h3>
+Para os utilizadores
+</h3>
+
+<p>
+<ul>
+<li>
+<a href="#search">Como pesquiso no DOAJ e que informaÃ§Ã£o sobre uma revista, ou sobre um artigo, posso encontrar no diretÃ³rio?</a>
+</li>
+<li>
+<a href="#byCountry">Posso encontrar informaÃ§Ã£o sobre que paÃ­ses tÃªm revistas incluÃ­das no DOAJ?</a>
+</li>
+<li> 
+<a href="#Other_OA">HÃ¡ outras vias para o acesso aberto? </a>
+</li>
+<li>
+<a href="#notcovered">Porque Ã© que a Ã¡rea cientÃ­fica que procuro nÃ£o estÃ¡ coberta? </a>
+</li>
+<li>
+<a href="#rss">HÃ¡ alguma funcionalidade RSS no DOAJ?</a>
+</li>
+<li> 
+<a href="#support">Como posso apoiar/patrocinar o DOAJ?</a>
+</li>
+</ul>
+<p>
+
+<h3>
+Para as bibliotecas
+</h3>
+
+<ul>
+<li>
+<a href="#metadata">Como posso obter metadados das revistas a partir do DOAJ?</a>
+</li>
+<li>
+
+<a href="#metadataA">Como obtenho metadados ao nÃ­vel dos artigos a partir do DOAJ?</a>
+</li>
+<li> 
+<a href="#restrictions">Existem algumas restriÃ§Ãµes ao uso dos metadados do DOAJ?</a>
+</li>
+<li> 
+<a href="#support">Como posso apoiar/patrocinar o DOAJ?</a>
+</li>
+</ul>
+
+<h3>
+Para as editoras
+</h3>
+
+<ul>
+<li>
+<a href="#cantfind">Porque Ã© que nÃ£o encontro a minha revista no DOAJ?</a>
+</li>
+<li>
+<a href="#publisher">Como editor, como carrego artigos no DOAJ?</a>
+</li>
+<li>
+<a href="#getseal">Como obtenho o SPARC Europe Seal for Open Access Journals?</a>
+</li>
+<li>
+<a href="#getarchived">O que tenho de fazer para que o conteÃºdo da minha revista seja objeto de preservaÃ§Ã£o perpÃ©tua?</a>
+<li> 
+<a href="#support">Como posso apoiar/patrocinar o DOAJ?</a>
+</li>
+</ul>
+
+<p>
+
+<h3>
+Para os autores
+</h3>
+
+<ul>
+<li><a href="#authors">Como posso encontrar informaÃ§Ã£o sobre taxas de autor (author fees)?</a>
+</li>
+<li> 
+<a href="#support">Como posso apoiar/patrocinar o DOAJ?</a>
+</li>
+</ul>
+
+<br>
+<br>
+
+
+<h3> <b>
+
+<a name="whatis">O que Ã© o DOAJ?</a>
+</b> </h3> 
+<p>O Directory of Open Access Journals Ã© um serviÃ§o que fornece acesso a revistas cientÃ­ficas, de qualidade controlada, em Acesso Aberto. O DiretÃ³rio pretende ser completo e cobrir todas as revistas cientÃ­fica e acadÃ©micas em acesso aberto que utilizem um sistema apropriado de controlo de qualidade, nÃ£o se limitando nenhuma Ã¡rea cientÃ­fica ou idiomas em particular. O objetivo do DiretÃ³rio Ã© aumentar a visibilidade e a facilidade de uso das publicaÃ§Ãµes cientÃ­ficas e acadÃ©micas em acesso aberto, promovendo assim o aumento da sua utilizaÃ§Ã£o e do seu impacto. 
+</p>
+<br>
+
+<h3>
+<b>
+<a name="whoisresponsible">Quem Ã© responsÃ¡vel por este serviÃ§o?</a>
+</b>
+</h3> 
+<p> O Directory of Open Access Journals Ã© alojado, mantido e parcialmente financiado pela direÃ§Ã£o das Lund University Libraries Head Office.</p>
+<p>O DOAJ recebeu ou recebe financiamento de:</p>
+
+<ul>
+<li>Swedish Library Association <a href="http://www.biblioteksforeningen.org/">http://www.biblioteksforeningen.org/</a></li>
+<li>INASP <a href="http://www.inasp.info/">http://www.inasp.info/</a></li>
+<li>Open Society Institute <a href="http://www.soros.org/">http://www.soros.org/</a> </li>
+<li>SPARC <a href="http://www.arl.org/sparc/">http://www.arl.org/sparc/</a></li> 
+<li>SPARC Europe <a href="http://www.sparceurope.org/">http://www.sparceurope.org/</a></li> 
+<li>BIBSAM <a href=" http://www.kb.se/bibliotek/"> http://www.kb.se/bibliotek/</a></li>
+<li>Axiell <a href="http://www.axiell.se/">http://www.axiell.se/</a></li> 
+
+</ul> 
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="definition">Como definimos Acesso Aberto, revista cientÃ­fica, controlo de qualidade...?</a>
+
+ </b>
+</h3> 
+<p>
+<b>Revista de acesso aberto</b>:</p>
+<p>
+Definimos as revistas em acesso aberto como as revistas que usam um modelo de financiamento que nÃ£o exige, aos leitores ou Ã s suas nistituiÃ§Ãµes, um pagamento pelo acesso aos conteÃºdos. Segundo a definiÃ§Ã£o da BOAI [1] de "acesso aberto", destacamos o direito conferido aos utilizadores para <b>"ler, descarregar, copiar, distribuir, imprimir, pesquisar ou fazer ligaÃ§Ãµes para o texto integral dos artigos"</b> como obrigatÃ³rio para que uma revista seja incluÃ­da no diretÃ³rio.
+</p>
+<p>[1] <a href="http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess">http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess</a>
+</p> 
+
+<p>
+<b>Controlo de qualidade:</b>
+</p>
+A revista deve efetuar a revisÃ£o por pares ou controlo de qualidade editorial para ser incluÃ­da.
+</p>
+<p>
+<b>Revista cientÃ­fica:</b> 
+</p>
+<p>
+Revista que relata resultados primÃ¡rios de investigaÃ§Ã£o ou revisÃµes de resultados de pesquisa, destinados a uma comunidade cientÃ­fica.
+</p>
+<p>
+<b>Revista (periÃ³dico):</b>
+</p>
+
+<p>
+PublicaÃ§Ã£o em sÃ©rie publicada ou com intenÃ§Ã£o de ser publicada indefinidamente a intervalos regulares, geralmente mais do que uma vez por ano, com fascÃ­culos numerados ou datados consecutivamente e que normalmente contÃ©m artigos, relatos, ou outros escritos distintos. 
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="selectioncriteria">Quais os critÃ©rios de seleÃ§Ã£o deste serviÃ§o?</a>
+</b>
+</h3> 
+<p>
+<b>Cobertura:</b>
+<br />
+<ul>
+<li>Assunto: todas as disciplinas cientÃ­ficas e acadÃ©micas sÃ£o cobertas</li>
+
+<li>Tipos de recursos: revistas cientÃ­ficas e acadÃ©micas que publicam artigos de investigaÃ§Ã£o ou de revisÃ£o em texto integral.</li>
+<li>Fontes aceitÃ¡veis: sÃ£o aceites todas as fontes acadÃ©micas, governamentais, comerciais, privadas nÃ£o-comerciais.</li> 
+<li>PÃºblico: as revistas incluÃ­das devem destinar-se preferencialmente a investigadores.</li> 
+<li>ConteÃºdo: uma parte significativa da revista deve consistir de artigos de investigaÃ§Ã£o. Todos os conteÃºdos devem estar disponÃ­veis em texto integral.</li>  
+<li>Todos os idiomas.
+</ul>
+<p>
+<p>
+<b> Accesso:</b>
+<br /> 
+<ul>
+
+<li>Todo o conteÃºdo deve estar acessÃ­vel gratuitamente.</li> 
+<li>Registo: Um registo online <b>gratuito</b> do utilizador Ã© aceitÃ¡vel.</li>  
+<li>Acesso aberto sem atrasos (por exemplo, sem perÃ­odo de embargo).</li>
+</ul>
+<p>
+<b>Qualidade:</b>
+<br /> 
+<p>Controlo de qualidade: para que uma revista seja incluÃ­da, deve exercer controlo de qualidade sobre os documentos submetidos, atravÃ©s de um editor, de um conselho editorial e/ou de um sistema de revisÃ£o por pares.</p> 
+</p>
+
+<p>
+<b>Periodicidade:</b>
+<br /> 
+<p>A revista deve ter um ISSN (International Standard Serial Number); para mais informaÃ§Ã£o, veja <a href=http://www.issn.org>http://www.issn.org</a>).</p> 
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="journalsway">Quais os procedimentos para inserir uma revista no DOAJ?</a>
+</b>
+</h3>
+<p>
+<b>SugestÃ£o</b>
+<p>
+Recebemos uma sugestÃ£o para inclusÃ£o de uma revista, por parte dos editores ou do pÃºblico. Verificamos: 
+<p>
+<ul>
+<li>A revista tem um ISSN vÃ¡lido? 
+<li>HÃ¡ alguma informaÃ§Ã£o sobre o conselho editorial?
+<li>Os artigos estÃ£o disponÃ­veis em texto integral?
+<li>HÃ¡ alguma informaÃ§Ã£o sobre a polÃ­tica de Acesso Aberto no website? 
+<li>A revista exerce revisÃ£o por pares ou por parte do corpo editorial? 
+<li>Por fim, verificamos se hÃ¡ um contacto eletrÃ³nico, e se este estÃ¡ ativo.
+</li>
+</ul>
+<p>
+Quando todos estes pontos foram verificados, enviamos um formulÃ¡rio de registo ao editor.
+<p>
+<b>VerificaÃ§Ã£o</b>
+<p>
+Depois de recebermos o formulÃ¡rio preenchido, examinamos mais minuciosamente a revista, com base na informaÃ§Ã£o fornecida no formulÃ¡rio de registo.
+<p>
+<ul>
+<li>
+<b>Ã uma revista de acesso aberto</b> segundo a definiÃ§Ã£o da BOAI? Isto significa saber se os artigos da revista estÃ£o âdisponÃ­veis gratuitamente na internet pÃºblica, permitindo a qualquer utilizador ler, descarregar, copiar, distribuir, imprimir, pesquisar ou fazer ligaÃ§Ãµes para o texto integral dos artigos, indexÃ¡-los e integrar os seus dados em software de tratamento de dados, ou utilizÃ¡-los para qualquer outro objetivo legal, sem barreiras financeiras, legais ou tÃ©cnicas para alÃ©m das intrÃ­nsecas ao acesso Ã  internet.â
+<li>A revista exige <b>pagamento por parte dos autores</b> para publicaÃ§Ã£o? Em caso afirmativo, hÃ¡ alguma informaÃ§Ã£o quanto a isso no website?
+<li>HÃ¡ alguma informaÃ§Ã£o, no website da revista, sobre o <b>processo de revisÃ£o por pares</b> ou sobre o processo de revisÃ£o editorial? 
+<li>HÃ¡ algum <b>embargo</b> (atraso na disponibilizaÃ§Ã£o em acesso aberto)? A versÃ£o impressa pode estar acessÃ­vel antes da versÃ£o eletrÃ³nica, ou o fascÃ­culo atual pode estar sujeito a assinatura e sÃ³ os nÃºmeros mais antigos estarem em acesso aberto.
+<li>A partir de que ano estÃ¡ disponÃ­vel o texto integral dos artigos?
+<li>Quem publica a revista?
+<li>PaÃ­s, idioma(s), palavras-chave.
+</li>
+</ul>
+<p>
+<b>Registo</b>
+<p>
+A revista Ã© registada no DOAJ e classificada de acordo com a classificaÃ§Ã£o da Biblioteca do Congresso.  A revista Ã© pesquisÃ¡vel e visÃ­vel no DOAJ a partir do momento do registo. 
+<p>
+<b>Metadados e arquivo</b>
+<p>
+Por fim, sugerimos ao editor que forneÃ§a ao DOAJ os metadados do artigo, em formato XML. O DOAJ Ã© compatÃ­vel com o OAI e, uma vez que os artigos estÃ£o disponÃ­veis no DOAJ, tornam-se automaticamente pesquisÃ¡veis.
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="oai">O que Ã© a OAI, Open Archives Initiative? </a>
+
+</b>
+</h3> 
+<p>
+<a href="http://www.openarchives.org/">O OAI, Open Archives Initiative</a>, fornece um enquadramento comum que permite obter acesso a conteÃºdos de uma forma normalizada, graÃ§as Ã  integraÃ§Ã£o dos seus metadados.
+</p>
+<br>
+
+<h3>
+<b>
+<a name="seal">O que Ã© o SPARC Europe Seal para revistas em acesso aberto?</a>
+</b>
+</h3> 
+<p>
+Este certificado pretende definir uma norma para as revistas em Acesso Aberto.<p>
+A SPARC Europe e o DOAJ fizeram um acordo sobre a introduÃ§Ã£o de um  esquema de certificaÃ§Ã£o para revistas em acesso aberto, o SPARC Europe Seal for Open Access Journals.
+<p>
+Para receber o certificado, a revista deve escolher a licenÃ§a CC-BY (Creative Commons license) e fornecer ao DOAJ os metadados ao nÃ­vel dos artigos.
+<p>
+<b>Quais as vantagens de ter o SPARC Europe Seal?</b>
+<ul>
+<li>
+Melhor informaÃ§Ã£o sobre o que Ã© permitido que utilizadores faÃ§am com os artigos publicados nas revistas em acesso aberto.
+</li>
+<li>
+Possibilidade de arquivo perpÃ©tuo do conteÃºdo, o que torna a publicaÃ§Ã£o na revista mais atrativa para os autores.
+</li>
+<li>
+Melhor exposiÃ§Ã£o da revista, suportada por tecnologias de disseminaÃ§Ã£o atualizadas.
+</li>
+<li>
+A equipa do DOAJ converte os metadados e torna-os pesquisÃ¡veis, o que significa a mais ampla disseminaÃ§Ã£o possÃ­vel e, desta forma, o aumento do uso e do impacto.
+</li>
+</ul>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="sealedJournals">Que revistas tÃªm, neste momento, o SPARC Europe Seal for Open Access Journals?</b>
+</h3>
+<p>
+Use <a href="http://www.doaj.org/doaj?func=sealedJournals&uiLanguage=pt">esta ligaÃ§Ã£o</a> para ver uma lista de revistas que tÃªm o certificado.
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="licensedJournals">Quais as revistas no DOAJ que tÃªm uma licenÃ§a Creative Commons?</b>
+</h3>
+<p>
+Use <a href="http://www.doaj.org/doaj?func=licensedJournals&uiLanguage=pt">esta ligaÃ§Ã£o</a> para ver uma lista das revistas que tÃªm uma licenÃ§a Creative Commons (qualquer dos tipos de licenÃ§a).
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="archived">O que significa o sÃ­mbolo "Archived"?</b>
+</h3>
+O sÃ­mbolo indica que o conteÃºdo da revista foi objeto de preservaÃ§Ã£o perpÃ©tua no arquivo e-Depot, National Library, Hauge, Netherlands (<a href="http://www.kb.nl/hrd/dd/index-en.html">www.kb.nl/hrd/dd/index-en.html</a>).
+
+</p>
+<br>
+
+<h3>
+<b>    
+<a name="support"> Como posso apoiar/patrocinar o DOAJ?
+</b>
+</h3>
+Veja a nossa <a href="http://www.doaj.org/doaj?func=loadTempl&templ=membership&uiLanguage=pt">pÃ¡gina de adesÃ£o</a> para mais informaÃ§Ã£o. 
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="search">Como pesquiso no DOAJ e que informaÃ§Ã£o sobre uma revista, ou sobre um artigo, posso encontrar no diretÃ³rio?</a>
+</b>
+</h3> 
+
+<p>
+Os registos do DOAJ contÃªm os seguintes campos:
+</p>
+<p>
+<b>TÃ­tulo da revista</b> <br>
+O tÃ­tulo da revista.</p> 
+
+<p><b>ISSN</b><br> 
+O ISSN da revista.</p>
+
+<p><b>EISSN</b> <br>
+O EISSN da revista (caso esta o possua).</p>
+
+<p><b>Assunto</b><br> 
+O tÃ³pico principal da revista.</p>
+
+<p><b>Editora</b><br>
+A entidade responsÃ¡vel pela publicaÃ§Ã£o da revista.</p>
+
+<p><b>PaÃ­s</b><br>
+PaÃ­s de publicaÃ§Ã£o.</p>
+
+<p><b>Idioma</b><br>
+Idioma(s) do texto dos artigos.</p>
+
+<p><b>Palavras-chave</b><br> 
+Palavras-chave do tÃ³pico da revista.</p>
+
+<p><b>Ano de inÃ­cio </b><br>
+Ano a partir do qual o texto integral da revista ficou disponÃ­vel, em formato eletrÃ³nico</p>
+
+<p><b>Ano de fim</b> (apenas se foi continuada por uma nova revista)<br>
+Data em que a revista deixou de ser publicada.</p> 
+
+<p>
+Use "Pesquisar revistas" para pesquisar revistas incluÃ­das no DOAJ. O sistema pesquisarÃ¡ todos os campos do registo, exceto <b>assunto</b> e <b>ano</b>.
+</p>
+
+<br>
+<p>Use <b>"Pesquisar artigos"</b> para pesquisar nas revistas que possuem <b>conteÃºdos no DOAJ</b>.</p>
+
+
+
+<p>Pode optar por fazer a sua pesquisa em qualquer dos campos seguintes: </p>
+<ul>
+<li>Todos os campos</li>
+<li>TÃ­tulo</li>
+<li>TÃ­tulo da revista</li>
+<li>ISSN</li>
+<li>Autor</li>
+<li>Palavra-chave</li>
+<li>Resumo</li>
+
+</ul>
+<p>Se escrever mais do que uma palavra na sua expressÃ£o de pesquisa, ela serÃ¡ considerada como uma frase. Tem tambÃ©m a possibilidade de usar os operadores booleanos: e, ou, nÃ£o.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="byCountry">Posso encontrar informaÃ§Ã£o sobre que paÃ­ses tÃªm revistas incluÃ­das no DOAJ?</a>
+</b>
+</h3> 
+<p>
+Sim. HÃ¡ duas listas, com resultados separados por ano, que mostram:
+</p>
+<ul>
+<li>que revistas foram incluÃ­das num determinado ano e em que data</li>
+<li>o nÃºmero total de revistas incluÃ­das atÃ© ao momento, pertencentes a um dado paÃ­s</li>
+</ul>
+<p>
+Consulte aqui <a href="http://www.doaj.org/doaj?func=byCountry&uiLanguage=pt">os dados do DOAJ por paÃ­s</a>.
+<p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+</p>
+<br>
+<h3>
+<a name="Other_OA">HÃ¡ outras vias para o Acesso Aberto?</a>
+</h3>
+<p>Sim. Leia mais sobre auto-arquivo e arquivos abertos em <a href="http://www.eprints.org/self-faq/">Southampton Self-Archiving FAQ</a>.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="notcovered">Poque Ã© que a Ã¡rea cientÃ­fica que procuro nÃ£o estÃ¡ coberta? </a>
+</b>
+</h3> 
+<p>Porque ainda nÃ£o encontramos nenhuma revista nessa Ã¡rea. Aceitamos sugestÃµes; use o nosso formulÃ¡rio para <a href="/doaj?func=suggest&uiLanguage=pt">sugerir uma revista</a> para inclusÃ£o no DOAJ.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="rss">HÃ¡ alguma funcionalidade RSS no DOAJ? </a>
+</b>
+</h3>
+<p>
+Sim, no menu do lado esquerdo encontra:
+<p>- Revistas adicionadas nos Ãºltimos 7 dias
+<p>- Revistas adicionadas nos Ãºltimos 30 dias
+
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadata">Como posso obter metadados das revistas a partir do DOAJ?</a>
+</h3>
+
+<p>O serviÃ§o DOAJ suporta o protocolo OAI para recolha de metadados (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>).
+Deste modo, qualquer serviÃ§o pode obter registos do DOAJ para inclusÃ£o na sua coleÃ§Ã£o. O protocolo OAI Ã© bastante conhecido e fÃ¡cil de usar.
+ The base URL is: http://www.doaj.org/oai . Pode aÃ­ adicionar a maior parte dos verbos OAI verbs e outros comandos diretamente. Alguns exemplos:</p>
+
+<br>
+Verbo: Identify<br> 
+
+<a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>
+
+<br><br>
+Verbo: ListMetadataFormats<br> 
+<a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>
+<br><br>
+
+Verbo: ListRecords&from=2004-01-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc">
+http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc</a>
+<br>
+
+
+<p>A partir destes URLs pode ficar com uma ideia do que Ã© o OAI e os nossos metadados. Veja tambÃ©m <a href="/doaj?func=loadTempl&templ=example_oai_record">o nosso exemplo</a>.</p>
+
+<a name="metadata_csv"></a>
+<p> Ã tambÃ©m possÃ­vel obter a lista de registos do DOAJ num formato com valores separados por vÃ­rgula (<i>comma separated</i>). A partir daqui, pode importar o ficheiro para Excel ou outro software para continuar a usar os registos. FaÃ§a do seguinte modo:
+<ul>
+<li>
+Descarregue o ficheiro em <a href="/doaj?func=csv">http://www.doaj.org/doaj?func=csv</a> para o seu computador</li>
+
+<li>Abra o Excel ou outra ferramenta equivalente</li>
+<li>VÃ¡ para o menu Data -> Get External Data -> Import Text File</li>
+<li> A partir daqui, pode escolher como pretende ver a folha; por exemplo, delimited-> Comma -> General</li>
+</ul>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadataA">Como obtenho metadados ao nÃ­vel dos artigos a partir do DOAJ?</a>
+</h3>
+<p>
+Os metadados ao nÃ­vel dos artigos podem ser obtidos usando o protocolo OAI.
+
+<br>O URL base Ã©: http://www.doaj.org/oai.article
+<br>Use verbos OAI e outros comandos diretamente aqui. 
+<br>Exemplo:
+
+<br><br>
+Verbo: ListRecords&from=2004-07-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc">
+http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc</a>
+<br>
+
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3>
+<a name="restrictions">Existem algumas restriÃ§Ãµes ao uso dos metadados do DOAJ?</a>
+</h3>
+<p>
+Os dados no DOAJ estÃ£o licenciados sob uma licenÃ§a Creative Commons
+Attribution-ShareAlike. As caraterÃ­sticas essenciais desta licenÃ§a sÃ£o explicitadas no <a href="http://creativecommons.org/licenses/by-sa/1.0/">website do Creative Commons</a>. (Pode ser que esteja tambÃ©m <a href="http://creativecommons.org/licenses/by-sa/1.0/legalcode">interessado nos detalhes jurÃ­dicos</a>.)
+</p>
+<p>
+<b>Tenha atenÃ§Ã£o ao facto de que tudo que Ã© gratuito vem sem nenhuma garantia.</b> Assim, lembre-se, se um dia tropeÃ§ar numa revista em acesso aberto catalogada por nÃ³s e partir uma perna, a culpa nÃ£o Ã© nossa!
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+<h3>
+<b>
+<a name="cantfind">Porque Ã© que nÃ£o encontro a minha revista no DOAJ? </a>
+</b>
+
+</h3> 
+<p>Talvez nÃ£o tenhamos encontrado a sua revista. Por favor, use o nosso formulÃ¡rio para <a href="/doaj?func=suggest&uiLanguage=pt">sugerir a inclusÃ£o de uma revista</a> no DOAJ. Ou talvez a revista nÃ£o corresponda aos nosso critÃ©rios: por exemplo, os artigos tÃªm de estar disponÃ­veis livremente no momento de publicaÃ§Ã£o. <a href="/articles/about#criteria&uiLanguage=pt">Veja os critÃ©rios de seleÃ§Ã£o</a>.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+<h3> 
+<b>
+<a name="publisher">Como editor, como carrego artigos no DOAJ?</a>
+</b> </h3>
+ 
+<p>
+
+Depois de uma revista ter sido adicionada ao DOAJ, uma identificaÃ§Ã£o e uma palavra-chave sÃ£o enviadas ao editor ou proprietÃ¡rio da revista. Ligue-se ao DOAJ a partir do separador "Para os editores". Tem duas opÃ§Ãµes para carregar os metadados dos artigos: ou artigo a artigo, ou ficheiro a ficheiro. Os arquivos devem estar conformes aos esquema XML especificado no DOAJ. Leia mais sobre isto <a href="http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo&uiLanguage=pt">aqui</a>.
+</p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="getseal">Como obtenho o SPARC Europe Seal for Open Access Journals?</a>
+</b>
+</h3> 
+<p>
+Como ser certificado:
+<p>
+<b>Passo 1:
+<p>
+Escolha a licenÃ§a Creative Commons CC-BY .
+</b>
+<p>
+Para poder qualificar-se para o SPARC Europe Seal deve disponibilizar os seus conteÃºdos sobuma licenÃ§a CC-BY, que Ã© a licenÃ§a mais favorÃ¡vel aos utilizadores, permitindo, entre outras coisas, o arquivo perpÃ©tuo e o tratamento de texto e dados.
+<p>
+Como escolher a licenÃ§a CC-BY:
+<p>
+
+Entre no website Creative Commons <a href="http://creativecommons.org/about/license"> (http://creativecommons.org/about/license)</a> e copie o sÃ­mbolo CC-BY Icon. Pode tambÃ©m querer consultar isto: <a href="http://wiki.creativecommons.org/Before_Licensing">http://wiki.creativecommons.org/Before_Licensing</a>.
+<p>
+Ponha o sÃ­mbolo CC-BY na pÃ¡gina inicial do website da(s) sua(s) revista(s) e, de preferÃªncia, em todos os artigos da(s) sua(s) revista(s).
+<p>
+VÃ¡ para o site do DOAJ <a href="http://www.doaj.org">(http://www.doaj.org)</a>, entre na Ã¡rea "Para os editores", clique em "License info" e escolha a licenÃ§a CC para a(s) sua(s) revista(s).
+<p>
+O sÃ­mbolo CC serÃ¡ automaticamente mostrado no DOAJ.
+<p>
+<b>
+Passo 2: 
+<p>A(s) sua(s) revista(s) deve(m) fornecer continuamente ao DOAJ os metadados para todo o seu conteÃºdo.
+</b>
+</p>
+ 
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+</p>
+<br>
+
+
+<h3> 
+<a name="getarchived">O que tenho de fazer para que o conteÃºdo da minha revista seja objeto de preservaÃ§Ã£o perpÃ©tua?</a>
+</h3>
+<p>
+TerÃ¡ de fornecer ao DOAJ os metadados ao nÃ­vel dos artigos. O DOAJ irÃ¡ entÃ£o, automaticamente e de modo regular, recolher o texto integral dos seus conteÃºdos e enviÃ¡-lo para o destino final no e-Depot, National Library, Hauge, Netherlands (<a href="http://www.kb.nl/dnp/e-depot/operational/background/index-en.html">http://www.kb.nl/dnp/e-depot/operational/background/index-en.html</a>), para ser arquivado.
+<p>
+<b>Note:</b> Neste momento, apenas conteÃºdo em formato <b>PDF</b> estÃ¡ a ser aqrquivado; leia os PDF Guidelines <a href="http://www.kb.nl/hrd/dd/dd_links_en_publicaties/PDF_Guidelines.pdf">aqui</a>. 
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=090401&uiLanguage=pt">Leia mais sobre este assunto</a>
+
+</p>
+<br>
+
+<h3> 
+<a name="authors">Como posso encontrar informaÃ§Ã£o sobre taxas de autor (author fees)?</a>
+</h3>
+<p>
+Encontra informaÃ§Ã£o sobre essas taxas de autor nos registos. 
+<p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=pt">Voltar ao inÃ­cio</a>
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals is provided by <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> in cooperation with <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
+
+

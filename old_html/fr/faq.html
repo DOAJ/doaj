@@ -1,0 +1,715 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+</head>
+
+<body>
+ 
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScript n'est pas activÃ©. Le site ne fonctionne pas correctement si Javascript n'est pas activÃ© dans votre navigateur.
+         <br><a href="http://www.iatn.net/help/javascript">
+              Comment activer Javascript ?
+          </a>
+      </div>
+    </noscript>
+ 
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=fr"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+              selected="selected"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="faq">
+ 
+ 
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=fr">Rechercher</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=fr">Consulter</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=fr">SuggÃ©rer une revue</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=fr">Soutenir le DOAJ</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=fr">Pour les Ã©diteurs</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=fr">A propos</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=fr">Nous contacter</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+ 
+ 
+    </span>
+
+    <div id="subMenu">
+       <a href="/doaj?func=loadTemplate&template=about&uiLanguage=fr">A propos du DOAJ</a>
+       <span class="menuSeparator"></span>
+       FAQ
+       <span class="menuSeparator"></span>
+       <a href="/doaj?func=loadTempl&templ=links&uiLanguage=fr">Open Access info</a>
+    </div>
+
+
+<h3>
+Informations gÃ©nÃ©rales
+</h3>
+
+<ul>
+<li><a href="#whatis">Qu'est-ce que le DOAJ? </a>
+</li>
+<li>
+<a href="#definition">Comment dÃ©finissez-vous libre accÃ¨s, accÃ¨s ouvert, revue de recherche, contrÃ´le de qualitÃ©... ?</a>
+</li><li>
+<a href="#selectioncriteria">Quels sont les critÃ¨res de sÃ©lection ?</a>
+</li>
+<li>
+<a href="#journalsway">Quelle est la procÃ©dure pour faire inclure une revue dans le DOAJ ?</li>
+<li>
+<a href="#oai">Qu'est-ce que l'OAI? </a>
+</li>
+<li> 
+<a href="#support">Comment puis-je aider / soutenir le DOAJ?</a>
+</li>
+</ul>
+<h3>
+Pour les utilisateurs
+</h3>
+
+<p>
+<ul>
+<li>
+<a href="#search">Comment chercher dans le DOAJ ? Quelles informations puis-je trouver sur une revue ou un article ?</a>
+</li>
+<li>
+<a href="#byCountry">Puis-je trouver des informations par pays sur les revues incluses dans le DOAJ ?</a>
+</li>
+<li> 
+<a href="#Other_OA">Y a-t-il d'autres voies menant au libre accÃ¨s ?</a>
+</li>
+<li>
+<a href="#notcovered">Pourquoi le sujet qui m'intÃ©resse n'est-il pas reprÃ©sentÃ© dans le DOAJ ?</a>
+</li>
+<li> 
+<a href="#support">Comment puis-je aider / soutenir le DOAJ ?</a>
+</li>
+</ul>
+<p>
+
+<h3>
+Pour les bibliothÃ¨ques
+</h3>
+
+<ul>
+<li>
+<a href="#metadata">Comment puis-je obtenir les mÃ©tadonnÃ©es des revues du DOAJ ?</a>
+</li>
+<li>
+
+<a href="#metadataA">Comment puis-je rÃ©cupÃ©rer les mÃ©tadonnÃ©es des articles du DOAJ ?</a>
+</li>
+<li> 
+<a href="#restrictions">L'utilisation de vos mÃ©tadonnÃ©es est-elle restreinte ?</a>
+</li>
+<li> 
+<a href="#support"> Comment puis-je aider / soutenir le DOAJ ?</a>
+</li>
+</ul>
+
+<h3>
+Pour les Ã©diteurs
+</h3>
+
+<ul>
+<li>
+<a href="#cantfind">Pourquoi ma revue n'est-elle pas dans le DOAJ ?</a>
+</li>
+<li>
+<a href="#publisher">En tant qu'Ã©diteur, comment puis-je charger des articles dans le DOAJ ?</a>
+</li>
+<li>
+<a href="#getseal">Comment puis-je obtenir le label SPARC Europe pour les revues en libre accÃ¨s ?</a>
+</li>
+<li>
+<a href="#license">Comment choisir la licence CC qu'il me faut ?</a>
+</li>
+<li>
+<a href="#support">Comment puis-je aider / soutenir le DOAJ ?</a>
+</li>
+</ul>
+
+<p>
+
+<h3>
+Pour les auteurs
+</h3>
+
+<ul>
+<li><a href="#authors">OÃ¹ puis-je trouver des informations sur les frais de publication ?</a>
+</li>
+<li> 
+<a href="#support">Comment puis-je aider / soutenir le DOAJ ?</a>
+</li>
+</ul>
+
+<br>
+<br>
+
+
+<h3> <b>
+
+<a name="whatis">Qu'est-ce que le DOAJ?</a>
+</b> </h3> 
+<p>
+Le Directory of Open Access Journals (RÃ©pertoire des revues en libre accÃ¨s) est un service donnant accÃ¨s Ã  des revues en Open Access dont la qualitÃ© est validÃ©ee. Le rÃ©pertoire se veut exhaustif et couvre toutes les revues scientifiques et universitaires en libre accÃ¨s qui utilisent un systÃ¨me de contrÃ´le pour garantir la qualitÃ© de leur contenu. L'objectif du Directory of Open Access Journals est d'amÃ©liorer la visibilitÃ© et la facilitÃ© d'utilisation des revues scientifiques et universitaires en libre accÃ¨s, en promouvant ainsi leur usage et leur impact croissants.
+</p>
+<br>
+
+<h3>
+<b>
+<a name="definition">Comment dÃ©finissez-vous les termes libre accÃ¨s, accÃ¨s ouvert, (Open Access), revue de recherche, contrÃ´le de qualitÃ© ?</a>
+
+ </b>
+</h3> 
+<p>
+<b>Revue en accÃ¨s ouvert ou en libre accÃ¨s (Open Access)</b>:</p>
+<p>
+Les revues en accÃ¨s ouvert sont des revues dont l'accÃ¨s au contenu n'est pas soumis Ã  un paiement par les utilisateurs ou par leurs institutions. Pour qu'une revue soit incluse dans le DOAJ, il est obligatoire que, selon la dÃ©finition de la BOAI[1] de l'accÃ¨s ouvert, elle donne aux utilisateurs le droit de "lire, tÃ©lÃ©charger, copier, distribuer, imprimer, rechercher ou lier le texte intÃ©gral des articles".
+</p>
+<p>[1] <a href="http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess">http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess</a>
+</p> 
+
+<p>
+<b>ContrÃ´le (de) qualitÃ© :</b>
+</p>
+La revue doit pratiquer la validation par les pairs (peer-review) ou inclure un contrÃ´le qualitÃ© Ã©ditorial.
+</p>
+<p>
+<b>Revues de recherche :</b> 
+</p>
+<p>
+Il s'agit de revues qui publient des rÃ©sultats de recherche ou des synthÃ¨ses de rÃ©sultats de recherche Ã  destination d'une communautÃ© scientifique.
+</p>
+<p>
+<b>PÃ©riodique :</b>
+</p>
+<p>
+Une publication en sÃ©rie paraissant ou supposÃ©e paraÃ®tre indÃ©finiment Ã  intervalles rÃ©guliers, gÃ©nÃ©ralement plus qu'annuellement, dont chaque parution est numÃ©rotÃ©e ou datÃ©e, et qui contient des articles, rÃ©cits ou autres Ã©crits distincts. 
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="selectioncriteria">Quels sont les critÃ¨res de sÃ©lection ?</a>
+</b>
+</h3> 
+<p>
+<b>Couverture :</b>
+<ul>
+<li>Sujet: Toutes les disciplines scientifiques et universitaires sont couvertes</li>
+<li>Types de ressources : Revues scientifiques et universitaires qui publient des articles de recherche ou de synthÃ¨se en texte intÃ©gral.</li>
+<li>Sources acceptables : Toutes les sources universitaires, gouvernementales, commerciales, privÃ©es et Ã  but non lucratif sont acceptables.</li> 
+<li>Niveau : le public-cible pour les revues incluses est prioritairement les chercheurs.</li> 
+<li>Contenu : une part consÃ©quente de la revue doit Ãªtre constituÃ©e d'articles de recherche. Tous les contenus doivent Ãªtre disponibles en texte intÃ©gral.</li>  
+<li>Langues : Toutes.</li>
+</ul>
+<p>
+<p>
+<b> AccÃ¨s:</b>
+<br /> 
+<ul>
+<li>Tous les contenus doivent Ãªtre librement accessibles.</li> 
+<li>Enregistrement : Une enregistrement <b>gratuit</b> de l'utilisateur pour l'accÃ¨s en ligne est acceptable.</li>  
+
+<li>Libre accÃ¨s sans dÃ©lai : Aucune pÃ©riode d'embargo n'est admise.</li>
+</ul>
+
+<br>
+
+<b>QualitÃ© :</b> Pour Ãªtre incluse dans le DOAJ, la revue doit pratiquer un contrÃ´le qualitÃ© sur les articles qui lui sont soumis, que ce soit pas un Ã©diteur, un comitÃ© Ã©ditorial et/ou un systÃ¨me de validation par les pairs.
+<br><br>
+
+<b>PÃ©riodique :</b> La revue doit avoir un ISSN (International Standard Serial Number, pour plus d'information voir <a href=http://www.issn.org>http://www.issn.org</a>).
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="journalsway">Quelle est la procÃ©dure pour intÃ©grer une revue dans le DOAJ?</a>
+</b>
+</h3>
+<p>
+<b>Suggestion</b>
+<p>
+Nous recevons des suggestion d'ajout de revues provenant soit des Ã©diteurs, soit du grand public. Nous vÃ©rifions alors les Ã©lÃ©ments suivants : 
+<p>
+<ul>
+<li>La revue dispose-t-elle un ISSN en cours de validitÃ© ? 
+<li>Le site web de la revue contient-il des informations sur le comitÃ© Ã©ditorial ?
+<li>Les articles sont-ils disponibles en texte intÃ©gral ?
+<li>Le site web de la revue contient-il des informations sur la politique de l'Ã©diteur en matiÃ¨re d'accÃ¨s ouvert (Open Access)? 
+<li>La revue pratique-t-elle une validation Ã©ditoriale et/ou une validation par les pairs ?
+<li>Ensuite nous regardons si le site mentionne une adresse Ã©lectronique de contact, et si celle-ci est active.</li>
+</ul>
+<p>
+Une fois que tout cela est fait, nous envoyons Ã  l'Ã©diteur un formulaire d'enregistrement. 
+<p>
+<b>VÃ©rification</b>
+<p>
+Lorsque le formulaire nous est retournÃ© rempli, nous procÃ©dons Ã  une vÃ©rification plus en profondeur, en fonction des prÃ©cisions apportÃ©es dans le formulaire.
+<p>
+<ul>
+<li>
+<b>S'agit-il d'accÃ¨s ouvert (Open Access)</b> conformÃ©ment Ã  la dÃ©finition de la BOAI ? Nous entendons par cela que la revue donne aux utilisateurs le droit de "lire, tÃ©lÃ©charger, copier, distribuer, imprimer, rechercher ou lier le texte intÃ©gral des articles, les indexer, les injecter dans des logiciels de traitement de donnÃ©es, ou de les utiliser pour tout autre objectif lÃ©gal, et ce sans barriÃ¨re financiÃ¨re, juridique ou technique autre que celle intrinsÃ¨que Ã  l'accÃ¨s Ã  internet". 
+<li>La revue <b>fait-elle payer des frais de publication</b>? Si tel est le cas, le site web de la revue donne-t-il des informations Ã  ce sujet ?
+<li>Le site web de la revue contient-il des informations sur <b>le mode de  validation par les pairs</b>, ou sur la validation Ã©ditoriale ?
+<li>La revue exige-t-elle une <b>pÃ©riode d'embargo</b> ? Il s'agit du cas oÃ¹ la version imprimÃ©e de la revue est accessible avant la version Ã©lectronique, ou bien oÃ¹ le dernier numÃ©ro est disponible sur abonnement, alors que les numÃ©ros plus anciens sont en accÃ¨s ouvert.
+<li>Depuis quelle annÃ©e les articles sont-ils disponibles en texte intÃ©gral ?
+<li>Qui est l'Ã©diteur ?
+<li>Pays, langue, mots-clÃ©s
+</li>
+</ul>
+<p>
+<b>Enregistrement</b>
+<p>
+La revue est ensuite enregistrÃ©e et classÃ©e dans le DOAJ selon le systÃ¨me de classement de la BibliothÃ¨que du CongrÃ¨s. La notice de la revue est immÃ©diatement visible et indexÃ©e.
+<p>
+<b>MÃ©tadonnÃ©es et archivage</b>
+<p>
+Nous suggÃ©rons enfin Ã  l'Ã©diteur de nous fournir les mÃ©tadonnÃ©es de ses articles, au format XML. Le DOAJ est compatible OAI, et une fois que les articles sont indexÃ©s, ils sont automatiquement moissonnables.
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="oai">Que signifie OAI, Open Archives Initiative? </a>
+
+</b>
+</h3> 
+<p>
+L'<a href="http://www.openarchives.org/">OAI, Open Archives Initiative</a>, fournit un cadre commun permettant d'avoir accÃ¨s Ã  des contenus de faÃ§on normalisÃ©e grÃ¢ce au moissonnage de leurs mÃ©tadonnÃ©es. </p>
+<br>
+<h3>
+<b>    
+<a name="support"> Comment puis-je aider / soutenir le DOAJ? 
+</b>
+</h3>
+Merci de consulter notre <a href="http://www.doaj.org/doaj?func=loadTempl&templ=membership&uiLanguage=fr">page sur les adhÃ©sions</a> pour plus d'informations.
+</p>
+<br>
+
+<h3>
+<b>
+<a name="search">Comment chercher dans le DOAJ ? Quelles informations puis-je trouver sur une revue ou un article ?</a>
+</b>
+</h3> 
+
+<p>
+Les notices du DOAJ contiennent les informations suivantes :
+</p>
+<p>
+<b>Titre de la revue</b> </p> 
+
+<p><b>NumÃ©ro ISSN</b>
+
+<p><b>NumÃ©ro E-ISSN</b> (pour les revues qui en ont un).</p>
+
+<p><b>Sujet</b></p>
+
+<p><b>Editeur</b> : l'entitÃ© responsable de la publication de la revue.</p>
+
+<p><b>Pays de publication</b></p>
+
+<p><b>Langue</b> : la ou les langue(s) des articles en texte intÃ©gral.</p>
+
+<p><b>Mots-clÃ©s</b> : les mots-clÃ©s dÃ©finissant le sujet de la revue.</p>
+
+<p><b>AnnÃ©e de dÃ©but </b> : AnnÃ©e au cours de laquelle la revue a commencÃ© Ã  proposer sous forme Ã©lectronique son contenu en texte intÃ©gral en libre accÃ¨s.</p>
+
+<p><b>AnnÃ©e de fin</b> (uniquement si la revue a une suite sous un autre titre)<br> AnnÃ©e au cours de laquelle la revue a cessÃ© d'exister.</p> 
+
+<p>
+Utilisez "Chercher des revues" pour trouver des revues dans le DOAJ. Le systÃ¨me cherche dans tous les champs des notices, sauf dans <b>sujet</b> et <b>annÃ©e</b>.
+</p>
+
+<br>
+<p>Utilisez <b>"Chercher des articles"</b> pour trouver des articles provenant de revues indexÃ©es au niveau de l'article (portant la mention <b>DOAJ CONTENT</b>.</p>
+
+<p>Vous pouvez faire porter votre recherche sur les champs suivants : </p>
+<ul>
+<li>Tous les champs</li>
+<li>Titre</li>
+<li>Titre de revue</li>
+<li>ISSN</li>
+<li>Auteur</li>
+<li>Mots-clÃ©s</li>
+<li>RÃ©sumÃ©</li>
+
+</ul>
+<p>Si vous saisissez plus d'un mot dans un champ, il sera considÃ©rÃ© comme une phrase. Vous pouvez Ã©galement utiliser les opÃ©rateur boolÃ©ens ET, OU, SAUF. 
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="byCountry">Puis-je trouver des informations sur les revues contenues dans le DOAJ par pays ?</a>
+</b>
+</h3> 
+<p>
+Oui, vous disposez de 2 listes triÃ©es par annÃ©e, qui montrent :
+</p>
+<ul>
+<li>quelles revues ont Ã©tÃ© ajoutÃ©es pendant une annÃ©e donnÃ©e et Ã  quelle date</li>
+<li>le nombre total de revues incluses dans le DOAJ par pays</li>
+</ul>
+<p>
+Vous pouvez consulter <a href="http://www.doaj.org/doaj?func=byCountry&uiLanguage=fr">la page des informations par pays</a>.
+<p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+</p>
+<br>
+<h3>
+<a name="Other_OA">Existe-t-il d'autres faÃ§ons de proposer du libre accÃ¨s (Open Access)</a>
+</h3>
+<p>Oui, et pour en savoir plus sur l'auto-archivage et les archives ouvertes, vous pouvez consulter <a href="http://www.eprints.org/self-faq/">la FAQ sur l'auto-archivage de Southampton</a> (en anglais).
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="notcovered">Pourquoi le sujet qui m'intÃ©resse n'est-il pas reprÃ©sentÃ© dans le DOAJ ? </a>
+</b>
+</h3> 
+<p>Vraisemblablement parce que nous n'avons pas encore trouvÃ© de revues dans ce domaine. Les suggestions sont les bienvenues, n'hÃ©sitez pas Ã  utiliser <a href="/doaj?func=suggest&uiLanguage=fr">notre formulaire de suggestion</a> pour nous les signaler.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="rss">Le DOAJ propose-t-il des fils RSS ? </a>
+</b>
+</h3>
+<p>
+Oui, dans le menu de gauche, vous trouverez :<br>
+- le fil des revues ajoutÃ©es au cours des 7 dernier jours<br>
+- le fil des revues ajoutÃ©es au cours des 30 dernier jours
+
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadata">Comment puis-je obtenir les mÃ©tadonnÃ©es des revues du DOAJ ?</a>
+</h3>
+
+<p>Le DOAJ est compatible avec le protocole OAI de moissonnage des mÃ©tadonnÃ©es (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>).
+De ce fait, n'importe quel service tiers peut rÃ©cupÃ©rer les notices du DOAJ et les inclure dans ses collections. OAI est un protocole reconnu et facile Ã  utiliser. 
+L'URL de base est : http://www.doaj.org/oai
+Vous pouvez y associer la plupart des commandes OAI directement. Voici quelques exemples :</p>
+
+<br>
+Verb: Identify<br> 
+
+<a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>
+
+<br><br>
+Verb: ListMetadataFormats<br> 
+<a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>
+<br><br>
+
+Verb: ListRecords&from=2004-01-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc">
+http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc</a>
+<br>
+
+
+<p>Ces URLs vous donneront une idÃ©e de ce qu'est l'OAI, et de ce que sont nos mÃ©tadonnÃ©es. Vous pouvez aussi consulter <a href="/doaj?func=loadTempl&templ=example_oai_record">cet exemple</a>.</p>
+
+<a name="metadata_csv"></a>
+              <p> Vous pouvez Ã©galement tÃ©lÃ©charger la liste des notices du DOAJ au format csv, puis l'importer dans excel ou tout autre logiciel vous permettant de rÃ©utiliser les donnÃ©es. Vous pouvez procÃ©der comme suit :
+<ul>
+                  <li>
+TÃ©lÃ©chargez le fichier depuis <a href="/doaj?func=csv">http://www.doaj.org/doaj?func=csv</a> sur votre ordinateur</li>
+
+<li>Ouvrez Excel</li> (par exemple)
+<li>Allez dans le menu DonnÃ©es > DonnÃ©es externes > Importer un fichier texte</li>
+<li>A partir de lÃ , vous pouvez choisir le format de sortie de vos donnÃ©es, par exemple DÃ©limitÃ© > Virgule > GÃ©nÃ©ral</li>
+                </ul>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadataA">Comment puis-je rÃ©cupÃ©rer les mÃ©tadonnÃ©es des articles du DOAJ ?</a>
+</h3>
+<p>
+Les donnÃ©es des articles peuvent Ãªtre moissonnÃ©es avec le protocole OAI.
+
+<br>L'URL de base est : http://www.doaj.org/oai.article
+<br>Vous pouvez utiliser la plupart des commandes OAI directement. 
+<br>Exemple:<br><br>
+Verb: ListRecords&from=2004-07-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc">
+http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc</a>
+<br>
+</p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+<h3>
+<a name="restrictions">L'utilisation de vos mÃ©tadonnÃ©es est-elle restreinte ?</a>
+</h3>
+<p>
+Les donnÃ©es dans le DOAJ sont diffusÃ©es sous une licence Creative Commons
+Attribution-Partage Ã  l'identique. Les conditions d'applications de cette licence sont expliquÃ©es sur <a href="http://creativecommons.org/licenses/by-sa/1.0/">le site de Creative Commons</a>. (Vous pouvez aussi obtenir <a href="http://creativecommons.org/licenses/by-sa/1.0/legalcode">plus de dÃ©tails juridiques</a>.)
+</p>
+<p>
+<b>Merci de noter que rien de ce qui est diffusÃ© gratuitement n'est garanti</b> : si vous tombez sur une revue en libre accÃ¨s et que vous vous cassez une jambe, ne vous en prenez pas Ã  nous !
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+<h3>
+<b>
+<a name="cantfind">Pourquoi ma revue n'est-elle pas dans le DOAJ ? </a>
+</b>
+
+</h3> 
+<p>Peut-Ãªtre n'avons-nous pas encore trouvÃ© votre revue ? Merci d'utiliser notre formulaire pour <a href="/doaj?func=suggest&uiLanguage=fr"> suggÃ©rer l'ajout d'une revue</a>. Peut-Ãªtre aussi que votre revue ne correspond malheureusement pas Ã  nos critÃ¨res de sÃ©lection : par exemple, les articles doivent Ãªtre disponibles en texte intÃ©gral depuis le dÃ©but de la publication. Merci de consulter <a href="/articles/about#criteria&uiLanguage=fr">nos critÃ¨res de selection</a>.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+<h3> 
+<b>
+<a name="publisher">En tant qu'Ã©diteur, comment puis-je charger des articles dans le DOAJ ?</a>
+</b> </h3>
+ 
+<p>
+
+Lorsqu'une revue a Ã©tÃ© ajoutÃ©e au DOAJ, un identifiant et un mot de passe sont transmis au propriÃ©taire de la revue. Connectez-vous au DOAJ depuis la page "AccÃ¨s Ã  l'interface pour les Ã©diteurs". Vous avez 2 possibilitÃ© pour charger vos mÃ©tadonnÃ©es : soit article par article, soit fichier par fichier. Les fichiers doivent Ãªtre conformes au schÃ©ma de spÃ©cifications du DOAJ. <a href="http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo&uiLanguage=fr">Pour en savoir plus...</a>.
+</p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="getseal">Comment puis-je obtenir le label SPARC Europe pour les revues en libre accÃ¨s ?</a>
+</b>
+</h3> 
+<p>
+Comment Ãªtre certifiÃ© :
+<p>
+<b>1Ã¨re Ã©tape:
+<p>
+Choisissez la licence Creative Commons CC-BY.
+</b>
+<p>
+Pour obtenir le label SPARC Europe, vous devez placer vos contenus sous licence CC-BY, licence qui est la plus favorable Ã  l'utilisateur, puisqu'elle permet, entre autres choses, l'archivage Ã  long terme et la fouille / le traitement des donnÃ©es.
+<p>
+Comment choisir la licence CC-BY :
+<p>
+Allez sur le <a href="http://creativecommons.org/about/license"> site de Creative Commons (CC) (http://creativecommons.org/about/license)</a> et copiez l'icÃ´ne CC-BY - vous pouvez consulter au prÃ©alable cette <a href="http://wiki.creativecommons.org/Before_Licensing">liste de points Ã  Ã©clairicir avant de choisir une licence</a>.
+<p>
+Ajoutez l'icÃ´ne CC-BY sur la page d'accueil de votre revue, ou de prÃ©fÃ©rence sur chaque article de votre revue.
+<p>
+Retournez sur le <a href="http://www.doaj.org">DOAJ</a>, connectez-vous sur l'espace "Pour les Ã©diteurs", cliquez sur "Informations sur les licences" puis choisissez pour votre revue "Licence CC".
+<p>
+L'icÃ´ne CC apparaÃ®tra automatiquement sur la notice de votre revue dans le DOAJ.
+<p>
+<b>
+2Ã¨me Ã©tape : 
+<p>
+Il faut que votre revue fournisse systÃ©matiquement au DOAJ les metadonnÃ©es de tous vos contenus.
+</b><br><br>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+</p>
+
+<br>
+<h3> 
+<a name="authors">Comment choisir la licence CC qu'il me faut ?</a>
+</h3>
+<p>
+Vous pouvez trouver des informations sur les diffÃ©rents types de licences sur le site de Creative Commons :<br>
+http://creativecommons.org/licenses/<br><br>
+Vous y trouverez mÃªme une page pour vous aider Ã  choisir la licence adÃ©quate pour vos contenus :<br>
+http://creativecommons.org/choose/<br>
+Ces informations sont disponibles en 24 langues.<br>
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+<p>
+
+<br>
+<h3> 
+<a name="authors">OÃ¹ puis-je trouver des informations sur les frais de publication ?</a>
+</h3>
+<p>
+Vous pouvez trouver des informations sur les frais de publication ici. 
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=fr">Retour en haut de page</a>
+
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals est proposÃ© par <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> en collaboration avec <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
