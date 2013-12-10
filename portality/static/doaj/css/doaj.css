@@ -140,6 +140,15 @@ footer > .shaded-container + .shaded-container {
     margin-right: 2em;
 }
 
+#search-progress-bar {
+    width: 100%;
+}
+
+#search-progress-bar > .bar{
+    width: 100%;
+    background-color: #F68B1F;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
