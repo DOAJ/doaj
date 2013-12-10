@@ -101,13 +101,11 @@ footer > .shaded-container + .shaded-container {
 #header-support-doaj {
     font-size: 120%;
     font-weight: bold;
-    color: #F68B1F;
-    border-bottom: 1px solid #F68B1F;
-}
-
-#header-support-doaj:hover {
-    text-decoration: none;
-    border-bottom: 1px dotted #F68B1F;
+    color: white;
+    background-color: #F68B1F;
+    background-image: -moz-linear-gradient(center top , #f6b574, #f68e26);
+    border-color: #F68B1F #F68B1F #F68411;
+    text-shadow: none;
 }
 
 #homepage-search-container {
@@ -135,9 +133,15 @@ footer > .shaded-container + .shaded-container {
     padding-bottom: 1em;
 }
 
+#footer-sponsors > a {
+    margin-right: 1em;
+    text-decoration: none;
+}
+
 #footer-sponsors > a > img {
+    max-width: 170px;
+    max-height: 100px;
     margin-top: 0.5em;
-    margin-right: 2em;
 }
 
 /* Custom responsive bits - elements, classes and id-s in that order */
