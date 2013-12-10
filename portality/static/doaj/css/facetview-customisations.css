@@ -76,6 +76,10 @@ hr {
     border-color: #F68B1F #F68B1F #F68411;
 }
 
+#facetview_selectedfilters .btn-group {
+    margin-right: 1em;
+}
+
 #facetview_selectedfilters .btn {
     background-color: #F68B1F;
     background-image: -moz-linear-gradient(center top , #f6b574, #f68e26);
@@ -93,4 +97,13 @@ hr {
 
 #facetview_learnmore {
     background-color: #FFEECE;
+}
+
+#search-progress-bar {
+    width: 100%;
+}
+
+#search-progress-bar > .bar{
+    width: 100%;
+    background-color: #F68B1F;
 }
