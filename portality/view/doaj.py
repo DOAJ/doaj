@@ -86,14 +86,6 @@ def search_post():
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
     return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
-@blueprint.route("/about")
-def about():
-    return render_template('doaj/about.html')
-    
-@blueprint.route("/publishers")
-def publishers():
-    return render_template('doaj/publishers.html')
-
 @blueprint.route("/csv")
 def csv_data():
     def get_csv_string(csv_row):
@@ -141,3 +133,23 @@ def csv_data():
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
     r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
+
+###############################################################
+## The various static endpoints
+###############################################################
+
+@blueprint.route("/about")
+def about():
+    return render_template('doaj/about.html')
+
+@blueprint.route("/contact")
+def contact():
+    return render_template("doaj/contact.html")
+
+@blueprint.route("/publishers")
+def publishers():
+    return render_template('doaj/publishers.html')
+
+@blueprint.route("/faq")
+def faq():
+    return render_template("doaj/faq.html")
