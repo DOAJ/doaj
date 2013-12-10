@@ -1,12 +1,12 @@
 function customise_facetview_init() {
     insert_progress_bar();
-}
-
-function customise_facetview_results() {
-    $('.facetview_filtershow').bind('click', toggle_bottom_border);
     $('.facetview_orderby').css('background-color', 'white');
     $('.facetview_orderby').css('width', 'auto');
     $('.facetview_searchfield').css('width', 'auto');
+    $('.facetview_filtershow').bind('click', toggle_bottom_border);
+}
+
+function customise_facetview_results() {
     $('.facetview_metadata div').css('border-color', '#F68B1F');
     $('.facetview_decrement, .facetview_increment').css('color', '#F68B1F');
     $('.date-month').each(expand_month)
