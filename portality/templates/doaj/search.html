@@ -16,57 +16,44 @@ jQuery(document).ready(function($) {
     hide_inactive_facets: true,
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
-        {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
-        {'field': 'bibjson.publisher.exact', 'display': 'Publisher'},
+        {'field': 'index.classification.exact', 'display': 'Subject'},
+        {'field': 'bibjson.keywords.exact', 'display': 'Keywords'},
+        {'field': 'index.language.exact', 'display': 'Language'},
+        {'field': 'index.country.exact', 'display': 'Country'},
+        {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Provider'},
-        {'field': 'bibjson.author_pays.exact', 'display': 'Publishing charge (APC)?'},
-        {'field': 'bibjson.language.exact', 'display': 'Language'},
-        {'field': 'bibjson.country.exact', 'display': 'Country'},
-        {'field': 'bibjson.license.title.exact', 'display': 'License'},
-        {'field': 'bibjson.oa_start.year.exact', 'display': 'Started publishing OA in..'}, // sort this alphabetically descending by default
-        {'field': 'bibjson.oa_end.year.exact', 'display': 'Stopped publishing OA in..'}, // sort this alphabetically descending by default
-        {'field': 'bibjson.for_free', 'display': 'For free?'},
+        {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
+        {'field': 'index.license.exact', 'display': 'License'},
         // Articles
-        {'field': 'bibjson.keywords.exact', 'display': 'Keywords .exact'},
-        {'field': 'bibjson.keywords', 'display': 'Keywords (loose)'},
-        {'field': 'bibjson.author.exact', 'display': 'Author'},
-        {'field': 'bibjson.year.exact', 'display': 'Year'},
-        {'field': 'bibjson.journal.publisher.exact', 'display': 'Publisher'},
+        {'field': 'bibjson.author.exact', 'display': 'Author (Articles)'},
+        {'field': 'bibjson.year.exact', 'display': 'Year of publication (Articles)'},
+        {'field': 'bibjson.journal.title.exact', 'display': 'Journal title (Articles)'},
     ],
     search_sortby: [
         {'display':'Date added to DOAJ','field':'created_date'},
         {'display':'Title','field':'bibjson.title.exact'},
-        {'display':'Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']},
+        {'display':'Article: Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']},
     ],
     searchbox_fieldselect: [
         {'display':'Title','field':'bibjson.title'},
-        {'display':'Keywords','field':'bibjson.keywords'},
-        {'display':'Subject','field':'bibjson.subject'},
+        {'display':'Keywords','field':'index.keywords'},
+        {'display':'Subject','field':'index.classification'},
         {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
+        {'display':'Country','field':'index.country'},
+        {'display':'Language','field':'index.language'},
+        {'display':'Publisher','field':'index.publisher'},
 
         {'display':'Article: Abstract','field':'bibjson.abstract'},
         {'display':'Article: Author','field':'bibjson.author'},
         {'display':'Article: Year','field':'bibjson.year'},
-        {'display':'Article: Country','field':'bibjson.journal.country'},
-        {'display':'Article: Language','field':'bibjson.journal.language'},
-        {'display':'Article: Publisher','field':'bibjson.journal.publisher'},
-        {'display':'Article: Journal Title','field':'bibjson.journal.publisher'},
+        {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-        {'display':'Journal: Country','field':'bibjson.country'},
-        {'display':'Journal: Language','field':'bibjson.language'},
-        {'display':'Journal: Publisher','field':'bibjson.publisher'},
         {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
       size: 10
     },
-    /*
-    predefined_filters: {
-        'bibjson.active': {'term':{'bibjson.active':true}},
-        'bibjson.for_free': {'term':{'bibjson.for_free':true}},
-    },
-    */
     default_operator: "AND",
     result_display: [
     // Journals
@@ -104,7 +91,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Publishing charge (APC)?</strong>: ",
+                "pre": "<strong>Publication charges?</strong>: ",
                 "field": "bibjson.author_pays",
             }
         ],
@@ -138,16 +125,6 @@ jQuery(document).ready(function($) {
                 "field": "bibjson.language",
             }
         ],
-        [
-            {
-                "pre": "<strong>More information - ",
-                "field": "bibjson.link.type",
-                "post": "</strong>: ",
-            },
-            {
-                "field": "bibjson.link.url",
-            },
-        ],
 // Articles
         [
             {
@@ -178,15 +155,15 @@ jQuery(document).ready(function($) {
                 "field": "bibjson.journal.title",
             },
             {
-                "pre": ", Volume ",
+                "pre": ", Vol ",
                 "field": "bibjson.journal.volume",
             },
             {
-                "pre": ", Issue ",
+                "pre": ", Iss ",
                 "field": "bibjson.journal.number",
             },
             {
-                "pre": ", Pages ",
+                "pre": ", Pp ",
                 "field": "bibjson.start_page",
             },
             {
@@ -208,7 +185,17 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>ID</strong>: ",
+                "pre": "<strong>More information - ",
+                "field": "bibjson.link.type",
+                "post": "</strong>: ",
+            },
+            {
+                "field": "bibjson.link.url",
+            },
+        ],
+        [
+            {
+                "pre": '<strong>ID</strong>: ',
                 "field": "id",
             }
         ],

@@ -1,6 +1,6 @@
     <div class="container" id="page_header">
         <div class="row-fluid">
-            <div class="span4{% if heading_title %} more-heading-padding{% endif %}" id="logo-container"><a href="{{ url_for('doaj.home') }}"><img src="{{ url_for('static', filename='doaj/images/logo_cropped.jpg') }}" alt="DOAJ Logo" /></a></div>
+            <div class="span4{% if heading_title %} more-heading-padding{% endif %}" id="logo-container"><a href="{{ url_for('doaj.home') }}"><img src="{{ url_for('static', filename='doaj/images/logo_cropped.jpg') }}" alt="Directory of Open Access Journals" title="Directory of Open Access Journals" /></a></div>
             <div class="span6">
                 {% if not heading_title %}&nbsp;
                 {% else %}
@@ -11,7 +11,7 @@
                 {% endif %}
             </div>
             <div class="span2 centre-text-container{% if heading_title %} more-heading-padding{% endif %}" id="header-right-container">
-                <a id="header-support-doaj" href="/membership">SUPPORT DOAJ</a>
+                <a class="btn" id="header-support-doaj" href="/membership" alt="Support DOAJ Become a member" title="Support DOAJ Become a member">SUPPORT DOAJ</a>
             </div>
         </div>
     </div>
@@ -20,11 +20,11 @@
         <div class="container">
           <ul class="nav">
             <li{% if request.path == '/' %} class="active"{% endif %}><a href="{{ url_for('doaj.home') }}">Home</a></li>
-            <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}">Search</a></li>
-            <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}">About</a></li>
+            <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}" alt="Search or browse DOAJ" title="Search or browse DOAJ">Search</a></li>
+            <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">About</a></li>
           </ul>
           <ul class="nav pull-right">
-            <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}">Publishers</a></li>
+            <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">Publishers</a></li>
             <li{% if request.path == '/suggest' %} class="active"{% endif %}><a href="{{url_for('doaj.suggest')}}">Suggest</a></li>
             {#
             {% if current_user.is_anonymous() %}
