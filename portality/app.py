@@ -31,7 +31,19 @@ app.register_blueprint(oaipmh)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
-
+# Redirects from previous DOAJ app.
+# RJ: I have decided to put these here so that they can be managed 
+# alongside the DOAJ codebase.  I know they could also go into the
+# nginx config, but there is a chance that they will get lost or forgotten
+# some day, whereas this approach doesn't have that risk.
+@app.route("/doaj")
+def legacy():
+    func = request.values.get("func")
+    if func == "csv":
+        return redirect("/csv"), 301
+    elif func == "rss":
+        return redirect("/feed"), 301
+    return redirect("/"), 301
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
