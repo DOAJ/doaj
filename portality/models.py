@@ -311,6 +311,10 @@ class Journal(DomainObject):
         subjects = []
         schema_subjects = []
         classification = []
+        langs = []
+        country = None
+        license = []
+        publisher = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -340,12 +344,34 @@ class Journal(DomainObject):
             issns += hbib.get_identifiers(hbib.E_ISSN)
             titles.append(hbib.title)
         
+        # copy the languages
+        if cbib.language is not None:
+            langs = cbib.language
+        
+        # copy the country
+        if cbib.country is not None:
+            country = cbib.country
+        
+        # get the title of the license
+        lic = cbib.get_license()
+        if lic is not None:
+            license.append(lic.get("title"))
+        
+        # copy the publisher/provider
+        if cbib.publisher:
+            publisher.append(cbib.publisher)
+        if cbib.provider:
+            publisher.append(cbib.provider)
+        
         # deduplicate the lists
         issns = list(set(issns))
         titles = list(set(titles))
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
+        license = list(set(license))
+        publisher = list(set(publisher))
+        langs = list(set(langs))
         
         # build the index part of the object
         self.data["index"] = {}
@@ -359,8 +385,23 @@ class Journal(DomainObject):
             self.data["index"]["schema_subject"] = schema_subjects
         if len(classification) > 0:
             self.data["index"]["classification"] = classification
+        if len(publisher) > 0:
+            self.data["index"]["publisher"] = publisher
+        if len(license) > 0:
+            self.data["index"]["license"] = license
+        if len(langs) > 0:
+            self.data["index"]["language"] = langs
+        if country is not None:
+            self.data["index"]["country"] = country
+    
+    def _ensure_in_doaj(self):
+        # switching active to false takes the item out of the DOAJ
+        # though note that switching active to True does not put something IN the DOAJ
+        if not self.bibjson().active:
+            self.set_in_doaj(False)
     
     def prep(self):
+        self._ensure_in_doaj()
         self._generate_index()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     
@@ -446,10 +487,12 @@ class JournalBibJSON(GenericBibJSON):
     @active.setter
     def active(self, val) : self.bibjson["active"] = val
     
+    """
     @property
     def for_free(self): return self.bibjson.get("for_free")
     @for_free.setter
     def for_free(self, val) : self.bibjson["for_free"] = val
+    """
     
     # journal-specific complex part getters and setters
     
@@ -610,8 +653,12 @@ class Article(DomainObject):
         self.data["history"].append(snobj)
     
     def is_in_doaj(self):
-        # FIXME: this won't work yet, as the data is not in the right shape
         return self.data.get("admin", {}).get("in_doaj", False)
+    
+    def set_in_doaj(self, value):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["in_doaj"] = value
     
     def _generate_index(self):
         # the index fields we are going to generate
@@ -619,6 +666,10 @@ class Article(DomainObject):
         subjects = []
         schema_subjects = []
         classification = []
+        langs = []
+        country = None
+        license = []
+        publisher = []
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -641,11 +692,31 @@ class Article(DomainObject):
             schema_subjects.append(scheme + ":" + term)
             classification.append(term)
         
+        # copy the languages
+        if cbib.journal_language is not None:
+            langs = cbib.journal_language
+        
+        # copy the country
+        if cbib.journal_country is not None:
+            country = cbib.journal_country
+        
+        # get the title of the license
+        lic = cbib.get_journal_license()
+        if lic is not None:
+            license.append(lic.get("title"))
+        
+        # copy the publisher/provider
+        if cbib.publisher:
+            publisher.append(cbib.publisher)
+        
         # deduplicate the list
         issns = list(set(issns))
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
+        license = list(set(license))
+        publisher = list(set(publisher))
+        langs = list(set(langs))
         
         # work out what the date of publication is
         date = cbib.get_publication_date()
@@ -662,6 +733,14 @@ class Article(DomainObject):
             self.data["index"]["schema_subject"] = schema_subjects
         if len(classification) > 0:
             self.data["index"]["classification"] = classification
+        if len(publisher) > 0:
+            self.data["index"]["publisher"] = publisher
+        if len(license) > 0:
+            self.data["index"]["license"] = license
+        if len(langs) > 0:
+            self.data["index"]["language"] = langs
+        if country is not None:
+            self.data["index"]["country"] = country
     
     def prep(self):
         self._generate_index()
@@ -748,7 +827,7 @@ class ArticleBibJSON(GenericBibJSON):
     
     @property
     def publisher(self):
-        self.bibjson.get("journal", {}).get("publisher")
+        return self.bibjson.get("journal", {}).get("publisher")
     
     @publisher.setter
     def publisher(self, value):

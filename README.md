@@ -83,8 +83,7 @@ It is likely that history records will only be created upon request by the admin
                 "number" : "<issue number>"
             },
             "provider" : "<journal provider if different from publisher>",
-            "active" : true|false
-            "for_free" : true|false
+            "active" : true|false,
             "subject" : [
                 {
                     "scheme" : "<scheme>", 
@@ -136,7 +135,11 @@ It is likely that history records will only be created upon request by the admin
             "title" : [<list of all titles the journal has been known by>],
             "subject" : [<all possible subject keywords>],
             "schema_subject" : [<all subject keywords with schema prefixes>],
-            "classification" : [<list of classification terms without prefixes>]
+            "classification" : [<list of classification terms without prefixes>],
+            "language" : [<list of languages of the journal>],
+            "country" : "<country of journal publication>",
+            "license" : [<list of titles of licences>],
+            "publisher" : "<publisher>"
         },
         "created_date" : "<date created>",
         "last_updated" : "<date record last modified>"
@@ -148,6 +151,9 @@ It is likely that history records will only be created upon request by the admin
 
     {
         "id" : "<some opaque identifier>",
+        "admin" : {
+            "in_doaj" : true|false
+        },
         "bibjson" : {
             "title" : "<title of the article>",
             "identifier": [
@@ -205,7 +211,11 @@ It is likely that history records will only be created upon request by the admin
             "issn" : [<list of all issns that this item pertains to>],
             "subject" : [<all possible subject keywords>],
             "schema_subject" : [<all subject keywords with schema prefixes>],
-            "classification" : [<list of classification terms without prefixes>]
+            "classification" : [<list of classification terms without prefixes>],
+            "language" : [<list of languages of the journal>],
+            "country" : "<country of journal publication>",
+            "license" : [<list of titles of licences>],
+            "publisher" : "<publisher>"
         },
         "created" : "<date created>",
         "last_modified" : "<date record last modified>"

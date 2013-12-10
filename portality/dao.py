@@ -85,6 +85,9 @@ class DomainObject(UserDict.IterableUserDict, object):
         """
         
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
+        
+        if r.status_code >= 400:
+            print r.json()
 
     def save_from_form(self,request):
         newdata = request.json if request.json else request.values

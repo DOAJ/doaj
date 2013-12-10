@@ -1,4 +1,4 @@
-import os, sys, codecs
+import os, sys, codecs, random, string
 from lxml import etree
 from datetime import datetime
 from copy import deepcopy
@@ -59,6 +59,7 @@ def load_issn_journal_map():
         obj["license"] = jbib.get_license()
         obj["language"] = jbib.language
         obj["country"] = jbib.country
+        obj["in_doaj"] = j.is_in_doaj()
         
         # get the issns that map to this journal (or any previous version of it)
         issns = j.data.get("index", {}).get("issn", [])
@@ -285,10 +286,23 @@ def _get_journal_clusters(journals):
     return clusters
 
 def _is_in_doaj(element):
+    # an item is in the DOAJ if the following things hold true:
+    # - doaj = True
+    # - active = True
+    # - for_free = True
+    
+    # lift the elements
     doaj = element.find("doaj")
-    if doaj is not None:
-        return doaj.text == "Y"
-    return False
+    active = element.find("active")
+    for_free = element.find("forFree")
+    
+    # work out whether each is True or False
+    d = doaj is not None and doaj.text == "Y"
+    a = active is not None and active.text == "Y"
+    f = for_free is not None and for_free.text == "Y"
+    
+    # all 3 have to be true for the element to be in DOAJ
+    return d and a and f
 
 def _to_journal_bibjson(element):
     b = JournalBibJSON()
@@ -373,9 +387,11 @@ def _to_journal_bibjson(element):
     if active is not None and active.text is not None and active.text != "":
         b.active = active.text == "Y"
     
+    """
     for_free = element.find("forFree")
     if for_free is not None and for_free.text is not None and for_free.text != "":
         b.for_free = for_free.text == "Y"
+    """
     
     subject_elements = element.findall("subject")
     for subject in subject_elements:
@@ -516,14 +532,20 @@ def migrate_articles(source, batch_size=5000):
     articles = xml.getroot()
     print "migrating", str(len(articles)), "article records from", source
     
-    #error = codecs.open(source + ".errors", "wb", "utf8")
     counter = 0
+    omissions = 0
     batch = []
     for element in articles:
         a = Article()
         b = _to_article_bibjson(element)
-        _add_journal_info(b)
         a.set_bibjson(b)
+        hasjournal = _add_journal_info(a)
+        
+        if not hasjournal:
+            print "INFO: omitting article"
+            omissions += 1
+            continue
+        
         a.set_created(_created_date(element))
         a.set_id()
         a.prep() # prepare the thing to be saved, which is necessary since we're not actually going to save()
@@ -542,13 +564,21 @@ def migrate_articles(source, batch_size=5000):
         Article.bulk(batch, refresh=True)
         print "batch written, total written", counter
     
-    #error.close()
-        
+    print "wrote", counter, "articles, omitted", omissions
 
 def _created_date(element):
     cd = element.find("addedOn")
     if cd is not None and cd.text is not None and cd.text != "":
-        return "T".join(cd.text.split(" ")) + "Z" # fudge the date format
+        fudge = "T".join(cd.text.split(" ")) + "Z" # fudge the date format
+        # check that it parses
+        try:
+            datetime.strptime(fudge, "%Y-%m-%dT%H:%M:%SZ")
+            return fudge
+        except:
+            # do nothing, we'll just fall back to "created now"
+            print "failed on", cd.text
+            pass
+        
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def _to_article_bibjson(element):
@@ -615,12 +645,13 @@ def _to_article_bibjson(element):
     keywords = element.find("keywords")
     if keywords is not None and keywords.text is not None and keywords.text != "":
         # this filters the string "keyword" and "keywords" at the same time
-        words = [w.strip() for w in keywords.text.split("---") if w.strip().lower() not in ["keyword", "keywords"]]
+        words = [w.strip() for w in keywords.text.split("---") if w.strip().lower() not in ["keyword", "keywords", "no keywords", "</keyword><keyword>"]]
         b.set_keywords(words)
     
     return b
 
-def _add_journal_info(bibjson):
+def _add_journal_info(article):
+    bibjson = article.bibjson()
     
     # first, get the ISSNs associated with the record
     pissns = bibjson.get_identifiers(bibjson.P_ISSN)
@@ -640,62 +671,11 @@ def _add_journal_info(bibjson):
             if issn in issnmap:
                 journal = issnmap.get(issn)
     
-    # next check the index
-    """
-    if journal is None:
-        possibilities = {}
-        for issn in pissns:
-            options = Journal.find_by_issn(issn)
-            if len(options) > 1:
-                print "WARN: more than one journal found for", issn
-            for option in options:
-                possibilities[option.id] = option
-        if len(possibilities.keys()) > 1:
-            print "WARN: multiple possibilities for ", issn, ":", possibilities
-        if len(possibilities.keys()) > 0:
-            journal = possibilities[possibilities.keys()[0]]
-    
-    if journal is None:
-        possibilities = {}
-        for issn in eissns:
-            options = Journal.find_by_issn(issn)
-            if len(options) > 1:
-                print "WARN: more than one journal found for", issn
-            for option in options:
-                possibilities[option.id] = option
-        if len(possibilities.keys()) > 1:
-            print "WARN: multiple possibilities for ", issn, ":", possibilities
-        if len(possibilities.keys()) > 0:
-            journal = possibilities[possibilities.keys()[0]]
-    """
-    
     if journal is None:
         print "WARN: no journal for ", pissns, eissns
-        # error_register.write(bibjson.title + "\n\n")
-        return
+        return False
     
     # if we get to here, we have a journal record we want to pull data from
-    """
-    jbib = journal.bibjson()
-    
-    subjects = jbib.subjects()
-    for s in subjects:
-        bibjson.add_subject(s.get("scheme"), s.get("term"))
-    
-    if jbib.title is not None:
-        bibjson.journal_title = jbib.title
-    
-    lic = jbib.get_license()
-    if lic is not None:
-        bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
-    
-    if jbib.language is not None:
-        bibjson.journal_language = jbib.language
-    
-    if jbib.country is not None:
-        bibjson.journal_country = jbib.country
-    """
-    
     for s in journal.get("subjects", []):
         bibjson.add_subject(s.get("scheme"), s.get("term"))
     
@@ -712,7 +692,8 @@ def _add_journal_info(bibjson):
     if journal.get("country") is not None:
         bibjson.journal_country = journal.get("country")
     
-    
+    article.set_in_doaj(journal.get("in_doaj", False))
+    return True
 
 #################################################################
 
@@ -728,9 +709,18 @@ def migrate_contacts(source, batch_size=1000):
     contacts = xml.getroot()
     print "migrating", str(len(contacts)), "contact records from", source
     
-    batch = []
-    counter = 0
+    # first thing to do is locate all the duplicates in the logins
     record = []
+    duplicates = []
+    for element in contacts:
+        login = element.find("login")
+        if login is not None and login.text is not None and login.text != "":
+            if login.text in record:
+                duplicates.append(login.text)
+            record.append(login.text)
+    
+    # now go through and load all the user accounts
+    batch = []
     for element in contacts:
         login = element.find("login")
         password = element.find("password")
@@ -739,23 +729,34 @@ def migrate_contacts(source, batch_size=1000):
         issns = element.findall("issn")
         
         if login is None or login.text is None or login.text == "":
-            print "ERROR: contact without login"
-            continue
+            print "ERROR: contact without login - providing login"
+            if len(issns) == 0:
+                # make a random 8 character login name
+                login = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
+            else:
+                # select the first issn
+                login = issns[0].text
+        else:
+            login = login.text
         
         if password is None or password.text is None or password.text == "":
-            print "ERROR: contact without password", login.text
-            continue
+            print "ERROR: contact without password", login, "- providing one"
+            # make a random 8 character password
+            password = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(8))
+        else:
+            password = password.text
         
-        if login.text in record:
-            print "WARN: duplicate user id", login.text
-        
-        #counter += 1
-        #print counter, login.text
-        record.append(login.text)
-        
+        # check to see if this is a duplicate
+        if login in duplicates:
+            if len(issns) == 0:
+                print "INFO: duplicate detected, has no ISSNs, so skipping", login
+                continue
+            else:
+                print "INFO: duplicate detected, with ISSNs, so keeping", login
+                
         a = Account()
-        a.set_id(login.text)
-        a.set_password(password.text)
+        a.set_id(login)
+        a.set_password(password)
         
         if name is not None and name.text is not None and name.text != "":
             a.set_name(name.text)
