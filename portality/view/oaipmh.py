@@ -842,6 +842,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             subel = etree.SubElement(oai_dc, self.DC + "subject")
             subel.text = scheme + ":" + term
         
+        for language in bibjson.journal_language:
+            langel = etree.SubElement(oai_dc, self.DC + "language")
+            langel.text = language
+        
+        if bibjson.get_journal_license() is not None:
+            rights = etree.SubElement(oai_dc, self.DC + "rights")
+            rights.text = bibjson.get_journal_license().get("title")
+        
         return metadata
         
     def header(self, record):
