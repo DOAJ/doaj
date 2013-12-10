@@ -13,6 +13,7 @@ jQuery(document).ready(function($) {
     pager_slider: true,
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
+    hide_inactive_facets: true,
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'bibjson.subject.term.exact', 'display': 'Subject'},
