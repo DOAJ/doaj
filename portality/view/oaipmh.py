@@ -1,4 +1,4 @@
-import json, base64
+import json, base64, urllib
 from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, abort, make_response
@@ -793,13 +793,16 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             title = etree.SubElement(oai_dc, self.DC + "title")
             title.text = bibjson.title
         
+        # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             idel.text = identifier.get("id")
         
-        # FIXME: not sure if we want this here?
-        #created = etree.SubElement(oai_dc, self.DC + "date")
-        #created.text = normalise_date(record.created_date)
+        # our internal identifier (currently just links to the search results page)
+        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
+        url = app.config['BASE_URL'] + "/search?" + query
+        idel = etree.SubElement(oai_dc, self.DC + "identifier")
+        idel.text = url
         
         # work out the date of publication
         date = bibjson.get_publication_date()
@@ -832,6 +835,13 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         objecttype.text = "article"
         
+        for subs in bibjson.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            
+            subel = etree.SubElement(oai_dc, self.DC + "subject")
+            subel.text = scheme + ":" + term
+        
         return metadata
         
     def header(self, record):
@@ -844,15 +854,12 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         datestamp.text = normalise_date(record.last_updated)
         
-        """
-        FIXME: we need to sort out the subject classifications for articles
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
             
             subel = etree.SubElement(head, self.PMH + "setSpec")
             subel.text = make_set_spec(scheme + ":" + term)
-        """
         
         return head
 
@@ -869,9 +876,16 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
             title = etree.SubElement(oai_dc, self.DC + "title")
             title.text = bibjson.title
         
+        # external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             idel.text = identifier.get("id")
+        
+        # our internal identifier (currently just links to the search results page)
+        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
+        url = app.config['BASE_URL'] + "/search?" + query
+        idel = etree.SubElement(oai_dc, self.DC + "identifier")
+        idel.text = url
         
         for keyword in bibjson.keywords:
             subj = etree.SubElement(oai_dc, self.DC + "subject")
