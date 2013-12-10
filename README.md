@@ -6,6 +6,7 @@ This repository provides the software which drives the DOAJ website and the DOAJ
 We're running supervisord on our server. Every time you push changes, do
     
     git pull  # obviously
+    git submodule update  # in case one of the repo's submodules are at a newer commit now
     sudo supervisorctl restart doaj
 
 ## Setting up the software
