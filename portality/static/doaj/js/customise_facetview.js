@@ -39,7 +39,7 @@ months_english = {
 }
 
 function expand_month() {
-    this.innerHTML = months_english[this.innerHTML];
+    this.innerHTML = months_english[this.innerHTML.replace(/^0+/,"")];
 }
 
 function insert_progress_bar() {
