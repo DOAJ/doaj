@@ -95,7 +95,15 @@ def query(path='Pages'):
                     qs['query']['bool']['must'] = []
                 qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][path.lower()]
 
-        resp = make_response( json.dumps(klass().query(q=qs)) )
+        # if ONLY articles and/or journals are being requested, apply a
+        # filter by default
+        for s in subpaths:
+            if s == 'journal' or s == 'article':
+                terms = {'in_doaj':True}
+            else:
+                terms = None
+
+        resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 
     resp.mimetype = "application/json"
     return resp

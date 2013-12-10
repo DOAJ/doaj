@@ -43,5 +43,5 @@ function expand_month() {
 }
 
 function insert_progress_bar() {
-        $('#facetview_selectedfilters').append('<div class="progress progress-danger progress-striped active notify-loading" id="search-progress-bar"><div class="bar"></div></div>');
+        $('#facetview_selectedfilters').append('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
 }
