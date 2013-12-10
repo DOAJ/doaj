@@ -12,6 +12,7 @@ ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
+DOMAIN = "doaj.cottagelabs.com"  # facetview needs to access it like a user would, because well, it does run client-side
 DEBUG = True
 PORT = 5004
 
