@@ -161,15 +161,18 @@ jQuery(document).ready(function($) {
         ],
         [
             {
+                "pre":'<strong>Date of publication</strong>: ',
+                "field": "bibjson.year",
+            },
+            {
+                "pre":' <span class="date-month">',
+                "field": "bibjson.month",
+                "post": "</span>"
+            },
+        ],
+        [
+            {
                 "pre": "<strong>Published in</strong>: ",
-                "field": "bibjson.journal.year",
-            },
-            {
-                "pre":"-",
-                "field": "bibjson.journal.month",
-            },
-            {
-                "pre":" <strong>in</strong> ",
                 "field": "bibjson.journal.title",
             },
             {
