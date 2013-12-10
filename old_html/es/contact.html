@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+</head>
+
+<body>
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScritp is disabled.  The site is not able to function
+         properly without the browser having JavaScript enabled.
+         <br><a href="http://www.iatn.net/help/javascript">
+              How to Enable JavaScript in Your Browser
+          </a>
+      </div>
+    </noscript>
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=es"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+              selected="selected"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="contact">
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=es">Search</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=es">Browse</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=es">Suggest</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=es">Support DOAJ</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=es">For publishers</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=es">About</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=es">Contact us</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+    </span>
+
+    <div id="subMenu">
+      Contact
+    </div>
+
+
+<br>
+<font color=red>Sin embargo, le rogamos que no utilice el formulario para preguntar acerca de las revistas que han sido postuladas recientemente. Nuestra cartera de pedidos es enorme y lamentamos no tener tiempo para responder a estas preguntas dado que esto demorar&iacute;a m&aacute;s el proceso de evaluaci&oacute;n.</font color=red>
+	</p>
+<form action="/doaj" method=post>
+<input type=hidden name=func value=contact>
+<input type=hidden name=uiLanguage value=es>
+
+<label for="subject">Asunto</label> <br />
+
+<input type="text" name="subject" id="subject" size="30" value="" /><br />
+<label for="message">Mensaje *</label><br />
+<textarea id=message name="message" cols=45 rows=8></textarea><br>
+<label for="name">Su nombre * </label><br />
+<input type=text name=name id=name value="" size=30 /><br />
+<input type=hidden name=already value=1>
+<input type=hidden name=cKey value=8911386699632>
+<label for="email">Su correo electr&oacute;nico *</label><br />
+<input type=text name=email id=email value="" size=30 /><br />
+Escriba la palabra mostrada en la imagen *
+<img src="/doajImages/captcha8911386699632.gif" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
+<br>
+<input name=cWord value="" size=7>
+<p />
+<input type="submit" value="Submit" border="0" /></form>
+</form>
+
+
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals is provided by <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> in cooperation with <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
+

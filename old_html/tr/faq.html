@@ -1,0 +1,836 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+</head>
+
+<body>
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScritp is disabled.  The site is not able to function
+         properly without the browser having JavaScript enabled.
+         <br><a href="http://www.iatn.net/help/javascript">
+              How to Enable JavaScript in Your Browser
+          </a>
+      </div>
+    </noscript>
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=tr"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+              selected="selected"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="faq">
+ 
+ 
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=tr">Arama</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=tr">GÃ¶zat</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=tr">Bir Dergi Ãnerin</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=tr">DOAJ'Ä± Destekleyin</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=tr">YayÄ±ncÄ±lar Ä°Ã§in</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=tr">HakkÄ±nda</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=tr">Bize UlaÅÄ±n</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+ 
+ 
+    </span>
+
+    <div id="subMenu">
+       <a href="/doaj?func=loadTemplate&template=about&uiLanguage=tr">About DOAJ</a>
+       <span class="menuSeparator"></span>
+       FAQ
+       <span class="menuSeparator"></span>
+       <a href="/doaj?func=loadTempl&templ=links&uiLanguage=tr">Open Access info</a>
+    </div>
+
+
+<h3>
+Genel Bilgi
+</h3>
+
+<ul>
+<li><a href="#whatis">DOAJ Nedir?</a>
+</li>
+<li>
+<a href="#whoisresponsible">Bu hizmetin sorumlusu kim?</a>
+</li>
+<li>
+<a href="#definition"> AÃ§Ä±k eriÅim, araÅtÄ±rma dergileri, kalite kontrolÃ¼ni nasÄ±l tanÄ±mlarÄ±z?</a>
+</li><li>
+<a href="#selectioncriteria">Bu hizmetteki seÃ§im kriterleri nedir?</a>
+</li>
+<li>
+<a href="#journalsway">DOAJ iÃ§ersine alÄ±nan dergiler iÃ§in seÃ§im kriterleri nedir??</a>
+</li>
+<li>
+<a href="#oai">OAI Nedir?</a>
+</li>
+<li>
+<a href="#seal"> AÃ§Ä±k EriÅim iÃ§in SPARC Europe MÃ¼hÃ¼rÃ¼ nedir ?</a>
+</li>
+<li>
+<a href="#sealedJournals"> Åu anda aÃ§Ä±k eriÅimli dergilerden hangileri SPARC Avrupa MÃ¼hÃ¼rÃ¼ne sahiptir?</a>
+</li>
+<li>
+<a href="#licensedJournals"> DOAJ'daki hangi dergiler CC-lisansÄ±na sahiptir?</a>
+</li>
+<li>
+<a href="#archived">"arÅiv" simgesi ne anlama geliyor?</a>
+</li>
+<li> 
+<a href="#support">DOAJâ dan nasÄ±l destek alabilirim? <a>
+</li>
+</ul>
+<h3>
+For users
+</h3>
+
+<p>
+<ul>
+<li>
+<a href="#search"> DOAJâ da dergi, makale, dizin hakkÄ±ndaki bilgiyi nasÄ±l tarayabiliriz?</a>
+</li>
+<li>
+<a href="#byCountry"> DOAJâ Ä±n iÃ§ersindeki dergilerin hangi Ã¼lkelere ait olduÄu bilgisini bulabilir miyim?</a>
+</li>
+<li> 
+<a href="#Other_OA">AÃ§Ä±k eriÅimin baÅka yollarÄ± var mÄ±? </a>
+</li>
+<li>
+<a href="#notcovered">Neden kapsamÄ±m dÄ±ÅÄ±ndaki konularÄ± buluyorum? </a>
+</li>
+<li>
+<a href="#newtitles">Yeni konularÄ± hangi bÃ¶lÃ¼m iÃ§ersinde bulabilirim?</a>
+</li>
+<li>
+<a href="#rss"> DOAJâ Ä±n geleceÄinde RSS ler olacak mÄ±?</a>
+</li>
+<li> 
+<a href="#support"> DOAJâ dan nasÄ±l destek alabilirim?</a>
+</li>
+</ul>
+<p>
+
+<h3>
+KÃ¼tÃ¼phaneler iÃ§in
+</h3>
+
+<ul>
+<li>
+<a href="#metadata"> DOAJâ dan dergi verilerini nasÄ±l alabilirim?</a>
+</li>
+<li>
+
+<a href="#metadataA"> DOAJâ dan makale seviyeleri ile ilgili bilgiyi nasÄ±l alabilirim?</a>
+</li>
+<li> 
+<a href="#restrictions">Kendi verileri kullanmak iÃ§in hiÃ§ kÄ±saltmalar kullanÄ±yor musun?</a>
+</li>
+<li> 
+<a href="#support"> DOAJâ dan nasÄ±l destek alabilirim?</a>
+</li>
+</ul>
+
+<h3>
+Yazarlar iÃ§in
+</h3>
+
+<ul>
+<li>
+<a href="#cantfind">Benim dergimi DOAJ da neden bulamÄ±yorum? </a>
+</li>
+<li>
+<a href="#publisher">Bir yayÄ±ncÄ± olarak DOAJ da makaleleri nasÄ±l gÃ¼ncelleyebilirim?</a>
+</li>
+<li>
+<a href="#getseal">AÃ§Ä±k eriÅimli dergiler iÃ§in SPARC Avrupa MÃ¼hÃ¼rÃ¼nÃ¼ nasÄ±l alabilirim?</a>
+</li>
+<li>
+<a href="#getarchived">Dergimin iÃ§eriÄini uzun sÃ¼reli alamak iÃ§in ne yapmalÄ±yÄ±m?</a>
+<li> 
+<a href="#support"> DOAJâ dan nasÄ±l destek alabilirim?</a>
+</li>
+</ul>
+
+<p>
+
+<h3>
+Yazarlar iÃ§in
+</h3>
+
+<ul>
+<li><a href="#authors">Yazar Ã¼cretleri hakkÄ±nda nasÄ±l bilgi bulabilirim?</a>
+</li>
+<li> 
+<a href="#support"> DOAJâ dan nasÄ±l destek alabilirim?</a>
+</li>
+</ul>
+
+<br>
+<br>
+
+
+<h3> <b>
+
+<a name="whatis">DOAJ Nedir?</a>
+</b> </h3> 
+<p> Directory of Open Access JournalsâÄ±n amacÄ± halen aÃ§Ä±k eriÅimli akademik dergilerin gÃ¶rÃ¼nÃ¼rlÃ¼klerini ve eriÅilebilirliklerini; bÃ¶ylece kullanÄ±mlarÄ±nÄ± ve etkilerini arttÄ±rmaktÄ±r. Dizin uygun bir kalite kontrol sisteminden geÃ§erek onaylanan tÃ¼m AÃ§Ä±k EriÅimli Dergileri kapsayabilmeyi hedeflemektedir. TÃ¼m dillerde ve konularda dergiler DOAJ iÃ§erisinde yer alacaktÄ±r. SeÃ§im kriterleri daha anlaÅÄ±labilir olmasÄ± amacÄ±yla kullanÄ±cÄ±lardan gelen geribildirimler ile gÃ¼ncellenerek (<a href=http://www.doaj.org/doaj?func=loadTempl&templ=about&uiLanguage=tr#criteria>http://www.doaj.org/doaj?func=loadTempl&templ=about&uiLanguage=tr#criteria</a>) sayfasÄ±ndaki yerini almÄ±ÅtÄ±r.
+</p>
+<br>
+
+<h3>
+<b>
+<a name="whoisresponsible">Bu hizmetin sorumlusu kim?</a>
+</b>
+</h3> 
+<p>Directory of Open Access Journals, depolama, bakÄ±mÄ± ve sunulmasÄ± aÃ§Ä±sÄ±ndan Lund Ãniversitesi KÃ¼tÃ¼phaneleri tarafÄ±ndan finanse edilmektedir.</p>
+<p>DOAJ aÅaÄÄ±daki kurumlar tarafÄ±ndan desteklenmiÅ/desteklenmeye devam etmektedir:</p>
+
+<ul>
+<li>Ä°sveÃ§ KÃ¼tÃ¼phane DerneÄi<a href="http://www.biblioteksforeningen.org/">http://www.biblioteksforeningen.org/</a></li>
+<li>INASP <a href="http://www.inasp.info/">http://www.inasp.info/</a></li>
+<li>Open Society Institute <a href="http://www.soros.org/">http://www.soros.org/</a> </li>
+<li>SPARC <a href="http://www.arl.org/sparc/">http://www.arl.org/sparc/</a></li> 
+<li>SPARC Europe <a href="http://www.sparceurope.org/">http://www.sparceurope.org/</a></li> 
+<li>BIBSAM <a href=" http://www.kb.se/bibliotek/"> http://www.kb.se/bibliotek/</a></li>
+<li>Axiell <a href="http://www.axiell.se/">http://www.axiell.se/</a></li> 
+
+</ul> 
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri dÃ¶n</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="definition"> AÃ§Ä±k eriÅim, akademik dergiler, kalite kontrolÃ¼ tanÄ±mlarÄ±nÄ± nasÄ±l yapabiliriz?</a>
+
+ </b>
+</h3> 
+<p>
+<b>AÃ§Ä±k EriÅim Dergisi</b>:</p>
+<p>
+Biz okuyucular aÃ§Ä±k eriÅimli dergileri; diÄer dergiler gibi tanÄ±mlar ve Ã¼cretsiz eriÅiriz ya da kendi kurumlarÄ±mÄ±zdan eriÅiriz. BOAI tarafÄ±ndan yapÄ±lan aÃ§Ä±k eriÅim tanÄ±mÄ±; biz doÄru kullanÄ±cÄ±larÄ± alÄ±rÄ±z <b>"okur, indirir, kopyalar, bastÄ±rÄ±r, taratÄ±r, ya da makaleye link verir"</b> dizin iÃ§ersinde bir dergiye dahil edilir.
+</p>
+<p>[1] <a href="http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess">http://www.earlham.edu/~peters/fos/boaifaq.htm#openaccess</a>
+</p> 
+
+<p>
+<b>Kalite KontrolÃ¼:</b>
+</p>
+Derginin hakemlik veya diÄer kalite kontrol unsurlarÄ±na dahil olmasÄ±dÄ±r.
+</p>
+<p>
+<b>AraÅtÄ±rma Dergisi:</b> 
+</p>
+<p> Akademik bir topluluk iÃ§in araÅtÄ±rma sonuÃ§larÄ±nÄ±n birincil Ã¶zetlerini dergide rapor edilir.
+</p>
+<p>
+<b>SÃ¼reli YayÄ±nlar:</b>
+</p>
+
+<p>
+Bir seri gÃ¶rÃ¼nen ya da genel olarak daha sÄ±k yÄ±lda daha dÃ¼zenli aralÄ±klarla sÃ¼resiz olarak gÃ¶rÃ¼nmesi amacÄ±yla, her sorunun sayÄ±lÄ± veya ardÄ±ÅÄ±k tarihli ve normalde ayrÄ± makaleler, Ã¶ykÃ¼ler, ya da diÄer yazÄ±larÄ± iÃ§eren yayÄ±ndÄ±r.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Back to top</a>
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="selectioncriteria">Bu servis iÃ§in seÃ§im kriterleri nedir?</a>
+</b>
+</h3> 
+<p>
+<b>Kapsama:</b>
+<br />
+<ul>
+<li>Konu: tÃ¼m bilimsel ve akademik konularÄ± kapsar</li>
+
+<li>Kaynak TÃ¼rleri: tÃ¼m bilimsel ve sÃ¼reli yayÄ±nlarÄ±nÄ±n, araÅtÄ±rma yayÄ±nlarÄ±nÄ±n tam metinleri.</li>
+<li>Kabul edilebilir kaynaklar: tÃ¼m akademik, bÃ¼rokratik, ticari ve kar amacÄ± gÃ¼tmeyen Ã¶zel yayÄ±nlar. </li> 
+<li>seviye : dahil dergilerin hedef kitlesi Ã¶ncelikle araÅtÄ±rmacÄ±lar olmalÄ±dÄ±r.</li> 
+<li>Ä°Ã§erik: Derginin bir baÄÄ±msÄ±z bÃ¶lÃ¼m araÅtÄ±rma makalelerini oluÅmalÄ±dÄ±r
+. TÃ¼m iÃ§eriÄi tam metin olarak mevcut olmalÄ±dÄ±r.</li>  
+<li>TÃ¼m Diller
+</ul>
+<p>
+<p>
+<b> EriÅim:</b>
+<br /> 
+<ul>
+
+<li>iÃ§erik serbestÃ§e kullanÄ±labilir.</li> 
+<li>KayÄ±t: <b>Ã¼cretsiz</b> KullanÄ±cÄ±larÄ±n online kayÄ±tlarÄ± kabul edilebilir.</li>  
+<li>Gecikmeksizin aÃ§Ä±k eriÅim (Ã¶rn. ambargo periyodu uygulanmadan.</li>
+</ul>
+<p>
+<b>Kalite:</b>
+<br /> 
+<p>Kalite Kontrol: Bir derginin bir editÃ¶r ile gÃ¶nderilen yayÄ±nlarÄ± iÃ§in, yayÄ±n kurulu kalite kontrolÃ¼ olmalÄ± ve / veya hakemlik sistemine dahil olmasÄ± gerekmektedir.
+</p> 
+</p>
+
+<p>
+<b>SÃ¼reli YayÄ±nlar:</b>
+<br /> 
+<p>Dergilerin ISSN'leri olmalÄ± (International Standard Serial Number, bilgi iÃ§in bakÄ±nÄ±z<a href=http://www.issn.org>http://www.issn.org</a>).</p> 
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="journalsway"> DOAJâ Ä±n iÃ§erisindeki dergileri almak iÃ§in prosedÃ¼r nedir?</a>
+</b>
+</h3>
+<p>
+<b>Ãneri</b>
+<p>
+YayÄ±ncÄ±lardan ya da diÄer editÃ¶rlerden dergilerin iÃ§eriÄi hakkÄ±nda Ã¶neri alabiliriz. Kontrol: 
+<p>
+<ul>
+<li>Dergilerin ISSN'i var mÄ±? 
+<li>YayÄ±n kuruluna iliÅkin herhangi bir bilgi var mÄ±?
+<li>Makalelere tam metin eriÅim mÃ¼mkÃ¼n mÃ¼?
+<li>Web sitesinde aÃ§Ä±k eriÅim politikalarÄ± ile ilgili bir bilgi var mÄ±? 
+<li>Dergilerin editÃ¶ryal incelemeleri yapÄ±lÄ±yor mu? 
+<li>Son olarak, ileriÅim bilgileriniz mevcut mu?
+</li>
+</ul>
+<p>
+TÃ¼m bunlarÄ± yerinde olduÄunda, editÃ¶re bir kayÄ±t formu gÃ¶nder: 
+<p>
+<b>DoÄrulama</b>
+<p>
+Formu doldurduktan sonra, dergi hakkÄ±nda sunulan kayÄ±t formunda iletilen bilgilere dayalÄ± kontrol.
+<p>
+<ul>
+<li>
+<b>BOAI tanÄ±mÄ±na gÃ¶re bu AÃ§Ä±k EriÅim midir?</b> Bu sayede aÃ§Ä±k eriÅimli makaleleri; herhangi bir mali, hukuksal ve teknik engele takÄ±lmadan internet Ã¼zerinden; okumak iÃ§in yÃ¼kleme, kopyalama, bu makalelerin tam metinlerine eriÅme, Ã§Ä±ktÄ± alma, arama, ya da baÄlantÄ± daÄÄ±tmak, indeksleme iÃ§in tarama, yazÄ±lÄ±ma aktarmak iÃ§in saÄlama,  amaÃ§larÄ±yla eriÅilebilen dergiler olarak tanÄ±mlayabiliriz. <li>Dergiler <b>yazarlara makaleleri iÃ§in Ã¼cret Ã¶der mi?</b> Web sitesi iÃ§erisinde bu konu ile ilgili bilgi var mÄ±?
+
+<li>Web sitesi iÃ§erisinde dergilerin <b>hakemlik sÃ¼reci</> ile ilgili bilgi var mÄ±?<b> <li>ya da editÃ¶ryal gÃ¶zden geÃ§irme sÃ¼reci var mÄ±? Bir <b>ambargo</b> gecikme  basÄ±lÄ±, ya da online versiyonu Ã¶nce eriÅilebilir veya Ã¶nceki konular AÃ§Ä±k EriÅim sÄ±rasÄ±nda gÃ¼ndeme tabi olabilir.
+<li>Hangi yÄ±llara ait tam metin makaleler mevcut?
+<li>YayÄ±ncÄ±lar kim?
+<li>Ãlke, dil(s), Anahtar kelime
+</li>
+</ul>
+<p>
+<b>KayÄ±t</b>
+<p>
+Dergi daha sonra DOAJ'a kaydedilir ve DOAJ personeli tarafÄ±ndan Kongre KÃ¼tÃ¼phanesi SÄ±nÄ±flama ÅemasÄ±'na gÃ¶re sÄ±nÄ±flanÄ±r. Dergi hemen aranabilir ve DOAJ kayÄ±t Ã¼zerinde gÃ¶rÃ¼lebilir.<p>
+<b>Metadata ve arÅivleme</b>
+<p>
+Son bir nokta olarak, editÃ¶rlere bizim iÃ§in makale MetadatalarÄ±nÄ± XML FormatÄ±nda sunmalarÄ±nÄ± Ã¶neririz. DOAJ, OAI uyumludur ve bir kez makale DOAJ'a dahil edildiÄinde, OAI'da da otomatik olarak toplanmaya baÅlar<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="oai">OAI (Open Archives Initiative) Nedir? </a>
+
+</b>
+</h3> 
+<p>
+<a href="http://www.openarchives.org/">OAI, AÃ§Ä±k ArÅiv GiriÅimi</a>, onlarÄ± veri toplama vasÄ±tasÄ±yla standart bir Åekilde iÃ§eriÄe eriÅmek iÃ§in izin web topluluklarÄ±na ortak bir Ã§erÃ§eve sunar.
+</p>
+<br>
+
+<h3>
+<b>
+<a name="seal">AÃ§Ä±k eriÅim iÃ§in SPARC Europe MÃ¼hÃ¼rÃ¼ nedir?</a>
+</b>
+</h3> 
+<p>
+AÃ§Ä±k eriÅim dergileri iÃ§in standart bir mÃ¼hÃ¼r.
+<p>
+SPARC Avrupa ve DOAJ AÃ§Ä±k EriÅim dergileri iÃ§in bir sertifikasyon programÄ± baÅlatÄ±lmasÄ±na iliÅkin bir anlaÅmaya girmiÅ, SPARC Europe MÃ¼hÃ¼rÃ¼ aÃ§Ä±k eriÅimli dergiler iÃ§in kullanÄ±lmÄ±ÅtÄ±r.<p>
+dergi "MÃ¼hÃ¼r" almak iÃ§in, CC-BY lisansÄ±nÄ± (Creative Commons lisansÄ±) seÃ§mek ve DOAJ'da makale dÃ¼zeyinde tarama ile eriÅilebiliyor olmalÄ±dÄ±r.
+<p>
+<b> SPARC Europe MÃ¼hÃ¼rÃ¼nÃ¼n avantajlarÄ± nedir?</b>
+<ul>
+<li>
+KullanÄ±cÄ±larÄ±n bir aÃ§Ä±k eriÅimli dergide yayÄ±nlanan makaleler ile yapabileceÄi ne kadar geliÅtirilmiÅ bilgi.
+</li>
+<li>
+yazarlara dergilerini daha cazip yayÄ±n yapmak iÃ§in destekleyecek; OlasÄ± uzun vadeli arÅivleme.
+</li>
+<li>
+Sanat yaygÄ±nlaÅtÄ±rma teknolojilerine dayalÄ± yÃ¼ksek kaliteli bir dergi olarak daha iyi sunum.
+</li>
+<li>
+DOAJ takÄ±mÄ± metadatayÄ± dÃ¶nÃ¼ÅtÃ¼rÃ¼r ve onu toplanabilir hale getirir,  bÃ¶ylece veriyi en geniÅ alana yayma amacÄ±na ulaÅarak kullanÄ±mÄ± ve etkisini artÄ±rÄ±r.
+
+</li>
+</ul>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="sealedJournals">Åu anda hangi dergiler SPARC Europe MÃ¼hÃ¼rÃ¼ kullanÄ±yor?</b>
+</h3>
+<p>
+KullanÄ±mÄ± <a href="http://www.doaj.org/doaj?func=sealedJournals&uiLanguage=tr">Bu link Ã¼zerinden</a> MÃ¼hÃ¼rlÃ¼ tÃ¼m dergi listesini gÃ¶rebilirsiniz.
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="licensedJournals">DOAJâda hangi dergilerde CC-lisansÄ± var?</b>
+</h3>
+<p>
+KullanÄ±mÄ± <a href="http://www.doaj.org/doaj?func=licensedJournals&uiLanguage=tr">Bu link Ã¼zerinden</a> CC-lisanslÄ± dergileri gÃ¶rebilirsiniz (tÃ¼m CC-lisanslarÄ±).
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="archived">âArÅivlenmiÅâ simgesinin anlamÄ± nedir?</b>
+</h3>
+ArÅivlenmiÅ simgesi derginin iÃ§eriÄinin dijital arÅiv standartlarÄ± ile Hollanda Milli KÃ¼tÃ¼phanesi e-Depo'sunda (<a href="http://www.kb.nl/hrd/dd/index-en.html">www.kb.nl/hrd/dd/index-en.html</a>) uzun sÃ¼reli korumaya dahil edildiÄini belirtir.
+
+</p>
+<br>
+
+<h3>
+<b>    
+<a name="support"> DOAJ'a nasÄ±l destek/sponsor olabilirim?
+</b>
+</h3>
+daha fazla bilgi iÃ§in lÃ¼tfen tÄ±klayÄ±nÄ±z<a href="http://www.doaj.org/doaj?func=loadTempl&templ=membership&uiLanguage=tr">Ãye sayfasÄ±</a> 
+</p>
+<br>
+
+<h3>
+<b>
+<a name="search">Belli bir makale, dergi vs. hakkÄ±nda bilgi alabilmek iÃ§in DOAJ'da nasÄ±l tarama yapabilirim?</a>
+</b>
+</h3> 
+
+<p>
+DOAJ iÃ§erisindeki kayÄ±tlar aÅaÄÄ±daki alanlarÄ± iÃ§erir:
+</p>
+<p>
+<b>Dergi Ä°smi</b> <br>
+Derginin  baÅlÄ±ÄÄ±.</p> 
+
+<p><b>ISSN</b><br> 
+Derginin ISSN numarasÄ±.</p>
+
+<p><b>EISSN</b> <br>
+Derginin EISSN.</p>
+
+<p><b>Konu</b><br> 
+Derginin konusu.</p>
+
+<p><b>YayÄ±ncÄ±</b><br>
+Derginin yayÄ±nevi.</p>
+
+<p><b>Ãlke</b><br>
+YayÄ±nlandÄ±ÄÄ± Ã¼lke.</p>
+
+<p><b>Dil</b><br>
+Tam metin dili.</p>
+
+<p><b>Anahtar kelime</b><br> 
+Derginin konusuna ait anahtar kelimesi.</p>
+
+<p><b>BaÅlama yÄ±lÄ±</b><br>
+Derginin elektronik tam metin olarak eriÅime aÃ§Ä±lma tarihi.
+</p>
+
+<p><b>BitiÅ yÄ±lÄ±</b> (sadece yeni bir isim ile yayÄ±nlanabilir)<br>
+Derginin yayÄ±nÄ±n durdurulduÄu zaman.</p> 
+
+<p>
+DOAJ iÃ§ersinde sunulan dergilerin taranmasÄ± iÃ§in "Dergi bulma"yÄ± kullanÄ±n. Sistem kayÄ±tlarÄ±nÄ± <b>konu</b> ve <b>yÄ±l</b> dÄ±ÅÄ±nda tÃ¼m alanlarÄ± ile arayacaktÄ±r.</p>
+
+<br>
+<p><b>DOAJ Ä°ÃERÄ°ÄÄ°NDE</b> sunulan mevcut dergilerde makaleleri aramak iÃ§in <b>"Makale taramasÄ±nÄ±"</b> kullanÄ±n.</p>
+
+
+
+<p> AÅaÄÄ±daki alanlardan herhangi birinde arama yapmayÄ± seÃ§ebilirsiniz
+: </p>
+<ul>
+<li>TÃ¼m Alanlar</li>
+<li>BaÅlÄ±k</li>
+<li>Dergi AdÄ±</li>
+<li>ISSN</li>
+<li>Yazar</li>
+<li>Anahtar Kelime</li>
+<li>Ãzet</li>
+
+</ul>
+<p> EÄer arama sorgusuna birden fazla kelime yazarsanÄ±z onu bir ifade olarak kabul edilecektir. AyrÄ±ca Boole taray kullanma imkanÄ± ve, veya, deÄil.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+</p>
+<br>
+
+<h3>
+<b>
+<a name="byCountry"> DOAJ Ä±n iÃ§erisindeki dergilerin hangi Ã¼lkeye ait olduklarÄ±nÄ± bulabilir miyim?</a>
+</b>
+</h3> 
+<p>
+Evet, yÄ±l dayanan bu gÃ¶stererek, iki liste sunuldu:
+</p>
+<ul>
+<li>Hangi dergiler ne zamandan beri belirli bir yÄ±l iÃ§ersine dahil edilmiÅlerdir (the date)</li>
+<li>derginin sayÄ±sÄ± Åimdiye kadar belirli bir Ã¼lkedendir</li>
+</ul>
+<p>
+<a href="http://www.doaj.org/doaj?func=byCountry&uiLanguage=tr">Sunum iÃ§in tÄ±klayÄ±nÄ±z</a>
+<p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+</p>
+<br>
+<h3>
+<a name="Other_OA">AÃ§Ä±k EriÅimin baÅka yollarÄ± var mÄ±?</a>
+</h3>
+<p>Evet, aÃ§Ä±k arÅiv ve kendi arÅiviniz ile ilgili daha fazlasÄ±nÄ± bulabilirsiniz <a href="http://www.eprints.org/self-faq/"> Southampton Self-ArÅivleme SSS</a>.
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="notcovered">Neden aradÄ±ÄÄ±m konu kapsamÄ±nda baÅlÄ±klara eriÅemiyorum? </a>
+</b>
+</h3> 
+<p> ÃÃ¼nkÃ¼ henÃ¼z bu alanda herhangi bir dergi dizinlemiyoruz. Ãnerileriniz iÃ§in lÃ¼tfen formu kullanÄ±n <a href="/doaj?func=suggest&uiLanguage=tr">DOAJ iÃ§in Bir Dergi Ãner</a></p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<b>
+<a name="rss">DOAJ iÃ§ersinde RSS olacak mÄ±? </a>
+</b>
+</h3>
+<p>
+Evet, sol tarafta gÃ¶receÄiniz Ã¼zere:
+- Son 7 gÃ¼nde eklenen dergiler 
+- Son 30 gÃ¼nde eklenen dergiler
+
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadata"> DOAJ'dan dergi verilerini nasÄ±l alabilirm?</a>
+</h3>
+
+<p> DOAJ OAI protokolÃ¼nÃ¼ destekler.
+(<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>)
+BÃ¶ylece, herhangi bir hizmet eklenmesi iÃ§in DOAJ kayÄ±tlarÄ± alabilirsiniz. OAI iyi kurulmuÅ bir sistemdir ve kullanÄ±mÄ± kolaydÄ±r.
+ Temel URL: http://www.doaj.org/oai.article  
+OAI fiileri ve doÄrudan komutlar. BirkaÃ§ Ã¶rnek:</p>
+
+<br>
+Fiil: Belirlemek<br> 
+
+<a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>
+
+<br><br>
+Fiil: Metadata biÃ§im listeleri<br> 
+<a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>
+<br><br>
+
+Verb: ListRecords&from=2004-01-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc">
+http://www.doaj.org/oai?verb=ListRecords&from=2004-03-01&metadataPrefix=oai_dc</a>
+<br>
+
+
+<p>Ä°lgili URL'den OAI hakkÄ±nda fikir alabilirsiniz. BakÄ±nÄ±z <a href="/doaj?func=loadTempl&templ=example_oai_record">bizim Ã¶rneÄimize bakÄ±nÄ±z</a>.</p>
+
+<a name="metadata_csv"></a>
+<p> AyrÄ±ca bir virgÃ¼lle ayrÄ±lmÄ±Å biÃ§imde DOAJ kayÄ±tlarÄ±n listesini indirmek iÃ§in ÅansÄ±nÄ±z var. Sonra Excel dosyasÄ± veya daha fazla kayÄ±tlarÄ± kullanmak iÃ§in baÅka bir yazÄ±lÄ±m alabilirsiniz. AÅaÄÄ±daki gibi yapabilirsin:
+<ul>
+<li>
+Adresinden dosya indir <a href="/doaj?func=csv">http://www.doaj.org/doaj?func=csv</a> to kendi bilgisayarÄ±nÄ±za</li>
+
+<li>Excell aÃ§</li>
+<li>menÃ¼ye git -> indir -> text dosyasÄ±nÄ± indir</li>
+<li> tablolama ayrÄ±lmÄ±Å, mesela nasÄ±l gÃ¶rÃ¼nmesini istediÄinizi seÃ§ebilirsiniz 
+ -> Comma -> Genel</li>
+                </ul>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<a name="metadata"> DOAJ'dan makale dÃ¼zeyinde metadatayÄ± nasÄ±l alabilirim?</a>
+</h3>
+<p>
+OAI protokolÃ¼ kullanÄ±larak makale dÃ¼zeyinde metadata toplanabilir.
+<br>Temel URL: http://www.doaj.org/oai.article
+<br>OAI fiilleri ve diÄer komut seÃ§eneklerini doÄrudan bunun Ã¼zerinden kullanÄ±n.
+
+<br>ÃrneÄin:
+
+<br><br>
+Verb: ListRecords&from=2004-07-01&metadataPrefix=oai_dc<br>
+<a href="http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc">
+http://www.doaj.org/oai.article?verb=ListRecords&from=2004-07-15&metadataPrefix=oai_dc</a>
+<br>
+
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3>
+<a name="restrictions">Metadata kullanÄ±mÄ± iÃ§in herhangi bir kÄ±sÄ±tlama var mÄ±?</a>
+</h3>
+<p>
+DOAJ verileri Creative Commons-Attribution-ShareAlike LisansÄ± altÄ±nda lisanslanmÄ±ÅtÄ±r. Bu lisansÄ±n temeli 
+ <a href="http://creativecommons.org/licenses/by-sa/1.0/">creative commons web sitesi</a>nde<a href="http://creativecommons.org/licenses/by-sa/1.0/legalcode">be
+Ä°nce baskÄ±</a>.)
+</p>
+<p>
+<b>Ãcretsiz gelen tÃ¼m iÃ§eriÄin herhangi bir garantiyle gelmediÄini unutmayÄ±n.</b> TarafÄ±mÄ±zdan dizinlenen bir dergi ile sorun yaÅayacak olursanÄ±z bunun sorumluluÄunun bizde olmadÄ±ÄÄ±nÄ± hatÄ±rlatÄ±rÄ±z.</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+<h3>
+<b>
+<a name="cantfind">Neden  DOAJ'da dergilerimi bulamÄ±yorum? </a>
+</b>
+
+</h3> 
+<p> Belki dergi hakkÄ±nda bilgi bulamamÄ±Å olabiliriz. DOAJ'a eklenmesi iÃ§in <a href="/doaj?func=suggest&uiLanguage=tr">Bir Dergi Ãner</a> linkini kullanabilirsiniz. Ya da dergi ne yazÄ±k ki bizim seÃ§im kriterlerimize uyuÅmuyor olabilir. <a href="/articles/about#criteria&uiLanguage=tr">SeÃ§im Kriterlerine bakÄ±nÄ±z</a>
+</p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+<h3> 
+<b>
+<a name="publisher">Bir YayÄ±ncÄ± olarak DOAJ'a nasÄ±l makale yÃ¼klerim?</a>
+</b> </h3>
+ 
+<p>
+
+Bir dergi DOAJ'a eklendiÄinde kullanÄ±cÄ± adÄ± ve Åifre dergi sahibine gÃ¶nderilir. "Dergi sahipleri" sayfasÄ±na gidin ve kullanÄ±cÄ± adÄ± ve Åifrenizle giriÅ yapÄ±n. Makale yÃ¼klemek iÃ§in makale makale veya dosya dosya olmak Ã¼zere iki seÃ§eneÄiniz vardÄ±r. DosyalarÄ±nÄ±z, DOAJ XML ÅemasÄ±na uygun olmalÄ±dÄ±r. Bu konuda daha fazla bilgi
+ <a href="http://www.doaj.org/doaj?func=loadTempl&templ=uploadInfo&uiLanguage=tr">buraya tÄ±klayÄ±nÄ±z</a>.
+</p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+
+<h3>
+<b>
+<a name="getseal">AÃ§Ä±k eriÅimli dergiler iÃ§in SPARC Europe MÃ¼hÃ¼rÃ¼ nasÄ±l alÄ±nÄ±r?</a>
+</b>
+</h3> 
+<p>
+NasÄ±l onaylanacak:
+<p>
+<b>BÃ¶lÃ¼m 1:
+<p>
+Creative Commons LisansÄ± CC-BY lisansÄ±'nÄ± seÃ§in:</b>
+<p>
+ 
+SPARC Europe MÃ¼hÃ¼rÃ¼ne  hak kazanmak iÃ§in uzun vadeli koruma ve metin ve veri madenciliÄi iÃ§in diÄer Åeyler arasÄ±nda saÄlayan en kullanÄ±cÄ± dostu lisanstÄ±r CC-BY lisansÄ±na uygulamak gerekir.
+<p>
+CC-BY lisansÄ± nasÄ±l seÃ§ilir?
+<p>
+Creative Commons (CC) web sitesine girin. <a href="http://creativecommons.org/about/license"> (http://creativecommons.org/about/license)</a> ve CC-BY Ä°konunu kopyalayÄ±n â AyrÄ±ca bu sayfaya da danÄ±Åmak iÃ§in baÅvurabilirsiniz: <a href="http://wiki.creativecommons.org/Before_Licensing">http://wiki.creativecommons.org/Before_Licensing</a>
+<p>
+Dergilerinizin anasayfalarÄ±na ve tercihen tÃ¼m makalelerinizin baÅÄ±na, CC-BY ikonunu koyun.
+<p>
+DOAJ web sitesine gidin <a href="http://www.doaj.org">(http://www.doaj.org)</a>, "Dergi sahipleri iÃ§in"e giriÅ yapÄ±n, "lisans bilgisi"ni tÄ±klayÄ±n ve dergiler iÃ§in CC-lisansÄ±nÄ± tÄ±klayÄ±n.
+<p>
+CC simgesi DOAJ'da otomatik olarak gÃ¶sterilecektir.
+<p>
+<b>
+BÃ¶lÃ¼m 2: 
+<p>
+<b>Derginiz sÃ¼rekli olarak tÃ¼m iÃ§eriÄi iÃ§in DOAJ'a metadatasÄ±nÄ± saÄlamak zorundadÄ±r.
+</b>
+</p>
+ 
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+
+</p>
+<br>
+
+
+<h3> 
+<a name="getarchived">Dergime ait iÃ§eriÄi uzun sÃ¼reli korumaya almak iÃ§in ne yapmalÄ±yÄ±m?</a>
+</h3>
+<p>
+DOAJ'a makale dÃ¼zeyinde metadata saÄlamak zorundasÄ±nÄ±z. DOAJ sonra otomatik ve dÃ¼zenli olarak, arÅivlenecek iÃ§eriÄin tam metnini toplar ve e-Depo, Milli KÃ¼tÃ¼phane, Hauge, Hollanda hedefine gÃ¶nderir (<a href="http://www.kb.nl/dnp/e-depot/operational/background/index-en.html">http://www.kb.nl/dnp/e-depot/operational/background/index-en.html</a>).
+<p>
+<b>Note:</b> Åu anda sadece <b>PDF</b> formatÄ±nda iÃ§erik  arÅivlenebilir, PDF klavuzunu okumak iÃ§in <a href="http://www.kb.nl/hrd/dd/dd_links_en_publicaties/PDF_Guidelines.pdf">buraya tÄ±klayÄ±nÄ±z</a>. 
+<p>
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=090401&uiLanguage=tr">Daha fazlasÄ± iÃ§in</a>
+
+</p>
+<br>
+
+<h3> 
+<a name="authors"> Yazar Ã¼cretleri hakkÄ±nda nasÄ±l bilgi bulabilirim?</a>
+</h3>
+<p>
+
+KayÄ±tlarda yazar Ã¼cretleri ile ilgili bilgileri gÃ¶rebilirsiniz.
+<p>
+
+<a href="http://www.doaj.org/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Geri DÃ¶n</a>
+<p>
+
+<a href="/doaj?func=loadTempl&templ=faq&uiLanguage=tr">Back to top</a>
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals is provided by <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> in cooperation with <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
