@@ -73,6 +73,7 @@ hr {
 #facetview_filters .btn, .facetview_search_options_container .btn {
     background-color: #F68B1F;
     background-image: -moz-linear-gradient(center top , #f6ede5, #F6BC82);
+    background-image: -webkit-linear-gradient(top, #f6ede5, #F6BC82);
     border-color: #F68B1F #F68B1F #F68411;
 }
 
