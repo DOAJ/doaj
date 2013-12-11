@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="alert alert-danger">THIS PAGE WAS OUT OF DATE.  NEW CONTENT IS REQUIRED</div>
+
+<h2>OAI-PMH</h2>
+
+<p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different urls</p>
+
+<h3>Journal Feed</h3>
+
+<p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>.</p>
+
+<p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai?verb=ListSets">http://www.doaj.org/oai?verb=ListSets</a>.</p>
+
+<p><strong>ListMetadataFormats</strong> - DOAJ currently supports only <code>oai_dc</code>, which can be seen here: <a href="http://www.doaj.org/oai?verb=ListMetadataFormats">http://www.doaj.org/oai?verb=ListMetadataFormats</a>.</p>
+
+<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Journal field:</p>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Dublin Core</th>
+            <th>Meaning within DOAJ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>title</td>
+            <td>The title of the journal</td>
+        </tr>
+        <tr>
+            <td>identifier</td>
+            <td>The ISSNs of the journal (both print and electronic) or a link back to the DOAJ record for this journal</td>
+        </tr>
+        <tr>
+            <td>subject</td>
+            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. LCC:Science)</td>
+        </tr>
+        <tr>
+            <td>language</td>
+            <td>The languages that can appear in this journal</td>
+        </tr>
+        <tr>
+            <td>relation</td>
+            <td>Links to related resources: the journal home page and the journal author-pays link if relevant</td>
+        </tr>
+        <tr>
+            <td>rights</td>
+            <td>The journal's content re-use policy.  Will be one of the Creative Commons licences</td>
+        </tr>
+        <tr>
+            <td>publisher</td>
+            <td>The publisher/provider of the journal</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>The type of the object; always contains "journal"</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+<p>This is an example record of how a journal record might appear:</p>
+
+<pre>
+&lt;record&gt;
+    &lt;header xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;identifier&gt;
+            oai:doaj.org/journal:9dfe4879964541069dff9bb6d15b65a2
+        &lt;/identifier&gt;
+        &lt;datestamp&gt;2013-12-10T00:23:25Z&lt;/datestamp&gt;
+        &lt;setSpec&gt;TENDOkVjb25vbWljIHRoZW9yeS4gRGVtb2dyYXBoeQ~~&lt;/setSpec&gt;
+        &lt;setSpec&gt;TENDOlNvY2lhbCBTY2llbmNlcw~~&lt;/setSpec&gt;
+        &lt;setSpec&gt;RE9BSjpFY29ub21pY3M~&lt;/setSpec&gt;
+        &lt;setSpec&gt;RE9BSjpCdXNpbmVzcyBhbmQgRWNvbm9taWNz&lt;/setSpec&gt;
+    &lt;/header&gt;
+    &lt;metadata xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;oai_dc:dc xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+            &lt;dc:title&gt;Croatian Economic Survey&lt;/dc:title&gt;
+            &lt;dc:identifier&gt;1330-4860&lt;/dc:identifier&gt;
+            &lt;dc:identifier&gt;1846-3878&lt;/dc:identifier&gt;
+            &lt;dc:identifier&gt;
+                http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%229dfe4879964541069dff9bb6d15b65a2%22%7D%7D%5D%7D%7D%7D
+            &lt;/dc:identifier&gt;
+            &lt;dc:subject&gt;economics&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;post-socialist Europe&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;comparative economics&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;policy formulation&lt;/dc:subject&gt;
+            &lt;dc:language&gt;English&lt;/dc:language&gt;
+            &lt;dc:relation&gt;
+                http://www.eizg.hr/en-US/Croatian-Economic-Survey-26.aspx
+            &lt;/dc:relation&gt;
+            &lt;dc:publisher&gt;The Institute of Economics, Zagreb&lt;/dc:publisher&gt;
+            &lt;dc:relation&gt;
+                http://www.eizg.hr/en-US/Croatian-Economic-Survey-26.aspx
+            &lt;/dc:relation&gt;
+            &lt;dc:publisher&gt;The Institute of Economics, Zagreb&lt;/dc:publisher&gt;
+            &lt;dc:date&gt;2013-11-06T15:18:52Z&lt;/dc:date&gt;
+            &lt;dc:type&gt;journal&lt;/dc:type&gt;
+            &lt;dc:subject&gt;LCC:Economic theory. Demography&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;LCC:Social Sciences&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;DOAJ:Economics&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;DOAJ:Business and Economics&lt;/dc:subject&gt;
+        &lt;/oai_dc:dc&gt;
+    &lt;/metadata&gt;
+&lt;/record&gt;
+</pre>
+
+<h3>Article Feed</h3>
+
+<p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai.article?verb=Identify">http://www.doaj.org/oai.article?verb=Identify</a>.</p>
+
+<p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai.article?verb=ListSets">http://www.doaj.org/oai.article?verb=ListSets</a>.</p>
+
+<p><strong>ListMetadataFormats</strong> - DOAJ currently supports only <code>oai_dc</code>, which can be seen here: <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats">http://www.doaj.org/oai.article?verb=ListMetadataFormats</a>.</p>
+
+<p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:</p>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>Dublin Core</th>
+            <th>Meaning within DOAJ</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>title</td>
+            <td>The title of the article</td>
+        </tr>
+        <tr>
+            <td>identifier</td>
+            <td>The ISSNs of the journal the article appears in (both print and electronic), the DOI of the article, or a link back to the DOAJ record for this article</td>
+        </tr>
+        <tr>
+            <td>subject</td>
+            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. LCC:Science)</td>
+        </tr>
+        <tr>
+            <td>language</td>
+            <td>The languages that the journal publishing this article publishes in.  Does not necessarily strictly denote the language of this article, and there may be multiple language fields provided.</td>
+        </tr>
+        <tr>
+            <td>relation</td>
+            <td>Links to related resources: the full-text url</td>
+        </tr>
+        <tr>
+            <td>rights</td>
+            <td>The journal's content re-use policy.  Will be one of the Creative Commons licences</td>
+        </tr>
+        <tr>
+            <td>publisher</td>
+            <td>The publisher/provider of the journal this article appears in.</td>
+        </tr>
+        <tr>
+            <td>type</td>
+            <td>The type of the object; always contains "article"</td>
+        </tr>
+        <tr>
+            <td>date</td>
+            <td>The approximate date of publication.</td>
+        </tr>
+        <tr>
+            <td>description</td>
+            <td>The article's abstract</td>
+        </tr>
+        <tr>
+            <td>creator</td>
+            <td>The article's authors</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+<p>This is an example record of how an article record might appear:</p>
+
+<pre>
+
+&lt;record&gt;
+    &lt;header xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;identifier&gt;
+            oai:doaj.org/article:2f032c66cd6047bdadaf0eddd7ab3341
+        &lt;/identifier&gt;
+        &lt;datestamp&gt;2013-12-10T02:01:04Z&lt;/datestamp&gt;
+        &lt;setSpec&gt;TENDOlB1YmxpYyBhc3BlY3RzIG9mIG1lZGljaW5l&lt;/setSpec&gt;
+        &lt;setSpec&gt;TENDOk1lZGljaW5l&lt;/setSpec&gt;
+        &lt;setSpec&gt;RE9BSjpQdWJsaWMgSGVhbHRo&lt;/setSpec&gt;
+        &lt;setSpec&gt;RE9BSjpIZWFsdGggU2NpZW5jZXM~&lt;/setSpec&gt;
+    &lt;/header&gt;
+    &lt;metadata xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/"&gt;
+        &lt;oai_dc:dc xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+            &lt;dc:title&gt;
+                Prevalência e fatores associados ao consumo de cigarros entre estudantes de escolas estaduais do ensino médio de Santa Maria, Rio Grande do Sul, Brasil, 2002
+            &lt;/dc:title&gt;
+            &lt;dc:identifier&gt;0102-311X&lt;/dc:identifier&gt;
+            &lt;dc:identifier&gt;1678-4464&lt;/dc:identifier&gt;
+            &lt;dc:identifier&gt;
+                http://doaj.org/search?source=%7B%22query%22%3A%7B%22bool%22%3A%7B%22must%22%3A%5B%7B%22term%22%3A%7B%22id%22%3A%222f032c66cd6047bdadaf0eddd7ab3341%22%7D%7D%5D%7D%7D%7D
+            &lt;/dc:identifier&gt;
+            &lt;dc:date&gt;2006-01-01T00:00:00Z&lt;/dc:date&gt;
+            &lt;dc:relation&gt;
+                http://www.scielo.br/scielo.php?script=sci_arttext&pid=S0102-311X2006000800010
+            &lt;/dc:relation&gt;
+            &lt;dc:description&gt;
+            O tabagismo é a segunda principal causa mundial de morte, sendo responsável pela morte de um a cada dez adultos (5 milhões por ano). Se os padrões atuais se mantiverem, em 2020 o tabagismo será a causa de 10 milhões de óbitos anuais, segundo a Organização Mundial da Saúde. Realizou-se um estudo transversal, em 2002, no qual foram entrevistados 459 estudantes de oito escolas do ensino médio estadual em Santa Maria, Rio Grande do Sul, Brasil, para determinar a prevalência e os fatores associados ao tabagismo, obtendo-se um modelo logístico multivariável descrevendo como as chances de ser fumante estão relacionadas com as variáveis investigadas. A prevalência encontrada para o tabagismo foi de 18% (IC95%: 14,6-21,7), sendo que os estudantes começam a fumar, em média, aos 14 anos. Os resultados permitem concluir que os estudantes das escolas estaduais de Santa Maria começam a fumar precocemente, sendo influenciados pelos amigos fumantes (OR = 4,37; p = 0,000), pela renda familiar mensal (OR = 2,04; p = 0,013) e idade (OR = 1,86; p = 0,031), destacando-se a necessidade de se trabalhar, preventivamente, no grupo de risco observado.
+            &lt;/dc:description&gt;
+            &lt;dc:creator&gt;Zanini Roselaine Ruviaro&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Moraes Anaelena Bragança de&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Trindade Ana Cláudia Antunes&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Riboldi João&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Medeiros Lídia Rosi de&lt;/dc:creator&gt;
+            &lt;dc:publisher&gt;
+                Escola Nacional de Saúde Pública, Fundação Oswaldo Cruz
+            &lt;/dc:publisher&gt;
+            &lt;dc:subject&gt;Tabagismo&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;Estudantes&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;Estudos Transversais&lt;/dc:subject&gt;
+            &lt;dc:type&gt;article&lt;/dc:type&gt;
+            &lt;dc:subject&gt;LCC:Public aspects of medicine&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;LCC:Medicine&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;DOAJ:Public Health&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;DOAJ:Health Sciences&lt;/dc:subject&gt;
+            &lt;dc:language&gt;English&lt;/dc:language&gt;
+            &lt;dc:language&gt;Spanish&lt;/dc:language&gt;
+            &lt;dc:language&gt;Portuguese&lt;/dc:language&gt;
+            &lt;dc:rights&gt;CC by-nc&lt;/dc:rights&gt;
+        &lt;/oai_dc:dc&gt;
+    &lt;/metadata&gt;
+&lt;/record&gt;
+
+</pre>
+
+{% endblock %}

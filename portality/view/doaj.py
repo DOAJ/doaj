@@ -86,14 +86,6 @@ def search_post():
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
     return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
-@blueprint.route("/about")
-def about():
-    return render_template('doaj/about.html')
-    
-@blueprint.route("/publishers")
-def publishers():
-    return render_template('doaj/publishers.html')
-
 @blueprint.route("/csv")
 def csv_data():
     def get_csv_string(csv_row):
@@ -141,3 +133,55 @@ def csv_data():
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
     r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
+
+###############################################################
+## The various static endpoints
+###############################################################
+
+@blueprint.route("/about")
+def about():
+    return render_template('doaj/about.html')
+
+@blueprint.route("/contact")
+def contact():
+    return render_template("doaj/contact.html")
+
+@blueprint.route("/publishers")
+def publishers():
+    return render_template('doaj/publishers.html')
+
+@blueprint.route("/faq")
+def faq():
+    return render_template("doaj/faq.html")
+
+@blueprint.route("/features")
+def features():
+    return render_template("doaj/features.html")
+
+@blueprint.route("/oainfo")
+def oainfo():
+    return render_template("doaj/oainfo.html")
+
+@blueprint.route("/members")
+def members():
+    return render_template("doaj/members.html")
+
+@blueprint.route("/membership")
+def membership():
+    return render_template("doaj/membership.html")
+
+@blueprint.route("/sponsors")
+def sponsors():
+    return render_template("doaj/our_sponsors.html")
+
+@blueprint.route("/support")
+def support():
+    return render_template("doaj/support.html")
+
+@blueprint.route("/publishermembers")
+def publishermembers():
+    return render_template("doaj/publishermembers.html")
+
+@blueprint.route("/suggest")
+def suggest():
+    return render_template("doaj/suggest.html")

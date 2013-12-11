@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Become a Publisher Member</h3>
+
+<div class="alert alert-danger">DECIDE HOW THIS LINK WILL HAPPEN</div>
+
+<p>If you are an institution or individual <a href="/membership">go here</a></p>
+
+<p>Thank you for choosing to support DOAJ. If you think that DOAJ makes a
+ significant impact on your publishing activities and you would like to 
+acknowledge that by supporting it, we recommend that you make your 
+contribution, according to the scale below which is based on business 
+size. You may also donate an amount of your choice and select whether 
+you wish to make a one-off or recurring annual payment. <b>ALL donations remain absolutely voluntary</b>.</p>
+<p>By choosing one of the predetermined amounts and by choosing to make a
+ recurring payment, you are enabling DOAJ to dedicate funds to continue 
+developing DOAJ into an even better service. If possible, DOAJ asks you 
+to use Option 1 below as this option reduces expenses incurred by 
+handling invoices.</p>
+
+<p><a href="/publishermembers">List of existing publisher members</a></p>
+
+Extra large, publishing more than 2000 articles/year: GBPs £3000 per year<br>
+Large, publishing between 500-2000 articles/year: GBPs £1000 per year<br>
+Medium, publishing between 200-500 articles/year: GBPs £300 per year<br>
+Small, publishing less than 100 articles/year: GBPs £100 per year
+
+<p><b>Please select your payment type:</b>
+
+</p><ol>
+<li><a href="#recurring">Scale amount: recurring annual payment</a></li>
+<li><a href="#oneoff">Scale amount: one-off payment</a></li>
+<li><a href="#own">Own amount: one-off payment</a></li>
+<!-- <li><a href="#bank">Bank transfer or invoice</a></li> -->
+</ol>
+<p></p>
+
+<br>
+<br>
+<br>
+<br>
+
+<p>
+<a name="recurring"></a>
+<b>Scale amount: recurring annual payment</b>
+</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="T8RHKSMJ2JN7S" type="hidden">
+<table>
+<tbody><tr><td><input name="on0" value="Membership options" type="hidden">Membership options</td></tr><tr><td><select name="os0">
+	<option selected="selected" value="Extra large">Extra large : £3,000.00 GBP - yearly</option>
+	<option value="Large">Large : £1,000.00 GBP - yearly</option>
+	<option value="Medium">Medium : £300.00 GBP - yearly</option>
+	<option value="Small">Small : £100.00 GBP - yearly</option>
+</select> </td></tr>
+</tbody></table>
+<input name="currency_code" value="GBP" type="hidden">
+<input src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_subscribeCC_LG.gif" name="submit" alt="PayPal – The safer, easier way to pay online." border="0" type="image">
+</form>
+<p></p>
+
+<br>
+<br>
+<br>
+<br>
+
+<p>
+<a name="oneoff"></a>
+<b>Scale amount: one-off payment</b>
+</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="7JEXFR4S7X2VN" type="hidden">
+<table>
+<tbody><tr><td><input name="on0" value="Please select your business size" type="hidden">Please select your business size</td></tr><tr><td><select name="os0">
+	<option selected="selected" value="Extra large">Extra large £3,000.00 GBP</option>
+	<option value="Large">Large £1,000.00 GBP</option>
+	<option value="Medium">Medium £300.00 GBP</option>
+	<option value="Small">Small £100.00 GBP</option>
+</select> </td></tr>
+</tbody></table>
+<input name="currency_code" value="GBP" type="hidden">
+<input src="https://www.paypalobjects.com/en_GB/i/btn/btn_paynowCC_LG.gif" name="submit" alt="PayPal – The safer, easier way to pay online." border="0" type="image">
+</form>
+<p></p>
+
+<br>
+<br>
+<br>
+<br>
+
+<p>
+<a name="own"></a>
+<b>Own amount: one-off payment</b>
+</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input name="cmd" value="_s-xclick" type="hidden">
+<input name="hosted_button_id" value="M4PM4R9PSJ63G" type="hidden">
+<input src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" name="submit" alt="PayPal – The safer, easier way to pay online." border="0" type="image">
+</form>
+<p></p>
+
+{#
+<br>
+<br>
+<p> or you can complete the form below:</p>
+
+ <p>
+<font color="red"></font>
+<br>
+</p><form method="post" action="/doaj">
+<input name="func" value="support" type="hidden">
+<input name="uiLanguage" value="en" type="hidden">
+<input name="already" value="1" type="hidden">
+<table border="0" cellpadding="5">
+<tbody><tr>
+  <td class="text">Organisation</td>
+  <td class="text"><input size="60" name="organization"></td>
+</tr>
+<tr>
+  <td class="text">URL</td>
+  <td class="text"><input size="60" name="url"></td>
+</tr>
+<tr>
+
+  <td class="text">Contact person*</td>
+  <td class="text"><input size="60" name="contactPerson"></td>
+</tr>
+<tr>
+  <td class="text">Contact Email*</td>
+  <td class="text"><input size="60" name="email"></td>
+</tr>
+<tr>
+  <td class="text">Contribution in GBPs (Pounds Stirling)*</td>
+  <td class="text"><input size="20" name="amount"></td>
+</tr>
+<tr>
+ <td class="text">Payment
+  </td>
+
+<td class="text">
+<textarea name="address" cols="60" rows="10" readonly="readonly">Account name: Infrastructure Services for Open Access C.I.C.
+Bank name: Royal Bank of Scotland - Exeter Branch
+Address: Broadwalk House, Southernhay West, EXETER EX1 1TZ, United Kingdom
+Account number: 11099915
+Sort code: 16-19-25
+IBAN number: GB24RBOS16192511099915
+SWIFT/BIC code: RBOSGB2L
+
+</textarea>
+</td>
+</tr>
+<tr>
+<td class="text">Security *</td>
+<td class="text" valign="middle">Type in the word displayed in the image <img src="support_files/captcha99271380200886.html" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
+<br>
+<input name="cWord" size="4">
+<input name="cKey" value="99271380200886" type="hidden">
+</td>
+</tr>
+<tr>
+<td class="text">Comments</td>
+
+<td class="text"><input name="comment" size="60"></td>
+</tr>
+<tr>
+<td class="text" colspan="2" align="center">
+<input value="Submit" type="submit">
+</td>
+</tr>
+</tbody></table>
+</form>
+<p>
+#}
+
+Thank you very much for your support!
+
+{% endblock %}
+

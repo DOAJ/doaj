@@ -14,7 +14,7 @@ import portality.models as models
 from portality.core import app, login_manager
 
 from portality.view.account import blueprint as account
-from portality.view.contact import blueprint as contact
+# from portality.view.contact import blueprint as contact
 from portality.view.query import blueprint as query
 from portality.view.stream import blueprint as stream
 from portality.view.forms import blueprint as forms
@@ -23,7 +23,7 @@ from portality.view.oaipmh import blueprint as oaipmh
 from portality.view.atom import blueprint as atom
 
 app.register_blueprint(account, url_prefix='/account')
-app.register_blueprint(contact, url_prefix='/contact')
+# app.register_blueprint(contact, url_prefix='/contact')
 app.register_blueprint(query, url_prefix='/query')
 app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(forms, url_prefix='/forms')

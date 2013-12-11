@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% for s in sponsors.values() %}
+
+    <a href="{{ s['url'] }}" target="_blank">
+        <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo'])  }}"  style="padding: 20px;" />
+    </a> 
+
+
+{% endfor %}
+
+{% endblock %}
