@@ -35,6 +35,7 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     cd doaj
     git submodule init
     git submodule update
+    pip install -e .  # install all the app's dependencies
     python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
     
 ## Data Models
