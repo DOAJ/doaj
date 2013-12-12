@@ -141,6 +141,18 @@ class GenericBibJSON(object):
 
 ############################################################################
 
+####################################################################
+## File upload model
+####################################################################
+
+class FileUpload(DomainObject):
+    __type__ = "upload"
+    
+    def upload(self, filename, publisher):
+        self.data["filename"] = filename
+        self.data["publisher"] = publisher
+
+####################################################################
 
 ####################################################################
 ## Account object and related classes

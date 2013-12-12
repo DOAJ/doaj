@@ -11,6 +11,7 @@ from StringIO import StringIO
 import csv
 from datetime import datetime
 import json
+import os, codecs
 
 import sys
 try:
@@ -133,6 +134,46 @@ def csv_data():
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
     r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
+
+@blueprint.route("/uploadFile", methods=["GET", "POST"])
+def upload_file():
+    if request.method == "GET":
+        return render_template('doaj/members/uploadfile.html')
+    
+    # otherwise we are dealing with a POST - file upload
+    f = request.files.get("file")
+    publisher = request.values.get("publisher_username")
+    
+    # do some validation
+    if f.filename == "" or publisher is None or publisher == "":
+        return render_template('doaj/members/uploadfile.html', no_file=(f.filename == ""), no_publisher=(publisher is None or publisher == ""))
+    
+    # prep a record to go into the index, to record this upload
+    record = models.FileUpload()
+    record.upload(f.filename, publisher)
+    record.set_id()
+    
+    # the two file paths that we are going to write to
+    txt = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".txt")
+    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".xml")
+    
+    # make the content of the txt metadata file
+    metadata = publisher + "\n" + f.filename
+    
+    # save the metadata to the text file
+    with codecs.open(txt, "wb", "utf8") as mdf:
+        mdf.write(metadata)
+    
+    # write the incoming file out to the XML file
+    f.save(xml)
+    
+    # finally, save the index entry
+    record.save()
+    
+    # return the thank you page
+    return render_template("doaj/members/upload_thanks.html")
+    
+    
 
 ###############################################################
 ## The various static endpoints

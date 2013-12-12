@@ -1,0 +1,98 @@
+#ResourceSync OAI-PMH profile options
+
+##Option 1: all details in the Capability List Index
+
+###Capability List Index
+
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+              xmlns:rs="http://www.openarchives.org/rs/terms/">
+  <rs:md capability="capabilitylist"
+         modified="2013-01-02T14:00:00Z"/>
+  <sitemap>
+      <loc>http://example.com/dataset1/metadatacapabilitylist.xml</loc>
+      <rs:ln rel="describedby" href="[metadata resource description]"/> <-- this could be the URI of the metadata namespace
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </sitemap>
+  <sitemap>
+      <loc>http://example.com/dataset1/metadatacapabilitylist.xml</loc>
+      <rs:ln rel="describedby" href="[content resource description]"/>
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </sitemap>
+  <sitemap>
+      <loc>http://example.com/dataset2/fullcapabilitylist.xml</loc>
+  </sitemap>
+</sitemapindex>
+
+###Overall Structure of Solution
+
+Capability List Index
+    -> Set/Metadata Capability List
+        -> Capabilities -> Metadata Records
+    -> Set/Content Capability List
+        -> Capabilities -> Content Records
+    -> Set Capability List
+        -> Capabilities -> All Records
+
+##Option 2: divide metadata repository from sets over Capability List Index and Capability List
+
+###Capability List Index
+
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+              xmlns:rs="http://www.openarchives.org/rs/terms/">
+  <rs:md capability="capabilitylist"
+         modified="2013-01-02T14:00:00Z"/>
+  <sitemap>
+      <loc>http://example.com/dataset1/metadatacapabilitylist.xml</loc>
+      <rs:ln rel="describedby" href="[metadata resource description]"/>
+  </sitemap>
+  <sitemap>
+      <loc>http://example.com/dataset1/metadatacapabilitylist.xml</loc>
+      <rs:ln rel="describedby" href="[content resource description]"/>
+  </sitemap>
+  <sitemap>
+      <loc>http://example.com/dataset2/fullcapabilitylist.xml</loc>
+  </sitemap>
+</sitemapindex>
+
+###Capability List
+
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:rs="http://www.openarchives.org/rs/terms/">
+  
+  <rs:ln rel="describedby" href="[metadata resource description]"/>
+  <rs:md capability="capabilitylist"
+         modified="2013-01-02T14:00:00Z"/>
+  <url>
+      <loc>http://example.com/dataset1/resourcelistindex.xml</loc>
+      <rs:md capability="resourcelist"/>
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </url>
+  <url>
+      <loc>http://example.com/dataset1/resourcedump.xml</loc>
+      <rs:md capability="resourcedump"/>
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </url>
+  <url>
+      <loc>http://example.com/dataset1/changelist.xml</loc>
+      <rs:md capability="changelist"/>
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </url>
+  <url>
+      <loc>http://example.com/dataset1/changedump.xml</loc>
+      <rs:md capability="changedump"/>
+      <rs:ln rel="describedby" href="http://repo.uni.ac.uk/collection/1"/>
+  </url>
+</urlset>
+
+###Overall Structure of Solution
+
+Capability List Index
+    -> Metadata repository Capability List
+        -> Set Capabilities -> Metadata Records
+    -> Content repository Capability List
+        -> Set Capabilities -> Content Records
+    -> Full repository Capability List
+        -> Set Capabilities -> All Records
