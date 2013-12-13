@@ -130,10 +130,12 @@ class GenericBibJSON(object):
                 urls.append(link.get("url"))
         return urls
     
-    def add_subject(self, scheme, term):
+    def add_subject(self, scheme, term, code=None):
         if "subject" not in self.bibjson:
             self.bibjson["subject"] = []
         sobj = {"scheme" : scheme, "term" : term}
+        if code is not None:
+            sobj["code"] = code
         self.bibjson["subject"].append(sobj)
     
     def subjects(self):
@@ -322,6 +324,7 @@ class Journal(DomainObject):
         titles = []
         subjects = []
         schema_subjects = []
+        schema_codes = []
         classification = []
         langs = []
         country = None
@@ -346,6 +349,8 @@ class Journal(DomainObject):
             subjects.append(term)
             schema_subjects.append(scheme + ":" + term)
             classification.append(term)
+            if "code" in subs:
+                schema_codes.append(scheme + ":" + subs.get("code"))
         
         # add the keywords to the non-schema subjects (but not the classification)
         subjects += cbib.keywords
@@ -384,6 +389,7 @@ class Journal(DomainObject):
         license = list(set(license))
         publisher = list(set(publisher))
         langs = list(set(langs))
+        schema_codes = list(set(schema_codes))
         
         # build the index part of the object
         self.data["index"] = {}
@@ -405,6 +411,8 @@ class Journal(DomainObject):
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
+        if len(schema_codes) > 0:
+            self.data["index"]["schema_code"] = schema_codes
     
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
@@ -498,13 +506,6 @@ class JournalBibJSON(GenericBibJSON):
     def active(self): return self.bibjson.get("active")
     @active.setter
     def active(self, val) : self.bibjson["active"] = val
-    
-    """
-    @property
-    def for_free(self): return self.bibjson.get("for_free")
-    @for_free.setter
-    def for_free(self, val) : self.bibjson["for_free"] = val
-    """
     
     # journal-specific complex part getters and setters
     
@@ -677,6 +678,7 @@ class Article(DomainObject):
         issns = []
         subjects = []
         schema_subjects = []
+        schema_codes = []
         classification = []
         langs = []
         country = None
@@ -703,6 +705,8 @@ class Article(DomainObject):
             subjects.append(term)
             schema_subjects.append(scheme + ":" + term)
             classification.append(term)
+            if "code" in subs:
+                schema_codes.append(scheme + ":" + subs.get("code"))
         
         # copy the languages
         if cbib.journal_language is not None:
@@ -729,6 +733,7 @@ class Article(DomainObject):
         license = list(set(license))
         publisher = list(set(publisher))
         langs = list(set(langs))
+        schema_codes = list(set(schema_codes))
         
         # work out what the date of publication is
         date = cbib.get_publication_date()
@@ -753,6 +758,8 @@ class Article(DomainObject):
             self.data["index"]["language"] = langs
         if country is not None:
             self.data["index"]["country"] = country
+        if schema_codes > 0:
+            self.data["index"]["schema_code"] = schema_codes
     
     def prep(self):
         self._generate_index()
