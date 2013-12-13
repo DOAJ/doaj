@@ -13,6 +13,9 @@ jQuery(document).ready(function($) {
     pager_slider: true,
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
+    results_render_callbacks: {
+        'bibjson.author_pays': fv_author_pays
+    },
     hide_inactive_facets: true,
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
@@ -153,18 +156,22 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Published in</strong>: ",
                 "field": "bibjson.journal.title",
+                "notrailingspace": true
             },
             {
                 "pre": ", Vol ",
                 "field": "bibjson.journal.volume",
+                "notrailingspace": true
             },
             {
                 "pre": ", Iss ",
                 "field": "bibjson.journal.number",
+                "notrailingspace": true
             },
             {
                 "pre": ", Pp ",
                 "field": "bibjson.start_page",
+                "notrailingspace": true
             },
             {
                 "pre": "-",

@@ -10,6 +10,18 @@ function customise_facetview_results() {
     $('.facetview_metadata div').css('border-color', '#F68B1F');
     $('.facetview_decrement, .facetview_increment').css('color', '#F68B1F');
     $('.date-month').each(expand_month)
+    customise_facets();
+}
+
+function customise_facets() {
+    $('#facetview_bibjson_author_pays_exact .facetview_filterchoice_text').each(
+            function() {
+                thespan = $(this);
+                if (fv_author_pays.mapping[thespan.html()]) {
+                    thespan.html(fv_author_pays.mapping[thespan.html()]);
+                }
+            }
+        );
 }
 
 function toggle_bottom_border() {

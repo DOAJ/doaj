@@ -5,7 +5,8 @@ This repository provides the software which drives the DOAJ website and the DOAJ
 ## Deployment
 We're running supervisord on our server. Every time you push changes, do
     
-    git pull  # obviously
+    git pull  # or git clone https://github.com/DOAJ/doaj.git if deploying for the first time
+    git submodule init  # if this is the first time you're deploying the app, but won't hurt if it's not
     git submodule update  # in case one of the repo's submodules are at a newer commit now
     sudo supervisorctl restart doaj
 
@@ -24,7 +25,7 @@ Install Python 2.6.6 or more recent . Not tested with Python 3.x .
 
 Install pip using [pip's very robust instructions](http://www.pip-installer.org/en/latest/installing.html).
     
-    pip install virtualenv  # won't upgrade it if you already have it. pip install -- upgrade virtualenv for that.
+    sudo pip install virtualenv  # won't upgrade it if you already have it. pip install -- upgrade virtualenv for that.
     virtualenv -p <path/to/python 2.7 executable> doajenv
     cd doajenv
     . bin/activate
@@ -34,6 +35,8 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     cd doaj
     git submodule init
     git submodule update
+    sudo apt-get install libxml2-dev libxslt-dev  # install LXML dependencies on Linux. Windows users: grab a precompiled LXML from http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml (go for version 3.x) - make sure the virtual environment can see it!
+    pip install -e .  # install all the app's dependencies
     python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
     
 ## Data Models
