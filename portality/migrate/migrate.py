@@ -28,9 +28,12 @@ def load_subjects(subject_path, lcc_path):
     for subject in lccs:
         name = subject.find("name").text
         parent = subject.find("parent")
+        code = subject.find("code")
         if parent is not None:
             parent = parent.text
-        lccmap[name] = {"p" : parent}
+        if code is not None:
+            code = code.text
+        lccmap[name] = {"p" : parent, "c" : code}
     
     for subject in subjects:
         name = subject.find("name").text
@@ -387,25 +390,22 @@ def _to_journal_bibjson(element):
     if active is not None and active.text is not None and active.text != "":
         b.active = active.text == "Y"
     
-    """
-    for_free = element.find("forFree")
-    if for_free is not None and for_free.text is not None and for_free.text != "":
-        b.for_free = for_free.text == "Y"
-    """
-    
     subject_elements = element.findall("subject")
     for subject in subject_elements:
         if subject is not None and subject.text is not None and subject.text != "":
             subjects = _mine_subject(subject.text)
-            for scheme, term in subjects:
-                b.add_subject(scheme, term)
+            for scheme, term, code in subjects:
+                b.add_subject(scheme, term, code=code)
     
     return b
 
 def _mine_subject(lcc_subject):
     # start a register of subjects and add this subject to it as the starting point
     register = []
-    register.append(("LCC", lcc_subject))
+    
+    # get the LCC classification and its code
+    s = lccmap.get(lcc_subject)
+    register.append(("LCC", lcc_subject, s.get("c")))
     
     # recurse up the tree to get all of the parents of this subject in the LCC
     # classification
@@ -414,7 +414,7 @@ def _mine_subject(lcc_subject):
     rels = lccmap.get(lcc_subject)
     doaj = rels.get("d")
     if doaj is not None:
-        register.append(("DOAJ", doaj))
+        register.append(("DOAJ", doaj, None)) # DOAJ does not have codes
         _recurse_parents(doaj, smap, register, "DOAJ")
     
     return register
@@ -423,7 +423,8 @@ def _recurse_parents(subject, tree, register, scheme):
     rels = tree.get(subject)
     parent = rels.get("p")
     if parent is not None:
-        register.append((scheme, parent))
+        s = tree.get(parent)
+        register.append((scheme, parent, s.get("c")))
         _recurse_parents(parent, tree, register, scheme)
 
 #################################################################
@@ -677,7 +678,7 @@ def _add_journal_info(article):
     
     # if we get to here, we have a journal record we want to pull data from
     for s in journal.get("subjects", []):
-        bibjson.add_subject(s.get("scheme"), s.get("term"))
+        bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
     
     if journal.get("title") is not None:
         bibjson.journal_title = journal.get("title")

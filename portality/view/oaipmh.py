@@ -841,6 +841,10 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             
             subel = etree.SubElement(oai_dc, self.DC + "subject")
             subel.text = scheme + ":" + term
+            
+            if "code" in subs:
+                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
+                sel2.text = scheme + ":" + subs.get("code")
         
         for language in bibjson.journal_language:
             langel = etree.SubElement(oai_dc, self.DC + "language")
@@ -937,6 +941,10 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
             
             subel = etree.SubElement(oai_dc, self.DC + "subject")
             subel.text = scheme + ":" + term
+            
+            if "code" in subs:
+                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
+                sel2.text = scheme + ":" + subs.get("code")
             
         return metadata
     
