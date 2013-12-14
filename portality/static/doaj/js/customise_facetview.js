@@ -14,11 +14,22 @@ function customise_facetview_results() {
 }
 
 function customise_facets() {
+    // bibjson.author_pays
+    // 1. facet itself
     $('#facetview_bibjson_author_pays_exact .facetview_filterchoice_text').each(
             function() {
                 thespan = $(this);
-                if (fv_author_pays.mapping[thespan.html()]) {
-                    thespan.html(fv_author_pays.mapping[thespan.html()]);
+                if (fv_author_pays.mapping[thespan.html()]['text']) {
+                    thespan.html(fv_author_pays.mapping[thespan.html()]['text']);
+                }
+            }
+        );
+    // 2. don't forget filter buttons
+    $('a.facetview_filterselected[rel="bibjson.author_pays.exact"] > .facetview_filterselected_text').each(
+            function() {
+                thespan = $(this);
+                if (fv_author_pays.mapping[thespan.text()]['text']) {
+                    thespan.text(fv_author_pays.mapping[thespan.text()]['text']);
                 }
             }
         );

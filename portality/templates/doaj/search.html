@@ -14,7 +14,8 @@ jQuery(document).ready(function($) {
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
     results_render_callbacks: {
-        'bibjson.author_pays': fv_author_pays
+        'bibjson.author_pays': fv_author_pays,
+        'created_date': fv_created_date,
     },
     hide_inactive_facets: true,
     facets: [
@@ -199,12 +200,6 @@ jQuery(document).ready(function($) {
             {
                 "field": "bibjson.link.url",
             },
-        ],
-        [
-            {
-                "pre": '<strong>ID</strong>: ',
-                "field": "id",
-            }
         ],
     ],
   });

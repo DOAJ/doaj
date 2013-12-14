@@ -18,6 +18,18 @@ footer {
     color: #F68B1F;
 }
 
+.red {
+    color: #C2020C;
+}
+
+.green {
+    color: #0C991F;
+}
+
+.blue {
+    color: #7073FF;
+}
+
 .centre-text-container {
     text-align: center;
 }

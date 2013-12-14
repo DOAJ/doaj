@@ -84,6 +84,7 @@ hr {
 #facetview_selectedfilters .btn {
     background-color: #F68B1F;
     background-image: -moz-linear-gradient(center top , #f6b574, #f68e26);
+    background-image: -webkit-linear-gradient(top, #f6b574, #f68e26);
     border-color: #F68B1F #F68B1F #F68411;
     text-shadow: none;
 }
