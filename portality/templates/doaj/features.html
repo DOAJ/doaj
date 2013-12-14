@@ -2,8 +2,6 @@
 
 {% block content %}
 
-<div class="alert alert-danger">THIS PAGE WAS OUT OF DATE.  NEW CONTENT IS REQUIRED</div>
-
 <h2>OAI-PMH</h2>
 
 <p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different urls</p>
@@ -231,5 +229,369 @@
 &lt;/record&gt;
 
 </pre>
+
+<div class="row-fluid"><div class="span11">
+<table border=0 width=100% bgcolor=white cellspacing=0 cellpadding=0>
+   <tr valign=top>
+     <td>
+     </td>
+     <td width=100%>
+
+<br><br>
+
+       <table width=100%>
+          <tr>
+             <td width=100%><h2>File upload info</h2></td>
+          </tr>
+          <tr>
+             <td class="text">
+
+
+             <br>
+
+If you happen to have a database full of articles then you need
+to convert your data to XML file format before you can add it to the
+DOAJ database.
+<br>
+If you are newbie in the world of file formats then please be assured
+that the XML file format is a simple and transparent form of data
+storage. Unlike some other data formats this one can be read and edited
+using an ordinary text editor.
+<br>
+You need to run a script or a program that converts your
+database into the accepted XML format.
+<br>
+However, for our receiving database to be able to accept your input
+it is important that it is well written. That is its format must
+strictly adhere to a set of rules encoded in an XML schema file that
+we supply.
+<br>
+There are XML checkers/validators that can be found for free on the 
+internet or may already be on your machine. These accepts as input 
+your XML file as well as a description of the format that your XML 
+file must adhere to.
+<br>
+
+<h3>Example XML File</h3>
+The example file below contains only one record.<br>
+<table cellspacing=0 cellpadding=0 width=100% border=0>
+<tr>
+  <td bgcolor=white valign=top width=50%>
+<pre>
+
+<<b>?xml version="1.0" encoding="UTF-8"?></b>
+<<b>records></b>
+  <<b>record></b>
+    <<b>language></b>eng<<b>/language></b>
+    <<b>publisher></b>Popular Chemistry<<b>/publisher></b>
+    <<b>journalTitle></b>Botanical Magazine<<b>/journalTitle></b>
+    <<b>issn></b>17497221<<b>/issn></b>
+    <<b>publicationDate></b>2002-09-30<<b>/publicationDate></b>
+    <<b>volume></b>98<<b>/volume></b>
+    <<b>issue></b>2<<b>/issue></b>
+    <<b>startPage></b>1234<<b>/startPage></b>
+    <<b>endPage></b>1235<<b>/endPage></b>
+    <<b>doi></b>1234567<<b>/doi></b>
+    <<b>publisherRecordId></b>12345<<b>/publisherRecordId></b>
+    <<b>documentType></b>article<<b>/documentType></b>
+    <<b>title language="eng"></b>Roses and Lilies<<b>/title></b>
+    <<b>title language="ger"></b>Roses und Lilies<<b>/title></b>
+    <<b>authors></b>
+      <<b>author></b>
+        <<b>name></b>Fritz Haber <<b>/name></b>
+        <<b>email></b>fritz.haber@some.university.org<<b>/email></b>
+        <<b>affiliationId></b>1<<b>/affiliationId></b>
+        <<b>affiliationId></b>2<<b>/affiliationId></b>
+        <<b>affiliationId></b>3<<b>/affiliationId></b>
+      <<b>/author></b>
+    <<b>/authors></b>
+    <<b>affiliationsList></b>
+      <<b>affiliationName affiliationId="1"></b>
+        University of A     
+      <<b>/affiliationName></b>
+      <<b>affiliationName affiliationId="2"></b>
+        Universitaty of B
+      <<b>/affiliationName></b> 
+      <<b>affiliationName affiliationId="3"></b>
+        University of C
+      <<b>/affiliationName></b>
+    <<b>/affiliationsList></b>
+</pre>
+</td>
+<td valign=top bgcolor=#eeeeee>
+<pre>
+
+
+
+
+ <= The language tag content must conform to the
+    iso 639-2b standard.
+
+ <= Here is the issn number of the journal in which
+    the article has been published. If you have an eissn
+    number instead then this line should be replaced by
+    <eissn>17497221</eissn>. If you have both issn
+    and eissn numbers then the eissn tag should occur
+    after the issn tag. 
+
+
+
+ <= If the title occurs in more than one language
+    then you may list the titles here. The title tag
+    has got the attribute language that must be set
+    according to the ISO 639-2b standard.
+
+
+
+ <= Note that the affilitationId numbers denote the
+    affilitations in the affiliationslist below. 
+</pre>
+</td> </tr>
+<tr> <td bgcolor=white>
+<pre>
+    <<b>abstract language="eng"></b>
+      The catalytic formation of ammonia from hydrogen
+      and atmospheric nitrogen under conditions of high
+      temperature and high pressure.
+    <<b>/abstract></b>
+    <<b>fullTextUrl format="pdf"></b>
+      http://www.science.org/articles/HaberBosch.pdf
+    <<b>/fullTextUrl></b>
+    <<b>keywords language="eng"></b>    
+      <<b>keyword></b>garden<<b>/keyword></b>
+      <<b>keyword></b>rose<<b>/keyword></b>
+    <<b>/keywords></b>
+  <<b>/record></b>
+
+  <<b>record></b>
+   ...
+  <<b>/record></b>
+   ...
+
+<<b>/records></b>
+
+</pre>
+  </td>
+  <td valign=bottom bgcolor=#eeeeee>
+   <pre>
+ <= Here is where your first record ends. You may
+    add as many more as you want of similar kind below.
+ 
+
+</pre>
+</td></tr>
+</table>
+
+
+<br>
+<table cellspacing=0 cellpadding=0 width=100% border=0>
+<tr>
+<td colspan=2 class="text">
+<h3>The <a href=/static/doaj/doajArticles.xsd>doajArticles.xsd</a> schema file</h3>
+This file specifies what may or may not be uploaded to the database. 
+<br> 
+</td>
+</tr>
+<tr>
+<td bgcolor="white"  width="50%">
+
+<pre>
+
+<<b>?xml version="1.0" encoding="UTF-8"?></b>
+ <<b>xs:schema 
+  xmlns:xs ="http://www.w3.org/2001/XMLSchema"
+  xmlns:iso_639-2b="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0"></b>
+
+ <<b>xs:import namespace="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0" 
+    schemaLocation="http://www.it.ojp.gov/jxdm/iso_639-2b/1.0/
+                    iso_639-2b.xsd"></b>
+
+  <<b>xs:annotation></b>
+    <<b>xs:documentation></b>
+
+    This schema determines allowable xml file formats
+    for upload into the DOAJ database.
+
+    The schema uses imported codes for the representation 
+    of names of languages devised by the International 
+    Organization for Standardization (ISO) 639-2/B 
+    (bibliographic codes). Please note that when two 
+    codes separated by a dash occurs in the iso 639-2 
+    table then only the first code is used, the 
+    bibliographic one. The terminology code that comes 
+    second is omitted.
+
+    <<b>/xs:documentation></b>
+  <<b>/xs:annotation></b>
+ <<b>/xs:import></b>
+
+ <<b>xs:element name="records"></b>
+  <<b>xs:complexType></b>
+   <<b>xs:sequence></b>
+    <<b>xs:element name="record" type="recordType" 
+                maxOccurs="unbounded" /></b>
+   <<b>/xs:sequence></b>
+  <<b>/xs:complexType></b>
+ <<b>/xs:element></b>
+
+ <<b>xs:complexType name="recordType"></b>
+  <<b>xs:sequence></b>
+   <<b>xs:element name="language" 
+               type="iso_639-2b:LanguageCodeType" 
+               minOccurs="0"/></b>
+
+   <<b>xs:element name="publisher" type="xs:string" /></b>
+
+   <<b>xs:element name="journalTitle" type="xs:string" /></b>
+
+   <<b>xs:element name="issn" minOccurs="0"></b>
+    <<b>xs:simpleType></b>
+     <<b>xs:restriction base="xs:string"></b>
+      <<b>xs:pattern value="[d0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}"/></b> 
+     <<b>/xs:restriction></b>
+    <<b>/xs:simpleType></b>
+   <<b>/xs:element></b>
+	   
+   <<b>xs:element name="eissn"  minOccurs="0"></b>
+    <<b>xs:simpleType></b>
+     <<b>xs:restriction base="xs:string"></b>
+      <<b>xs:pattern value="[0-9]{4}-{0,1}[0-9]{3}[0-9xX]{1}"/></b> 
+     <<b>/xs:restriction></b>
+    <<b>/xs:simpleType></b>
+   <<b>/xs:element></b>
+
+   <<b>xs:element name="publicationDate"></b>
+    <<b>xs:simpleType></b>
+     <<b>xs:restriction base="xs:string"></b>
+      <<b>xs:pattern value="[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?"/></b>
+     <<b>/xs:restriction></b>
+    <<b>/xs:simpleType></b>
+   <<b>/xs:element></b>
+
+   <<b>xs:element name="volume" type="xs:string"  minOccurs="0"/></b>
+   <<b>xs:element name="issue" type="xs:string"  minOccurs="0"/></b>
+   <<b>xs:element name="startPage" type="xs:string"  minOccurs="0"/></b>
+   <<b>xs:element name="endPage" type="xs:string"  minOccurs="0"/></b>
+
+   <<b>xs:element name="doi" type="xs:string"  minOccurs="0"/></b>
+            
+   <<b>xs:element name="publisherRecordId" type="xs:string"  
+           minOccurs="0"/></b>
+
+   <<b>xs:element name="documentType" type="xs:string"  
+           minOccurs="0"/></b>
+
+   <<b>xs:element name="title" minOccurs="1" maxOccurs="unbounded"></b> 
+    <<b>xs:complexType></b>
+     <<b>xs:simpleContent></b>
+      <<b>xs:extension base="xs:string"></b>
+       <<b>xs:attribute name="language" 
+                           type="iso_639-2b:LanguageCodeType" /></b>
+      <<b>/xs:extension></b>
+     <<b>/xs:simpleContent></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b> 
+
+   <<b>xs:element name="authors" minOccurs="0" maxOccurs="1"></b>
+    <<b>xs:complexType></b>
+     <<b>xs:sequence></b>
+      <<b>xs:element name="author" 
+                  minOccurs="0"    maxOccurs="unbounded"></b>
+       <<b>xs:complexType></b>
+        <<b>xs:sequence></b>
+         <<b>xs:element name="name"   type="xs:string" /></b>
+         <<b>xs:element name="email"  type="xs:string"
+                     minOccurs="0" /></b>
+         <<b>xs:element name="affiliationId" 
+                     minOccurs="0" maxOccurs="unbounded"/></b>
+        <<b>/xs:sequence></b>
+       <<b>/xs:complexType></b>
+      <<b>/xs:element></b>
+     <<b>/xs:sequence></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b>
+
+   <<b>xs:element name="affiliationsList" minOccurs="0" 
+         maxOccurs="1"></b>
+    <<b>xs:complexType></b>
+     <<b>xs:sequence></b>
+      <<b>xs:element name="affiliationName" minOccurs="0"  
+           maxOccurs="unbounded"></b>
+       <<b>xs:complexType></b>
+        <<b>xs:simpleContent></b>
+         <<b>xs:extension base="xs:string"></b>
+          <<b>xs:attribute name="affiliationId" type="xs:string" 
+                              use="required"/></b>
+         <<b>/xs:extension></b>
+        <<b>/xs:simpleContent></b>
+       <<b>/xs:complexType></b>
+      <<b>/xs:element></b>
+     <<b>/xs:sequence></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b>
+ 
+   <<b>xs:element name="abstract" minOccurs="0" 
+                     maxOccurs="unbounded"></b>
+    <<b>xs:complexType></b>
+     <<b>xs:simpleContent></b>
+      <<b>xs:extension base="xs:string"></b>
+       <<b>xs:attribute name="language" 
+                           type="iso_639-2b:LanguageCodeType" /></b>
+      <<b>/xs:extension></b>
+     <<b>/xs:simpleContent></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b>
+ 
+   <<b>xs:element name="fullTextUrl"></b>
+    <<b>xs:complexType></b> 
+     <<b>xs:simpleContent></b>
+      <<b>xs:extension base="xs:anyURI"></b>
+       <<b>xs:attribute name="format" /></b>  
+      <<b>/xs:extension></b>
+     <<b>/xs:simpleContent></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b>
+ 
+   <<b>xs:element name="keywords"
+               minOccurs="0"  maxOccurs="unbounded"></b>
+    <<b>xs:complexType></b>
+     <<b>xs:sequence></b>
+      <<b>xs:element name="keyword"   type="xs:string"
+                   minOccurs="0"    maxOccurs="unbounded"/></b>
+     <<b>/xs:sequence></b>
+     <<b>xs:attribute name="language" 
+                         type="iso_639-2b:LanguageCodeType"
+                         use="optional"/></b>
+    <<b>/xs:complexType></b>
+   <<b>/xs:element></b>
+
+  <<b>/xs:sequence></b>
+ <<b>/xs:complexType></b>
+<<b>/xs:schema></b>
+
+</pre>
+
+</td>
+<td valign=top bgcolor=#eeeeee>
+<pre style='margin-top:130px'>
+
+
+<= Here we specify the root 'records' element that
+   contains elements of type record.
+
+<= Here we specify the record element. This section
+   gives an overview of the elements contained. Some
+   elements are specified further below in the
+   grey section.
+</pre>
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+</td>
+</tr>
+</table>
+</td></tr></table>
+</td></tr></table>
+</div></div>
 
 {% endblock %}

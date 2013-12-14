@@ -226,3 +226,7 @@ def publishermembers():
 @blueprint.route("/suggest")
 def suggest():
     return render_template("doaj/suggest.html")
+    
+@blueprint.route("/supportDoaj")
+def support_doaj():
+    return render_template("doaj/supportDoaj.html")
