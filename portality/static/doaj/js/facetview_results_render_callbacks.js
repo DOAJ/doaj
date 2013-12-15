@@ -27,3 +27,18 @@ fv_created_date = (function (resultobj) {
     };
     return that;
 })();
+
+
+fv_abstract = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = '<a class="abstract_action" href="" rel="';
+        result += resultobj['id'];
+        result += '">(expand)</a> <span class="abstract_text" rel="';
+        result += resultobj['id'];
+        result += '">' + '<br>';
+        result += resultobj['bibjson']['abstract'];
+        result += '</span>';
+        return result
+    };
+    return that;
+})();

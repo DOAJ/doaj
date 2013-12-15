@@ -11,11 +11,13 @@ jQuery(document).ready(function($) {
     searchbox_shade: 'none',
     pager_on_top: true,
     pager_slider: true,
+    pre_search_callback: customise_facetview_presearch,
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
     results_render_callbacks: {
         'bibjson.author_pays': fv_author_pays,
         'created_date': fv_created_date,
+        'bibjson.abstract': fv_abstract,
     },
     hide_inactive_facets: true,
     facets: [
@@ -199,6 +201,12 @@ jQuery(document).ready(function($) {
             {
                 "field": "bibjson.link.url",
             },
+        ],
+        [
+            {
+                "pre": '<strong>Abstract</strong>: ',
+                "field": "bibjson.abstract",
+            }
         ],
     ],
   });

@@ -1,16 +1,22 @@
 function customise_facetview_init() {
-    insert_progress_bar();
     $('.facetview_orderby').css('background-color', 'white');
     $('.facetview_orderby').css('width', 'auto');
     $('.facetview_searchfield').css('width', 'auto');
     $('.facetview_filtershow').bind('click', toggle_bottom_border);
 }
 
+function customise_facetview_presearch() {
+    setTimeout(insert_progress_bar, 400);
+}
+
 function customise_facetview_results() {
     $('.facetview_metadata div').css('border-color', '#F68B1F');
     $('.facetview_decrement, .facetview_increment').css('color', '#F68B1F');
     $('.date-month').each(expand_month)
+    $('.abstract_action').click(abstract_toggle);
+    $('.abstract_text').hide();
     customise_facets();
+    $('#facetview_selectedfilters #search-progress-bar').remove();
 }
 
 function customise_facets() {
@@ -24,6 +30,7 @@ function customise_facets() {
                 }
             }
         );
+    // bibjson.author_pays
     // 2. don't forget filter buttons
     $('a.facetview_filterselected[rel="bibjson.author_pays.exact"] > .facetview_filterselected_text').each(
             function() {
@@ -65,5 +72,17 @@ function expand_month() {
 }
 
 function insert_progress_bar() {
-    $('#facetview_selectedfilters').prepend('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
+    if ($.fn.facetview.options.searching) {
+        $('#facetview_selectedfilters').prepend('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
+    }
+}
+
+function abstract_toggle(_event) {
+    _event.preventDefault();
+    _anchor = $(this);
+    article_id = _anchor.attr('rel');
+    if (_anchor.text() == '(expand)') { _anchor.text('(collapse)'); }
+    else if(_anchor.text() == '(collapse)') { _anchor.text('(expand)'); }
+    $('.abstract_text[rel="' + article_id + '"]').fadeToggle(300);
+    return true;
 }
