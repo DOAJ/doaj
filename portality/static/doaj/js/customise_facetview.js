@@ -3,6 +3,7 @@ function customise_facetview_init() {
     $('.facetview_orderby').css('width', 'auto');
     $('.facetview_searchfield').css('width', 'auto');
     $('.facetview_filtershow').bind('click', toggle_bottom_border);
+    customise_help_buttons_on_init();
 }
 
 function customise_facetview_presearch() {
@@ -20,6 +21,20 @@ function customise_facetview_results() {
 }
 
 function customise_facets() {
+    // make help button the last option on the facet options
+    $('.facetview_filteroptions').each(function()
+        {
+            var thediv=$(this);
+            var thehelpbtn=$(thediv.children('.facetview_learnmore')[0]);
+            thehelpbtn.remove();
+            thediv.append(thehelpbtn);
+            thehelpbtn.click(function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                $('#facetview_learnmore').fadeToggle(300);
+            });
+        });
+
     // bibjson.author_pays
     // 1. facet itself
     $('#facetview_bibjson_author_pays_exact .facetview_filterchoice_text').each(
@@ -85,4 +100,34 @@ function abstract_toggle(_event) {
     else if(_anchor.text() == '(collapse)') { _anchor.text('(expand)'); }
     $('.abstract_text[rel="' + article_id + '"]').fadeToggle(300);
     return true;
+}
+
+function customise_help_buttons_on_init() {
+    // close the help on clicking outside of the help
+    // first, close it on clicking anywhere at all
+    $('html').click(function() {
+        if($('#facetview_learnmore').is(":visible")) {
+            $('#facetview_learnmore').fadeOut(300);
+        }
+    });
+    
+    // but don't close it when clicking on the help itself
+    $('#facetview_learnmore').click(function(event){
+        event.stopPropagation();
+    });
+
+    // fade out the help when closing using the label
+    $('.facetview_learnmore.label').unbind('click').click(function(event){
+        event.preventDefault();
+        $('#facetview_learnmore').fadeOut(300);
+    });
+
+    // help button in search options - don't close help when clicked
+    // (it's the button that shows it after all). Also fade show/hide
+    // the help when clicked.
+    $('.facetview_learnmore').unbind('click').click(function(event){
+        event.stopPropagation();
+        event.preventDefault();
+        $('#facetview_learnmore').fadeToggle(300);
+    });
 }

@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
         'bibjson.author_pays': fv_author_pays,
         'created_date': fv_created_date,
         'bibjson.abstract': fv_abstract,
+        'addthis-social-share-button': fv_addthis,
     },
     hide_inactive_facets: true,
     facets: [
@@ -206,6 +207,11 @@ jQuery(document).ready(function($) {
             {
                 "pre": '<strong>Abstract</strong>: ',
                 "field": "bibjson.abstract",
+            }
+        ],
+        [
+            {
+                "field": "addthis-social-share-button",
             }
         ],
     ],
