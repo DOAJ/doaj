@@ -55,6 +55,18 @@ function customise_facets() {
                 }
             }
         );
+
+    // always open some facets
+    var alwaysopen = ['_type', 'index_classification_exact', 'index_language_exact']
+    for (var i = 0; i < alwaysopen.length; i++) {
+        var cur = '#facetview_' + alwaysopen[i];
+        $(cur).find('.facetview_filtervalue').show();
+        $(cur).find('i').removeClass('icon-plus');
+        $(cur).find('i').addClass('icon-minus');
+        $(cur).addClass('facetview_open');
+        $('#facetview_' + cur).find('.facetview_filtervalue').show();
+        $(cur).find('.facetview_filteroptions').show();
+    }
 }
 
 function toggle_bottom_border() {
