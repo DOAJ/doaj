@@ -1131,6 +1131,72 @@ class AtomRecord(Journal):
         
         return [AtomRecord(**hit.get("_source")) for hit in results.get("hits", {}).get("hits", [])]
 
+#######################################################################
+
+#######################################################################
+## Classes for working across both Journals and Articles
+#######################################################################
+
 class JournalArticle(DomainObject):
     __type__ = 'journal,article'
     __readonly__ = True  # TODO actually heed this attribute in all DomainObject methods which modify data
+    
+    @classmethod
+    def site_statistics(cls):
+        # prep the query and result objects
+        q = JournalArticleQuery()
+        stats = {
+            "articles" : 0,
+            "journals" : 0,
+            "countries" : 0,
+            "searchable" : 0
+        }
+        
+        # do the query
+        res = cls.query(q=q.site_statistics())
+        
+        # pull the journal and article facets out
+        terms = res.get("facets", {}).get("type", {}).get("terms", [])
+        for t in terms:
+            if t.get("term") == "journal":
+                stats["journals"] = t.get("count", 0)
+            if t.get("term") == "article":
+                stats["articles"] = t.get("count", 0)
+        
+        # count the size of the countries facet
+        stats["countries"] = len(res.get("facets", {}).get("countries", {}).get("terms", []))
+        
+        # count the size of the journals facet (which tells us how many journals have articles)
+        stats["searchable"] = len(res.get("facets", {}).get("journals", {}).get("terms", []))
+        
+        return stats
+        
+
+class JournalArticleQuery(object):
+    stats = {
+	    "query":{
+        	"bool" : {
+            	"must" : [
+                	{"term" : {"admin.in_doaj" : True}}
+                ]
+            }
+	    },
+        "size" : 0,
+        "facets" : {
+        	"type" : {
+            	"terms" : {"field" : "_type"} 
+            },
+            "countries" : {
+			    "terms" : {"field" : "index.country.exact", "size" : 10000 }
+		    },
+            "journals" : {
+            	"terms" : {"field" : "bibjson.journal.title.exact", "size" : 15000 }
+            }
+        }
+    }
+    
+    def site_statistics(self):
+        return deepcopy(self.stats)
+
+
+########################################################################

@@ -61,6 +61,7 @@ def additional_context():
         'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
+        'statistics' : models.JournalArticle.site_statistics()
         }
 
 @blueprint.route("/")
