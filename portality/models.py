@@ -238,6 +238,11 @@ class Journal(DomainObject):
         records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
     
+    @classmethod
+    def all_in_doaj(cls, page_size=5000):
+        q = JournalQuery()
+        return cls.iterate(q.all_in_doaj(), page_size=page_size)
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -430,43 +435,59 @@ class Journal(DomainObject):
         super(Journal, self).save()
 
     def csv(self, multival_sep=','):
+        """
+        CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
+                    "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
+                    "Subjects", "Country", "Publication fee", "Further Information", 
+                    "CC License", "Content in DOAJ"]
+        """
         YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
         row = []
-        c = self.data['bibjson']
-        row.append(c.get('title', ''))
-        row.append('') # in place of Title Alternative
-        row.append( multival_sep.join(c.get('link', '')) )
-        row.append(c.get('publisher', ''))
-        row.append(c.get('language', ''))
+        
+        bibjson = self.bibjson()
+        row.append(bibjson.title) # Title
+        row.append(bibjson.alternative_title) # Title Alternative
+        row.append( multival_sep.join([u.get("url") for u in bibjson.get_urls()]) ) # Identifier
+        row.append(bibjson.publisher)
+        row.append( multival_sep.join(bibjson.language))
 
         # we're following the old CSV format strictly for now, so only 1
         # ISSN allowed - below is the code for handling multiple ones
 
         # ISSN taken from Print ISSN
         # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
-        pissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'pissn']
+        pissns = bibjson.get_identifiers(bibjson.P_ISSN)
         row.append(pissns[0] if len(pissns) > 0 else '') # just the 1st one
 
         # EISSN - the same as ISSN applies
         # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
-        eissns = [id_['id'] for id_ in c.get('identifier', []) if id_['type'] == 'eissn']
+        eissns = bibjson.get_identifiers(bibjson.E_ISSN)
         row.append(eissns[0] if len(eissns) > 0 else '') # just the 1st one
 
-        row.append( multival_sep.join(c.get('keywords', '')) )
-        row.append(c.get('oa_start', {}).get('year'))
-        row.append(c.get('oa_end', {}).get('year'))
-        row.append(self.data.get('created_date', ''))
-        row.append( multival_sep.join([subject['term'] for subject in c.get('subject', [])]) )
-        row.append(c.get('country', ''))
-        row.append(YES_NO[c.get('author_pays', '')])
-        row.append(c.get('author_pays_url', ''))
+        row.append( multival_sep.join(bibjson.keywords) ) # Keywords
+        row.append( bibjson.oa_start.get('year', '')) # Year OA began
+        row.append( bibjson.oa_end.get('year', '')) # Year OA ended
+        row.append( self.created_date ) # Date created
+        row.append( multival_sep.join([subject['term'] for subject in bibjson.subjects()]) ) # Subject terms
+        row.append( bibjson.country ) # Country
+        row.append( bibjson.author_pays ) # author pays
+        row.append(bibjson.author_pays_url) # author pays url
 
         # for now, follow the strange format of the CC License column
         # that the old CSV had. Also, only take the first CC license we see!
-        cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
-        row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
+        lic = bibjson.get_license()
+        if lic is not None:
+            lt = lic.get("type", "")
+            if lt.lower().startswith("cc"):
+                row.append(lt[3:])
+            else:
+                row.append("")
+        else:
+            row.append("")
+        #cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
+        #row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
         
-        row.append(YES_NO[c.get('active')])
+        row.append(YES_NO.get(self.is_in_doaj(), ""))
         return row
 
 class JournalBibJSON(GenericBibJSON):
@@ -560,6 +581,10 @@ class JournalBibJSON(GenericBibJSON):
             oaobj["number"] = number
         self.bibjson["oa_start"] = oaobj
     
+    @property
+    def oa_start(self):
+        return self.bibjson.get("oa_start", {})
+    
     def set_oa_end(self, year=None, volume=None, number=None):
         oaobj = {}
         if year is not None:
@@ -569,6 +594,10 @@ class JournalBibJSON(GenericBibJSON):
         if number is not None:
             oaobj["number"] = number
         self.bibjson["oa_end"] = oaobj
+    
+    @property
+    def oa_end(self):
+        return self.bibjson.get("oa_end", {})
 
 class JournalQuery(object):
     """
@@ -586,12 +615,25 @@ class JournalQuery(object):
         }
     }
     
+    all_doaj = {
+	    "query" : {
+        	"bool" : {
+            	"must" : [
+            	    {"term" : {"admin.in_doaj" : True}}
+            	]
+            }
+        }
+    }
+    
     def __init__(self):
         self.query = None
     
     def find_by_issn(self, issn):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
+        
+    def all_in_doaj(self):
+        return deepcopy(self.all_doaj)
 
 ############################################################################
 

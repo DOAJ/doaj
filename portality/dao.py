@@ -269,6 +269,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             
             res = cls.query(q=q)
             rs = [r.get("_source") for r in res.get("hits", {}).get("hits", [])]
+            # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(q)
             if len(rs) == 0:
                 break
             for r in rs:

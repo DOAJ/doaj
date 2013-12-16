@@ -101,12 +101,13 @@ def csv_data():
         '''
         csvstream = StringIO()
         csvwriter = csv.writer(csvstream, quoting=csv.QUOTE_ALL)
-        csvwriter.writerow(csv_row)
+        # normalise the row - None -> "", and unicode > 128 to ascii
+        csvwriter.writerow([c.encode("ascii", "replace") if c is not None else "" for c in csv_row])
         csvstring = csvstream.getvalue()
         csvstream.close()
         return csvstring
 
-    journals = models.Journal.query()
+    journal_iterator = models.Journal.all_in_doaj()
     def generate():
         '''Return the CSV header and then all the journals one by one.'''
 
@@ -122,14 +123,14 @@ def csv_data():
         '''
         yield get_csv_string(models.Journal.CSV_HEADER)
 
-        for j in journals:
-            jm = models.Journal(**j['_source'])
-            yield get_csv_string(jm.csv())
+        for j in journal_iterator:
+            # jm = models.Journal(**j['_source'])
+            yield get_csv_string(j.csv())
 
-    if journals['hits']['total'] > 0:
-        journals = journals['hits']['hits']
-    else:
-        return 'Cannot find any journals in the DOAJ index. Please report this problem to ' + settings.ADMIN_EMAIL, 500
+    #if journals['hits']['total'] > 0:
+    #    journals = journals['hits']['hits']
+    #else:
+    #    return 'Cannot find any journals in the DOAJ index. Please report this problem to ' + settings.ADMIN_EMAIL, 500
 
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
     r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
