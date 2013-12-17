@@ -46,6 +46,7 @@ SPONSORS = {
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
+"""
 @blueprint.context_processor
 def additional_context():
     '''
@@ -63,7 +64,7 @@ def additional_context():
         'settings': settings,
         'statistics' : models.JournalArticle.site_statistics()
         }
-
+"""
 @blueprint.route("/")
 def home():
     return render_template('doaj/index.html')
@@ -138,6 +139,7 @@ def csv_data():
     return r
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
+@blueprint.route("/uploadfile", methods=["GET", "POST"])
 def upload_file():
     if request.method == "GET":
         return render_template('doaj/members/uploadfile.html')
