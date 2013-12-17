@@ -57,7 +57,7 @@ function customise_facets() {
         );
 
     // always open some facets
-    var alwaysopen = ['_type', 'index_classification_exact', 'index_language_exact']
+    var alwaysopen = [/*'_type', 'index_classification_exact', 'index_language_exact'*/]
     for (var i = 0; i < alwaysopen.length; i++) {
         var cur = '#facetview_' + alwaysopen[i];
         var a = $(cur).find(".facetview_filtershow")
