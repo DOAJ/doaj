@@ -20,6 +20,7 @@ jQuery(document).ready(function($) {
         'created_date': fv_created_date,
         'bibjson.abstract': fv_abstract,
         'addthis-social-share-button': fv_addthis,
+        'journal_license' : fv_journal_license
     },
     hide_inactive_facets: true,
     facets: [
@@ -208,10 +209,30 @@ jQuery(document).ready(function($) {
         ],
         [
             {
+                "pre": "<strong>Journal Language(s):</strong> ",
+                "field": "bibjson.journal.language"
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Journal License:</strong> ",
+                "field": "journal_license"
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Country of publication:</strong> ",
+                "field": "bibjson.journal.country"
+            }
+        ],
+        [
+            {
                 "pre": '<strong>Abstract</strong>: ',
                 "field": "bibjson.abstract",
             }
         ],
+
+// Share Button
         [
             {
                 "field": "addthis-social-share-button",

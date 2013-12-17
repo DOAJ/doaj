@@ -58,3 +58,23 @@ fv_addthis = (function (resultobj) {
     };
     return that;
 })();
+
+fv_journal_license = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
+            var lics = resultobj["bibjson"]["journal"]["license"]
+            if (lics.length > 0) {
+                return lics[0].title
+            }
+        }
+        else if (resultobj.bibjson && resultobj.bibjson.license) {
+            var lics = resultobj["bibjson"]["license"]
+            if (lics.length > 0) {
+                return lics[0].title
+            }
+        }
+        
+        return false;
+    };
+    return that;
+})();
