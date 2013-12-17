@@ -2,14 +2,23 @@
 // the function, a bit cleaner
 fv_author_pays = (function(resultobj) {
     var that = function(resultobj) {
+        field = ""
         if(that.mapping[resultobj['bibjson']['author_pays']]) {
             var result = '<span class=' + that.mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
             result += that.mapping[resultobj['bibjson']['author_pays']]['text'];
             result += '</span>';
-            return result;
+            field += result;
         } else {
-            return resultobj['bibjson']['author_pays'];
+            field += resultobj['bibjson']['author_pays'];
         }
+        if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
+            url = resultobj.bibjson.author_pays_url
+            field += " (see <a href='" + url + "'>" + url + "</a>)"
+        }
+        if (field === "") {
+            return false
+        }
+        return field
     };
     return that;
 })();
