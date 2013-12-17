@@ -142,6 +142,24 @@ fv_links = (function (resultobj) {
                 return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + ls[i].url + "</a>"
             }
         }
+        return false;
+    };
+    return that;
+})();
+
+fv_issns = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.identifier) {
+            var ids = resultobj.bibjson.identifier
+            var issns = []
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].type === "pissn" || ids[i].type === "eissn") {
+                    issns.push(ids[i].id)
+                }
+            }
+            return issns.join(", ")
+        }
+        return false
     };
     return that;
 })();

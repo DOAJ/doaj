@@ -23,7 +23,8 @@ jQuery(document).ready(function($) {
         'journal_license' : fv_journal_license,
         "title_field" : fv_title_field,
         "doi_link" : fv_doi_link,
-        "links" : fv_links
+        "links" : fv_links,
+        "issns" : fv_issns
     },
     hide_inactive_facets: true,
     facets: [
@@ -192,6 +193,12 @@ jQuery(document).ready(function($) {
                 "pre": "-",
                 "field": "bibjson.end_page",
             },
+        ],
+        [
+            {
+                "pre" : "<strong>ISSN(s)</strong>: ",
+                "field" : "issns"
+            }
         ],
         [
             {
