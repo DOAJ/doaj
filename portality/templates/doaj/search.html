@@ -20,7 +20,8 @@ jQuery(document).ready(function($) {
         'created_date': fv_created_date,
         'bibjson.abstract': fv_abstract,
         'addthis-social-share-button': fv_addthis,
-        'journal_license' : fv_journal_license
+        'journal_license' : fv_journal_license,
+        "title_field" : fv_title_field
     },
     hide_inactive_facets: true,
     facets: [
@@ -66,13 +67,26 @@ jQuery(document).ready(function($) {
     },
     default_operator: "AND",
     result_display: [
+    // Type
+    /*
+        [
+            {
+                "field" : "type_icon"
+            }
+        ],
+        */
     // Journals
         [
+            {
+                "field" : "title_field"
+            }
+            /*
             {
                 "pre": '<span class="title">',
                 "field": "bibjson.title",
                 "post": "</span>"
             }
+            */
         ],
         [
             {

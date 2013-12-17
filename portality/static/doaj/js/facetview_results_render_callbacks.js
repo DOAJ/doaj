@@ -78,3 +78,38 @@ fv_journal_license = (function (resultobj) {
     };
     return that;
 })();
+
+fv_type_icon = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.journal) {
+            // this is an article
+            return "<i class='icon icon-file'></i>"
+        }
+        else {
+            // this is a journal
+            return "<i class='icon icon-book'></i>"
+        }
+    };
+    return that;
+})();
+
+fv_title_field = (function (resultobj) {
+    var that = function(resultobj) {
+        var field = '<span class="title">'
+        if (resultobj.bibjson && resultobj.bibjson.journal) {
+            // this is an article
+            field += "<i class='icon icon-file'></i> "
+        }
+        else {
+            // this is a journal
+            field += "<i class='icon icon-book'></i> "
+        }
+        if (resultobj.bibjson.title) {
+            field += resultobj.bibjson.title + "</span>"
+            return field
+        } else {
+            return false
+        }
+    };
+    return that;
+})();
