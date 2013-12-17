@@ -113,3 +113,20 @@ fv_title_field = (function (resultobj) {
     };
     return that;
 })();
+
+fv_doi_link = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.identifier) {
+            var ids = resultobj.bibjson.identifier
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].type === "doi") {
+                    var doi = ids[i].id
+                    var tendot = doi.indexOf("10.")
+                    var url = "http://dx.doi.org/" + doi.substring(tendot)
+                    return "<a href='" + url + "'>" + doi.substring(tendot) + "</a>"
+                }
+            }
+        }
+    };
+    return that;
+})();

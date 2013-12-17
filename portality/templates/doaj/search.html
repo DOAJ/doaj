@@ -21,7 +21,8 @@ jQuery(document).ready(function($) {
         'bibjson.abstract': fv_abstract,
         'addthis-social-share-button': fv_addthis,
         'journal_license' : fv_journal_license,
-        "title_field" : fv_title_field
+        "title_field" : fv_title_field,
+        "doi_link" : fv_doi_link
     },
     hide_inactive_facets: true,
     facets: [
@@ -67,14 +68,6 @@ jQuery(document).ready(function($) {
     },
     default_operator: "AND",
     result_display: [
-    // Type
-    /*
-        [
-            {
-                "field" : "type_icon"
-            }
-        ],
-        */
     // Journals
         [
             {
@@ -209,6 +202,12 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Date added to DOAJ</strong>: ",
                 "field": "created_date",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>DOI</strong>: ",
+                "field": "doi_link",
             }
         ],
         [
