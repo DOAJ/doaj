@@ -127,6 +127,21 @@ fv_doi_link = (function (resultobj) {
                 }
             }
         }
+        return false
+    };
+    return that;
+})();
+
+fv_links = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.link) {
+            var ls = resultobj.bibjson.link
+            for (var i = 0; i < ls.length; i++) {
+                var t = ls[i].type
+                var label = t.substring(0, 1).toUpperCase() + t.substring(1)
+                return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + ls[i].url + "</a>"
+            }
+        }
     };
     return that;
 })();
