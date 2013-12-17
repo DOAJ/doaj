@@ -60,12 +60,14 @@ function customise_facets() {
     var alwaysopen = ['_type', 'index_classification_exact', 'index_language_exact']
     for (var i = 0; i < alwaysopen.length; i++) {
         var cur = '#facetview_' + alwaysopen[i];
-        $(cur).find('.facetview_filtervalue').show();
-        $(cur).find('i').removeClass('icon-plus');
-        $(cur).find('i').addClass('icon-minus');
-        $(cur).addClass('facetview_open');
-        $('#facetview_' + cur).find('.facetview_filtervalue').show();
-        $(cur).find('.facetview_filteroptions').show();
+        var a = $(cur).find(".facetview_filtershow")
+        a.trigger("click")
+        // $(cur).find('.facetview_filtervalue').show();
+        //$(cur).find('i').removeClass('icon-plus');
+        //$(cur).find('i').addClass('icon-minus');
+        //$(cur).addClass('facetview_open');
+        //$('#facetview_' + cur).find('.facetview_filtervalue').show();
+        //$(cur).find('.facetview_filteroptions').show();
     }
 }
 
