@@ -12,7 +12,7 @@ ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
-DOMAIN = "localhost:5004"  # facetview needs to access it like a user would, because well, it does run client-side
+DOMAIN = "doaj.cottagelabs.com"  # facetview needs to access it like a user would, because well, it does run client-side
 DEBUG = True
 PORT = 5004
 
@@ -177,3 +177,10 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
 UPLOAD_DIR = "upload"
 
+# =================================
+# ReCaptcha settings
+# We use per-domain, not global keys
+RECAPTCHA_PUBLIC_KEY = '6LeE8esSAAAAABccctzeYyzGGWljypRMJeThc0zZ'
+# RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
+# committed to the repository, but only held locally and on the server
+# (transfer using scp).

@@ -287,6 +287,7 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["in_doaj"] = value
     
+    @property
     def application_status(self):
         return self.data.get("admin", {}).get("application_status")
     
@@ -545,11 +546,11 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["language"] = []
         self.bibjson["language"].append(language)
     
-    def set_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
+    def set_license(self, license_title, license_type, url=None, version=None, open_access=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
         
-        lobj = {"title" : licence_title, "type" : licence_type}
+        lobj = {"title" : license_title, "type" : license_type}
         if url is not None:
             lobj["url"] = url
         if version is not None:
@@ -648,26 +649,28 @@ class Suggestion(Journal):
         if "suggestion" not in self.data:
             self.data["suggestion"] = {}
         self.data["suggestion"][name] = value
-    
-    def description(self): return self.data.get("suggestion", {}).get("description")
-    
-    def set_description(self, value): self._set_suggestion_property("description", value)
-    
+
+    ### suggestion properties (as in, the Suggestion model's "suggestion" object ###
+
+    @property
     def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
-    
-    def set_suggested_by_owner(self, value): self._set_suggestion_property("suggested_by_owner", value)
-    
+    @suggested_by_owner.setter
+    def suggested_by_owner(self, val):  self._set_suggestion_property("suggested_by_owner", val)
+
+    @property
     def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
+    @suggested_on.setter
+    def suggested_on(self, val): self._set_suggestion_property("suggested_on", val)
     
-    def set_suggested_on(self, value): self._set_suggestion_property("suggested_on", value)
+    @property
+    def description(self): return self.data.get("suggestion", {}).get("description")
+    @description.setter
+    def description(self, val): self._set_suggestion_property("description", val)
     
-    def suggester(self):
-        return self.data.get("suggestion", {}).get("suggester")
-        
+    @property
+    def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
     def set_suggester(self, name, email):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"]["suggester"] = {"name" : name, "email" : email}
+        self._set_suggestion_property("suggester", {"name" : name, "email" : email})
 
 ############################################################################
 

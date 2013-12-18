@@ -1,7 +1,7 @@
 import os, requests, json
 from flask import Flask
 
-from portality import settings
+from portality import settings, secret_settings
 from flask.ext.login import LoginManager, current_user
 login_manager = LoginManager()
 
@@ -15,6 +15,7 @@ def create_app():
 
 def configure_app(app):
     app.config.from_object(settings)
+    app.config.from_object(secret_settings)
     # parent directory
     here = os.path.dirname(os.path.abspath( __file__ ))
     config_path = os.path.join(os.path.dirname(here), 'app.cfg')

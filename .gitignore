@@ -11,3 +11,4 @@ app.cfg
 media/*
 portality/default_templates/pagemanager/content/*
 upload/*
+portality/secret_settings.py
