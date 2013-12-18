@@ -77,16 +77,27 @@ fv_addthis = (function (resultobj) {
 
 fv_journal_license = (function (resultobj) {
     var that = function(resultobj) {
+        var title = undefined
         if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
             var lics = resultobj["bibjson"]["journal"]["license"]
             if (lics.length > 0) {
-                return lics[0].title
+                title = lics[0].title
             }
         }
         else if (resultobj.bibjson && resultobj.bibjson.license) {
             var lics = resultobj["bibjson"]["license"]
             if (lics.length > 0) {
-                return lics[0].title
+                title = lics[0].title
+            }
+        }
+        
+        if (title) {
+            if (CC_MAP[title]) {
+                urls = CC_MAP[title]
+                // i know i know, i'm not using styles.  the attrs still work and are easier.
+                return "<a href='" + urls[1] + "' title='" + title + "' target='blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + title + "'></a>"
+            } else {
+                return title
             }
         }
         
@@ -94,6 +105,15 @@ fv_journal_license = (function (resultobj) {
     };
     return that;
 })();
+
+CC_MAP = {
+    "CC by" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
+    "CC by-nc" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
+    "CC by-nc-nd" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
+    "CC by-nc-sa" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
+    "CC by-nd" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
+    "CC by-sa" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
+}
 
 fv_type_icon = (function (resultobj) {
     var that = function(resultobj) {
