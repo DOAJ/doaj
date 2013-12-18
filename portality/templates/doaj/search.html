@@ -30,12 +30,12 @@ jQuery(document).ready(function($) {
     facets: [
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
-        {'field': 'index.language.exact', 'display': 'Language'},
-        {'field': 'index.country.exact', 'display': 'Country'},
+        {'field': 'index.language.exact', 'display': 'Journal Language'},
+        {'field': 'index.country.exact', 'display': 'Journal Country'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
-        {'field': 'index.license.exact', 'display': 'License'},
+        {'field': 'index.license.exact', 'display': 'Journal License'},
         // Articles
         {'field': 'bibjson.author.exact', 'display': 'Author (Articles)'},
         {'field': 'bibjson.year.exact', 'display': 'Year of publication (Articles)'},
@@ -53,8 +53,8 @@ jQuery(document).ready(function($) {
         {'display':'ISSN', 'field':'index.issn.exact'},
         {'display':'DOI', 'field' : 'bibjson.identifier'},
         // {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
-        {'display':'Country','field':'index.country'},
-        {'display':'Language','field':'index.language'},
+        {'display':'Journal Country','field':'index.country'},
+        {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
 
         {'display':'Article: Abstract','field':'bibjson.abstract'},
@@ -136,13 +136,13 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Country</strong>: ",
+                "pre": "<strong>Journal Country</strong>: ",
                 "field": "bibjson.country",
             }
         ],
         [
             {
-                "pre": "<strong>Language</strong>: ",
+                "pre": "<strong>Journal Language</strong>: ",
                 "field": "bibjson.language",
             }
         ],

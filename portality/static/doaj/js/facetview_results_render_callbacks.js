@@ -58,8 +58,15 @@ fv_abstract = (function (resultobj) {
 
 fv_addthis = (function (resultobj) {
     var that = function(resultobj) {
+        var prefix = ''
+        if (resultobj.bibjson && resultobj.bibjson.journal) {
+            prefix = '[OA Article]'
+        }
+        else {
+            prefix = '[OA Journal]'
+        }
         var result = '<a class="addthis_button"';
-        result += ' addthis:title="' + resultobj['bibjson']['title'] + '"';
+        result += ' addthis:title="' + prefix + ' ' + resultobj['bibjson']['title'] + '"';
         var query = '{"query":{"query_string":{"query":"' + resultobj['id'] + '"}}}';
         result += ' addthis:url="http://' + document.domain + '/search?source=' + escape(query) + '"';
         result += ' href="http://www.addthis.com/bookmark.php?v=300&amp;pubid=ra-52ae52c34c6f0a3e"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
@@ -147,7 +154,14 @@ fv_links = (function (resultobj) {
             var ls = resultobj.bibjson.link
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type
-                var label = t.substring(0, 1).toUpperCase() + t.substring(1)
+                var label = ''
+                if (t == 'fulltext') {
+                    label = 'Full text'
+                } else if (t == 'homepage') {
+                    label = 'Home page'
+                } else {
+                    label = t.substring(0, 1).toUpperCase() + t.substring(1)
+                }
                 return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + ls[i].url + "</a>"
             }
         }
