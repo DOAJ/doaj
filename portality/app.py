@@ -6,7 +6,7 @@ also be backed up by models, so have a look at the example models and use them /
 new ones as required too.
 '''
 
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort, render_template, redirect
 from flask.views import View
 from flask.ext.login import login_user, current_user
 
