@@ -108,7 +108,7 @@ def csv_data():
         csvstream = StringIO()
         csvwriter = csv.writer(csvstream, quoting=csv.QUOTE_ALL)
         # normalise the row - None -> "", and unicode > 128 to ascii
-        csvwriter.writerow([c.encode("ascii", "replace") if c is not None else "" for c in csv_row])
+        csvwriter.writerow([c.encode("utf8", "replace") if c is not None else "" for c in csv_row])
         csvstring = csvstream.getvalue()
         csvstream.close()
         return csvstring
