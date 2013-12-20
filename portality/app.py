@@ -86,6 +86,9 @@ def load_account_for_login_manager(userid):
     out = models.Account.pull(userid)
     return out
 
+# FIXME: this used to calculate the site stats on request, but for the time being
+# this is an unnecessary overhead, so taking it out.  Will need to put something
+# equivalent back in when we do the admin area
 @app.context_processor
 def set_current_context():
     """ Set some template context globals. """
@@ -102,7 +105,7 @@ def set_current_context():
         'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
-        'statistics' : models.JournalArticle.site_statistics(),
+        # 'statistics' : models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app" : app
         }
