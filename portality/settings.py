@@ -180,7 +180,7 @@ UPLOAD_DIR = "upload"
 # =================================
 # ReCaptcha settings
 # We use per-domain, not global keys
-RECAPTCHA_PUBLIC_KEY = '6LeE8esSAAAAABccctzeYyzGGWljypRMJeThc0zZ'
+RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
 # RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
 # committed to the repository, but only held locally and on the server
 # (transfer using scp).
