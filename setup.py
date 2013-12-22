@@ -13,7 +13,10 @@ setup(
         "markdown",
         "gitpython",
         "lxml",
-        "nose"
+        "nose",
+        # for deployment
+        "setproctitle",
+        "gunicorn",
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
