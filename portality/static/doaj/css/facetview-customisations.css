@@ -46,6 +46,7 @@ hr {
 #facetview table th, #facetview table td{
     border-top-color: #F68B1F;
     border-bottom-color: #F68B1F;
+    border-left: 0;
 }
 
 #facetview table {

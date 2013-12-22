@@ -8,14 +8,13 @@
             <div class="span8">
                 <form class="form-search form-horizontal" id="topsearch" name="topsearch" action="/search" method="POST">
                     <div class="control-group" id="homepage-search-container">
-                        <div class="input-append span4">
+                        <div class="input-append span10">
                             <div class="row-fluid">
-                                <div class="span11"><input type="text" name="q" placeholder="Search DOAJ" id="homepage-search-input"/></div>
-                                <div class="span1" id="homepage-search-button-container"><button class="btn add-on" id="homepage-search-button"><i class="icon-search orange"></i></button></div>
+                                <div class="span10"><input type="text" name="q" placeholder="Search DOAJ" id="homepage-search-input"/></div><div class="span2" id="homepage-search-button-container"><button class="btn add-on" id="homepage-search-button"><i class="icon-search orange"></i></button></div>
                             </div>
                         </div>
                     </div>
-                    <div class="control-group span4" id="homepage-search-options-container">
+                    <div class="control-group span8" id="homepage-search-options-container">
                         <label class="checkbox"><input type="checkbox" name="include_journals" value="include_journals" checked="checked"/><span class="label-text">journals</span></label>
                         <label class="checkbox"><input type="checkbox" name="include_articles" value="include_articles" checked="checked"/><span class="label-text">articles</span></label>
                         <a href="{{ url_for('doaj.search') }}" class="pull-right">[Advanced Search]</a>

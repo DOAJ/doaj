@@ -9,9 +9,13 @@ footer {
     margin-bottom: 1em;
 }
 
-input:focus, textarea:focus {
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
     border-color: rgba(246, 139, 31, 0.8);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
+select {
+    background-color: white;
 }
 
 /* Classes */
@@ -53,6 +57,31 @@ input:focus, textarea:focus {
 .navbar-inner {
     background-color: #F68B1F;
     background-image: none;
+    border-radius: 0;
+}
+
+.navbar .container {
+    width: 90%;
+}
+
+.navbar .btn-navbar {
+    background-color: white;
+    background-image: none;
+    border-color: white;
+    box-shadow: none
+}
+
+.navbar .btn-navbar .icon-bar {
+    background-color: #F68B1F;
+    box-shadow: none
+}
+
+.nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a {
+    font-weight: inherit;
+}
+
+.navbar .btn-navbar:hover, .navbar .btn-navbar:active, .navbar .btn-navbar.active, .navbar .btn-navbar.disabled, .navbar .btn-navbar[disabled] {
+    background-color: white;
 }
 
 .navbar .nav > li > a {
@@ -99,6 +128,10 @@ footer > .shaded-container {
 
 footer > .shaded-container + .shaded-container {
     margin-top: 1em;
+}
+
+#main-nav-first-menu {
+    margin-right: 0;
 }
 
 #header-announcement-title {
@@ -165,6 +198,11 @@ footer > .shaded-container + .shaded-container {
 
     #homepage-search-input {
         width: 97%;
+    }
+
+    #homepage-search-button {
+        position: relative;
+        left: -2px;
     }
 }
 
