@@ -58,6 +58,12 @@ select {
     background-color: #F68B1F;
     background-image: none;
     border-radius: 0;
+    filter: none;
+    -ms-filter: none;
+    /*
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F68B1F',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333',endColorstr='#222222',GradientType=0)";
+    */
 }
 
 .navbar .container {
@@ -165,6 +171,17 @@ footer > .shaded-container + .shaded-container {
     margin-bottom: 0;
 }
 
+/* Internet Exploder fixes - do not affect other browsers */
+#homepage-search-button {
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#E6E6E6',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFF',endColorstr='#E6E6E6',GradientType=0)";
+}
+
+#homepage-search-button:hover {
+    filter: none;
+    -ms-filter: none;
+}
+
 #main-nav.more-padding {
     margin-top: 1em;
 }
@@ -183,7 +200,6 @@ footer > .shaded-container + .shaded-container {
     max-height: 100px;
     margin-top: 0.5em;
 }
-
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {

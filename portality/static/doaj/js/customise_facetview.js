@@ -102,7 +102,7 @@ function expand_month() {
 
 function insert_progress_bar() {
     if ($.fn.facetview.options.searching) {
-        $('#facetview_selectedfilters').prepend('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar"></div></div>');
+        $('#facetview_selectedfilters').prepend('<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar">Loading, please wait...</div></div>');
     }
 }
 
