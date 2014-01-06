@@ -79,7 +79,7 @@ def legacy():
         return redirect("/csv"), 301
     elif func == "rss":
         return redirect("/feed"), 301
-    return redirect("/"), 301
+    abort(404)
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
