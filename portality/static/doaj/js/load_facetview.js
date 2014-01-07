@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
         {'display':'Keywords','field':'index.keywords'},
         {'display':'Subject','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
-        {'display':'DOI', 'field' : 'bibjson.identifier'},
+        {'display':'DOI', 'field' : 'bibjson.identifier.id'},
         // {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
         {'display':'Journal Country','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
