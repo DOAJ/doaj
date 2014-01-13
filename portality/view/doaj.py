@@ -345,6 +345,10 @@ def suggest():
 def support_doaj():
     return render_template("doaj/supportDoaj.html")
 
+@blueprint.route("/support_thanks")
+def support_doaj():
+    return render_template("doaj/support_thanks.html")
+
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
