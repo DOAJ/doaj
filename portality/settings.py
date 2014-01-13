@@ -7,6 +7,7 @@ SECRET_KEY = "default-key"
 # contact info
 ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
+ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
