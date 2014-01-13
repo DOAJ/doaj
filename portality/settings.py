@@ -8,6 +8,7 @@ SECRET_KEY = "default-key"
 ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
+SUPPRESS_ERROR_EMAILS = False  # should be set to False in production and True in staging
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"

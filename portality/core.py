@@ -47,10 +47,12 @@ def setup_error_logging(app):
                     ADMINS = [e]
                 elif isinstance(e, list):
                     ADMINS = e
-        if ADMINS:
+        if ADMINS and not app.config.get('SUPPRESS_ERROR_EMAILS'):
             from logging.handlers import SMTPHandler
+            import platform
+            hostname = platform.uname()[1]
             mail_handler = SMTPHandler('mailtrap.io',
-                                       'server-error@doaj.org',
+                                       'server-error@' + hostname,
                                        ADMINS,
                                        'DOAJ Flask Error',
                                        credentials=('doaj-errors-265cc22d4983a31c', 'd8788b4007fd9cc6')
