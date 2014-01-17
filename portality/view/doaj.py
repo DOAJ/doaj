@@ -346,7 +346,7 @@ def support_doaj():
     return render_template("doaj/supportDoaj.html")
 
 @blueprint.route("/support_thanks")
-def support_doaj():
+def support_doaj_thanks():
     return render_template("doaj/support_thanks.html")
 
 @blueprint.route("/googlebdb21861de30fe30.html")
