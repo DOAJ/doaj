@@ -241,6 +241,31 @@ assert the user(s) they can be administered by
     }
 
 
+## Authorisation System
+
+The DOAJ user area uses role-based authorisation.
+
+When implementing a feature, that feature should be given a role name.
+
+For example, if implementing a "Create new Administrator" feature, a new role should be defined with the name "create_administrator".  Any actions which pertain to the creation of a new administrator should be authorised with a call to the current user's has_role method:
+
+    if current_user.has_role("create_administrator"):
+        # do some create administrator stuff
+    else:
+        # unauthorised
+
+There are two high-level roles which the DOAJ implements
+
+* admin - for the DOAJ administrators, who will have complete super-user priviledges
+* publisher - for publisher users of the DOAJ, who will be administering their own content
+
+At this early stage of development, user accounts will only need to be assigned one of those roles.  The "admin" role is a super user so any calls to has_role for any role on an administrator's user object will result in success (i.e. has_role("create_administrator") on a user with role "admin" will return True).
+
+At a later stage, and when it becomes necessary, we will implement mappings of the high level roles to more granular roles.
+
+
+
+
 
 
 
