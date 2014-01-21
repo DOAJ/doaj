@@ -23,15 +23,21 @@ ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
-# list of superuser account names
-SUPER_USER = ["test"]
-
-# Can people register publicly? If false, only the superuser can create new accounts
-PUBLIC_REGISTER = False
-
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
+# ========================
+# authorisation settings
+
+# Can people register publicly? If false, only the superuser can create new accounts
+# PUBLIC_REGISTER = False
+
+SUPER_USER_ROLE = "admin"
+
+# FIXME: something like this required for hierarchical roles, but not yet needed
+#ROLE_MAP = {
+#    "admin" : {"publisher", "create_user"}
+#}
 
 # ========================
 # MAPPING SETTINGS

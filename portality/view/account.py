@@ -2,7 +2,7 @@ import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
-from flask.ext.login import login_user, logout_user, current_user
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
 from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
@@ -12,7 +12,7 @@ import portality.util as util
 
 blueprint = Blueprint('account', __name__)
 
-
+"""
 if len(app.config.get('SUPER_USER',[])) > 0:
     firstsu = app.config['SUPER_USER'][0]
     if models.Account.pull(firstsu) is None:
@@ -21,11 +21,12 @@ if len(app.config.get('SUPER_USER',[])) > 0:
         su.save()
         print 'superuser account named - ' + firstsu + ' created.'
         print 'default password matches username. Change it.'
-
+"""
 
 @blueprint.route('/')
+@login_required
 def index():
-    if current_user.is_anonymous():
+    if not current_user.has_role("list_users"):
         abort(401)
     users = models.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
     if users['hits']['total'] != 0:
@@ -33,7 +34,7 @@ def index():
         # explicitly mapped to ensure no leakage of sensitive data. augment as necessary
         users = []
         for acc in accs:
-            user = {'id':acc.id}
+            user = {'id':acc.id, "email":acc.email, "role" : acc.role}
             if 'created_date' in acc.data:
                 user['created_date'] = acc.data['created_date']
             users.append(user)
@@ -46,6 +47,7 @@ def index():
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
+@login_required
 def username(username):
     acc = models.Account.pull(username)
 
@@ -70,10 +72,15 @@ def username(username):
             else:
                 newdata['api_key'] = acc.data['api_key']
         for k, v in newdata.items():
-            if k not in ['submit','password']:
+            if k not in ['submit','password', 'role']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             acc.set_password(newdata['password'])
+        # only super users can re-write roles
+        if "role" in newdata and current_user.is_super:
+            new_roles = [r.strip() for r in newdata.get("role").split(",")]
+            acc.set_role(new_roles)
+            
         acc.save()
         flash("Record updated")
         return render_template('account/view.html', account=acc)
@@ -124,7 +131,8 @@ def login():
         if user is not None and user.check_password(password):
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
-            return form.redirect('index')
+            # return form.redirect('index')
+            return redirect(url_for('doaj.home'))
         else:
             flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
@@ -190,8 +198,9 @@ class RegisterForm(Form):
     c = PasswordField('Repeat Password')
 
 @blueprint.route('/register', methods=['GET', 'POST'])
+@login_required
 def register():
-    if not app.config.get('PUBLIC_REGISTER',False) and not current_user.is_super:
+    if not app.config.get('PUBLIC_REGISTER',False) and not current_user.has_role("create_user"):
         abort(401)
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():

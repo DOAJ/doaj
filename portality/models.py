@@ -4,6 +4,7 @@ import json
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
+from portality.authorise import Authorise
 
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
@@ -164,7 +165,7 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     @classmethod
-    def pull_by_email(cls,email):
+    def pull_by_email(cls, email):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits',{}).get('total',0) == 1:
             return cls(**res['hits']['hits'][0]['_source'])
@@ -209,8 +210,27 @@ class Account(DomainObject, UserMixin):
 
     @property
     def is_super(self):
-        return not self.is_anonymous() and self.id in app.config['SUPER_USER']
-        
+        # return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        return Authorise.has_role(app.config["SUPER_USER_ROLE"], self.data.get("role", []))
+    
+    def has_role(self, role):
+        return Authorise.has_role(role, self.data.get("role", []))
+    
+    def add_role(self, role):
+        if "role" not in self.data:
+            self.data["role"] = []
+        self.data["role"].append(role)
+    
+    @property
+    def role(self):
+        return self.data.get("role", [])
+    
+    def set_role(self, role):
+        if not isinstance(role, list):
+            role = [role]
+        self.data["role"] = role
+            
+    
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
