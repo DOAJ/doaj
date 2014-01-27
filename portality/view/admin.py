@@ -24,5 +24,10 @@ def restrict():
 def index():
     return render_template('admin/index.html')
 
-
+@blueprint.route("/suggestion/<suggestion_id>")
+@login_required
+def suggestion_page(suggestion_id):
+    if not current_user.has_role("edit_suggestion"):
+        abort(401)
+    return render_template("admin/suggestion.html")
 
