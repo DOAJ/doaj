@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
         {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
+      from: 0,
       size: 10
     },
     default_operator: "AND",
