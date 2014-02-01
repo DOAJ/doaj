@@ -24,10 +24,21 @@ def restrict():
 def index():
     return render_template('admin/index.html')
 
-@blueprint.route("/suggestion/<suggestion_id>")
+@blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
-    return render_template("admin/suggestion.html")
+    s = models.Suggestion.pull(suggestion_id)
+    if s is None:
+        abort(404)
+        
+    if request.method == "GET":
+        return render_template("admin/suggestion.html", suggestion=s)
 
+    elif request.method == "POST":
+        req = json.loads(request.data)
+        new_status = req.get("status")
+        s.set_application_status(new_status)
+        s.save()
+        return "", 204

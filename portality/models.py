@@ -335,6 +335,9 @@ class Journal(DomainObject):
             self.data["admin"]["notes"] = []
         self.data["admin"]["notes"].append({"date" : date, "note" : note})
     
+    def notes(self):
+        return self.data.get("admin", {}).get("notes", [])
+    
     def add_correspondence(self, message, date=None):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -343,6 +346,9 @@ class Journal(DomainObject):
         if "owner_correspondence" not in self.data.get("admin"):
             self.data["admin"]["owner_correspondence"] = []
         self.data["admin"]["owner_correspondence"].append({"date" : date, "note" : message})
+    
+    def correspondence(self):
+        return self.data.get("admin", {}).get("owner_correspondence", [])
     
     def _generate_index(self):
         # the index fields we are going to generate

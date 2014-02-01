@@ -49,3 +49,8 @@ displayed. #}
 <script type="text/javascript" src="/static/doaj/js/doaj.js"></script>
 <script type="text/javascript" src="/static/doaj/js/customise_facetview.js"></script>
 <script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js"></script>
+
+{# any admin area javascript includes #}
+{% if request.path.startswith("/admin") %}
+<script type="text/javascript" src="/static/doaj/js/suggest.js"></script>
+{% endif %} 

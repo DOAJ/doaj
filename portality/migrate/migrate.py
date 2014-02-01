@@ -466,7 +466,7 @@ def _to_suggestion(element, suggestion):
     
     desc = element.find("description")
     if desc is not None and desc.text is not None and desc.text != "":
-        suggestion.set_description(desc.text)
+        suggestion.description = desc.text
     
     sn = element.find("userName")
     se = element.find("userEmail")
@@ -512,11 +512,11 @@ def _to_suggestion(element, suggestion):
     
     bo = element.find("byOwner")
     if bo is not None:
-        suggestion.set_suggested_by_owner(bo.text == "1")
+        suggestion.suggested_by_owner = bo.text == "1"
     
     so = element.find("addedOn")
     if so is not None and so.text is not None and so.text != "":
-        suggestion.set_suggested_on(so.text)
+        suggestion.suggested_on = so.text
     
 
 #################################################################
