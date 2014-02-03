@@ -1,0 +1,4 @@
+<ul class="nav nav-tabs">
+  <li{% if request.path == url_for('admin.journals') %} class="active"{% endif %}><a href="{{ url_for('admin.journals') }}">Journals</a></li>
+  <li{% if request.path == url_for('admin.suggestions') %} class="active"{% endif %}><a href="{{ url_for('admin.suggestions') }}">Suggestions</a></li>
+</ul>

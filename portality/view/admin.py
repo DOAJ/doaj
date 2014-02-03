@@ -42,3 +42,11 @@ def suggestion_page(suggestion_id):
         s.set_application_status(new_status)
         s.save()
         return "", 204
+
+@blueprint.route("/journals")
+def journals():
+    return render_template('admin/journals.html')
+
+@blueprint.route("/suggestions")
+def suggestions():
+    return render_template('admin/suggestions.html')
