@@ -39,7 +39,8 @@ select {
     color: #7073FF;
 }
 
-.centre-text-container {
+.centre-text-container,
+.big.box {
     text-align: center;
 }
 
@@ -51,6 +52,11 @@ select {
 
 .box {
     padding: 0.5em;
+}
+
+.big.box {
+    padding: 2em;
+    font-size: 250%;
 }
 
 .main-content {
