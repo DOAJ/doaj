@@ -75,7 +75,7 @@ def home():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html')
+    return render_template('doaj/search.html', search_page=True)
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():

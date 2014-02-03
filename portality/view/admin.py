@@ -45,8 +45,8 @@ def suggestion_page(suggestion_id):
 
 @blueprint.route("/journals")
 def journals():
-    return render_template('admin/journals.html')
+    return render_template('admin/journals.html', search_page=True)
 
 @blueprint.route("/suggestions")
 def suggestions():
-    return render_template('admin/suggestions.html')
+    return render_template('admin/suggestions.html', search_page=True)
