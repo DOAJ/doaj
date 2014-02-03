@@ -1,6 +1,6 @@
 <footer>
     {% if request.path == '/' %}
-    <div class="shaded-container">
+    <div class="box with-borders">
         <div class="row-fluid">
             <div class="span12 centre-text-container" id="footer-sponsors">
                 {% for s in sponsors.values() %}
@@ -12,7 +12,7 @@
         </div>
     </div>
     {% endif %}
-    <div class="shaded-container">
+    <div class="box with-borders">
         <div class="row-fluid">
             <div class="span12 centre-text-container"><img src="{{ url_for('static', filename='doaj/images/cc-by-sa.png') }}" alt="Creative Commons Attribution ShareAlike license icon"/></div>
         </div>
