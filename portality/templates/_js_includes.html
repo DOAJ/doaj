@@ -41,8 +41,10 @@ displayed. #}
 </script>
 
 {% if search_page %}
-<script type="text/javascript">var es_domain = "{{ settings.DOMAIN }}";</script>
-<script type="text/javascript" src="/static/doaj/js/load_facetview.js"></script>
+  <script type="text/javascript">var es_domain = "{{ settings.DOMAIN }}";</script>
+  {% for facetview in facetviews %}
+    <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js"></script>
+  {% endfor %}
 {% endif %}
 
 <!-- get the app's js -->

@@ -49,4 +49,7 @@ def journals():
 
 @blueprint.route("/suggestions")
 def suggestions():
-    return render_template('admin/suggestions.html', search_page=True)
+    return render_template('admin/suggestions.html',
+               search_page=True,
+               facetviews=['suggestions']
+           )

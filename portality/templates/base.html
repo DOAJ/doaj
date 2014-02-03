@@ -10,14 +10,14 @@
         <div class="row-fluid">
                 {# Let facetview fill the whole screen on the search
                 page, but keep space for the sidebar on other pages #}
-            <div class="span{%- if request.path == '/search' -%}
+            <div class="span{%- if search_page -%}
                     12
                 {%- else -%}
                     9
                 {%- endif -%}">
             {% block content %}{% endblock %}
             </div>
-            {% if request.path != '/search' %}
+            {% if not search_page %}
                 {% include 'sidebar.html' %}
             {% endif %}
         </div>

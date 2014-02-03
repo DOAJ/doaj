@@ -50,32 +50,34 @@ SPONSORS = {
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
-"""
-@blueprint.context_processor
-def additional_context():
-    '''
-    Inserts variables into every template this blueprint renders.  This
-    one deals with the announcement in the header, which can't be built
-    into the template directly, as various styles are applied only if a
-    header is present on the page. It also makes the list of DOAJ
-    sponsors available and may include similar minor pieces of
-    information.
-    '''
-    return {
-        'heading_title': '',
-        'heading_text': '',
-        'sponsors': SPONSORS,
-        'settings': settings,
-        'statistics' : models.JournalArticle.site_statistics()
-        }
-"""
+# @blueprint.context_processor
+# def additional_context():
+#     '''
+#     Inserts variables into every template this blueprint renders.  This
+#     one deals with the announcement in the header, which can't be built
+#     into the template directly, as various styles are applied only if a
+#     header is present on the page. It also makes the list of DOAJ
+#     sponsors available and may include similar minor pieces of
+#     information.
+#     '''
+#     return {
+#         'heading_title': '',
+#         'heading_text': '',
+#         'sponsors': SPONSORS,
+#         'settings': settings,
+#         'statistics' : models.JournalArticle.site_statistics()
+#         }
+
 @blueprint.route("/")
 def home():
     return render_template('doaj/index.html')
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html', search_page=True)
+    return render_template('doaj/search.html',
+               search_page=True,
+               facetviews=['journals_and_articles']
+           )
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
