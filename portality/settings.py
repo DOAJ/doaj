@@ -71,6 +71,7 @@ MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
 MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
 MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
 MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
+MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -193,3 +194,11 @@ RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
 # RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
 # committed to the repository, but only held locally and on the server
 # (transfer using scp).
+
+
+# =================================
+# Cache settings
+
+# number of seconds site statistics should be considered fresh
+# 1800s = 30mins
+SITE_STATISTICS_TIMEOUT = 30

@@ -1172,6 +1172,14 @@ class JournalArticle(DomainObject):
     
     @classmethod
     def site_statistics(cls):
+        # first check the cache
+        stats = Cache.get_site_statistics()
+        if stats is not None:
+            return stats
+        
+        # we didn't get anything from the cache, so we need to generate and
+        # cache a new set
+        
         # prep the query and result objects
         q = JournalArticleQuery()
         stats = {
@@ -1188,15 +1196,18 @@ class JournalArticle(DomainObject):
         terms = res.get("facets", {}).get("type", {}).get("terms", [])
         for t in terms:
             if t.get("term") == "journal":
-                stats["journals"] = t.get("count", 0)
+                stats["journals"] = "{:,}".format(t.get("count", 0))
             if t.get("term") == "article":
-                stats["articles"] = t.get("count", 0)
+                stats["articles"] = "{:,}".format(t.get("count", 0))
         
         # count the size of the countries facet
-        stats["countries"] = len(res.get("facets", {}).get("countries", {}).get("terms", []))
+        stats["countries"] = "{:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
         
         # count the size of the journals facet (which tells us how many journals have articles)
-        stats["searchable"] = len(res.get("facets", {}).get("journals", {}).get("terms", []))
+        stats["searchable"] = "{:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+        
+        # now cache and return
+        Cache.cache_site_statistics(stats)
         
         return stats
         
@@ -1229,3 +1240,100 @@ class JournalArticleQuery(object):
 
 
 ########################################################################
+
+class Cache(DomainObject):
+    __type__ = "cache"
+    
+    @classmethod
+    def get_site_statistics(cls):
+        rec = cls.pull("site_statistics")
+        
+        """
+        returnable = rec is not None
+        if rec is not None:
+            marked_regen = rec.marked_regen()
+            if not marked_regen:
+                stale = rec.is_stale()
+                if stale:
+                    rec.mark_for_regen()
+                else:
+                    returnable = True
+            else:
+                returnable = True
+        """
+        returnable = rec is not None
+        if rec is not None:
+            if rec.is_stale():
+                returnable = False
+        
+        # if the cache exists and is in date (or is otherwise returnable), then explicilty build the
+        # cache object and return it
+        if returnable:
+            return {
+                "articles" : rec.data.get("articles"),
+                "journals" : rec.data.get("journals"),
+                "countries" : rec.data.get("countries"),
+                "searchable" : rec.data.get("searchable")
+            }
+        
+        # if we get to here, then we don't return the cache
+        return None
+    
+    @classmethod
+    def cache_site_statistics(cls, stats):
+        cobj = cls(**stats)
+        cobj.set_id("site_statistics")
+        cobj.save()
+    
+    def mark_for_regen(self):
+        self.update({"regen" : True})
+    
+    def is_stale(self):
+        lu = datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.now()
+        dt = now - lu
+        return dt.total_seconds() > app.config.get("SITE_STATISTICS_TIMEOUT")
+    
+    def marked_regen(self):
+        return self.data.get("regen", False)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

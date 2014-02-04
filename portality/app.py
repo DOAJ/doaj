@@ -107,7 +107,7 @@ def set_current_context():
         'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
-        # 'statistics' : models.JournalArticle.site_statistics(),
+        'statistics' : models.JournalArticle.site_statistics(),
         "current_user": current_user,
         "app" : app
         }
