@@ -213,7 +213,7 @@ fv_issns = (function (resultobj) {
 fv_edit_suggestion = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
-            var result = '<a class="edit_suggestion" href="';
+            var result = '<a class="edit_suggestion_link pull-right" href="';
             result += suggestion_edit_url;
             result += resultobj['id'];
             result += '" target="_blank"';
