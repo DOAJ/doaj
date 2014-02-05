@@ -6,3 +6,6 @@
 </div>
 {% endblock %}
 
+{% block extra_js_bottom %}
+<script type="text/javascript">var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";</script>
+{% endblock %}

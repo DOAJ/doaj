@@ -209,3 +209,18 @@ fv_issns = (function (resultobj) {
     };
     return that;
 })();
+
+fv_edit_suggestion = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj['suggestion']) {
+            var result = '<a class="edit_suggestion" href="';
+            result += suggestion_edit_url;
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Edit this suggestion</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();

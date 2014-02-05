@@ -20,7 +20,8 @@ jQuery(document).ready(function($) {
         "title_field" : fv_title_field,
         "doi_link" : fv_doi_link,
         "links" : fv_links,
-        "issns" : fv_issns
+        "issns" : fv_issns,
+        "edit_suggestion" : fv_edit_suggestion,
     },
     hide_inactive_facets: true,
     facets: [
@@ -183,6 +184,11 @@ jQuery(document).ready(function($) {
         [
             {
                 "field" : "links"
+            }
+        ],
+        [
+            {
+                "field" : "edit_suggestion"
             }
         ],
     ],
