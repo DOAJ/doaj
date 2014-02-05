@@ -20,7 +20,7 @@ blueprint = Blueprint('query', __name__)
 @blueprint.route('/<path:path>', methods=['GET','POST'])
 @blueprint.route('/', methods=['GET','POST'])
 @util.jsonp
-def query(path='Pages'):
+def query(path='Pages', show_not_in_doaj=False):
     pathparts = path.strip('/').split('/')
     subpath = pathparts[0]
 
@@ -97,11 +97,11 @@ def query(path='Pages'):
 
         # if ONLY articles and/or journals are being requested, apply a
         # filter by default
-        for s in subpaths:
-            if s == 'journal' or s == 'article':
-                terms = {'in_doaj':True}
-            else:
-                terms = None
+        terms = None
+        if not show_not_in_doaj:
+            for s in subpaths:
+                if s == 'journal' or s == 'article':
+                    terms = {'in_doaj':True}
 
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 

@@ -213,3 +213,22 @@ fv_edit_suggestion = (function (resultobj) {
     };
     return that;
 })();
+
+fv_edit_journal = (function (resultobj) {
+    var that = function(resultobj) {
+        console.log(resultobj);
+        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+            // if it's not a suggestion or an article .. (it's a
+            // journal!)
+            // we really need to expose _type ...
+            var result = '<a class="edit_journal_link pull-right" href="';
+            result += journal_edit_url;
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Edit this journal</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();

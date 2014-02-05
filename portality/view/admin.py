@@ -24,6 +24,43 @@ def restrict():
 def index():
     return render_template('admin/index.html')
 
+@blueprint.route("/journals")
+@login_required
+def journals():
+    return render_template('admin/journals.html',
+               search_page=True,
+               facetviews=['journals']
+           )
+
+@blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
+@login_required
+def journal_page(journal_id):
+    if not current_user.has_role("edit_journal"):
+        abort(401)
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+        
+    if request.method == "GET":
+        return render_template("admin/journal.html", journal=j)
+
+    elif request.method == "POST":
+        #req = json.loads(request.data)
+        #new_status = req.get("status")
+        #s.set_application_status(new_status)
+        #s.save()
+        #return "", 204
+        abort(501) # not implemented
+
+
+@blueprint.route("/suggestions")
+@login_required
+def suggestions():
+    return render_template('admin/suggestions.html',
+               search_page=True,
+               facetviews=['suggestions']
+           )
+
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 def suggestion_page(suggestion_id):
@@ -42,14 +79,3 @@ def suggestion_page(suggestion_id):
         s.set_application_status(new_status)
         s.save()
         return "", 204
-
-@blueprint.route("/journals")
-def journals():
-    return render_template('admin/journals.html', search_page=True)
-
-@blueprint.route("/suggestions")
-def suggestions():
-    return render_template('admin/suggestions.html',
-               search_page=True,
-               facetviews=['suggestions']
-           )
