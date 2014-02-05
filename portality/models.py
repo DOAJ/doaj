@@ -1292,7 +1292,14 @@ class Cache(DomainObject):
         lu = datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
         now = datetime.now()
         dt = now - lu
-        return dt.total_seconds() > app.config.get("SITE_STATISTICS_TIMEOUT")
+
+        # compatibility with Python 2.6
+        if hasattr(dt, 'total_seconds'):
+            total_seconds = dt.total_seconds()
+        else:
+            total_seconds = (dt.microseconds + (dt.seconds + dt.days * 24 * 3600) * 10**6) / 10**6
+
+        return total_seconds > app.config.get("SITE_STATISTICS_TIMEOUT")
     
     def marked_regen(self):
         return self.data.get("regen", False)
