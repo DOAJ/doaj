@@ -26,7 +26,7 @@ jQuery(document).ready(function($) {
     },
     hide_inactive_facets: true,
     facets: [
-        {'field': 'admin.in_doaj.exact', 'display': 'Journal is in the DOAJ?'},
+        {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
@@ -69,6 +69,12 @@ jQuery(document).ready(function($) {
                 "pre": '<span class="alt_title">Alternative title: ',
                 "field": "bibjson.alternative_title",
                 "post": "</span>"
+            }
+        ],
+        [
+            {
+                "pre" : "<strong>In DOAJ?</strong>: ",
+                "field" : "admin.in_doaj"
             }
         ],
         [

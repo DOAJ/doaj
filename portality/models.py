@@ -2,6 +2,7 @@ from datetime import datetime
 from copy import deepcopy
 import json
 import locale
+import sys
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -72,6 +73,17 @@ class GenericBibJSON(object):
             if identifier.get("type") == idtype and identifier.get("id") not in ids:
                 ids.append(identifier.get("id"))
         return ids
+
+    def update_identifiers(self, idtype, new_values):
+        if 'identifier' not in self.bibjson:
+            self.bibjson['identifier'] = []
+
+        new_ids = []
+        for v in new_values:
+            new_id = {'type': idtype, 'id': v}
+            new_ids.append(deepcopy(new_id))
+
+        self.bibjson['identifier'] = new_ids
     
     def remove_identifiers(self, idtype=None, id=None):
         # if we are to remove all identifiers, this is easy
@@ -131,6 +143,25 @@ class GenericBibJSON(object):
             if link.get("type") == urltype:
                 urls.append(link.get("url"))
         return urls
+
+    def get_single_url(self, urltype):
+        urls = self.get_urls(urltype=urltype)
+        if urls:
+            return urls[0]
+        return None
+
+    def update_url(self, url, urltype=None):
+        if "link" not in self.bibjson:
+            self.bibjson['link'] = []
+
+        urls = self.bibjson['link']
+
+        if urls:
+            for url in urls:
+                if url['type'] == urltype:
+                    url['url'] = url
+        else:
+            self.add_url(url, urltype)
     
     def add_subject(self, scheme, term, code=None):
         if "subject" not in self.bibjson:
@@ -1200,20 +1231,33 @@ class JournalArticle(DomainObject):
         # need to be compatible with Python 2.6
         # otherwise we would be able to do "{0:,}".format(t.get("count", 0))
 
-        locale.setlocale(locale.LC_ALL, 'en_US')
-        for t in terms:
-            if t.get("term") == "journal":
-                stats["journals"] = locale.format("%d", t.get("count", 0), grouping=True)
-            if t.get("term") == "article":
-                stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
-        
-        # count the size of the countries facet
-        stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
-        
-        # count the size of the journals facet (which tells us how many journals have articles)
-        stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
-        
-        locale.resetlocale()
+        if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+            locale.setlocale(locale.LC_ALL, 'en_US')
+            for t in terms:
+                if t.get("term") == "journal":
+                    stats["journals"] = locale.format("%d", t.get("count", 0), grouping=True)
+                if t.get("term") == "article":
+                    stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
+            
+            # count the size of the countries facet
+            stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
+            
+            # count the size of the journals facet (which tells us how many journals have articles)
+            stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
+            
+            locale.resetlocale()
+        else:
+            for t in terms:
+                if t.get("term") == "journal":
+                    stats["journals"] = "{0:,}".format(t.get("count", 0))
+                if t.get("term") == "article":
+                    stats["articles"] = "{0:,}".format(t.get("count", 0))
+            
+            # count the size of the countries facet
+            stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
+            
+            # count the size of the journals facet (which tells us how many journals have articles)
+            stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
 
         # now cache and return
         Cache.cache_site_statistics(stats)

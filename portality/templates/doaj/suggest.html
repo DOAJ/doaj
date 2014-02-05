@@ -24,33 +24,6 @@ otherwise your application will be automatically rejected.</li>
 </ul>
 <p></p>For more information <a href="/about#criteria">see our selection criteria</a>.</p>
 
-{% from "_formhelpers.html" import render_field_horizontal %}
-<form method="post" action="{{ url_for('doaj.suggest') }}" class="form-horizontal" id="suggest_form">
-  <fieldset>
-    {{ render_field_horizontal(form.url, class="input-xlarge") }}
-    {{ render_field_horizontal(form.title, class="input-xlarge") }}
-    <p>Either an ISSN or an EISSN has to be provided. Providing both is preferred.</p>
-    {{ render_field_horizontal(form.pissn, class="input-small", size="9", maxlength="9") }}
-    {{ render_field_horizontal(form.eissn, class="input-small", size="9", maxlength="9") }}
-    {{ render_field_horizontal(form.publisher) }}
-    {{ render_field_horizontal(form.oa_start_year, class="input-mini", size="4", maxlength="4") }}
-    {{ render_field_horizontal(form.country) }}
-    {{ render_field_horizontal(form.license) }}
-    {{ render_field_horizontal(form.author_pays) }}
-    {{ render_field_horizontal(form.author_pays_url, class="input-xlarge") }}
-    {{ render_field_horizontal(form.journal_contact_name) }}
-    {{ render_field_horizontal(form.journal_contact_email, class="input-large") }}
-    {{ render_field_horizontal(form.description, class="input-xlarge") }}
-    {{ render_field_horizontal(form.keywords, class="input-xlarge") }}
-    {{ render_field_horizontal(form.languages, class="input-xlarge") }}
-    {{ render_field_horizontal(form.submitter_name) }}
-    {{ render_field_horizontal(form.submitter_email, class="input-large") }}
-    {{ render_field_horizontal(form.recaptcha) }}
-    <div class="control-group">
-        <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
-    </div>
-  </fieldset>
-</form>
 
 -->
 {% endblock %}
