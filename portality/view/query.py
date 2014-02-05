@@ -99,13 +99,19 @@ def query(path='Pages'):
         # filter by default, unless the user should be allowed to see
         # all records
         terms = None
-        if not current_user.has_role("edit_journal"):
-            for s in subpaths:
-                if s == 'journal' or s == 'article':
-                    terms = {'in_doaj':True}
+        if current_user.is_anonymous():
+            terms = _default_filter(subpaths)
+        else:
+            if not current_user.has_role("edit_journal"):
+                terms = _default_filter(subpaths)
 
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 
     resp.mimetype = "application/json"
     return resp
 
+def _default_filter(subpaths):
+    for s in subpaths:
+        if s == 'journal' or s == 'article':
+            return {'in_doaj':True}
+    return None
