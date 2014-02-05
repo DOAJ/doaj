@@ -20,7 +20,7 @@ blueprint = Blueprint('query', __name__)
 @blueprint.route('/<path:path>', methods=['GET','POST'])
 @blueprint.route('/', methods=['GET','POST'])
 @util.jsonp
-def query(path='Pages', show_not_in_doaj=False):
+def query(path='Pages'):
     pathparts = path.strip('/').split('/')
     subpath = pathparts[0]
 
@@ -96,9 +96,10 @@ def query(path='Pages', show_not_in_doaj=False):
                 qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][path.lower()]
 
         # if ONLY articles and/or journals are being requested, apply a
-        # filter by default
+        # filter by default, unless the user should be allowed to see
+        # all records
         terms = None
-        if not show_not_in_doaj:
+        if not current_user.has_role("edit_journal"):
             for s in subpaths:
                 if s == 'journal' or s == 'article':
                     terms = {'in_doaj':True}
