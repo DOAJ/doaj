@@ -1196,15 +1196,15 @@ class JournalArticle(DomainObject):
         terms = res.get("facets", {}).get("type", {}).get("terms", [])
         for t in terms:
             if t.get("term") == "journal":
-                stats["journals"] = "{:,}".format(t.get("count", 0))
+                stats["journals"] = "{0:,}".format(t.get("count", 0))
             if t.get("term") == "article":
-                stats["articles"] = "{:,}".format(t.get("count", 0))
+                stats["articles"] = "{0:,}".format(t.get("count", 0))
         
         # count the size of the countries facet
-        stats["countries"] = "{:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
+        stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
         
         # count the size of the journals facet (which tells us how many journals have articles)
-        stats["searchable"] = "{:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+        stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
         
         # now cache and return
         Cache.cache_site_statistics(stats)
