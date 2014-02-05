@@ -1,6 +1,7 @@
 from datetime import datetime
 from copy import deepcopy
 import json
+import locale
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -1194,18 +1195,26 @@ class JournalArticle(DomainObject):
         
         # pull the journal and article facets out
         terms = res.get("facets", {}).get("type", {}).get("terms", [])
+
+        # can't use the Python , option when formatting numbers since we
+        # need to be compatible with Python 2.6
+        # otherwise we would be able to do "{0:,}".format(t.get("count", 0))
+
+        locale.setlocale(locale.LC_ALL, 'en_US')
         for t in terms:
             if t.get("term") == "journal":
-                stats["journals"] = "{0:,}".format(t.get("count", 0))
+                stats["journals"] = locale.format("%d", t.get("count", 0), grouping=True)
             if t.get("term") == "article":
-                stats["articles"] = "{0:,}".format(t.get("count", 0))
+                stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
         
         # count the size of the countries facet
-        stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
+        stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
         
         # count the size of the journals facet (which tells us how many journals have articles)
-        stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+        stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
         
+        locale.resetlocale()
+
         # now cache and return
         Cache.cache_site_statistics(stats)
         
