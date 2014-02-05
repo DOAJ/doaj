@@ -118,20 +118,6 @@ CC_MAP = {
     "CC by-sa" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
 }
 
-fv_type_icon = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj.bibjson && resultobj.bibjson.journal) {
-            // this is an article
-            return "<i class='icon icon-file'></i>"
-        }
-        else {
-            // this is a journal
-            return "<i class='icon icon-book'></i>"
-        }
-    };
-    return that;
-})();
-
 fv_title_field = (function (resultobj) {
     var that = function(resultobj) {
         var field = '<span class="title">'
@@ -139,7 +125,10 @@ fv_title_field = (function (resultobj) {
             // this is an article
             field += "<i class='icon icon-file'></i> "
         }
-        else {
+        else if (resultobj.suggestion) {
+            // this is a suggestion
+            field += "<i class='icon icon-signin' style=\"margin-right: 0.5em;\"></i>"
+        } else {
             // this is a journal
             field += "<i class='icon icon-book'></i> "
         }
