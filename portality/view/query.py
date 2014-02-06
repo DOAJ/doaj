@@ -99,12 +99,13 @@ def query(path='Pages'):
         # filter by default, unless the user should be allowed to see
         # all records
         terms = None
-        if current_user.is_anonymous():
+        print request.referrer
+        if current_user.is_anonymous() or "/search?" in request.referrer: # FIXME: hardcoded for the time being - should probably be configurable
             terms = _default_filter(subpaths)
         else:
-            if not current_user.has_role("edit_journal"):
+            if not current_user.has_role("view_not_in_doaj"):
                 terms = _default_filter(subpaths)
-
+        
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 
     resp.mimetype = "application/json"
