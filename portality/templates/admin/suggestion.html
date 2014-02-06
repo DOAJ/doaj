@@ -21,6 +21,30 @@
             <div class="span9">{% if suggestion.bibjson().alternative_title %}{{suggestion.bibjson().alternative_title}}{% endif %}</div>
         </div>
         
+        <!-- issns -->
+        {% for identifier in suggestion.bibjson().get_identifiers() %}
+            <div class="row-fluid">
+                <div class="span3"><strong>{% if identifier.type %}{{identifier.type}}{% else %}identifier{% endif %}</strong></div>
+                <div class="span9">{{identifier.id}}</div>
+            </div>
+        {% endfor %}
+        
+        <!-- urls -->
+        {% for link in suggestion.bibjson().get_urls() %}
+            <div class="row-fluid">
+                <div class="span3"><strong>{% if link.type %}{{link.type}}{% else %}url{% endif %}</strong></div>
+                <div class="span9">
+                    {% if link.url %}
+                        {% if link.url.startswith("http") %}
+                            <a href="{{link.url}}">{{link.url}}</a>
+                        {% else %}
+                            {{link.url}}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        
         <div class="row-fluid">
             <div class="span3"><strong>author pays?</strong></div>
             <div class="span9">{% if suggestion.bibjson().author_pays %}{{suggestion.bibjson().author_pays}}{% endif %}</div>
