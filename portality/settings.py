@@ -201,4 +201,4 @@ RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
 
 # number of seconds site statistics should be considered fresh
 # 1800s = 30mins
-SITE_STATISTICS_TIMEOUT = 30
+SITE_STATISTICS_TIMEOUT = 1800
