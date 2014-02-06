@@ -157,9 +157,9 @@ class GenericBibJSON(object):
         urls = self.bibjson['link']
 
         if urls:
-            for url in urls:
-                if url['type'] == urltype:
-                    url['url'] = url
+            for u in urls: # do not reuse "url" as it's a parameter!
+                if u['type'] == urltype:
+                    u['url'] = url
         else:
             self.add_url(url, urltype)
     

@@ -186,9 +186,7 @@ def journal_page(journal_id):
         nj.bibjson().author_pays_url = form.author_pays_url.data
         nj.bibjson().set_keywords(form.keywords.data)
         nj.bibjson().set_language(form.languages.data)
-        print nj.data
-        json.dumps(nj.data)
-        #nj.save()
+        nj.save()
 
     return render_template("admin/journal.html", form=form, journal=j)
 
