@@ -22,8 +22,8 @@
           {{ render_field_horizontal(form.url, class="input-xlarge") }}
           {{ render_field_horizontal(form.title, class="input-xlarge") }}
           <p>Either an ISSN or an EISSN has to be provided. Providing both is preferred.</p>
-          {{ render_field_horizontal(form.pissn, class="input-small", size="9", maxlength="9") }}
-          {{ render_field_horizontal(form.eissn, class="input-small", size="9", maxlength="9") }}
+          {{ render_field_horizontal(form.pissn) }}
+          {{ render_field_horizontal(form.eissn) }}
           {{ render_field_horizontal(form.publisher) }}
           {{ render_field_horizontal(form.oa_start_year, class="input-mini", size="4", maxlength="4") }}
           {{ render_field_horizontal(form.country) }}

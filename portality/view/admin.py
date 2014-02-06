@@ -1,4 +1,5 @@
 import json
+import re
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
@@ -24,6 +25,8 @@ except AttributeError:
         from collections import OrderedDict
 else:
     from collections import OrderedDict
+
+ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 
 blueprint = Blueprint('admin', __name__)
 
@@ -78,6 +81,7 @@ def journal_page(journal_id):
         ('N', 'No charges'),
         ('CON', 'Conditional charges'),
         ('Y', 'Has charges'),
+        ('NY', 'No information'),
     ]
 
     class TagListField(Field):
@@ -88,6 +92,9 @@ def journal_page(journal_id):
                 return u', '.join(self.data)
             else:
                 return u''
+
+        def get_list(self):
+            return self.data
     
         def process_formdata(self, valuelist):
             if valuelist:
@@ -118,13 +125,25 @@ def journal_page(journal_id):
             if bool(other_field.data):
                 super(OptionalIf, self).__call__(form, field)
 
-    issn_error = "The identifier (ISSN or EISSN) should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If the identifier is 7 digits long, it must end with the letter X (e.g. 1234-567X)."
+    def validate_issn_list(id_type):
+
+        def _validate_issn_list(form, field):
+            data = field.get_list()
+            if not data:
+                return True
+
+            error = '{id_type} #{which} is not valid. An {id_type} should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If the {id_type} is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
+            for idx, issn in enumerate(data, start=1):
+                if not ISSN_REGEX.match(issn):
+                    raise validators.ValidationError(error.format(id_type=id_type, which=idx))
+        return _validate_issn_list
+
     class JournalForm(Form):
         in_doaj = BooleanField('In DOAJ?')
         url = TextField('URL', [validators.Required()])
         title = TextField('Journal Title', [validators.Required()])
-        pissn = FieldList(TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(r'^\d{4}-\d{3}(\d|X|x){1}$', message=issn_error)]))
-        eissn = FieldList(TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(r'^\d{4}-\d{3}(\d|X|x){1}$', message=issn_error)]))
+        pissn = TagListField('Journal ISSN', [OptionalIf('eissn'), validate_issn_list(id_type='ISSN')], description='(<strong>use commas</strong> to separate multiple ISSN-s)')
+        eissn = TagListField('Journal EISSN', [OptionalIf('pissn'), validate_issn_list(id_type='EISSN')], description='(<strong>use commas</strong> to separate multiple EISSN-s)')
         publisher = TextField('Publisher', [validators.Required()])
         oa_start_year = IntegerAsStringField('Start year since online full text content is available', [validators.Required(), validators.NumberRange(min=1600)])
         country = SelectField('Country', [validators.Required()], choices=country_options)
@@ -133,7 +152,7 @@ def journal_page(journal_id):
         author_pays_url = TextField('Author pays - guide link', [validators.Optional()])
         keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
         languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
-
+    
     current_info = {
         'in_doaj': j.is_in_doaj(),
         'url': j.bibjson().get_single_url(urltype='homepage'),
@@ -157,8 +176,8 @@ def journal_page(journal_id):
         nj.set_in_doaj(form.in_doaj.data)
         nj.bibjson().update_url(form.url.data, 'homepage')
         nj.bibjson().title = form.title.data
-        nj.bibjson().update_identifiers(nj.bibjson().P_ISSN, form.pissn.data)
-        nj.bibjson().update_identifiers(nj.bibjson().E_ISSN, form.eissn.data)
+        nj.bibjson().update_identifiers(nj.bibjson().P_ISSN, form.pissn.get_list())
+        nj.bibjson().update_identifiers(nj.bibjson().E_ISSN, form.eissn.get_list())
         nj.bibjson().publisher = form.publisher.data
         nj.bibjson().set_oa_start(year=form.oa_start_year.data)
         nj.bibjson().country = form.country.data
@@ -167,6 +186,7 @@ def journal_page(journal_id):
         nj.bibjson().author_pays_url = form.author_pays_url.data
         nj.bibjson().set_keywords(form.keywords.data)
         nj.bibjson().set_language(form.languages.data)
+        print nj.data
         json.dumps(nj.data)
         #nj.save()
 
