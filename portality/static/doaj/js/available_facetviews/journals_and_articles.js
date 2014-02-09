@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-  $('.facet-view-simple').each(function() {
+  $('.facetview.journals_and_articles').each(function() {
   $(this).facetview({
     search_url: 'http://' + es_domain + '/query/journal,article/_search?',
     search_index: 'elasticsearch',
@@ -63,6 +63,7 @@ jQuery(document).ready(function($) {
         {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
+      from: 0,
       size: 10
     },
     default_operator: "AND",

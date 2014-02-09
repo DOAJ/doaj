@@ -1,9 +1,12 @@
 from datetime import datetime
 from copy import deepcopy
 import json
+import locale
+import sys
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
+from portality.authorise import Authorise
 
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
@@ -70,6 +73,31 @@ class GenericBibJSON(object):
             if identifier.get("type") == idtype and identifier.get("id") not in ids:
                 ids.append(identifier.get("id"))
         return ids
+
+    def get_one_identifier(self, idtype=None):
+        results = self.get_identifiers(idtype=idtype)
+        if results:
+            return results[0]
+        else:
+            return None
+
+    def update_identifier(self, idtype, new_value):
+        if not new_value:
+            self.remove_identifiers(idtype=idtype)
+            return
+
+        if 'identifier' not in self.bibjson:
+            return
+
+        if not self.get_one_identifier(idtype):
+            self.add_identifier(idtype, new_value)
+            return
+
+        # so an old identifier does actually exist, and we actually want
+        # to update it
+        for id_ in self.bibjson['identifier']:
+            if id_['type'] == idtype:
+                id_['id'] = new_value
     
     def remove_identifiers(self, idtype=None, id=None):
         # if we are to remove all identifiers, this is easy
@@ -129,6 +157,25 @@ class GenericBibJSON(object):
             if link.get("type") == urltype:
                 urls.append(link.get("url"))
         return urls
+
+    def get_single_url(self, urltype):
+        urls = self.get_urls(urltype=urltype)
+        if urls:
+            return urls[0]
+        return None
+
+    def update_url(self, url, urltype=None):
+        if "link" not in self.bibjson:
+            self.bibjson['link'] = []
+
+        urls = self.bibjson['link']
+
+        if urls:
+            for u in urls: # do not reuse "url" as it's a parameter!
+                if u['type'] == urltype:
+                    u['url'] = url
+        else:
+            self.add_url(url, urltype)
     
     def add_subject(self, scheme, term, code=None):
         if "subject" not in self.bibjson:
@@ -164,7 +211,7 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     @classmethod
-    def pull_by_email(cls,email):
+    def pull_by_email(cls, email):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits',{}).get('total',0) == 1:
             return cls(**res['hits']['hits'][0]['_source'])
@@ -209,8 +256,27 @@ class Account(DomainObject, UserMixin):
 
     @property
     def is_super(self):
-        return not self.is_anonymous() and self.id in app.config['SUPER_USER']
-        
+        # return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        return Authorise.has_role(app.config["SUPER_USER_ROLE"], self.data.get("role", []))
+    
+    def has_role(self, role):
+        return Authorise.has_role(role, self.data.get("role", []))
+    
+    def add_role(self, role):
+        if "role" not in self.data:
+            self.data["role"] = []
+        self.data["role"].append(role)
+    
+    @property
+    def role(self):
+        return self.data.get("role", [])
+    
+    def set_role(self, role):
+        if not isinstance(role, list):
+            role = [role]
+        self.data["role"] = role
+            
+    
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -315,6 +381,9 @@ class Journal(DomainObject):
             self.data["admin"]["notes"] = []
         self.data["admin"]["notes"].append({"date" : date, "note" : note})
     
+    def notes(self):
+        return self.data.get("admin", {}).get("notes", [])
+    
     def add_correspondence(self, message, date=None):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -323,6 +392,9 @@ class Journal(DomainObject):
         if "owner_correspondence" not in self.data.get("admin"):
             self.data["admin"]["owner_correspondence"] = []
         self.data["admin"]["owner_correspondence"].append({"date" : date, "note" : message})
+    
+    def correspondence(self):
+        return self.data.get("admin", {}).get("owner_correspondence", [])
     
     def _generate_index(self):
         # the index fields we are going to generate
@@ -549,6 +621,10 @@ class JournalBibJSON(GenericBibJSON):
     def set_license(self, license_title, license_type, url=None, version=None, open_access=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
+
+        if not license_title and not license_type:  # something wants to delete the license
+            del self.bibjson['license']
+            return
         
         lobj = {"title" : license_title, "type" : license_type}
         if url is not None:
@@ -558,10 +634,19 @@ class JournalBibJSON(GenericBibJSON):
         if open_access is not None:
             lobj["open_access"] = open_access
         
-        self.bibjson["license"].append(lobj)
+        if len(self.bibjson['license']) >= 1:
+            self.bibjson["license"][0] = lobj
+        else:
+            self.bibjson["license"].append(lobj)
     
     def get_license(self):
         return self.bibjson.get("license", [None])[0]
+
+    def get_license_type(self):
+        lobj = self.get_license()
+        if lobj:
+            return lobj['type']
+        return None
     
     def set_open_access(self, open_access):
         if "license" not in self.bibjson:
@@ -1146,6 +1231,14 @@ class JournalArticle(DomainObject):
     
     @classmethod
     def site_statistics(cls):
+        # first check the cache
+        stats = Cache.get_site_statistics()
+        if stats is not None:
+            return stats
+        
+        # we didn't get anything from the cache, so we need to generate and
+        # cache a new set
+        
         # prep the query and result objects
         q = JournalArticleQuery()
         stats = {
@@ -1160,17 +1253,41 @@ class JournalArticle(DomainObject):
         
         # pull the journal and article facets out
         terms = res.get("facets", {}).get("type", {}).get("terms", [])
-        for t in terms:
-            if t.get("term") == "journal":
-                stats["journals"] = t.get("count", 0)
-            if t.get("term") == "article":
-                stats["articles"] = t.get("count", 0)
-        
-        # count the size of the countries facet
-        stats["countries"] = len(res.get("facets", {}).get("countries", {}).get("terms", []))
-        
-        # count the size of the journals facet (which tells us how many journals have articles)
-        stats["searchable"] = len(res.get("facets", {}).get("journals", {}).get("terms", []))
+
+        # can't use the Python , option when formatting numbers since we
+        # need to be compatible with Python 2.6
+        # otherwise we would be able to do "{0:,}".format(t.get("count", 0))
+
+        if sys.version_info[0] == 2 and sys.version_info[1] < 7:
+            locale.setlocale(locale.LC_ALL, 'en_US')
+            for t in terms:
+                if t.get("term") == "journal":
+                    stats["journals"] = locale.format("%d", t.get("count", 0), grouping=True)
+                if t.get("term") == "article":
+                    stats["articles"] = locale.format("%d", t.get("count", 0), grouping=True)
+            
+            # count the size of the countries facet
+            stats["countries"] = locale.format("%d", len(res.get("facets", {}).get("countries", {}).get("terms", [])), grouping=True)
+            
+            # count the size of the journals facet (which tells us how many journals have articles)
+            stats["searchable"] = locale.format("%d", len(res.get("facets", {}).get("journals", {}).get("terms", [])), grouping=True)
+            
+            locale.resetlocale()
+        else:
+            for t in terms:
+                if t.get("term") == "journal":
+                    stats["journals"] = "{0:,}".format(t.get("count", 0))
+                if t.get("term") == "article":
+                    stats["articles"] = "{0:,}".format(t.get("count", 0))
+            
+            # count the size of the countries facet
+            stats["countries"] = "{0:,}".format(len(res.get("facets", {}).get("countries", {}).get("terms", [])))
+            
+            # count the size of the journals facet (which tells us how many journals have articles)
+            stats["searchable"] = "{0:,}".format(len(res.get("facets", {}).get("journals", {}).get("terms", [])))
+
+        # now cache and return
+        Cache.cache_site_statistics(stats)
         
         return stats
         
@@ -1203,3 +1320,107 @@ class JournalArticleQuery(object):
 
 
 ########################################################################
+
+class Cache(DomainObject):
+    __type__ = "cache"
+    
+    @classmethod
+    def get_site_statistics(cls):
+        rec = cls.pull("site_statistics")
+        
+        """
+        returnable = rec is not None
+        if rec is not None:
+            marked_regen = rec.marked_regen()
+            if not marked_regen:
+                stale = rec.is_stale()
+                if stale:
+                    rec.mark_for_regen()
+                else:
+                    returnable = True
+            else:
+                returnable = True
+        """
+        returnable = rec is not None
+        if rec is not None:
+            if rec.is_stale():
+                returnable = False
+        
+        # if the cache exists and is in date (or is otherwise returnable), then explicilty build the
+        # cache object and return it
+        if returnable:
+            return {
+                "articles" : rec.data.get("articles"),
+                "journals" : rec.data.get("journals"),
+                "countries" : rec.data.get("countries"),
+                "searchable" : rec.data.get("searchable")
+            }
+        
+        # if we get to here, then we don't return the cache
+        return None
+    
+    @classmethod
+    def cache_site_statistics(cls, stats):
+        cobj = cls(**stats)
+        cobj.set_id("site_statistics")
+        cobj.save()
+    
+    def mark_for_regen(self):
+        self.update({"regen" : True})
+    
+    def is_stale(self):
+        lu = datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.now()
+        dt = now - lu
+
+        # compatibility with Python 2.6
+        if hasattr(dt, 'total_seconds'):
+            total_seconds = dt.total_seconds()
+        else:
+            total_seconds = (dt.microseconds + (dt.seconds + dt.days * 24 * 3600) * 10**6) / 10**6
+
+        return total_seconds > app.config.get("SITE_STATISTICS_TIMEOUT")
+    
+    def marked_regen(self):
+        return self.data.get("regen", False)
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -50,32 +50,34 @@ SPONSORS = {
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
-"""
-@blueprint.context_processor
-def additional_context():
-    '''
-    Inserts variables into every template this blueprint renders.  This
-    one deals with the announcement in the header, which can't be built
-    into the template directly, as various styles are applied only if a
-    header is present on the page. It also makes the list of DOAJ
-    sponsors available and may include similar minor pieces of
-    information.
-    '''
-    return {
-        'heading_title': '',
-        'heading_text': '',
-        'sponsors': SPONSORS,
-        'settings': settings,
-        'statistics' : models.JournalArticle.site_statistics()
-        }
-"""
+# @blueprint.context_processor
+# def additional_context():
+#     '''
+#     Inserts variables into every template this blueprint renders.  This
+#     one deals with the announcement in the header, which can't be built
+#     into the template directly, as various styles are applied only if a
+#     header is present on the page. It also makes the list of DOAJ
+#     sponsors available and may include similar minor pieces of
+#     information.
+#     '''
+#     return {
+#         'heading_title': '',
+#         'heading_text': '',
+#         'sponsors': SPONSORS,
+#         'settings': settings,
+#         'statistics' : models.JournalArticle.site_statistics()
+#         }
+
 @blueprint.route("/")
 def home():
     return render_template('doaj/index.html')
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html')
+    return render_template('doaj/search.html',
+               search_page=True,
+               facetviews=['journals_and_articles']
+           )
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
@@ -231,115 +233,9 @@ def support():
 def publishermembers():
     return render_template("doaj/publishermembers.html")
 
-@blueprint.route("/suggest", methods=['GET', 'POST'])
+@blueprint.route("/suggest", methods=['GET'])
 def suggest():
-    with open('country-codes.json', 'rb') as f:
-        countries = json.loads(f.read())
-    countries = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name']))
-    country_options = [('','')]
-    for code, country_info in countries.items():
-        country_options.append((code, country_info['name']))
-
-    license_options = [
-        ('', ''),
-        ('CC by', 'Attribution'),
-        ('CC by-nc', 'Attribution NonCommercial'),
-        ('CC by-nc-nd', 'Attribution NonCommercial NoDerivatives'),
-        ('CC by-nc-sa', 'Attribution NonCommercial ShareAlike'),
-        ('CC by-nd', 'Attribution NoDerivatives'),
-        ('CC by-sa', 'Attribution ShareAlike'),
-    ]
-
-    author_pays_options = [
-        ('N', 'No charges'),
-        ('CON', 'Conditional charges'),
-        ('Y', 'Has charges'),
-    ]
-
-    class TagListField(Field):
-        widget = TextInput()
-    
-        def _value(self):
-            if self.data:
-                return u', '.join(self.data)
-            else:
-                return u''
-    
-        def process_formdata(self, valuelist):
-            if valuelist:
-                self.data = [clean_x for clean_x in [x.strip() for x in valuelist[0].split(',')] if clean_x]
-            else:
-                self.data = []
-
-    class IntegerAsStringField(Field):
-        widget = TextInput()
-    
-        def _value(self):
-            if self.data:
-                return unicode(str(self.data))
-            return u''
-
-    class OptionalIf(validators.Optional):
-        # a validator which makes a field optional if
-        # another field is set and has a truthy value
-    
-        def __init__(self, other_field_name, *args, **kwargs):
-            self.other_field_name = other_field_name
-            super(OptionalIf, self).__init__(*args, **kwargs)
-    
-        def __call__(self, form, field):
-            other_field = form._fields.get(self.other_field_name)
-            if other_field is None:
-                raise Exception('no field named "%s" in form' % self.other_field_name)
-            if bool(other_field.data):
-                super(OptionalIf, self).__call__(form, field)
-
-    issn_error = "The identifier (ISSN or EISSN) should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If the identifier is 7 digits long, it must end with the letter X (e.g. 1234-567X)."
-    class RegistrationForm(Form):
-        url = TextField('URL', [validators.Required()])
-        title = TextField('Journal Title', [validators.Required()])
-        # TODO either ISSN or EISSN required!
-        pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(r'^\d{4}-\d{3}(\d|X|x){1}$', message=issn_error)])
-        eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(r'^\d{4}-\d{3}(\d|X|x){1}$', message=issn_error)])
-        publisher = TextField('Publisher', [validators.Required()])
-        oa_start_year = IntegerAsStringField('Start year since online full text content is available', [validators.Required(), validators.NumberRange(min=1600)])
-        country = SelectField('Country', [validators.Required()], choices=country_options)
-        license = SelectField('Creative Commons (CC) License, if any', [validators.Optional()], choices=license_options)
-        author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
-        author_pays_url = TextField('Author pays - guide link', [validators.Optional()])
-        journal_contact_name = TextField('Journal Contact name', [validators.Required()])
-        journal_contact_email = TextField('Journal Contact email', [validators.Required(), validators.Email()])
-        description = TextAreaField('Description', [validators.Optional()])
-        keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
-        languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
-        submitter_name = TextField('Your name', [validators.Required()])
-        submitter_email = TextField('Your email', [validators.Required(), validators.Email()])
-        recaptcha = RecaptchaField()
-
-    form = RegistrationForm(request.form)
-    if request.method == 'POST' and form.validate():
-        ns = models.Suggestion()
-        ns.bibjson().add_url(form.url.data, 'homepage')
-        ns.bibjson().title = form.title.data
-        ns.bibjson().add_identifier(ns.bibjson().P_ISSN, form.pissn.data)
-        ns.bibjson().add_identifier(ns.bibjson().E_ISSN, form.eissn.data)
-        ns.bibjson().publisher = form.publisher.data
-        ns.bibjson().set_oa_start(year=form.oa_start_year.data)
-        ns.bibjson().country = form.country.data
-        ns.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
-        ns.bibjson().author_pays = form.author_pays.data
-        ns.bibjson().author_pays_url = form.author_pays_url.data
-        ns.add_contact(form.journal_contact_name.data, form.journal_contact_email.data)
-        ns.bibjson().set_keywords(form.keywords.data)
-        ns.bibjson().set_language(form.languages.data)
-        ns.description = form.description.data
-        ns.set_suggester(form.submitter_name.data, form.submitter_email.data)
-        ns.suggested_by_owner = True
-        ns.set_in_doaj(False)
-        ns.suggested_on = datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
-        ns.save()
-        return render_template("doaj/suggest_thanks.html")
-    return render_template("doaj/suggest.html", form=form)
+    return render_template("doaj/suggest.html")
     
 @blueprint.route("/supportDoaj")
 def support_doaj():

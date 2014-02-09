@@ -20,18 +20,25 @@ PORT = 5004
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
+#ELASTIC_SEARCH_HOST = "http://doaj.cottagelabs.com:9200"
 ELASTIC_SEARCH_DB = "doaj"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
-
-# list of superuser account names
-SUPER_USER = ["test"]
-
-# Can people register publicly? If false, only the superuser can create new accounts
-PUBLIC_REGISTER = False
 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
+# ========================
+# authorisation settings
+
+# Can people register publicly? If false, only the superuser can create new accounts
+# PUBLIC_REGISTER = False
+
+SUPER_USER_ROLE = "admin"
+
+# FIXME: something like this required for hierarchical roles, but not yet needed
+#ROLE_MAP = {
+#    "admin" : {"publisher", "create_user"}
+#}
 
 # ========================
 # MAPPING SETTINGS
@@ -64,6 +71,7 @@ MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
 MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
 MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
 MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
+MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -186,3 +194,11 @@ RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
 # RECAPTCHA_PRIVATE_KEY is set in secret_settings.py which should not be
 # committed to the repository, but only held locally and on the server
 # (transfer using scp).
+
+
+# =================================
+# Cache settings
+
+# number of seconds site statistics should be considered fresh
+# 1800s = 30mins
+SITE_STATISTICS_TIMEOUT = 1800

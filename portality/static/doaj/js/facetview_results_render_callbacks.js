@@ -118,20 +118,6 @@ CC_MAP = {
     "CC by-sa" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
 }
 
-fv_type_icon = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj.bibjson && resultobj.bibjson.journal) {
-            // this is an article
-            return "<i class='icon icon-file'></i>"
-        }
-        else {
-            // this is a journal
-            return "<i class='icon icon-book'></i>"
-        }
-    };
-    return that;
-})();
-
 fv_title_field = (function (resultobj) {
     var that = function(resultobj) {
         var field = '<span class="title">'
@@ -139,7 +125,10 @@ fv_title_field = (function (resultobj) {
             // this is an article
             field += "<i class='icon icon-file'></i> "
         }
-        else {
+        else if (resultobj.suggestion) {
+            // this is a suggestion
+            field += "<i class='icon icon-signin' style=\"margin-right: 0.5em;\"></i>"
+        } else {
             // this is a journal
             field += "<i class='icon icon-book'></i> "
         }
@@ -209,3 +198,65 @@ fv_issns = (function (resultobj) {
     };
     return that;
 })();
+
+fv_edit_suggestion = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj['suggestion']) {
+            var result = '<a class="edit_suggestion_link pull-right" href="';
+            result += suggestion_edit_url;
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Edit this suggestion</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
+fv_edit_journal = (function (resultobj) {
+    var that = function(resultobj) {
+        console.log(resultobj);
+        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+            // if it's not a suggestion or an article .. (it's a
+            // journal!)
+            // we really need to expose _type ...
+            var result = '<a class="edit_journal_link pull-right" href="';
+            result += journal_edit_url;
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Edit this journal</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
+
+fv_in_doaj = (function(resultobj) {
+    var that = function(resultobj) {
+        field = ""
+        if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
+            if(that.mapping[resultobj['admin']['in_doaj']]) {
+                var result = '<span class=' + that.mapping[resultobj['admin']['in_doaj']]['class'] + '>';
+                result += that.mapping[resultobj['admin']['in_doaj']]['text'];
+                result += '</span>';
+                field += result;
+            } else {
+                field += resultobj['admin']['in_doaj'];
+            }
+            if (field === "") {
+                return false
+            }
+            return field
+        }
+        return false;
+    };
+    return that;
+})();
+
+fv_in_doaj.mapping = {
+    false: {"text": "No", "class": "red"},
+    true: {"text": "Yes", "class": "green"},
+}

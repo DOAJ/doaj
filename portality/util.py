@@ -1,9 +1,10 @@
 from urllib import urlopen, urlencode
 import md5
-import os, re
+import os, re, string
 from unicodedata import normalize
 from functools import wraps
 from flask import request, current_app
+from random import choice
 
 from urlparse import urlparse, urljoin
 
@@ -105,3 +106,7 @@ def get_gravatar(email, size=None, default=None, border=None):
 
     return image
 
+def generate_password(length=8):
+    chars = string.letters + string.digits
+    pw = ''.join(choice(chars) for _ in range(length))
+    return pw

@@ -39,14 +39,24 @@ select {
     color: #7073FF;
 }
 
-.centre-text-container {
+.centre-text-container,
+.big.box {
     text-align: center;
 }
 
-.shaded-container {
+.with-borders {
     border: 1px solid #F68B1F;
     /*box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);*/
     border-radius: 6px;
+}
+
+.box {
+    padding: 0.5em;
+}
+
+.big.box {
+    padding: 2em;
+    font-size: 250%;
 }
 
 .main-content {
@@ -128,11 +138,7 @@ label > .label-text {
     padding-left: 0.25em;
 }
 
-footer > .shaded-container {
-    padding: 0.5em;
-}
-
-footer > .shaded-container + .shaded-container {
+footer > .box + .box {
     margin-top: 1em;
 }
 

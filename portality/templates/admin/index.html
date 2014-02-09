@@ -1,22 +1,18 @@
-{% extends "base.html" %}
+{% extends "admin/admin_base.html" %}
 
-{% block content %}
-
-<script type="text/javascript" charset="utf-8">
-jQuery(document).ready(function() {
-
-
-
-});
-</script>            
-
-
+{% block admin_content %}
 <div class="row-fluid">
-    <div class="span12">
-        <p>Admin controllers here</p>
+  <div class="span6">
+    <div class="big box with-borders">
+      <a href="{{ url_for('admin.journals') }}">Journals</a>
     </div>
+  </div>
+  
+  <div class="span6">
+    <div class="big box with-borders">
+      <a href="{{ url_for('admin.suggestions') }}">Suggestions</a>
+    </div>
+  </div>
 </div>
-
-
 {% endblock %}
 

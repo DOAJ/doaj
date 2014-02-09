@@ -1,0 +1,9 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+<div class="facetview journals"></div>
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";</script>
+{% endblock %}

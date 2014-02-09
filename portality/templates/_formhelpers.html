@@ -1,6 +1,6 @@
 {% macro render_field(field) %}
     {% if field.type != 'SubmitField' %}
-        {{ field.label }}
+        {{ field.label | safe }}
     {% endif %}
     <div class="input">
         {{ field(**kwargs) }}
@@ -18,39 +18,62 @@
 {% endmacro %}
 
 {% macro render_field_horizontal(field) %}
-    <div class="control-group
-    {% if field.errors %} error {% endif %}
-    ">
-        {% if field.type != 'SubmitField' %}
-            <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
-            {% if field.flags.required %}<span class="red">*</span>{% endif %}
+    {% if field.type == 'FieldList' %}
+      {% for subfield in field %}
+        <div class="control-group
+        {% if subfield.errors %} error {% endif %}
+        ">
+            <label class="control-label" for="{{subfield.short_name}}">{{subfield.label.text | safe}}
+            {% if subfield.flags.required %}<span class="red">*</span>{% endif %}
             </label>
-        {% endif %}
-        <div class="controls">
-            {% if field.type != 'RadioField' %}
-                {{ field(**kwargs) }}
-                {% if field.errors %}
-                <ul class="errors">
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if field.description %}
-                <p class="help-block">{{ field.description | safe }}</p>
-                {% endif %}
-            {% else %}
-                {% for subfield in field %}
-                    {% call __render_radio(subfield) %}{% endcall %}
-                {% endfor %}
-            {% endif %}
+
+            <div class="controls">
+              {{ subfield(**kwargs) }}
+              {% if subfield.errors %}
+              <ul class="errors">
+                  {% for error in subfield.errors %}
+                  <li>{{ error }}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
         </div>
-    </div>
+      {% endfor %}
+    {% else %}
+      <div class="control-group
+      {% if field.errors %} error {% endif %}
+      ">
+          {% if field.type != 'SubmitField' %}
+              <label class="control-label" for="{{field.short_name}}">{{field.label.text | safe}}
+              {% if field.flags.required %}<span class="red">*</span>{% endif %}
+              </label>
+          {% endif %}
+          <div class="controls">
+              {% if field.type != 'RadioField' %}
+                  {{ field(**kwargs) }}
+                  {% if field.errors %}
+                  <ul class="errors">
+                      {% for error in field.errors %}
+                      <li>{{ error }}</li>
+                      {% endfor %}
+                  </ul>
+                  {% endif %}
+                  {% if field.description %}
+                  <p class="help-block">{{ field.description | safe }}</p>
+                  {% endif %}
+              {% else %}
+                  {% for subfield in field %}
+                      {% call __render_radio(subfield) %}{% endcall %}
+                  {% endfor %}
+              {% endif %}
+          </div>
+      </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro __render_radio(field, caller=None) %}
 <label class="radio" for="{{field.short_name}}">
     {{ field }}
-    <span class="label-text">{{field.label.text}}</span>
+    <span class="label-text">{{field.label.text | safe}}</span>
 </label>
 {% endmacro %}

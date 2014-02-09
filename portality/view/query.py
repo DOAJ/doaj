@@ -96,15 +96,23 @@ def query(path='Pages'):
                 qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][path.lower()]
 
         # if ONLY articles and/or journals are being requested, apply a
-        # filter by default
-        for s in subpaths:
-            if s == 'journal' or s == 'article':
-                terms = {'in_doaj':True}
-            else:
-                terms = None
-
+        # filter by default, unless the user should be allowed to see
+        # all records
+        terms = None
+        print request.referrer
+        if current_user.is_anonymous() or "/search?" in request.referrer: # FIXME: hardcoded for the time being - should probably be configurable
+            terms = _default_filter(subpaths)
+        else:
+            if not current_user.has_role("view_not_in_doaj"):
+                terms = _default_filter(subpaths)
+        
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 
     resp.mimetype = "application/json"
     return resp
 
+def _default_filter(subpaths):
+    for s in subpaths:
+        if s == 'journal' or s == 'article':
+            return {'in_doaj':True}
+    return None

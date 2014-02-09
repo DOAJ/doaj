@@ -31,26 +31,30 @@
             <ul class="nav" id="main-nav-second-menu">
               <li{% if request.path == '/suggest' %} class="active"{% endif %}><a href="{{url_for('doaj.suggest')}}">Suggest</a></li>
               <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">About</a></li>
+              <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">For Publishers</a></li>
             </ul>
             <ul class="nav pull-right">
-              <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">For Publishers</a></li>
-              {#
-              {% if current_user.is_anonymous() %}
-              <li>
-                <a href="{{url_for('account.register')}}">Register</a>
-              </li>
-              <li>
-                <a href="{{url_for('account.login')}}">Login</a>
-              </li>
+              
+              {% if not current_user.is_anonymous() %}
+              
+                <li{% if request.path.startswith('/account') %} class="active"{% endif %}><a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}"><strong>{{current_user.id}}</strong></a></li>
+                
+                  {% if current_user.has_role("admin_area") %}
+                    <li{% if request.path.startswith('/admin') %} class="active"{% endif %}><a alt="go to the admin area" title="go to the admin area" href="{{ url_for('admin.index') }}">Admin</a></li>
+                  {% endif %}
+                  
+                  {% if current_user.has_role("publisher") %}
+                    <li{% if request.path.startswith('/publisher') and not request.path.startswith("/publishers") %} class="active"{% endif %}><a alt="go to the publisher area" title="go to the publisher area" href="{{ url_for('publisher.index') }}">Publisher Area</a></li>
+                  {% endif %}
+              
+                <li><a href="{{ url_for('account.logout') }}">Logout</a></li>
+              
               {% else %}
-              <li>
-                <a alt="view your account" title="view your account" href="{{ url_for('account.index') }}{{current_user.id}}"><strong>{{current_user.id}}</strong></a>
-              </li>
-              <li>
-                <a href="{{ url_for('account.logout') }}">Logout</a>
-              </li>
+              
+                <li><a alt="login to the DOAJ" title="login to the DOAJ" href="{{ url_for('account.login') }}">Login</a></li>
+              
               {% endif %}
-              #}
+              
             </ul>
           </div>
         </div>
