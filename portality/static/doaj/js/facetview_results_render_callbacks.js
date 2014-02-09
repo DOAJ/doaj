@@ -232,3 +232,31 @@ fv_edit_journal = (function (resultobj) {
     };
     return that;
 })();
+
+
+fv_in_doaj = (function(resultobj) {
+    var that = function(resultobj) {
+        field = ""
+        if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
+            if(that.mapping[resultobj['admin']['in_doaj']]) {
+                var result = '<span class=' + that.mapping[resultobj['admin']['in_doaj']]['class'] + '>';
+                result += that.mapping[resultobj['admin']['in_doaj']]['text'];
+                result += '</span>';
+                field += result;
+            } else {
+                field += resultobj['admin']['in_doaj'];
+            }
+            if (field === "") {
+                return false
+            }
+            return field
+        }
+        return false;
+    };
+    return that;
+})();
+
+fv_in_doaj.mapping = {
+    false: {"text": "No", "class": "red"},
+    true: {"text": "Yes", "class": "green"},
+}

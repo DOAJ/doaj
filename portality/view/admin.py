@@ -1,5 +1,6 @@
 import json
 import re
+from datetime import datetime
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
@@ -27,6 +28,7 @@ else:
     from collections import OrderedDict
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
+ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 
 blueprint = Blueprint('admin', __name__)
 
@@ -63,10 +65,31 @@ def journal_page(journal_id):
 
     with open('country-codes.json', 'rb') as f:
         countries = json.loads(f.read())
-    countries = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name']))
+    countries = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name'])).items()
     country_options = [('','')]
-    for code, country_info in countries.items():
+    country_options_two_char_code_index = []
+    for code, country_info in countries:
         country_options.append((code, country_info['name']))
+        country_options_two_char_code_index.append(code)
+
+    current_country = j.bibjson().country
+    country_help_text = ''
+    if current_country:
+        if current_country not in country_options_two_char_code_index:
+            for two_char_code, info in countries:
+                if current_country.lower() == info['name'].lower():
+                    current_country = two_char_code
+                    break
+                
+                if current_country.upper() == info['ISO3166-1-Alpha-3']:
+                    current_country = two_char_code
+                    break
+
+        if current_country not in country_options_two_char_code_index:
+            # couldn't find it, better warn the user to look for it
+            # themselves
+            country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
+                                
 
     license_options = [
         ('', ''),
@@ -103,14 +126,6 @@ def journal_page(journal_id):
             else:
                 self.data = []
 
-    class IntegerAsStringField(Field):
-        widget = TextInput()
-    
-        def _value(self):
-            if self.data:
-                return unicode(str(self.data))
-            return u''
-
     class OptionalIf(validators.Optional):
         # a validator which makes a field optional if
         # another field is set and has a truthy value
@@ -126,44 +141,39 @@ def journal_page(journal_id):
             if bool(other_field.data):
                 super(OptionalIf, self).__call__(form, field)
 
-    def validate_issn_list(id_type):
-
-        def _validate_issn_list(form, field):
-            data = field.get_list()
-            if not data:
-                return True
-
-            error = '{id_type} #{which} is not valid. An {id_type} should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If the {id_type} is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
-            for idx, issn in enumerate(data, start=1):
-                if not ISSN_REGEX.match(issn):
-                    raise validators.ValidationError(error.format(id_type=id_type, which=idx))
-        return _validate_issn_list
-
     class JournalForm(Form):
+        
         in_doaj = BooleanField('In DOAJ?')
-        url = TextField('URL', [validators.Required()])
+        url = TextField('URL', [validators.Required(), validators.URL()])
         title = TextField('Journal Title', [validators.Required()])
-        pissn = TagListField('Journal ISSN', [OptionalIf('eissn'), validate_issn_list(id_type='ISSN')], description='(<strong>use commas</strong> to separate multiple ISSN-s)')
-        eissn = TagListField('Journal EISSN', [OptionalIf('pissn'), validate_issn_list(id_type='EISSN')], description='(<strong>use commas</strong> to separate multiple EISSN-s)')
+        alternative_title = TextField('Alternative Title', [validators.Optional()])
+        pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+        eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
         publisher = TextField('Publisher', [validators.Required()])
-        oa_start_year = IntegerAsStringField('Start year since online full text content is available', [validators.Required(), validators.NumberRange(min=1600)])
-        country = SelectField('Country', [validators.Required()], choices=country_options)
+        provider = TextField('Provider', [validators.Optional()])
+        oa_start_year = IntegerField('Year in which the journal <strong>started</strong> publishing OA content', [validators.Required(), validators.NumberRange(min=1600)])
+        oa_end_year = IntegerField('Year in which the journal <strong>stopped</strong> publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
+        country = SelectField('Country', [validators.Required()], choices=country_options, description='<span class="red">' + country_help_text + '</span>')
         license = SelectField('Creative Commons (CC) License, if any', [validators.Optional()], choices=license_options)
         author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
-        author_pays_url = TextField('Author pays - guide link', [validators.Optional()])
+        author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])
         keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
         languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
     
+
     current_info = {
         'in_doaj': j.is_in_doaj(),
         'url': j.bibjson().get_single_url(urltype='homepage'),
         'title': j.bibjson().title,
-        'pissn': j.bibjson().get_identifiers(j.bibjson().P_ISSN),
-        'eissn': j.bibjson().get_identifiers(j.bibjson().E_ISSN),
+        'alternative_title': j.bibjson().alternative_title,
+        'pissn': j.bibjson().get_one_identifier(j.bibjson().P_ISSN),
+        'eissn': j.bibjson().get_one_identifier(j.bibjson().E_ISSN),
         'publisher': j.bibjson().publisher,
+        'provider': j.bibjson().provider,
         'oa_start_year': j.bibjson().oa_start.get('year', ''),
-        'country': j.bibjson().country,
-        'license': j.bibjson().get_license(),
+        'oa_end_year': j.bibjson().oa_end.get('year', ''),
+        'country': current_country,
+        'license': j.bibjson().get_license_type(),
         'author_pays': j.bibjson().author_pays,
         'author_pays_url': j.bibjson().author_pays_url,
         'keywords': j.bibjson().keywords,
@@ -171,25 +181,38 @@ def journal_page(journal_id):
     }
 
     form = JournalForm(request.form, **current_info)
-    if request.method == 'POST' and form.validate():
-        nj = j
-        nj.bibjson().active = form.in_doaj.data
-        nj.set_in_doaj(form.in_doaj.data)
-        nj.bibjson().update_url(form.url.data, 'homepage')
-        nj.bibjson().title = form.title.data
-        nj.bibjson().update_identifiers(nj.bibjson().P_ISSN, form.pissn.get_list())
-        nj.bibjson().update_identifiers(nj.bibjson().E_ISSN, form.eissn.get_list())
-        nj.bibjson().publisher = form.publisher.data
-        nj.bibjson().set_oa_start(year=form.oa_start_year.data)
-        nj.bibjson().country = form.country.data
-        nj.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
-        nj.bibjson().author_pays = form.author_pays.data
-        nj.bibjson().author_pays_url = form.author_pays_url.data
-        nj.bibjson().set_keywords(form.keywords.data)
-        nj.bibjson().set_language(form.languages.data)
-        nj.save()
+    there_were_errors = False
+    if request.method == 'POST':
+        if form.validate():
+            nj = j
+            nj.bibjson().active = form.in_doaj.data
+            nj.set_in_doaj(form.in_doaj.data)
+            nj.bibjson().update_url(form.url.data, 'homepage')
+            nj.bibjson().title = form.title.data
+            nj.bibjson().alternative_title = form.alternative_title.data
+            nj.bibjson().update_identifier(nj.bibjson().P_ISSN, form.pissn.data)
+            nj.bibjson().update_identifier(nj.bibjson().E_ISSN, form.eissn.data)
+            nj.bibjson().publisher = form.publisher.data
+            nj.bibjson().provider = form.provider.data
+            nj.bibjson().set_oa_start(year=form.oa_start_year.data)
+            nj.bibjson().set_oa_end(year=form.oa_end_year.data)
+            nj.bibjson().country = form.country.data
+            nj.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
+            nj.bibjson().author_pays = form.author_pays.data
+            nj.bibjson().author_pays_url = form.author_pays_url.data
+            nj.bibjson().set_keywords(form.keywords.data)
+            nj.bibjson().set_language(form.languages.data)
+            nj.save()
+            return redirect(url_for('admin.journal_page', journal_id=journal_id))  # observe the POST->redirect pattern
+        else:
+            there_were_errors = True
 
-    return render_template("admin/journal.html", form=form, journal=j, admin_page=True)
+    subject_strings = []
+    for sub in j.bibjson().subjects():
+        subject_strings.append('[{scheme}] {term}'.format(scheme=sub.get('scheme'), term=sub.get('term')))
+    subject_final_str = ', '.join(subject_strings)
+
+    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subject_final_str, there_were_errors=there_were_errors)
 
 @blueprint.route("/suggestions")
 @login_required

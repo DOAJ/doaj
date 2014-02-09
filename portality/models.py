@@ -74,16 +74,30 @@ class GenericBibJSON(object):
                 ids.append(identifier.get("id"))
         return ids
 
-    def update_identifiers(self, idtype, new_values):
+    def get_one_identifier(self, idtype=None):
+        results = self.get_identifiers(idtype=idtype)
+        if results:
+            return results[0]
+        else:
+            return None
+
+    def update_identifier(self, idtype, new_value):
+        if not new_value:
+            self.remove_identifiers(idtype=idtype)
+            return
+
         if 'identifier' not in self.bibjson:
-            self.bibjson['identifier'] = []
+            return
 
-        new_ids = []
-        for v in new_values:
-            new_id = {'type': idtype, 'id': v}
-            new_ids.append(deepcopy(new_id))
+        if not self.get_one_identifier(idtype):
+            self.add_identifier(idtype, new_value)
+            return
 
-        self.bibjson['identifier'] = new_ids
+        # so an old identifier does actually exist, and we actually want
+        # to update it
+        for id_ in self.bibjson['identifier']:
+            if id_['type'] == idtype:
+                id_['id'] = new_value
     
     def remove_identifiers(self, idtype=None, id=None):
         # if we are to remove all identifiers, this is easy
@@ -607,6 +621,10 @@ class JournalBibJSON(GenericBibJSON):
     def set_license(self, license_title, license_type, url=None, version=None, open_access=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
+
+        if not license_title and not license_type:  # something wants to delete the license
+            del self.bibjson['license']
+            return
         
         lobj = {"title" : license_title, "type" : license_type}
         if url is not None:
@@ -616,10 +634,19 @@ class JournalBibJSON(GenericBibJSON):
         if open_access is not None:
             lobj["open_access"] = open_access
         
-        self.bibjson["license"].append(lobj)
+        if len(self.bibjson['license']) >= 1:
+            self.bibjson["license"][0] = lobj
+        else:
+            self.bibjson["license"].append(lobj)
     
     def get_license(self):
         return self.bibjson.get("license", [None])[0]
+
+    def get_license_type(self):
+        lobj = self.get_license()
+        if lobj:
+            return lobj['type']
+        return None
     
     def set_open_access(self, open_access):
         if "license" not in self.bibjson:

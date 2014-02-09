@@ -23,6 +23,7 @@ jQuery(document).ready(function($) {
         "links" : fv_links,
         "issns" : fv_issns,
         "edit_journal": fv_edit_journal,
+        "in_doaj": fv_in_doaj,
     },
     hide_inactive_facets: true,
     facets: [
@@ -74,7 +75,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre" : "<strong>In DOAJ?</strong>: ",
-                "field" : "admin.in_doaj"
+                "field" : "in_doaj"
             }
         ],
         [
