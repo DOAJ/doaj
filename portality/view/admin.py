@@ -41,14 +41,15 @@ def restrict():
 @blueprint.route('/')
 @login_required
 def index():
-    return render_template('admin/index.html')
+    return render_template('admin/index.html', admin_page=True)
 
 @blueprint.route("/journals")
 @login_required
 def journals():
     return render_template('admin/journals.html',
                search_page=True,
-               facetviews=['journals']
+               facetviews=['journals'],
+               admin_page=True
            )
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
@@ -188,14 +189,15 @@ def journal_page(journal_id):
         nj.bibjson().set_language(form.languages.data)
         nj.save()
 
-    return render_template("admin/journal.html", form=form, journal=j)
+    return render_template("admin/journal.html", form=form, journal=j, admin_page=True)
 
 @blueprint.route("/suggestions")
 @login_required
 def suggestions():
     return render_template('admin/suggestions.html',
                search_page=True,
-               facetviews=['suggestions']
+               facetviews=['suggestions'],
+               admin_page=True
            )
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
@@ -208,7 +210,7 @@ def suggestion_page(suggestion_id):
         abort(404)
         
     if request.method == "GET":
-        return render_template("admin/suggestion.html", suggestion=s)
+        return render_template("admin/suggestion.html", suggestion=s, admin_page=True)
 
     elif request.method == "POST":
         req = json.loads(request.data)

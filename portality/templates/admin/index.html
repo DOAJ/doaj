@@ -1,15 +1,17 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
-<div class="span6">
-  <div class="big box with-borders">
-    <a href="{{ url_for('admin.journals') }}">Journals</a>
+<div class="row-fluid">
+  <div class="span6">
+    <div class="big box with-borders">
+      <a href="{{ url_for('admin.journals') }}">Journals</a>
+    </div>
   </div>
-</div>
-
-<div class="span6">
-  <div class="big box with-borders">
-    <a href="{{ url_for('admin.suggestions') }}">Suggestions</a>
+  
+  <div class="span6">
+    <div class="big box with-borders">
+      <a href="{{ url_for('admin.suggestions') }}">Suggestions</a>
+    </div>
   </div>
 </div>
 {% endblock %}
