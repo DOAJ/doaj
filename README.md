@@ -54,28 +54,34 @@ It is likely that history records will only be created upon request by the admin
     {
         "id" : "<some opaque identifier>",
         "bibjson" : {
+            "active" : true|false,
             "title" : "The title of the journal",
-            "alternative_title" : "An alternative title for the journal",
             "identifier": [
                 {"type" : "pissn", "id" : "<print issn>"},
                 {"type" : "eissn", "id" : "<electronic issn>"},
             ],
             "keywords" : [<list of free-text keywords>],
             "language" : ["The language of the journal"],
-            "author_pays_url" : "<charging link>",
-            "author_pays" : true|false,
             "country" : "<country of journal publication>",
-            "license" : [
+            "publisher" : "<publisher>",
+            "provider" : "<journal provider if different from publisher>",
+            "institution" : "<society or institution responsible for journal>",
+            "platform" : "<service provider or platform used for journal>",
+            "link": [
+                {"type" : "homepage", "url" : "<url>"},
+                {"type" : "waiver_policy", "url" : "<url>"},
+                {"type" : "editorial_board", "url" : "<url>"},
+                {"type" : "aims_scope", "url" : "<url>"},
+                {"type" : "author_instructions", "url" : "<url>"},
+                {"type" : "oa_statement", "url" : "<url>"}
+            ],
+            "subject" : [
                 {
-                    "title" : "<name of licence>",
-                    "type" : "<type>", 
-                    "url" : "<url>", 
-                    "version" : "<version>",
-                    "open_access": true|false,
+                    "scheme" : "<scheme>", 
+                    "term" : "<term>"
                 }
             ],
-            "publisher" : "<publisher>",
-            "link": [{"url" : "<url>"}],
+            
             "oa_start" : {
                 "year" : "<year>", 
                 "volume" : "<volume>", 
@@ -86,14 +92,48 @@ It is likely that history records will only be created upon request by the admin
                 "volume" : "<volume>", 
                 "number" : "<issue number>"
             },
-            "provider" : "<journal provider if different from publisher>",
-            "active" : true|false,
-            "subject" : [
-                {
-                    "scheme" : "<scheme>", 
-                    "term" : "<term>"
-                }
+            "apc" : {
+                "currency" : "<currency code>",
+                "average_price" : "<average price of APC>"
+            },
+            "asc" : {
+                "currency" : "<currency code>",
+                "average_price" : "<average price of submission charge>"
+            },
+            "archiving_policy" : [
+                {"policy" : "<policy type (e.g. LOCKSS)>", "url" : "<url to policy>"}
+            ],
+            "editorial_review" : {
+                "process" : "<type of editorial review process>",
+                "url" : "<url to info about editorial review process>"
+            },
+            "plagiarism_detection" : {
+                "detection": true|false, # is there plagiarism detection
+                "url" : "<url to info about plagiarism detection>"
+            },
+            "deposit_policy" : [
+                {"policy" : "<policy type (e.g. Sherpa/Romeo)>", "url" : "<url to policy>"}
             ]
+            "allows_fulltext_indexing" : true|false,
+            "persistent_identifier_schemes" : [<list of names of pid schemes>],
+            "article_statistics" : true|false, # does the journal provide download statistics
+            "format" : [<list of mimetypes of fulltext formats available>]
+            "publication_time" : "<average time in weeks to publication>"
+            "license" : [
+                {
+                    "title" : "<name of licence>",
+                    "type" : "<type>", 
+                    "url" : "<url>", 
+                    "version" : "<version>",
+                    "open_access": true|false, # is the licence BOAI compliant
+                    "embedded" : true|false # is the licence metadata embedded in the article pages>
+                }
+            ],
+            
+            # Deprecated - may be removed
+            "alternative_title" : "An alternative title for the journal",
+            "author_pays_url" : "<charging link>",
+            "author_pays" : true|false
         },
         "history" : [
             {
@@ -104,13 +144,20 @@ It is likely that history records will only be created upon request by the admin
             }
         ]
         "suggestion" : {
-            "description" : "description of the journal's activities",
             "suggester" : { 
                 "name" : "name of person suggesting journal",
                 "email" : "email of person suggesting journal"
             },
+            "suggested_on" : "<date of suggestion>",
+            "articles_last_year" : {
+                "count" : "<number of articles published last year>",
+                "url" : "<link to proof of above number>"
+            },
+            "article_metadata" : true|false
+            
+            # Deprecated - may be removed
+            "description" : "description of the journal's activities",
             "suggested_by_owner" : true|false,
-            "suggested_on" : "<date of suggestion>"
         },
         "admin" : {
             "in_doaj" : true|false,
