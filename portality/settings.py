@@ -35,6 +35,12 @@ PUBLIC_ACCESSIBLE_JSON = True
 
 SUPER_USER_ROLE = "admin"
 
+# remember people are logged in across subdomains
+# without this, people who log into doaj.org will be asked to login
+# again on www.doaj.org
+REMEMBER_COOKIE_DOMAIN = '.' + DOMAIN
+
+
 # FIXME: something like this required for hierarchical roles, but not yet needed
 #ROLE_MAP = {
 #    "admin" : {"publisher", "create_user"}
