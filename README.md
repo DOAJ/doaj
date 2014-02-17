@@ -51,7 +51,7 @@ It is likely that history records will only be created upon request by the admin
 
 ### Journal Data Model
 
-```json
+```python
 {
     "id" : "<some opaque identifier>",
     "bibjson" : {
@@ -216,7 +216,7 @@ It is likely that history records will only be created upon request by the admin
 
 ### Article Data Model
 
-```json
+```python
 {
     "id" : "<some opaque identifier>",
     "admin" : {
