@@ -51,244 +51,244 @@ It is likely that history records will only be created upon request by the admin
 
 ### Journal Data Model
 
-    ```json
-    {
-        "id" : "<some opaque identifier>",
-        "bibjson" : {
-            "active" : true|false,
-            "title" : "The title of the journal",
-            "alternative_title" : "An alternative title for the journal",
-            "identifier": [
-                {"type" : "pissn", "id" : "<print issn>"},
-                {"type" : "eissn", "id" : "<electronic issn>"},
-            ],
-            "keywords" : [<list of free-text keywords>],
-            "language" : ["The language of the journal"],
-            "country" : "<country of journal publication>",
-            "publisher" : "<publisher>",
-            "provider" : "<service provider or platform used for journal>",
-            "institution" : "<society or institution responsible for journal>",
-            "link": [
-                {"type" : "homepage", "url" : "<url>"},
-                {"type" : "waiver_policy", "url" : "<url>"},
-                {"type" : "editorial_board", "url" : "<url>"},
-                {"type" : "aims_scope", "url" : "<url>"},
-                {"type" : "author_instructions", "url" : "<url>"},
-                {"type" : "oa_statement", "url" : "<url>"}
-            ],
-            "subject" : [
-                {
-                    "scheme" : "<scheme>", 
-                    "term" : "<term>"
-                }
-            ],
-            
-            "oa_start" : {
-                "year" : "<year>", 
-                "volume" : "<volume>", # Deprecated - may be removed
-                "number" : "<issue number>" # Deprecated - may be removed
-            },
-            "oa_end" : {
-                "year" : "<year>", 
-                "volume" : "<volume>", # Deprecated - may be removed
-                "number" : "<issue number>" # Deprecated - may be removed
-            },
-            "apc" : {
-                "currency" : "<currency code>",
-                "average_price" : "<average price of APC>"
-            },
-            "submission_charges" : {
-                "currency" : "<currency code>",
-                "average_price" : "<average price of submission charge>"
-            },
-            "archiving_policy" : {
-                "policy" : ["<policy type (e.g. LOCKSS)>"]
-                "url" : "<url to policy information page>"
-            },
-            "editorial_review" : {
-                "process" : "<type of editorial review process>",
-                "url" : "<url to info about editorial review process>"
-            },
-            "plagiarism_detection" : {
-                "detection": true|false, # is there plagiarism detection
-                "url" : "<url to info about plagiarism detection>"
-            },
-            "article_statistics" : {
-                "statistics" : true|false
-                "url" : "<url for info about article statistics>"
-            },
-            "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
-            "author_copyright" : {
-                "from" : "<year statement is valid from>",
-                "copyright" : true|false
-            },
-            "author_publishing_rights" : {
-                "from" : "<year statement is valid from>",
-                "publishing_rights" : true|false
+```json
+{
+    "id" : "<some opaque identifier>",
+    "bibjson" : {
+        "active" : true|false,
+        "title" : "The title of the journal",
+        "alternative_title" : "An alternative title for the journal",
+        "identifier": [
+            {"type" : "pissn", "id" : "<print issn>"},
+            {"type" : "eissn", "id" : "<electronic issn>"},
+        ],
+        "keywords" : [<list of free-text keywords>],
+        "language" : ["The language of the journal"],
+        "country" : "<country of journal publication>",
+        "publisher" : "<publisher>",
+        "provider" : "<service provider or platform used for journal>",
+        "institution" : "<society or institution responsible for journal>",
+        "link": [
+            {"type" : "homepage", "url" : "<url>"},
+            {"type" : "waiver_policy", "url" : "<url>"},
+            {"type" : "editorial_board", "url" : "<url>"},
+            {"type" : "aims_scope", "url" : "<url>"},
+            {"type" : "author_instructions", "url" : "<url>"},
+            {"type" : "oa_statement", "url" : "<url>"}
+        ],
+        "subject" : [
+            {
+                "scheme" : "<scheme>", 
+                "term" : "<term>"
             }
-            "allows_fulltext_indexing" : true|false,
-            "persistent_identifier_schemes" : [<list of names of pid schemes>],
-            "article_statistics" : true|false, # does the journal provide download statistics
-            "format" : [<list of mimetypes of fulltext formats available>]
-            "publication_time" : "<average time in weeks to publication>"
+        ],
+        
+        "oa_start" : {
+            "year" : "<year>", 
+            "volume" : "<volume>", # Deprecated - may be removed
+            "number" : "<issue number>" # Deprecated - may be removed
+        },
+        "oa_end" : {
+            "year" : "<year>", 
+            "volume" : "<volume>", # Deprecated - may be removed
+            "number" : "<issue number>" # Deprecated - may be removed
+        },
+        "apc" : {
+            "currency" : "<currency code>",
+            "average_price" : "<average price of APC>"
+        },
+        "submission_charges" : {
+            "currency" : "<currency code>",
+            "average_price" : "<average price of submission charge>"
+        },
+        "archiving_policy" : {
+            "policy" : ["<policy type (e.g. LOCKSS)>"]
+            "url" : "<url to policy information page>"
+        },
+        "editorial_review" : {
+            "process" : "<type of editorial review process>",
+            "url" : "<url to info about editorial review process>"
+        },
+        "plagiarism_detection" : {
+            "detection": true|false, # is there plagiarism detection
+            "url" : "<url to info about plagiarism detection>"
+        },
+        "article_statistics" : {
+            "statistics" : true|false
+            "url" : "<url for info about article statistics>"
+        },
+        "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
+        "author_copyright" : {
+            "from" : "<year statement is valid from>",
+            "copyright" : true|false
+        },
+        "author_publishing_rights" : {
+            "from" : "<year statement is valid from>",
+            "publishing_rights" : true|false
+        }
+        "allows_fulltext_indexing" : true|false,
+        "persistent_identifier_schemes" : [<list of names of pid schemes>],
+        "article_statistics" : true|false, # does the journal provide download statistics
+        "format" : [<list of mimetypes of fulltext formats available>]
+        "publication_time" : "<average time in weeks to publication>"
+        "license" : [
+            {
+                "title" : "<name of licence>",
+                "type" : "<type>", 
+                "url" : "<url>", 
+                "version" : "<version>",
+                "open_access": true|false, # is the licence BOAI compliant
+                "embedded" : true|false # is the licence metadata embedded in the article pages>
+            }
+        ],
+        
+        # Require migration to "apc"
+        "author_pays_url" : "<charging link>",
+        "author_pays" : true|false
+    },
+    "history" : [
+        {
+            "date" : "<date history object created>",
+            "replaces" : [<list of p/e-issns this record immediately supersedes than>],
+            "isreplacedby" : [<list of p/e-issns that this record is immediately superseded by>]
+            "bibjson" : { <snapshot of historic bibjson record> }
+        }
+    ]
+    "suggestion" : {
+        "suggester" : { 
+            "name" : "name of person suggesting journal",
+            "email" : "email of person suggesting journal"
+        },
+        "suggested_on" : "<date of suggestion>",
+        "articles_last_year" : {
+            "count" : "<number of articles published last year>",
+            "url" : "<link to proof of above number>"
+        },
+        "article_metadata" : true|false
+        
+        # Deprecated - may be removed
+        "description" : "description of the journal's activities",
+        "suggested_by_owner" : true|false,
+    },
+    "admin" : {
+        "in_doaj" : true|false,
+        "application_status" : "state of journal application",
+        "notes" : [
+            {
+                "note" : "<note>", 
+                "date" : "<date>"
+            }
+        ],
+        "owner_correspondence" : [
+            {
+                "note" : "<note>", 
+                "date" : "<date>"
+            }
+        ],
+        "contact" : [
+            { 
+                "email" : "<email of journal contact>",
+                "name" : "<name of journal contact>"
+            }
+        ]
+    },
+    "index" : {
+        "issn" : [<list of all print and electronic issns for all time>],
+        "title" : [<list of all titles the journal has been known by>],
+        "subject" : [<all possible subject keywords>],
+        "schema_subject" : [<all subject keywords with schema prefixes>],
+        "classification" : [<list of classification terms without prefixes>],
+        "language" : [<list of languages of the journal>],
+        "country" : "<country of journal publication>",
+        "license" : [<list of titles of licences>],
+        "publisher" : "<publisher>",
+        "homepage_url" : "<homepage url>",
+        "waiver_policy_url" : "<waiver policy url>",
+        "editorial_board_url" : "<editorial board url>",
+        "aims_scope_url" : "<aims and scope url>",
+        "author_instructions_url" : "<author instructions url>",
+        "oa_statement_url" : "<OA statment url>"
+    },
+    "created_date" : "<date created>",
+    "last_updated" : "<date record last modified>"
+}
+```
+
+### Article Data Model
+
+```json
+{
+    "id" : "<some opaque identifier>",
+    "admin" : {
+        "in_doaj" : true|false
+    },
+    "bibjson" : {
+        "title" : "<title of the article>",
+        "identifier": [
+            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"},
+            {"type" : "pissn", "id" : "<print issn>"},
+            {"type" : "eissn", "id" : "<electronic issn>"}
+        ],
+        "journal" : {
+            "volume" : "journal volume number",
+            "number" : "journal issue number",
+            "publisher" : "<publisher>",
+            "title" : "<journal title (taken from journal record)>"
             "license" : [
                 {
                     "title" : "<name of licence>",
                     "type" : "<type>", 
                     "url" : "<url>", 
                     "version" : "<version>",
-                    "open_access": true|false, # is the licence BOAI compliant
-                    "embedded" : true|false # is the licence metadata embedded in the article pages>
+                    "open_access": true|false,
                 }
             ],
-            
-            # Require migration to "apc"
-            "author_pays_url" : "<charging link>",
-            "author_pays" : true|false
+            "language" : "<language of journal as a whole>",
+            "country" : "<country of publication>"
         },
-        "history" : [
+        "year" : "<year of publication>",
+        "month" : "<month of publicaiton>",
+        "start_page" : "<start page>",
+        "end_page" : "<end page>",
+        "link" : [
             {
-                "date" : "<date history object created>",
-                "replaces" : [<list of p/e-issns this record immediately supersedes than>],
-                "isreplacedby" : [<list of p/e-issns that this record is immediately superseded by>]
-                "bibjson" : { <snapshot of historic bibjson record> }
+                "url" : "<fulltext url>",
+                "type" : "fulltext"
+            }
+        ],
+        "abstract" : "<the abstract>",
+        "author" : [
+            {"name" : "<author name>"},
+        ],
+        "keywords" : [<list of free text keywords>],
+        "subject" : [
+            {
+                "scheme" : "<subject scheme>",
+                "term" : "<subject term>"
             }
         ]
-        "suggestion" : {
-            "suggester" : { 
-                "name" : "name of person suggesting journal",
-                "email" : "email of person suggesting journal"
-            },
-            "suggested_on" : "<date of suggestion>",
-            "articles_last_year" : {
-                "count" : "<number of articles published last year>",
-                "url" : "<link to proof of above number>"
-            },
-            "article_metadata" : true|false
-            
-            # Deprecated - may be removed
-            "description" : "description of the journal's activities",
-            "suggested_by_owner" : true|false,
-        },
-        "admin" : {
-            "in_doaj" : true|false,
-            "application_status" : "state of journal application",
-            "notes" : [
-                {
-                    "note" : "<note>", 
-                    "date" : "<date>"
-                }
-            ],
-            "owner_correspondence" : [
-                {
-                    "note" : "<note>", 
-                    "date" : "<date>"
-                }
-            ],
-            "contact" : [
-                { 
-                    "email" : "<email of journal contact>",
-                    "name" : "<name of journal contact>"
-                }
-            ]
-        },
-        "index" : {
-            "issn" : [<list of all print and electronic issns for all time>],
-            "title" : [<list of all titles the journal has been known by>],
-            "subject" : [<all possible subject keywords>],
-            "schema_subject" : [<all subject keywords with schema prefixes>],
-            "classification" : [<list of classification terms without prefixes>],
-            "language" : [<list of languages of the journal>],
-            "country" : "<country of journal publication>",
-            "license" : [<list of titles of licences>],
-            "publisher" : "<publisher>",
-            "homepage_url" : "<homepage url>",
-            "waiver_policy_url" : "<waiver policy url>",
-            "editorial_board_url" : "<editorial board url>",
-            "aims_scope_url" : "<aims and scope url>",
-            "author_instructions_url" : "<author instructions url>",
-            "oa_statement_url" : "<OA statment url>"
-        },
-        "created_date" : "<date created>",
-        "last_updated" : "<date record last modified>"
-    }
-    ```
-
-### Article Data Model
-
-    ```json
-    {
-        "id" : "<some opaque identifier>",
-        "admin" : {
-            "in_doaj" : true|false
-        },
-        "bibjson" : {
-            "title" : "<title of the article>",
-            "identifier": [
-                {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"},
-                {"type" : "pissn", "id" : "<print issn>"},
-                {"type" : "eissn", "id" : "<electronic issn>"}
-            ],
-            "journal" : {
-                "volume" : "journal volume number",
-                "number" : "journal issue number",
-                "publisher" : "<publisher>",
-                "title" : "<journal title (taken from journal record)>"
-                "license" : [
-                    {
-                        "title" : "<name of licence>",
-                        "type" : "<type>", 
-                        "url" : "<url>", 
-                        "version" : "<version>",
-                        "open_access": true|false,
-                    }
-                ],
-                "language" : "<language of journal as a whole>",
-                "country" : "<country of publication>"
-            },
-            "year" : "<year of publication>",
-            "month" : "<month of publicaiton>",
-            "start_page" : "<start page>",
-            "end_page" : "<end page>",
-            "link" : [
-                {
-                    "url" : "<fulltext url>",
-                    "type" : "fulltext"
-                }
-            ],
-            "abstract" : "<the abstract>",
-            "author" : [
-                {"name" : "<author name>"},
-            ],
-            "keywords" : [<list of free text keywords>],
-            "subject" : [
-                {
-                    "scheme" : "<subject scheme>",
-                    "term" : "<subject term>"
-                }
-            ]
-        },
-        "history" : [
-            {
-                "date" : "<date history record created>",
-                "bibjson" : { <historic bibjson record> }
-            }
-        ]
-        "index" : {
-            "date" : "<date of publication>"
-            "issn" : [<list of all issns that this item pertains to>],
-            "subject" : [<all possible subject keywords>],
-            "schema_subject" : [<all subject keywords with schema prefixes>],
-            "classification" : [<list of classification terms without prefixes>],
-            "language" : [<list of languages of the journal>],
-            "country" : "<country of journal publication>",
-            "license" : [<list of titles of licences>],
-            "publisher" : "<publisher>"
-        },
-        "created" : "<date created>",
-        "last_modified" : "<date record last modified>"
-    }
-    ```
+    },
+    "history" : [
+        {
+            "date" : "<date history record created>",
+            "bibjson" : { <historic bibjson record> }
+        }
+    ]
+    "index" : {
+        "date" : "<date of publication>"
+        "issn" : [<list of all issns that this item pertains to>],
+        "subject" : [<all possible subject keywords>],
+        "schema_subject" : [<all subject keywords with schema prefixes>],
+        "classification" : [<list of classification terms without prefixes>],
+        "language" : [<list of languages of the journal>],
+        "country" : "<country of journal publication>",
+        "license" : [<list of titles of licences>],
+        "publisher" : "<publisher>"
+    },
+    "created" : "<date created>",
+    "last_modified" : "<date record last modified>"
+}
+```
 
 NOTE: there's an argument for putting the issn identifiers inside the journal part of the bibjson, rather than at the root of the bibliographic record, but this creates some annoying complexities in the software implementation and its API for interacting with identifiers, so it has not yet been done.  Sould it be?  The same goes for the subject, which currently comes from the journal record, but which can effectively be applied the the article too.
 
