@@ -51,6 +51,7 @@ It is likely that history records will only be created upon request by the admin
 
 ### Journal Data Model
 
+    ```json
     {
         "id" : "<some opaque identifier>",
         "bibjson" : {
@@ -211,9 +212,11 @@ It is likely that history records will only be created upon request by the admin
         "created_date" : "<date created>",
         "last_updated" : "<date record last modified>"
     }
+    ```
 
 ### Article Data Model
 
+    ```json
     {
         "id" : "<some opaque identifier>",
         "admin" : {
@@ -285,6 +288,7 @@ It is likely that history records will only be created upon request by the admin
         "created" : "<date created>",
         "last_modified" : "<date record last modified>"
     }
+    ```
 
 NOTE: there's an argument for putting the issn identifiers inside the journal part of the bibjson, rather than at the root of the bibliographic record, but this creates some annoying complexities in the software implementation and its API for interacting with identifiers, so it has not yet been done.  Sould it be?  The same goes for the subject, which currently comes from the journal record, but which can effectively be applied the the article too.
 
