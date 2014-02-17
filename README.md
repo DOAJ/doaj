@@ -56,6 +56,7 @@ It is likely that history records will only be created upon request by the admin
         "bibjson" : {
             "active" : true|false,
             "title" : "The title of the journal",
+            "alternative_title" : "An alternative title for the journal",
             "identifier": [
                 {"type" : "pissn", "id" : "<print issn>"},
                 {"type" : "eissn", "id" : "<electronic issn>"},
@@ -64,9 +65,8 @@ It is likely that history records will only be created upon request by the admin
             "language" : ["The language of the journal"],
             "country" : "<country of journal publication>",
             "publisher" : "<publisher>",
-            "provider" : "<journal provider if different from publisher>",
+            "provider" : "<service provider or platform used for journal>",
             "institution" : "<society or institution responsible for journal>",
-            "platform" : "<service provider or platform used for journal>",
             "link": [
                 {"type" : "homepage", "url" : "<url>"},
                 {"type" : "waiver_policy", "url" : "<url>"},
@@ -84,25 +84,26 @@ It is likely that history records will only be created upon request by the admin
             
             "oa_start" : {
                 "year" : "<year>", 
-                "volume" : "<volume>", 
-                "number" : "<issue number>"
+                "volume" : "<volume>", # Deprecated - may be removed
+                "number" : "<issue number>" # Deprecated - may be removed
             },
             "oa_end" : {
                 "year" : "<year>", 
-                "volume" : "<volume>", 
-                "number" : "<issue number>"
+                "volume" : "<volume>", # Deprecated - may be removed
+                "number" : "<issue number>" # Deprecated - may be removed
             },
             "apc" : {
                 "currency" : "<currency code>",
                 "average_price" : "<average price of APC>"
             },
-            "asc" : {
+            "submission_charges" : {
                 "currency" : "<currency code>",
                 "average_price" : "<average price of submission charge>"
             },
-            "archiving_policy" : [
-                {"policy" : "<policy type (e.g. LOCKSS)>", "url" : "<url to policy>"}
-            ],
+            "archiving_policy" : {
+                "policy" : ["<policy type (e.g. LOCKSS)>"]
+                "url" : "<url to policy information page>"
+            },
             "editorial_review" : {
                 "process" : "<type of editorial review process>",
                 "url" : "<url to info about editorial review process>"
@@ -111,9 +112,19 @@ It is likely that history records will only be created upon request by the admin
                 "detection": true|false, # is there plagiarism detection
                 "url" : "<url to info about plagiarism detection>"
             },
-            "deposit_policy" : [
-                {"policy" : "<policy type (e.g. Sherpa/Romeo)>", "url" : "<url to policy>"}
-            ]
+            "article_statistics" : {
+                "statistics" : true|false
+                "url" : "<url for info about article statistics>"
+            },
+            "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
+            "author_copyright" : {
+                "from" : "<year statement is valid from>",
+                "copyright" : true|false
+            },
+            "author_publishing_rights" : {
+                "from" : "<year statement is valid from>",
+                "publishing_rights" : true|false
+            }
             "allows_fulltext_indexing" : true|false,
             "persistent_identifier_schemes" : [<list of names of pid schemes>],
             "article_statistics" : true|false, # does the journal provide download statistics
@@ -130,8 +141,7 @@ It is likely that history records will only be created upon request by the admin
                 }
             ],
             
-            # Deprecated - may be removed
-            "alternative_title" : "An alternative title for the journal",
+            # Require migration to "apc"
             "author_pays_url" : "<charging link>",
             "author_pays" : true|false
         },
@@ -190,13 +200,17 @@ It is likely that history records will only be created upon request by the admin
             "language" : [<list of languages of the journal>],
             "country" : "<country of journal publication>",
             "license" : [<list of titles of licences>],
-            "publisher" : "<publisher>"
+            "publisher" : "<publisher>",
+            "homepage_url" : "<homepage url>",
+            "waiver_policy_url" : "<waiver policy url>",
+            "editorial_board_url" : "<editorial board url>",
+            "aims_scope_url" : "<aims and scope url>",
+            "author_instructions_url" : "<author instructions url>",
+            "oa_statement_url" : "<OA statment url>"
         },
         "created_date" : "<date created>",
         "last_updated" : "<date record last modified>"
     }
-
-
 
 ### Article Data Model
 
