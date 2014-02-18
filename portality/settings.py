@@ -14,7 +14,8 @@ SUPPRESS_ERROR_EMAILS = False  # should be set to False in production and True i
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
-DOMAIN = "doaj.cottagelabs.com"  # facetview needs to access it like a user would, because well, it does run client-side
+# DOMAIN = "doaj.cottagelabs.com"  # facetview needs to access it like a user would, because well, it does run client-side
+DOMAIN = "localhost:5004"
 DEBUG = True
 PORT = 5004
 
@@ -78,7 +79,8 @@ MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 # QUERY SETTINGS
 
 # list index types that should not be queryable via the query endpoint
-NO_QUERY = ['account']
+NO_QUERY = []
+SU_ONLY = ["account"]
 
 # list additional terms to impose on anonymous users of query endpoint
 # for each index type that you wish to have some
@@ -95,6 +97,10 @@ DEFAULT_SORT = {
     # "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
 }
 
+QUERY_ROUTE = {
+    "query" : {"role": None, "default_filter": True},
+    "admin_query" : {"role" : "admin", "default_filter": False}
+}
 
 # ========================
 # MEDIA SETTINGS

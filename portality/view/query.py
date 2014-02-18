@@ -32,11 +32,37 @@ def query(path='Pages'):
 
     if not subpaths:
         abort(400)
-
+    
+    # first, decide if we are to 401 the request
     for subpath in subpaths:
         if subpath.lower() in app.config.get('NO_QUERY',[]):
             abort(401)
-
+        if subpath.lower() in app.config.get("SU_ONLY", []):
+            if current_user.is_anonymous() or not current_user.is_super:
+                abort(401)
+    
+    # now look at the config of this route and determine if the url path
+    # requires us to limit access or not to a user role
+    #
+    default_filter = True # always apply the default filter unless asked otherwise
+    role = None
+    qr = app.config.get("QUERY_ROUTE", {})
+    frag = request.path
+    for qroute in qr:
+        if frag.startswith("/" + qroute):
+            default_filter = qr[qroute].get("default_filter", True)
+            role = qr[qroute].get("role")
+            break
+    
+    # if there is a role, then check that the user is not anonymous and
+    # that the user has the required role
+    if role is not None:
+        if current_user.is_anonymous() or not current_user.has_role(role):
+            abort(401)
+    
+    # if we get to here, then we are good to respond, though check further down
+    # to see if we apply the default filter
+    
     modelname = ''
     for s in subpaths:
         modelname += s.capitalize()
@@ -99,12 +125,15 @@ def query(path='Pages'):
         # filter by default, unless the user should be allowed to see
         # all records
         terms = None
-        print request.referrer
-        if current_user.is_anonymous() or "/search?" in request.referrer: # FIXME: hardcoded for the time being - should probably be configurable
+        """
+        if current_user.is_anonymous() or (request.referrer is not None and "/search?" in request.referrer): # FIXME: hardcoded for the time being - should probably be configurable
             terms = _default_filter(subpaths)
         else:
             if not current_user.has_role("view_not_in_doaj"):
                 terms = _default_filter(subpaths)
+        """
+        if default_filter:
+            terms = _default_filter(subpaths)
         
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 

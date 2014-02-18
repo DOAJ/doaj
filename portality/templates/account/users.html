@@ -1,21 +1,13 @@
-{% extends "base.html" %}
+{% extends "admin/admin_base.html" %}
 
-{% block content %}
+{% block admin_content %}
 
-    {% if current_user.has_role("create_user") %}<p><a href="/account/register">create new user</a></p>{% endif %}
+{% if current_user.has_role("create_user") %}<p><a href="/account/register">create new user</a></p>{% endif %}
 
-    {% for user in users %}
-
-    <div style="padding:20px; margin:20px; border:2px solid #ccc; width:300px; float:left; overflow:hidden;">
-        <h2><a href="{{url_for('account.index')}}{{ user.id }}">{{ user.id }}</a></h2>
-        {% if user.email %}<p><a href="mailto:{{user.email}}">{{user.email}}</a></p>{% endif %}
-        <p><strong>roles</strong>: {{user.role|join(", ")}}</p>
-        <p>created : {{ user.created_date }}</p>
-    </div>
-
-    {% endfor %}
-
-    <div class="clearfix"></div>
+<div class="facetview users"></div>
 
 {% endblock %}
 
+{% block extra_js_bottom %}
+<script type="text/javascript">var user_edit_url = "{{ url_for('account.username', username="") }}";</script>
+{% endblock %}

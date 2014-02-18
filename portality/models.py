@@ -276,7 +276,6 @@ class Account(DomainObject, UserMixin):
             role = [role]
         self.data["role"] = role
             
-    
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
