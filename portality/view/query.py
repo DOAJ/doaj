@@ -44,6 +44,7 @@ def query(path='Pages'):
     # now look at the config of this route and determine if the url path
     # requires us to limit access or not to a user role
     #
+    owner_filter = False # don't apply the owner filter unless expressly requested
     default_filter = True # always apply the default filter unless asked otherwise
     role = None
     qr = app.config.get("QUERY_ROUTE", {})
@@ -52,6 +53,7 @@ def query(path='Pages'):
         if frag.startswith("/" + qroute):
             default_filter = qr[qroute].get("default_filter", True)
             role = qr[qroute].get("role")
+            owner_filter = qr[qroute].get("owner_filter")
             break
     
     # if there is a role, then check that the user is not anonymous and
@@ -124,7 +126,7 @@ def query(path='Pages'):
         # if ONLY articles and/or journals are being requested, apply a
         # filter by default, unless the user should be allowed to see
         # all records
-        terms = None
+        terms = {}
         """
         if current_user.is_anonymous() or (request.referrer is not None and "/search?" in request.referrer): # FIXME: hardcoded for the time being - should probably be configurable
             terms = _default_filter(subpaths)
@@ -133,12 +135,18 @@ def query(path='Pages'):
                 terms = _default_filter(subpaths)
         """
         if default_filter:
-            terms = _default_filter(subpaths)
+            terms.update(_default_filter(subpaths))
+        
+        if owner_filter:
+            terms.update(_owner_filter())
         
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
 
     resp.mimetype = "application/json"
     return resp
+
+def _owner_filter():
+    return {"admin.owner" : current_user.id}
 
 def _default_filter(subpaths):
     for s in subpaths:

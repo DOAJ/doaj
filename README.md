@@ -190,7 +190,8 @@ It is likely that history records will only be created upon request by the admin
                 "email" : "<email of journal contact>",
                 "name" : "<name of journal contact>"
             }
-        ]
+        ],
+        "owner" : "<account id of owner>"
     },
     "index" : {
         "issn" : [<list of all print and electronic issns for all time>],

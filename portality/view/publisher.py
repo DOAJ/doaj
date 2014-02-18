@@ -16,4 +16,4 @@ def restrict():
 @blueprint.route("/")
 @login_required
 def index():
-    return render_template("doaj/publisher/index.html")
+    return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])

@@ -99,7 +99,8 @@ DEFAULT_SORT = {
 
 QUERY_ROUTE = {
     "query" : {"role": None, "default_filter": True},
-    "admin_query" : {"role" : "admin", "default_filter": False}
+    "admin_query" : {"role" : "admin", "default_filter": False},
+    "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True}
 }
 
 # ========================

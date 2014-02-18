@@ -6,3 +6,4 @@ They should be run individually in the following order:
 
 
 1. userroles.py - adds the "publisher" role to user accounts where appropriate
+2. journalowners.py - adds the "owner" field to the journals for the relevant user accounts
