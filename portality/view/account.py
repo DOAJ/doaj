@@ -62,6 +62,10 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
+            conf = request.values.get("confirm")
+            if conf is None or conf != "confirm":
+                flash('check the box to confirm you really mean it!', "error")
+                return render_template('account/view.html', account=acc)
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
@@ -94,6 +98,7 @@ def username(username):
             resp.mimetype = "application/json"
             return resp
         else:
+            # do an mget on the journals, so that we can present them to the user
             return render_template('account/view.html', account=acc)
 
 

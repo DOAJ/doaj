@@ -5,4 +5,4 @@ This directory contains the scripts that need to be run in order to migrate from
 They should be run individually in the following order:
 
 
-
+1. userroles.py - adds the "publisher" role to user accounts where appropriate

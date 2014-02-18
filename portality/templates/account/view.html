@@ -62,28 +62,20 @@ jQuery(document).ready(function() {
                 </form>
             </div>
             
+            {% if current_user.is_super %}
             <div style="border: 1px solid #cccccc; padding: 10px; margin: 10px">
                 <h4>Delete this account</h4>
-                <p>(Deleting your details irrevocably deletes your account.)</p>
+                <p>(This <strong>irrevocably</strong> deletes the account)</p>
                 <form action="" method="POST">
                     <input type="submit" name="submit" value="Delete" class="btn btn-danger">
+                    <input type="radio" name="confirm" value="confirm">&nbsp;yes, I'm sure
                 </form>
             </div>
+            {% endif %}
         </div>
         
     </div>
     
-    {% if account.journal %}
-    <h3>Your Journals</h3>
-    <div class="row-fluid">
-        <div class="span12">
-            {% for j in account.journal %}
-                {{j}}<br>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
-
 {% else %}
 
     <div class="row-fluid">
