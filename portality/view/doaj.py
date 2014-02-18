@@ -144,6 +144,7 @@ def csv_data():
     r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
 
+"""
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 def upload_file():
@@ -182,7 +183,7 @@ def upload_file():
     
     # return the thank you page
     return render_template("doaj/members/upload_thanks.html")
-    
+"""
     
 
 ###############################################################
