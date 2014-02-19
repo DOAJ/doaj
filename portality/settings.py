@@ -1,5 +1,10 @@
+import os
+
 # ========================
 # MAIN SETTINGS
+
+# base path, to the directory where this settings file lives
+BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
@@ -190,9 +195,16 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
 
 # =================================
-# File Upload settings
+# File Upload and crosswalk settings
 
 UPLOAD_DIR = "upload"
+
+# paths to schema files to validate incoming documents against for the various
+# crosswalks available
+
+SCHEMAS = {
+    "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
+}
 
 # =================================
 # ReCaptcha settings

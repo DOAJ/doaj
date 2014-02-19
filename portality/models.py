@@ -140,12 +140,14 @@ class GenericBibJSON(object):
     def set_keywords(self, keywords):
         self.bibjson["keywords"] = keywords
     
-    def add_url(self, url, urltype=None):
+    def add_url(self, url, urltype=None, content_type=None):
         if "link" not in self.bibjson:
             self.bibjson["link"] = []
         urlobj = {"url" : url}
         if urltype is not None:
             urlobj["type"] = urltype
+        if content_type is not None:
+            urlobj["content_type"] = content_type
         self.bibjson["link"].append(urlobj)
     
     def get_urls(self, urltype=None):
@@ -811,6 +813,14 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["in_doaj"] = value
     
+    def publisher_record_id(self):
+        return self.data.get("admin", {}).get("publisher_record_id")
+    
+    def set_publisher_record_id(self, pri):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["publisher_record_id"] = pri
+    
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
@@ -913,12 +923,12 @@ class ArticleBibJSON(GenericBibJSON):
     @property
     def year(self): return self.bibjson.get("year")
     @year.setter
-    def year(self, val) : self.bibjson["year"] = val
+    def year(self, val) : self.bibjson["year"] = str(val)
     
     @property
     def month(self): return self.bibjson.get("month")
     @month.setter
-    def month(self, val) : self.bibjson["month"] = val
+    def month(self, val) : self.bibjson["month"] = str(val)
     
     @property
     def start_page(self): return self.bibjson.get("start_page")
@@ -990,10 +1000,15 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_journal_property("publisher", value)
         
-    def add_author(self, name):
+    def add_author(self, name, email=None, affiliation=None):
         if "author" not in self.bibjson:
             self.bibjson["author"] = []
-        self.bibjson["author"].append({"name" : name})
+        aobj = {"name" : name}
+        if email is not None:
+            aobj["email"] = email
+        if affiliation is not None:
+            aobj["affiliation"] = affiliation
+        self.bibjson["author"].append(aobj)
     
     @property
     def author(self):

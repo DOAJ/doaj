@@ -221,7 +221,8 @@ It is likely that history records will only be created upon request by the admin
 {
     "id" : "<some opaque identifier>",
     "admin" : {
-        "in_doaj" : true|false
+        "in_doaj" : true|false,
+        "publisher_record_id" : "<publisher identifier for item>"
     },
     "bibjson" : {
         "title" : "<title of the article>",
@@ -254,12 +255,17 @@ It is likely that history records will only be created upon request by the admin
         "link" : [
             {
                 "url" : "<fulltext url>",
-                "type" : "fulltext"
+                "type" : "fulltext",
+                "content-type" : "<content type of resource>"
             }
         ],
         "abstract" : "<the abstract>",
         "author" : [
-            {"name" : "<author name>"},
+            {
+                "name" : "<author name>",
+                "email" : "<author email>",
+                "affiliation" : "<author affiliation>"
+            },
         ],
         "keywords" : [<list of free text keywords>],
         "subject" : [
@@ -286,7 +292,7 @@ It is likely that history records will only be created upon request by the admin
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>"
     },
-    "created" : "<date created>",
+    "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"
 }
 ```
@@ -295,14 +301,12 @@ NOTE: there's an argument for putting the issn identifiers inside the journal pa
 
 ### Contact Data Model
 
-NOTE: this is just for the purposes of holding them over until the new year.  We should actually have each document
-assert the user(s) they can be administered by
-
     {
         "id" : "<the username of the user>",
         "password" : "<hashed password>",
         "name" : "<user's actual name>",
         "email" : "<user's email address>",
+        "role" : [<list of user roles>]
         "journal" : [<list of journal ids the user can administer>]
     }
 
