@@ -28,6 +28,7 @@ if len(app.config.get('SUPER_USER',[])) > 0:
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
+    """
     users = models.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
     if users['hits']['total'] != 0:
         accs = [models.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
@@ -44,6 +45,8 @@ def index():
         return resp
     else:
         return render_template('account/users.html', users=users)
+    """
+    return render_template("account/users.html", search_page=True, facetviews=["users"])
 
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
@@ -59,6 +62,10 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
+            conf = request.values.get("confirm")
+            if conf is None or conf != "confirm":
+                flash('check the box to confirm you really mean it!', "error")
+                return render_template('account/view.html', account=acc)
             acc.delete()
             flash('Account ' + acc.id + ' deleted')
             return redirect(url_for('.index'))
@@ -72,7 +79,7 @@ def username(username):
             else:
                 newdata['api_key'] = acc.data['api_key']
         for k, v in newdata.items():
-            if k not in ['submit','password', 'role']:
+            if k not in ['submit','password', 'role', 'confirm']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             acc.set_password(newdata['password'])
@@ -91,6 +98,7 @@ def username(username):
             resp.mimetype = "application/json"
             return resp
         else:
+            # do an mget on the journals, so that we can present them to the user
             return render_template('account/view.html', account=acc)
 
 

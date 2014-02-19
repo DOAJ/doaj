@@ -276,7 +276,6 @@ class Account(DomainObject, UserMixin):
             role = [role]
         self.data["role"] = role
             
-    
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -395,6 +394,15 @@ class Journal(DomainObject):
     
     def correspondence(self):
         return self.data.get("admin", {}).get("owner_correspondence", [])
+    
+    @property
+    def owner(self):
+        return self.data.get("admin", {}).get("account")
+    
+    def set_owner(self, owner):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["owner"] = owner
     
     def _generate_index(self):
         # the index fields we are going to generate
