@@ -92,26 +92,26 @@ class OptionalIf(validators.Optional):
         if bool(other_field.data):
             super(OptionalIf, self).__call__(form, field)
 
-class JournalForm(Form):
+class JournalInformationForm(Form):
     
-    in_doaj = BooleanField('In DOAJ?')
     url = TextField('URL', [validators.Required(), validators.URL()])
     title = TextField('Journal Title', [validators.Required()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
     pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
     eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
     publisher = TextField('Publisher', [validators.Required()])
-    provider = TextField('Provider', [validators.Optional()])
     oa_start_year = IntegerField('Year in which the journal <strong>started</strong> publishing OA content', [validators.Required(), validators.NumberRange(min=1600)])
-    oa_end_year = IntegerField('Year in which the journal <strong>stopped</strong> publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
     country = SelectField('Country', [validators.Required()], choices=country_options)
     license = SelectField('Creative Commons (CC) License, if any', [validators.Optional()], choices=license_options)
-    author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
-    author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])
     keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
     languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
 
-
+class JournalForm(JournalInformationForm):
+    in_doaj = BooleanField('In DOAJ?')
+    provider = TextField('Provider', [validators.Optional()])
+    author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
+    author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])
+    oa_end_year = IntegerField('Year in which the journal <strong>stopped</strong> publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
 
 
 
