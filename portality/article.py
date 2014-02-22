@@ -288,7 +288,7 @@ def _element(xml, field):
 
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 
-def ingest_file(self, handle, format_name=None):
+def ingest_file(handle, format_name=None):
     try:
         doc = etree.parse(handle)
     except:
@@ -319,7 +319,10 @@ def ingest_file(self, handle, format_name=None):
         raise IngestException("Unable to validate document with any available ingesters")
     
     # do the crosswalk
-    xwalk.crosswalk_doc(doc)
+    try:
+        xwalk.crosswalk_doc(doc)
+    except:
+        raise IngestException("Error occurred ingesting the records in the document")
 
 def check_schema(handle, format_name=None):
     try:

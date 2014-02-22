@@ -42,7 +42,7 @@ def upload_file():
     record.set_id()
     
     # the two file paths that we are going to write to
-    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".xml")
+    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.local_filename)
     
     # it's critical here that no errors cause files to get left behind unrecorded
     try:

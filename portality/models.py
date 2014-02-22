@@ -199,6 +199,18 @@ class GenericBibJSON(object):
 class FileUpload(DomainObject):
     __type__ = "upload"
     
+    @property
+    def local_filename(self):
+        return self.id + ".xml"
+    
+    @property
+    def filename(self):
+        return self.data.get("filename")
+    
+    @property
+    def schema(self):
+        return self.data.get("schema")
+    
     def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
         self.data["owner"] = owner
@@ -214,6 +226,28 @@ class FileUpload(DomainObject):
     
     def processed(self):
         self.data["status"] = "processed"
+    
+    @classmethod
+    def list_valid(self):
+        q = FileQuery()
+        res = self.query(q=q.query())
+        rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+
+class FileQuery(object):
+    base_query = {
+        "query" : {
+            "term" : { "status.exact" : "validated" }
+        },
+        "sort" : [
+            {"created_date" : "asc"}
+        ]
+    }
+    def __init__(self):
+        self._query = deepcopy(self.base_query)
+    
+    def query(self):
+        return self._query
 
 ####################################################################
 
