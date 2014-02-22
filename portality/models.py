@@ -199,9 +199,21 @@ class GenericBibJSON(object):
 class FileUpload(DomainObject):
     __type__ = "upload"
     
-    def upload(self, filename, publisher):
+    def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
-        self.data["publisher"] = publisher
+        self.data["owner"] = owner
+        self.data["status"] = status
+    
+    def failed(self, message):
+        self.data["status"] = "failed"
+        self.data["error"] = message
+    
+    def validated(self, schema):
+        self.data["status"] = "validated"
+        self.data["schema"] = schema
+    
+    def processed(self):
+        self.data["status"] = "processed"
 
 ####################################################################
 
