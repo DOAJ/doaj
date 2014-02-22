@@ -1,34 +1,14 @@
 import json
-import re
-from datetime import datetime
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
-from wtforms import Form, validators
-from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, FieldList
-from wtforms.widgets import TextInput
-
 from portality.core import app
 import portality.models as models
 import portality.util as util
+from portality.view.forms import JournalForm, countries, country_options_two_char_code_index
 
-# used by the journal edit form
-import sys
-try:
-    if sys.version_info.major == 2 and sys.version_info.minor < 7:
-        from portality.ordereddict import OrderedDict
-except AttributeError:
-    if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-        from portality.ordereddict import OrderedDict
-    else:
-        from collections import OrderedDict
-else:
-    from collections import OrderedDict
-
-ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
-ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 
 blueprint = Blueprint('admin', __name__)
 
@@ -63,14 +43,6 @@ def journal_page(journal_id):
     if j is None:
         abort(404)
 
-    with open('country-codes.json', 'rb') as f:
-        countries = json.loads(f.read())
-    countries = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name'])).items()
-    country_options = [('','')]
-    country_options_two_char_code_index = []
-    for code, country_info in countries:
-        country_options.append((code, country_info['name']))
-        country_options_two_char_code_index.append(code)
 
     current_country = j.bibjson().country
     country_help_text = ''
@@ -84,82 +56,11 @@ def journal_page(journal_id):
                 if current_country.upper() == info['ISO3166-1-Alpha-3']:
                     current_country = two_char_code
                     break
-
+    
         if current_country not in country_options_two_char_code_index:
             # couldn't find it, better warn the user to look for it
             # themselves
             country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
-                                
-
-    license_options = [
-        ('', ''),
-        ('CC by', 'Attribution'),
-        ('CC by-nc', 'Attribution NonCommercial'),
-        ('CC by-nc-nd', 'Attribution NonCommercial NoDerivatives'),
-        ('CC by-nc-sa', 'Attribution NonCommercial ShareAlike'),
-        ('CC by-nd', 'Attribution NoDerivatives'),
-        ('CC by-sa', 'Attribution ShareAlike'),
-    ]
-
-    author_pays_options = [
-        ('N', 'No charges'),
-        ('CON', 'Conditional charges'),
-        ('Y', 'Has charges'),
-        ('NY', 'No information'),
-    ]
-
-    class TagListField(Field):
-        widget = TextInput()
-    
-        def _value(self):
-            if self.data:
-                return u', '.join(self.data)
-            else:
-                return u''
-
-        def get_list(self):
-            return self.data
-    
-        def process_formdata(self, valuelist):
-            if valuelist:
-                self.data = [clean_x for clean_x in [x.strip() for x in valuelist[0].split(',')] if clean_x]
-            else:
-                self.data = []
-
-    class OptionalIf(validators.Optional):
-        # a validator which makes a field optional if
-        # another field is set and has a truthy value
-    
-        def __init__(self, other_field_name, *args, **kwargs):
-            self.other_field_name = other_field_name
-            super(OptionalIf, self).__init__(*args, **kwargs)
-    
-        def __call__(self, form, field):
-            other_field = form._fields.get(self.other_field_name)
-            if other_field is None:
-                raise Exception('no field named "%s" in form' % self.other_field_name)
-            if bool(other_field.data):
-                super(OptionalIf, self).__call__(form, field)
-
-    class JournalForm(Form):
-        
-        in_doaj = BooleanField('In DOAJ?')
-        url = TextField('URL', [validators.Required(), validators.URL()])
-        title = TextField('Journal Title', [validators.Required()])
-        alternative_title = TextField('Alternative Title', [validators.Optional()])
-        pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
-        eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
-        publisher = TextField('Publisher', [validators.Required()])
-        provider = TextField('Provider', [validators.Optional()])
-        oa_start_year = IntegerField('Year in which the journal <strong>started</strong> publishing OA content', [validators.Required(), validators.NumberRange(min=1600)])
-        oa_end_year = IntegerField('Year in which the journal <strong>stopped</strong> publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
-        country = SelectField('Country', [validators.Required()], choices=country_options, description='<span class="red">' + country_help_text + '</span>')
-        license = SelectField('Creative Commons (CC) License, if any', [validators.Optional()], choices=license_options)
-        author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
-        author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])
-        keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
-        languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
-    
 
     current_info = {
         'in_doaj': j.is_in_doaj(),
@@ -181,6 +82,8 @@ def journal_page(journal_id):
     }
 
     form = JournalForm(request.form, **current_info)
+    form.country.description = '<span class="red">' + country_help_text + '</span>'
+
     there_were_errors = False
     if request.method == 'POST':
         if form.validate():
