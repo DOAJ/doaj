@@ -288,7 +288,7 @@ def _element(xml, field):
 
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 
-def ingest_file(self, handle, format_name=None):
+def ingest_file(handle, format_name=None):
     try:
         doc = etree.parse(handle)
     except:
@@ -300,7 +300,7 @@ def ingest_file(self, handle, format_name=None):
         klazz = xwalk_map.get(format_name)
         if klazz is not None:
             xwalk = klazz()
-            valid = inst.validate(doc)
+            valid = xwalk.validate(doc)
     
     if not valid: # which can happen if there was no format name or if the format name was wrong
         # look for an alternative
@@ -319,10 +319,41 @@ def ingest_file(self, handle, format_name=None):
         raise IngestException("Unable to validate document with any available ingesters")
     
     # do the crosswalk
-    xwalk.crosswalk_doc(doc)
+    try:
+        xwalk.crosswalk_doc(doc)
+    except:
+        raise IngestException("Error occurred ingesting the records in the document")
 
-
-
+def check_schema(handle, format_name=None):
+    try:
+        doc = etree.parse(handle)
+    except:
+        raise IngestException("Unable to parse XML file")
+        
+    actual_format = format_name
+    valid = False
+    if format_name is not None:
+        klazz = xwalk_map.get(format_name)
+        if klazz is not None:
+            xwalk = klazz()
+            valid = xwalk.validate(doc)
+    
+    if not valid: # which can happen if there was no format name or if the format name was wrong
+        # look for an alternative
+        for name, x in xwalk_map.iteritems():
+            if format_name is not None and format_name != name:
+                # we may have already tried validating with this one already
+                continue
+            inst = x()
+            valid = inst.validate(doc)
+            if valid:
+                actual_format = name
+                break
+    
+    if not valid:
+        return False
+    
+    return actual_format
 
 
 

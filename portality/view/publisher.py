@@ -3,8 +3,12 @@ from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
 from portality.core import app
-from portality import settings
+
+from portality import settings, models
 from portality.view.forms import SuggestionForm, countries, country_options_two_char_code_index
+from portality import article
+import os
+
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -23,42 +27,86 @@ def index():
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 def upload_file():
+    # all responses involve getting the previous uploads
+    previous = models.FileUpload.by_owner(current_user.id)
+    
     if request.method == "GET":
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     # otherwise we are dealing with a POST - file upload
     f = request.files.get("file")
-    publisher = request.values.get("publisher_username")
+    schema = request.values.get("schema")
     
     # do some validation
-    if f.filename == "" or publisher is None or publisher == "":
-        return render_template('doaj/members/uploadfile.html', no_file=(f.filename == ""), no_publisher=(publisher is None or publisher == ""))
+    if f.filename == "":
+        flash("No file provided", "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
-    record.upload(f.filename, publisher)
+    record.upload(current_user.id, f.filename)
     record.set_id()
     
     # the two file paths that we are going to write to
-    txt = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".txt")
-    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".xml")
+    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.local_filename)
     
-    # make the content of the txt metadata file
-    metadata = publisher + "\n" + f.filename
+    # it's critical here that no errors cause files to get left behind unrecorded
+    try:
+        # write the incoming file out to the XML file
+        f.save(xml)
+        
+        # save the index entry
+        record.save()
+    except:
+        # if we can't record either of these things, we need to back right off
+        try:
+            os.remove(xml)
+        except:
+            pass
+        try:
+            record.delete()
+        except:
+            pass
+        
+        flash("Failed to upload file - please contact an administrator", "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
+        
+    # now we have the record in the index and on disk, we can attempt to
+    # validate it
+    try:
+        actual_schema = None
+        with open(xml) as handle:
+            actual_schema = article.check_schema(handle, schema)
+    except:
+        # file is a dud, so remove it
+        try:
+            os.remove(xml)
+        except:
+            pass
+        
+        # if we're unable to validate the file, we should record this as
+        # a file error.
+        record.failed("Unable to parse file")
+        record.save()
+        previous = [record] + previous
+        flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
     
-    # save the metadata to the text file
-    with codecs.open(txt, "wb", "utf8") as mdf:
-        mdf.write(metadata)
+    if actual_schema:
+        record.validated(actual_schema)
+        record.save()
+        previous = [record] + previous # add the new record to the previous records
+        flash("File successfully uploaded - it will be processed shortly", "success")
+        return render_template('publisher/uploadfile.html', previous=previous)
+    else:
+        record.failed("File could not be validated against a known schema")
+        record.save()
+        os.remove(xml)
+        previous = [record] + previous
+        flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
     
-    # write the incoming file out to the XML file
-    f.save(xml)
     
-    # finally, save the index entry
-    record.save()
-    
-    # return a thank you
-    flash("File successfully uploaded", "success")
-    return render_template('publisher/uploadfile.html')
     
 @blueprint.route("/suggestion/new", methods=["GET", "POST"])
 @login_required

@@ -197,7 +197,9 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # =================================
 # File Upload and crosswalk settings
 
-UPLOAD_DIR = "upload"
+# directory to upload files to.  MUST be full absolute path
+# The default takes the directory above this, and then down in to "upload"
+UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
 
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available

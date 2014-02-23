@@ -199,9 +199,89 @@ class GenericBibJSON(object):
 class FileUpload(DomainObject):
     __type__ = "upload"
     
-    def upload(self, filename, publisher):
+    @property
+    def local_filename(self):
+        return self.id + ".xml"
+    
+    @property
+    def filename(self):
+        return self.data.get("filename")
+    
+    @property
+    def schema(self):
+        return self.data.get("schema")
+    
+    def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
-        self.data["publisher"] = publisher
+        self.data["owner"] = owner
+        self.data["status"] = status
+    
+    def failed(self, message):
+        self.data["status"] = "failed"
+        self.data["error"] = message
+    
+    def validated(self, schema):
+        self.data["status"] = "validated"
+        self.data["schema"] = schema
+    
+    def processed(self):
+        self.data["status"] = "processed"
+    
+    def created_timestamp(self):
+        if "created_date" not in self.data:
+            return None
+        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
+    
+    @classmethod
+    def list_valid(self):
+        q = ValidFileQuery()
+        return self.iterate(q=q.query())
+        # res = self.query(q=q.query())
+        # rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        # return rs
+    
+    @classmethod
+    def by_owner(self, owner, size=10):
+        q = OwnerFileQuery(owner)
+        res = self.query(q=q.query())
+        rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+
+class ValidFileQuery(object):
+    base_query = {
+        "query" : {
+            "term" : { "status.exact" : "validated" }
+        },
+        "sort" : [
+            {"created_date" : "asc"}
+        ]
+    }
+    def __init__(self):
+        self._query = deepcopy(self.base_query)
+    
+    def query(self):
+        return self._query
+
+class OwnerFileQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        },
+        "sort" : [
+            {"created_date" : "desc"}
+        ],
+        "size" : 10
+    }
+    def __init__(self, owner, size=10):
+        self._query = deepcopy(self.base_query)
+        owner_term = {"term" : {"owner" : owner}}
+        self._query["query"]["bool"]["must"].append(owner_term)
+        self._query["size"] = size
+    
+    def query(self):
+        return self._query
 
 ####################################################################
 
