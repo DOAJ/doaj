@@ -4,6 +4,7 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app
 from portality import settings
+from portality.view.forms import SuggestionForm, countries, country_options_two_char_code_index
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -59,3 +60,8 @@ def upload_file():
     flash("File successfully uploaded", "success")
     return render_template('publisher/uploadfile.html')
     
+@blueprint.route("/suggestion/new", methods=["GET", "POST"])
+@login_required
+def suggestion():
+    form = SuggestionForm(request.form)
+    return render_template('publisher/suggestion.html', form=form)
