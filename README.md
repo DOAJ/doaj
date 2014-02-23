@@ -313,13 +313,14 @@ NOTE: there's an argument for putting the issn identifiers inside the journal pa
 ### File Upload Data Model
 
     {
-        id: "<opaque id of upload>",
+        "id": "<opaque id of upload>",
         "status": "incoming|validated|failed|processed",
-        last_updated: "<last date modified>",
-        created_date: "<date of initial upload>",
-        owner: "<user id of owner>",
-        schema: "<metadata scheme used>",
-        filename: "<filename of upload item>"
+        "last_updated": "<last date modified>",
+        "created_date": "<date of initial upload>",
+        "owner": "<user id of owner>",
+        "schema": "<metadata scheme used>",
+        "filename": "<filename of upload>",
+        "error" : "<any error associated with the upload>"
     }
 
 ## Authentication and Authorisation System

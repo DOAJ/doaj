@@ -41,4 +41,69 @@
 
 </form>
 
+<hr>
+
+{% if previous|length > 0 %}
+
+    <h3>Previously uploaded files</h3>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <table id="previous_files" style="width: 100%" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>Upload Date</th>
+                        <th>Filename</th>
+                        <th>Format</th>
+                        <th>Upload Status</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+            {% for file in previous %}
+                <tr>
+                    <td>{{ file.created_timestamp().strftime("%d %b %Y %H:%M:%S") }}</td>
+                    <td>{{file.filename}}</td>
+                    <td>
+                        {% if file.schema == "doaj" %}
+                            DOAJ Native XML
+                        {% elif file.schema == "mathml" %}
+                            OJS MathML
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.status == "incoming" %}
+                            <span style="color: #000066">pending</span>
+                        {% elif file.status == "validated" %}
+                            <span style="color: #000066">pending</span>
+                        {% elif file.status == "failed" %}
+                            <span style="color: #660000">processing failed</span>
+                        {% elif file.status == "processed" %}
+                            <span style="color: #006600">successfully processed</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if file.error %}
+                            {{file.error}}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endif %}
+
 {% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#previous_files").tablesorter() 
+})
+</script>
+
+{% endblock %}
+

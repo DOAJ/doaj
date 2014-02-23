@@ -24,8 +24,11 @@ def index():
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 def upload_file():
+    # all responses involve getting the previous uploads
+    previous = models.FileUpload.by_owner(current_user.id)
+    
     if request.method == "GET":
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     # otherwise we are dealing with a POST - file upload
     f = request.files.get("file")
@@ -34,7 +37,7 @@ def upload_file():
     # do some validation
     if f.filename == "":
         flash("No file provided", "error")
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
@@ -63,7 +66,7 @@ def upload_file():
             pass
         
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
         
     # now we have the record in the index and on disk, we can attempt to
     # validate it
@@ -82,20 +85,23 @@ def upload_file():
         # a file error.
         record.failed("Unable to parse file")
         record.save()
+        previous = [record] + previous
         flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     if actual_schema:
         record.validated(actual_schema)
         record.save()
+        previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     else:
         record.failed("File could not be validated against a known schema")
         record.save()
         os.remove(xml)
+        previous = [record] + previous
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
-        return render_template('publisher/uploadfile.html')
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     
     

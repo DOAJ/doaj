@@ -227,14 +227,26 @@ class FileUpload(DomainObject):
     def processed(self):
         self.data["status"] = "processed"
     
+    def created_timestamp(self):
+        if "created_date" not in self.data:
+            return None
+        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
+    
     @classmethod
     def list_valid(self):
-        q = FileQuery()
+        q = ValidFileQuery()
+        res = self.query(q=q.query())
+        rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+    
+    @classmethod
+    def by_owner(self, owner):
+        q = OwnerFileQuery(owner)
         res = self.query(q=q.query())
         rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
 
-class FileQuery(object):
+class ValidFileQuery(object):
     base_query = {
         "query" : {
             "term" : { "status.exact" : "validated" }
@@ -245,6 +257,25 @@ class FileQuery(object):
     }
     def __init__(self):
         self._query = deepcopy(self.base_query)
+    
+    def query(self):
+        return self._query
+
+class OwnerFileQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        },
+        "sort" : [
+            {"created_date" : "desc"}
+        ]
+    }
+    def __init__(self, owner):
+        self._query = deepcopy(self.base_query)
+        owner_term = {"term" : {"owner" : owner}}
+        self._query["query"]["bool"]["must"].append(owner_term)
     
     def query(self):
         return self._query
