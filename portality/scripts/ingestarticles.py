@@ -7,8 +7,7 @@ if upload_dir is None:
     print "UPLOAD_DIR is not set in configuration"
     exit()
 
-to_process = models.FileUpload.list_valid()
-print "processing", len(to_process), "new uploads"
+to_process = models.FileUpload.list_valid() # returns an iterator
 for upload in to_process:
     path = os.path.join(upload_dir, upload.local_filename)
     print "importing ", path

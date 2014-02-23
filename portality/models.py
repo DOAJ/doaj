@@ -235,12 +235,13 @@ class FileUpload(DomainObject):
     @classmethod
     def list_valid(self):
         q = ValidFileQuery()
-        res = self.query(q=q.query())
-        rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
-        return rs
+        return self.iterate(q=q.query())
+        # res = self.query(q=q.query())
+        # rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        # return rs
     
     @classmethod
-    def by_owner(self, owner):
+    def by_owner(self, owner, size=10):
         q = OwnerFileQuery(owner)
         res = self.query(q=q.query())
         rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
@@ -270,12 +271,14 @@ class OwnerFileQuery(object):
         },
         "sort" : [
             {"created_date" : "desc"}
-        ]
+        ],
+        "size" : 10
     }
-    def __init__(self, owner):
+    def __init__(self, owner, size=10):
         self._query = deepcopy(self.base_query)
         owner_term = {"term" : {"owner" : owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
+        self._query["size"] = size
     
     def query(self):
         return self._query
