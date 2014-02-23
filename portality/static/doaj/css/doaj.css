@@ -134,6 +134,23 @@ select {
     height: inherit !important;
 }
 
+.form-horizontal.wide .control-label {
+    width: 200px;
+}
+
+.form-horizontal.wide .controls {
+    margin-left: 220px;
+}
+
+.checkboxes  ul {
+    list-style: none outside none;
+    margin-left: 0;
+}
+
+.checkboxes label {
+    display: inline;
+}
+
 label > .label-text {
     padding-left: 0.25em;
 }

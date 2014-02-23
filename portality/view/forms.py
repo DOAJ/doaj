@@ -183,7 +183,7 @@ class SuggestionForm(JournalInformationForm):
     contact_email = TextField('Contact email', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
-    confirm_email = TextField('Confirm email', 
+    confirm_contact_email = TextField('Confirm email', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
     ) #must match contact_email
     processing_charges = RadioField('Does the journal have article processing charges (APCs)? Include relevant currency.', 
@@ -296,7 +296,7 @@ class SuggestionForm(JournalInformationForm):
         choices = license_choices, 
         description = 'For more information go to http://creativecommons.org/licenses/ '
     )
-    reuse_license_url = TextField("Enter the URL on your site where your license terms are stated", 
+    license_url = TextField("Enter the URL on your site where your license terms are stated", 
         [validators.Required(), validators.URL()]
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
@@ -306,7 +306,9 @@ class SuggestionForm(JournalInformationForm):
     deposit_policy = SelectMultipleField('The journal has a deposit policy registered with a deposit policy directory.', 
         [validators.Required()], 
         description = 'Select all that apply.', 
-        choices = deposit_policy_choices
+        choices = deposit_policy_choices,
+        option_widget=widgets.CheckboxInput(), 
+        widget=widgets.ListWidget(prefix_label=False)
     )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?', 
         [validators.Required()],

@@ -1,8 +1,6 @@
-{% extends "admin/admin_base.html" %}
+{% extends "publisher/publisher_base.html" %}
 
-{% block admin_content %}
-
-{# NOTE: requires suggest.js to be enabled (see _js_includes.html) #}
+{% block publisher_content %}
 
 <div class="row-fluid" style="margin-bottom: 3em;">
   
@@ -15,12 +13,20 @@
     {% endif %}
 
     {% from "_formhelpers.html" import render_field_horizontal %}
-    <form method="post" action="{{ url_for('publisher.suggestion') }}" class="form-horizontal" id="suggest_form">
+    <form method="post" action="{{ url_for('publisher.suggestion') }}" class="form-horizontal wide" id="suggest_form">
       <fieldset>
+        {{ render_field_horizontal(form.title) }}
+        {{ render_field_horizontal(form.url) }}
+        {{ render_field_horizontal(form.alternative_title) }}
+        {{ render_field_horizontal(form.pissn) }}
+        {{ render_field_horizontal(form.eissn) }}
+        {{ render_field_horizontal(form.publisher) }}
+        {{ render_field_horizontal(form.society_institution) }}
         {{ render_field_horizontal(form.platform) }}
         {{ render_field_horizontal(form.contact_name) }}
         {{ render_field_horizontal(form.contact_email) }}
-        {{ render_field_horizontal(form.confirm_email) }}
+        {{ render_field_horizontal(form.confirm_contact_email) }}
+        {{ render_field_horizontal(form.country) }}
         {{ render_field_horizontal(form.processing_charges) }}
         {{ render_field_horizontal(form.submission_charges) }}
         {{ render_field_horizontal(form.journals_last_year) }}
@@ -48,7 +54,7 @@
         {{ render_field_horizontal(form.oa_statement_url) }}
         {{ render_field_horizontal(form.license_embedded) }}
         {{ render_field_horizontal(form.license) }}
-        {{ render_field_horizontal(form.reuse_license_url) }}
+        {{ render_field_horizontal(form.license_url) }}
         {{ render_field_horizontal(form.open_access) }}
         {{ render_field_horizontal(form.deposit_policy) }}
         {{ render_field_horizontal(form.copyright) }}
