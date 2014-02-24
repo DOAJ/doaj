@@ -9,3 +9,8 @@ They should be run individually in the following order:
 2. journalowners.py - adds the "owner" field to the journals for the relevant user accounts
 3. uploadedxml.py - migrates all the new articles from uploaded files into the database.  You will need to modify the file to point to the directory of the XML files, and the script itself could take upwards of 30 minutes to run.
 4. flushuploads.py - remove all the old uploaded file records, and set the index up for its new usage
+
+
+The following files are scripts generated in the development of the migrate scripts and should NOT be run as part of the migration:
+
+1. uploadedfilenames.py - investigates uploaded files for the filenames and publishers to see if there are any obvious duplicates
