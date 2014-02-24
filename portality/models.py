@@ -233,6 +233,9 @@ class FileUpload(DomainObject):
     def exists(self):
         self.data["status"] = "exists"
     
+    def downloaded(self):
+        self.data["status"] = "downloaded"
+    
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
@@ -242,10 +245,12 @@ class FileUpload(DomainObject):
     def list_valid(self):
         q = ValidFileQuery()
         return self.iterate(q=q.query())
-        # res = self.query(q=q.query())
-        # rs = [FileUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
-        # return rs
     
+    @classmethod
+    def list_remote(self):
+        q = ExistsFileQuery()
+        return self.iterate(q=q.query())
+        
     @classmethod
     def by_owner(self, owner, size=10):
         q = OwnerFileQuery(owner)
@@ -257,6 +262,21 @@ class ValidFileQuery(object):
     base_query = {
         "query" : {
             "term" : { "status.exact" : "validated" }
+        },
+        "sort" : [
+            {"created_date" : "asc"}
+        ]
+    }
+    def __init__(self):
+        self._query = deepcopy(self.base_query)
+    
+    def query(self):
+        return self._query
+
+class ExistsFileQuery(object):
+    base_query = {
+        "query" : {
+            "term" : { "status.exact" : "exists" }
         },
         "sort" : [
             {"created_date" : "asc"}

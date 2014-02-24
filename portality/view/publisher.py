@@ -123,7 +123,6 @@ def _url_upload(url, schema, previous):
     record.upload(current_user.id, url)
     record.set_id()
     record.set_schema(schema) # although it could be wrong, this will get checked later
-    record.save()
     
     # now we attempt to verify that the file is retrievable
     try:
