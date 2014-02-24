@@ -20,12 +20,22 @@
 <form id="upload_form" method="POST" action="/publisher/uploadfile" enctype="multipart/form-data">
 
     <div class="row-fluid">
-        <div class="span4"><strong>Select a file to upload*</strong></div>
+        <div class="span4"><strong>Select a file to upload</strong></div>
         <div class="span8"><input type="file" name="file"></div>
     </div>
-
+    
     <div class="row-fluid">
-        <div class="span4"><strong>XML Schema of the file*</strong></div>
+        <div class="span4">&nbsp;&nbsp;&nbsp;&nbsp;<strong>OR</strong></div>
+        <div class="span8">&nbsp;</div>
+    </div>
+    
+    <div class="row-fluid">
+        <div class="span4"><strong>Provide a URL where we can download the XML</strong></div>
+        <div class="span8"><input type="text" name="url" placeholder="URL for XML file" style="width: 80%"></div>
+    </div>
+
+    <div class="row-fluid" style="margin-top: 40px">
+        <div class="span4"><strong>Format of the file*</strong></div>
         <div class="span8">
             <select name="schema">
                 <option value="doaj">DOAJ Native XML</option>
@@ -62,7 +72,13 @@
             {% for file in previous %}
                 <tr>
                     <td>{{ file.created_timestamp().strftime("%d %b %Y %H:%M:%S") }}</td>
-                    <td>{{file.filename}}</td>
+                    <td>
+                        {% if file.filename.startswith("http") %}
+                            <a href="{{file.filename}}">{{file.filename}}</a>
+                        {% else %}
+                            {{file.filename}}
+                        {% endif %}
+                    </td>
                     <td>
                         {% if file.schema == "doaj" %}
                             DOAJ Native XML
@@ -74,6 +90,8 @@
                         {% if file.status == "incoming" %}
                             <span style="color: #000066">pending</span>
                         {% elif file.status == "validated" %}
+                            <span style="color: #000066">pending</span>
+                        {% elif file.status == "exists" %}
                             <span style="color: #000066">pending</span>
                         {% elif file.status == "failed" %}
                             <span style="color: #660000">processing failed</span>

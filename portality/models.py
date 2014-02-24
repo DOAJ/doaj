@@ -211,6 +211,9 @@ class FileUpload(DomainObject):
     def schema(self):
         return self.data.get("schema")
     
+    def set_schema(self, s):
+        self.data["schema"] = s
+    
     def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
         self.data["owner"] = owner
@@ -226,6 +229,9 @@ class FileUpload(DomainObject):
     
     def processed(self):
         self.data["status"] = "processed"
+    
+    def exists(self):
+        self.data["status"] = "exists"
     
     def created_timestamp(self):
         if "created_date" not in self.data:

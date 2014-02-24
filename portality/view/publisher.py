@@ -7,7 +7,7 @@ from portality.core import app
 from portality import settings, models
 from portality.view.forms import SuggestionForm, countries, country_options_two_char_code_index
 from portality import article
-import os
+import os, requests
 
 
 blueprint = Blueprint('publisher', __name__)
@@ -33,21 +33,32 @@ def upload_file():
     if request.method == "GET":
         return render_template('publisher/uploadfile.html', previous=previous)
     
-    # otherwise we are dealing with a POST - file upload
+    # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
     schema = request.values.get("schema")
+    url = request.values.get("url")
     
-    # do some validation
-    if f.filename == "":
-        flash("No file provided", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+    # file upload takes precedence over URL, in case the user has given us both
+    if f.filename != "" and url is not None and url != "":
+        flash("You provided a file and a URL - the URL has been ignored")
+    
+    if f.filename != "":
+        return _file_upload(f, schema, previous)
+    
+    if url is not None and url != "":
+        return _url_upload(url, schema, previous)
+    
+    flash("No file or URL provided", "error")
+    return render_template('publisher/uploadfile.html', previous=previous)
+
+def _file_upload(f, schema, previous):
     
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
     record.upload(current_user.id, f.filename)
     record.set_id()
     
-    # the two file paths that we are going to write to
+    # the file path that we are going to write to
     xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.local_filename)
     
     # it's critical here that no errors cause files to get left behind unrecorded
@@ -105,7 +116,47 @@ def upload_file():
         previous = [record] + previous
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
         return render_template('publisher/uploadfile.html', previous=previous)
+
+def _url_upload(url, schema, previous):
+    # prep a record to go into the index, to record this upload.  The filename is the url
+    record = models.FileUpload()
+    record.upload(current_user.id, url)
+    record.set_id()
+    record.set_schema(schema) # although it could be wrong, this will get checked later
+    record.save()
     
+    # now we attempt to verify that the file is retrievable
+    try:
+        # first thing to try is a head request, supporting redirects
+        head = requests.head(url, allow_redirects=True)
+        if head.status_code == requests.codes.ok:
+            record.exists()
+            record.save()
+            previous = [record] + previous
+            flash("File reference successfully received - it will be processed shortly", "success")
+            return render_template('publisher/uploadfile.html', previous=previous)
+        
+        # if we get to here, the head request failed.  This might be because the file
+        # isn't there, but it might also be that the server doesn't support HEAD (a lot
+        # of webapps [including this one] don't implement it)
+        #
+        # so we do an interruptable get request instead, so we don't download too much
+        # unnecessary content
+        get = requests.get(url, stream=True)
+        get.close()
+        if get.status_code == requests.codes.ok:
+            record.exists()
+            record.save()
+            previous = [record] + previous
+            flash("File reference successfully received - it will be processed shortly", "success")
+            return render_template('publisher/uploadfile.html', previous=previous)
+        
+    except:
+        record.failed("The URL could not be accessed")
+        record.save()
+        previous = [record] + previous
+        flash("The URL provided could not be accessed; please check it before submitting again", "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
     
     
 @blueprint.route("/suggestion/new", methods=["GET", "POST"])
