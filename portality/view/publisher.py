@@ -4,8 +4,9 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app
 
-from portality import settings, models
+from portality import settings, models, article
 from portality.view.forms import SuggestionForm, countries, country_options_two_char_code_index
+from portality.view.forms import ArticleForm
 from portality import article
 import os, requests
 
@@ -163,3 +164,25 @@ def _url_upload(url, schema, previous):
 def suggestion():
     form = SuggestionForm(request.form)
     return render_template('publisher/suggestion.html', form=form)
+
+@blueprint.route("/metadata", methods=["GET", "POST"])
+@login_required
+def metadata():
+    if request.method == "GET":
+        form = ArticleForm()
+        return render_template('publisher/metadata.html', form=form)
+    elif request.method == "POST":
+        form = ArticleForm(request.form)
+        if form.validate():
+            xwalk = article.FormXWalk()
+            art = xwalk.crosswalk_form(form)
+            print art
+            art.save()
+            flash("Metadata saved", "success")
+            form = ArticleForm()
+            return render_template('publisher/metadata.html', form=form)
+        else:
+            return render_template('publisher/metadata.html', form=form)
+    
+    
+    

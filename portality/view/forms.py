@@ -333,21 +333,51 @@ class SuggestionForm(JournalInformationForm):
     suggester_email_confirm = TextField('Confirm your email address', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
     ) #must match suggester_email
-    
-    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
+
+
+
+##########################################################################
+## Forms and related features for Article metadata
+##########################################################################
+
+class ArticleForm(Form):
+    title = TextField("Article Title", [validators.Required()])
+    doi = TextField("DOI", [validators.Optional()])
+    author = TextField("Author", [validators.Optional()])
+    affiliation = TextField("Affiliation", [validators.Optional()])
+    abstract = TextAreaField("Abstract", [validators.Optional()])
+    keywords = TextField("Keywords", [validators.Optional()]) # enhance this with select2
+    fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()])
+    publication_date = TextField("Publication Date", [validators.Optional()]) # enhance this with date selection
+    pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    volume = TextField("Volume Number", [validators.Optional()])
+    number = TextField("Issue Number", [validators.Optional()])
+    start = TextField("Start Page", [validators.Optional()])
+    end = TextField("End Page", [validators.Optional()])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # a forms overview page at the top level, can list forms or say whatever needs said about forms, or catch closed forms
 @blueprint.route('/')
 def intro():

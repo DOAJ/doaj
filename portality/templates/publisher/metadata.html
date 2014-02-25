@@ -1,0 +1,40 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% block publisher_content %}
+
+<div class="row-fluid">
+    <div class="span12">
+        
+        {% if there_were_errors %}
+            <h4 class="red">There is a problem with the submitted form.</h4>
+        {% endif %}
+        
+        {% from "_formhelpers.html" import render_field_horizontal %}
+        
+        <form method="post" action="{{ url_for('publisher.metadata') }}" class="form-horizontal wide" id="article_metadata_form">
+            <fieldset>
+                {{ render_field_horizontal(form.title, "width: 100%", "Article Title") }}
+                {{ render_field_horizontal(form.doi) }}
+                {{ render_field_horizontal(form.author) }}
+                {{ render_field_horizontal(form.affiliation) }}
+                {{ render_field_horizontal(form.abstract) }}
+                {{ render_field_horizontal(form.keywords) }}
+                {{ render_field_horizontal(form.fulltext) }}
+                {{ render_field_horizontal(form.publication_date) }}
+                {{ render_field_horizontal(form.pissn) }}
+                {{ render_field_horizontal(form.eissn) }}
+                {{ render_field_horizontal(form.volume) }}
+                {{ render_field_horizontal(form.number) }}
+                {{ render_field_horizontal(form.start) }}
+                {{ render_field_horizontal(form.end) }}
+                
+                <div class="control-group">
+                    <div class="controls"><button class="btn btn-success" type="submit">Add Article</button></div>
+                </div>
+                
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

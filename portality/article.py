@@ -60,6 +60,86 @@ class XWalk(object):
         article.set_in_doaj(journal.get("in_doaj", False))
         return True
 
+class FormXWalk(XWalk):
+    format_name = "form"
+    
+    def crosswalk_form(self, form, add_journal_info=True):
+        article = models.Article()
+        bibjson = article.bibjson()
+        
+        # title
+        bibjson.title = form.title.data
+        
+        # doi
+        doi = form.doi.data
+        if doi is not None and doi != "":
+            bibjson.add_identifier(bibjson.DOI, doi)
+        
+        # author
+        author = form.author.data
+        aff = form.affiliation.data
+        if author is not None and author != "":
+            bibjson.add_author(author, affiliation=affiliation)
+        
+        # abstract
+        abstract = form.abstract.data
+        if abstract is not None and abstract != "":
+            bibjson.abstract = abstract
+        
+        # keywords
+        keywords = form.keywords.data
+        if keywords is not None and keywords != "":
+            ks = [k.strip() for k in keywords.split(",")]
+            bibjson.set_keywords(ks)
+            
+        # fulltext
+        ft = form.fulltext.data
+        if ft is not None and ft != "":
+            bibjson.add_url(ft, "fulltext")
+        
+        # publication date
+        pd = form.publication_date.data
+        if pd is not None and pd != "":
+            stamp = datetime.strptime(pd, "%Y-%m-%d")
+            bibjson.month = stamp.month
+            bibjson.year = stamp.year
+            
+        # pissn
+        pissn = form.pissn.data
+        if pissn is not None and pissn != "":
+            bibjson.add_identifier(bibjson.P_ISSN, pissn)
+        
+        # eissn
+        eissn = form.eissn.data
+        if eissn is not None and eissn != "":
+            bibjson.add_identifier(bibjson.E_ISSN, pissn)
+        
+        # volume
+        volume = form.volume.data
+        if volume is not None and volume != "":
+            bibjson.volume = volume
+        
+        # number
+        number = form.number.data
+        if number is not None and number != "":
+            bibjson.number = number
+        
+        # start date
+        start = form.start.data
+        if start is not None and start != "":
+            bibjson.start_page = start
+        
+        # end date
+        end = form.end.data
+        if end is not None and end != "":
+            bibjson.end_page = end
+        
+        # add the journal info if requested
+        if add_journal_info:
+            self.add_journal_info(article)
+        
+        return article
+
 class DOAJXWalk(XWalk):
     format_name = "doaj"
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
