@@ -1,20 +1,90 @@
-{% macro render_field(field) %}
-    {% if field.type != 'SubmitField' %}
-        {{ field.label | safe }}
-    {% endif %}
-    <div class="input">
-        {{ field(**kwargs) }}
-        {% if field.errors %}
-        <ul class="errors">
-            {% for error in field.errors %}
-            <li>{{ error }}</li>
+{% macro render_field(field, render_subfields_horizontal=False) %}
+    {% if field.type == 'FormField' %}
+        <div class="control-group
+        {% if field.errors %} error{% endif %}
+        {% if render_subfields_horizontal %} row-fluid{% endif %}
+        " id="{{field.short_name}}-container">
+            {% for subfield in field %}
+                {% if render_subfields_horizontal 
+                and not (subfield.type == 'CSRFTokenField' and not subfield.value)%}
+                    <div class="span3">
+                        {{ __render_field(subfield, **kwargs) }}
+                    </div>
+                {% else %}
+                    {{ __render_field(subfield, **kwargs) }}
+                {% endif %}
             {% endfor %}
-        </ul>
+        </div>
+    {% elif field.type == 'FieldList' %}
+        {% for subfield in field %}
+            {% if subfield.type == 'FormField' %}
+                {{ render_field(subfield,
+                      render_subfields_horizontal=render_subfields_horizontal,
+                      **kwargs
+                   )
+                }}
+            {% else %}
+            <div class="control-group
+            {% if subfield.errors %} error{% endif %}
+            ">
+                {{ __render_field(subfield, **kwargs) }}
+            </div>
+            {% endif %}
+        {% endfor %}    
+    {% else %}
+        <div class="control-group
+        {% if field.errors %} error {% endif %}
+        ">
+            {{ __render_field(field, **kwargs) }}
+        </div> 
+    {% endif %}
+    
+{% endmacro %}
+
+{% macro __render_radio(field, caller=None) %}
+<label class="radio" for="{{field.short_name}}">
+    {{ field }}
+    <span class="label-text">{{field.label.text}}</span>
+</label>
+{% endmacro %}
+
+{% macro field_errors(field, caller=None) %}
+  {% if field.errors %}
+  <ul class="errors">
+      {% for error in field.errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+{% endmacro %}
+
+{% macro __render_field(field) %}
+    {% if not (field.type == 'CSRFTokenField' and not field.value) %}
+        {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
+            <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
+            {% if field.flags.required %}<span class="red">*</span>{% endif %}
+            </label>
         {% endif %}
-        {% if field.description %}
-        <span class="help-block">{{ field.description | safe }}</span>
-        {% endif %}
-    </div>
+        <div class="controls">
+            {% if field.type != 'RadioField' %}
+                {{ field(**kwargs) }}
+                {% if field.errors %}
+                <ul class="errors">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if field.description %}
+                <p class="help-block">{{ field.description | safe }}</p>
+                {% endif %}
+            {% else %}
+                {% for subfield in field %}
+                    {% call __render_radio(subfield) %}{% endcall %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% endif %}
 {% endmacro %}
 
 {% macro render_field_horizontal(field, style=None, placeholder="") %}

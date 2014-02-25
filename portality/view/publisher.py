@@ -168,21 +168,67 @@ def suggestion():
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
 def metadata():
+    # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
         form = ArticleForm()
         return render_template('publisher/metadata.html', form=form)
+    
+    # if this is a post request, a form button has been hit and we need to do
+    # a bunch of work
     elif request.method == "POST":
         form = ArticleForm(request.form)
+        
+        # first we need to do any server-side form modifications which
+        # the user might request by pressing the add/remove authors buttons
+        more_authors = request.values.get("more_authors")
+        remove_author = None
+        for v in request.values.keys():
+            if v.startswith("remove_authors"):
+                remove_author = v.split("-")[1]
+        
+        # if the user wants more authors, add an extra entry
+        if more_authors:
+            form.authors.append_entry()
+            return render_template('publisher/metadata.html', form=form)
+        
+        # if the user wants to remove an author, do the various back-flips required
+        if remove_author is not None:
+            keep = []
+            while len(form.authors.entries) > 0:
+                entry = form.authors.pop_entry()
+                if entry.short_name == "authors-" + remove_author:
+                    break
+                else:
+                    keep.append(entry)
+            while len(keep) > 0:
+                form.authors.append_entry(keep.pop().data)
+            return render_template('publisher/metadata.html', form=form)
+        
+        # if we get to here, then this is the full submission, and we need to
+        # validate and return
+        enough_authors = _validate_authors(form)
         if form.validate():
-            xwalk = article.FormXWalk()
-            art = xwalk.crosswalk_form(form)
-            print art
-            art.save()
-            flash("Metadata saved", "success")
-            form = ArticleForm()
-            return render_template('publisher/metadata.html', form=form)
+            # if the form validates, then we have to do our own bit of validation,
+            # which is to check that there is at least one author supplied
+            if not enough_authors:
+                return render_template('publisher/metadata.html', form=form, author_error=True)
+            else:
+                xwalk = article.FormXWalk()
+                art = xwalk.crosswalk_form(form)
+                print art
+                art.save()
+                flash("Metadata saved", "success")
+                form = ArticleForm()
+                return render_template('publisher/metadata.html', form=form)
         else:
-            return render_template('publisher/metadata.html', form=form)
+            return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
     
-    
+def _validate_authors(form, require=1):
+    counted = 0
+    for entry in form.authors.entries:
+        name = entry.data.get("name")
+        if name is not None and name != "":
+            counted += 1
+    print counted
+    return counted >= require
     

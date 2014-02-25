@@ -13,7 +13,7 @@ from flask import Blueprint, request, abort, make_response, render_template, fla
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField
+from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList
 from wtforms import widgets 
 from flask_wtf import RecaptchaField
 
@@ -341,11 +341,17 @@ class SuggestionForm(JournalInformationForm):
 ## Forms and related features for Article metadata
 ##########################################################################
 
+DOI_REGEX = re.compile(r'^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)')
+DOI_ERROR = 'A DOI should have no prefix or one of the valid doi prefixes (e.g. "doi:") then start with "10."'
+
+class AuthorForm(Form):
+    name = TextField("Name", [validators.Optional()])
+    affiliation = TextField("Affiliation", [validators.Optional()])
+    
 class ArticleForm(Form):
     title = TextField("Article Title", [validators.Required()])
-    doi = TextField("DOI", [validators.Optional()])
-    author = TextField("Author", [validators.Optional()])
-    affiliation = TextField("Affiliation", [validators.Optional()])
+    doi = TextField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
+    authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = TextField("Keywords", [validators.Optional()]) # enhance this with select2
     fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()])
