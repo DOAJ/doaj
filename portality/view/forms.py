@@ -13,7 +13,7 @@ from flask import Blueprint, request, abort, make_response, render_template, fla
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList
+from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError
 from wtforms import widgets 
 from flask_wtf import RecaptchaField
 
@@ -143,6 +143,7 @@ class OptionalIf(validators.Optional):
 
     def __call__(self, form, field):
         other_field = form._fields.get(self.other_field_name)
+        # print bool(field.data), self.other_field_name, bool(other_field.data)
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
         if bool(other_field.data):
@@ -341,8 +342,24 @@ class SuggestionForm(JournalInformationForm):
 ## Forms and related features for Article metadata
 ##########################################################################
 
-DOI_REGEX = re.compile(r'^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)')
-DOI_ERROR = 'A DOI should have no prefix or one of the valid doi prefixes (e.g. "doi:") then start with "10."'
+DOI_REGEX = "^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)"
+DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
+
+YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, datetime.now().year - 15, -1)]
+MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
+
+class ThisOrThat(object):
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        this = bool(field.data)
+        that = bool(other_field.data)
+        if not this and not that:
+            raise ValidationError("Either this field or " + other_field.label.text + " is required")
 
 class AuthorForm(Form):
     name = TextField("Name", [validators.Optional()])
@@ -353,17 +370,30 @@ class ArticleForm(Form):
     doi = TextField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
     authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
-    keywords = TextField("Keywords", [validators.Optional()]) # enhance this with select2
+    keywords = TextField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()])
-    publication_date = TextField("Publication Date", [validators.Optional()]) # enhance this with date selection
-    pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
-    eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
+    publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
+    pissn = SelectField("Journal ISSN", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = SelectField("Journal E-ISSN", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+ 
     volume = TextField("Volume Number", [validators.Optional()])
     number = TextField("Issue Number", [validators.Optional()])
     start = TextField("Start Page", [validators.Optional()])
     end = TextField("End Page", [validators.Optional()])
 
-
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
+        try:
+            if not current_user.is_anonymous():
+                issns = models.Journal.issns_by_owner(current_user.id)
+                ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
+                self.pissn.choices = ic
+                self.eissn.choices = ic
+        except:
+            # not logged in, and current_user is broken
+            # probably you are loading the class from the command line
+            pass
 
 
 

@@ -416,6 +416,13 @@ class Journal(DomainObject):
         q = JournalQuery()
         return cls.iterate(q.all_in_doaj(), page_size=page_size)
     
+    @classmethod
+    def issns_by_owner(cls, owner):
+        q = IssnQuery(owner)
+        res = cls.query(q=q.query())
+        issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
+        return issns
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -836,6 +843,31 @@ class JournalQuery(object):
         
     def all_in_doaj(self):
         return deepcopy(self.all_doaj)
+
+class IssnQuery(object):
+    base_query = {
+        "query" : {
+            "term" : { "admin.owner.exact" : "<owner id here>" }
+        },
+        "size" : 0,
+        "facets" : {
+            "issns" : {
+                "terms" : {
+                    "field" : "index.issn.exact",
+                    "size" : 10000,
+                    "order" : "term"
+                }
+            }
+        }
+    }
+    
+    def __init__(self, owner):
+        self._query = deepcopy(self.base_query)
+        self._query["query"]["term"]["admin.owner.exact"] = owner
+    
+    def query(self):
+        return self._query
+    
 
 ############################################################################
 

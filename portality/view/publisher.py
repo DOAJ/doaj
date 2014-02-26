@@ -215,9 +215,8 @@ def metadata():
             else:
                 xwalk = article.FormXWalk()
                 art = xwalk.crosswalk_form(form)
-                print art
                 art.save()
-                flash("Metadata saved", "success")
+                flash("New article created", "success")
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)
         else:
@@ -229,6 +228,5 @@ def _validate_authors(form, require=1):
         name = entry.data.get("name")
         if name is not None and name != "":
             counted += 1
-    print counted
     return counted >= require
-    
+

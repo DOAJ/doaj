@@ -75,12 +75,13 @@ class FormXWalk(XWalk):
         if doi is not None and doi != "":
             bibjson.add_identifier(bibjson.DOI, doi)
         
-        # author
-        author = form.author.data
-        aff = form.affiliation.data
-        if author is not None and author != "":
-            bibjson.add_author(author, affiliation=affiliation)
-        
+        # authors
+        for subfield in form.authors:
+            author = subfield.form.name.data
+            aff = subfield.form.affiliation.data
+            if author is not None and author != "":
+                bibjson.add_author(author, affiliation=aff)
+                
         # abstract
         abstract = form.abstract.data
         if abstract is not None and abstract != "":
@@ -97,12 +98,13 @@ class FormXWalk(XWalk):
         if ft is not None and ft != "":
             bibjson.add_url(ft, "fulltext")
         
-        # publication date
-        pd = form.publication_date.data
-        if pd is not None and pd != "":
-            stamp = datetime.strptime(pd, "%Y-%m-%d")
-            bibjson.month = stamp.month
-            bibjson.year = stamp.year
+        # publication year/month
+        py = form.publication_year.data
+        pm = form.publication_month.data
+        if pm is not None:
+            bibjson.month = pm
+        if py is not None:
+            bibjson.year = py
             
         # pissn
         pissn = form.pissn.data
@@ -112,7 +114,7 @@ class FormXWalk(XWalk):
         # eissn
         eissn = form.eissn.data
         if eissn is not None and eissn != "":
-            bibjson.add_identifier(bibjson.E_ISSN, pissn)
+            bibjson.add_identifier(bibjson.E_ISSN, eissn)
         
         # volume
         volume = form.volume.data
