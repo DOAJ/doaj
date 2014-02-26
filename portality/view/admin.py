@@ -136,7 +136,7 @@ def suggestion_page(suggestion_id):
         abort(404)
         
     if request.method == "GET":
-        return render_template("admin/suggestion.html", suggestion=s, admin_page=True)
+        return render_template("admin/suggestion.html", suggestion=s, admin_page=True, edit_suggestion_page=True)
 
     elif request.method == "POST":
         req = json.loads(request.data)

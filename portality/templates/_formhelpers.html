@@ -1,9 +1,11 @@
-{% macro render_field(field, render_subfields_horizontal=False) %}
+{% macro render_field(field, render_subfields_horizontal=False, hidden=False) %}
     {% if field.type == 'FormField' %}
         <div class="control-group
         {% if field.errors %} error{% endif %}
         {% if render_subfields_horizontal %} row-fluid{% endif %}
-        " id="{{field.short_name}}-container">
+        " id="{{field.short_name}}-container"
+        {% if hidden %} style="display: none;" {% endif %} 
+        >
             {% for subfield in field %}
                 {% if render_subfields_horizontal 
                 and not (subfield.type == 'CSRFTokenField' and not subfield.value)%}
@@ -25,16 +27,18 @@
                 }}
             {% else %}
             <div class="control-group
-            {% if subfield.errors %} error{% endif %}
-            ">
+            {% if subfield.errors %} error{% endif %}"
+            {% if hidden %} style="display: none;" {% endif %}
+            >
                 {{ __render_field(subfield, **kwargs) }}
             </div>
             {% endif %}
         {% endfor %}    
     {% else %}
         <div class="control-group
-        {% if field.errors %} error {% endif %}
-        ">
+        {% if field.errors %} error {% endif %}"
+        {% if hidden %} style="display: none;" {% endif %}
+        >
             {{ __render_field(field, **kwargs) }}
         </div> 
     {% endif %}

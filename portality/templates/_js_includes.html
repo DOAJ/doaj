@@ -60,5 +60,9 @@ displayed. #}
 
 {# any admin area javascript includes #}
 {% if request.path.startswith("/admin") %}
-<script type="text/javascript" src="/static/doaj/js/suggest.js"></script>
+
 {% endif %} 
+
+{% if edit_suggestion_page %}
+<script type="text/javascript" src="/static/doaj/js/suggest.js"></script>
+{% endif %}

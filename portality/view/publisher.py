@@ -163,7 +163,7 @@ def _url_upload(url, schema, previous):
 @login_required
 def suggestion():
     form = SuggestionForm(request.form)
-    return render_template('publisher/suggestion.html', form=form)
+    return render_template('publisher/suggestion.html', form=form, edit_suggestion_page=True)
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required

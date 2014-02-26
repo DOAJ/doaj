@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
             }
         })
 
-    })
+    });
     
     $("select[name=application_status]").change(function() {
         var original = $("input[name=current_status]").val()
@@ -48,4 +48,27 @@ jQuery(document).ready(function($) {
         }
     });
     
+    toggle_url_field('waiver_policy');
+    toggle_url_field('download_statistics');
+    toggle_url_field('plagiarism_screening');
+    
+    toggle_charges_amount('processing_charges');
+    toggle_charges_amount('submission_charges');
+    
 });
+
+function toggle_url_field(field_name) {
+    $('input[name=' + field_name + ']:radio').change( function () {
+        $('#' + field_name + '_url').parent().parent().toggle();
+        
+    });
+
+}
+
+function toggle_charges_amount(field_name) {
+    $('input[name=' + field_name + ']:radio').change( function () {
+        $('#' + field_name + '_amount').parent().parent().toggle();
+        $('#' + field_name + '_currency').parent().parent().toggle();
+    });
+}
+

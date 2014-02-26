@@ -112,8 +112,11 @@ fulltext_format_choices = [
     ('Other:', 'Other:')
 ]
 
-
-
+currency_choices = [
+    ('EUR', 'EUR'),
+    ('GBP', 'GBP'),
+    ('USD', 'USD')
+]    
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -192,14 +195,27 @@ class SuggestionForm(JournalInformationForm):
         description = 'If "Yes" then add the amount (average price) with currency', 
         choices = binary_choices
     )
+    processing_charges_amount = IntegerField('Amount',
+        [validators.Required()],
+    )
+    processing_charges_currency = SelectField('Currency',
+        choices = currency_choices,
+    )
+    
     submission_charges = RadioField('Does the journal have article submission charges? Include relevant currency.', 
         [validators.Required()],
         description = 'If "Yes" then add the amount (average price) with currency', 
         choices = binary_choices
     )
-    journals_last_year = IntegerField('Does the journal have article submission charges? Include relevant currency.', 
+    submission_charges_amount = IntegerField('Amount', 
         [validators.Required()],
-        description = 'Does the journal have article submission charges? Include relevant currency.', 
+    )
+    submission_charges_currency = SelectField('Currency',
+        choices = currency_choices,
+    )    
+    journals_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
+        [validators.Required()],
+        description = 'A journal must publish at least 5 articles per year to stay in the DOAJ', 
     )
     journals_last_year_url = TextField('Enter the URL where this information can be found', 
         [validators.Required(), validators.URL()]
