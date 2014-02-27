@@ -54,6 +54,7 @@ jQuery(document).ready(function($) {
     
     toggle_charges_amount('processing_charges');
     toggle_charges_amount('submission_charges');
+   
     
 });
 
@@ -71,4 +72,3 @@ function toggle_charges_amount(field_name) {
         $('#' + field_name + '_currency').parent().parent().toggle();
     });
 }
-

@@ -64,8 +64,8 @@ digital_archiving_policy_choices = [
     ('Portico', 'Portico'), 
     ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'), 
     ('No policy in place', 'No policy in place'), 
-    ('A national library. Please specify:', 'A national library. Please specify:'), 
-    ('Other', 'Other:')
+    ('A national library. Please specify', 'A national library. Please specify:'), 
+    ('Other', 'Other')
 ]
 
 binary_choices = [
@@ -74,7 +74,7 @@ binary_choices = [
 ]
 
 ternary_choices = binary_choices + [
-    ('Other', 'Other:')
+    ('Other', 'Other')
 ]
 
 deposit_policy_choices = [
@@ -331,12 +331,16 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required()],
         choices = ternary_choices 
     )
+    copyright_other = TextField('',
+    )
     copyright_url = TextField('Enter the URL where this information can be found', 
         [validators.Required(), validators.URL()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?', 
         [validators.Required()], 
         choices = ternary_choices
+    )
+    publishing_rights_other = TextField('',
     )
     publishing_rights_url = TextField('Enter the URL where this information can be found', 
         [validators.Required(), validators.URL()]

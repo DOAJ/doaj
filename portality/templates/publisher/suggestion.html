@@ -61,9 +61,57 @@
         {{ render_field(form.license_url) }}
         {{ render_field(form.open_access) }}
         {{ render_field(form.deposit_policy) }}
-        {{ render_field(form.copyright) }}
+        {# render_field(form.copyright) #}
+        <div class="control-group">
+            <label class="control-label" for="copyright">Does the journal allow the author(s) to hold the copyright without restrictions?
+            <span class="red">*</span>
+            </label>
+        
+            <div class="controls">
+                <label class="radio" for="copyright">
+                    <input id="copyright-0" name="copyright" type="radio" value="True">
+                    <span class="label-text">Yes</span>
+                </label>       
+                                    
+                <label class="radio" for="copyright">
+                    <input id="copyright-1" name="copyright" type="radio" value="False">
+                    <span class="label-text">No</span>
+                </label>        
+                                    
+                <label class="radio" for="copyright">
+                    <input id="copyright-2" name="copyright" type="radio" value="Other">
+                    <span class="label-text">Other</span>
+                    <input id="copyright_other" name="copyright_other" other_field type="text" value="">
+                </label>
+            </div>
+        </div>
+        {# render_field(form.copyright_other) #}
         {{ render_field(form.copyright_url) }}
-        {{ render_field(form.publishing_rights) }}
+        <div class="control-group">
+            <label class="control-label" for="publishing_rights">Will the journal allow the author(s) to retain publishing rights without restrictions?
+            <span class="red">*</span>
+            </label>
+        
+            <div class="controls">
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-0" name="publishing_rights" type="radio" value="True">
+                    <span class="label-text">Yes</span>
+                </label>       
+                                    
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-1" name="publishing_rights" type="radio" value="False">
+                    <span class="label-text">No</span>
+                </label>        
+                                    
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-2" name="publishing_rights" type="radio" value="Other">
+                    <span class="label-text">Other</span>
+                    <input id="publishing_rights_other" name="publishing_rights_other" other_field type="text" value="">
+                </label>
+            </div>
+        </div>
+        {# render_field(form.publishing_rights) #}
+        {# render_field(form.publishing_rights_other) #}
         {{ render_field(form.publishing_rights_url) }}
         {{ render_field(form.suggester_name) }}
         {{ render_field(form.suggester_email) }}
