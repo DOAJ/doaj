@@ -539,6 +539,7 @@ class Journal(DomainObject):
         country = None
         license = []
         publisher = []
+        urls = {}
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -549,7 +550,8 @@ class Journal(DomainObject):
         issns += cbib.get_identifiers(cbib.E_ISSN)
         
         # get the title out of the current bibjson
-        titles.append(cbib.title)
+        if cbib.title is not None:
+            titles.append(cbib.title)
         
         # get the subjects and concatenate them with their schemes from the current bibjson
         for subs in cbib.subjects():
@@ -568,7 +570,8 @@ class Journal(DomainObject):
         for date, r, irb, hbib in hist:
             issns += hbib.get_identifiers(hbib.P_ISSN)
             issns += hbib.get_identifiers(hbib.E_ISSN)
-            titles.append(hbib.title)
+            if hbib.title is not None:
+                titles.append(hbib.title)
         
         # copy the languages
         if cbib.language is not None:
@@ -583,11 +586,18 @@ class Journal(DomainObject):
         if lic is not None:
             license.append(lic.get("title"))
         
-        # copy the publisher/provider
+        # copy the publisher/institution
         if cbib.publisher:
             publisher.append(cbib.publisher)
-        if cbib.provider:
-            publisher.append(cbib.provider)
+        if cbib.institution:
+            publisher.append(cbib.institution)
+        
+        # extract and convert all of the urls by their type
+        links = cbib.get_urls()
+        for link in links:
+            lt = link.get("type")
+            if lt is not None:
+                urls[lt + "_url"] = link.get("url")
         
         # deduplicate the lists
         issns = list(set(issns))
@@ -622,6 +632,8 @@ class Journal(DomainObject):
             self.data["index"]["country"] = country
         if len(schema_codes) > 0:
             self.data["index"]["schema_code"] = schema_codes
+        if len(urls.keys()) > 0:
+            self.data["index"].update(urls)
     
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
@@ -753,7 +765,7 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def institution(self): return self.bibjson.get("institution")
     @institution.setter
-    def provider(self, val) : self.bibjson["institution"] = val
+    def institution(self, val) : self.bibjson["institution"] = val
     
     @property
     def active(self): return self.bibjson.get("active")
@@ -883,13 +895,13 @@ class JournalBibJSON(GenericBibJSON):
     def submission_charges(self):
         return self.bibjson.get("submission_charges")
     
-    def archiving_policy(self, policies, policy_url):
+    def set_archiving_policy(self, policies, policy_url):
         if "archiving_policy" not in self.bibjson:
             self.bibjson["archiving_policy"] = {}
         if not isinstance(policies, list):
             policies = [policies]
         self.bibjson["archiving_policy"]["policy"] = policies
-        self.bibjson["archiving_policy"]["url"] = price
+        self.bibjson["archiving_policy"]["url"] = policy_url
     
     def add_archiving_policy(self, policy_name):
         if "archiving_policy" not in self.bibjson:
@@ -974,7 +986,7 @@ class JournalBibJSON(GenericBibJSON):
     def persistent_identifier_scheme(self):
         return self.bibjson.get("persistent_identifier_scheme", [])
         
-    @persistent_identifier_scheme
+    @persistent_identifier_scheme.setter
     def persistent_identifier_scheme(self, schemes):
         if not isinstance(schemes, list):
             schemes = [schemes]
@@ -989,7 +1001,7 @@ class JournalBibJSON(GenericBibJSON):
     def format(self):
         return self.bibjson.get("format", [])
         
-    @format
+    @format.setter
     def format(self, form):
         if not isinstance(form, list):
             form = [form]
@@ -1083,9 +1095,18 @@ class Suggestion(Journal):
     ### suggestion properties (as in, the Suggestion model's "suggestion" object ###
 
     @property
-    def suggested_by_owner(self): return self.data.get("suggestion", {}).get("suggested_by_owner")
+    def suggested_by_owner(self):
+        """
+        Deprecated - DO NOT USE
+        """
+        return self.data.get("suggestion", {}).get("suggested_by_owner")
+    
     @suggested_by_owner.setter
-    def suggested_by_owner(self, val):  self._set_suggestion_property("suggested_by_owner", val)
+    def suggested_by_owner(self, val): 
+        """
+        Deprecated - DO NOT USE
+        """
+        self._set_suggestion_property("suggested_by_owner", val)
 
     @property
     def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
@@ -1093,9 +1114,35 @@ class Suggestion(Journal):
     def suggested_on(self, val): self._set_suggestion_property("suggested_on", val)
     
     @property
-    def description(self): return self.data.get("suggestion", {}).get("description")
+    def articles_last_year(self):
+        return self.data.get("suggestion", {}).get("articles_last_year")
+    
+    def set_articles_last_year(self, count, url):
+        if "suggestion" not in self.data:
+            self.data["suggestion"] = {}
+        if "articles_last_year" not in self.data["suggestion"]:
+            self.data["suggestion"]["articles_last_year"] = {}
+        self.data["suggestion"]["articles_last_year"]["count"] = count
+        self.data["suggestion"]["articles_last_year"]["url"] = url
+    
+    @property
+    def article_metadata(self): return self.data.get("suggestion", {}).get("article_metadata")
+    @article_metadata.setter
+    def article_metadata(self, val): self._set_suggestion_property("article_metadata", val)
+    
+    @property
+    def description(self): 
+        """
+        Deprecated - DO NOT USE
+        """
+        return self.data.get("suggestion", {}).get("description")
+    
     @description.setter
-    def description(self, val): self._set_suggestion_property("description", val)
+    def description(self, val): 
+        """
+        Deprecated - DO NOT USE
+        """
+        self._set_suggestion_property("description", val)
     
     @property
     def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
