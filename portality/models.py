@@ -21,6 +21,14 @@ class GenericBibJSON(object):
     E_ISSN = "eissn"
     DOI = "doi"
     
+    # allowable values for the url types
+    HOMEPAGE = "homepage"
+    WAIVER_POLICY = "waiver_policy"
+    EDITORIAL_BOARD = "editorial_board"
+    AIMS_SCOPE = "aims_scope"
+    AUTHOR_INSTRUCTIONS = "author_instructions"
+    OA_STATEMENT = "oa_statement"
+    
     # constructor
     def __init__(self, bibjson=None):
         self.bibjson = bibjson if bibjson is not None else {}
@@ -695,14 +703,37 @@ class JournalBibJSON(GenericBibJSON):
     def alternative_title(self, val) : self.bibjson["alternative_title"] = val
     
     @property
-    def author_pays_url(self): return self.bibjson.get("author_pays_url")
+    def author_pays_url(self): 
+        """
+        Deprecated - DO NOT USE
+        """
+        return None
+        # url self.bibjson.get("author_pays_url")
+        
+        
     @author_pays_url.setter
-    def author_pays_url(self, val) : self.bibjson["author_pays_url"] = val
+    def author_pays_url(self, val): 
+        """
+        Deprecated - DO NOT USE
+        """
+        pass
+        # self.bibjson["author_pays_url"] = val
     
     @property
-    def author_pays(self): return self.bibjson.get("author_pays")
+    def author_pays(self): 
+        """
+        Deprecated - DO NOT USE
+        """
+        # return self.bibjson.get("author_pays")
+        return None
+        
     @author_pays.setter
-    def author_pays(self, val) : self.bibjson["author_pays"] = val
+    def author_pays(self, val): 
+        """
+        Deprecated - DO NOT USE
+        """
+        # self.bibjson["author_pays"] = val
+        pass
     
     @property
     def country(self): return self.bibjson.get("country")
@@ -718,6 +749,11 @@ class JournalBibJSON(GenericBibJSON):
     def provider(self): return self.bibjson.get("provider")
     @provider.setter
     def provider(self, val) : self.bibjson["provider"] = val
+    
+    @property
+    def institution(self): return self.bibjson.get("institution")
+    @institution.setter
+    def provider(self, val) : self.bibjson["institution"] = val
     
     @property
     def active(self): return self.bibjson.get("active")
@@ -741,10 +777,11 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["language"] = []
         self.bibjson["language"].append(language)
     
-    def set_license(self, license_title, license_type, url=None, version=None, open_access=None):
+    def set_license(self, license_title, license_type, url=None, version=None, open_access=None, by=None, sa=None, nc=None, nd=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
-
+        
+        # FIXME: why is there not a "remove license" function
         if not license_title and not license_type:  # something wants to delete the license
             del self.bibjson['license']
             return
@@ -756,6 +793,14 @@ class JournalBibJSON(GenericBibJSON):
             lobj["version"] = version
         if open_access is not None:
             lobj["open_access"] = open_access
+        if by is not None:
+            lobj["BY"] = by
+        if sa is not None:
+            lobj["SA"] = sa
+        if nc is not None:
+            lobj["NC"] = nc
+        if nd is not None:
+            lobj["ND"] = nd
         
         if len(self.bibjson['license']) >= 1:
             self.bibjson["license"][0] = lobj
@@ -781,13 +826,18 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["license"][0]["open_access"] = open_access
     
     def set_oa_start(self, year=None, volume=None, number=None):
+        """
+        Volume and Number are deprecated
+        """
         oaobj = {}
         if year is not None:
             oaobj["year"] = year
+        """
         if volume is not None:
             oaobj["volume"] = volume
         if number is not None:
             oaobj["number"] = number
+        """
         self.bibjson["oa_start"] = oaobj
     
     @property
@@ -795,19 +845,166 @@ class JournalBibJSON(GenericBibJSON):
         return self.bibjson.get("oa_start", {})
     
     def set_oa_end(self, year=None, volume=None, number=None):
+        """
+        Volume and Number are deprecated
+        """
         oaobj = {}
         if year is not None:
             oaobj["year"] = year
+        """
         if volume is not None:
             oaobj["volume"] = volume
         if number is not None:
             oaobj["number"] = number
+        """
         self.bibjson["oa_end"] = oaobj
     
     @property
     def oa_end(self):
         return self.bibjson.get("oa_end", {})
+    
+    def set_apc(self, currency, average_price):
+        if "apc" not in self.bibjson:
+            self.bibjson["apc"] = {}
+        self.bibjson["apc"]["currency"] = currency
+        self.bibjson["apc"]["average_price"] = average_price
+    
+    @property
+    def apc(self):
+        return self.bibjson.get("apc") 
+    
+    def set_submission_charges(self, currency, average_price):
+        if "submission_charges" not in self.bibjson:
+            self.bibjson["submission_charges"] = {}
+        self.bibjson["submission_charges"]["currency"] = currency
+        self.bibjson["submission_charges"]["average_price"] = average_price
+    
+    @property
+    def submission_charges(self):
+        return self.bibjson.get("submission_charges")
+    
+    def archiving_policy(self, policies, policy_url):
+        if "archiving_policy" not in self.bibjson:
+            self.bibjson["archiving_policy"] = {}
+        if not isinstance(policies, list):
+            policies = [policies]
+        self.bibjson["archiving_policy"]["policy"] = policies
+        self.bibjson["archiving_policy"]["url"] = price
+    
+    def add_archiving_policy(self, policy_name):
+        if "archiving_policy" not in self.bibjson:
+            self.bibjson["archiving_policy"] = {}
+        self.bibjson["archiving_policy"]["policy"].append(policy_name)
+    
+    @property
+    def archiving_policy(self): 
+        return self.bibjson.get("archiving_policy")
+    
+    def set_editorial_review(self, process, review_url):
+        if "editorial_review" not in self.bibjson:
+            self.bibjson["editorial_review"] = {}
+        self.bibjson["editorial_review"]["process"] = process
+        self.bibjson["editorial_review"]["url"] = review_url
+    
+    @property
+    def editorial_review(self):
+        return self.bibjson.get("editorial_review") 
+        
+    def set_plagiarism_detection(self, url, has_detection=True):
+        if "plagiarism_detection" not in self.bibjson:
+            self.bibjson["plagiarism_detection"] = {}
+        self.bibjson["plagiarism_detection"]["detection"] = has_detection
+        self.bibjson["plagiarism_detection"]["url"] = url
+    
+    @property
+    def plagiarism_detection(self):
+        return self.bibjson.get("plagiarism_detection")
+        
+    def set_article_statistics(self, url, has_statistics=True):
+        if "article_statistics" not in self.bibjson:
+            self.bibjson["article_statistics"] = {}
+        self.bibjson["article_statistics"]["statistics"] = has_statistics
+        self.bibjson["article_statistics"]["url"] = url
+    
+    @property
+    def article_statistics(self):
+        return self.bibjson.get("article_statistics") 
+    
+    @property
+    def deposit_policy(self):
+        return self.bibjson.get("deposit_policy")
+    
+    @deposit_policy.setter
+    def deposit_policy(self, policies):
+        if not isinstance(policies, list):
+            policies = [policies]
+        self.bibjson["deposit_policy"] = policies
+    
+    def add_deposit_policy(self, policy):
+        if "deposit_policy" not in self.bibjson:
+            self.bibjson["deposit_policy"] = []
+        self.bibjson["deposit_policy"].append(policy)
+    
+    def set_author_copyright(self, url, holds_copyright=True):
+        if "author_copyright" not in self.bibjson:
+            self.bibjson["author_copyright"] = {}
+        self.bibjson["author_copyright"]["copyright"] = holds_copyright
+        self.bibjson["author_copyright"]["url"] = url
+    
+    @property
+    def author_copyright(self):
+        return self.bibjson.get("author_copyright") 
+    
+    def set_author_publishing_rights(self, url, holds_rights=True):
+        if "author_publishing_rights" not in self.bibjson:
+            self.bibjson["author_publishing_rights"] = {}
+        self.bibjson["author_publishing_rights"]["publishing_rights"] = holds_rights
+        self.bibjson["author_publishing_rights"]["url"] = url
+    
+    @property
+    def author_publishing_rights(self):
+        return self.bibjson.get("author_publishing_rights")
+    
+    @property
+    def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing", False)
+    @allows_fulltext_indexing.setter
+    def allows_fulltext_indexing(self, allows): self.bibjson["allows_fulltext_indexing"] = allows
+    
+    @property
+    def persistent_identifier_scheme(self):
+        return self.bibjson.get("persistent_identifier_scheme", [])
+        
+    @persistent_identifier_scheme
+    def persistent_identifier_scheme(self, schemes):
+        if not isinstance(schemes, list):
+            schemes = [schemes]
+        self.bibjson["persistent_identifier_scheme"] = schemes
+    
+    def add_persistent_identifier_scheme(self, scheme):
+        if "persistent_identifier_scheme" not in self.bibjson:
+            self.bibjson["persistent_identifier_scheme"] = []
+        self.bibjson["persistent_identifier_scheme"].append(scheme)
 
+    @property
+    def format(self):
+        return self.bibjson.get("format", [])
+        
+    @format
+    def format(self, form):
+        if not isinstance(form, list):
+            form = [form]
+        self.bibjson["format"] = form
+    
+    def add_format(self, form):
+        if "format" not in self.bibjson:
+            self.bibjson["format"] = []
+        self.bibjson["format"].append(form)
+    
+    @property
+    def publication_time(self): return self.bibjson.get("publication_time")
+    @publication_time.setter
+    def publication_time(self, weeks): self.bibjson["publication_time"] = weeks
+    
 class JournalQuery(object):
     """
     wrapper around the kinds of queries we want to do against the journal type

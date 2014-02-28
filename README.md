@@ -119,18 +119,17 @@ It is likely that history records will only be created upon request by the admin
         },
         "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
         "author_copyright" : {
-            "from" : "<year statement is valid from>",
-            "copyright" : true|false
+            "copyright" : true|false,
+            "url" : "<url for information about copyright position>"
         },
         "author_publishing_rights" : {
-            "from" : "<year statement is valid from>",
-            "publishing_rights" : true|false
-        }
+            "publishing_rights" : true|false,
+            "url" : "<url for information about publishing rights>"
+        },
         "allows_fulltext_indexing" : true|false,
-        "persistent_identifier_schemes" : [<list of names of pid schemes>],
-        "article_statistics" : true|false, # does the journal provide download statistics
-        "format" : [<list of mimetypes of fulltext formats available>]
-        "publication_time" : "<average time in weeks to publication>"
+        "persistent_identifier_scheme" : [<list of names of pid schemes>],
+        "format" : [<list of mimetypes of fulltext formats available>],
+        "publication_time" : "<average time in weeks to publication>",
         "license" : [
             {
                 "title" : "<name of licence>",
@@ -138,6 +137,10 @@ It is likely that history records will only be created upon request by the admin
                 "url" : "<url>", 
                 "version" : "<version>",
                 "open_access": true|false, # is the licence BOAI compliant
+                "BY": true/false,
+                "NC": true/false,
+                "ND": true/false,
+                "SA": true/false,
                 "embedded" : true|false # is the licence metadata embedded in the article pages>
             }
         ],
