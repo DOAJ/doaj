@@ -19,8 +19,6 @@ SUPPRESS_ERROR_EMAILS = False  # should be set to False in production and True i
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
-# DOMAIN = "doaj.cottagelabs.com"  # facetview needs to access it like a user would, because well, it does run client-side
-DOMAIN = "localhost:5004"
 DEBUG = True
 PORT = 5004
 
