@@ -84,7 +84,7 @@ deposit_policy_choices = [
     ('H\xc3\xa9loise'.decode('utf-8'), 'H\xc3\xa9loise'.decode('utf-8')),
     ('Diadorum', 'Diadorum'), 
     ('None', 'None'), 
-    ('Other:', 'Other:')
+    ('Other', 'Other')
 ]
 
 license_choices = [
@@ -93,7 +93,14 @@ license_choices = [
     ('CC-BY NC', 'CC-BY NC'),
     ('CC-BY ND', 'CC-BY ND'),
     ('No', 'No'), 
-    ('Other:', 'Other:')
+    ('Other', 'Other')
+]
+
+license_checkbox_choices = [
+    ('Attribution', 'Attribution'),
+    ('Share Alike', 'Share Alike'),
+    ('No Commercial Usage', 'No Commercial Usage'),
+    ('No Derivatives', 'No Derivatives')
 ]
 
 review_process_choices = [
@@ -109,7 +116,16 @@ fulltext_format_choices = [
     ('HTML', 'HTML'), 
     ('ePUB', 'ePUB'), 
     ('XML', 'XML'), 
-    ('Other:', 'Other:')
+    ('Other', 'Other')
+]
+
+article_identifiers_choices = [
+    ('DOI', 'DOI'),
+    ('Handles', 'Handles'),
+    ('ARK', 'ARK'),
+    ('EzID', 'EzID'),
+    ('None', 'None'),
+    ('Other', 'Other')
 ]
 
 currency_choices = [
@@ -241,7 +257,13 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required()],
         choices = binary_choices
     )
-    #question 20 should be here
+    article_identifiers = SelectMultipleField('Which article identifiers does the journal use?', 
+        [validators.Required()],
+        description = 'For example DOIs, Handles, ARK, EzID etc',
+        choices = article_identifiers_choices,
+        option_widget=widgets.CheckboxInput(),   
+        widget=widgets.ListWidget(prefix_label=False),
+    )
     metadata_provision = RadioField('Does the journal provide, or intend to provide, article level metadata to DOAJ?', 
         [validators.Required()],
         description = 'For new applications, metadata must be provided within 3 months of acceptance into DOAJ', 
@@ -312,6 +334,11 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required()],
         choices = license_choices, 
         description = 'For more information go to http://creativecommons.org/licenses/ '
+    )
+    license_checkbox = SelectMultipleField('Does it require',
+        choices = license_checkbox_choices,
+        option_widget=widgets.CheckboxInput(), 
+        widget=widgets.ListWidget(prefix_label=False),
     )
     license_url = TextField("Enter the URL on your site where your license terms are stated", 
         [validators.Required(), validators.URL()]

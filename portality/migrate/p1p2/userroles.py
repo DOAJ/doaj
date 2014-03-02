@@ -4,7 +4,7 @@ print "Migrating user accounts - adding publisher role"
 
 batch = []
 batch_size = 1000
-for acc in models.Account.iterall():
+for acc in models.Account.iterall(page_size=10000):
     if len(acc.role) == 0:
         acc.add_role("publisher")
         batch.append(acc.data)

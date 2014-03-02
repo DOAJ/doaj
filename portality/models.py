@@ -431,6 +431,13 @@ class Journal(DomainObject):
         issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
         return issns
     
+    @classmethod
+    def find_by_publisher(cls, publisher, exact=True):
+        q = PublisherQuery(publisher, exact)
+        result = cls.query(q=q.query())
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -520,7 +527,7 @@ class Journal(DomainObject):
     
     @property
     def owner(self):
-        return self.data.get("admin", {}).get("account")
+        return self.data.get("admin", {}).get("owner")
     
     def set_owner(self, owner):
         if "admin" not in self.data:
@@ -1076,7 +1083,36 @@ class IssnQuery(object):
     
     def query(self):
         return self._query
+
+class PublisherQuery(object):
+    exact_query = {
+        "query" : {
+            "term" : {"index.publisher.exact" : "<publisher name here>"}
+        },
+        "size": 10000
+    }
     
+    inexact_query = {
+        "query" : {
+            "term" : {"index.publisher" : "<publisher name here>"}
+        },
+        "size": 10000
+    }
+
+    def __init__(self, publisher, exact=True):
+        self.publisher = publisher
+        self.exact = exact
+    
+    def query(self):
+        q = None
+        if self.exact:
+            q = deepcopy(self.exact_query)
+            q["query"]["term"]["index.publisher.exact"] = self.publisher
+        else:
+            q = deepcopy(self.inexact_query)
+            q["query"]["term"]["index.publisher"] = self.publisher.lower()
+        return q
+        
 
 ############################################################################
 
