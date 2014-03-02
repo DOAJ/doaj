@@ -59,6 +59,28 @@ class XWalk(object):
         
         article.set_in_doaj(journal.get("in_doaj", False))
         return True
+    
+    def is_legitimate_owner(self, article, owner):
+        b = article.bibjson()
+        issns = b.get_identifiers(b.P_ISSN)
+        issns += b.get_identifiers(b.E_ISSN)
+        owners = []
+        for issn in issns:
+            journals = models.Journal.find_by_issn(issn) # FIXME: could make this query more efficient
+            if len(journals) == 0:
+                # if we can't find a matching journal, this article is a dud
+                return False
+            owners += [j.owner for j in journals if j.owner is not None]
+        owners = list(set(owners))
+        
+        if len(owners) == 0:
+            # no owner means we can't confirm
+            return False
+        if len(owners) > 1:
+            # multiple owners means ownership of this article is confused
+            return False
+        
+        return owners[0] == owner
 
 class FormXWalk(XWalk):
     format_name = "form"
@@ -162,14 +184,21 @@ class DOAJXWalk(XWalk):
         valid = self.schema.validate(doc)
         return valid
     
-    def crosswalk_file(self, handle, add_journal_info=True, article_callback=None):
+    def crosswalk_file(self, handle, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
         doc = etree.parse(handle)
-        return self.crosswalk_doc(doc, add_journal_info=add_journal_info, article_callback=article_callback)
+        return self.crosswalk_doc(doc, add_journal_info=add_journal_info, article_callback=article_callback, 
+                                    limit_to_owner=limit_to_owner, fail_callback=fail_callback)
     
-    def crosswalk_doc(self, doc, add_journal_info=True, article_callback=None):
+    def crosswalk_doc(self, doc, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
         root = doc.getroot()
         for record in root:
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
+            if limit_to_owner is not None:
+                legit = self.is_legitimate_owner(article, limit_to_owner)
+                if not legit:
+                    if fail_callback:
+                        fail_callback(article)
+                        continue
             if article_callback is not None:
                 article_callback(article)
     

@@ -6,6 +6,7 @@ from datetime import datetime
 start = datetime.now()
 
 xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
+#xml_dir = "/home/richard/tmp/doaj/uploads/testfail"
 corrections_csv = "/home/richard/Dropbox/Documents/DOAJ/corrections.csv"
 
 # start by reading in the publisher id corrections 
@@ -28,18 +29,21 @@ malformed_file = os.path.join(out_dir, "malformed.csv")
 invalid_file = os.path.join(out_dir, "invalid.csv")
 orphan_file = os.path.join(out_dir, "orphan.csv")
 duplicate_file = os.path.join(out_dir, "duplicate.csv")
+failed_articles = os.path.join(out_dir, "failed_articles.csv")
 
 success_writer = csv.writer(open(success_file, "wb"))
 malformed_writer = csv.writer(open(malformed_file, "wb"))
 invalid_writer = csv.writer(open(invalid_file, "wb"))
 orphan_writer = csv.writer(open(orphan_file, "wb"))
 duplicate_writer = csv.writer(open(duplicate_file, "wb"))
+failed_articles_writer = csv.writer(open(failed_articles, "wb"))
 
 success_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded"])
 malformed_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded", "Contact Email"])
 invalid_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded", "Contact Email"])
 orphan_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded"])
 duplicate_writer.writerow(["Old ID", "Publisher", "Original Filename", "Date Uploaded"])
+failed_articles_writer.writerow(["File ID", "Publisher", "Original Filename", "Date Uploaded", "Article Title"])
 
 xwalk = article.DOAJXWalk()
 
@@ -51,12 +55,27 @@ valid = 0
 invalid = 0
 processed = 0
 attempted = 0
+articles_in = 0
+articles_failed = 0
 
 print "importing", total, "files"
 
 def article_callback(article):
+    global articles_in
+    articles_in += 1
     article.save()
     print "saved article", article.id
+
+def fail_closure(id, publisher, filename, uploaded):
+    def fail_callback(article):
+        global articles_failed
+        articles_failed += 1
+        title = article.bibjson().title
+        if title is not None:
+            title = title.encode("ascii", errors="ignore")
+        print "illegitimate owner", title
+        failed_articles_writer.writerow([id, publisher, filename, uploaded, title])
+    return fail_callback
 
 # read in all the txt files to a datastructure that we can then work with
 imports = {}
@@ -146,9 +165,10 @@ for publisher, files in imports.iteritems():
                 invalid_writer.writerow([f, publisher, filename, uploaded, acc.email])
             
             if validates:
-                xwalk.crosswalk_doc(doc, article_callback=article_callback)
+                xwalk.crosswalk_doc(doc, article_callback=article_callback, limit_to_owner=publisher, fail_callback=fail_closure(f, publisher, filename, uploaded))
 
 end = datetime.now()
 
-print "Total", total, "processed", processed, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned
+print "Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned
+print "Created Articles", articles_in, "Failed Articles", articles_failed
 print start, end
