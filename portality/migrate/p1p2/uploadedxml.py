@@ -6,6 +6,20 @@ from datetime import datetime
 start = datetime.now()
 
 xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
+corrections_csv = "/home/richard/Dropbox/Documents/DOAJ/corrections.csv"
+
+# start by reading in the publisher id corrections 
+corrections = {}
+reader = csv.reader(open(corrections_csv))
+first = True
+for row in reader:
+    if first:
+        first = False
+        continue
+    id = row[0]
+    publisher = row[4]
+    corrections[id] = publisher
+
 txt_files = [f for f in os.listdir(xml_dir) if f.endswith(".txt")]
 
 out_dir = "/home/richard/tmp/doaj/uploads/output"
@@ -58,8 +72,11 @@ for t in txt_files:
     lm = os.path.getmtime(txt_file)
     uploaded = datetime.fromtimestamp(lm).strftime("%Y-%m-%d %H:%M:%S")
     
-    # TODO: at this point we will want to convert the publisher name into a known
-    # user account where we don't already have that information
+    # at this point we apply a correction in the event that we have a 
+    # correction for this id
+    if id in corrections:
+        print t, "correcting publisher", publisher, "-", corrections[id]
+        publisher = corrections[id]
     
     acc = models.Account.pull(publisher)
     if acc is None:
