@@ -48,13 +48,27 @@ jQuery(document).ready(function($) {
         }
     });
     
+    $('#processing_charges_amount').parents('.control-group').hide();
+    $('#processing_charges_currency').parents('.control-group').hide();
+    $('#submission_charges_amount').parents('.control-group').hide();
+    $('#submission_charges_currency').parents('.control-group').hide();
+    $('#waiver_policy_url').parents('.control-group').hide();
+    $('#download_statistics_url').parents('.control-group').hide();
+    $('#plagiarsm_screening_url').parents('.control-group').hide();
+    $('#license_checkbox').parents('.control-group').hide();
+    
+    
     toggle_url_field('waiver_policy');
     toggle_url_field('download_statistics');
     toggle_url_field('plagiarism_screening');
     
     toggle_charges_amount('processing_charges');
     toggle_charges_amount('submission_charges');
-   
+    
+    expand_with_checkboxes('license');
+    
+    $('#country').select2()
+          
     
 });
 
@@ -71,4 +85,15 @@ function toggle_charges_amount(field_name) {
         $('#' + field_name + '_amount').parent().parent().toggle();
         $('#' + field_name + '_currency').parent().parent().toggle();
     });
+}
+
+function expand_with_checkboxes(field_name) {
+    $('input[name=' + field_name + ']:radio').change(function () {
+        if (this.value == 'Other') {
+            $('#license_checkbox').parent().parent().show();
+        } else {
+            $('#license_checkbox').parent().parent().hide();
+        }
+    });    
+     
 }

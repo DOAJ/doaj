@@ -69,7 +69,15 @@
             {% if field.flags.required %}<span class="red">*</span>{% endif %}
             </label>
         {% endif %}
-        <div class="controls">
+        
+        {% set extra_class = '' %}
+        {% if field.type == 'SelectMultipleField' 
+              and field.option_widget.__class__.__name__ == 'CheckboxInput'
+              and field.widget.__class__.__name__ == 'ListWidget' %}
+            {% set extra_class = extra_class + ' checkboxes' %}
+        {% endif %}
+          
+        <div class="controls {{extra_class}}">
             {% if field.type != 'RadioField' %}
                 {{ field(**kwargs) }}
                 {% if field.errors %}
