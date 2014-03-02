@@ -97,13 +97,18 @@
                             <span style="color: #660000">processing failed</span>
                         {% elif file.status == "processed" %}
                             <span style="color: #006600">successfully processed</span>
+                        {% elif file.status == "partial" %}
+                            <span style="color: #ff3300">partial success</span>
                         {% endif %}
                     </td>
                     <td>
                         {% if file.error %}
                             {{file.error}}
                         {% else %}
-                            &nbsp;
+                            {% if file.status == "partial" or file.status == "processed" %}
+                                {{ file.imported }} articles imported;
+                                {{ file.failed_imports }} articles failed
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

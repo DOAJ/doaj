@@ -190,17 +190,23 @@ class DOAJXWalk(XWalk):
                                     limit_to_owner=limit_to_owner, fail_callback=fail_callback)
     
     def crosswalk_doc(self, doc, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
+        success = 0
+        fail = 0
+        
         root = doc.getroot()
         for record in root:
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
             if limit_to_owner is not None:
                 legit = self.is_legitimate_owner(article, limit_to_owner)
                 if not legit:
+                    fail += 1
                     if fail_callback:
                         fail_callback(article)
-                        continue
+                    continue
             if article_callback is not None:
                 article_callback(article)
+            success += 1
+        return success, fail
     
     def crosswalk_article(self, record, add_journal_info=True):
         """
@@ -399,7 +405,11 @@ def _element(xml, field):
 
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 
-def ingest_file(handle, format_name=None):
+
+def article_save_callback(article):
+    article.save()
+    
+def ingest_file(handle, format_name=None, owner=None):
     try:
         doc = etree.parse(handle)
     except:
@@ -431,7 +441,8 @@ def ingest_file(handle, format_name=None):
     
     # do the crosswalk
     try:
-        xwalk.crosswalk_doc(doc)
+        success, fail = xwalk.crosswalk_doc(doc, article_callback=article_save_callback, limit_to_owner=owner)
+        return success, fail
     except:
         raise IngestException("Error occurred ingesting the records in the document")
 
