@@ -62,8 +62,13 @@ for upload in to_process:
     
     try:
         with open(path) as handle:
-            article.ingest_file(handle, upload.schema)
-        upload.processed()
+            success, fail = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner)
+        if success == 0 and fail > 0:
+            upload.failed("All articles in file failed to import")
+        if success > 0 and fail == 0:
+            upload.processed(success)
+        if success > 0 and fail > 0:
+            upload.partial(success, fail)
         upload.save()
         os.remove(path)
         print "... success"

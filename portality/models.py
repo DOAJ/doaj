@@ -219,6 +219,18 @@ class FileUpload(DomainObject):
     def schema(self):
         return self.data.get("schema")
     
+    @property
+    def owner(self):
+        return self.data.get("owner")
+    
+    @property
+    def imported(self):
+        return self.data.get("imported", 0)
+    
+    @property
+    def failed_imports(self):
+        return self.data.get("failed", 0)
+    
     def set_schema(self, s):
         self.data["schema"] = s
     
@@ -235,8 +247,14 @@ class FileUpload(DomainObject):
         self.data["status"] = "validated"
         self.data["schema"] = schema
     
-    def processed(self):
+    def processed(self, count):
         self.data["status"] = "processed"
+        self.data["imported"] = count
+    
+    def partial(self, success, fail):
+        self.data["status"] = "partial"
+        self.data["imported"] = success
+        self.data["failed"] = fail
     
     def exists(self):
         self.data["status"] = "exists"
@@ -252,12 +270,12 @@ class FileUpload(DomainObject):
     @classmethod
     def list_valid(self):
         q = ValidFileQuery()
-        return self.iterate(q=q.query())
+        return self.iterate(q=q.query(), page_size=10000)
     
     @classmethod
     def list_remote(self):
         q = ExistsFileQuery()
-        return self.iterate(q=q.query())
+        return self.iterate(q=q.query(), page_size=10000)
         
     @classmethod
     def by_owner(self, owner, size=10):
