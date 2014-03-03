@@ -229,11 +229,11 @@ class SuggestionForm(JournalInformationForm):
     submission_charges_currency = SelectField('Currency',
         choices = currency_choices,
     )    
-    journals_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
+    articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
         [validators.Required()],
         description = 'A journal must publish at least 5 articles per year to stay in the DOAJ', 
     )
-    journals_last_year_url = TextField('Enter the URL where this information can be found', 
+    articles_last_year_url = TextField('Enter the URL where this information can be found', 
         [validators.Required(), validators.URL()]
     )
     waiver_policy = RadioField('Does the journal have a waiver policy (for developing country authors etc)?', 

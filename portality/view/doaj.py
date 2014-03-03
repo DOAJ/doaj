@@ -10,6 +10,7 @@ from portality import dao
 from portality import models as models
 from portality.core import app
 from portality import settings
+from portality.view.forms import SuggestionForm
 
 from StringIO import StringIO
 import csv
@@ -94,6 +95,11 @@ def search_post():
 
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
     return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
+
+@blueprint.route("/suggestion/new", methods=["GET", "POST"])
+def suggestion():
+    form = SuggestionForm(request.form)
+    return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
 
 @blueprint.route("/csv")
 def csv_data():

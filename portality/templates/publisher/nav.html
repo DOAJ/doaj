@@ -2,7 +2,6 @@
   <div class="span12">
     <ul class="nav nav-tabs">
       <li{% if request.path == url_for('publisher.index') %} class="active"{% endif %}><a href="{{ url_for('publisher.index') }}">Your Journals</a></li>
-      <li{% if request.path == url_for('publisher.suggestion') %} class="active"{% endif %}><a href="{{ url_for('publisher.suggestion') }}">Suggest a new journal</a></li>
       <li{% if request.path == url_for('publisher.upload_file') %} class="active"{% endif %}><a href="{{ url_for('publisher.upload_file') }}">Upload Article XML</a></li>
       <li{% if request.path == url_for('publisher.metadata') %} class="active"{% endif %}><a href="{{ url_for('publisher.metadata') }}">Enter Article Metadata</a></li>
     </ul>

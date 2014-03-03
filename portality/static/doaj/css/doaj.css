@@ -39,6 +39,10 @@ select {
     color: #7073FF;
 }
 
+.input-tiny {
+    width: 20px;
+}
+
 .centre-text-container,
 .big.box {
     text-align: center;

@@ -5,7 +5,7 @@ from flask.ext.login import current_user, login_required
 from portality.core import app
 
 from portality import settings, models, article
-from portality.view.forms import SuggestionForm, countries, country_options_two_char_code_index
+from portality.view.forms import SuggestionForm
 from portality.view.forms import ArticleForm
 from portality import article
 import os, requests
@@ -158,12 +158,6 @@ def _url_upload(url, schema, previous):
         flash("The URL provided could not be accessed; please check it before submitting again", "error")
         return render_template('publisher/uploadfile.html', previous=previous)
     
-    
-@blueprint.route("/suggestion/new", methods=["GET", "POST"])
-@login_required
-def suggestion():
-    form = SuggestionForm(request.form)
-    return render_template('publisher/suggestion.html', form=form, edit_suggestion_page=True)
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
