@@ -74,7 +74,7 @@
                     }}
                 {% endfor %}
             {% elif is_checkbox %}
-                <ul>
+                <ul id="{{field.short_name}}">
                 {% for subfield in field %}
                     {{ __render_checkbox(subfield,
                           extra_input_field=extra_input_field,
