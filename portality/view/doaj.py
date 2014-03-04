@@ -96,10 +96,11 @@ def search_post():
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
     return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
-@blueprint.route("/suggestion/new", methods=["GET", "POST"])
+@blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
     form = SuggestionForm(request.form)
     return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
+    
 
 @blueprint.route("/csv")
 def csv_data():

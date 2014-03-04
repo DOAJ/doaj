@@ -92,6 +92,7 @@ license_choices = [
     ('CC-CY SA', 'CC-CY SA'),
     ('CC-BY NC', 'CC-BY NC'),
     ('CC-BY ND', 'CC-BY ND'),
+    ('CC-BY-NC-ND', 'CC-BY-NC-ND'),
     ('No', 'No'), 
     ('Other', 'Other')
 ]
@@ -104,11 +105,13 @@ license_checkbox_choices = [
 ]
 
 review_process_choices = [
+    (' ', ' '),
     ('Editorial review', 'Editorial review'), 
     ('Peer review', 'Peer review'),
     ('Blind peer review', 'Blind peer review'), 
     ('Double blind peer review', 'Double blind peer review'), 
-    ('Open peer review', 'Open peer review')
+    ('Open peer review', 'Open peer review'),
+    (False, 'None')
 ]
 
 fulltext_format_choices = [
@@ -328,7 +331,7 @@ class SuggestionForm(JournalInformationForm):
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
         [validators.Required()],
         choices = binary_choices, 
-        description = 'Please provide an example. For more information go to http://wiki.creativecommons.org/Marking_works '
+        description = 'Please provide an example. For more information go to http://wiki.creativecommons.org/Marking_works ',
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
         [validators.Required()],
@@ -345,9 +348,10 @@ class SuggestionForm(JournalInformationForm):
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
         [validators.Required()],
-        choices = binary_choices, description = "From the Budapest Open Access Initiative's definition of Open Access: http://www.budapestopenaccessinitiative.org/read "
+        choices = binary_choices, 
+        description = "From the Budapest Open Access Initiative's definition of Open Access: http://www.budapestopenaccessinitiative.org/read ",
     )
-    deposit_policy = SelectMultipleField('The journal has a deposit policy registered with a deposit policy directory.', 
+    deposit_policy = SelectMultipleField('Whit which deposit policy directory does the journal have a registered deposit policy?', 
         [validators.Required()], 
         description = 'Select all that apply.', 
         choices = deposit_policy_choices,

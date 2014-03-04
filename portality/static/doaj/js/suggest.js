@@ -54,27 +54,43 @@ jQuery(document).ready(function($) {
     $('#submission_charges_currency').parents('.control-group').hide();
     $('#waiver_policy_url').parents('.control-group').hide();
     $('#download_statistics_url').parents('.control-group').hide();
-    $('#plagiarsm_screening_url').parents('.control-group').hide();
+    $('#plagiarism_screening_url').parents('.control-group').hide();
     $('#license_checkbox').parents('.control-group').hide();
+    $('#copyright_url').parents('.control-group').hide();
+    $('#publishing_rights_url').parents('.control-group').hide();
     
     
-    toggle_url_field('waiver_policy');
-    toggle_url_field('download_statistics');
-    toggle_url_field('plagiarism_screening');
+    
+    toggle_url_field('waiver_policy', '#waiver_policy_url');
+    toggle_url_field('download_statistics', '#download_statistics_url');
+    toggle_url_field('plagiarism_screening', '#plagiarism_screening_url');
+    toggle_url_field('publishing_rights', '#publishing_rights_url');
+    toggle_url_field('copyright', '#copyright_url');
     
     toggle_charges_amount('processing_charges');
     toggle_charges_amount('submission_charges');
     
-    expand_with_checkboxes('license');
+    toggle_other_field('license', '#license_checkbox');
+    
     
     $('#country').select2()
+    
+    $("#keywords").select2({
+        minimumInputLength: 1,
+        tags: [],
+        tokenSeparators: [","]
+    });
           
     
 });
 
-function toggle_url_field(field_name) {
+function toggle_url_field(field_name, url_id) {
     $('input[name=' + field_name + ']:radio').change( function () {
-        $('#' + field_name + '_url').parent().parent().toggle();
+        if (this.value == 'False') {
+            $(url_id).parents('.control-group').hide();
+        } else {
+            $(url_id).parents('.control-group').show();
+        }
         
     });
 
@@ -87,13 +103,14 @@ function toggle_charges_amount(field_name) {
     });
 }
 
-function expand_with_checkboxes(field_name) {
+function toggle_other_field(field_name, selector) {
     $('input[name=' + field_name + ']:radio').change(function () {
         if (this.value == 'Other') {
-            $('#license_checkbox').parent().parent().show();
+            $(selector).parents('.control-group').show();
         } else {
-            $('#license_checkbox').parent().parent().hide();
+            $(selector).parents('.control-group').hide();
         }
-    });    
+    });  
+    
      
 }

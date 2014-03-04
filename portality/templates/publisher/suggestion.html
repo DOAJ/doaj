@@ -1,0 +1,133 @@
+{% extends "publisher/publisher_base.html" %}
+
+{% block publisher_content %}
+
+<div class="row-fluid" style="margin-bottom: 3em;">
+  
+</div>
+
+<div class="row-fluid">
+  <div class="span12">
+    {% if there_were_errors %}
+      <h4 class="red">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    {% from "_formhelpers.html" import render_field %}
+    <form method="post" action="{{ url_for('publisher.suggestion') }}" class="form-horizontal wide" id="suggest_form">
+      <fieldset>
+        {{ render_field(form.title) }}
+        {{ render_field(form.url) }}
+        {{ render_field(form.alternative_title) }}
+        {{ render_field(form.pissn) }}
+        {{ render_field(form.eissn) }}
+        {{ render_field(form.publisher) }}
+        {{ render_field(form.society_institution) }}
+        {{ render_field(form.platform) }}
+        {{ render_field(form.contact_name) }}
+        {{ render_field(form.contact_email) }}
+        {{ render_field(form.confirm_contact_email) }}
+        {{ render_field(form.country, class="input-large") }}
+        {{ render_field(form.processing_charges) }}
+        {{ render_field(form.processing_charges_amount) }}
+        {{ render_field(form.processing_charges_currency) }}
+        {{ render_field(form.submission_charges) }}
+        {{ render_field(form.submission_charges_amount) }}
+        {{ render_field(form.submission_charges_currency) }}
+        {{ render_field(form.journals_last_year) }}
+        {{ render_field(form.journals_last_year_url) }}
+        {{ render_field(form.waiver_policy) }}
+        {{ render_field(form.waiver_policy_url) }}
+        {{ render_field(form.digital_archiving_policy) }}
+        {{ render_field(form.digital_archiving_policy_url) }}
+        {{ render_field(form.crawl_permission) }}
+        {{ render_field(form.article_identifiers) }}
+        {{ render_field(form.metadata_provision) }}
+        {{ render_field(form.download_statistics) }}
+        {{ render_field(form.download_statistics_url) }}
+        {{ render_field(form.first_fulltext_oa_year) }}
+        {{ render_field(form.fulltext_format) }}
+        {{ render_field(form.keywords) }}
+        {{ render_field(form.languages) }}
+        {{ render_field(form.editorial_board_url) }}
+        {{ render_field(form.review_process) }}
+        {{ render_field(form.review_process_url) }}
+        {{ render_field(form.aims_scope_url) }}
+        {{ render_field(form.instructions_authors_url) }}
+        {{ render_field(form.plagiarism_screening) }}
+        {{ render_field(form.plagiarism_screening_url) }}
+        {{ render_field(form.publication_time) }}
+        {{ render_field(form.oa_statement_url) }}
+        {{ render_field(form.license_embedded) }}
+        {{ render_field(form.license) }}
+        {{ render_field(form.license_checkbox) }}
+        {{ render_field(form.license_url) }}
+        {{ render_field(form.open_access) }}
+        {{ render_field(form.deposit_policy) }}
+        {# render_field(form.copyright) #}
+        <div class="control-group">
+            <label class="control-label" for="copyright">Does the journal allow the author(s) to hold the copyright without restrictions?
+            <span class="red">*</span>
+            </label>
+        
+            <div class="controls">
+                <label class="radio" for="copyright">
+                    <input id="copyright-0" name="copyright" type="radio" value="True">
+                    <span class="label-text">Yes</span>
+                </label>       
+                                    
+                <label class="radio" for="copyright">
+                    <input id="copyright-1" name="copyright" type="radio" value="False">
+                    <span class="label-text">No</span>
+                </label>        
+                                    
+                <label class="radio" for="copyright">
+                    <input id="copyright-2" name="copyright" type="radio" value="Other">
+                    <span class="label-text">Other</span>
+                    <input id="copyright_other" name="copyright_other" other_field type="text" value="">
+                </label>
+            </div>
+        </div>
+        {# render_field(form.copyright_other) #}
+        {{ render_field(form.copyright_url) }}
+        <div class="control-group">
+            <label class="control-label" for="publishing_rights">Will the journal allow the author(s) to retain publishing rights without restrictions?
+            <span class="red">*</span>
+            </label>
+        
+            <div class="controls">
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-0" name="publishing_rights" type="radio" value="True">
+                    <span class="label-text">Yes</span>
+                </label>       
+                                    
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-1" name="publishing_rights" type="radio" value="False">
+                    <span class="label-text">No</span>
+                </label>        
+                                    
+                <label class="radio" for="publishing_rights">
+                    <input id="publishing_rights-2" name="publishing_rights" type="radio" value="Other">
+                    <span class="label-text">Other</span>
+                    <input id="publishing_rights_other" name="publishing_rights_other" other_field type="text" value="">
+                </label>
+            </div>
+        </div>
+        {# render_field(form.publishing_rights) #}
+        {# render_field(form.publishing_rights_other) #}
+        {{ render_field(form.publishing_rights_url) }}
+        {{ render_field(form.suggester_name) }}
+        {{ render_field(form.suggester_email) }}
+        {{ render_field(form.suggester_email_confirm) }}
+
+        <div class="control-group">
+            <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
+        </div>
+      </fieldset>
+    </form>
+    
+  </div>
+</div>
+  
+
+{% endblock %}
+

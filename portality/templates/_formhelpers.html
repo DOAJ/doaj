@@ -80,21 +80,24 @@
         <div class="controls {{extra_class}}">
             {% if field.type != 'RadioField' %}
                 {{ field(**kwargs) }}
-                {% if field.errors %}
-                <ul class="errors">
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if field.description %}
-                <p class="help-block">{{ field.description | safe }}</p>
-                {% endif %}
+                                
             {% else %}
                 {% for subfield in field %}
                     {% call __render_radio(subfield) %}{% endcall %}
                 {% endfor %}
             {% endif %}
+            {% if field.errors %}
+                <ul class="errors">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if field.description %}
+                <p class="help-block">{{ field.description | safe }}</p>
+            {% endif %}
+            
+            
         </div>
     {% endif %}
 {% endmacro %}
