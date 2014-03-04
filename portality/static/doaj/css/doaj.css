@@ -155,7 +155,8 @@ select {
     display: inline;
 }
 
-label > .label-text {
+label > .label-text,
+.checkboxes label {
     padding-left: 0.25em;
 }
 
