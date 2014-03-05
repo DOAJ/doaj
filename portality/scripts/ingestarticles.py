@@ -85,7 +85,7 @@ for upload in to_process:
         except:
             pass
     except Exception as e:
-        raise e
+        # raise e
         print "... filesystem error"
         # there could be other sorts of errors, like filesystem ones
         upload.failed("File system error when reading file")

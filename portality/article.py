@@ -139,6 +139,10 @@ class XWalk(object):
         # - MUST fuzzy match the title
         # - SHOULD have X of: volume, issue, start page, fulltext url, doi (we ignore end page, it's too unreliably populated) (X=2 initially)
         #       (if doi or fulltext matched earlier, then take them out of this list, and make X = 1)
+        """
+        #DISABLED - this code is extremely slow, so disabling it to compare to 
+        #what happens without it
+        
         issns = b.get_identifiers(b.P_ISSN)
         issns += b.get_identifiers(b.E_ISSN)
         
@@ -182,7 +186,7 @@ class XWalk(object):
                                             should_match=should_match)
         if len(articles) == 1:
             return articles[0]
-        
+        """
         # else, we have failed to locate or have located too many matches
         return None
 
@@ -573,8 +577,8 @@ def ingest_file(handle, format_name=None, owner=None):
         results = xwalk.crosswalk_doc(doc, article_callback=article_save_callback, limit_to_owner=owner)
         return results
     except Exception as e:
-        raise e
-        # raise IngestException("Error occurred ingesting the records in the document")
+        # raise e
+        raise IngestException("Error occurred ingesting the records in the document")
 
 def check_schema(handle, format_name=None):
     try:
