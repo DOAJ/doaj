@@ -43,7 +43,7 @@ malformed_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "D
 invalid_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded", "Contact Email"])
 orphan_writer.writerow(["DOAJ Filename", "Publisher", "Original Filename", "Date Uploaded"])
 duplicate_writer.writerow(["Old ID", "Publisher", "Original Filename", "Date Uploaded"])
-failed_articles_writer.writerow(["File ID", "Publisher", "Original Filename", "Date Uploaded", "Article Title"])
+failed_articles_writer.writerow(["File ID", "Publisher", "Original Filename", "Date Uploaded", "ISSN", "E-ISSN", "Article Title"])
 
 xwalk = article.DOAJXWalk()
 
@@ -57,6 +57,8 @@ processed = 0
 attempted = 0
 articles_in = 0
 articles_failed = 0
+articles_updated = 0
+articles_new = 0
 
 print "importing", total, "files"
 
@@ -70,11 +72,14 @@ def fail_closure(id, publisher, filename, uploaded):
     def fail_callback(article):
         global articles_failed
         articles_failed += 1
-        title = article.bibjson().title
+        b = article.bibjson()
+        title = b.title
+        pissn = b.get_identifiers(b.P_ISSN)
+        eissn = b.get_identifiers(b.E_ISSN)
         if title is not None:
             title = title.encode("ascii", errors="ignore")
         print "illegitimate owner", title
-        failed_articles_writer.writerow([id, publisher, filename, uploaded, title])
+        failed_articles_writer.writerow([id, publisher, filename, uploaded, ", ".join(pissn), ", ".join(eissn), title])
     return fail_callback
 
 # read in all the txt files to a datastructure that we can then work with
@@ -128,47 +133,91 @@ for t in txt_files:
 # per publisher, which represent the most recent file of that name, then the last mod date
 # then the id of the file to be imported
 
-# how many unique publisher names and filenames are there
-for publisher, files in imports.iteritems():
-    for filename in files:
-        attempted += 1
-
-print "orphaned", orphaned, "duplicate", duplicate
-print "attempting import of", attempted, "from", total
-
+# our next task is to sequence the items in the order that we're going to import them
+# they must be imported in date order for each publisher
+# so we're restructuring the data so that we can process it in the order that the
+# files were uploaded
+lastmods = []
+lookup = {}
 for publisher, files in imports.iteritems():
     for filename, details in files.iteritems():
-        for lm, id in details.iteritems():
-            f = id + ".xml"
-            xml_file = os.path.join(xml_dir, f)
+        lm = details.keys()[0]
+        id = details[lm]
+        
+        lastmods.append(lm)
+        if lm not in lookup:
+            lookup[lm] = []
+        lookup[lm].append({"publisher" : publisher, "filename" : filename, "id" : id})
+
+lastmods = list(set(lastmods))
+lastmods.sort()
+
+for lm in lastmods:
+    for obj in lookup[lm]:
+        attempted += 1
+        
+        publisher = obj["publisher"]
+        filename = obj["filename"]
+        id = obj["id"]        
+        
+        f = id + ".xml"
+        xml_file = os.path.join(xml_dir, f)
+        uploaded = datetime.fromtimestamp(lm).strftime("%Y-%m-%dT%H:%M:%SZ")
+        
+        upload = models.FileUpload()
+        upload.set_schema(xwalk.format_name)
+        upload.upload(publisher, filename)
+        upload.set_created(uploaded)
+        
+        # now try and parse the file
+        doc = None
+        try:
+            doc = etree.parse(open(xml_file))
+        except:
+            failed += 1
+            print f, "Malformed XML"
+            malformed_writer.writerow([f, publisher, filename, uploaded, acc.email])
+            upload.failed("Unable to parse file")
+            upload.save()
+            continue
+        
+        # now try and validate the file
+        validates = xwalk.validate(doc)
+        print f, ("Valid" if validates else "Invalid")
+        
+        if validates: 
+            valid += 1
+            success_writer.writerow([f, publisher, filename, uploaded])
+        
+        if not validates: 
+            invalid += 1
+            invalid_writer.writerow([f, publisher, filename, uploaded, acc.email])
+            upload.failed("File could not be validated against a known schema")
+            upload.save()
+            continue
+        
+        if validates:
+            result = xwalk.crosswalk_doc(doc, article_callback=article_callback, limit_to_owner=publisher, fail_callback=fail_closure(f, publisher, filename, uploaded))
             
-            # now try and parse the file
-            doc = None
-            try:
-                doc = etree.parse(open(xml_file))
-            except:
-                failed += 1
-                print f, "Malformed XML"
-                malformed_writer.writerow([f, publisher, filename, uploaded, acc.email])
-                continue
+            success = result["success"]
+            fail = result["fail"]
+            update = result["update"]
+            new = result["new"]
             
-            # now try and validate the file
-            validates = xwalk.validate(doc)
-            print f, ("Valid" if validates else "Invalid")
+            articles_updated += update
+            articles_new += new
             
-            if validates: 
-                valid += 1
-                success_writer.writerow([f, publisher, filename, uploaded])
-            
-            if not validates: 
-                invalid += 1
-                invalid_writer.writerow([f, publisher, filename, uploaded, acc.email])
-            
-            if validates:
-                xwalk.crosswalk_doc(doc, article_callback=article_callback, limit_to_owner=publisher, fail_callback=fail_closure(f, publisher, filename, uploaded))
+            if success == 0 and fail > 0:
+                upload.failed("All articles in file failed to import")
+            if success > 0 and fail == 0:
+                upload.processed(success, update, new)
+            if success > 0 and fail > 0:
+                upload.partial(success, fail, update, new)
+            upload.save()
 
 end = datetime.now()
 
 print "Total", total, "attempted", attempted, "valid", valid, "invalid", invalid, "failed", failed, "duplicate", duplicate, "orphaned", orphaned
 print "Created Articles", articles_in, "Failed Articles", articles_failed
+print "New Articles", articles_new, "Updated Articles", articles_updated
 print start, end

@@ -314,7 +314,6 @@ class DOAJXWalk(XWalk):
             if limit_to_owner is not None:
                 legit = self.is_legitimate_owner(article, limit_to_owner)
                 if not legit:
-                    print "fail", fail
                     fail += 1
                     if fail_callback:
                         fail_callback(article)
