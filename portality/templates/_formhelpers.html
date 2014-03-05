@@ -45,11 +45,86 @@
     
 {% endmacro %}
 
-{% macro __render_radio(field, caller=None) %}
+{% macro __render_field(field, extra_input_field='', display_extra_when_label_is='other') %}
+    {% if not (field.type == 'CSRFTokenField' and not field.value) %}
+        {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
+            <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
+            {% if field.flags.required %}<span class="red">*</span>{% endif %}
+            </label>
+        {% endif %}
+        
+        {% set extra_class = '' %}
+        {% if field.type == 'SelectMultipleField' 
+              and field.option_widget.__class__.__name__ == 'CheckboxInput'
+              and field.widget.__class__.__name__ == 'ListWidget' %}
+            {% set is_checkbox = True %}
+        {% endif %}
+
+        {% if is_checkbox %}
+            {% set extra_class = extra_class + ' checkboxes' %}
+        {% endif %}
+          
+        <div class="controls {{extra_class}}">
+            {% if field.type == 'RadioField' %}
+                {% for subfield in field %}
+                    {{ __render_radio(subfield,
+                          extra_input_field=extra_input_field,
+                          display_extra_when_label_is=display_extra_when_label_is,
+                          **kwargs)
+                    }}
+                {% endfor %}
+            {% elif is_checkbox %}
+                <ul id="{{field.short_name}}">
+                {% for subfield in field %}
+                    {{ __render_checkbox(subfield,
+                          extra_input_field=extra_input_field,
+                          display_extra_when_label_is=display_extra_when_label_is,
+                          **kwargs)
+                    }}
+                {% endfor %}
+                </ul>
+            {% else %}
+                {{ field(**kwargs) }}
+
+                {% if extra_input_field and display_extra_when_label_is.lower() == field.value.lower() %}
+                  {{ extra_input_field }}
+                {% endif %}
+            {% endif %}
+
+
+
+            {% if field.errors %}
+                <ul class="errors">
+                    {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if field.description %}
+                <p class="help-block">{{ field.description | safe }}</p>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endmacro %}
+
+{% macro __render_radio(field, extra_input_field='', display_extra_when_label_is='') %}
 <label class="radio" for="{{field.short_name}}">
-    {{ field }}
+    {{ field(**kwargs) }}
     <span class="label-text">{{field.label.text}}</span>
+    {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
+      {{ extra_input_field }}
+    {% endif %}
 </label>
+{% endmacro %}
+
+{% macro __render_checkbox(field, extra_input_field='', display_extra_when_label_is='') %}
+<li>
+    {{ field(**kwargs) }}
+    <label for="{{field.short_name}}">{{field.label.text}}</label>
+    {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
+      {{ extra_input_field }}
+    {% endif %}
+</li>
 {% endmacro %}
 
 {% macro field_errors(field, caller=None) %}
@@ -62,44 +137,12 @@
   {% endif %}
 {% endmacro %}
 
-{% macro __render_field(field) %}
-    {% if not (field.type == 'CSRFTokenField' and not field.value) %}
-        {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
-            <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
-            {% if field.flags.required %}<span class="red">*</span>{% endif %}
-            </label>
-        {% endif %}
-        
-        {% set extra_class = '' %}
-        {% if field.type == 'SelectMultipleField' 
-              and field.option_widget.__class__.__name__ == 'CheckboxInput'
-              and field.widget.__class__.__name__ == 'ListWidget' %}
-            {% set extra_class = extra_class + ' checkboxes' %}
-        {% endif %}
-          
-        <div class="controls {{extra_class}}">
-            {% if field.type != 'RadioField' %}
-                {{ field(**kwargs) }}
-                {% if field.errors %}
-                <ul class="errors">
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if field.description %}
-                <p class="help-block">{{ field.description | safe }}</p>
-                {% endif %}
-            {% else %}
-                {% for subfield in field %}
-                    {% call __render_radio(subfield) %}{% endcall %}
-                {% endfor %}
-            {% endif %}
-        </div>
-    {% endif %}
-{% endmacro %}
+
+
+
 
 {% macro render_field_horizontal(field, style=None, placeholder="", required=False) %}
+    {% set dummy = kwargs.pop('extra_input_field') %} {# this macro can't deal with this arg, render_field can #}
     {% if field.type == 'FieldList' %}
       {% for subfield in field %}
         <div class="control-group
@@ -153,17 +196,10 @@
                   {% endif %}
               {% else %}
                   {% for subfield in field %}
-                      {% call __render_radio(subfield) %}{% endcall %}
+                      {{ __render_radio(subfield, **kwargs) }}
                   {% endfor %}
               {% endif %}
           </div>
       </div>
     {% endif %}
-{% endmacro %}
-
-{% macro __render_radio(field, caller=None) %}
-<label class="radio" for="{{field.short_name}}">
-    {{ field }}
-    <span class="label-text">{{field.label.text | safe}}</span>
-</label>
 {% endmacro %}
