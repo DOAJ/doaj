@@ -1,12 +1,14 @@
-import csv, re
+import csv, re, os
 from portality import models
 
-analysis = "/home/richard/Dropbox/Documents/DOAJ/orphan_analysis2.csv"
+analysis = os.path.join(os.path.dirname(os.path.realpath(__file__)), "orphan_analysis.csv")
+# analysis = "/home/richard/Dropbox/Documents/DOAJ/orphan_analysis2.csv"
 
-corrections = "/home/richard/Dropbox/Documents/DOAJ/corrections.csv"
-ambiguous = "/home/richard/Dropbox/Documents/DOAJ/ambiguous.csv"
-failed = "/home/richard/Dropbox/Documents/DOAJ/failed.csv"
-summary = "/home/richard/Dropbox/Documents/DOAJ/summary.csv"
+out_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)))
+corrections = os.path.join(out_dir, "corrections.csv")
+ambiguous = os.path.join(out_dir, "ambiguous.csv")
+failed = os.path.join(out_dir, "failed.csv")
+summary = os.path.join(out_dir, "summary.csv")
 
 reader = csv.reader(open(analysis))
 correction_writer = csv.writer(open(corrections, "wb"))

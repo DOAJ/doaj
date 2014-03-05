@@ -1,13 +1,15 @@
 import os, csv
 from lxml import etree
-from portality import article, models
+from portality import article, models, settings
 from datetime import datetime
 
 start = datetime.now()
 
-xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
-#xml_dir = "/home/richard/tmp/doaj/uploads/testfail"
-corrections_csv = "/home/richard/Dropbox/Documents/DOAJ/corrections.csv"
+corrections_csv = os.path.join(os.path.dirname(os.path.realpath(__file__)), "corrections.csv")
+xml_dir = settings.UPLOAD_DIR
+
+# xml_dir = "/home/richard/tmp/doaj/uploads/doaj-xml"
+# corrections_csv = "/home/richard/Dropbox/Documents/DOAJ/corrections.csv"
 
 # start by reading in the publisher id corrections 
 corrections = {}
@@ -60,7 +62,7 @@ articles_failed = 0
 articles_updated = 0
 articles_new = 0
 
-print "importing", total, "files"
+print "importing", total, "files from", xml_dir
 
 def article_callback(article):
     global articles_in
