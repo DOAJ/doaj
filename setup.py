@@ -17,6 +17,7 @@ setup(
         # for deployment
         "setproctitle",
         "gunicorn",
+        "newrelic",
     ],
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
