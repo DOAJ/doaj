@@ -469,6 +469,13 @@ class Journal(DomainObject):
         records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
     
+    @classmethod
+    def find_by_title(cls, title):
+        q = TitleQuery(title)
+        result = cls.query(q=q.query())
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -1143,7 +1150,22 @@ class PublisherQuery(object):
             q = deepcopy(self.inexact_query)
             q["query"]["term"]["index.publisher"] = self.publisher.lower()
         return q
-        
+
+class TitleQuery(object):
+    base_query = {
+        "query" : {
+            "term" : {"index.title.exact" : "<title here>"}
+        },
+        "size": 10000
+    }
+    
+    def __init__(self, title):
+        self.title = title
+    
+    def query(self):
+        q = deepcopy(self.base_query)
+        q["query"]["term"]["index.title.exact"] = self.title
+        return q
 
 ############################################################################
 
