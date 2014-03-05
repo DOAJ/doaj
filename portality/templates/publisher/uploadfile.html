@@ -8,7 +8,7 @@
             <p>Uploaded files must conform to one of the approved XML formats:</p>
             <ul>
                 <li><a href="/static/doaj/doajArticles.xsd">DOAJ Native XML</a></li>
-                <li>OJS MathML</li>
+                <li>OJS Native XML</li>
             </ul>
             
             <p>Files must also be &lt; 50Mb.  If you need to upload more than 50Mb, you should upload multiple files</p>
@@ -39,7 +39,7 @@
         <div class="span8">
             <select name="schema">
                 <option value="doaj">DOAJ Native XML</option>
-                <option value="mathml">OJS MathML</option>
+                <option value="mathml">OJS Native XML</option>
             </select>
         </div>
     </div>
@@ -55,7 +55,7 @@
 
 {% if previous|length > 0 %}
 
-    <h3>Previous {{previous|length}} uploaded files</h3>
+    <h3>History of uploads (showing last {{previous|length}})</h3>
 
     <div class="row-fluid">
         <div class="span12">
@@ -106,8 +106,13 @@
                             {{file.error}}
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
-                                {{ file.imported }} articles imported;
-                                {{ file.failed_imports }} articles failed
+                                {{ file.imported }} articles imported 
+                                {% if file.imported > 0 %}
+                                    ({{file.new}} new, {{file.updates}} updated)
+                                {% endif %}
+                                {% if file.failed_imports > 0 %}
+                                    ; {{ file.failed_imports }} articles failed
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>

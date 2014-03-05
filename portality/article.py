@@ -10,6 +10,7 @@ from lxml import etree
 from portality import models
 from portality.core import app
 from datetime import datetime
+import json
 
 class XWalk(object):
     def add_journal_info(self, article):
@@ -81,6 +82,109 @@ class XWalk(object):
             return False
         
         return owners[0] == owner
+    
+    def get_duplicate(self, article, owner=None):
+        # get the owner's issns
+        issns = []
+        if owner is not None:
+            issns = models.Journal.issns_by_owner(owner)
+        
+        # we'll need the article bibjson a few times
+        b = article.bibjson()
+        
+        # some useful flags that we may or may not use later, depending on how
+        # well this matcher goes
+        use_prid = False
+        use_doi = False
+        use_fulltext = False
+        
+        # first test is the most definitive - does the publisher's record id match
+        if article.publisher_record_id() is not None:
+            articles = models.Article.duplicates(issns=issns, publisher_record_id=article.publisher_record_id())
+            if len(articles) == 1:
+                return articles[0]
+            if len(articles) > 1:
+                use_prid = True # we don't have a definitive answer, but we do have options
+        
+        # second test is to look by doi
+        
+        dois = b.get_identifiers(b.DOI)
+        if len(dois) > 0:
+            # there should only be the one
+            doi = dois[0]
+            articles = models.Article.duplicates(issns=issns, doi=doi)
+            if len(articles) == 1:
+                return articles[0]
+            if len(articles) > 1:
+                use_doi = True # we don't have a definitive answer, but we do have options
+        
+        # third test is to look by fulltext url
+        urls = b.get_urls(b.FULLTEXT)
+        if len(urls) > 0:
+            # there should be only one, but let's allow for multiple
+            articles = models.Article.duplicates(issns=issns, fulltexts=urls)
+            if len(articles) == 1:
+                return articles[0]
+            if len(articles) > 1:
+                use_fulltext = True # we don't have a definitive answer, but we do have options
+        
+        # NOTE: we may choose, at this point, to do some OR matching around the prid, doi and fulltext,
+        # so we'll come back to it if the matching requirements arise.
+        
+        # final test is to do some fuzzy matching based on the following criteria:
+        # - MUST be from at least one of the ISSNs in the incoming article
+        # - MUST have the publisher record id (if the match above hit more than one item)
+        # - MUST have the doi (if the match above hit more than one item)
+        # - MUST have the fulltext url (if the match above hit more than one item)
+        # - MUST fuzzy match the title
+        # - SHOULD have X of: volume, issue, start page, fulltext url, doi (we ignore end page, it's too unreliably populated) (X=2 initially)
+        #       (if doi or fulltext matched earlier, then take them out of this list, and make X = 1)
+        issns = b.get_identifiers(b.P_ISSN)
+        issns += b.get_identifiers(b.E_ISSN)
+        
+        prid = None
+        if use_prid:
+            prid = article.publisher_record_id()
+        
+        doi = None
+        if use_doi:
+            dois = b.get_identifiers(b.DOI)
+            if len(dois) > 0:
+                # there should only be the one
+                doi = dois[0]
+        
+        fulltexts = b.get_urls(b.FULLTEXT)
+        title = b.title
+        volume = b.volume
+        number = b.number
+        start = b.start_page
+        
+        # do we actually have enough info to make a meaningful query?
+        # this gives us the number of the optional vectors which are not None (or non zero length arrays)
+        vector_count = len([x for x in [volume, number, start, len(fulltexts) > 0, doi] if x is not None and x])
+        
+        # if there aren't enough vectors to consider, we just stop
+        if vector_count < 2:
+            return None
+        
+        should_match = 2
+        if use_doi or use_fulltext:
+            should_match = 1
+        
+        articles = models.Article.duplicates(issns=issns, 
+                                            publisher_record_id=prid,
+                                            doi=doi,
+                                            fulltexts=fulltexts,
+                                            title=title,
+                                            volume=volume,
+                                            number=number,
+                                            start=start,
+                                            should_match=should_match)
+        if len(articles) == 1:
+            return articles[0]
+        
+        # else, we have failed to locate or have located too many matches
+        return None
 
 class FormXWalk(XWalk):
     format_name = "form"
@@ -192,21 +296,46 @@ class DOAJXWalk(XWalk):
     def crosswalk_doc(self, doc, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
         success = 0
         fail = 0
+        update = 0
+        new = 0
         
+        # go through the records in the doc and crosswalk each one individually
         root = doc.getroot()
-        for record in root:
+        for record in root.findall("record"):
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
+            # print "processing record", article.bibjson().title
+            
+            # once we have an article from the record, determine if it belongs to
+            # the stated owner.  If not, we need to reject it
             if limit_to_owner is not None:
                 legit = self.is_legitimate_owner(article, limit_to_owner)
                 if not legit:
+                    print "fail", fail
                     fail += 1
                     if fail_callback:
                         fail_callback(article)
                     continue
+            
+            # print "legit"
+            
+            # before finalising, we need to determine whether this is a new article
+            # or an update
+            duplicate = self.get_duplicate(article, limit_to_owner)
+            # print duplicate
+            if duplicate is not None:
+                update += 1
+                article.merge(duplicate) # merge will take the old id, so this will overwrite
+            else:
+                new += 1
+            
+            # if we get to here without failing, then we call the article callback
+            # (which can do something like save)
             if article_callback is not None:
                 article_callback(article)
             success += 1
-        return success, fail
+        
+        # return some stats on the import
+        return {"success" : success, "fail" : fail, "update" : update, "new" : new}
     
     def crosswalk_article(self, record, add_journal_info=True):
         """
@@ -441,10 +570,11 @@ def ingest_file(handle, format_name=None, owner=None):
     
     # do the crosswalk
     try:
-        success, fail = xwalk.crosswalk_doc(doc, article_callback=article_save_callback, limit_to_owner=owner)
-        return success, fail
-    except:
-        raise IngestException("Error occurred ingesting the records in the document")
+        results = xwalk.crosswalk_doc(doc, article_callback=article_save_callback, limit_to_owner=owner)
+        return results
+    except Exception as e:
+        raise e
+        # raise IngestException("Error occurred ingesting the records in the document")
 
 def check_schema(handle, format_name=None):
     try:

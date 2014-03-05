@@ -62,13 +62,17 @@ for upload in to_process:
     
     try:
         with open(path) as handle:
-            success, fail = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner)
+            result = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner)
+            success = result["success"]
+            fail = result["fail"]
+            update = result["update"]
+            new = result["new"]
         if success == 0 and fail > 0:
             upload.failed("All articles in file failed to import")
         if success > 0 and fail == 0:
-            upload.processed(success)
+            upload.processed(success, update, new)
         if success > 0 and fail > 0:
-            upload.partial(success, fail)
+            upload.partial(success, fail, update, new)
         upload.save()
         os.remove(path)
         print "... success"
@@ -80,7 +84,8 @@ for upload in to_process:
             os.remove(path)
         except:
             pass
-    except:
+    except Exception as e:
+        raise e
         print "... filesystem error"
         # there could be other sorts of errors, like filesystem ones
         upload.failed("File system error when reading file")

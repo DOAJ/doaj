@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- import as the user that owns 1913-5963 -->
+
+<records>
+    <!-- record should be successfully imported as new record each time - it does not contain
+    enough information to match itself again -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <eissn>1913-5963</eissn>
+      <publicationDate>2013</publicationDate>
+      <volume/>
+      <issue>7</issue>
+      <startPage/>
+      <endPage/>
+      <documentType>article</documentType>
+      <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+      <authors>
+         <author>
+            <name>Papillon, Joëlle</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <fullTextUrl/>
+      <keywords>
+         <keyword>Introduction</keyword>
+         <keyword>Littérature amérindienne</keyword>
+         <keyword>Histoire</keyword>
+         <keyword>Identité</keyword>
+         <keyword>Amerindian Literature</keyword>
+         <keyword>History</keyword>
+         <keyword>Identity</keyword>
+         <keyword>Littérature contemporaine</keyword>
+         <keyword>Imaginaire</keyword>
+         <keyword>Contemporary Literature</keyword>
+         <keyword>Imaginary</keyword>
+      </keywords>
+   </record>
+   
+   <!-- article should override any existing record with the same publisherRecordId (1234) owned
+    by 1913-5963.  To see the effect, import this file once, then import again -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <publicationDate>2013</publicationDate>
+      <volume/>
+      <issue>7</issue>
+      <startPage/>
+      <endPage/>
+      <publisherRecordId>1234</publisherRecordId>
+      <documentType>article</documentType>
+      <title language="fre">Théories du théâtre autochtone au Canada depuis 1990. Refus de la posthistoire et réparation du corps social</title>
+      <authors>
+         <author>
+            <name>Paré, François</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Les compagnies théâtrales autochtones ont cherché à occuper tous les espaces de parole en produisant, au cours des années, non seulement un théâtre joué et très souvent publié, mais aussi un abondant discours d'accompagnement sur le sens à conférer aux oeuvres produites sur scène et dans divers espaces publics. Ces textes de Qwo-Li Driskill, Candace Brunette, Daniel Heath Justice, Yves Sioui-Durand et Jo-Ann Episkenew, entre autres, nous permettent de saisir de l'intérieur le rôle privilégié assigné au théâtre et aux pratiques de la performance par toute une génération de chercheurs et d'activistes autochtones des trente dernières années. Nous en retenons que deux courants animent cette production théorique et méthodologique axée sur la décolonisation : le refus des esthétiques liées à la posthistoire (postmodernisme et postcolonialisme) et le recours à un imaginaire et un lexique empruntés aux études contemporaines du traumatisme individuel et collectif.</abstract>
+      <abstract language="eng">Indigenous theatre collectives have been active on all fronts in recent years, not only by staging and publishing a large number of plays written by Native writers, but also through the production and circulation of a significant number of theoretical texts on Indigenous theatre methodologies. Writings by Qwo-Li Driskill, Candace Brunette, Daniel Heath Justice, Yves Sioui-Durand and Jo-Ann Episkenew, among others, allow us to understand from within the role assigned to the theatre by a generation of Indigenous activists and scholars. The performance space is seen as a decolonizing agency, rejecting concepts related to both postmodernism and postcolonialism in favour of traditional healing processes rooted in contemporary studies on collective and personal trauma.</abstract>
+      <fullTextUrl>http://tempszero.contemporain.info/document1122</fullTextUrl>
+      <keywords>
+         <keyword>Théâtre autochtone</keyword>
+         <keyword>Recherche</keyword>
+         <keyword>Décolonisation</keyword>
+         <keyword>Postmodernisme</keyword>
+         <keyword>Postcolonialisme</keyword>
+         <keyword>Indigenous theatre</keyword>
+         <keyword>Research</keyword>
+         <keyword>Decolonization</keyword>
+         <keyword>Postmodernism</keyword>
+         <keyword>Postcolonialism</keyword>
+      </keywords>
+   </record>
+   
+   <!-- article should override any other article with the same doi owned by 1913-5963.
+    To see the effect import once and then import again -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <eissn>1913-5963</eissn>
+      <publicationDate>2013</publicationDate>
+      <volume/>
+      <issue>7</issue>
+      <startPage/>
+      <endPage/>
+      <doi>10.1234/testing</doi>
+      <documentType>article</documentType>
+      <title language="fre">Cowboys et Indiens. Masculinités, métissage et queeritude chez Tomson Highway et Louis Hamelin</title>
+      <authors>
+         <author>
+            <name>Scott, Corrie</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Corrie Scott analyse tour à tour les masculinités autochtones construites par le romancier québécois Louis Hamelin dans Cowboy (1992) et celles proposées par l'écrivain cri Tomson Highway dans Champion et Ooneemeetoo [Kiss of the Fur Queen] (1998). Scott démontre que les deux auteurs jouent différemment du métissage et de son rapport avec le colonialisme : tandis que Hamelin met en scène des personnages autochtones dévirilisés et en perte d'authenticité, Highway s'appuie sur la notion amérindienne de bispiritualité pour créer des personnages queer qui transcendent les constructions binaires sur lesquelles se base la masculinité hégémonique.</abstract>
+      <abstract language="eng">Corrie Scott examines the notion of métissage in the representation of Indigenous masculinities in Cowboy by Québécois novelist Louis Hamelin (1992) and in Kiss of the Fur Queen by Cree novelist Tomson Highway (1998). Scott shows the different ways in which the two authors approach the notion of métissage and its relationship with colonialism: while Hamelin depicts hybrid Indigenous characters as less authentic and virile, Highway embraces a queer poetics that questions hegemonic masculinities and gendered colonial stereotypes through hybrid fictional male identities. An intersectional theoretical framework proves essential to the analysis of hegemonic masculinities which function hand in hand with colonialism.</abstract>
+      <fullTextUrl>http://tempszero.contemporain.info/document1108</fullTextUrl>
+      <keywords>
+         <keyword>Identité</keyword>
+         <keyword>Identity</keyword>
+         <keyword>Masculinité</keyword>
+         <keyword>Cowboy</keyword>
+         <keyword>Champion et Ooneemeetoo</keyword>
+         <keyword>Queer</keyword>
+         <keyword>Métissage</keyword>
+         <keyword>Masculinity</keyword>
+         <keyword>Cowboy</keyword>
+         <keyword>Kiss of the Fur Queen</keyword>
+         <keyword>Queer</keyword>
+         <keyword>Métissage</keyword>
+      </keywords>
+   </record>
+   
+   <!-- article should override any other article with the same fulltext url owned by 1913-5963.
+    To see the effect import once and then import again -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <eissn>1913-5963</eissn>
+      <publicationDate>2013</publicationDate>
+      <volume/>
+      <issue>7</issue>
+      <startPage/>
+      <endPage/>
+      <documentType>article</documentType>
+      <title language="fre">Le territoire dans le corps. Figurations du Nord et de son absence dans la poésie orale et écrite de Taqralik Partridge</title>
+      <authors>
+         <author>
+            <name>Duvicq, Nelly</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Dans ses textes de spoken word et de prose, la poète inuit Taqralik Partridge, originaire de Kuujjuaq, discute des relations entre l'Inuk, le Nord et le Sud. Le corps, en tant qu'espace perméable à travers lequel la présence du Nord ou son absence agissent, joue un rôle essentiel dans la poétique de l'auteure. Cet article montre dans quelles conditions les corps vivent au Nord, alors qu'au Sud, ils survivent ou dépérissent. Cependant, loin de s'arrêter à une conception manichéenne des relations Nord-Sud où la culture inuit s'oppose à celle de l'Occident, Taqralik Partridge développe un discours où le corps ? surtout le corps de la femme ?, peu importe où il se trouve, est le relais de la culture inuit et de ses valeurs à travers ce qu'il porte, ce qu'il mange, les gestes qu'il accomplit et la façon de les faire.</abstract>
+      <abstract language="eng">In her spoken word and fictional texts, the Inuit poet Taqralik Partridge, born in Kuujjuaq, explores the relationships between the Inuk, the North and the South.  As a porous space through which the presence and the absence of the North  is acted out, the body plays an essential role in  the author's poetics. This article aims to analyse the conditions in which bodies "live" in the North, whereas in the South they "survive" or "wither". However, far from settling for a Manichean vision of the North and South, in which Inuit culture is opposed to that of the Occident, Taqralik Partridge constructs a narrative where the "mostly female" body, regardless of its location, acts as a conduit to Inuit culture and its values through the clothing worn, the food eaten, the gestures made and the manner in which these activities are assumed.</abstract>
+      <fullTextUrl>http://tempszero.contemporain.info/document1082</fullTextUrl>
+      <keywords>
+         <keyword>Taqralik Partridge</keyword>
+         <keyword>Poésie</keyword>
+         <keyword>Culture inuit</keyword>
+         <keyword>Nord</keyword>
+         <keyword>Femmes</keyword>
+         <keyword>Corps</keyword>
+         <keyword>Taqralik Partridge</keyword>
+         <keyword>Poetry</keyword>
+         <keyword>Inuit culture</keyword>
+         <keyword>North</keyword>
+         <keyword>Women</keyword>
+         <keyword>Body</keyword>
+      </keywords>
+   </record>
+   
+   <!-- ============================================================= -->
+   <!-- From here we are testing the various match vectors            -->
+   <!-- ============================================================= -->
+   
+   <!-- volume and number only -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <publicationDate>2013</publicationDate>
+      <volume>10</volume>
+      <issue>20</issue>
+      <startPage/>
+      <endPage/>
+      <documentType>article</documentType>
+      <title language="fre">Quand la poésie amérindienne réinvente l'image de l'Indien. </title>
+      <authors>
+         <author>
+            <name>Beaupré, Jonathan Lamy</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Cet article aborde la poésie très récente de Marie-Andrée Gill, Natasha Kanapé Fontaine et Louis-Karl Picard-Sioui. L'auteur y questionne l'expression personnelle - et, pourrait-on dire, décomplexée - de l'appartenance culturelle, qui se déploie dans leurs textes en critiquant, en évitant ou en réinventant la représentation des Premières Nations. Affrontant chacun le conflit entre le fait d'être amérindien et d'être un sujet singulier dans le temps présent, ces poètes participent d'un renouveau de la prise de parole autochtone au Québec. Celle-ci affirme haut et fort, souvent avec humour, parfois avec colère, sa contemporanéité.</abstract>
+      <abstract language="eng">This article discusses the very recent poetry of Marie-Andrée Gill, Natasha Kanapé Fontaine and Louis-Karl Picard-Sioui. The author questions the personal - and uninhibited, one might say - expression of cultural belonging, which unfolds in these texts by criticizing, avoiding or reinventing the representation of First Nations peoples. Confronted with the conflict between being both an aboriginal and a singular subject in the present time, each of the aforementioned poets participates in a revival of an aboriginal voice speaking out in Quebec. This voice states loudly and clearly - often with humor, sometimes with anger - its contemporaneousness.</abstract>
+      <fullTextUrl/>
+      <keywords>
+         <keyword>Identité</keyword>
+         <keyword>Identity</keyword>
+         <keyword>Poésie</keyword>
+         <keyword>Poetry</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Appartenance culturelle</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Cultural belonging</keyword>
+         <keyword>Culture amérindienne</keyword>
+         <keyword>Indian Culture</keyword>
+      </keywords>
+   </record>
+   
+   <!-- volume and start page -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <publicationDate>2013</publicationDate>
+      <volume>10</volume>
+      <issue/>
+      <startPage>234</startPage>
+      <endPage/>
+      <documentType>article</documentType>
+      <title language="fre">Quand la poésie amérindienne réinvente l'image de l'Indien. </title>
+      <authors>
+         <author>
+            <name>Beaupré, Jonathan Lamy</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Cet article aborde la poésie très récente de Marie-Andrée Gill, Natasha Kanapé Fontaine et Louis-Karl Picard-Sioui. L'auteur y questionne l'expression personnelle - et, pourrait-on dire, décomplexée - de l'appartenance culturelle, qui se déploie dans leurs textes en critiquant, en évitant ou en réinventant la représentation des Premières Nations. Affrontant chacun le conflit entre le fait d'être amérindien et d'être un sujet singulier dans le temps présent, ces poètes participent d'un renouveau de la prise de parole autochtone au Québec. Celle-ci affirme haut et fort, souvent avec humour, parfois avec colère, sa contemporanéité.</abstract>
+      <abstract language="eng">This article discusses the very recent poetry of Marie-Andrée Gill, Natasha Kanapé Fontaine and Louis-Karl Picard-Sioui. The author questions the personal - and uninhibited, one might say - expression of cultural belonging, which unfolds in these texts by criticizing, avoiding or reinventing the representation of First Nations peoples. Confronted with the conflict between being both an aboriginal and a singular subject in the present time, each of the aforementioned poets participates in a revival of an aboriginal voice speaking out in Quebec. This voice states loudly and clearly - often with humor, sometimes with anger - its contemporaneousness.</abstract>
+      <fullTextUrl/>
+      <keywords>
+         <keyword>Identité</keyword>
+         <keyword>Identity</keyword>
+         <keyword>Poésie</keyword>
+         <keyword>Poetry</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Appartenance culturelle</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Cultural belonging</keyword>
+         <keyword>Culture amérindienne</keyword>
+         <keyword>Indian Culture</keyword>
+      </keywords>
+   </record>
+   
+   <!-- issue and start page -->
+   <record>
+      <language>fre</language>
+      <publisher>Codicille éditeur et CRILCQ</publisher>
+      <journalTitle>Temps zéro</journalTitle>
+      <issn>1913-5963</issn>
+      <publicationDate>2013</publicationDate>
+      <volume/>
+      <issue>20</issue>
+      <startPage>234</startPage>
+      <endPage/>
+      <documentType>article</documentType>
+      <title language="fre">Quand la poésie amérindienne réinvente l'image de l'Indien. </title>
+      <authors>
+         <author>
+            <name>Beaupré, Jonathan Lamy</name>
+            <email/>
+            <affiliationId>1</affiliationId>
+         </author>
+      </authors>
+      <affiliationsList>
+         <affiliationName affiliationId="1"/>
+      </affiliationsList>
+      <abstract language="fre">Cet article aborde la poésie très récente de Marie-Andrée Gill, Natasha Kanapé Fontaine et Louis-Karl Picard-Sioui. L'auteur y questionne l'expression personnelle - et, pourrait-on dire, décomplexée - de l'appartenance culturelle, qui se déploie dans leurs textes en critiquant, en évitant ou en réinventant la représentation des Premières Nations. Affrontant chacun le conflit entre le fait d'être amérindien et d'être un sujet singulier dans le temps présent, ces poètes participent d'un renouveau de la prise de parole autochtone au Québec. Celle-ci affirme haut et fort, souvent avec humour, parfois avec colère, sa contemporanéité.</abstract>
+      <abstract language="eng">This article discusses the very recent poetry of Marie-Andrée Gill, Natasha Kanapé Fontaine and Louis-Karl Picard-Sioui. The author questions the personal - and uninhibited, one might say - expression of cultural belonging, which unfolds in these texts by criticizing, avoiding or reinventing the representation of First Nations peoples. Confronted with the conflict between being both an aboriginal and a singular subject in the present time, each of the aforementioned poets participates in a revival of an aboriginal voice speaking out in Quebec. This voice states loudly and clearly - often with humor, sometimes with anger - its contemporaneousness.</abstract>
+      <fullTextUrl/>
+      <keywords>
+         <keyword>Identité</keyword>
+         <keyword>Identity</keyword>
+         <keyword>Poésie</keyword>
+         <keyword>Poetry</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Appartenance culturelle</keyword>
+         <keyword>Louis-Karl Picard-Sioui</keyword>
+         <keyword>Marie-Andrée Gill</keyword>
+         <keyword>Natasha Kanapé Fontaine</keyword>
+         <keyword>Cultural belonging</keyword>
+         <keyword>Culture amérindienne</keyword>
+         <keyword>Indian Culture</keyword>
+      </keywords>
+   </record>
+   
+</records>

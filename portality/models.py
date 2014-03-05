@@ -28,6 +28,7 @@ class GenericBibJSON(object):
     AIMS_SCOPE = "aims_scope"
     AUTHOR_INSTRUCTIONS = "author_instructions"
     OA_STATEMENT = "oa_statement"
+    FULLTEXT = "fulltext"
     
     # constructor
     def __init__(self, bibjson=None):
@@ -231,6 +232,14 @@ class FileUpload(DomainObject):
     def failed_imports(self):
         return self.data.get("failed", 0)
     
+    @property
+    def updates(self):
+        return self.data.get("update", 0)
+    
+    @property
+    def new(self):
+        return self.data.get("new", 0)
+    
     def set_schema(self, s):
         self.data["schema"] = s
     
@@ -247,14 +256,18 @@ class FileUpload(DomainObject):
         self.data["status"] = "validated"
         self.data["schema"] = schema
     
-    def processed(self, count):
+    def processed(self, count, update, new):
         self.data["status"] = "processed"
         self.data["imported"] = count
+        self.data["update"] = update
+        self.data["new"] = new
     
-    def partial(self, success, fail):
+    def partial(self, success, fail, update, new):
         self.data["status"] = "partial"
         self.data["imported"] = success
         self.data["failed"] = fail
+        self.data["update"] = update
+        self.data["new"] = new
     
     def exists(self):
         self.data["status"] = "exists"
@@ -1212,6 +1225,27 @@ class Suggestion(Journal):
 class Article(DomainObject):
     __type__ = "article"
     
+    @classmethod
+    def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None):
+        # some input sanitisation
+        issns = issns if isinstance(issns, list) else []
+        urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+        
+        q = DuplicateArticleQuery(issns=issns, 
+                                    publisher_record_id=publisher_record_id, 
+                                    doi=doi, 
+                                    urls=urls,
+                                    title=title,
+                                    volume=volume,
+                                    number=number,
+                                    start=start,
+                                    should_match=should_match)
+        # print json.dumps(q.query())
+        
+        res = cls.query(q=q.query())
+        articles = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        return articles
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -1257,6 +1291,39 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["publisher_record_id"] = pri
     
+    def merge(self, old):
+        # this takes an old version of the article and brings
+        # forward any useful information that is needed.  The rules of merge are:
+        # - ignore "index" (it gets regenerated on save)
+        # - always take the "created_date"
+        # - any top level field that does not exist in the current item (esp "id" and "history")
+        # - in "admin", copy any field that does not already exist
+        
+        # always take the created date
+        self.set_created(old.created_date)
+        
+        # take the id
+        if self.id is None:
+            self.set_id(old.id)
+        
+        # take the history
+        if len(self.data.get("history", [])) == 0:
+            self.data["history"] = deepcopy(old.data.get("history", []))
+        
+        # take the bibjson
+        if "bibjson" not in self.data:
+            self.set_bibjson(deepcopy(old.bibjson()))
+        
+        # take the admin if there isn't one
+        if "admin" not in self.data:
+            self.data["admin"] = deepcopy(old.data.get("admin", {}))
+        else:
+            # otherwise, copy any admin keys that don't exist on the current item
+            oa = old.data.get("admin", {})
+            for key in oa:
+                if key not in self.data["admin"]:
+                    self.data["admin"][key] = deepcopy(oa[key])
+        
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
@@ -1501,6 +1568,119 @@ class ArticleBibJSON(GenericBibJSON):
             except:
                 return ""
         return date
+
+class DuplicateArticleQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        }
+    }
+    
+    _should = {
+        "should" : [],
+        "minimum_should_match" : 2
+    }
+    
+    _volume_term = {"term" : {"bibjson.journal.volume.exact" : "<volume>"}}
+    _number_term = {"term" : {"bibjson.journal.number.exact" : "<issue number>"}}
+    _start_term = {"term" : {"bibjson.start_page.exact" : "<start page>"}}
+    _issn_terms = {"terms" : { "index.issn.exact" : ["<list of issns>"] }}
+    _pubrec_term = {"term" : {"admin.publisher_record_id.exact" : "<publisher record id>"}}
+    _identifier_term = {"term" : {"bibjson.identifier.id.exact" : "<doi or issn here>"}}
+    _url_terms = {"terms" : {"bibjson.link.url.exact" : ["<urls here>"]}}
+    _fuzzy_title = {"fuzzy" : {"bibjson.title.exact" : "<title here>"}}
+
+    def __init__(self, issns=None, publisher_record_id=None, doi=None, urls=None, title=None, volume=None, number=None, start=None, should_match=None):
+        self.issns = issns if isinstance(issns, list) else []
+        self.publisher_record_id = publisher_record_id
+        self.doi = doi
+        self.urls = urls if isinstance(urls, list) else [urls] if isinstance(urls, str) or isinstance(urls, unicode) else []
+        self.title = title
+        self.volume = volume
+        self.number = number
+        self.start = start
+        self.should_match = should_match
+    
+    def query(self):
+        # - MUST be from at least one of the ISSNs
+        # - MUST have the publisher record id
+        # - MUST have the doi unless should_match is set
+        # - MUST have the one of the fulltext urls unless should_match is set
+        # - MUST fuzzy match the title
+        # - SHOULD have <should_match> of: volume, issue, start page, fulltext url, doi
+        
+        q = deepcopy(self.base_query)
+        if len(self.issns) > 0:
+            it = deepcopy(self._issn_terms)
+            it["terms"]["index.issn.exact"] = self.issns
+            q["query"]["bool"]["must"].append(it)
+        
+        if self.publisher_record_id is not None:
+            pr = deepcopy(self._pubrec_term)
+            pr["term"]["admin.publisher_record_id.exact"] = self.publisher_record_id
+            q["query"]["bool"]["must"].append(pr)
+        
+        if self.doi is not None and self.should_match is None:
+            idt = deepcopy(self._identifier_term)
+            idt["term"]["bibjson.identifier.id.exact"] = self.doi
+            q["query"]["bool"]["must"].append(idt)
+        
+        if len(self.urls) > 0 and self.should_match is None:
+            uq = deepcopy(self._url_terms)
+            uq["terms"]["bibjson.link.url.exact"] = self.urls
+            q["query"]["bool"]["must"].append(uq)
+        
+        if self.title is not None:
+            ft = deepcopy(self._fuzzy_title)
+            ft["fuzzy"]["bibjson.title.exact"] = self.title
+            q["query"]["bool"]["must"].append(ft)
+        
+        if self.should_match is not None:
+            term_count = 0
+            s = deepcopy(self._should)
+            
+            if self.volume is not None:
+                term_count += 1
+                vt = deepcopy(self._volume_term)
+                vt["term"]["bibjson.journal.volume.exact"] = self.volume
+                s["should"].append(vt)
+            
+            if self.number is not None:
+                term_count += 1
+                nt = deepcopy(self._number_term)
+                nt["term"]["bibjson.journal.number.exact"] = self.number
+                s["should"].append(nt)
+                
+            if self.start is not None:
+                term_count += 1
+                st = deepcopy(self._start_term)
+                st["term"]["bibjson.start_page.exact"] = self.start
+                s["should"].append(st)
+            
+            if len(self.urls) > 0:
+                term_count += 1
+                uq = deepcopy(self._url_terms)
+                uq["terms"]["bibjson.link.url.exact"] = self.urls
+                s["should"].append(uq)
+            
+            if self.doi is not None:
+                term_count += 1
+                idt = deepcopy(self._identifier_term)
+                idt["term"]["bibjson.identifier.id.exact"] = self.doi
+                s["should"].append(idt)
+            
+            msm = self.should_match
+            if msm > term_count:
+                msm = term_count    
+            s["minimum_should_match"] = msm
+            
+            q["query"]["bool"].update(s)
+            
+        return q
+            
+    
 
 ####################################################################
 
