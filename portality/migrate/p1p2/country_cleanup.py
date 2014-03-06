@@ -12,7 +12,10 @@ def main(argv=sys.argv)
     counter = 0
     for j in journal_iterator:
         counter += 1
-        j.bibjson().country = xwalk.get_country_code(j.bibjson().country)
+        oldcountry = j.bibjson().country
+        j.bibjson().country = xwalk.get_country_code(j.bibjson())
+        newcountry = j.bibjson().country
+        print j.bibjson().title, ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry, ',', 'New country:', newcountry
         j.prep()
         j.save()
     
