@@ -7,7 +7,9 @@ from flask.ext.login import current_user, login_required
 from portality.core import app
 import portality.models as models
 import portality.util as util
-from portality.view.forms import JournalForm, countries, country_options_two_char_code_index
+from portality import xwalk
+from portality.view.forms import JournalForm
+from portality.datasets import country_options_two_char_code_index
 
 
 blueprint = Blueprint('admin', __name__)
@@ -43,24 +45,14 @@ def journal_page(journal_id):
     if j is None:
         abort(404)
 
+    current_country = xwalk.get_country_code(j.bibjson().country)
 
-    current_country = j.bibjson().country
-    country_help_text = ''
-    if current_country:
-        if current_country not in country_options_two_char_code_index:
-            for two_char_code, info in countries:
-                if current_country.lower() == info['name'].lower():
-                    current_country = two_char_code
-                    break
-                
-                if current_country.upper() == info['ISO3166-1-Alpha-3']:
-                    current_country = two_char_code
-                    break
-    
-        if current_country not in country_options_two_char_code_index:
-            # couldn't find it, better warn the user to look for it
-            # themselves
-            country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
+    if current_country not in country_options_two_char_code_index:
+        # couldn't find it, better warn the user to look for it
+        # themselves
+        country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
+    else:
+        country_help_text = ''
 
     current_info = {
         'in_doaj': j.is_in_doaj(),

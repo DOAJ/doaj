@@ -7,6 +7,7 @@ import sys
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
 from portality.authorise import Authorise
+from portality import xwalk
 
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
@@ -624,7 +625,7 @@ class Journal(DomainObject):
         
         # copy the country
         if cbib.country is not None:
-            country = cbib.country
+            country = xwalk.get_country_name(cbib.country)
         
         # get the title of the license
         lic = cbib.get_license()
@@ -706,6 +707,7 @@ class Journal(DomainObject):
         row = []
         
         bibjson = self.bibjson()
+        index = self.data.get('index', {})
         row.append(bibjson.title) # Title
         row.append(bibjson.alternative_title) # Title Alternative
         row.append( multival_sep.join([u.get("url") for u in bibjson.get_urls()]) ) # Identifier
@@ -730,7 +732,7 @@ class Journal(DomainObject):
         row.append( bibjson.oa_end.get('year', '')) # Year OA ended
         row.append( self.created_date ) # Date created
         row.append( multival_sep.join([subject['term'] for subject in bibjson.subjects()]) ) # Subject terms
-        row.append( bibjson.country ) # Country
+        row.append( index.get('country', '') ) # Country
         row.append( bibjson.author_pays ) # author pays
         row.append(bibjson.author_pays_url) # author pays url
 
@@ -1360,6 +1362,7 @@ class Article(DomainObject):
         
         # the places we're going to get those fields from
         cbib = self.bibjson()
+        jindex = self.data.get('index', {})
         hist = self.history()
         
         # get the issns out of the current bibjson
@@ -1386,8 +1389,10 @@ class Article(DomainObject):
             langs = cbib.journal_language
         
         # copy the country
-        if cbib.journal_country is not None:
-            country = cbib.journal_country
+        if jindex.get('country'):
+            country = jindex.get('country')
+        elif cbib.journal_country:
+            country = xwalk.get_country_name(cbib.journal_country)
         
         # get the title of the license
         lic = cbib.get_journal_license()
@@ -1509,6 +1514,10 @@ class ArticleBibJSON(GenericBibJSON):
     def journal_language(self, lang):
         self._set_journal_property("language", lang)
     
+    # beware, the index part of an article will contain the same as the
+    # index part of a journal, not the same as the bibjson part of a
+    # journal!
+    # the method below is referring to the bibjson part of a journal
     @property
     def journal_country(self):
         return self.bibjson.get("journal", {}).get("country")

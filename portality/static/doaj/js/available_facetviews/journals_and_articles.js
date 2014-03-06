@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Journal Country</strong>: ",
-                "field": "bibjson.country",
+                "field": "index.country",
             }
         ],
         [
@@ -253,7 +253,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Country of publication</strong>: ",
-                "field": "bibjson.journal.country"
+                "field": "bibjson.journal.index.country"
             }
         ],
         [
