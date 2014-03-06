@@ -15,10 +15,12 @@ setup(
         "gitpython",
         "lxml",
         "nose",
+        "futures==2.1.6",
         # for deployment
         "gunicorn",
-    ]
-    + (["setproctitle"] if "linux" in sys.platform else []),
+        "newrelic",
+    ] + (["setproctitle"] if "linux" in sys.platform else []),
+
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',

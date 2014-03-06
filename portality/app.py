@@ -85,6 +85,10 @@ def legacy():
         return redirect("/feed"), 301
     abort(404)
 
+@app.route("/doaj2csv")
+def another_legacy_csv_route():
+    return redirect("/csv"), 301
+
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
     out = models.Account.pull(userid)
