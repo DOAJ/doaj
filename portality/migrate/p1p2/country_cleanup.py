@@ -43,24 +43,25 @@ def migrate(test=False):
     journal_iterator = models.Journal.all_in_doaj()
     
     counter = 0
-    for j in journal_iterator:
-        counter += 1
-        oldcountry = j.bibjson().country
-        j.bibjson().country = xwalk.get_country_code(j.bibjson().country)
-        newcountry = j.bibjson().country
-        newcountry_index = j.data['index']['country']
+    with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
+        writer = csv.writer(o)
+        writer.writerow(['Old country', 'New Country'])
 
-        if not test:
-            print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
+        for j in journal_iterator:
+            counter += 1
+            oldcountry = j.bibjson().country
+            j.bibjson().country = xwalk.get_country_code(j.bibjson().country)
+            newcountry = j.bibjson().country
+            newcountry_name = xwalk.get_country_name(newcountry)
 
-        with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
-            writer = csv.writer(o)
-            writer.writerow(['Old country', 'New Country'])
-            writer.writerow([oldcountry.encode('utf-8'), newcountry_index.encode('utf-8')])
+            if not test:
+                print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
 
-        if not test:
-            j.prep()
-            j.save()
+            writer.writerow([oldcountry.encode('utf-8'), newcountry_name.encode('utf-8')])
+
+            if not test:
+                j.prep()
+                j.save()
     
     end = datetime.now()
     
