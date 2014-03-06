@@ -48,13 +48,15 @@ def migrate(test=False):
         oldcountry = j.bibjson().country
         j.bibjson().country = xwalk.get_country_code(j.bibjson().country)
         newcountry = j.bibjson().country
+        newcountry_index = j.data['index']['country']
 
         if not test:
             print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
 
         with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
-            o.write('Old country,New Country')
-            o.write('"' + oldcountry.encode('utf-8') + '","' + xwalk.get_country_name(newcountry).encode('utf-8') + '"')
+            writer = csv.writer(o)
+            writer.write(['Old country', 'New Country'])
+            writer.write([oldcountry.encode('utf-8'), newcountry_index.encode('utf-8')])
 
         if not test:
             j.prep()
