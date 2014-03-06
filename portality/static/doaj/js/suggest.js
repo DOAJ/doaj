@@ -73,13 +73,16 @@ jQuery(document).ready(function($) {
     toggle_other_field('license', '#license_checkbox');
     
     
-    $('#country').select2()
+    $('#country').select2();
+    $('#submission_charges_currency').select2();
     
     $("#keywords").select2({
         minimumInputLength: 1,
         tags: [],
         tokenSeparators: [","]
     });
+    
+    $("#languages").select2();
           
     
 });
