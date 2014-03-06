@@ -114,6 +114,12 @@ review_process_choices = [
     (False, 'None')
 ]
 
+language_choices = [
+    ('English', 'English'),
+    ('French', 'French'),
+    ('German', 'German')
+]
+
 fulltext_format_choices = [
     ('PDF', 'PDF'), 
     ('HTML', 'HTML'), 
@@ -294,8 +300,9 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required()], 
         description='MAXIMUM 6'
     )
-    languages = TagListField('In which language(s) is the Full Text of articles published? ', 
-        [validators.Required()], 
+    languages = SelectMultipleField('In which language(s) is the Full Text of articles published? ', 
+        [validators.Required()],
+        choices = language_choices,
         description="Use ',' (comma) as separator. For example English, French, Spanish."
     )
     editorial_board_url = TextField('What is the URL for the Editorial Board page?', 
