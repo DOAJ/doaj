@@ -136,8 +136,7 @@ def get_csv_data():
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 def upload_file():
-    if request.method == "GET":
-        return render_template('doaj/members/uploadfile.html')
+    return render_template('doaj/members/uploadfile.html')
     
     # otherwise we are dealing with a POST - file upload
     f = request.files.get("file")
