@@ -14,6 +14,7 @@ setup(
         "gitpython",
         "lxml",
         "nose",
+        "futures==2.1.6",
         # for deployment
         "setproctitle",
         "gunicorn",

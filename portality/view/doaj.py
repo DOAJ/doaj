@@ -17,6 +17,8 @@ from datetime import datetime
 import json
 import os, codecs
 
+from concurrent import futures
+
 import sys
 try:
     if sys.version_info.major == 2 and sys.version_info.minor < 7:
@@ -97,6 +99,11 @@ def search_post():
 
 @blueprint.route("/csv")
 def csv_data():
+    with futures.ProcessPoolExecutor(max_workers=1) as executor:
+        result = executor.submit(get_csv_data).result()
+    return result
+
+def get_csv_data():
     def get_csv_string(csv_row):
         '''
         csv.writer only writes to files - it'd be a lot easier if it
@@ -115,33 +122,15 @@ def csv_data():
         csvstream.close()
         return csvstring
 
+    thecsv = ''
+    thecsv += get_csv_string(models.Journal.CSV_HEADER)
+
     journal_iterator = models.Journal.all_in_doaj()
-    def generate():
-        '''Return the CSV header and then all the journals one by one.'''
-
-        '''
-        The header will only be generated once. This is because once the
-        generator yields a value for the first time, it remembers what
-        state its local variables were in. The next time yield is
-        called, it can simply resume where it left off. In this
-        function, this means that once we get into the loop iterating
-        over all the journals, we stay there until we run out of
-        journals. So the code before the loop only ever gets executed
-        once - the first time the generator returns a value.
-        '''
-        yield get_csv_string(models.Journal.CSV_HEADER)
-
-        for j in journal_iterator:
-            # jm = models.Journal(**j['_source'])
-            yield get_csv_string(j.csv())
-
-    #if journals['hits']['total'] > 0:
-    #    journals = journals['hits']['hits']
-    #else:
-    #    return 'Cannot find any journals in the DOAJ index. Please report this problem to ' + settings.ADMIN_EMAIL, 500
+    for j in journal_iterator:
+        thecsv += get_csv_string(j.csv())
 
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
-    r = Response(generate(), mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
+    r = Response(thecsv, mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
