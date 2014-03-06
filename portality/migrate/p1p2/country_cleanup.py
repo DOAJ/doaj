@@ -55,8 +55,8 @@ def migrate(test=False):
 
         with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
             writer = csv.writer(o)
-            writer.write(['Old country', 'New Country'])
-            writer.write([oldcountry.encode('utf-8'), newcountry_index.encode('utf-8')])
+            writer.writerow(['Old country', 'New Country'])
+            writer.writerow([oldcountry.encode('utf-8'), newcountry_index.encode('utf-8')])
 
         if not test:
             j.prep()
