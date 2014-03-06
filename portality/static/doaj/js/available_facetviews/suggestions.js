@@ -166,7 +166,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Journal Country</strong>: ",
-                "field": "bibjson.country",
+                "field": "index.country",
             }
         ],
         [

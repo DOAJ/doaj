@@ -25,7 +25,8 @@ for row in reader:
 
 txt_files = [f for f in os.listdir(xml_dir) if f.endswith(".txt")]
 
-out_dir = "/home/richard/tmp/doaj/uploads/output"
+# out_dir = "/home/richard/tmp/doaj/uploads/output"
+out_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 success_file = os.path.join(out_dir, "success.csv")
 malformed_file = os.path.join(out_dir, "malformed.csv")
 invalid_file = os.path.join(out_dir, "invalid.csv")

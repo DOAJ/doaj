@@ -18,28 +18,14 @@ from wtforms import widgets
 from flask_wtf import RecaptchaField
 
 from portality.core import app
-
-import portality.models as models
-
-if sys.version_info[0] == 2 and sys.version_info[1] < 7:
-    from portality.ordereddict import OrderedDict
-else:
-    from collections import OrderedDict
+from portality import models
+from portality.datasets import country_options
 
 blueprint = Blueprint('forms', __name__)
 
-with open('country-codes.json', 'rb') as f:
-    countries = json.loads(f.read())
-countries = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name'])).items()
-country_options = [('','')]
-country_options_two_char_code_index = []
-for code, country_info in countries:
-    country_options.append((code, country_info['name']))
-    country_options_two_char_code_index.append(code)
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
-
 
 license_options = [
     ('', ''),
