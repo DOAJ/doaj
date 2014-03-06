@@ -15,7 +15,7 @@ def main(argv=sys.argv):
         oldcountry = j.bibjson().country
         j.bibjson().country = xwalk.get_country_code(j.bibjson().country)
         newcountry = j.bibjson().country
-        print j.bibjson().title.decode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.decode('utf-8'), ',', 'New country:', newcountry.decode('utf-8')
+        print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
         j.prep()
         j.save()
     
