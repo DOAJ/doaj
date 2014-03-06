@@ -10,7 +10,7 @@ OUT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)))
 OUT_FILENAME = 'country_cleanup.csv'
 
 def main(argv=sys.argv):
-    if len(argv > 1):
+    if len(argv) > 1:
         if argv[1] == '-t':
             test_migration()
         elif argv[1] == '--dry-run':
