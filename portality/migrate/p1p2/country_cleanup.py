@@ -49,7 +49,7 @@ def migrate(test=False):
         if not test:
             print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
 
-        with open(os.path.join(out_dir, 'country_cleanup.csv'), 'wb') as o:
+        with open(os.path.join(OUT_DIR, OUT_FILENAME), 'wb') as o:
             o.write('Old country,New Country')
             o.write('"' + oldcountry.encode('utf-8') + '","' + xwalk.get_country_name(newcountry).encode('utf-8') + '"')
 
