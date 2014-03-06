@@ -28,10 +28,13 @@ def test_migration():
             data.append(row)
 
     print 'Problems:'
+    problems = False
     for row in data:
         if row[0] != row[1]:
+            problems = True
             print row[0], ',', row[1]
-    else:
+
+    if not problems:
         print 'No problems'
 
 def migrate(test=False):
