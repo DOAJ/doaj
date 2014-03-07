@@ -1315,6 +1315,14 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["publisher_record_id"] = pri
     
+    def upload_id(self):
+        return self.data.get("admin", {}).get("upload_id")
+    
+    def set_upload_id(self, uid):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["upload_id"] = uid
+    
     def merge(self, old):
         # this takes an old version of the article and brings
         # forward any useful information that is needed.  The rules of merge are:

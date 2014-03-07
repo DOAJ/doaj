@@ -65,11 +65,22 @@ articles_new = 0
 
 print "importing", total, "files from", xml_dir
 
+def article_save_closure(upload_id):
+    def article_callback(article):
+        global articles_in
+        articles_in += 1
+        article.set_upload_id(upload_id)
+        article.save()
+        print "saved article", article.id
+    return article_callback
+
+"""
 def article_callback(article):
     global articles_in
     articles_in += 1
     article.save()
     print "saved article", article.id
+"""
 
 def fail_closure(id, publisher, filename, uploaded):
     def fail_callback(article):
@@ -171,6 +182,7 @@ for lm in lastmods:
         upload.set_schema(xwalk.format_name)
         upload.upload(publisher, filename)
         upload.set_created(uploaded)
+        upload.set_id()
         
         # now try and parse the file
         doc = None
@@ -200,7 +212,8 @@ for lm in lastmods:
             continue
         
         if validates:
-            result = xwalk.crosswalk_doc(doc, article_callback=article_callback, limit_to_owner=publisher, fail_callback=fail_closure(f, publisher, filename, uploaded))
+            cb = article_save_closure(upload.id)
+            result = xwalk.crosswalk_doc(doc, article_callback=cb, limit_to_owner=publisher, fail_callback=fail_closure(f, publisher, filename, uploaded))
             
             success = result["success"]
             fail = result["fail"]

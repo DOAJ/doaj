@@ -308,7 +308,7 @@ class DOAJXWalk(XWalk):
         root = doc.getroot()
         for record in root.findall("record"):
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
-            print "processing record", article.bibjson().title
+            # print "processing record", article.bibjson().title
             
             # once we have an article from the record, determine if it belongs to
             # the stated owner.  If not, we need to reject it
@@ -320,12 +320,12 @@ class DOAJXWalk(XWalk):
                         fail_callback(article)
                     continue
             
-            print "legit"
+            # print "legit"
             
             # before finalising, we need to determine whether this is a new article
             # or an update
             duplicate = self.get_duplicate(article, limit_to_owner)
-            print duplicate
+            # print duplicate
             if duplicate is not None:
                 update += 1
                 article.merge(duplicate) # merge will take the old id, so this will overwrite
@@ -538,11 +538,16 @@ def _element(xml, field):
 
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 
+def article_upload_closure(upload_id):
+    def article_callback(article):
+        article.set_upload_id(upload_id)
+        article.save()
+    return article_callback
 
 def article_save_callback(article):
     article.save()
     
-def ingest_file(handle, format_name=None, owner=None):
+def ingest_file(handle, format_name=None, owner=None, upload_id=None):
     try:
         doc = etree.parse(handle)
     except:
@@ -574,11 +579,12 @@ def ingest_file(handle, format_name=None, owner=None):
     
     # do the crosswalk
     try:
-        results = xwalk.crosswalk_doc(doc, article_callback=article_save_callback, limit_to_owner=owner)
+        cb = article_save_callback if upload_id is None else article_upload_closure(upload_id)
+        results = xwalk.crosswalk_doc(doc, article_callback=cb, limit_to_owner=owner)
         return results
     except Exception as e:
-        raise e
-        # raise IngestException("Error occurred ingesting the records in the document")
+        # raise e
+        raise IngestException("Error occurred ingesting the records in the document")
 
 def check_schema(handle, format_name=None):
     try:

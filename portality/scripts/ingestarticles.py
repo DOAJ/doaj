@@ -62,7 +62,7 @@ for upload in to_process:
     
     try:
         with open(path) as handle:
-            result = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner)
+            result = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner, upload_id=upload.id)
             success = result["success"]
             fail = result["fail"]
             update = result["update"]

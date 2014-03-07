@@ -7,11 +7,12 @@ They should be run individually in the following order:
 
 1. userroles.py - adds the "publisher" role to user accounts where appropriate.  Should be run a couple of times, since for some reason it doesn't always get everyone.  Weird.
 2. journalowners.py - adds the "owner" field to the journals for the relevant user accounts.  As with (1) needs to be run a couple of times.  Debug if time permits.
-3. flushuploads.py - remove all the old uploaded file records in the index, and set it up for its new usage
-4. uploadcorrections.py - builds the corrections table for the next script (uploadedxml.py).  You will need to modify the file to point to the relevant file-paths
-5. uploadedxml.py - migrates all the new articles from uploaded files into the database.  You will need to modify the file to point to the directory of the XML files, and the script itself could take upwards of 10 minutes to run. 
-6. Do this yourself: delete all of the files from the /upload directory
-
+3. /scripts/journalinfo.py - this script is in the standard doaj scripts folder.  Running it will correct any issues with the in_doaj flag on articles.  Check the size of the article index before and after to see the effect it has on the amount of content.
+4. flushuploads.py - remove all the old uploaded file records in the index, and set it up for its new usage
+5. uploadcorrections.py - builds the corrections table for the next script (uploadedxml.py).  You will need to modify the file to point to the relevant file-paths
+6. uploadedxml.py - migrates all the new articles from uploaded files into the database.  You will need to modify the file to point to the directory of the XML files, and the script itself could take upwards of 10 minutes to run. 
+7. Do this yourself: move the upload directory out of the way and make a new empty one (we should keep the old upload directory in case we need the content again)
+8. Set up the cron jobs for ingesting articles
 
 The following files are scripts generated in the development of the migrate scripts and should NOT be run as part of the migration:
 
