@@ -9,3 +9,11 @@ function iso_datetime2date(isodate_str) {
      */
     return isodate_str.substring(0,10);
 }
+
+function iso_datetime2date_and_time(isodate_str) {
+    /* >>> "2013-12-13T22:35:42Z".replace('T',' ').replace('Z','')
+     * "2013-12-13 22:35:42"
+     */
+    return isodate_str.replace('T',' ').replace('Z','')
+}
+
