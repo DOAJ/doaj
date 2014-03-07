@@ -44,20 +44,29 @@ author_pays_options = [
     ('NY', 'No information'),
 ]
 
-digital_archiving_policy_choices = [
+__digital_archiving_policy_choices_1 = [
     ('LOCKSS', 'LOCKSS'), 
     ('CLOCKSS', 'CLOCKSS'), 
     ('Portico', 'Portico'), 
     ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'), 
+]
+
+digital_archiving_policy_optional_url_choices = [
     ('No policy in place', 'No policy in place'), 
+]
+
+digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
+
+__digital_archiving_policy_choices_2 = [
     ('A national library. Please specify', 'A national library. Please specify:'), 
     ('Other', 'Other')
 ]
 
-binary_choices = [
-    ('True', 'Yes'),
-    ('False', 'No')
-]
+digital_archiving_policy_choices = __digital_archiving_policy_choices_1 + digital_archiving_policy_optional_url_choices + __digital_archiving_policy_choices_2
+
+optional_url_binary_choices = [('False', 'No')]
+optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
+binary_choices = [('True', 'Yes')] + optional_url_binary_choices
 
 ternary_choices = binary_choices + [
     ('Other', 'Other')
@@ -151,17 +160,42 @@ class OptionalIf(validators.Optional):
     # a validator which makes a field optional if
     # another field is set and has a truthy value
 
-    def __init__(self, other_field_name, *args, **kwargs):
+    def __init__(self, other_field_name, optvals=[], *args, **kwargs):
         self.other_field_name = other_field_name
+        self.optvals = optvals
         super(OptionalIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
         other_field = form._fields.get(self.other_field_name)
-        # print bool(field.data), self.other_field_name, bool(other_field.data)
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
-        if bool(other_field.data):
-            super(OptionalIf, self).__call__(form, field)
+        if not self.optvals:
+            if bool(other_field.data):
+                super(OptionalIf, self).__call__(form, field)
+        else:
+            no_optval_matched = True
+            for v in self.optvals:
+                print v, other_field.data
+                if isinstance(other_field.data, list):
+                    if v in other_field.data and len(other_field.data) == 1:
+                        # must be the only option submitted - OK for
+                        # radios and for checkboxes where a single
+                        # checkbox, but no more, is required to make the
+                        # field optional
+                        no_optval_matched = False
+                        self.__make_optional(form, field)
+                        break
+                if other_field.data == v:
+                    no_optval_matched = False
+                    self.__make_optional(form, field)
+                    break
+
+            if no_optval_matched:
+                raise validators.StopValidation('This field is required')
+
+    def __make_optional(self, form, field):
+        super(OptionalIf, self).__call__(form, field)
+        raise validators.StopValidation()
 
 class JournalInformationForm(Form):
     
@@ -186,10 +220,10 @@ class JournalForm(JournalInformationForm):
     languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
     
 class SuggestionForm(JournalInformationForm):
-    society_institution = TextField('Society or Institution (if applicable)', 
+    society_institution = TextField('Society or Institution', 
         [validators.Optional()]
     )
-    platform = TextField('Platform, Host or Aggregator (if applicable)', 
+    platform = TextField('Platform, Host or Aggregator', 
         [validators.Optional()]
     )
     contact_name = TextField('Name of contact for this journal', 
@@ -207,9 +241,10 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices
     )
     processing_charges_amount = IntegerField('Amount',
-        [validators.Required()],
+        [OptionalIf('processing_charges', optvals=optional_url_binary_choices_optvals)],
     )
     processing_charges_currency = SelectField('Currency',
+        [OptionalIf('processing_charges', optvals=optional_url_binary_choices_optvals)],
         choices = currency_choices,
     )
     
@@ -219,9 +254,10 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices
     )
     submission_charges_amount = IntegerField('Amount', 
-        [validators.Required()],
+        [OptionalIf('submission_charges', optvals=optional_url_binary_choices_optvals)],
     )
     submission_charges_currency = SelectField('Currency',
+        [OptionalIf('submission_charges', optvals=optional_url_binary_choices_optvals)],
         choices = currency_choices,
     )    
     articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
@@ -236,7 +272,7 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices 
     )
     waiver_policy_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('waiver_policy', optvals=optional_url_binary_choices_optvals), validators.URL()]
     )
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?', 
         [validators.Required()],
@@ -245,8 +281,11 @@ class SuggestionForm(JournalInformationForm):
         option_widget=widgets.CheckboxInput(), 
         widget=widgets.ListWidget(prefix_label=False)
     )
+    digital_archiving_policy_other = TextField('',
+    )
     digital_archiving_policy_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), validators.URL()],
+        description='This field is optional if you have only selected "No policy in place" above',
     )
     crawl_permission = RadioField('Does the journal allow anyone to crawl the full-text of the journal?', 
         [validators.Required()],
@@ -259,6 +298,8 @@ class SuggestionForm(JournalInformationForm):
         option_widget=widgets.CheckboxInput(),   
         widget=widgets.ListWidget(prefix_label=False),
     )
+    article_identifiers_other = TextField('',
+    )
     metadata_provision = RadioField('Does the journal provide, or intend to provide, article level metadata to DOAJ?', 
         [validators.Required()],
         description = 'For new applications, metadata must be provided within 3 months of acceptance into DOAJ', 
@@ -269,7 +310,7 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices 
     )
     download_statistics_url = TextField('Enter the URL where this information can be found', 
-        [validators.URL()]
+        [OptionalIf('download_statistics', optvals=optional_url_binary_choices_optvals)],
     )
     first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles (Full Text may be provided as PDFs).', 
         [validators.Required()], #TODO: validator for the year
@@ -282,9 +323,11 @@ class SuggestionForm(JournalInformationForm):
         option_widget=widgets.CheckboxInput(),   
         widget=widgets.ListWidget(prefix_label=False)
     )
+    fulltext_format_other = TextField('',
+    )
     keywords = TagListField('Add keyword(s) that best describe the journal', 
         [validators.Required()], 
-        description='MAXIMUM 6'
+        description='Maximum 6'
     )
     languages = SelectMultipleField('In which language(s) is the Full Text of articles published? ', 
         [validators.Required()],
@@ -300,7 +343,7 @@ class SuggestionForm(JournalInformationForm):
         choices = review_process_choices
     )
     review_process_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('review_process'), validators.URL()]
     )
     aims_scope_url = TextField("What is the URL for the journal's Aims & Scope", 
         [validators.Required(), validators.URL()]
@@ -313,7 +356,7 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices 
     )
     plagiarism_screening_url = TextField("Enter the URL where this information can be found", 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), validators.URL()]
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication', 
         [validators.Required()]
@@ -324,12 +367,17 @@ class SuggestionForm(JournalInformationForm):
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
         [validators.Required()],
         choices = binary_choices, 
-        description = 'Please provide an example. For more information go to http://wiki.creativecommons.org/Marking_works ',
+        description = 'For more information go to http://wiki.creativecommons.org/Marking_works ',
+    )
+    license_embedded_url = TextField("Please provide a URL to an example page with embedded licensing information",
+        [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), validators.URL()]
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
         [validators.Required()],
         choices = license_choices, 
         description = 'For more information go to http://creativecommons.org/licenses/ '
+    )
+    license_other = TextField('',
     )
     license_checkbox = SelectMultipleField('Does it require',
         choices = license_checkbox_choices,
@@ -337,7 +385,7 @@ class SuggestionForm(JournalInformationForm):
         widget=widgets.ListWidget(prefix_label=False),
     )
     license_url = TextField("Enter the URL on your site where your license terms are stated", 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('license'), validators.URL()]
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
         [validators.Required()],
@@ -351,6 +399,8 @@ class SuggestionForm(JournalInformationForm):
         option_widget=widgets.CheckboxInput(), 
         widget=widgets.ListWidget(prefix_label=False)
     )
+    deposit_policy_other = TextField('',
+    )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?', 
         [validators.Required()],
         choices = ternary_choices 
@@ -358,7 +408,7 @@ class SuggestionForm(JournalInformationForm):
     copyright_other = TextField('',
     )
     copyright_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('copyright'), validators.URL()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?', 
         [validators.Required()], 
@@ -367,7 +417,7 @@ class SuggestionForm(JournalInformationForm):
     publishing_rights_other = TextField('',
     )
     publishing_rights_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+        [OptionalIf('publishing_rights'), validators.URL()]
     )
     suggester_name = TextField('Your Name', 
         [validators.Required()]

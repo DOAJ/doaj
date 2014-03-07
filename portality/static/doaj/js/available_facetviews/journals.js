@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
     results_render_callbacks: {
         'bibjson.author_pays': fv_author_pays,
         'created_date': fv_created_date,
+        'last_updated': fv_last_updated,
         'bibjson.abstract': fv_abstract,
         'addthis-social-share-button': fv_addthis,
         'journal_license' : fv_journal_license,
@@ -40,6 +41,7 @@ jQuery(document).ready(function($) {
     ],
     search_sortby: [
         {'display':'Date added to DOAJ','field':'created_date'},
+        {'display':'Last updated','field':'last_updated'},
         {'display':'Title','field':'index.title.exact'},
     ],
     searchbox_fieldselect: [
@@ -88,6 +90,12 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Date added to DOAJ</strong>: ",
                 "field": "created_date",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Last updated</strong>: ",
+                "field": "last_updated",
             }
         ],
         [

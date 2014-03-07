@@ -58,6 +58,7 @@ jQuery(document).ready(function($) {
     $('#license_checkbox').parents('.control-group').hide();
     $('#copyright_url').parents('.control-group').hide();
     $('#publishing_rights_url').parents('.control-group').hide();
+    $('#license_embedded_url').parents('.control-group').hide();
     
     
     
@@ -66,6 +67,7 @@ jQuery(document).ready(function($) {
     toggle_url_field('plagiarism_screening', '#plagiarism_screening_url');
     toggle_url_field('publishing_rights', '#publishing_rights_url');
     toggle_url_field('copyright', '#copyright_url');
+    toggle_url_field('license_embedded', '#license_embedded_url');
     
     toggle_charges_amount('processing_charges');
     toggle_charges_amount('submission_charges');

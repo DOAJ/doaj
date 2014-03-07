@@ -101,7 +101,14 @@ def search_post():
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
     form = SuggestionForm(request.form)
+    if request.method == 'POST' and form.validate():
+        #unicorns
+        return redirect(url_for('doaj.suggestion_thanks'))
     return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
+
+@blueprint.route("/application/thanks", methods=["GET"])
+def suggestion_thanks():
+    return render_template('doaj/suggest_thanks.html')
     
 
 @blueprint.route("/csv")
