@@ -324,7 +324,10 @@ class SuggestionForm(JournalInformationForm):
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
         [validators.Required()],
         choices = binary_choices, 
-        description = 'Please provide an example. For more information go to http://wiki.creativecommons.org/Marking_works ',
+        description = 'For more information go to http://wiki.creativecommons.org/Marking_works ',
+    )
+    license_embedded_url = TextField("Please provide a URL to an example page with embedded licensing information",
+        [validators.Required(), validators.URL()]
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
         [validators.Required()],
