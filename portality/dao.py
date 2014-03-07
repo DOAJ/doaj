@@ -267,6 +267,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     def iterate(cls, q, page_size=1000, limit=None):
         q["size"] = page_size
         q["from"] = 0
+        q["sort"] = [{"id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit

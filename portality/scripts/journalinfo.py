@@ -1,5 +1,8 @@
 from portality import models
 from portality import article
+from datetime import datetime
+
+start = datetime.now()
 
 xwalk = article.XWalk()
 batch_size = 1000
@@ -22,3 +25,7 @@ if len(batch) > 0:
     total += len(batch)
     print "writing", len(batch), "; total so far", total
     models.Article.bulk(batch)
+
+end = datetime.now()
+
+print start, "-", end
