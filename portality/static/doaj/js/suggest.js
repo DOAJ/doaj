@@ -86,6 +86,9 @@ jQuery(document).ready(function($) {
     
     $("#languages").select2();
           
+    autocomplete('#publisher', 'bibjson.publisher');
+    autocomplete('#society_institution', 'bibjson.institution');
+    autocomplete('#platform', 'bibjson.provider');
     
 });
 
@@ -116,6 +119,24 @@ function toggle_other_field(field_name, selector) {
             $(selector).parents('.control-group').hide();
         }
     });  
-    
-     
+}
+
+function autocomplete(selector, doc_field, doc_type) {
+    var doc_type = doc_type || "journal";
+    $(selector).select2({
+        minimumInputLength: 3,
+        ajax: {
+            url: "../autocomplete/" + doc_type + "/" + doc_field,
+            dataType: 'json',
+            data: function (term, page) {
+                return {
+                    q: term
+                };
+            },
+            results: function (data, page) {
+                return { results: data["suggestions"] };
+            }
+        },
+        createSearchChoice: function(term) {return {"id":term, "text": term};}
+    });
 }
