@@ -283,6 +283,8 @@ class SuggestionForm(JournalInformationForm):
     )
     digital_archiving_policy_other = TextField('',
     )
+    digital_archiving_policy_library = TextField('',
+    )
     digital_archiving_policy_url = TextField('Enter the URL where this information can be found', 
         [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), validators.URL()],
         description='This field is optional if you have only selected "No policy in place" above',

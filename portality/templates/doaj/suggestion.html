@@ -31,7 +31,12 @@
     {{ render_field(form.articles_last_year_url, class="input-xlarge") }}
     {{ render_field(form.waiver_policy) }}
     {{ render_field(form.waiver_policy_url, class="input-xlarge") }}
-    {{ render_field(form.digital_archiving_policy, extra_input_field=form.digital_archiving_policy_other, display_extra_when_label_is='Other') }}
+    {{ render_field(form.digital_archiving_policy,
+          extra_input_field=form.digital_archiving_policy_other,
+          display_extra_when_label_is='Other',
+          extra_input_field2=form.digital_archiving_policy_library,
+          display_extra2_when_label_is='A national library. Please specify:',
+      ) }}
     {{ render_field(form.digital_archiving_policy_url, class="input-xlarge") }}
     {{ render_field(form.crawl_permission) }}
     {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other') }}

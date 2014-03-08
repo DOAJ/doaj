@@ -45,7 +45,10 @@
     
 {% endmacro %}
 
-{% macro __render_field(field, extra_input_field='', display_extra_when_label_is='other') %}
+{% macro __render_field(field,
+            extra_input_field='', display_extra_when_label_is='other',
+            extra_input_field2='', display_extra2_when_label_is='other'
+            ) %}
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
             <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
@@ -70,6 +73,8 @@
                     {{ __render_radio(subfield,
                           extra_input_field=extra_input_field,
                           display_extra_when_label_is=display_extra_when_label_is,
+                          extra_input_field2=extra_input_field2,
+                          display_extra2_when_label_is=display_extra2_when_label_is,
                           **kwargs)
                     }}
                 {% endfor %}
@@ -79,6 +84,8 @@
                     {{ __render_checkbox(subfield,
                           extra_input_field=extra_input_field,
                           display_extra_when_label_is=display_extra_when_label_is,
+                          extra_input_field2=extra_input_field2,
+                          display_extra2_when_label_is=display_extra2_when_label_is,
                           **kwargs)
                     }}
                 {% endfor %}
@@ -88,6 +95,10 @@
 
                 {% if extra_input_field and display_extra_when_label_is.lower() == field.value.lower() %}
                   {{ extra_input_field }}
+                {% endif %}
+
+                {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.value.lower() %}
+                  {{ extra_input_field2 }}
                 {% endif %}
             {% endif %}
 
@@ -107,34 +118,42 @@
     {% endif %}
 {% endmacro %}
 
-{% macro __render_radio(field, extra_input_field='', display_extra_when_label_is='') %}
+{% macro __render_radio(field,
+              extra_input_field='', display_extra_when_label_is='',
+              extra_input_field2='', display_extra2_when_label_is=''
+         )
+%}
 <label class="radio" for="{{field.short_name}}">
     {{ field(**kwargs) }}
     <span class="label-text">{{field.label.text}}</span>
+
     {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
       {{ extra_input_field }}
+    {% endif %}
+
+    {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
+      {{ extra_input_field2 }}
     {% endif %}
 </label>
 {% endmacro %}
 
-{% macro __render_checkbox(field, extra_input_field='', display_extra_when_label_is='') %}
+{% macro __render_checkbox(field, 
+              extra_input_field='', display_extra_when_label_is='',
+              extra_input_field2='', display_extra2_when_label_is=''
+         )
+%}
 <li>
     {{ field(**kwargs) }}
     <label for="{{field.short_name}}">{{field.label.text}}</label>
+
     {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
       {{ extra_input_field }}
     {% endif %}
-</li>
-{% endmacro %}
 
-{% macro field_errors(field, caller=None) %}
-  {% if field.errors %}
-  <ul class="errors">
-      {% for error in field.errors %}
-      <li>{{ error }}</li>
-      {% endfor %}
-  </ul>
-  {% endif %}
+    {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
+      {{ extra_input_field2 }}
+    {% endif %}
+</li>
 {% endmacro %}
 
 
