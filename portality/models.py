@@ -12,9 +12,11 @@ from portality import xwalk
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-def lookup_model(name=''):
+def lookup_model(name='', capitalize=True):
+    if capitalize:
+        name = name.capitalize()
     try:
-        return getattr(sys.modules[__name__], name.capitalize())
+        return getattr(sys.modules[__name__], name)
     except:
         return None
 

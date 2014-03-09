@@ -69,7 +69,7 @@ def query(path='Pages'):
     for s in subpaths:
         modelname += s.capitalize()
 
-    klass = models.lookup_model(modelname)
+    klass = models.lookup_model(modelname, capitalize=False)
     if not klass:
         abort(404)
 
