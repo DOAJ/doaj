@@ -38,7 +38,20 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     sudo apt-get install libxml2-dev libxslt-dev  # install LXML dependencies on Linux. Windows users: grab a precompiled LXML from http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml (go for version 3.x) - make sure the virtual environment can see it!
     pip install -e .  # install all the app's dependencies
     python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
-    
+
+### Cron Jobs
+
+The following tasks need to run periodically:
+
+    portality/scripts/ingestarticles.py
+
+This will ingest all of the latest file uploads and remote URLs provided.  It should be run approximately every hour.
+
+    portality/scripts/journalcsv.py
+
+This will generate the latest version of the csv to serve on request.  It should be run approximately every 30 minutes.
+
+
 ## Data Models
 
 Notes on the data model
