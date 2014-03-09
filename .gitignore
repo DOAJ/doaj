@@ -12,3 +12,4 @@ media/*
 portality/default_templates/pagemanager/content/*
 upload/*
 cache/*
+portality/migrate/p1p2/*.csv
