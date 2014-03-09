@@ -1,6 +1,7 @@
 import os, json, UserDict, requests, uuid
 from copy import deepcopy
 from datetime import datetime
+import time
 
 from portality.core import app, current_user
 
@@ -236,13 +237,28 @@ class DomainObject(UserDict.IterableUserDict, object):
 
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid=''):
+    def send_query(cls, qobj, endpoint='_search', recid='', retry=10):
         '''Actually send a query object to the backend.'''
-        if endpoint in ['_mapping']:
-            r = requests.get(cls.target() + recid + endpoint)
-        else:
-            r = requests.post(cls.target() + recid + endpoint, data=json.dumps(qobj))
-        return r.json()
+        r = None
+        count = 0
+        exception = None
+        while count < retry:
+            count += 1
+            try:
+                if endpoint in ['_mapping']:
+                    r = requests.get(cls.target() + recid + endpoint)
+                else:
+                    r = requests.post(cls.target() + recid + endpoint, data=json.dumps(qobj))
+                break
+            except Exception as e:
+                exception = e
+            time.sleep(0.5)
+                
+        if r is not None:
+            return r.json()
+        if exception is not None:
+            raise exception
+        raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
 
     def accessed(self):
         if 'last_access' not in self.data:
