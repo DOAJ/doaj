@@ -48,19 +48,6 @@ jQuery(document).ready(function($) {
         }
     });
     
-    $('#processing_charges_amount').parents('.control-group').hide();
-    $('#processing_charges_currency').parents('.control-group').hide();
-    $('#submission_charges_amount').parents('.control-group').hide();
-    $('#submission_charges_currency').parents('.control-group').hide();
-    $('#waiver_policy_url').parents('.control-group').hide();
-    $('#download_statistics_url').parents('.control-group').hide();
-    $('#plagiarism_screening_url').parents('.control-group').hide();
-    $('#license_checkbox').parents('.control-group').hide();
-    $('#copyright_url').parents('.control-group').hide();
-    $('#publishing_rights_url').parents('.control-group').hide();
-    $('#license_embedded_url').parents('.control-group').hide();
-    
-    
     
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
     toggle_optional_field('download_statistics', ['#download_statistics_url']);
