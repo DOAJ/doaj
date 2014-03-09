@@ -18,8 +18,6 @@ def get_country_code(current_country):
                     new_country = two_char_code
                     break
 
-    if current_country == 'Iran':
-        print 'returning', new_country
     return new_country
 
 def get_country_name(code):

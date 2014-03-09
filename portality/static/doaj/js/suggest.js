@@ -48,40 +48,26 @@ jQuery(document).ready(function($) {
         }
     });
     
-    $('#processing_charges_amount').parents('.control-group').hide();
-    $('#processing_charges_currency').parents('.control-group').hide();
-    $('#submission_charges_amount').parents('.control-group').hide();
-    $('#submission_charges_currency').parents('.control-group').hide();
-    $('#waiver_policy_url').parents('.control-group').hide();
-    $('#download_statistics_url').parents('.control-group').hide();
-    $('#plagiarism_screening_url').parents('.control-group').hide();
-    $('#license_checkbox').parents('.control-group').hide();
-    $('#copyright_url').parents('.control-group').hide();
-    $('#publishing_rights_url').parents('.control-group').hide();
-    $('#license_embedded_url').parents('.control-group').hide();
     
-    
-    
-    toggle_url_field('waiver_policy', '#waiver_policy_url');
-    toggle_url_field('download_statistics', '#download_statistics_url');
-    toggle_url_field('plagiarism_screening', '#plagiarism_screening_url');
-    toggle_url_field('publishing_rights', '#publishing_rights_url');
-    toggle_url_field('copyright', '#copyright_url');
-    toggle_url_field('license_embedded', '#license_embedded_url');
-    
-    toggle_charges_amount('processing_charges');
-    toggle_charges_amount('submission_charges');
-    
-    toggle_other_field('license', '#license_checkbox');
-    
+    toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
+    toggle_optional_field('download_statistics', ['#download_statistics_url']);
+    toggle_optional_field('plagiarism_screening', ['#plagiarism_screening_url']);
+    toggle_optional_field('publishing_rights', ['#publishing_rights_url'], ["True", "Other"]);
+    toggle_optional_field('copyright', ['#copyright_url'], ["True", "Other"]);
+    toggle_optional_field('license_embedded', ['#license_embedded_url']);
+    toggle_optional_field('processing_charges', ['#processing_charges_amount', '#processing_charges_currency']);
+    toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
+    toggle_optional_field('license', ['#license_checkbox'], ["other"]);
     
     $('#country').select2();
+    $('#processing_charges_currency').select2();
     $('#submission_charges_currency').select2();
     
     $("#keywords").select2({
         minimumInputLength: 1,
         tags: [],
-        tokenSeparators: [","]
+        tokenSeparators: [","],
+        maximumSelectionSize: 6
     });
     
     $("#languages").select2();
@@ -92,33 +78,42 @@ jQuery(document).ready(function($) {
     
 });
 
-function toggle_url_field(field_name, url_id) {
-    $('input[name=' + field_name + ']:radio').change( function () {
-        if (this.value == 'False') {
-            $(url_id).parents('.control-group').hide();
-        } else {
-            $(url_id).parents('.control-group').show();
-        }
-        
+function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
+    var values_to_show_for = values_to_show_for || ["True"];
+    var main_field_selector = 'input[name=' + field_name + '][type="radio"]';
+
+    // hide all optional fields first
+    for (var i = 0; i < optional_field_selectors.length; i++) {
+        $(optional_field_selectors[i]).parents('.control-group').hide();
+    }
+
+    // show them again if the correct radio button is chosen
+    $(main_field_selector).each( function () {
+        __init_optional_field(this, optional_field_selectors, values_to_show_for);
     });
 
-}
-
-function toggle_charges_amount(field_name) {
-    $('input[name=' + field_name + ']:radio').change( function () {
-        $('#' + field_name + '_amount').parent().parent().toggle();
-        $('#' + field_name + '_currency').parent().parent().toggle();
+    $(main_field_selector).change( function () {
+        if ($.inArray(this.value, values_to_show_for) >= 0) {
+            for (var i = 0; i < optional_field_selectors.length; i++) {
+                $(optional_field_selectors[i]).parents('.control-group').show();
+            }
+        } else {
+            for (var i = 0; i < optional_field_selectors.length; i++) {
+                $(optional_field_selectors[i]).parents('.control-group').hide();
+            }
+        }
     });
 }
 
-function toggle_other_field(field_name, selector) {
-    $('input[name=' + field_name + ']:radio').change(function () {
-        if (this.value == 'Other') {
-            $(selector).parents('.control-group').show();
-        } else {
-            $(selector).parents('.control-group').hide();
+function __init_optional_field(elem, optional_field_selectors, values_to_show_for) {
+    var values_to_show_for = values_to_show_for || ["True"];
+    var main_field = $(elem);
+
+    if (main_field.is(':checked') && $.inArray(main_field.val(), values_to_show_for) >= 0) {
+        for (var i = 0; i < optional_field_selectors.length; i++) {
+            $(optional_field_selectors[i]).parents('.control-group').show();
         }
-    });  
+    }
 }
 
 function autocomplete(selector, doc_field, doc_type) {

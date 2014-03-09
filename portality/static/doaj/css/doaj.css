@@ -146,6 +146,15 @@ select {
     margin-left: 220px;
 }
 
+.error .select2-choice {
+    border-color: #b94a48;
+}
+
+.control-group.error input.extra_input_field {
+    border-color: #ccc;
+    color: #555;
+}
+
 .checkboxes  ul {
     list-style: none outside none;
     margin-left: 0;
