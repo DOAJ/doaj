@@ -5,6 +5,7 @@ def get_country_code(current_country):
     if new_country:
         if new_country not in country_options_two_char_code_index:
             for two_char_code, info in countries:
+
                 if new_country.lower() == info['name'].lower():
                     new_country = two_char_code
                     break
@@ -15,6 +16,7 @@ def get_country_code(current_country):
 
                 if info['name'].lower().startswith(new_country.lower()):
                     new_country = two_char_code
+                    break
 
     return new_country
 

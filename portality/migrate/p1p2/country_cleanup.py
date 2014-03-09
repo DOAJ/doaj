@@ -54,9 +54,6 @@ def migrate(test=False):
             newcountry = j.bibjson().country
             newcountry_name = xwalk.get_country_name(newcountry)
 
-            if not test:
-                print j.bibjson().title.encode('utf-8'), ',', j.bibjson().get_one_identifier(j.bibjson().P_ISSN), j.bibjson().get_one_identifier(j.bibjson().E_ISSN), ',', 'Old country:', oldcountry.encode('utf-8'), ',', 'New country:', newcountry.encode('utf-8')
-
             writer.writerow([oldcountry.encode('utf-8'), newcountry_name.encode('utf-8')])
 
             if not test:
