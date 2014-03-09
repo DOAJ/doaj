@@ -12,7 +12,8 @@ They should be run individually in the following order:
 5. uploadcorrections.py - builds the corrections table for the next script (uploadedxml.py).  You will need to modify the file to point to the relevant file-paths
 6. uploadedxml.py - migrates all the new articles from uploaded files into the database.  You will need to modify the file to point to the directory of the XML files, and the script itself could take upwards of 10 minutes to run. 
 7. Do this yourself: move the upload directory out of the way and make a new empty one (we should keep the old upload directory in case we need the content again)
-8. Set up the cron jobs for ingesting articles
+8. /scripts/journalcsv.py - generate the initial csv file
+9. Set up the cron jobs for ingesting articles
 
 The following files are scripts generated in the development of the migrate scripts and should NOT be run as part of the migration:
 
