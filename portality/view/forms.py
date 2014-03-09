@@ -169,10 +169,15 @@ class OptionalIf(validators.Optional):
         other_field = form._fields.get(self.other_field_name)
         if other_field is None:
             raise Exception('no field named "%s" in form' % self.other_field_name)
+
+        # if no values (for other_field) which make this field optional
+        # are specified...
         if not self.optvals:
+            # ... just make this field optional if the other is truthy
             if bool(other_field.data):
                 super(OptionalIf, self).__call__(form, field)
         else:
+            # if such values are specified, check for them 
             no_optval_matched = True
             for v in self.optvals:
                 print v, other_field.data
@@ -282,6 +287,8 @@ class SuggestionForm(JournalInformationForm):
         widget=widgets.ListWidget(prefix_label=False)
     )
     digital_archiving_policy_other = TextField('',
+    )
+    digital_archiving_policy_library = TextField('',
     )
     digital_archiving_policy_url = TextField('Enter the URL where this information can be found', 
         [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), validators.URL()],

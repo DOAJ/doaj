@@ -1,5 +1,5 @@
 from flask import Blueprint, request, abort, make_response, Response
-from flask import render_template, abort, redirect, url_for, flash, send_file
+from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user
 from wtforms import Form, validators
 from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField
@@ -7,7 +7,7 @@ from wtforms.widgets import TextInput
 from flask_wtf import RecaptchaField
 
 from portality import dao
-from portality import models as models
+from portality import models
 from portality.core import app
 from portality import settings
 from portality.view.forms import SuggestionForm
@@ -153,6 +153,21 @@ def get_csv_data():
     r = Response(thecsv, mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
 """
+
+@blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
+def autocomplete(doc_type, field_name):
+    prefix = request.args.get('q','').lower()
+    if not prefix:
+        return jsonify({'suggestions':[{"id":"", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+
+    m = models.lookup_model(doc_type)
+    if not m:
+        return jsonify({'suggestions':[{"id":"", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+
+    size = request.args.get('size', 5)
+    return jsonify({'suggestions': m.autocomplete(field_name, prefix, size=size)})
+    # you shouldn't return lists top-level in a JSON response:
+    # http://flask.pocoo.org/docs/security/#json-security
 
 """
 @blueprint.route("/uploadFile", methods=["GET", "POST"])

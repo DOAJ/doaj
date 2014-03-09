@@ -12,6 +12,13 @@ from portality import xwalk
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
+def lookup_model(name=''):
+    try:
+        return getattr(sys.modules[__name__], name.capitalize())
+    except:
+        return None
+
+
 ############################################################################
 # Generic/Utility classes and functions
 ############################################################################

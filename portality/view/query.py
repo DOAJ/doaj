@@ -65,12 +65,11 @@ def query(path='Pages'):
     # if we get to here, then we are good to respond, though check further down
     # to see if we apply the default filter
     
-    modelname = ''
     for s in subpaths:
         modelname += s.capitalize()
-    try:
-        klass = getattr(models, modelname)
-    except:
+
+    klass = models.lookup_model(modelname)
+    if not klass:
         abort(404)
 
     if len(pathparts) > 1 and pathparts[1] == '_mapping':

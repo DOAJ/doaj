@@ -232,11 +232,16 @@ class DomainObject(UserDict.IterableUserDict, object):
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         '''
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
+        return cls.send_query(query, endpoint=endpoint, recid=recid)
 
+
+    @classmethod
+    def send_query(cls, qobj, endpoint='_search', recid=''):
+        '''Actually send a query object to the backend.'''
         if endpoint in ['_mapping']:
             r = requests.get(cls.target() + recid + endpoint)
         else:
-            r = requests.post(cls.target() + recid + endpoint, data=json.dumps(query))
+            r = requests.post(cls.target() + recid + endpoint, data=json.dumps(qobj))
         return r.json()
 
     def accessed(self):
@@ -293,6 +298,47 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     def csv(self, multival_sep=','):
         raise NotImplementedError
+
+    @classmethod
+    def prefix_query(cls, field, prefix, size=5):
+        # example of a prefix query
+        # {
+        #     "query": {"prefix" : { "bibjson.publisher" : "ope" } },
+        #     "size": 0,
+        #     "facets" : {
+        #       "publisher" : { "terms" : {"field" : "bibjson.publisher.exact", "size": 5} }
+        #     }
+        # }
+        if field.endswith(app.config['FACET_FIELD']):
+            # strip .exact (or whatever it's configured as) off the end
+            query_field = field[:field.rfind(app.config['FACET_FIELD'])]
+        else:
+            query_field = field
+
+        # the actual terms should come from the .exact version of the
+        # field - we are suggesting whole values, not fragments
+        facet_field = query_field + app.config['FACET_FIELD']
+
+        q = {
+            "query": {"prefix" : { query_field : prefix } },
+            "size": 0,
+            "facets" : {
+              field : { "terms" : {"field" : facet_field, "size": size} }
+            }
+        }
+
+        return cls.send_query(q)
+
+    @classmethod
+    def autocomplete(cls, field, prefix, size=5):
+        res = cls.prefix_query(field, prefix, size=size)
+        result = []
+        for term in res['facets'][field]['terms']:
+            # keep ordering - it's by count by default, so most frequent
+            # terms will now go to the front of the result list
+            result.append({"id": term['term'], "text": term['term']})
+        return result
+        
 
 ########################################################################
 ## Some useful ES queries
