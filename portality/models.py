@@ -2005,20 +2005,6 @@ class Cache(DomainObject):
     @classmethod
     def get_site_statistics(cls):
         rec = cls.pull("site_statistics")
-        
-        """
-        returnable = rec is not None
-        if rec is not None:
-            marked_regen = rec.marked_regen()
-            if not marked_regen:
-                stale = rec.is_stale()
-                if stale:
-                    rec.mark_for_regen()
-                else:
-                    returnable = True
-            else:
-                returnable = True
-        """
         returnable = rec is not None
         if rec is not None:
             if rec.is_stale():
@@ -2042,6 +2028,21 @@ class Cache(DomainObject):
         cobj = cls(**stats)
         cobj.set_id("site_statistics")
         cobj.save()
+    
+    @classmethod
+    def cache_csv(cls, filename):
+        cobj = cls(**{
+            "filename" : filename
+        })
+        cobj.set_id("csv")
+        cobj.save()
+    
+    @classmethod
+    def get_latest_csv(cls):
+        rec = cls.pull("csv")
+        if rec is None:
+            return None
+        return rec.get("filename")
     
     def mark_for_regen(self):
         self.update({"regen" : True})

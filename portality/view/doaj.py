@@ -1,5 +1,5 @@
 from flask import Blueprint, request, abort, make_response, Response
-from flask import render_template, abort, redirect, url_for, flash
+from flask import render_template, abort, redirect, url_for, flash, send_file
 from flask.ext.login import current_user
 from wtforms import Form, validators
 from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField
@@ -113,10 +113,16 @@ def suggestion_thanks():
 
 @blueprint.route("/csv")
 def csv_data():
+    """
     with futures.ProcessPoolExecutor(max_workers=1) as executor:
         result = executor.submit(get_csv_data).result()
     return result
+    """
+    csv_file = models.Cache.get_latest_csv()
+    csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
+    return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
 
+"""
 def get_csv_data():
     def get_csv_string(csv_row):
         '''
@@ -146,6 +152,7 @@ def get_csv_data():
     attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
     r = Response(thecsv, mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
     return r
+"""
 
 """
 @blueprint.route("/uploadFile", methods=["GET", "POST"])

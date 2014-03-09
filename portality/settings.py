@@ -221,3 +221,7 @@ RECAPTCHA_PUBLIC_KEY = '6LdaE-wSAAAAAKTofjeh5Zn94LN1zxzbrhxE8Zxr'
 # number of seconds site statistics should be considered fresh
 # 1800s = 30mins
 SITE_STATISTICS_TIMEOUT = 1800
+
+# directory into which to put files which are cached (e.g. the csv)
+CACHE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "cache")
+
