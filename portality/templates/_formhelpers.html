@@ -94,11 +94,11 @@
                 {{ field(**kwargs) }}
 
                 {% if extra_input_field and display_extra_when_label_is.lower() == field.value.lower() %}
-                  {{ extra_input_field }}
+                  {{ extra_input_field(class="extra_input_field") }}
                 {% endif %}
 
                 {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.value.lower() %}
-                  {{ extra_input_field2 }}
+                  {{ extra_input_field2(class="extra_input_field") }}
                 {% endif %}
             {% endif %}
 
@@ -128,11 +128,11 @@
     <span class="label-text">{{field.label.text}}</span>
 
     {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
-      {{ extra_input_field }}
+      {{ extra_input_field(class="extra_input_field") }}
     {% endif %}
 
     {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
-      {{ extra_input_field2 }}
+      {{ extra_input_field2(class="extra_input_field") }}
     {% endif %}
 </label>
 {% endmacro %}
@@ -147,11 +147,11 @@
     <label for="{{field.short_name}}">{{field.label.text}}</label>
 
     {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
-      {{ extra_input_field }}
+      {{ extra_input_field(class="extra_input_field") }}
     {% endif %}
 
     {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
-      {{ extra_input_field2 }}
+      {{ extra_input_field2(class="extra_input_field") }}
     {% endif %}
 </li>
 {% endmacro %}

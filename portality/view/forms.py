@@ -19,7 +19,7 @@ from flask_wtf import RecaptchaField
 
 from portality.core import app
 from portality import models
-from portality.datasets import country_options
+from portality.datasets import country_options, language_options, currency_options
 
 blueprint = Blueprint('forms', __name__)
 
@@ -83,36 +83,30 @@ deposit_policy_choices = [
 ]
 
 license_choices = [
-    ('CC-BY', 'CC-BY'),
-    ('CC-CY SA', 'CC-CY SA'),
-    ('CC-BY NC', 'CC-BY NC'),
-    ('CC-BY ND', 'CC-BY ND'),
-    ('CC-BY-NC-ND', 'CC-BY-NC-ND'),
-    ('No', 'No'), 
-    ('Other', 'Other')
+    ('cc-by', 'CC-BY'),
+    ('cc-by-sa', 'CC-BY-SA'),
+    ('cc-by-nc', 'CC-BY-NC'),
+    ('cc-by-nd', 'CC-BY-ND'),
+    ('cc-by-nc-nd', 'CC-BY-NC-ND'),
+    ('not-cc', 'No'), 
+    ('other', 'Other')
 ]
 
 license_checkbox_choices = [
-    ('Attribution', 'Attribution'),
-    ('Share Alike', 'Share Alike'),
-    ('No Commercial Usage', 'No Commercial Usage'),
-    ('No Derivatives', 'No Derivatives')
+    ('by', 'Attribution'),
+    ('sa', 'Share Alike'),
+    ('nc', 'No Commercial Usage'),
+    ('nd', 'No Derivatives')
 ]
 
 review_process_choices = [
-    (' ', ' '),
+    ('', ' '),
     ('Editorial review', 'Editorial review'), 
     ('Peer review', 'Peer review'),
     ('Blind peer review', 'Blind peer review'), 
     ('Double blind peer review', 'Double blind peer review'), 
     ('Open peer review', 'Open peer review'),
     (False, 'None')
-]
-
-language_choices = [
-    ('English', 'English'),
-    ('French', 'French'),
-    ('German', 'German')
 ]
 
 fulltext_format_choices = [
@@ -131,12 +125,6 @@ article_identifiers_choices = [
     ('None', 'None'),
     ('Other', 'Other')
 ]
-
-currency_choices = [
-    ('EUR', 'EUR'),
-    ('GBP', 'GBP'),
-    ('USD', 'USD')
-]    
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -180,7 +168,6 @@ class OptionalIf(validators.Optional):
             # if such values are specified, check for them 
             no_optval_matched = True
             for v in self.optvals:
-                print v, other_field.data
                 if isinstance(other_field.data, list):
                     if v in other_field.data and len(other_field.data) == 1:
                         # must be the only option submitted - OK for
@@ -250,7 +237,7 @@ class SuggestionForm(JournalInformationForm):
     )
     processing_charges_currency = SelectField('Currency',
         [OptionalIf('processing_charges', optvals=optional_url_binary_choices_optvals)],
-        choices = currency_choices,
+        choices = currency_options,
     )
     
     submission_charges = RadioField('Does the journal have article submission charges? Include relevant currency.', 
@@ -263,7 +250,7 @@ class SuggestionForm(JournalInformationForm):
     )
     submission_charges_currency = SelectField('Currency',
         [OptionalIf('submission_charges', optvals=optional_url_binary_choices_optvals)],
-        choices = currency_choices,
+        choices = currency_options,
     )    
     articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
         [validators.Required()],
@@ -338,8 +325,8 @@ class SuggestionForm(JournalInformationForm):
     )
     languages = SelectMultipleField('In which language(s) is the Full Text of articles published? ', 
         [validators.Required()],
-        choices = language_choices,
-        description="Use ',' (comma) as separator. For example English, French, Spanish."
+        choices = language_options,
+        description="You can select multiple languages"
     )
     editorial_board_url = TextField('What is the URL for the Editorial Board page?', 
         [validators.Required(), validators.URL()], 
