@@ -52,12 +52,12 @@ jQuery(document).ready(function($) {
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
     toggle_optional_field('download_statistics', ['#download_statistics_url']);
     toggle_optional_field('plagiarism_screening', ['#plagiarism_screening_url']);
-    toggle_optional_field('publishing_rights', ['#publishing_rights_url']);
-    toggle_optional_field('copyright', ['#copyright_url']);
+    toggle_optional_field('publishing_rights', ['#publishing_rights_url'], ["True", "Other"]);
+    toggle_optional_field('copyright', ['#copyright_url'], ["True", "Other"]);
     toggle_optional_field('license_embedded', ['#license_embedded_url']);
     toggle_optional_field('processing_charges', ['#processing_charges_amount', '#processing_charges_currency']);
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
-    toggle_optional_field('license', ['#license_checkbox'], "Other");
+    toggle_optional_field('license', ['#license_checkbox'], ["other"]);
     
     $('#country').select2();
     $('#processing_charges_currency').select2();
@@ -66,7 +66,8 @@ jQuery(document).ready(function($) {
     $("#keywords").select2({
         minimumInputLength: 1,
         tags: [],
-        tokenSeparators: [","]
+        tokenSeparators: [","],
+        maximumSelectionSize: 6
     });
     
     $("#languages").select2();
@@ -77,16 +78,22 @@ jQuery(document).ready(function($) {
     
 });
 
-function toggle_optional_field(field_name, optional_field_selectors, value_to_show_for) {
-    value_to_show_for = value_to_show_for || "True";
-    main_field_selector = 'input[name=' + field_name + '][type="radio"]';
+function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
+    var values_to_show_for = values_to_show_for || ["True"];
+    var main_field_selector = 'input[name=' + field_name + '][type="radio"]';
 
-    $(main_field_selector + ':checked').each( function () {
-        __init_optional_field(this, optional_field_selectors, value_to_show_for);
+    // hide all optional fields first
+    for (var i = 0; i < optional_field_selectors.length; i++) {
+        $(optional_field_selectors[i]).parents('.control-group').hide();
+    }
+
+    // show them again if the correct radio button is chosen
+    $(main_field_selector).each( function () {
+        __init_optional_field(this, optional_field_selectors, values_to_show_for);
     });
 
     $(main_field_selector).change( function () {
-        if (this.value == value_to_show_for) {
+        if ($.inArray(this.value, values_to_show_for) >= 0) {
             for (var i = 0; i < optional_field_selectors.length; i++) {
                 $(optional_field_selectors[i]).parents('.control-group').show();
             }
@@ -98,17 +105,13 @@ function toggle_optional_field(field_name, optional_field_selectors, value_to_sh
     });
 }
 
-function __init_optional_field(elem, optional_field_selectors, value_to_show_for) {
-    value_to_show_for = value_to_show_for || "True";
-    main_field = $(elem);
+function __init_optional_field(elem, optional_field_selectors, values_to_show_for) {
+    var values_to_show_for = values_to_show_for || ["True"];
+    var main_field = $(elem);
 
-    if (main_field.val() == value_to_show_for) {
+    if (main_field.is(':checked') && $.inArray(main_field.val(), values_to_show_for) >= 0) {
         for (var i = 0; i < optional_field_selectors.length; i++) {
             $(optional_field_selectors[i]).parents('.control-group').show();
-        }
-    } else {
-        for (var i = 0; i < optional_field_selectors.length; i++) {
-            $(optional_field_selectors[i]).parents('.control-group').hide();
         }
     }
 }
