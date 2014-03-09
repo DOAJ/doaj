@@ -65,6 +65,7 @@ def query(path='Pages'):
     # if we get to here, then we are good to respond, though check further down
     # to see if we apply the default filter
     
+    modelname = ''
     for s in subpaths:
         modelname += s.capitalize()
 
