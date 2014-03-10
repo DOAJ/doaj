@@ -2,7 +2,7 @@ from flask import Blueprint, request, abort, make_response, Response
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
-from portality.core import app
+from portality.core import app, ssl_required
 
 from portality import settings, models, article
 from portality.view.forms import SuggestionForm
@@ -13,7 +13,7 @@ import os, requests
 
 blueprint = Blueprint('publisher', __name__)
 
-# restrict everything in admin to logged in users with the "publsiher" role
+# restrict everything in admin to logged in users with the "publisher" role
 @blueprint.before_request
 def restrict():
     if current_user.is_anonymous() or not current_user.has_role("publisher"):
@@ -21,12 +21,14 @@ def restrict():
 
 @blueprint.route("/")
 @login_required
+@ssl_required
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
+@ssl_required
 def upload_file():
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
@@ -161,6 +163,7 @@ def _url_upload(url, schema, previous):
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
+@ssl_required
 def metadata():
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":

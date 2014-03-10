@@ -6,7 +6,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
 from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
-from portality.core import app
+from portality.core import app, ssl_required
 import portality.models as models
 import portality.util as util
 
@@ -25,6 +25,7 @@ if len(app.config.get('SUPER_USER',[])) > 0:
 
 @blueprint.route('/')
 @login_required
+@ssl_required
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
@@ -51,6 +52,7 @@ def index():
 
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
 @login_required
+@ssl_required
 def username(username):
     acc = models.Account.pull(username)
 
@@ -128,6 +130,7 @@ class LoginForm(RedirectForm):
     password = PasswordField('Password', [validators.Required()])
 
 @blueprint.route('/login', methods=['GET', 'POST'])
+@ssl_required
 def login():
     form = LoginForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
@@ -148,6 +151,7 @@ def login():
     return render_template('account/login.html', form=form)
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
+@ssl_required
 def forgot():
     if request.method == 'POST':
         un = request.form.get('un',"")
@@ -182,6 +186,7 @@ def forgot():
 
 
 @blueprint.route('/logout')
+@ssl_required
 def logout():
     logout_user()
     flash('You are now logged out', 'success')
@@ -207,6 +212,7 @@ class RegisterForm(Form):
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @login_required
+@ssl_required
 def register():
     if not app.config.get('PUBLIC_REGISTER',False) and not current_user.has_role("create_user"):
         abort(401)

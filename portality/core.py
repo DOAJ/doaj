@@ -1,5 +1,8 @@
 import os, requests, json
+from functools import wraps
+
 from flask import Flask
+from flask import request, redirect
 
 from portality import settings, secret_settings
 from flask.ext.login import LoginManager, current_user
@@ -68,3 +71,20 @@ def setup_error_logging(app):
 
 app = create_app()
 
+
+# misc stuff available for importing anywhere
+
+# a decorator to be used elsewhere (or in this file) in the app,
+# anywhere where a view f() should be served only over SSL
+def ssl_required(fn):
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        if app.config.get("SSL"):
+            if request.is_secure:
+                return fn(*args, **kwargs)
+            else:
+                return redirect(request.url.replace("http://", "https://"))
+        
+        return fn(*args, **kwargs)
+            
+    return decorated_view
