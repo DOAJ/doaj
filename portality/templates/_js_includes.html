@@ -48,6 +48,7 @@ displayed. #}
 
 {% if search_page %}
   <script type="text/javascript">var es_domain = document.location.host;</script>
+  <script type="text/javascript">var es_scheme = window.location.protocol;</script>
   {% for facetview in facetviews %}
     <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js"></script>
   {% endfor %}

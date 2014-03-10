@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
   $('.facetview.users').each(function() {
   $(this).facetview({
-    search_url: 'http://' + es_domain + '/admin_query/account/_search?',
+    search_url: es_scheme + '//' + es_domain + '/admin_query/account/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',

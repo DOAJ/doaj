@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
   $('.facetview.journals_and_articles').each(function() {
   $(this).facetview({
-    search_url: 'http://' + es_domain + '/query/journal,article/_search?',
+    search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
