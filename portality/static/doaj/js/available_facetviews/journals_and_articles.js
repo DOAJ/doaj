@@ -21,7 +21,8 @@ jQuery(document).ready(function($) {
         "title_field" : fv_title_field,
         "doi_link" : fv_doi_link,
         "links" : fv_links,
-        "issns" : fv_issns
+        "issns" : fv_issns,
+        "country_name": fv_country_name
     },
     hide_inactive_facets: true,
     facets: [
@@ -135,7 +136,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Journal Country</strong>: ",
-                "field": "index.country",
+                "field": "country_name",
             }
         ],
         [
@@ -253,7 +254,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Country of publication</strong>: ",
-                "field": "bibjson.journal.index.country"
+                "field": "country_name"
             }
         ],
         [

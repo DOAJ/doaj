@@ -22,6 +22,7 @@ jQuery(document).ready(function($) {
         "links" : fv_links,
         "issns" : fv_issns,
         "edit_suggestion" : fv_edit_suggestion,
+        "country_name": fv_country_name
     },
     hide_inactive_facets: true,
     facets: [
@@ -166,7 +167,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Journal Country</strong>: ",
-                "field": "index.country",
+                "field": "country_name",
             }
         ],
         [

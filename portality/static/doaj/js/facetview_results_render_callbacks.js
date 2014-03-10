@@ -278,3 +278,13 @@ fv_in_doaj.mapping = {
     false: {"text": "No", "class": "red"},
     true: {"text": "Yes", "class": "green"},
 }
+
+fv_country_name = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.index && resultobj.index.country) {
+            return resultobj.index.country;
+        }
+        return false
+    };
+    return that;
+})();

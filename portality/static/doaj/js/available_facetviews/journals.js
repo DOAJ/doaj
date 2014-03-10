@@ -25,6 +25,7 @@ jQuery(document).ready(function($) {
         "issns" : fv_issns,
         "edit_journal": fv_edit_journal,
         "in_doaj": fv_in_doaj,
+        "country_name": fv_country_name
     },
     hide_inactive_facets: true,
     facets: [
@@ -154,7 +155,7 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Country</strong>: ",
-                "field": "index.country",
+                "field": "country_name",
             }
         ],
         [
