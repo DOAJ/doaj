@@ -124,38 +124,6 @@ def csv_data():
     csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
     return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
 
-"""
-def get_csv_data():
-    def get_csv_string(csv_row):
-        '''
-        csv.writer only writes to files - it'd be a lot easier if it
-        could give us the string it generates, but it can't. This
-        function uses StringIO to capture every CSV row that csv.writer
-        produces and returns it.
-
-        :param csv_row: A list of strings, each representing a CSV cell.
-            This is the format required by csv.writer .
-        '''
-        csvstream = StringIO()
-        csvwriter = csv.writer(csvstream, quoting=csv.QUOTE_ALL)
-        # normalise the row - None -> "", and unicode > 128 to ascii
-        csvwriter.writerow([unicode(c).encode("utf8", "replace") if c is not None else "" for c in csv_row])
-        csvstring = csvstream.getvalue()
-        csvstream.close()
-        return csvstring
-
-    thecsv = ''
-    thecsv += get_csv_string(models.Journal.CSV_HEADER)
-
-    journal_iterator = models.Journal.all_in_doaj()
-    for j in journal_iterator:
-        thecsv += get_csv_string(j.csv())
-
-    attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '.csv'
-    r = Response(thecsv, mimetype='text/csv', headers={'Content-Disposition':'attachment; filename=' + attachment_name})
-    return r
-"""
-
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q','').lower()
@@ -171,46 +139,50 @@ def autocomplete(doc_type, field_name):
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
-"""
-@blueprint.route("/uploadFile", methods=["GET", "POST"])
-@blueprint.route("/uploadfile", methods=["GET", "POST"])
-def upload_file():
-    return render_template('doaj/members/uploadfile.html')
+@blueprint.route("/toc/<identifier>")
+@blueprint.route("/toc/<identifier>/<volume>")
+def toc(identifier=None, volume=None):
+    # identifier may be the journal id or an issn
+    journal = None
+    if len(identifier) == 9:
+        js = models.Journal.find_by_issn(identifier)
+        if len(js) > 1:
+            abort(400) # really this is a 500 - we have more than one journal with this issn
+        if len(js) == 0:
+            abort(404)
+        journal = js[0]
+    else:
+        journal = models.Journal.pull(identifier)
+    if journal is None:
+        abort(404)
     
-    # otherwise we are dealing with a POST - file upload
-    f = request.files.get("file")
-    publisher = request.values.get("publisher_username")
+    all_volumes = models.JournalVolumeToC.list_volumes(identifier)
+    all_volumes = _sort_volumes(all_volumes)
     
-    # do some validation
-    if f.filename == "" or publisher is None or publisher == "":
-        return render_template('doaj/members/uploadfile.html', no_file=(f.filename == ""), no_publisher=(publisher is None or publisher == ""))
+    if volume is None and len(all_volumes) > 0:
+        volume = all_volumes[0]
     
-    # prep a record to go into the index, to record this upload
-    record = models.FileUpload()
-    record.upload(f.filename, publisher)
-    record.set_id()
+    table = None
+    if volume is not None:
+        table = models.JournalVolumeToC.get_toc(identifier, volume)
+        if table is None:
+            abort(404)
     
-    # the two file paths that we are going to write to
-    txt = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".txt")
-    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.id + ".xml")
+    return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume)
+
+def _sort_volumes(volumes):
+    numeric = []
+    non_numeric = []
+    for v in volumes:
+        try:
+            numeric.append(int(v))
+        except:
+            non_numeric.append(v)
     
-    # make the content of the txt metadata file
-    metadata = publisher + "\n" + f.filename
+    numeric.sort(reverse=True)
+    non_numeric.sort(reverse=True)
     
-    # save the metadata to the text file
-    with codecs.open(txt, "wb", "utf8") as mdf:
-        mdf.write(metadata)
-    
-    # write the incoming file out to the XML file
-    f.save(xml)
-    
-    # finally, save the index entry
-    record.save()
-    
-    # return the thank you page
-    return render_template("doaj/members/upload_thanks.html")
-"""
-    
+    return [str(n) for n in numeric] + non_numeric
 
 ###############################################################
 ## The various static endpoints
