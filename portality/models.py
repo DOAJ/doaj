@@ -2073,7 +2073,11 @@ class Cache(DomainObject):
         return self.data.get("regen", False)
         
 
+######################################################################
 
+
+class JournalToC(DomainObject):
+    __type__ = "toc"
 
 
 
