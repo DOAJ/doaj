@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1 style="margin-bottom: 40px">Hi {{account.id}}: Reset Your Password</h1>
+
+<div class="row-fluid">
+    <div class="span4">
+        &nbsp;
+    </div>
+    <div class="span5">
+        <form action="" method="POST">
+            <input type="password" name="password" placeholder="new password"><br>
+            <input type="password" name="confirm" placeholder="confirm your new password"><br>
+            <input type="submit" class="btn btn-success" name="submit" value="Update">
+        </form>
+    </div>
+    
+</div>
+
+{% endblock %}
+

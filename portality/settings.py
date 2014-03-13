@@ -40,6 +40,12 @@ SMTP_SERVER = "smtp.mandrillapp.com"
 SMTP_PORT = 587
 
 # ========================
+# user login settings
+
+# amount of time a reset token is valid for (86400 is 24 hours)
+PASSWORD_RESET_TIMEOUT = 86400
+
+# ========================
 # authorisation settings
 
 # Can people register publicly? If false, only the superuser can create new accounts

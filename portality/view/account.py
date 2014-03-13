@@ -161,36 +161,74 @@ def login():
 @ssl_required
 def forgot():
     if request.method == 'POST':
+        # get hold of the user account
         un = request.form.get('un',"")
         account = models.Account.pull(un)
-        if account is None: account = models.Account.pull_by_email(un)
+        if account is None: 
+            account = models.Account.pull_by_email(un)
         if account is None:
             flash('Sorry, your account username / email address is not recognised. Please contact us.')
-        else:
-            newpass = util.generate_password()
-            account.set_password(newpass)
-            account.save()
-
-            to = [account.data['email'],app.config['ADMIN_EMAIL']]
-            fro = app.config['ADMIN_EMAIL']
-            subject = app.config.get("SERVICE_NAME","") + " - password reset"
-            text = "A password reset request for account " + account.id + " has been received and processed.\n\n"
-            text += "The new password for this account is " + newpass + "\n\n"
-            text += "If you are the user " + account.id + " and you requested this change, please login now and change the password again to something of your preference.\n\n"
-            
-            text += "If you are the user " + account.id + " and you did NOT request this change, please contact us immediately.\n\n"
-            try:
-                util.send_mail(to=to, fro=fro, subject=subject, text=text)
-                flash('Your password has been reset. Please check your emails.')
-                if app.config.get('DEBUG',False):
-                    flash('Debug mode - new password was set to ' + newpass)
-            except:
-                flash('Email failed.')
-                if app.config.get('DEBUG',False):
-                    flash('Debug mode - new password was set to ' + newpass)
+            return render_template('account/forgot.html')
+        
+        # if we get to here, we have a user account to reset
+        #newpass = util.generate_password()
+        #account.set_password(newpass)
+        reset_token = uuid.uuid4().hex
+        account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
+        account.save()
+        
+        sep = "/"
+        if request.url_root.endswith("/"):
+            sep = ""
+        reset_url = request.url_root + sep + "account/reset/" + reset_token
+        
+        to = [account.data['email'],app.config['ADMIN_EMAIL']]
+        fro = app.config['ADMIN_EMAIL']
+        subject = app.config.get("SERVICE_NAME","") + " - password reset"
+        text = "A password reset request for account '" + account.id + "' has been received and processed.\n\n"
+        text += "Please visit " + reset_url + " and enter your new password.\n\n"
+        text += "If you are the user '" + account.id + "' and you requested this change, please visit that link now and set the password to something of your preference.\n\n"
+        text += "If you are the user '" + account.id + "' and you did not request this change, you can ignore this email.\n\n"
+        text += "Regards, The DOAJ Team"
+        try:
+            util.send_mail(to=to, fro=fro, subject=subject, text=text)
+            flash('Instructions to reset your password have been sent to you. Please check your emails.')
+            if app.config.get('DEBUG',False):
+                flash('Debug mode - url for reset is ' + reset_url)
+        except:
+            flash('Email failed.')
+            if app.config.get('DEBUG',False):
+                flash('Debug mode - url for reset is' + reset_url)
 
     return render_template('account/forgot.html')
 
+@blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
+@ssl_required
+def reset(reset_token):
+    account = models.Account.get_by_reset_token(reset_token)
+    if account is None:
+        abort(404)
+    
+    if request.method == "GET":
+        return render_template("account/reset.html", account=account)
+        
+    elif request.method == "POST":
+        # check that the passwords match, and bounce if not
+        pw = request.values.get("password")
+        conf = request.values.get("confirm")
+        if pw != conf:
+            flash("Passwords do not match - please try again", "error")
+            return render_template("account/reset.html", account=account)
+            
+        # update the user's account
+        account.set_password(pw)
+        account.remove_reset_token()
+        account.save()
+        flash("Password has been reset", "success")
+        
+        # log the user in
+        login_user(account, remember=True)
+        return redirect(url_for('doaj.home'))
 
 @blueprint.route('/logout')
 @ssl_required
