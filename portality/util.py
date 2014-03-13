@@ -3,7 +3,7 @@ import md5
 import os, re, string
 from unicodedata import normalize
 from functools import wraps
-from flask import request, current_app
+from flask import request, current_app, flash
 from random import choice
 
 from urlparse import urlparse, urljoin
@@ -120,3 +120,6 @@ def generate_password(length=8):
     chars = string.letters + string.digits
     pw = ''.join(choice(chars) for _ in range(length))
     return pw
+
+def flash_with_url(message, category=''):
+    flash(message, category + '+contains-url')

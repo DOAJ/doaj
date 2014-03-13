@@ -7,8 +7,8 @@ from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
 from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
 from portality.core import app, ssl_required
-import portality.models as models
-import portality.util as util
+from portality import models
+from portality import util
 
 blueprint = Blueprint('account', __name__)
 
@@ -160,6 +160,7 @@ def login():
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
 def forgot():
+    CONTACT_INSTR = ' Please <a href="{url}">contact us.</a>'.format(url=url_for('doaj.contact'))
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un',"")
@@ -167,9 +168,13 @@ def forgot():
         if account is None: 
             account = models.Account.pull_by_email(un)
         if account is None:
-            flash('Sorry, your account username / email address is not recognised. Please contact us.')
+            util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
         
+        if not account.data.get('email'):
+            util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
+            return render_template('account/forgot.html')
+
         # if we get to here, we have a user account to reset
         #newpass = util.generate_password()
         #account.set_password(newpass)
@@ -195,10 +200,11 @@ def forgot():
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is ' + reset_url)
-        except:
-            flash('Email failed.')
+        except Exception as e:
+            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR, 'error')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is' + reset_url)
+            app.logger.error(str(uuid.uuid1()) + "\n" + repr(e))
 
     return render_template('account/forgot.html')
 
