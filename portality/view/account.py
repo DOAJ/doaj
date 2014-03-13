@@ -173,9 +173,9 @@ def forgot():
 
             to = [account.data['email'],app.config['ADMIN_EMAIL']]
             fro = app.config['ADMIN_EMAIL']
-            subject = app.config.get("SERVICE_NAME","") + "password reset"
+            subject = app.config.get("SERVICE_NAME","") + " - password reset"
             text = "A password reset request for account " + account.id + " has been received and processed.\n\n"
-            text += "The new password for this account is " + newpass + ".\n\n"
+            text += "The new password for this account is " + newpass + "\n\n"
             text += "If you are the user " + account.id + " and you requested this change, please login now and change the password again to something of your preference.\n\n"
             
             text += "If you are the user " + account.id + " and you did NOT request this change, please contact us immediately.\n\n"

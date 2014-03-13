@@ -32,6 +32,13 @@ INITIALISE_INDEX = True # whether or not to try creating the index and required 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
+# =======================
+# email settings
+
+SMTP_SERVER = "smtp.mandrillapp.com"
+
+SMTP_PORT = 587
+
 # ========================
 # authorisation settings
 
