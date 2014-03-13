@@ -2,7 +2,7 @@ import os, requests, json
 from functools import wraps
 
 from flask import Flask
-from flask import request, redirect
+from flask import request, redirect, url_for, flash
 
 from portality import settings, secret_settings
 from flask.ext.login import LoginManager, current_user
@@ -88,3 +88,12 @@ def ssl_required(fn):
         return fn(*args, **kwargs)
             
     return decorated_view
+
+def restrict_to_role(role):
+    if current_user.is_anonymous():
+        flash('You are trying to access a protected area. Please log in first.', 'error')
+        return redirect(url_for('account.login', next=request.url))
+
+    if not current_user.has_role(role):
+        flash('You do not have permission to access this area of the site.', 'error')
+        return redirect(url_for('doaj.home'))

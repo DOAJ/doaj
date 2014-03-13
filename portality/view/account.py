@@ -104,12 +104,17 @@ def username(username):
             return render_template('account/view.html', account=acc)
 
 
-def get_redirect_target():
-    for target in request.args.get('next'), request.referrer:
+def get_redirect_target(form=None):
+    form_target = ''
+    if form and hasattr(form, 'next') and getattr(form, 'next'):
+        form_target = form.next.data
+
+    for target in form_target, request.args.get('next',[]):
         if not target:
             continue
         if target == util.is_safe_url(target):
             return target
+    return url_for('doaj.home')
 
 class RedirectForm(Form):
     next = HiddenField()
@@ -132,7 +137,8 @@ class LoginForm(RedirectForm):
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
 def login():
-    form = LoginForm(request.form, csrf_enabled=False)
+    current_info = {'next':request.args.get('next', '')}
+    form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
         password = form.password.data
         username = form.username.data
@@ -143,11 +149,12 @@ def login():
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
             # return form.redirect('index')
-            return redirect(url_for('doaj.home'))
+            # return redirect(url_for('doaj.home'))
+            return redirect(get_redirect_target(form=form))
         else:
             flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
-        flash('Invalid form', 'error')
+        flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
