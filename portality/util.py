@@ -14,7 +14,8 @@ from email.MIMEBase import MIMEBase
 from email.MIMEText import MIMEText
 from email.Utils import COMMASPACE, formatdate
 from email import Encoders
-         
+
+from portality.core import app
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -25,7 +26,7 @@ def is_safe_url(target):
     else:
         return '/'
 
-def send_mail(to, fro, subject, text, files=[],server="localhost"):
+def send_mail(to, fro, subject, text, files=[], server="localhost"):
     assert type(to)==list
     assert type(files)==list
  
@@ -44,9 +45,18 @@ def send_mail(to, fro, subject, text, files=[],server="localhost"):
         part.add_header('Content-Disposition', 'attachment; filename="%s"'
                        % os.path.basename(file))
         msg.attach(part)
- 
-    smtp = smtplib.SMTP(server)
-    smtp.sendmail(fro, to, msg.as_string() )
+    
+    # now deal with connecting to the server
+    server = app.config.get("SMTP_SERVER")
+    server_port = app.config.get("SMTP_PORT")
+    smtp_user = app.config.get("SMTP_USER")
+    smtp_pass = app.config.get("SMTP_PASS")
+    
+    smtp = smtplib.SMTP(server, server_port)
+    if smtp_user is not None:
+        smtp.login(smtp_user, smtp_pass)
+    
+    smtp.sendmail(fro, to, msg.as_string())
     smtp.close()
 
 
