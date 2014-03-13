@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from copy import deepcopy
 import json
 import locale
@@ -379,6 +379,24 @@ class Account(DomainObject, UserMixin):
         else:
             return None
     
+    @classmethod
+    def get_by_reset_token(cls, reset_token, not_expired=True):
+        res = cls.query(q='reset_token.exact:"' + reset_token + '"')
+        obs = [hit.get("_source") for hit in res.get("hits", {}).get("hits", [])]
+        if len(obs) == 0 or len(obs) > 1:
+            return None
+        expires = obs[0].get("reset_expires")
+        if expires is None:
+            return None
+        if not_expired:
+            try:
+                ed = datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
+                if ed < datetime.now():
+                    return None
+            except:
+                return None
+        return cls(**obs[0])
+    
     @property
     def name(self):
         return self.data.get("name")
@@ -414,7 +432,18 @@ class Account(DomainObject, UserMixin):
         if "journal" not in self.data:
             return
         self.data["journal"].remove(jid)
-
+    
+    def set_reset_token(self, token, timeout):
+        expires = datetime.now() + timedelta(0, timeout)
+        self.data["reset_token"] = token
+        self.data["reset_expires"] = expires.strftime("%Y-%m-%dT%H:%M:%SZ")
+    
+    def remove_reset_token(self):
+        if "reset_token" in self.data:
+            del self.data["reset_token"]
+        if "reset_expires" in self.data:
+            del self.data["reset_expires"]
+    
     @property
     def is_super(self):
         # return not self.is_anonymous() and self.id in app.config['SUPER_USER']
