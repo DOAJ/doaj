@@ -11,7 +11,7 @@ SECRET_KEY = "default-key"
 
 # contact info
 ADMIN_NAME = "DOAJ"
-ADMIN_EMAIL = "emanuil@cottagelabs.com"
+ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
 SUPPRESS_ERROR_EMAILS = False  # should be set to False in production and True in staging
 
