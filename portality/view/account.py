@@ -201,10 +201,11 @@ def forgot():
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is ' + reset_url)
         except Exception as e:
-            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR, 'error')
+            magic = str(uuid.uuid1())
+            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is' + reset_url)
-            app.logger.error(str(uuid.uuid1()) + "\n" + repr(e))
+            app.logger.error(magic + "\n" + repr(e))
 
     return render_template('account/forgot.html')
 
