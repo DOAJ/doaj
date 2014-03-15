@@ -58,6 +58,7 @@ jQuery(document).ready(function($) {
     toggle_optional_field('processing_charges', ['#processing_charges_amount', '#processing_charges_currency']);
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
     toggle_optional_field('license', ['#license_checkbox'], ["other"]);
+    toggle_optional_field('license', ['#license_url'], ['cc-by', 'cc-by-sa', 'cc-by-nc', 'cc-by-nd', 'cc-by-nc-nd', "other"]);
     
     $('#country').select2();
     $('#processing_charges_currency').select2();
