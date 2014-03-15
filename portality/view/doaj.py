@@ -98,15 +98,13 @@ def search_post():
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
     return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
-#@blueprint.route("/application/new", methods=["GET", "POST"])
-@blueprint.route("/suggest", methods=['GET'])
+@blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
-    return render_template("doaj/suggest.html")
-    #form = SuggestionForm(request.form)
-    #if request.method == 'POST' and form.validate():
-    #    #unicorns
-    #    return redirect(url_for('doaj.suggestion_thanks'))
-    #return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
+    form = SuggestionForm(request.form)
+    if request.method == 'POST' and form.validate():
+        #unicorns
+        return redirect(url_for('doaj.suggestion_thanks'))
+    return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():
@@ -232,6 +230,10 @@ def support():
 def publishermembers():
     return render_template("doaj/publishermembers.html")
 
+@blueprint.route("/suggest", methods=['GET'])
+def suggest():
+    return render_template("doaj/suggest.html")
+    
 @blueprint.route("/supportDoaj")
 def support_doaj():
     return render_template("doaj/supportDoaj.html")
