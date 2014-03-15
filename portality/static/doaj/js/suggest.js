@@ -77,6 +77,15 @@ jQuery(document).ready(function($) {
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
     
+    $('#digital_archiving_policy :checkbox[value="No policy in place"]').change(function() {
+        if (this.checked) {
+            $('#digital_archiving_policy :checkbox:not([value="No policy in place"])').prop('disabled', true);
+            $('#digital_archiving_policy .extra_input_field').prop('disabled', true);
+        } else {
+            $('#digital_archiving_policy :checkbox:not([value="No policy in place"])').prop('disabled', false);
+            $('#digital_archiving_policy .extra_input_field').prop('disabled', false);
+        }
+    });
 });
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {

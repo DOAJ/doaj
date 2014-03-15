@@ -45,25 +45,22 @@ author_pays_options = [
     ('NY', 'No information'),
 ]
 
-__digital_archiving_policy_choices_1 = [
+_digital_archiving_policy_no_policy_value = "No policy in place"
+digital_archiving_policy_optional_url_choices = [
+    (_digital_archiving_policy_no_policy_value, _digital_archiving_policy_no_policy_value), 
+]
+digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
+
+__digital_archiving_policy_choices = [
     ('LOCKSS', 'LOCKSS'), 
     ('CLOCKSS', 'CLOCKSS'), 
     ('Portico', 'Portico'), 
     ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'), 
-]
-
-digital_archiving_policy_optional_url_choices = [
-    ('No policy in place', 'No policy in place'), 
-]
-
-digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
-
-__digital_archiving_policy_choices_2 = [
     ('A national library. Please specify', 'A national library. Please specify:'), 
     ('Other', 'Other')
 ]
 
-digital_archiving_policy_choices = __digital_archiving_policy_choices_1 + digital_archiving_policy_optional_url_choices + __digital_archiving_policy_choices_2
+digital_archiving_policy_choices = digital_archiving_policy_optional_url_choices  + __digital_archiving_policy_choices
 
 optional_url_binary_choices = [('False', 'No')]
 optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
@@ -190,6 +187,39 @@ class OptionalIf(validators.Optional):
         super(OptionalIf, self).__call__(form, field)
         raise validators.StopValidation()
 
+class ExclusiveCheckbox(object):
+    '''If a checkbox is checked, do not allow any other checkboxes to be checked.'''
+    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
+    # except where it will simplify a 50-field form, k?
+
+    def __init__(self, exclusive_checkbox_value, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
+        self.exclusive_checkbox_value = exclusive_checkbox_value
+        self.message = message
+
+    def __call__(self, form, field):
+        detected_exclusive = False
+        detected_others = False
+        for val in field.data:
+            if val == self.exclusive_checkbox_value:
+                detected_exclusive = True
+            else:
+                if val:
+                    detected_others = True
+
+        # if only one of them is true, it doesn't matter
+        # if both are false, no checkboxes have been checked - use a
+        # validators.Required() on the checkboxes field for that
+        # which leaves the case where both are True - and that is what
+        # this validator is all about
+
+        if detected_exclusive and detected_others:
+            raise validators.ValidationError(self.message
+                    .format(exclusive_checkbox_value=self.exclusive_checkbox_value)
+            )
+            # it won't insert the checkbox value anywhere if
+            # {exclusive_checkbox_value} is not present in the message
+            # passed to the constructor
+
 class JournalInformationForm(Form):
     
     url = TextField('URL', [validators.Required(), validators.URL()])
@@ -268,7 +298,7 @@ class SuggestionForm(JournalInformationForm):
         [OptionalIf('waiver_policy', optvals=optional_url_binary_choices_optvals), validators.URL()]
     )
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?', 
-        [validators.Required()],
+        [validators.Required(), ExclusiveCheckbox(_digital_archiving_policy_no_policy_value)],
         description = "Select all that apply. Institutional archives and publishers' own online archives are not valid",  
         choices = digital_archiving_policy_choices, 
         option_widget=widgets.CheckboxInput(), 

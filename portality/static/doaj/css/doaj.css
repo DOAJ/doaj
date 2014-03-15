@@ -171,9 +171,14 @@ select {
     color: #555;
 }
 
-.checkboxes  ul {
+.checkboxes ul {
     list-style: none outside none;
     margin-left: 0;
+}
+
+.checkboxes ul.errors {
+    list-style: disc;
+    margin-left: 25px;
 }
 
 .checkboxes label {
