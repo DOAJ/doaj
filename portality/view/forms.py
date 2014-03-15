@@ -26,6 +26,7 @@ blueprint = Blueprint('forms', __name__)
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
+EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 
 license_options = [
     ('', ''),
@@ -221,12 +222,12 @@ class SuggestionForm(JournalInformationForm):
     contact_name = TextField('Name of contact for this journal', 
         [validators.Optional()]
     )
-    contact_email = TextField('Contact email', 
+    contact_email = TextField('Contact email address', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
-    confirm_contact_email = TextField('Confirm email', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
-    ) #must match contact_email
+    confirm_contact_email = TextField('Confirm contact email address', 
+        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
+    )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)? Include relevant currency.', 
         [validators.Required()],
         description = 'If "Yes" then add the amount (average price) with currency', 
@@ -420,8 +421,8 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
     suggester_email_confirm = TextField('Confirm your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
-    ) #must match suggester_email
+        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+    )
 
 
 
