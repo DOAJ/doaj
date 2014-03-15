@@ -220,7 +220,7 @@ class SuggestionForm(JournalInformationForm):
         [validators.Optional()]
     )
     contact_name = TextField('Name of contact for this journal', 
-        [validators.Optional()]
+        [validators.Required()]
     )
     contact_email = TextField('Contact email address', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
