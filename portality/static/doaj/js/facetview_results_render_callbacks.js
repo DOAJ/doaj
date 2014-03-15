@@ -219,7 +219,7 @@ fv_edit_suggestion = (function (resultobj) {
             result += suggestion_edit_url;
             result += resultobj['id'];
             result += '" target="_blank"';
-            result += '>Edit this suggestion</a>';
+            result += '>Edit this application</a>';
             return result;
         }
         return false;

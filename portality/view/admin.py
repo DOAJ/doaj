@@ -111,7 +111,7 @@ def journal_page(journal_id):
 
     return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subject_final_str, there_were_errors=there_were_errors)
 
-@blueprint.route("/suggestions")
+@blueprint.route("/applications")
 @login_required
 @ssl_required
 def suggestions():

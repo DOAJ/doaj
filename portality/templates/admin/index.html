@@ -2,15 +2,21 @@
 
 {% block admin_content %}
 <div class="row-fluid">
-  <div class="span6">
+  <div class="span4">
     <div class="big box with-borders">
       <a href="{{ url_for('admin.journals') }}">Journals</a>
     </div>
   </div>
   
-  <div class="span6">
+  <div class="span4">
     <div class="big box with-borders">
-      <a href="{{ url_for('admin.suggestions') }}">Suggestions</a>
+      <a href="{{ url_for('admin.suggestions') }}">Applications</a>
+    </div>
+  </div>
+
+  <div class="span4">
+    <div class="big box with-borders">
+      <a href="{{ url_for('account.index') }}">Users</a>
     </div>
   </div>
 </div>
