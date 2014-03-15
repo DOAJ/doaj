@@ -168,11 +168,6 @@ def forgot():
         if account is None: 
             account = models.Account.pull_by_email(un)
         if account is None:
-<<<<<<< HEAD
-            flash('Sorry, your account username / email address is not recognised. Please contact us.')
-            return render_template('account/forgot.html')
-        
-=======
             util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
         
@@ -180,7 +175,6 @@ def forgot():
             util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
 
->>>>>>> phase2
         # if we get to here, we have a user account to reset
         #newpass = util.generate_password()
         #account.set_password(newpass)
