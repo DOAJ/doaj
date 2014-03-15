@@ -142,8 +142,24 @@ select {
     width: 200px;
 }
 
-.form-horizontal.wide .controls {
+.form-horizontal.wide .controls,
+.form-horizontal.wide .form-status,
+.form-horizontal.wide h1,
+.form-horizontal.wide h2,
+.form-horizontal.wide h3,
+.form-horizontal.wide h4,
+.form-horizontal.wide h5,
+.form-horizontal.wide h6 {
     margin-left: 220px;
+}
+
+.form-horizontal.wide h1,
+.form-horizontal.wide h2,
+.form-horizontal.wide h3,
+.form-horizontal.wide h4,
+.form-horizontal.wide h5,
+.form-horizontal.wide h6 {
+    margin-bottom: 1em;
 }
 
 .error .select2-choice {

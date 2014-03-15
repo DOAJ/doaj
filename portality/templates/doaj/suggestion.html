@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h2>DOAJ Journal Application Form</h2>
 
-{% if there_were_errors %}
-  <h4 class="red">There is a problem with the submitted form.</h4>
+<p>All the information provided will help our Editorial Team with their assessment, to help them make an informed decision based on the information that you provide.</p>
+
+<p>If you know a journal that should be in DOAJ, please contact the publisher and ask them to complete this form.</p>
+
+<p>BEFORE YOU START, please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
+
+{% if form.errors %}
+  <h4 class="red form-status">There is a problem with the submitted form.</h4>
 {% endif %}
 
 {% from "_formhelpers.html" import render_field %}
 <form method="post" action="{{ url_for('doaj.suggestion') }}" class="form-horizontal wide" id="suggest_form">
   <fieldset>
+    <h3>Basic Journal Information</h3>
     {{ render_field(form.title, class="input-xlarge") }}
     {{ render_field(form.url, class="input-xlarge") }}
     {{ render_field(form.alternative_title, class="input-xlarge") }}
@@ -47,6 +55,7 @@
     {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other') }}
     {{ render_field(form.keywords, class="input-xlarge") }}
     {{ render_field(form.languages, class="input-xlarge") }}
+    <h3>Quality and Transparency of the Editorial Process</h3>
     {{ render_field(form.editorial_board_url, class="input-xlarge") }}
     {{ render_field(form.review_process) }}
     {{ render_field(form.review_process_url, class="input-xlarge") }}
@@ -55,7 +64,10 @@
     {{ render_field(form.plagiarism_screening) }}
     {{ render_field(form.plagiarism_screening_url, class="input-xlarge") }}
     {{ render_field(form.publication_time, class="input-tiny") }}
+    <h3>How Open is the Journal?</h3>
+    <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
     {{ render_field(form.oa_statement_url, class="input-xlarge") }}
+    <h3>Content Licensing</h3>
     {{ render_field(form.license_embedded) }}
     {{ render_field(form.license_embedded_url, class="input-xlarge") }}
     {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other') }}
@@ -63,10 +75,28 @@
     {{ render_field(form.license_url, class="input-xlarge") }}
     {{ render_field(form.open_access) }}
     {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other') }}
+    <h3>Copyright and Permissions</h3>
     {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other') }}
     {{ render_field(form.copyright_url, class="input-xlarge") }}
     {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other') }}
     {{ render_field(form.publishing_rights_url, class="input-xlarge") }}
+    <h3>A note about the qualifiers for the DOAJ Seal</h3>
+    <p>DOAJ promotes best practice in Open Access publishing. To that end, we are introducing the DOAJ Seal for Open Access journals.</p>
+    
+    <p>The qualifiers for the Seal will highlight features related to the openness, indexability and discoverability of the journal and, as such, have nothing to do with <strong>the scientific quality of the papers published in the journal</strong>.</p>
+    
+    <p>To qualify for the Seal the journal must:</p>
+      <ol>
+        <li>have an archival arrangement in place with an external party. (Question 17). If 'None' is selected, the journal will not qualify for the Seal.</li>
+        <li>provide permanent identifiers in the papers published. (Question 20). If 'None' is selected, the journal will not qualify for the Seal.</li>
+        <li>provide article level metadata to DOAJ. (Question 21). If 'No' is selected or the journal fails to provide metadata within 3 months, the journal will not qualify for the Seal.</li>
+        <li>embed machine-readable CC licensing information in its article level metadata. (Question 37)  If 'No' is selected the journal will not qualify for the Seal.</li>
+        <li>allow reuse and remixing of its content in accordance with a CC-BY or CC-BY-NC. (Question 39).  If CC-BY-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
+        <li>have a deposit policy registered in a deposit policy directory. (Question 43). If 'No' is selected the journal will not qualify for the Seal.</li>
+      </ol>
+    
+    <p>A journal cannot apply for the Seal. The Seal will be awarded to a journal by the DOAJ Editorial staff depending on the information provided in the application form.</p>
+    <h3>Information about You</h3>
     {{ render_field(form.suggester_name) }}
     {{ render_field(form.suggester_email, class="input-xlarge") }}
     {{ render_field(form.suggester_email_confirm, class="input-xlarge") }}
