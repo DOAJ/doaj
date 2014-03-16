@@ -101,10 +101,20 @@ def search_post():
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
     form = SuggestionForm(request.form)
-    if request.method == 'POST' and form.validate():
-        #unicorns
-        return redirect(url_for('doaj.suggestion_thanks'))
-    return render_template('doaj/suggestion.html', form=form, edit_suggestion_page=True)
+    first_field_with_error = ''
+
+    if request.method == 'POST':
+        if form.validate():
+            #unicorns
+            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))  # meaningless anchor to replace #first_problem used on the form
+            # anchors persist between 3xx redirects to the same resource
+            # (/application)
+        else:
+            for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
+                if field.errors:
+                    first_field_with_error = field.short_name
+                    break
+    return render_template('doaj/suggestion.html', form=form, first_field_with_error=first_field_with_error, edit_suggestion_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():

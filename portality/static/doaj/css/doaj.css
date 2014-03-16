@@ -162,6 +162,12 @@ select {
     margin-bottom: 1em;
 }
 
+
+.form-horizontal.wide .form-status {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
 .error .select2-choice {
     border-color: #b94a48;
 }

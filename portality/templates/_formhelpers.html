@@ -1,4 +1,15 @@
-{% macro render_field(field, render_subfields_horizontal=False, hidden=False) %}
+{% macro render_field(
+            field,
+            render_subfields_horizontal=False,
+            hidden=False,
+            first_field_with_error=''
+            )
+%}
+
+    {% if field.short_name == first_field_with_error %}
+        <a name="first_problem"></a>
+    {% endif %}
+
     {% if field.type == 'FormField' %}
         <div class="control-group
         {% if field.errors %} error{% endif %}
@@ -49,6 +60,7 @@
             extra_input_field='', display_extra_when_label_is='other',
             extra_input_field2='', display_extra2_when_label_is='other'
             ) %}
+
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
             <label class="control-label" for="{{field.short_name}}">{{field.label.text}}

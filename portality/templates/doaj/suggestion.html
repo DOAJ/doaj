@@ -9,77 +9,78 @@
 
 <p>BEFORE YOU START, please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
 
-{% if form.errors %}
-  <h4 class="red form-status">There is a problem with the submitted form.</h4>
-{% endif %}
-
 {% from "_formhelpers.html" import render_field %}
-<form method="post" action="{{ url_for('doaj.suggestion') }}" class="form-horizontal wide" id="suggest_form">
+
+<form method="post" action="{{ url_for('doaj.suggestion', _anchor='first_problem') }}" class="form-horizontal wide" id="suggest_form">
+  {% if form.errors %}
+    <h4 class="red form-status">There is a problem with the submitted form.</h4>
+  {% endif %}
+
   <fieldset>
     <h3>Basic Journal Information</h3>
-    {{ render_field(form.title, class="input-xlarge") }}
-    {{ render_field(form.url, class="input-xlarge") }}
-    {{ render_field(form.alternative_title, class="input-xlarge") }}
-    {{ render_field(form.pissn, class="input-small", size="9", maxlength="9") }}
-    {{ render_field(form.eissn, class="input-small", size="9", maxlength="9") }}
-    {{ render_field(form.publisher, class="input-xlarge") }}
-    {{ render_field(form.society_institution, class="input-xlarge") }}
-    {{ render_field(form.platform, class="input-xlarge") }}
-    {{ render_field(form.contact_name) }}
-    {{ render_field(form.contact_email) }}
-    {{ render_field(form.confirm_contact_email) }}
-    {{ render_field(form.country, class="input-large") }}
-    {{ render_field(form.processing_charges) }}
-    {{render_field(form.processing_charges_amount, class="input-mini") }}
-    {{render_field(form.processing_charges_currency, class="input-large") }}
-    {{ render_field(form.submission_charges) }}
-    {{render_field(form.submission_charges_amount, class="input-mini") }}
-    {{render_field(form.submission_charges_currency, class="input-large") }}
-    {{ render_field(form.articles_last_year, class="input-mini") }}
-    {{ render_field(form.articles_last_year_url, class="input-xlarge") }}
-    {{ render_field(form.waiver_policy) }}
-    {{ render_field(form.waiver_policy_url, class="input-xlarge") }}
+    {{ render_field(form.title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.alternative_title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.pissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.eissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.publisher, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.society_institution, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.platform, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.contact_name, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.contact_email, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.confirm_contact_email, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.country, class="input-large", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.processing_charges, first_field_with_error=first_field_with_error) }}
+    {{render_field(form.processing_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
+    {{render_field(form.processing_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.submission_charges, first_field_with_error=first_field_with_error) }}
+    {{render_field(form.submission_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
+    {{render_field(form.submission_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.articles_last_year, class="input-mini", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.articles_last_year_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.waiver_policy, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.waiver_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
     {{ render_field(form.digital_archiving_policy,
           extra_input_field=form.digital_archiving_policy_other,
           display_extra_when_label_is='Other',
           extra_input_field2=form.digital_archiving_policy_library,
           display_extra2_when_label_is='A national library. Please specify:',
-      ) }}
-    {{ render_field(form.digital_archiving_policy_url, class="input-xlarge") }}
-    {{ render_field(form.crawl_permission) }}
-    {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other') }}
-    {{ render_field(form.metadata_provision) }}
-    {{ render_field(form.download_statistics) }}
-    {{ render_field(form.download_statistics_url, class="input-xlarge") }}
-    {{ render_field(form.first_fulltext_oa_year, class="input-mini") }}
-    {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other') }}
-    {{ render_field(form.keywords, class="input-xlarge") }}
-    {{ render_field(form.languages, class="input-xlarge") }}
+          first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.digital_archiving_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.crawl_permission, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.metadata_provision, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.download_statistics, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.download_statistics_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.first_fulltext_oa_year, class="input-mini", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.keywords, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.languages, class="input-xlarge", first_field_with_error=first_field_with_error) }}
     <h3>Quality and Transparency of the Editorial Process</h3>
-    {{ render_field(form.editorial_board_url, class="input-xlarge") }}
-    {{ render_field(form.review_process) }}
-    {{ render_field(form.review_process_url, class="input-xlarge") }}
-    {{ render_field(form.aims_scope_url, class="input-xlarge") }}
-    {{ render_field(form.instructions_authors_url, class="input-xlarge") }}
-    {{ render_field(form.plagiarism_screening) }}
-    {{ render_field(form.plagiarism_screening_url, class="input-xlarge") }}
-    {{ render_field(form.publication_time, class="input-tiny") }}
+    {{ render_field(form.editorial_board_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.review_process, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.review_process_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.aims_scope_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.instructions_authors_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.plagiarism_screening, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.plagiarism_screening_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.publication_time, class="input-tiny", first_field_with_error=first_field_with_error) }}
     <h3>How Open is the Journal?</h3>
     <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
-    {{ render_field(form.oa_statement_url, class="input-xlarge") }}
+    {{ render_field(form.oa_statement_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
     <h3>Content Licensing</h3>
-    {{ render_field(form.license_embedded) }}
-    {{ render_field(form.license_embedded_url, class="input-xlarge") }}
-    {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other') }}
-    {{ render_field(form.license_checkbox) }}
-    {{ render_field(form.license_url, class="input-xlarge") }}
-    {{ render_field(form.open_access) }}
-    {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other') }}
+    {{ render_field(form.license_embedded, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.license_embedded_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.license_checkbox, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.license_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.open_access, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
     <h3>Copyright and Permissions</h3>
-    {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other') }}
-    {{ render_field(form.copyright_url, class="input-xlarge") }}
-    {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other') }}
-    {{ render_field(form.publishing_rights_url, class="input-xlarge") }}
+    {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.copyright_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.publishing_rights_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
     <h3>A note about the qualifiers for the DOAJ Seal</h3>
     <p>DOAJ promotes best practice in Open Access publishing. To that end, we are introducing the DOAJ Seal for Open Access journals.</p>
     
@@ -97,9 +98,9 @@
     
     <p>A journal cannot apply for the Seal. The Seal will be awarded to a journal by the DOAJ Editorial staff depending on the information provided in the application form.</p>
     <h3>Information about You</h3>
-    {{ render_field(form.suggester_name) }}
-    {{ render_field(form.suggester_email, class="input-xlarge") }}
-    {{ render_field(form.suggester_email_confirm, class="input-xlarge") }}
+    {{ render_field(form.suggester_name, first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.suggester_email, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    {{ render_field(form.suggester_email_confirm, class="input-xlarge", first_field_with_error=first_field_with_error) }}
 
     <div class="control-group">
         <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
