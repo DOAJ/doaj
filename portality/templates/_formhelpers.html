@@ -40,6 +40,7 @@
             <div class="control-group
             {% if subfield.errors %} error{% endif %}"
             {% if hidden %} style="display: none;" {% endif %}
+            id="{{field.short_name}}-container"
             >
                 {{ __render_field(subfield, **kwargs) }}
             </div>
@@ -49,6 +50,7 @@
         <div class="control-group
         {% if field.errors %} error {% endif %}"
         {% if hidden %} style="display: none;" {% endif %}
+        id="{{field.short_name}}-container"
         >
             {{ __render_field(field, **kwargs) }}
         </div> 

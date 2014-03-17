@@ -1,5 +1,57 @@
 jQuery(document).ready(function($) {
 
+    // define a new highlight function, letting us highlight any element
+    // on a page
+    // adapted from http://stackoverflow.com/a/11589350
+    jQuery.fn.highlight = function(color, fade_time) {
+       // some defaults
+       var color = color || "#F68B1F";  // the DOAJ color
+       var fade_time = fade_time || 1500;  // milliseconds
+
+       $(this).each(function() {
+            var el = $(this);
+            el.before("<div/>")
+            el.prev()
+                .width(el.width())
+                .height(el.height())
+                .css({
+                    "position": "absolute",
+                    "background-color": color,
+                    "opacity": ".9"   
+                })
+                .fadeOut(fade_time);
+        });
+    }
+
+    // animated scrolling to an anchor
+    jQuery.fn.anchorAnimate = function(settings) {
+
+        settings = jQuery.extend({
+            speed : 700
+        }, settings);   
+    
+        return this.each(function(){
+            var caller = this
+            $(caller).click(function (event) {  
+                event.preventDefault()
+                var locationHref = window.location.href
+                var elementClick = $(caller).attr("href")
+    
+                var destination = $(elementClick).offset().top;
+
+                $("html:not(:animated),body:not(:animated)").animate({ scrollTop: destination}, settings.speed, function() {
+                    window.location.hash = elementClick;  // ... but it also needs to be getting set here for the animation itself to work
+                });
+
+                setTimeout(function(){
+                    highlight_target();
+                }, settings.speed + 50);
+
+                return false;
+            })
+        })
+    }
+
     $("#submit_status").click(function(event) {
         event.preventDefault()
         
@@ -86,6 +138,11 @@ jQuery(document).ready(function($) {
             $('#digital_archiving_policy .extra_input_field').prop('disabled', false);
         }
     });
+
+    if ("onhashchange" in window) {
+        window.onhashchange = highlight_target();
+        $('a.animated').anchorAnimate();
+    }
 });
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
@@ -144,4 +201,9 @@ function autocomplete(selector, doc_field, doc_type) {
         },
         createSearchChoice: function(term) {return {"id":term, "text": term};}
     });
+}
+
+function highlight_target() {
+    console.log(window.location.hash);
+    $(window.location.hash).highlight()
 }
