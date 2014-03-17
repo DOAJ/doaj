@@ -56,7 +56,7 @@ author_pays_options = [
 ]
 
 _digital_archiving_policy_no_policy_value = "No policy in place"
-_digital_archiving_policy_specific_library_value = 'A national library. Please specify'
+_digital_archiving_policy_specific_library_value = 'A national library'
 
 digital_archiving_policy_optional_url_choices = [
     (_digital_archiving_policy_no_policy_value, _digital_archiving_policy_no_policy_value), 
@@ -222,8 +222,8 @@ class ExtraFieldRequiredIf(OptionalIf):
     # All of this holds for a checkbox with a related text field too.
 
     def __init__(self, extra_field_name, reqval,
-            message_empty='You have selected "{reqval}" but not provided any details.',
-            message_full='You have not selected "{reqval}" but provided further details.',
+            message_empty='You have selected "{reqval}" but have not provided any details.',
+            message_full='You have not selected "{reqval}" but have provided further details.',
             *args, **kwargs):
         self.extra_field_name = extra_field_name
         self.reqval = reqval
@@ -449,7 +449,7 @@ class SuggestionForm(Form):
         [validators.Optional()],
     )
     first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles (Full Text may be provided as PDFs).', 
-        [validators.Required(), validators.NumberRange(min=1600, max=(datetime.now().year + 1)) ],
+        [validators.Required(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
         description = 'Use 4 digits for the year, i.e. YYYY format'
     )
     fulltext_format = SelectMultipleField('Please indicate which formats of full text are available', 
