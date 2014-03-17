@@ -65,6 +65,7 @@
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
             <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
             {% if field.flags.required %}<span class="red">*</span>{% endif %}
+            {% if not field.flags.required and field.flags.display_required_star %}<span class="red">*</span>{% endif %}
             </label>
         {% endif %}
         

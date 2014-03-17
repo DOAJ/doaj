@@ -155,6 +155,7 @@ class OptionalIf(validators.Optional):
     # of those values are present in the other field, this field becomes
     # optional. The other field having a truthy value is then no longer
     # sufficient.
+    field_flags = ('display_required_star', )
 
     def __init__(self, other_field_name, optvals=[], *args, **kwargs):
         self.other_field_name = other_field_name
@@ -299,9 +300,9 @@ class URLOptionalScheme(validators.Regexp):
     """
     def __init__(self, require_tld=True, message=None):
         tld_part = (require_tld and r'\.[a-z]{2,10}' or '')
+        # the original regex - the URL scheme is not optional
         #regex = r'^[a-z]+://([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
-        print(regex)
         super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
 
     def __call__(self, form, field):
@@ -338,8 +339,14 @@ class SuggestionForm(Form):
     title = TextField('Journal Title', [validators.Required()])
     url = TextField('URL', [validators.Required(), URLOptionalScheme()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
-    pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
-    eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    pissn = TextField('Journal ISSN',
+        [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.',
+    )
+    eissn = TextField('Journal EISSN',
+        [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.',
+    )
     publisher = TextField('Publisher', [validators.Required()])
     society_institution = TextField('Society or Institution', 
         [validators.Optional()]
@@ -458,7 +465,7 @@ class SuggestionForm(Form):
         [validators.Required()], 
         description='Maximum 6'
     )
-    languages = SelectMultipleField('In which language(s) is the Full Text of articles published? ', 
+    languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in', 
         [validators.Required()],
         choices = language_options,
         description="You can select multiple languages"
@@ -489,7 +496,7 @@ class SuggestionForm(Form):
         [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication', 
-        [validators.Required(), validators.NumberRange(min=0, max=99)]
+        [validators.Required(), validators.NumberRange(min=0, max=53)]
     )
     oa_statement_url = TextField("What is the URL for the journal's Open Access statement?", 
         [validators.Required(), URLOptionalScheme()]
