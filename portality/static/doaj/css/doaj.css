@@ -144,12 +144,8 @@ select {
 
 .form-horizontal.wide .controls,
 .form-horizontal.wide .form-status,
-.form-horizontal.wide h1,
-.form-horizontal.wide h2,
-.form-horizontal.wide h3,
-.form-horizontal.wide h4,
-.form-horizontal.wide h5,
-.form-horizontal.wide h6 {
+.form-horizontal.wide .heading-aligned-with-fields
+{
     margin-left: 220px;
 }
 
@@ -162,10 +158,14 @@ select {
     margin-bottom: 1em;
 }
 
-
 .form-horizontal.wide .form-status {
     margin-top: 1.5em;
     margin-bottom: 1.5em;
+}
+
+.form-horizontal.wide .form-section {
+    margin-top: 1em;
+    padding: 0.5em 1.5em;  /* top/bottom, left/right */
 }
 
 .error .select2-choice {

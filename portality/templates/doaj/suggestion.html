@@ -17,94 +17,123 @@
   {% endif %}
 
   <fieldset>
-    <h3>Basic Journal Information</h3>
-    {{ render_field(form.title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.alternative_title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.pissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.eissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.publisher, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.society_institution, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.platform, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.contact_name, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.contact_email, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.confirm_contact_email, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.country, class="input-large", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.processing_charges, first_field_with_error=first_field_with_error) }}
-    {{render_field(form.processing_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
-    {{render_field(form.processing_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.submission_charges, first_field_with_error=first_field_with_error) }}
-    {{render_field(form.submission_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
-    {{render_field(form.submission_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.articles_last_year, class="input-mini", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.articles_last_year_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.waiver_policy, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.waiver_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.digital_archiving_policy,
-          extra_input_field=form.digital_archiving_policy_other,
-          display_extra_when_label_is='Other',
-          extra_input_field2=form.digital_archiving_policy_library,
-          display_extra2_when_label_is='A national library. Please specify:',
-          first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.digital_archiving_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.crawl_permission, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.metadata_provision, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.download_statistics, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.download_statistics_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.first_fulltext_oa_year, class="input-mini", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.keywords, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.languages, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    <h3>Quality and Transparency of the Editorial Process</h3>
-    {{ render_field(form.editorial_board_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.review_process, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.review_process_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.aims_scope_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.instructions_authors_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.plagiarism_screening, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.plagiarism_screening_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.publication_time, class="input-tiny", first_field_with_error=first_field_with_error) }}
-    <h3>How Open is the Journal?</h3>
-    <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
-    {{ render_field(form.oa_statement_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    <h3>Content Licensing</h3>
-    {{ render_field(form.license_embedded, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.license_embedded_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.license_checkbox, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.license_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.open_access, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    <h3>Copyright and Permissions</h3>
-    {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.copyright_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.publishing_rights_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    <h3>A note about the qualifiers for the DOAJ Seal</h3>
-    <p>DOAJ promotes best practice in Open Access publishing. To that end, we are introducing the DOAJ Seal for Open Access journals.</p>
-    
-    <p>The qualifiers for the Seal will highlight features related to the openness, indexability and discoverability of the journal and, as such, have nothing to do with <strong>the scientific quality of the papers published in the journal</strong>.</p>
-    
-    <p>To qualify for the Seal the journal must:</p>
-      <ol>
-        <li>have an archival arrangement in place with an external party. <a href="#digital_archiving_policy">(scroll to digital archiving policy question)</a> If 'No policy in place' is selected, the journal will not qualify for the Seal.</li>
-        <li>provide permanent identifiers in the papers published. <a href="#article_identifiers">(scroll to article identifiers question)</a> If 'None' is selected, the journal will not qualify for the Seal.</li>
-        <li>provide article level metadata to DOAJ. <a href="#metadata_provision-0">(scroll to metadata provision question)</a> If 'No' is selected or the journal fails to provide metadata within 3 months, the journal will not qualify for the Seal.</li>
-        <li>embed machine-readable CC licensing information in its article level metadata. <a href="#license_embedded-0">(scroll to embedded licensing data question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
-        <li>allow reuse and remixing of its content in accordance with a CC-BY or CC-BY-NC. <a href="#license-0">(scroll to licensing question)</a> If CC-BY-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
-        <li>have a deposit policy registered in a deposit policy directory. <a href="#deposit_policy">(scroll to deposit policy question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
-      </ol>
-    
-    <p>A journal cannot apply for the Seal. The Seal will be awarded to a journal by the DOAJ Editorial staff depending on the information provided in the application form.</p>
-    <h3>Information about You</h3>
-    {{ render_field(form.suggester_name, first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.suggester_email, class="input-xlarge", first_field_with_error=first_field_with_error) }}
-    {{ render_field(form.suggester_email_confirm, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+    <div class="row-fluid">
 
-    <div class="control-group">
-        <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
+      <div class="span6 with-borders form-section">
+        <h3 class="heading-aligned-with-fields">Basic Journal Information</h3>
+        {{ render_field(form.title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.alternative_title, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.pissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.eissn, class="input-small", size="9", maxlength="9", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.publisher, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.society_institution, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.platform, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.contact_name, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.contact_email, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.confirm_contact_email, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.country, class="input-large", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.processing_charges, first_field_with_error=first_field_with_error) }}
+        {{render_field(form.processing_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
+        {{render_field(form.processing_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.submission_charges, first_field_with_error=first_field_with_error) }}
+        {{render_field(form.submission_charges_amount, class="input-mini", first_field_with_error=first_field_with_error) }}
+        {{render_field(form.submission_charges_currency, class="input-large", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.articles_last_year, class="input-mini", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.articles_last_year_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.waiver_policy, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.waiver_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.digital_archiving_policy,
+              extra_input_field=form.digital_archiving_policy_other,
+              display_extra_when_label_is='Other',
+              extra_input_field2=form.digital_archiving_policy_library,
+              display_extra2_when_label_is='A national library. Please specify:',
+              first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.digital_archiving_policy_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.crawl_permission, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.metadata_provision, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.download_statistics, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.download_statistics_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.first_fulltext_oa_year, class="input-mini", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.keywords, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.languages, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+      </div>
+
+      <div class="span6 with-borders form-section">
+        <h3>Quality and Transparency of the Editorial Process</h3>
+        {{ render_field(form.editorial_board_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.review_process, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.review_process_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.aims_scope_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.instructions_authors_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.plagiarism_screening, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.plagiarism_screening_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.publication_time, class="input-tiny", first_field_with_error=first_field_with_error) }}
+      </div>
+
+      <div class="span6 with-borders form-section">
+        <h3>How Open is the Journal?</h3>
+        <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
+        {{ render_field(form.oa_statement_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+      </div>
+
+      <div class="span6 with-borders form-section">
+        <h3>Content Licensing</h3>
+        {{ render_field(form.license_embedded, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.license_embedded_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.license_checkbox, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.license_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.open_access, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+      </div>
+
+      <div class="span6 with-borders form-section">
+        <h3>Copyright and Permissions</h3>
+        {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.copyright_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other', first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.publishing_rights_url, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+      </div>
+
+      <div class="span6 with-borders form-section">
+        <h3>A note about the qualifiers for the DOAJ Seal</h3>
+        <p>DOAJ promotes best practice in Open Access publishing. To that end, we are introducing the DOAJ Seal for Open Access journals.</p>
+        
+        <p>The qualifiers for the Seal will highlight features related to the openness, indexability and discoverability of the journal and, as such, have nothing to do with <strong>the scientific quality of the papers published in the journal</strong>.</p>
+        
+        <p>To qualify for the Seal the journal must:</p>
+          <ol>
+            <li>have an archival arrangement in place with an external party. <a href="#digital_archiving_policy">(scroll to digital archiving policy question)</a> If 'No policy in place' is selected, the journal will not qualify for the Seal.</li>
+            <li>provide permanent identifiers in the papers published. <a href="#article_identifiers">(scroll to article identifiers question)</a> If 'None' is selected, the journal will not qualify for the Seal.</li>
+            <li>provide article level metadata to DOAJ. <a href="#metadata_provision-0">(scroll to metadata provision question)</a> If 'No' is selected or the journal fails to provide metadata within 3 months, the journal will not qualify for the Seal.</li>
+            <li>embed machine-readable CC licensing information in its article level metadata. <a href="#license_embedded-0">(scroll to embedded licensing data question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
+            <li>allow reuse and remixing of its content in accordance with a CC-BY or CC-BY-NC. <a href="#license-0">(scroll to licensing question)</a> If CC-BY-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
+            <li>have a deposit policy registered in a deposit policy directory. <a href="#deposit_policy">(scroll to deposit policy question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
+          </ol>
+        
+        <p>A journal cannot apply for the Seal. The Seal will be awarded to a journal by the DOAJ Editorial staff depending on the information provided in the application form.</p>
+      </div>
+
     </div>
+
+    <div class="row-fluid">
+      <div class="span3">&nbsp;</div>
+      <div class="span6 with-borders form-section">
+        <h3 class="heading-aligned-with-fields">Information about You</h3>
+        {{ render_field(form.suggester_name, first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.suggester_email, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.suggester_email_confirm, class="input-xlarge", first_field_with_error=first_field_with_error) }}
+
+        <div class="control-group">
+            <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
+        </div>
+
+      </div>
+    </div>
+
   </fieldset>
 </form>
 
