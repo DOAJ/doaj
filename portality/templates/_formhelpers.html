@@ -60,14 +60,16 @@
 
 {% macro __render_field(field,
             extra_input_field='', display_extra_when_label_is='other',
-            extra_input_field2='', display_extra2_when_label_is='other'
+            extra_input_field2='', display_extra2_when_label_is='other',
+            q_num=''
             ) %}
 
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
-            <label class="control-label" for="{{field.short_name}}">{{field.label.text}}
-            {% if field.flags.required %}<span class="red">*</span>{% endif %}
-            {% if not field.flags.required and field.flags.display_required_star %}<span class="red">*</span>{% endif %}
+
+            <label class="control-label" for="{{field.short_name}}">
+              {% if q_num %} <a class="animated orange" href="#{{field.short_name}}-container" title="Link to this question">{{ q_num }})</a> {% endif %}
+              {{field.label.text}}{% if field.flags.required %}&nbsp;<span class="red">*</span>{% endif %}{% if not field.flags.required and field.flags.display_required_star %}&nbsp;<span class="red">*</span>{% endif %}
             </label>
         {% endif %}
         

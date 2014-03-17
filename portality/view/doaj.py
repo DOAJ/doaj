@@ -114,7 +114,11 @@ def suggestion():
                 if field.errors:
                     first_field_with_error = field.short_name
                     break
-    return render_template('doaj/suggestion.html', form=form, first_field_with_error=first_field_with_error, edit_suggestion_page=True)
+    return render_template(
+            'doaj/suggestion.html',
+            form=form, first_field_with_error=first_field_with_error,
+            q_numbers=xrange(1,10000).__iter__(),  # a generator for the purpose of displaying numbered questions
+            edit_suggestion_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():

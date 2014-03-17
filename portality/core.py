@@ -13,6 +13,7 @@ def create_app():
     configure_app(app)
     if app.config['INITIALISE_INDEX']: initialise_index(app)
     setup_error_logging(app)
+    setup_jinja(app)
     login_manager.setup_app(app)
     return app
 
@@ -68,6 +69,10 @@ def setup_error_logging(app):
         send_errors_to_supervisor = logging.StreamHandler(sys.stderr)
         send_errors_to_supervisor.setLevel(logging.ERROR)
         app.logger.addHandler(send_errors_to_supervisor)
+
+def setup_jinja(app):
+    '''Add jinja extensions and other init-time config as needed.'''
+    app.jinja_env.add_extension('jinja2.ext.do')
 
 app = create_app()
 
