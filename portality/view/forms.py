@@ -38,6 +38,8 @@ other_choice = (other_val, other_val)
 ternary_choices = binary_choices + [other_choice]
 optional_url_ternary_choices_optvals = optional_url_binary_choices_optvals  # "No" still makes the URL optional, from ["Yes", "No", "Other"]
 
+none_val = 'None'
+
 license_options = [
     ('', ''),
     ('CC by', 'Attribution'),
@@ -75,12 +77,12 @@ digital_archiving_policy_choices = digital_archiving_policy_optional_url_choices
 
 
 deposit_policy_choices = [
+    (none_val, none_val), 
     ('Sherpa/Romeo', 'Sherpa/Romeo'),
     ('Dulcinea', 'Dulcinea'),
     ('OAKlist', 'OAKlist'),
     ('H\xc3\xa9loise'.decode('utf-8'), 'H\xc3\xa9loise'.decode('utf-8')),
     ('Diadorum', 'Diadorum'), 
-    ('None', 'None'), 
 ] + [other_choice]
 
 
@@ -103,7 +105,7 @@ license_checkbox_choices = [
 ]
 
 review_process_optional_url_choices_1 = [ ('', ' ') ]
-review_process_optional_url_choices_2 = [ ('None', 'None') ]
+review_process_optional_url_choices_2 = [ (none_val, none_val) ]
 review_process_optional_url_choices_optvals = [v[0] for v in review_process_optional_url_choices_1 + review_process_optional_url_choices_2]
 
 review_process_choices = review_process_optional_url_choices_1 + [
@@ -122,11 +124,11 @@ fulltext_format_choices = [
 ] + [other_choice]
 
 article_identifiers_choices = [
+    (none_val, none_val),
     ('DOI', 'DOI'),
     ('Handles', 'Handles'),
     ('ARK', 'ARK'),
     ('EzID', 'EzID'),
-    ('None', 'None'),
 ] + [other_choice]
 
 class TagListField(Field):
@@ -256,7 +258,7 @@ class ExclusiveCheckbox(object):
     # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
     # except where it will simplify a 50-field form, k?
 
-    def __init__(self, exclusive_checkbox_value, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
+    def __init__(self, exclusive_checkbox_value=none_val, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
         self.exclusive_checkbox_value = exclusive_checkbox_value
         self.message = message
 
@@ -428,7 +430,7 @@ class SuggestionForm(Form):
         choices = binary_choices
     )
     article_identifiers = SelectMultipleField('Which article identifiers does the journal use?', 
-        [validators.Required(), ExtraFieldRequiredIf('article_identifiers_other', reqval=other_val)],
+        [validators.Required(), ExtraFieldRequiredIf('article_identifiers_other', reqval=other_val), ExclusiveCheckbox()],
         description = 'For example DOIs, Handles, ARK, EzID etc',
         choices = article_identifiers_choices,
         option_widget=widgets.CheckboxInput(),   
@@ -530,7 +532,7 @@ class SuggestionForm(Form):
         description = "From the Budapest Open Access Initiative's definition of Open Access: http://www.budapestopenaccessinitiative.org/read ",
     )
     deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?', 
-        [validators.Required(), ExtraFieldRequiredIf('deposit_policy_other', reqval=other_val)], 
+        [validators.Required(), ExtraFieldRequiredIf('deposit_policy_other', reqval=other_val), ExclusiveCheckbox()], 
         description = 'Select all that apply.', 
         choices = deposit_policy_choices,
         option_widget=widgets.CheckboxInput(), 

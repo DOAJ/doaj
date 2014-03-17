@@ -128,17 +128,11 @@ jQuery(document).ready(function($) {
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
-    
-    $('#digital_archiving_policy :checkbox[value="No policy in place"]').change(function() {
-        if (this.checked) {
-            $('#digital_archiving_policy :checkbox:not([value="No policy in place"])').prop('disabled', true);
-            $('#digital_archiving_policy .extra_input_field').prop('disabled', true);
-        } else {
-            $('#digital_archiving_policy :checkbox:not([value="No policy in place"])').prop('disabled', false);
-            $('#digital_archiving_policy .extra_input_field').prop('disabled', false);
-        }
-    });
 
+    exclusive_checkbox('digital_archiving_policy', 'No policy in place');
+    exclusive_checkbox('article_identifiers', 'None');
+    exclusive_checkbox('deposit_policy', 'None');
+    
     if ("onhashchange" in window) {
         window.onhashchange = highlight_target();
         $('a.animated').anchorAnimate();
@@ -200,6 +194,18 @@ function autocomplete(selector, doc_field, doc_type) {
             }
         },
         createSearchChoice: function(term) {return {"id":term, "text": term};}
+    });
+}
+
+function exclusive_checkbox(field_name, exclusive_val) {
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(function() {
+        if (this.checked) {
+            $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', true);
+            $('#' + field_name + ' .extra_input_field').prop('disabled', true);
+        } else {
+            $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', false);
+            $('#' + field_name + ' .extra_input_field').prop('disabled', false);
+        }
     });
 }
 
