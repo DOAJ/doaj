@@ -48,6 +48,7 @@
               display_extra_when_label_is='Other',
               extra_input_field2=form.digital_archiving_policy_library,
               display_extra2_when_label_is='A national library. Please specify:',
+              q_num=q_numbers.next(),
               first_field_with_error=first_field_with_error) }}
         {{ render_field(form.digital_archiving_policy_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.crawl_permission, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
