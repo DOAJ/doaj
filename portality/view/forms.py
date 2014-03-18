@@ -315,6 +315,25 @@ class URLOptionalScheme(validators.Regexp):
         super(URLOptionalScheme, self).__call__(form, field, message)
 
 
+class MaxLen(object):
+    '''
+    Maximum length validator. Works on anything which supports len(thing).
+
+    Use {max_len} in your custom message to insert the maximum length you've
+    specified into the message.
+    '''
+    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
+    # except where it will simplify a 50-field form, k?
+
+    def __init__(self, max_len, message='Maximum {max_len}.', *args, **kwargs):
+        self.max_len = max_len
+        self.message = message
+
+    def __call__(self, form, field):
+        if len(field.data) > self.max_len:
+            raise validators.ValidationError(self.message.format(max_len=self.max_len))
+
+
 class JournalInformationForm(Form):
     
     title = TextField('Journal Title', [validators.Required()])
@@ -464,7 +483,7 @@ class SuggestionForm(Form):
     fulltext_format_other = TextField('',
     )
     keywords = TagListField('Add keyword(s) that best describe the journal', 
-        [validators.Required()], 
+        [validators.Required(), MaxLen(6, message='You can only enter up to {max_len} keywords.')], 
         description='Maximum 6'
     )
     languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in', 
