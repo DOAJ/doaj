@@ -157,10 +157,13 @@ class URLField(TextField):
         val = valuelist[0]
         assumed_scheme = 'http://'
 
-        if not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
+        if val and not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
             self.data = assumed_scheme + val
         else:
-            self.data = val
+            if val == assumed_scheme:  # just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere
+                self.data = u''
+            else:
+                self.data = val
 
 class OptionalIf(validators.Optional):
     # A validator which makes a field optional if # another field is set
