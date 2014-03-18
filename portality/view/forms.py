@@ -28,6 +28,7 @@ blueprint = Blueprint('forms', __name__)
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
+URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
 
 optional_url_binary_choices = [('False', 'No')]
 optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
@@ -148,6 +149,18 @@ class TagListField(Field):
             self.data = [clean_x for clean_x in [x.strip() for x in valuelist[0].split(',')] if clean_x]
         else:
             self.data = []
+
+class URLField(TextField):
+    widget = widgets.TextInput()
+
+    def process_formdata(self, valuelist):
+        val = valuelist[0]
+        assumed_scheme = 'http://'
+
+        if not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
+            self.data = assumed_scheme + val
+        else:
+            self.data = val
 
 class OptionalIf(validators.Optional):
     # A validator which makes a field optional if # another field is set
@@ -303,7 +316,7 @@ class URLOptionalScheme(validators.Regexp):
     def __init__(self, require_tld=True, message=None):
         tld_part = (require_tld and r'\.[a-z]{2,10}' or '')
         # the original regex - the URL scheme is not optional
-        #regex = r'^[a-z]+://([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        #regex = r'^[a-z]+://([^/:]+s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
 
@@ -358,7 +371,7 @@ class JournalForm(JournalInformationForm):
     
 class SuggestionForm(Form):
     title = TextField('Journal Title', [validators.Required()])
-    url = TextField('URL', [validators.Required(), URLOptionalScheme()])
+    url = URLField('URL', [validators.Required(), URLOptionalScheme()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
     pissn = TextField('Journal ISSN',
         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
@@ -423,14 +436,14 @@ class SuggestionForm(Form):
         [validators.Required(), validators.NumberRange(min=0)],
         description = 'A journal must publish at least 5 articles per year to stay in the DOAJ', 
     )
-    articles_last_year_url = TextField('Enter the URL where this information can be found', 
+    articles_last_year_url = URLField('Enter the URL where this information can be found', 
         [validators.Required(), URLOptionalScheme()]
     )
     waiver_policy = RadioField('Does the journal have a waiver policy (for developing country authors etc)?', 
         [validators.Required()],
         choices = binary_choices 
     )
-    waiver_policy_url = TextField('Enter the URL where this information can be found', 
+    waiver_policy_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('waiver_policy', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?', 
@@ -449,7 +462,7 @@ class SuggestionForm(Form):
     )
     digital_archiving_policy_library = TextField('',
     )
-    digital_archiving_policy_url = TextField('Enter the URL where this information can be found', 
+    digital_archiving_policy_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), URLOptionalScheme()],
         description='This field is optional if you have only selected "No policy in place" above',
     )
@@ -500,35 +513,36 @@ class SuggestionForm(Form):
         choices = language_options,
         description="You can select multiple languages"
     )
-    editorial_board_url = TextField('What is the URL for the Editorial Board page?', 
+    editorial_board_url = URLField('What is the URL for the Editorial Board page?', 
         [validators.Required(), URLOptionalScheme()], 
         description = 'The journal must have either an editor or an editorial board with clearly identifiable members including affiliation information and email addresses.'
     ) 
     review_process = SelectField('Please select the review process for papers', 
         [validators.Required()],
         choices = review_process_choices,
+        default = '',
     )
-    review_process_url = TextField('Enter the URL where this information can be found', 
+    review_process_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('review_process', optvals=review_process_optional_url_choices_optvals), URLOptionalScheme()],
         description = 'This field is optional if you have selected "None" above.'
     )
-    aims_scope_url = TextField("What is the URL for the journal's Aims & Scope", 
+    aims_scope_url = URLField("What is the URL for the journal's Aims & Scope", 
         [validators.Required(), URLOptionalScheme()]
     )
-    instructions_authors_url = TextField("What is the URL for the journal's instructions for authors?", 
+    instructions_authors_url = URLField("What is the URL for the journal's instructions for authors?", 
         [validators.Required(), URLOptionalScheme()]
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?', 
         [validators.Required()],
         choices = binary_choices 
     )
-    plagiarism_screening_url = TextField("Enter the URL where this information can be found", 
+    plagiarism_screening_url = URLField("Enter the URL where this information can be found", 
         [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication', 
         [validators.Required(), validators.NumberRange(min=0, max=53)]
     )
-    oa_statement_url = TextField("What is the URL for the journal's Open Access statement?", 
+    oa_statement_url = URLField("What is the URL for the journal's Open Access statement?", 
         [validators.Required(), URLOptionalScheme()]
     )
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
@@ -536,7 +550,7 @@ class SuggestionForm(Form):
         choices = binary_choices, 
         description = 'For more information go to http://wiki.creativecommons.org/Marking_works ',
     )
-    license_embedded_url = TextField("Please provide a URL to an example page with embedded licensing information",
+    license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
@@ -551,7 +565,7 @@ class SuggestionForm(Form):
         option_widget=widgets.CheckboxInput(), 
         widget=widgets.ListWidget(prefix_label=False),
     )
-    license_url = TextField("Enter the URL on your site where your license terms are stated", 
+    license_url = URLField("Enter the URL on your site where your license terms are stated", 
         [validators.Optional(), URLOptionalScheme()]
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
@@ -574,7 +588,7 @@ class SuggestionForm(Form):
     )
     copyright_other = TextField('',
     )
-    copyright_url = TextField('Enter the URL where this information can be found', 
+    copyright_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('copyright', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?', 
@@ -583,7 +597,7 @@ class SuggestionForm(Form):
     )
     publishing_rights_other = TextField('',
     )
-    publishing_rights_url = TextField('Enter the URL where this information can be found', 
+    publishing_rights_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('publishing_rights', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
     suggester_name = TextField('Your Name', 
