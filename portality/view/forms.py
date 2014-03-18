@@ -362,21 +362,26 @@ class SuggestionForm(Form):
     alternative_title = TextField('Alternative Title', [validators.Optional()])
     pissn = TextField('Journal ISSN',
         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.',
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the ISSN with the hyphen "-" e.g. 1234-4321.',
     )
     eissn = TextField('Journal EISSN',
         [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.',
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the EISSN with the hyphen "-" e.g. 1234-4321.',
     )
-    publisher = TextField('Publisher', [validators.Required()])
+    publisher = TextField('Publisher',
+        [validators.Required()]
+    )
     society_institution = TextField('Society or Institution', 
-        [validators.Optional()]
+        [validators.Optional()],
+        description='The name of the Society or Institution that the journal belongs to',
     )
     platform = TextField('Platform, Host or Aggregator', 
-        [validators.Optional()]
+        [validators.Optional()],
+        description='The name of the platform, host or aggregator of the journal content. For example: HighWire Press, EBSCO.'
     )
     contact_name = TextField('Name of contact for this journal', 
-        [validators.Required()]
+        [validators.Required()],
+        description='Somebody who DOAJ can contact about this journal',
     )
     contact_email = TextField('Contact email address', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
@@ -384,7 +389,11 @@ class SuggestionForm(Form):
     confirm_contact_email = TextField('Confirm contact email address', 
         [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
     )
-    country = SelectField('Country', [validators.Required()], choices=country_options)
+    country = SelectField('In which country is the publisher of the journal based?',
+        [validators.Required()],
+        description='Select the country where the publishing company is legally registered',
+        choices=country_options,
+    )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)? Include relevant currency.', 
         [validators.Required()],
         description = 'If "Yes" then add the amount (average price) with currency', 
@@ -411,7 +420,7 @@ class SuggestionForm(Form):
         choices = currency_options,
     )    
     articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
-        [validators.Required()],
+        [validators.Required(), validators.NumberRange(min=0)],
         description = 'A journal must publish at least 5 articles per year to stay in the DOAJ', 
     )
     articles_last_year_url = TextField('Enter the URL where this information can be found', 
@@ -469,7 +478,7 @@ class SuggestionForm(Form):
     download_statistics_url = TextField('Enter the URL where this information can be found', 
         [validators.Optional()],
     )
-    first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles (Full Text may be provided as PDFs).', 
+    first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)', 
         [validators.Required(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
         description = 'Use 4 digits for the year, i.e. YYYY format'
     )
@@ -548,7 +557,7 @@ class SuggestionForm(Form):
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
         [validators.Required()],
         choices = binary_choices, 
-        description = "From the Budapest Open Access Initiative's definition of Open Access: http://www.budapestopenaccessinitiative.org/read ",
+        description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>',
     )
     deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?', 
         [validators.Required(), ExtraFieldRequiredIf('deposit_policy_other', reqval=other_val), ExclusiveCheckbox()], 
