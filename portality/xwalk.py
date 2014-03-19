@@ -1,3 +1,5 @@
+'''Common functionality to help with processing or crosswalking data from one form to another.'''
+
 from portality.datasets import countries_dict, countries, country_options_two_char_code_index
 
 def get_country_code(current_country):

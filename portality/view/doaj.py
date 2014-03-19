@@ -10,7 +10,8 @@ from portality import dao
 from portality import models
 from portality.core import app
 from portality import settings
-from portality.view.forms import SuggestionForm
+from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
+from portality.suggestion import SuggestionFormXWalk
 
 from StringIO import StringIO
 import csv
@@ -103,9 +104,58 @@ def suggestion():
     form = SuggestionForm(request.form)
     first_field_with_error = ''
 
+    #print json.dumps(form.data, indent=3)
+
+    # the code below will output only submitted values which were truthy
+    # useful for debugging the form itself without getting lost in the
+    # 57-field object that gets created
+    '''
+    print
+    print
+    for field in form:
+        if field.data and field.data != 'None':
+            print field.short_name, '::', field.data, ',', type(field.data)
+    print
+    '''
+
     if request.method == 'POST':
         if form.validate():
-            #unicorns
+            suggestion = SuggestionFormXWalk.form2obj(form)
+
+            # the code below can be used to quickly debug objects which
+            # fail to serialise as JSON - there should be none of those
+            # in the suggestion!
+            '''
+            for thing in suggestion.data:
+                try:
+                    if thing == 'bibjson':
+                        bibjson = suggestion.bibjson().bibjson
+                        for thing2 in bibjson:
+                            try:
+                                print json.dumps(bibjson[thing2])
+                            except TypeError as e:
+                                print 'This is it:',thing2
+                                print e
+                                print
+                                print json.dumps(bibjson[thing2])
+                except TypeError as e:
+                    print 'This is it:',thing
+                    print e
+                    print
+            '''
+
+            # the code below produces a dump of the object returned by
+            # the crosswalk
+            '''
+            print
+            print
+            print 'Now all the data!'
+
+            print json.dumps(suggestion.data, indent=3)
+            '''
+
+            suggestion.save()
+
             return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))  # meaningless anchor to replace #first_problem used on the form
             # anchors persist between 3xx redirects to the same resource
             # (/application)
@@ -118,6 +168,8 @@ def suggestion():
             'doaj/suggestion.html',
             form=form, first_field_with_error=first_field_with_error,
             q_numbers=xrange(1,10000).__iter__(),  # a generator for the purpose of displaying numbered questions
+            other_val=other_val,
+            digital_archiving_policy_specific_library_value=digital_archiving_policy_specific_library_value,
             edit_suggestion_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])

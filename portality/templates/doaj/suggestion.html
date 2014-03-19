@@ -18,6 +18,8 @@
 
   <fieldset>
     <div class="row-fluid">
+      {{other_val}}
+      {{digital_archiving_policy_specific_library_value}}
 
       <div class="span6 with-borders form-section">
         <h3 class="heading-aligned-with-fields">Basic Journal Information</h3>
@@ -45,19 +47,19 @@
         {{ render_field(form.waiver_policy_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.digital_archiving_policy,
               extra_input_field=form.digital_archiving_policy_other,
-              display_extra_when_label_is='Other',
+              display_extra_when_label_is=other_val,
               extra_input_field2=form.digital_archiving_policy_library,
-              display_extra2_when_label_is='A national library. Please specify:',
+              display_extra2_when_label_is=digital_archiving_policy_specific_library_value,
               q_num=q_numbers.next(),
               first_field_with_error=first_field_with_error) }}
         {{ render_field(form.digital_archiving_policy_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.crawl_permission, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
-        {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.article_identifiers, extra_input_field=form.article_identifiers_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.metadata_provision, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.download_statistics, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.download_statistics_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.first_fulltext_oa_year, class="input-mini", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
-        {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.fulltext_format, extra_input_field=form.fulltext_format_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.keywords, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.languages, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
       </div>
@@ -84,18 +86,18 @@
         <h3>Content Licensing</h3>
         {{ render_field(form.license_embedded, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.license_embedded_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
-        {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.license, extra_input_field=form.license_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.license_checkbox, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.license_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.open_access, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
-        {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.deposit_policy, extra_input_field=form.deposit_policy_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
       </div>
 
       <div class="span6 with-borders form-section">
         <h3>Copyright and Permissions</h3>
-        {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.copyright, extra_input_field=form.copyright_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.copyright_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
-        {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is='Other', q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
+        {{ render_field(form.publishing_rights, extra_input_field=form.publishing_rights_other, display_extra_when_label_is=other_val, q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
         {{ render_field(form.publishing_rights_url, class="input-xlarge", q_num=q_numbers.next(), first_field_with_error=first_field_with_error) }}
       </div>
 
@@ -111,7 +113,7 @@
             <li>provide permanent identifiers in the papers published. <a class="animated" href="#article_identifiers-container">(scroll to article identifiers question)</a> If 'None' is selected, the journal will not qualify for the Seal.</li>
             <li>provide article level metadata to DOAJ. <a class="animated" href="#metadata_provision-container">(scroll to metadata provision question)</a> If 'No' is selected or the journal fails to provide metadata within 3 months, the journal will not qualify for the Seal.</li>
             <li>embed machine-readable CC licensing information in its article level metadata. <a class="animated" href="#license_embedded-container">(scroll to embedded licensing data question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
-            <li>allow reuse and remixing of its content in accordance with a CC-BY or CC-BY-NC. <a class="animated" href="#license-container">(scroll to licensing question)</a> If CC-BY-ND, 'No' or 'Other' is selected the journal will not qualify for the Seal.</li>
+            <li>allow reuse and remixing of its content in accordance with a CC-BY or CC-BY-NC. <a class="animated" href="#license-container">(scroll to licensing question)</a> If CC-BY-ND, 'No' or '{{other_val}}' is selected the journal will not qualify for the Seal.</li>
             <li>have a deposit policy registered in a deposit policy directory. <a class="animated" href="#deposit_policy-container">(scroll to deposit policy question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
           </ol>
         

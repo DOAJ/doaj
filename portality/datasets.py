@@ -16,16 +16,28 @@ with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", 'count
     countries = json.loads(f.read())
 countries_dict = OrderedDict(sorted(countries.items(), key=lambda x: x[1]['name']))
 countries = countries_dict.items()
+
 country_options = [('','')]
 country_options_two_char_code_index = []
+
 currency_options = [('','')]
 currency_options_code_index = []
+
 for code, country_info in countries:
     country_options.append((code, country_info['name']))
     country_options_two_char_code_index.append(code)
     if 'currency_alphabetic_code' in country_info and 'currency_name' in country_info:
-        currency_options.append((country_info['currency_alphabetic_code'], country_info['currency_alphabetic_code'] + ' - ' + country_info['currency_name']))
-        currency_options_code_index.append(country_info['currency_alphabetic_code'])
+        if country_info['currency_alphabetic_code'] not in currency_options_code_index:
+            # prevent duplicates in the currency options by checking if
+            # that currency has already been added - multiple countries
+            # use the same currency after all (GBP, EUR..)
+            currency_options.append(
+                (
+                    country_info['currency_alphabetic_code'],
+                    country_info['currency_alphabetic_code'] + ' - ' + country_info['currency_name']
+                )
+            )
+            currency_options_code_index.append(country_info['currency_alphabetic_code'])
 
 # languages
 languages_iso639_2 = [
@@ -536,3 +548,26 @@ language_options_two_char_code_index = []
 for code, language_info in languages:
     language_options.append((code, language_info['name']))
     language_options_two_char_code_index.append(code)
+
+# license rights by license type
+licenses = {
+    # the titles and types are made to match the current values of
+    # journals in the DOAJ for now - they can be cleaned up but it might
+    # not be such a small job
+    # Also DOAJ currently assumes type and title are the same.
+    "CC by": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC-BY'},
+    "CC by-sa": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC-BY-SA'},
+    "CC by-nc": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC-BY-NC'},
+    "CC by-nd": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC-BY-ND'},
+    "CC by-nc-nd": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC-BY-NC-ND'},
+}
+
+for lic_type, lic_info in licenses.iteritems():
+    lic_info['type'] = lic_type  # do not change this - the top-level keys in the licenses dict should always be == to the "type" of each license object
+    lic_info['title'] = lic_type
+
+license_dict = OrderedDict(sorted(licenses.items(), key=lambda x: x[1]['type']))
+
+main_license_options = []
+for lic_type, lic_info in license_dict.iteritems():
+    main_license_options.append((lic_type, lic_info['form_label']))

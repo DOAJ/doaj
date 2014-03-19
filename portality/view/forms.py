@@ -3,8 +3,6 @@ A forms system
 
 Build a form template, build a handler for its submission, receive data from end users
 '''
-from __future__ import print_function
-
 import json
 import sys
 import re
@@ -20,7 +18,7 @@ from flask_wtf import RecaptchaField
 
 from portality.core import app
 from portality import models
-from portality.datasets import country_options, language_options, currency_options
+from portality.datasets import country_options, language_options, currency_options, main_license_options
 
 blueprint = Blueprint('forms', __name__)
 
@@ -58,11 +56,11 @@ author_pays_options = [
     ('NY', 'No information'),
 ]
 
-_digital_archiving_policy_no_policy_value = "No policy in place"
-_digital_archiving_policy_specific_library_value = 'A national library'
+digital_archiving_policy_no_policy_value = "No policy in place"
+digital_archiving_policy_specific_library_value = 'A national library'
 
 digital_archiving_policy_optional_url_choices = [
-    (_digital_archiving_policy_no_policy_value, _digital_archiving_policy_no_policy_value), 
+    (digital_archiving_policy_no_policy_value, digital_archiving_policy_no_policy_value), 
 ]
 digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
 
@@ -71,7 +69,7 @@ __digital_archiving_policy_choices = [
     ('CLOCKSS', 'CLOCKSS'), 
     ('Portico', 'Portico'), 
     ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'), 
-    (_digital_archiving_policy_specific_library_value, _digital_archiving_policy_specific_library_value + ':'), 
+    (digital_archiving_policy_specific_library_value, digital_archiving_policy_specific_library_value), 
 ] + [other_choice]
 
 digital_archiving_policy_choices = digital_archiving_policy_optional_url_choices  + __digital_archiving_policy_choices
@@ -90,19 +88,13 @@ deposit_policy_choices = [
 license_optional_url_choices = [ ('not-cc-like', 'No') ]
 license_optional_url_choices_optvals = [v[0] for v in license_optional_url_choices]
 
-license_choices = [
-    ('cc-by', 'CC-BY'),
-    ('cc-by-sa', 'CC-BY-SA'),
-    ('cc-by-nc', 'CC-BY-NC'),
-    ('cc-by-nd', 'CC-BY-ND'),
-    ('cc-by-nc-nd', 'CC-BY-NC-ND'),
-] + license_optional_url_choices + [other_choice]
+license_choices = main_license_options + license_optional_url_choices + [other_choice]
 
 license_checkbox_choices = [
     ('by', 'Attribution'),
-    ('sa', 'Share Alike'),
     ('nc', 'No Commercial Usage'),
-    ('nd', 'No Derivatives')
+    ('nd', 'No Derivatives'),
+    ('sa', 'Share Alike'),
 ]
 
 review_process_optional_url_choices_1 = [ ('', ' ') ]
@@ -131,6 +123,56 @@ article_identifiers_choices = [
     ('ARK', 'ARK'),
     ('EzID', 'EzID'),
 ] + [other_choice]
+
+def interpret_special(val):
+    if isinstance(val, basestring):
+        if val.lower() == 'true':
+            return True
+        elif val.lower() == 'false':
+            return False
+        elif val.lower() == 'none':
+            return None
+        elif val == digital_archiving_policy_no_policy_value:
+            return None
+
+    if isinstance(val, list):
+        if len(val) == 1:
+            actual_val = interpret_special(val[0])
+            if not actual_val:
+                return []
+            return val
+        return val
+
+    return val
+
+
+def interpret_other(value, other_field_data, other_value=other_val):
+    '''
+    Interpret a value list coming from (e.g.) checkboxes when one of
+    them says "Other" and allows free-text input.
+
+    The value can also be a string. In that case, if it matched other_value, other_field_data is returned
+    instead of the original value. This is for radio buttons with an "Other" option - you only get 1 value
+    from the form, but if it's "Other", you still need to replace it with the relevant free text field data.
+
+    :param value: String or list of values from the form.
+        checkboxes_field.data basically.
+    :param other_field_data: data from the Other inline extra text input field.
+        Usually checkboxes_field_other.data or similar.
+    :param other_value: Which checkbox has an extra field? Put its value in here. It's "Other" by default.
+        More technically: the value which triggers considering and adding the data in other_field to value.
+    '''
+    if isinstance(value, basestring):
+        if value == other_value:
+            return other_field_data
+    elif isinstance(value, list):
+        value = value[:]
+        # if "Other" (or some custom value) is in the there, remove it and take the data from the extra text field
+        if other_value in value and other_field_data:
+            value.remove(other_value)
+            value.append(other_field_data)
+    # don't know what else to do, just return it as-is
+    return value
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -221,11 +263,6 @@ class OptionalIf(validators.Optional):
             raise Exception('no field named "%s" in form' % self.other_field_name)
         return other_field
 
-    def debug(self, *args):
-        if True:  # change this condition to check for self.other_field_name or whatever you want
-                  # in order to only get debugging statements for
-                  # certain fields, even in a 50-field form
-            print(*args) 
 
 class ExtraFieldRequiredIf(OptionalIf):
     '''Another field is required if this field has a certain value, but must be empty for all other values of this field.'''
@@ -452,8 +489,8 @@ class SuggestionForm(Form):
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?', 
         [
             validators.Required(),
-            ExclusiveCheckbox(_digital_archiving_policy_no_policy_value),
-            ExtraFieldRequiredIf('digital_archiving_policy_library', reqval=_digital_archiving_policy_specific_library_value),
+            ExclusiveCheckbox(digital_archiving_policy_no_policy_value),
+            ExtraFieldRequiredIf('digital_archiving_policy_library', reqval=digital_archiving_policy_specific_library_value),
             ExtraFieldRequiredIf('digital_archiving_policy_other', reqval=other_val),
         ],
         description = "Select all that apply. Institutional archives and publishers' own online archives are not valid",  
@@ -551,7 +588,7 @@ class SuggestionForm(Form):
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
         [validators.Required()],
         choices = binary_choices, 
-        description = 'For more information go to http://wiki.creativecommons.org/Marking_works ',
+        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/Marking_works">http://wiki.creativecommons.org/Marking_works</a>',
     )
     license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
@@ -559,7 +596,7 @@ class SuggestionForm(Form):
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
         [validators.Required(), ExtraFieldRequiredIf('license_other', reqval=other_val)],
         choices = license_choices, 
-        description = 'For more information go to http://creativecommons.org/licenses/ '
+        description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
     )
     license_other = TextField('',
     )

@@ -160,6 +160,10 @@ class GenericBibJSON(object):
         self.bibjson["keywords"] = keywords
     
     def add_url(self, url, urltype=None, content_type=None):
+        if not url:
+            # do not add empty URL-s
+            return
+
         if "link" not in self.bibjson:
             self.bibjson["link"] = []
         urlobj = {"url" : url}
@@ -897,7 +901,9 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["language"] = []
         self.bibjson["language"].append(language)
     
-    def set_license(self, license_title, license_type, url=None, version=None, open_access=None, by=None, sa=None, nc=None, nd=None):
+    def set_license(self, license_title, license_type, url=None, version=None, open_access=None,
+                    by=None, sa=None, nc=None, nd=None,
+                    embedded=None, embedded_example_url=None):
         if "license" not in self.bibjson:
             self.bibjson["license"] = []
         
@@ -921,6 +927,10 @@ class JournalBibJSON(GenericBibJSON):
             lobj["NC"] = nc
         if nd is not None:
             lobj["ND"] = nd
+        if embedded is not None:
+            lobj["embedded"] = embedded
+        if embedded_example_url is not None:
+            lobj["embedded_example_url"] = embedded_example_url
         
         if len(self.bibjson['license']) >= 1:
             self.bibjson["license"][0] = lobj
