@@ -168,6 +168,16 @@ select {
     padding: 0.5em 1.5em;  /* top/bottom, left/right */
 }
 
+.control-group.error .help-block,
+.control-group.error .help-inline,
+.control-group.error .radio {
+    color: #333;
+}
+
+.error ul.errors {
+    color: #D60500;
+}
+
 .error .select2-choice {
     border-color: #b94a48;
 }
@@ -264,6 +274,12 @@ footer > .box + .box {
     max-height: 100px;
     margin-top: 0.5em;
 }
+
+/* From suggestion form */
+#digital_archiving_policy_library {
+    width: 150px;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
