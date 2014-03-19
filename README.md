@@ -339,56 +339,6 @@ NOTE: there's an argument for putting the issn identifiers inside the journal pa
         "error" : "<any error associated with the upload>"
     }
 
-### Journal ToC Data Model
-
-The Journal ToC data model stores a cache of the Table of Contents on a per-volume basis
-
-```python
-{
-    "id" : "<the journal's opaque identifier>",
-    "issn" : ["<list of issns for this journal>"],
-    "volume" : "<the volume number represented here>",
-    "issues" : [
-        {
-            "number" : "<issue number>",
-            "year" : "<year of publication>",
-            "month" : "<month of publication>",
-            "articles" : [
-                {
-                    "id" : "<the article's opaque id>",
-                    "bibjson" : {
-                        "title" : "<title of the article>",
-                        "identifier": [
-                            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"}
-                        ],
-                        "start_page" : "<start page>",
-                        "end_page" : "<end page>",
-                        "link" : [
-                            {
-                                "url" : "<fulltext url>",
-                                "type" : "fulltext",
-                                "content-type" : "<content type of resource>"
-                            }
-                        ],
-                        "abstract" : "<the abstract>",
-                        "author" : [
-                            {
-                                "name" : "<author name>",
-                                "email" : "<author email>",
-                                "affiliation" : "<author affiliation>"
-                            },
-                        ],
-                        "keywords" : [<list of free text keywords>],
-                    }
-                }
-            ]
-        }
-    ]
-    "created_date" : "<date created>",
-    "last_updated" : "<date record last modified>"
-}
-```
-
 ## Authentication and Authorisation System
 
 ### Creating a new user
