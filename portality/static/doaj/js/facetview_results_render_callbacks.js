@@ -128,7 +128,6 @@ CC_MAP = {
 fv_title_field = (function (resultobj) {
     var that = function(resultobj) {
         var field = '<span class="title">'
-        var isjournal = false;
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // this is an article
             field += "<i class='icon icon-file'></i> "
@@ -139,14 +138,9 @@ fv_title_field = (function (resultobj) {
         } else {
             // this is a journal
             field += "<i class='icon icon-book'></i> "
-            isjournal = true
         }
         if (resultobj.bibjson.title) {
-            if (isjournal) {
-                field += "<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span>"
-            } else {
-                field += resultobj.bibjson.title + "</span>"
-            }
+            field += resultobj.bibjson.title + "</span>"
             return field
         } else {
             return false

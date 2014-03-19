@@ -345,8 +345,7 @@ The Journal ToC data model stores a cache of the Table of Contents on a per-volu
 
 ```python
 {
-    "id" : "<opaque identifier for this volume>",
-    "about" : "<the journal's opaque identifier>",
+    "id" : "<the journal's opaque identifier>",
     "issn" : ["<list of issns for this journal>"],
     "volume" : "<the volume number represented here>",
     "issues" : [

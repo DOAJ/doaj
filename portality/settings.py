@@ -90,7 +90,6 @@ MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
 MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
 MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
 MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
-MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
 
 
 # ========================
