@@ -43,6 +43,14 @@ select {
     width: 20px;
 }
 
+.box .long-label {
+    line-height: 32px;
+}
+
+.box-row + .box-row {
+    margin-top: 2em;
+}
+
 .centre-text-container,
 .big.box {
     text-align: center;
@@ -59,7 +67,7 @@ select {
 }
 
 .big.box {
-    padding: 2em;
+    padding: 1em;
     font-size: 250%;
 }
 

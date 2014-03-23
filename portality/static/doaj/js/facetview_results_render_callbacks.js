@@ -40,6 +40,13 @@ fv_created_date = (function (resultobj) {
     return that;
 })();
 
+fv_created_date_with_time = (function (resultobj) {
+    var that = function(resultobj) {
+        return iso_datetime2date_and_time(resultobj['created_date']);
+    };
+    return that;
+})();
+
 fv_last_updated = (function (resultobj) {
     var that = function(resultobj) {
         return iso_datetime2date_and_time(resultobj['last_updated']);

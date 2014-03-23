@@ -1,7 +1,7 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
-<div class="row-fluid">
+<div class="row-fluid box-row">
   <div class="span4">
     <div class="big box with-borders">
       <a href="{{ url_for('admin.journals') }}">Journals</a>
@@ -17,6 +17,14 @@
   <div class="span4">
     <div class="big box with-borders">
       <a href="{{ url_for('account.index') }}">Users</a>
+    </div>
+  </div>
+</div>
+
+<div class="row-fluid box-row">
+  <div class="span4">
+    <div class="big box with-borders">
+      <a href="{{ url_for('admin.admin_site_search') }}" class="long-label">Administrative site search</a>
     </div>
   </div>
 </div>
