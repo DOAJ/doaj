@@ -141,4 +141,8 @@ def suggestion_page(suggestion_id):
         s.save()
         return "", 204
 
-
+@blueprint.route("/admin_site_search")
+@login_required
+@ssl_required
+def admin_site_search():
+    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin_journals_and_articles'])
