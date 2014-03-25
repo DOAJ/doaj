@@ -5,8 +5,9 @@ and include the views you require, as well as writing new ones. Of course, views
 also be backed up by models, so have a look at the example models and use them / write 
 new ones as required too.
 '''
+import os
 
-from flask import Flask, request, abort, render_template, redirect
+from flask import Flask, request, abort, render_template, redirect, send_file
 from flask.views import View
 from flask.ext.login import login_user, current_user
 
@@ -88,6 +89,10 @@ def legacy():
 @app.route("/doaj2csv")
 def another_legacy_csv_route():
     return redirect("/csv"), 301
+
+@app.route("/schemas/doajArticles.xsd")
+def legacy_doaj_XML_schema():
+    return send_file(os.path.join(app.config.get("STATIC_DIR"), "doaj", 'doajArticles.xsd'), mimetype="application/xml")
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
