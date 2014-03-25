@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
     post_init_callback: customise_facetview_init,
     freetext_submit_delay:"1000",
     results_render_callbacks: {
-        "user_actions" : fv_user_actions
+        "edit_user" : fv_edit_user
     },
     hide_inactive_facets: true,
     facets: [
@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "field": "user_actions"
+                "field": "edit_user"
             }
         ]
     ],
