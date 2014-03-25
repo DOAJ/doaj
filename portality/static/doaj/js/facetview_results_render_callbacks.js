@@ -253,13 +253,23 @@ fv_edit_journal = (function (resultobj) {
     return that;
 })();
 
-fv_edit_user = (function (resultobj) {
+fv_user_actions = (function (resultobj) {
     var that = function(resultobj) {
-        var result = '<a class="edit_user_link pull-right" href="';
-        result += user_edit_url;
-        result += resultobj['id'];
-        result += '" target="_blank"';
-        result += '>Edit this user</a>';
+        var separator = '<span style="margin-left: 0.5em; margin-right: 0.5em;" class="pull-right">,</span>';
+
+        var edit_user = '<a class="edit_user_link pull-right" href="';
+        edit_user += user_edit_url;
+        edit_user += resultobj['id'];
+        edit_user += '" target="_blank"';
+        edit_user += '>Edit this user</a>';
+
+        var impersonate_user = '<a class="impersonate_user_link pull-right" href="';
+        impersonate_user += user_impersonate_url;
+        impersonate_user += resultobj['id'];
+        impersonate_user += '" target="_blank"';
+        impersonate_user += '>Impersonate this user (logs you out)</a>';
+
+        var result = edit_user + separator + impersonate_user;
         return result;
     };
     return that;

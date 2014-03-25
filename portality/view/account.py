@@ -50,6 +50,21 @@ def index():
     return render_template("account/users.html", search_page=True, facetviews=["users"])
 
 
+@blueprint.route('/impersonate/<username>', methods=['GET'])
+@login_required
+@ssl_required
+def impersonate(username):
+    if not current_user.is_super:
+        abort(401)
+
+    user = models.Account.pull(username)
+    if not user:
+        abort(404)
+
+    login_user(user, remember=True)
+    flash('Impersonating user ' + username, 'success')
+    return redirect(url_for('.username', username=username))
+
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
 @login_required
 @ssl_required
