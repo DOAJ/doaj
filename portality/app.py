@@ -92,7 +92,11 @@ def another_legacy_csv_route():
 
 @app.route("/schemas/doajArticles.xsd")
 def legacy_doaj_XML_schema():
-    return send_file(os.path.join(app.config.get("STATIC_DIR"), "doaj", 'doajArticles.xsd'), mimetype="application/xml")
+    schema_fn = 'doajArticles.xsd'
+    return send_file(
+            os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
+            mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
+            )
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
