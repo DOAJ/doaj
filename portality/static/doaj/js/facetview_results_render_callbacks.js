@@ -85,8 +85,9 @@ fv_addthis = (function (resultobj) {
         var result = '<a class="addthis_button"';
         result += ' addthis:title="' + prefix + ' ' + resultobj['bibjson']['title'] + '"';
         var query = '{"query":{"query_string":{"query":"' + resultobj['id'] + '"}}}';
-        result += ' addthis:url="http://' + document.domain + '/search?source=' + escape(query) + '"';
-        result += ' href="http://www.addthis.com/bookmark.php?v=300&amp;pubid=ra-52ae52c34c6f0a3e"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
+        // the http: or https: scheme comes from the es_scheme global var
+        result += ' addthis:url="' + es_scheme + '//' + document.domain + '/search?source=' + escape(query) + '"';
+        result += ' href="' + es_scheme + '//www.addthis.com/bookmark.php?v=300&amp;pubid=ra-52ae52c34c6f0a3e"><img src="' + es_scheme + '//s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a>';
         return result;
     };
     return that;
@@ -246,13 +247,23 @@ fv_edit_journal = (function (resultobj) {
     return that;
 })();
 
-fv_edit_user = (function (resultobj) {
+fv_user_actions = (function (resultobj) {
     var that = function(resultobj) {
-        var result = '<a class="edit_user_link pull-right" href="';
-        result += user_edit_url;
-        result += resultobj['id'];
-        result += '" target="_blank"';
-        result += '>Edit this user</a>';
+        var separator = '<span style="margin-left: 0.5em; margin-right: 0.5em;" class="pull-right">,</span>';
+
+        var edit_user = '<a class="edit_user_link pull-right" href="';
+        edit_user += user_edit_url;
+        edit_user += resultobj['id'];
+        edit_user += '" target="_blank"';
+        edit_user += '>Edit this user</a>';
+
+        var impersonate_user = '<a class="impersonate_user_link pull-right" href="';
+        impersonate_user += user_impersonate_url;
+        impersonate_user += resultobj['id'];
+        impersonate_user += '" target="_blank"';
+        impersonate_user += '>Impersonate this user (logs you out)</a>';
+
+        var result = edit_user + separator + impersonate_user;
         return result;
     };
     return that;
