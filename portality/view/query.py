@@ -140,13 +140,13 @@ def query(path='Pages'):
         if owner_filter:
             terms.update(_owner_filter())
         
-        resp = make_response( json.dumps(klass().query(q=qs, terms=terms), indent=4) )
+        resp = make_response( json.dumps(klass().query(q=qs, terms=terms)) )
 
     resp.mimetype = "application/json"
     return resp
 
 def _owner_filter():
-    return {"admin.owner" : current_user.id}
+    return {"admin.owner.exact" : current_user.id}
 
 def _default_filter(subpaths):
     for s in subpaths:
