@@ -285,10 +285,11 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
     
     @classmethod
-    def iterate(cls, q, page_size=1000, limit=None):
+    def iterate(cls, q, page_size=1000, limit=None, wrap=True):
         q["size"] = page_size
         q["from"] = 0
-        q["sort"] = [{"id" : {"order" : "asc"}}]
+        if "sort" not in q: # to ensure complete coverage on a changing index, sort by id is our best bet
+            q["sort"] = [{"id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit
@@ -296,7 +297,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 break
             
             res = cls.query(q=q)
-            rs = [r.get("_source") for r in res.get("hits", {}).get("hits", [])]
+            rs = [r.get("_source") if "_source" in r else r.get("fields") for r in res.get("hits", {}).get("hits", [])]
             # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(q)
             if len(rs) == 0:
                 break
@@ -305,7 +306,10 @@ class DomainObject(UserDict.IterableUserDict, object):
                 if limit is not None and counter >= limit:
                     break
                 counter += 1
-                yield cls(**r)
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
             q["from"] += page_size   
     
     @classmethod

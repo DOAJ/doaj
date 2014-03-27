@@ -498,9 +498,10 @@ class Journal(DomainObject):
         return records
     
     @classmethod
-    def all_in_doaj(cls, page_size=5000):
-        q = JournalQuery()
-        return cls.iterate(q.all_in_doaj(), page_size=page_size)
+    def all_in_doaj(cls, page_size=5000, minified=False):
+        q = JournalQuery(minified=minified, sort_by_title=minified)
+        wrap = not minified
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=wrap)
     
     @classmethod
     def issns_by_owner(cls, owner):
@@ -1161,15 +1162,24 @@ class JournalQuery(object):
         }
     }
     
-    def __init__(self):
+    _minified_fields = ["id", "bibjson.title"]
+    
+    def __init__(self, minified=False, sort_by_title=False):
         self.query = None
+        self.minified = minified
+        self.sort_by_title = sort_by_title
     
     def find_by_issn(self, issn):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
         
     def all_in_doaj(self):
-        return deepcopy(self.all_doaj)
+        q = deepcopy(self.all_doaj)
+        if self.minified:
+            q["fields"] = self._minified_fields
+        if self.sort_by_title:
+            q["sort"] = [{"bibjson.title.exact" : {"order" : "asc"}}]
+        return q
 
 class IssnQuery(object):
     base_query = {
