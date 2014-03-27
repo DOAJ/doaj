@@ -29,7 +29,7 @@
           </a>
           <div class="nav-collapse">
             <ul class="nav" id="main-nav-second-menu">
-              <li{% if request.path == url_for('doaj.suggestion') %} class="active"{% endif %}><a href="{{url_for('doaj.suggestion')}}">Suggest</a></li>
+              <li{% if request.path == url_for('doaj.suggestion') %} class="active"{% endif %}><a href="{{url_for('doaj.suggestion')}}">Apply</a></li>
               <li{% if request.path == '/about' %} class="active"{% endif %}><a href="{{ url_for('doaj.about') }}" alt="About DOAJ" title="About DOAJ">About</a></li>
               <li{% if request.path == '/publishers' %} class="active"{% endif %}><a href="{{url_for('doaj.publishers')}}" alt="Publishers info and metadata upload" title="Publishers info and metadata upload">For Publishers</a></li>
             </ul>
@@ -64,12 +64,25 @@
     <div class="container">
 
         <div class="alert-messages">
+
         {% with messages = get_flashed_messages(with_categories=True) %}
-        {%if messages %}
+        {% if messages %}
+          {% set category_url_indicator = '+contains-url' %}
+
           {% for category, message in messages %}
+            {% set message_has_url = False %}
+            {% if category.endswith(category_url_indicator) %}
+              {% set category = category[:category.rfind(category_url_indicator)] %}
+              {% set message_has_url = True %}
+            {% endif %}
+
             <div class="alert alert-{{category}} fade in" data-alert="alert">
               <a class="close" data-dismiss="alert" href="#">&times;</a>
-              {{ message }}
+              {% if message_has_url %}
+                {{ message | safe }}
+              {% else %}
+                {{ message }}
+              {% endif %}
             </div>
           {% endfor %}
         {% endif %}

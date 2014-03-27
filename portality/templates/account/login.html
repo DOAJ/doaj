@@ -11,6 +11,7 @@
       <form method="post" action="">
           {{ render_field(form.username, placeholder="your username") }}
           {{ render_field(form.password, placeholder="********") }}
+          {{ render_field(form.next) }}
         <div class="actions">
           <input type="submit" value="Login" class="btn btn-primary" />
         </div>

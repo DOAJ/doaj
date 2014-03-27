@@ -26,8 +26,8 @@ jQuery(document).ready(function($) {
     },
     hide_inactive_facets: true,
     facets: [
-        {'field': 'admin.application_status.exact', 'display': 'Suggestion Status'},
-        {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Suggested by owner?'},
+        {'field': 'admin.application_status.exact', 'display': 'Application Status'},
+        {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
 
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.oa_end.exact', 'display': 'Stopped publishing OA content (year)'},
     ],
     search_sortby: [
-        {'display':'Date suggested','field':'suggestion.suggested_on.exact'},
+        {'display':'Date applied','field':'suggestion.suggested_on.exact'},
         {'display':'Title','field':'bibjson.title.exact'},
     ],
     searchbox_fieldselect: [
@@ -76,7 +76,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Date suggested</strong>: ",
+                "pre": "<strong>Date applied</strong>: ",
                 "field": "suggestion.suggested_on",
             }
         ],
@@ -109,7 +109,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre" : "<strong>Suggested by</strong>: ",
+                "pre" : "<strong>Application by</strong>: ",
                 "field" : "suggestion.suggester.name"
             },
             {
@@ -118,7 +118,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Suggested by owner?</strong>: ",
+                "pre": "<strong>Application by owner?</strong>: ",
                 "field": "suggestion.suggested_by_owner"
             }
         ],

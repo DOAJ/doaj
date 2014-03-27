@@ -1,5 +1,57 @@
 jQuery(document).ready(function($) {
 
+    // define a new highlight function, letting us highlight any element
+    // on a page
+    // adapted from http://stackoverflow.com/a/11589350
+    jQuery.fn.highlight = function(color, fade_time) {
+       // some defaults
+       var color = color || "#F68B1F";  // the DOAJ color
+       var fade_time = fade_time || 1500;  // milliseconds
+
+       $(this).each(function() {
+            var el = $(this);
+            el.before("<div/>")
+            el.prev()
+                .width(el.width())
+                .height(el.height())
+                .css({
+                    "position": "absolute",
+                    "background-color": color,
+                    "opacity": ".9"   
+                })
+                .fadeOut(fade_time);
+        });
+    }
+
+    // animated scrolling to an anchor
+    jQuery.fn.anchorAnimate = function(settings) {
+
+        settings = jQuery.extend({
+            speed : 700
+        }, settings);   
+    
+        return this.each(function(){
+            var caller = this
+            $(caller).click(function (event) {  
+                event.preventDefault()
+                var locationHref = window.location.href
+                var elementClick = $(caller).attr("href")
+    
+                var destination = $(elementClick).offset().top;
+
+                $("html:not(:animated),body:not(:animated)").animate({ scrollTop: destination}, settings.speed, function() {
+                    window.location.hash = elementClick;  // ... but it also needs to be getting set here for the animation itself to work
+                });
+
+                setTimeout(function(){
+                    highlight_target();
+                }, settings.speed + 50);
+
+                return false;
+            })
+        })
+    }
+
     $("#submit_status").click(function(event) {
         event.preventDefault()
         
@@ -57,7 +109,7 @@ jQuery(document).ready(function($) {
     toggle_optional_field('license_embedded', ['#license_embedded_url']);
     toggle_optional_field('processing_charges', ['#processing_charges_amount', '#processing_charges_currency']);
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
-    toggle_optional_field('license', ['#license_checkbox'], ["other"]);
+    toggle_optional_field('license', ['#license_checkbox'], ["Other"]);
     
     $('#country').select2();
     $('#processing_charges_currency').select2();
@@ -75,7 +127,15 @@ jQuery(document).ready(function($) {
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
+
+    exclusive_checkbox('digital_archiving_policy', 'No policy in place');
+    exclusive_checkbox('article_identifiers', 'None');
+    exclusive_checkbox('deposit_policy', 'None');
     
+    if ("onhashchange" in window) {
+        window.onhashchange = highlight_target();
+        $('a.animated').anchorAnimate();
+    }
 });
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
@@ -134,4 +194,21 @@ function autocomplete(selector, doc_field, doc_type) {
         },
         createSearchChoice: function(term) {return {"id":term, "text": term};}
     });
+}
+
+function exclusive_checkbox(field_name, exclusive_val) {
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(function() {
+        if (this.checked) {
+            $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', true);
+            $('#' + field_name + ' .extra_input_field').prop('disabled', true);
+        } else {
+            $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', false);
+            $('#' + field_name + ' .extra_input_field').prop('disabled', false);
+        }
+    });
+}
+
+function highlight_target() {
+    console.log(window.location.hash);
+    $(window.location.hash).highlight()
 }

@@ -7,8 +7,8 @@ from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
 from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
 from portality.core import app, ssl_required
-import portality.models as models
-import portality.util as util
+from portality import models
+from portality import util
 
 blueprint = Blueprint('account', __name__)
 
@@ -104,12 +104,17 @@ def username(username):
             return render_template('account/view.html', account=acc)
 
 
-def get_redirect_target():
-    for target in request.args.get('next'), request.referrer:
+def get_redirect_target(form=None):
+    form_target = ''
+    if form and hasattr(form, 'next') and getattr(form, 'next'):
+        form_target = form.next.data
+
+    for target in form_target, request.args.get('next',[]):
         if not target:
             continue
         if target == util.is_safe_url(target):
             return target
+    return url_for('doaj.home')
 
 class RedirectForm(Form):
     next = HiddenField()
@@ -132,7 +137,8 @@ class LoginForm(RedirectForm):
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
 def login():
-    form = LoginForm(request.form, csrf_enabled=False)
+    current_info = {'next':request.args.get('next', '')}
+    form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
         password = form.password.data
         username = form.username.data
@@ -143,16 +149,18 @@ def login():
             login_user(user, remember=True)
             flash('Welcome back.', 'success')
             # return form.redirect('index')
-            return redirect(url_for('doaj.home'))
+            # return redirect(url_for('doaj.home'))
+            return redirect(get_redirect_target(form=form))
         else:
             flash('Incorrect username/password', 'error')
     if request.method == 'POST' and not form.validate():
-        flash('Invalid form', 'error')
+        flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
 def forgot():
+    CONTACT_INSTR = ' Please <a href="{url}">contact us.</a>'.format(url=url_for('doaj.contact'))
     if request.method == 'POST':
         # get hold of the user account
         un = request.form.get('un',"")
@@ -160,9 +168,13 @@ def forgot():
         if account is None: 
             account = models.Account.pull_by_email(un)
         if account is None:
-            flash('Sorry, your account username / email address is not recognised. Please contact us.')
+            util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
         
+        if not account.data.get('email'):
+            util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
+            return render_template('account/forgot.html')
+
         # if we get to here, we have a user account to reset
         #newpass = util.generate_password()
         #account.set_password(newpass)
@@ -188,10 +200,12 @@ def forgot():
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is ' + reset_url)
-        except:
-            flash('Email failed.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is' + reset_url)
+            app.logger.error(magic + "\n" + repr(e))
 
     return render_template('account/forgot.html')
 

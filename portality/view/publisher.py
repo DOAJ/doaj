@@ -2,7 +2,7 @@ from flask import Blueprint, request, abort, make_response, Response
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required
+from portality.core import app, ssl_required, restrict_to_role
 
 from portality import settings, models, article
 from portality.view.forms import SuggestionForm
@@ -16,8 +16,7 @@ blueprint = Blueprint('publisher', __name__)
 # restrict everything in admin to logged in users with the "publisher" role
 @blueprint.before_request
 def restrict():
-    if current_user.is_anonymous() or not current_user.has_role("publisher"):
-        abort(401)    
+    return restrict_to_role('publisher')
 
 @blueprint.route("/")
 @login_required

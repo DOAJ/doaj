@@ -3,7 +3,6 @@ A forms system
 
 Build a form template, build a handler for its submission, receive data from end users
 '''
-
 import json
 import sys
 import re
@@ -19,13 +18,26 @@ from flask_wtf import RecaptchaField
 
 from portality.core import app
 from portality import models
-from portality.datasets import country_options, language_options, currency_options
+from portality.datasets import country_options, language_options, currency_options, main_license_options
 
 blueprint = Blueprint('forms', __name__)
 
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
+EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
+URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
+
+optional_url_binary_choices = [('False', 'No')]
+optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
+binary_choices = [('True', 'Yes')] + optional_url_binary_choices
+
+other_val = 'Other'
+other_choice = (other_val, other_val)
+ternary_choices = binary_choices + [other_choice]
+optional_url_ternary_choices_optvals = optional_url_binary_choices_optvals  # "No" still makes the URL optional, from ["Yes", "No", "Other"]
+
+none_val = 'None'
 
 license_options = [
     ('', ''),
@@ -44,87 +56,123 @@ author_pays_options = [
     ('NY', 'No information'),
 ]
 
-__digital_archiving_policy_choices_1 = [
+digital_archiving_policy_no_policy_value = "No policy in place"
+digital_archiving_policy_specific_library_value = 'A national library'
+
+digital_archiving_policy_optional_url_choices = [
+    (digital_archiving_policy_no_policy_value, digital_archiving_policy_no_policy_value), 
+]
+digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
+
+__digital_archiving_policy_choices = [
     ('LOCKSS', 'LOCKSS'), 
     ('CLOCKSS', 'CLOCKSS'), 
     ('Portico', 'Portico'), 
     ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'), 
-]
+    (digital_archiving_policy_specific_library_value, digital_archiving_policy_specific_library_value), 
+] + [other_choice]
 
-digital_archiving_policy_optional_url_choices = [
-    ('No policy in place', 'No policy in place'), 
-]
+digital_archiving_policy_choices = digital_archiving_policy_optional_url_choices  + __digital_archiving_policy_choices
 
-digital_archiving_policy_optional_url_choices_optvals = [v[0] for v in digital_archiving_policy_optional_url_choices]
-
-__digital_archiving_policy_choices_2 = [
-    ('A national library. Please specify', 'A national library. Please specify:'), 
-    ('Other', 'Other')
-]
-
-digital_archiving_policy_choices = __digital_archiving_policy_choices_1 + digital_archiving_policy_optional_url_choices + __digital_archiving_policy_choices_2
-
-optional_url_binary_choices = [('False', 'No')]
-optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
-binary_choices = [('True', 'Yes')] + optional_url_binary_choices
-
-ternary_choices = binary_choices + [
-    ('Other', 'Other')
-]
 
 deposit_policy_choices = [
+    (none_val, none_val), 
     ('Sherpa/Romeo', 'Sherpa/Romeo'),
     ('Dulcinea', 'Dulcinea'),
     ('OAKlist', 'OAKlist'),
     ('H\xc3\xa9loise'.decode('utf-8'), 'H\xc3\xa9loise'.decode('utf-8')),
     ('Diadorum', 'Diadorum'), 
-    ('None', 'None'), 
-    ('Other', 'Other')
-]
+] + [other_choice]
 
-license_choices = [
-    ('cc-by', 'CC-BY'),
-    ('cc-by-sa', 'CC-BY-SA'),
-    ('cc-by-nc', 'CC-BY-NC'),
-    ('cc-by-nd', 'CC-BY-ND'),
-    ('cc-by-nc-nd', 'CC-BY-NC-ND'),
-    ('not-cc', 'No'), 
-    ('other', 'Other')
-]
+
+license_optional_url_choices = [ ('not-cc-like', 'No') ]
+license_optional_url_choices_optvals = [v[0] for v in license_optional_url_choices]
+
+license_choices = main_license_options + license_optional_url_choices + [other_choice]
 
 license_checkbox_choices = [
     ('by', 'Attribution'),
-    ('sa', 'Share Alike'),
     ('nc', 'No Commercial Usage'),
-    ('nd', 'No Derivatives')
+    ('nd', 'No Derivatives'),
+    ('sa', 'Share Alike'),
 ]
 
-review_process_choices = [
-    ('', ' '),
+review_process_optional_url_choices_1 = [ ('', ' ') ]
+review_process_optional_url_choices_2 = [ (none_val, none_val) ]
+review_process_optional_url_choices_optvals = [v[0] for v in review_process_optional_url_choices_1 + review_process_optional_url_choices_2]
+
+review_process_choices = review_process_optional_url_choices_1 + [
     ('Editorial review', 'Editorial review'), 
     ('Peer review', 'Peer review'),
     ('Blind peer review', 'Blind peer review'), 
     ('Double blind peer review', 'Double blind peer review'), 
     ('Open peer review', 'Open peer review'),
-    (False, 'None')
-]
+] + review_process_optional_url_choices_2
 
 fulltext_format_choices = [
     ('PDF', 'PDF'), 
     ('HTML', 'HTML'), 
     ('ePUB', 'ePUB'), 
     ('XML', 'XML'), 
-    ('Other', 'Other')
-]
+] + [other_choice]
 
 article_identifiers_choices = [
+    (none_val, none_val),
     ('DOI', 'DOI'),
     ('Handles', 'Handles'),
     ('ARK', 'ARK'),
     ('EzID', 'EzID'),
-    ('None', 'None'),
-    ('Other', 'Other')
-]
+] + [other_choice]
+
+def interpret_special(val):
+    if isinstance(val, basestring):
+        if val.lower() == 'true':
+            return True
+        elif val.lower() == 'false':
+            return False
+        elif val.lower() == 'none':
+            return None
+        elif val == digital_archiving_policy_no_policy_value:
+            return None
+
+    if isinstance(val, list):
+        if len(val) == 1:
+            actual_val = interpret_special(val[0])
+            if not actual_val:
+                return []
+            return val
+        return val
+
+    return val
+
+
+def interpret_other(value, other_field_data, other_value=other_val):
+    '''
+    Interpret a value list coming from (e.g.) checkboxes when one of
+    them says "Other" and allows free-text input.
+
+    The value can also be a string. In that case, if it matched other_value, other_field_data is returned
+    instead of the original value. This is for radio buttons with an "Other" option - you only get 1 value
+    from the form, but if it's "Other", you still need to replace it with the relevant free text field data.
+
+    :param value: String or list of values from the form.
+        checkboxes_field.data basically.
+    :param other_field_data: data from the Other inline extra text input field.
+        Usually checkboxes_field_other.data or similar.
+    :param other_value: Which checkbox has an extra field? Put its value in here. It's "Other" by default.
+        More technically: the value which triggers considering and adding the data in other_field to value.
+    '''
+    if isinstance(value, basestring):
+        if value == other_value:
+            return other_field_data
+    elif isinstance(value, list):
+        value = value[:]
+        # if "Other" (or some custom value) is in the there, remove it and take the data from the extra text field
+        if other_value in value and other_field_data:
+            value.remove(other_value)
+            value.append(other_field_data)
+    # don't know what else to do, just return it as-is
+    return value
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -144,9 +192,30 @@ class TagListField(Field):
         else:
             self.data = []
 
+class URLField(TextField):
+    widget = widgets.TextInput()
+
+    def process_formdata(self, valuelist):
+        val = valuelist[0]
+        assumed_scheme = 'http://'
+
+        if val and not val.startswith(assumed_scheme) and not URL_REQUIRED_SCHEME_REGEX.match(val):
+            self.data = assumed_scheme + val
+        else:
+            if val == assumed_scheme:  # just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere
+                self.data = u''
+            else:
+                self.data = val
+
 class OptionalIf(validators.Optional):
-    # a validator which makes a field optional if
-    # another field is set and has a truthy value
+    # A validator which makes a field optional if # another field is set
+    # and has a truthy value.
+
+    # Additionally, a list of values (optvals) can be specified - if any
+    # of those values are present in the other field, this field becomes
+    # optional. The other field having a truthy value is then no longer
+    # sufficient.
+    field_flags = ('display_required_star', )
 
     def __init__(self, other_field_name, optvals=[], *args, **kwargs):
         self.other_field_name = other_field_name
@@ -154,9 +223,7 @@ class OptionalIf(validators.Optional):
         super(OptionalIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
-        other_field = form._fields.get(self.other_field_name)
-        if other_field is None:
-            raise Exception('no field named "%s" in form' % self.other_field_name)
+        other_field = self.get_other_field(form)
 
         # if no values (for other_field) which make this field optional
         # are specified...
@@ -183,16 +250,147 @@ class OptionalIf(validators.Optional):
                     break
 
             if no_optval_matched:
-                raise validators.StopValidation('This field is required')
+                if not field.data:
+                    raise validators.StopValidation('This field is required')
 
     def __make_optional(self, form, field):
         super(OptionalIf, self).__call__(form, field)
         raise validators.StopValidation()
 
+    def get_other_field(self, form):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        return other_field
+
+
+class ExtraFieldRequiredIf(OptionalIf):
+    '''Another field is required if this field has a certain value, but must be empty for all other values of this field.'''
+    # A radio button has a related text field - we've got to:
+    # a/ require a value in the text input if the related radio
+    # button is checked.
+    # b/ raise an error if there is text present but the related radio
+    # button is not checked (people are far less likely to type text in
+    # by accident compared to forgetting to click on a button, so we
+    # cannot just ignore the text they've typed in).
+
+    # All of this holds for a checkbox with a related text field too.
+
+    def __init__(self, extra_field_name, reqval,
+            message_empty='You have selected "{reqval}" but have not provided any details.',
+            message_full='You have not selected "{reqval}" but have provided further details.',
+            *args, **kwargs):
+        self.extra_field_name = extra_field_name
+        self.reqval = reqval
+        self.message_empty = message_empty
+        self.message_full = message_full
+        super(ExtraFieldRequiredIf, self).__init__(extra_field_name, *args, **kwargs)
+
+    def __call__(self, form, field):
+        extra_field = self.get_extra_field(form)
+
+        # case A - this field is checked, but there's no data in
+        # the extra field
+        if self.reqval in field.data: # works both if this field is a list (checkbox fields) and a string (radio or other fields)
+            if not extra_field.data:
+                raise validators.ValidationError(self.message_empty.format(reqval=self.reqval))
+
+        # case B - the this field is not checked, but there is data in
+        # the extra field
+        if self.reqval not in field.data: # works both if this field is a list (checkbox fields) and a string (radio or other fields)
+            if extra_field.data:
+                raise validators.ValidationError(self.message_full.format(reqval=self.reqval))
+
+    def get_extra_field(self, form):
+        '''Alias get_other_field from the superclass to make its purpose clearer for this class.'''
+        return self.get_other_field(form)
+
+
+class ExclusiveCheckbox(object):
+    '''If a checkbox is checked, do not allow any other checkboxes to be checked.'''
+    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
+    # except where it will simplify a 50-field form, k?
+
+    def __init__(self, exclusive_checkbox_value=none_val, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
+        self.exclusive_checkbox_value = exclusive_checkbox_value
+        self.message = message
+
+    def __call__(self, form, field):
+        detected_exclusive = False
+        detected_others = False
+        for val in field.data:
+            if val == self.exclusive_checkbox_value:
+                detected_exclusive = True
+            else:
+                if val:
+                    detected_others = True
+
+        # if only one of them is true, it doesn't matter
+        # if both are false, no checkboxes have been checked - use a
+        # validators.Required() on the checkboxes field for that
+        # which leaves the case where both are True - and that is what
+        # this validator is all about
+
+        if detected_exclusive and detected_others:
+            raise validators.ValidationError(self.message
+                    .format(exclusive_checkbox_value=self.exclusive_checkbox_value)
+            )
+            # it won't insert the checkbox value anywhere if
+            # {exclusive_checkbox_value} is not present in the message
+            # passed to the constructor
+
+class URLOptionalScheme(validators.Regexp):
+    # copied from (around) https://github.com/wtforms/wtforms/blob/master/wtforms/validators.py#L375
+    """
+    Simple regexp based url validation. Much like the email validator, you
+    probably want to validate the url later by other means if the url must
+    resolve.
+
+    :param require_tld:
+        If true, then the domain-name portion of the URL must contain a .tld
+        suffix.  Set this to false if you want to allow domains like
+        `localhost`.
+    :param message:
+        Error message to raise in case of a validation error.
+    """
+    def __init__(self, require_tld=True, message=None):
+        tld_part = (require_tld and r'\.[a-z]{2,10}' or '')
+        # the original regex - the URL scheme is not optional
+        #regex = r'^[a-z]+://([^/:]+s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
+        super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
+
+    def __call__(self, form, field):
+        message = self.message
+        if message is None:
+            message = field.gettext('Invalid URL.')
+
+        super(URLOptionalScheme, self).__call__(form, field, message)
+
+
+class MaxLen(object):
+    '''
+    Maximum length validator. Works on anything which supports len(thing).
+
+    Use {max_len} in your custom message to insert the maximum length you've
+    specified into the message.
+    '''
+    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
+    # except where it will simplify a 50-field form, k?
+
+    def __init__(self, max_len, message='Maximum {max_len}.', *args, **kwargs):
+        self.max_len = max_len
+        self.message = message
+
+    def __call__(self, form, field):
+        if len(field.data) > self.max_len:
+            raise validators.ValidationError(self.message.format(max_len=self.max_len))
+
+
 class JournalInformationForm(Form):
     
-    url = TextField('URL', [validators.Required(), validators.URL()])
     title = TextField('Journal Title', [validators.Required()])
+    url = TextField('URL', [validators.Required(), validators.URL()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
     pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
     eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
@@ -211,22 +409,44 @@ class JournalForm(JournalInformationForm):
     keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
     languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
     
-class SuggestionForm(JournalInformationForm):
+class SuggestionForm(Form):
+    title = TextField('Journal Title', [validators.Required()])
+    url = URLField('URL', [validators.Required(), URLOptionalScheme()])
+    alternative_title = TextField('Alternative Title', [validators.Optional()])
+    pissn = TextField('Journal ISSN',
+        [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the ISSN with the hyphen "-" e.g. 1234-4321.',
+    )
+    eissn = TextField('Journal EISSN',
+        [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the EISSN with the hyphen "-" e.g. 1234-4321.',
+    )
+    publisher = TextField('Publisher',
+        [validators.Required()]
+    )
     society_institution = TextField('Society or Institution', 
-        [validators.Optional()]
+        [validators.Optional()],
+        description='The name of the Society or Institution that the journal belongs to',
     )
     platform = TextField('Platform, Host or Aggregator', 
-        [validators.Optional()]
+        [validators.Optional()],
+        description='The name of the platform, host or aggregator of the journal content. For example: HighWire Press, EBSCO.'
     )
     contact_name = TextField('Name of contact for this journal', 
-        [validators.Optional()]
+        [validators.Required()],
+        description='Somebody who DOAJ can contact about this journal',
     )
-    contact_email = TextField('Contact email', 
+    contact_email = TextField('Contact email address', 
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
-    confirm_contact_email = TextField('Confirm email', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
-    ) #must match contact_email
+    confirm_contact_email = TextField('Confirm contact email address', 
+        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
+    )
+    country = SelectField('In which country is the publisher of the journal based?',
+        [validators.Required()],
+        description='Select the country where the publishing company is legally registered',
+        choices=country_options,
+    )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)? Include relevant currency.', 
         [validators.Required()],
         description = 'If "Yes" then add the amount (average price) with currency', 
@@ -253,21 +473,26 @@ class SuggestionForm(JournalInformationForm):
         choices = currency_options,
     )    
     articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?', 
-        [validators.Required()],
+        [validators.Required(), validators.NumberRange(min=0)],
         description = 'A journal must publish at least 5 articles per year to stay in the DOAJ', 
     )
-    articles_last_year_url = TextField('Enter the URL where this information can be found', 
-        [validators.Required(), validators.URL()]
+    articles_last_year_url = URLField('Enter the URL where this information can be found', 
+        [validators.Required(), URLOptionalScheme()]
     )
     waiver_policy = RadioField('Does the journal have a waiver policy (for developing country authors etc)?', 
         [validators.Required()],
         choices = binary_choices 
     )
-    waiver_policy_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('waiver_policy', optvals=optional_url_binary_choices_optvals), validators.URL()]
+    waiver_policy_url = URLField('Enter the URL where this information can be found', 
+        [OptionalIf('waiver_policy', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?', 
-        [validators.Required()],
+        [
+            validators.Required(),
+            ExclusiveCheckbox(digital_archiving_policy_no_policy_value),
+            ExtraFieldRequiredIf('digital_archiving_policy_library', reqval=digital_archiving_policy_specific_library_value),
+            ExtraFieldRequiredIf('digital_archiving_policy_other', reqval=other_val),
+        ],
         description = "Select all that apply. Institutional archives and publishers' own online archives are not valid",  
         choices = digital_archiving_policy_choices, 
         option_widget=widgets.CheckboxInput(), 
@@ -277,8 +502,8 @@ class SuggestionForm(JournalInformationForm):
     )
     digital_archiving_policy_library = TextField('',
     )
-    digital_archiving_policy_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), validators.URL()],
+    digital_archiving_policy_url = URLField('Enter the URL where this information can be found', 
+        [OptionalIf('digital_archiving_policy', optvals=digital_archiving_policy_optional_url_choices_optvals), URLOptionalScheme()],
         description='This field is optional if you have only selected "No policy in place" above',
     )
     crawl_permission = RadioField('Does the journal allow anyone to crawl the full-text of the journal?', 
@@ -286,7 +511,7 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices
     )
     article_identifiers = SelectMultipleField('Which article identifiers does the journal use?', 
-        [validators.Required()],
+        [validators.Required(), ExtraFieldRequiredIf('article_identifiers_other', reqval=other_val), ExclusiveCheckbox()],
         description = 'For example DOIs, Handles, ARK, EzID etc',
         choices = article_identifiers_choices,
         option_widget=widgets.CheckboxInput(),   
@@ -304,14 +529,14 @@ class SuggestionForm(JournalInformationForm):
         choices = binary_choices 
     )
     download_statistics_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('download_statistics', optvals=optional_url_binary_choices_optvals)],
+        [validators.Optional()],
     )
-    first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles (Full Text may be provided as PDFs).', 
-        [validators.Required()], #TODO: validator for the year
-        description = 'Use format YYYY'
+    first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)', 
+        [validators.Required(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
+        description = 'Use 4 digits for the year, i.e. YYYY format'
     )
     fulltext_format = SelectMultipleField('Please indicate which formats of full text are available', 
-        [validators.Required()],
+        [validators.Required(), ExtraFieldRequiredIf('fulltext_format_other', reqval=other_val)],
         description = 'Tick all that apply', 
         choices = fulltext_format_choices, 
         option_widget=widgets.CheckboxInput(),   
@@ -320,56 +545,58 @@ class SuggestionForm(JournalInformationForm):
     fulltext_format_other = TextField('',
     )
     keywords = TagListField('Add keyword(s) that best describe the journal', 
-        [validators.Required()], 
+        [validators.Required(), MaxLen(6, message='You can only enter up to {max_len} keywords.')], 
         description='Maximum 6'
     )
-    languages = SelectMultipleField('In which language(s) is the Full Text of articles published? ', 
+    languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in', 
         [validators.Required()],
         choices = language_options,
         description="You can select multiple languages"
     )
-    editorial_board_url = TextField('What is the URL for the Editorial Board page?', 
-        [validators.Required(), validators.URL()], 
+    editorial_board_url = URLField('What is the URL for the Editorial Board page?', 
+        [validators.Required(), URLOptionalScheme()], 
         description = 'The journal must have either an editor or an editorial board with clearly identifiable members including affiliation information and email addresses.'
     ) 
     review_process = SelectField('Please select the review process for papers', 
         [validators.Required()],
-        choices = review_process_choices
+        choices = review_process_choices,
+        default = '',
     )
-    review_process_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('review_process'), validators.URL()]
+    review_process_url = URLField('Enter the URL where this information can be found', 
+        [OptionalIf('review_process', optvals=review_process_optional_url_choices_optvals), URLOptionalScheme()],
+        description = 'This field is optional if you have selected "None" above.'
     )
-    aims_scope_url = TextField("What is the URL for the journal's Aims & Scope", 
-        [validators.Required(), validators.URL()]
+    aims_scope_url = URLField("What is the URL for the journal's Aims & Scope", 
+        [validators.Required(), URLOptionalScheme()]
     )
-    instructions_authors_url = TextField("What is the URL for the journal's instructions for authors?", 
-        [validators.Required(), validators.URL()]
+    instructions_authors_url = URLField("What is the URL for the journal's instructions for authors?", 
+        [validators.Required(), URLOptionalScheme()]
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?', 
         [validators.Required()],
         choices = binary_choices 
     )
-    plagiarism_screening_url = TextField("Enter the URL where this information can be found", 
-        [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), validators.URL()]
+    plagiarism_screening_url = URLField("Enter the URL where this information can be found", 
+        [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication', 
-        [validators.Required()]
+        [validators.Required(), validators.NumberRange(min=0, max=53)]
     )
-    oa_statement_url = TextField("What is the URL for the journal's Open Access statement?", 
-        [validators.Required(), validators.URL()]
+    oa_statement_url = URLField("What is the URL for the journal's Open Access statement?", 
+        [validators.Required(), URLOptionalScheme()]
     )
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?', 
         [validators.Required()],
         choices = binary_choices, 
-        description = 'For more information go to http://wiki.creativecommons.org/Marking_works ',
+        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/Marking_works">http://wiki.creativecommons.org/Marking_works</a>',
     )
-    license_embedded_url = TextField("Please provide a URL to an example page with embedded licensing information",
-        [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), validators.URL()]
+    license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
+        [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?', 
-        [validators.Required()],
+        [validators.Required(), ExtraFieldRequiredIf('license_other', reqval=other_val)],
         choices = license_choices, 
-        description = 'For more information go to http://creativecommons.org/licenses/ '
+        description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
     )
     license_other = TextField('',
     )
@@ -378,16 +605,16 @@ class SuggestionForm(JournalInformationForm):
         option_widget=widgets.CheckboxInput(), 
         widget=widgets.ListWidget(prefix_label=False),
     )
-    license_url = TextField("Enter the URL on your site where your license terms are stated", 
-        [OptionalIf('license'), validators.URL()]
+    license_url = URLField("Enter the URL on your site where your license terms are stated", 
+        [validators.Optional(), URLOptionalScheme()]
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?", 
         [validators.Required()],
         choices = binary_choices, 
-        description = "From the Budapest Open Access Initiative's definition of Open Access: http://www.budapestopenaccessinitiative.org/read ",
+        description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>',
     )
-    deposit_policy = SelectMultipleField('Whit which deposit policy directory does the journal have a registered deposit policy?', 
-        [validators.Required()], 
+    deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?', 
+        [validators.Required(), ExtraFieldRequiredIf('deposit_policy_other', reqval=other_val), ExclusiveCheckbox()], 
         description = 'Select all that apply.', 
         choices = deposit_policy_choices,
         option_widget=widgets.CheckboxInput(), 
@@ -396,22 +623,22 @@ class SuggestionForm(JournalInformationForm):
     deposit_policy_other = TextField('',
     )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?', 
-        [validators.Required()],
+        [validators.Required(), ExtraFieldRequiredIf('copyright_other', reqval=other_val)],
         choices = ternary_choices 
     )
     copyright_other = TextField('',
     )
-    copyright_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('copyright'), validators.URL()]
+    copyright_url = URLField('Enter the URL where this information can be found', 
+        [OptionalIf('copyright', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?', 
-        [validators.Required()], 
+        [validators.Required(), ExtraFieldRequiredIf('publishing_rights_other', reqval=other_val)], 
         choices = ternary_choices
     )
     publishing_rights_other = TextField('',
     )
-    publishing_rights_url = TextField('Enter the URL where this information can be found', 
-        [OptionalIf('publishing_rights'), validators.URL()]
+    publishing_rights_url = URLField('Enter the URL where this information can be found', 
+        [OptionalIf('publishing_rights', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
     suggester_name = TextField('Your Name', 
         [validators.Required()]
@@ -420,8 +647,8 @@ class SuggestionForm(JournalInformationForm):
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
     suggester_email_confirm = TextField('Confirm your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
-    ) #must match suggester_email
+        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+    )
 
 
 

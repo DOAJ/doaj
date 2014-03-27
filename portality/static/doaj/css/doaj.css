@@ -43,6 +43,14 @@ select {
     width: 20px;
 }
 
+.box .long-label {
+    line-height: 32px;
+}
+
+.box-row + .box-row {
+    margin-top: 2em;
+}
+
 .centre-text-container,
 .big.box {
     text-align: center;
@@ -59,7 +67,7 @@ select {
 }
 
 .big.box {
-    padding: 2em;
+    padding: 1em;
     font-size: 250%;
 }
 
@@ -142,8 +150,40 @@ select {
     width: 200px;
 }
 
-.form-horizontal.wide .controls {
+.form-horizontal.wide .controls,
+.form-horizontal.wide .form-status,
+.form-horizontal.wide .heading-aligned-with-fields
+{
     margin-left: 220px;
+}
+
+.form-horizontal.wide h1,
+.form-horizontal.wide h2,
+.form-horizontal.wide h3,
+.form-horizontal.wide h4,
+.form-horizontal.wide h5,
+.form-horizontal.wide h6 {
+    margin-bottom: 1em;
+}
+
+.form-horizontal.wide .form-status {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+}
+
+.form-horizontal.wide .form-section {
+    margin-top: 1em;
+    padding: 0.5em 1.5em;  /* top/bottom, left/right */
+}
+
+.control-group.error .help-block,
+.control-group.error .help-inline,
+.control-group.error .radio {
+    color: #333;
+}
+
+.error ul.errors {
+    color: #D60500;
 }
 
 .error .select2-choice {
@@ -155,9 +195,14 @@ select {
     color: #555;
 }
 
-.checkboxes  ul {
+.checkboxes ul {
     list-style: none outside none;
     margin-left: 0;
+}
+
+.checkboxes ul.errors {
+    list-style: disc;
+    margin-left: 25px;
 }
 
 .checkboxes label {
@@ -237,6 +282,12 @@ footer > .box + .box {
     max-height: 100px;
     margin-top: 0.5em;
 }
+
+/* From suggestion form */
+#digital_archiving_policy_library {
+    width: 150px;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {

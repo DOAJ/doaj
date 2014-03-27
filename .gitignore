@@ -1,10 +1,14 @@
 *.pyc
 *.egg-info/*
-.*.swp
 src*
 .Python
 build/*
 dist/*
+
+# PyCharm and other IntelliJ-based IDE-s and editors' folder:
+.idea
+# vim swap files
+.*.swp
 
 app.cfg
 
