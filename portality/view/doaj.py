@@ -208,6 +208,7 @@ def autocomplete(doc_type, field_name):
 def toc(identifier=None, volume=None):
     # identifier may be the journal id or an issn
     journal = None
+    jid = identifier # track the journal id - this may be an issn, in which case this will get overwritten
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier)
         if len(js) > 1:
@@ -215,12 +216,13 @@ def toc(identifier=None, volume=None):
         if len(js) == 0:
             abort(404)
         journal = js[0]
+        jid = journal.id
     else:
         journal = models.Journal.pull(identifier)
     if journal is None:
         abort(404)
     
-    all_volumes = models.JournalVolumeToC.list_volumes(identifier)
+    all_volumes = models.JournalVolumeToC.list_volumes(jid)
     all_volumes = _sort_volumes(all_volumes)
     
     if volume is None and len(all_volumes) > 0:
@@ -228,7 +230,7 @@ def toc(identifier=None, volume=None):
     
     table = None
     if volume is not None:
-        table = models.JournalVolumeToC.get_toc(identifier, volume)
+        table = models.JournalVolumeToC.get_toc(jid, volume)
         if table is None:
             abort(404)
     
