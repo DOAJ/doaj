@@ -188,6 +188,12 @@ def csv_data():
     csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
     return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
 
+@blueprint.route("/sitemap.xml")
+def sitemap():
+    sitemap_file = models.Cache.get_latest_sitemap()
+    sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
+    return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q','').lower()

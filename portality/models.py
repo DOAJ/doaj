@@ -1162,7 +1162,7 @@ class JournalQuery(object):
         }
     }
     
-    _minified_fields = ["id", "bibjson.title"]
+    _minified_fields = ["id", "bibjson.title", "last_updated"]
     
     def __init__(self, minified=False, sort_by_title=False):
         self.query = None
@@ -2201,6 +2201,21 @@ class Cache(DomainObject):
     @classmethod
     def get_latest_csv(cls):
         rec = cls.pull("csv")
+        if rec is None:
+            return None
+        return rec.get("filename")
+    
+    @classmethod
+    def cache_sitemap(cls, filename):
+        cobj = cls(**{
+            "filename" : filename
+        })
+        cobj.set_id("sitemap")
+        cobj.save()
+    
+    @classmethod
+    def get_latest_sitemap(cls):
+        rec = cls.pull("sitemap")
         if rec is None:
             return None
         return rec.get("filename")
