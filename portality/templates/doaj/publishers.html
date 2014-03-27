@@ -45,6 +45,31 @@ published to the site by an automated script that runs every hour.</li>
 
 <br><br>
 
+<h3>How do I correct an error in article metadata?</h3>
+
+<p>If you need to correct an error, you must upload the metadata again. To make sure that your new upload overwrites
+the old one, at least one piece of key metadata in the new file must match the same piece of metadata in the old file. 
+The 3 specific pieces of key metadata that we look for are, in priority order:</p>
+
+<ol><li><b>article ID - the "Provider Record ID"</b> (in the XML) as specified by the DOAJ schema 
+(http://doaj.org/static/doaj/doajArticles.xsd). This is your own ID for the article and will be whatever value you put
+in that tag in the XML.</li>
+  <li><b>DOI</b> - if you assign DOIs to your articles then we will match on the DOI.</li>
+  <li><b>Full Text URL</b> - this is the URL that you give us for the full text of the article.</li>
+</ol>
+
+<p>If there is no article ID our site will look for a DOI. If there is no DOI, it will look for the Full Text URL.</p>
+
+<p><b>Some examples</b></p>
+<p>Use case 1: a publisher wants to correct some article metadata because an author is missing. The publisher must
+reupload the file. The publisher's article ID in the XML is the same so the site automatically overwrites the older
+version.<br>
+  Use case 2: a publisher wants to correct the URL for their full text articles because their site has moved. 
+  The publisher does not use article IDS or DOIs. The publisher must upload a new version. No automatic overwriting
+  will happen because no matching can occur so the publisher must contact us so we can remove the older version.</p>
+
+<br><br>
+
 <h3>Applying for your journal to be in DOAJ</h3>
 
 <p>For a journal to be included in DOAJ, it must go through the new application process. Due to the nature of the 
