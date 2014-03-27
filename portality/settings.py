@@ -256,7 +256,7 @@ STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 # approximate rate of change of the Table of Contents for journals
 TOC_CHANGEFREQ = "monthly"
 
-STATIC_PAGES = {
+STATIC_PAGES = [
     ("", "monthly"), # home page
     ("/search", "daily"),
     ("/toc", "monthly"),
@@ -273,7 +273,7 @@ STATIC_PAGES = {
     ("/features", "monthly"),
     ("/oainfo", "monthly"),
     ("/sponsors", "monthly")
-}
+]
 
 
 
