@@ -2302,16 +2302,22 @@ class JournalVolumeToC(DomainObject):
         # now do the combined numeric and non-numeric sorting
         numeric = []
         non_numeric = []
+        nmap = {}
         for n in numbers:
             try:
-                numeric.append(int(n))
+                # try to convert n to an int
+                nint = int(n)
+                numeric.append(nint)
+                
+                # remember the original string (it may have leading 0s)
+                nmap[nint] = n
             except:
                 non_numeric.append(n)
         
         numeric.sort(reverse=True)
         non_numeric.sort(reverse=True)
         
-        sorted_keys = [str(n) for n in numeric] + non_numeric
+        sorted_keys = [nmap[n] for n in numeric] + non_numeric # convert the numbers back to their original representations
         sorted_issues = [imap[n].data for n in sorted_keys]
         
         self.data["issues"] = sorted_issues
