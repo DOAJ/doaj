@@ -237,7 +237,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid='', retry=10):
+    def send_query(cls, qobj, endpoint='_search', recid='', retry=50):
         '''Actually send a query object to the backend.'''
         r = None
         count = 0
