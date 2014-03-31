@@ -221,6 +221,9 @@ SCHEMAS = {
     "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
 }
 
+# maximum size of files that can be provided by-reference (the default value is 250Mb)
+MAX_REMOTE_SIZE = 262144000
+
 # =================================
 # ReCaptcha settings
 # We use per-domain, not global keys
