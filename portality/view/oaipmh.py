@@ -894,8 +894,9 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
             idel.text = identifier.get("id")
         
         # our internal identifier (currently just links to the search results page)
-        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        url = app.config['BASE_URL'] + "/search?" + query
+        #query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
+        #url = app.config['BASE_URL'] + "/search?" + query
+        url = app.config["BASE_URL"] + "/toc/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         idel.text = url
         
