@@ -121,7 +121,6 @@ article_identifiers_choices = [
     ('DOI', 'DOI'),
     ('Handles', 'Handles'),
     ('ARK', 'ARK'),
-    ('EzID', 'EzID'),
 ] + [other_choice]
 
 def interpret_special(val):
@@ -512,7 +511,6 @@ class SuggestionForm(Form):
     )
     article_identifiers = SelectMultipleField('Which article identifiers does the journal use?', 
         [validators.Required(), ExtraFieldRequiredIf('article_identifiers_other', reqval=other_val), ExclusiveCheckbox()],
-        description = 'For example DOIs, Handles, ARK, EzID etc',
         choices = article_identifiers_choices,
         option_widget=widgets.CheckboxInput(),   
         widget=widgets.ListWidget(prefix_label=False),
