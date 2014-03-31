@@ -2405,6 +2405,55 @@ class JournalIssueToC(object):
         if isinstance(article, Article):
             article = article.data
         self.data["articles"].append(article)
+        self._sort_articles()
+    
+    def _sort_articles(self):
+        # first extract the array we want to sort on
+        # and make a map of that value to the issue itself
+        unsorted = []
+        numbers = []
+        imap = {}
+        for art in self.articles:
+            sp = art.bibjson().start_page
+            
+            # can't sort anything that doesn't have a start page
+            if sp is None:
+                unsorted.append(art)
+                continue
+            
+            # deal with start page clashes and record the start pages
+            # to sort by
+            if sp not in numbers:
+                numbers.append(sp)
+            if sp in imap:
+                imap[sp].append(art)
+            else:
+                imap[sp] = [art]
+        
+        # now do the combined numeric and non-numeric sorting
+        numeric = []
+        non_numeric = []
+        nmap = {}
+        for n in numbers:
+            try:
+                # try to convert n to an int
+                nint = int(n)
+                numeric.append(nint)
+                
+                # remember the original string
+                nmap[nint] = n
+            except:
+                non_numeric.append(n)
+        
+        numeric.sort()
+        non_numeric.sort()
+        
+        sorted_keys = [nmap[n] for n in numeric] + non_numeric # convert the numbers back to their original representations
+        s = []
+        for n in sorted_keys:
+            s += [x.data for x in imap[n]]
+        
+        self.data["articles"] = s
 
 class VolumesToCQuery(object):
     base_query = {
