@@ -391,8 +391,8 @@ class JournalInformationForm(Form):
     title = TextField('Journal Title', [validators.Required()])
     url = TextField('URL', [validators.Required(), validators.URL()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
-    pissn = TextField('Journal ISSN', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
-    eissn = TextField('Journal EISSN', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    pissn = TextField('Journal ISSN (print version)', [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
+    eissn = TextField('Journal ISSN (online version)', [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)])
     publisher = TextField('Publisher', [validators.Required()])
     oa_start_year = IntegerField('Year in which the journal <strong>started</strong> publishing OA content', [validators.Required(), validators.NumberRange(min=1600)])
     country = SelectField('Country', [validators.Required()], choices=country_options)
@@ -412,13 +412,13 @@ class SuggestionForm(Form):
     title = TextField('Journal Title', [validators.Required()])
     url = URLField('URL', [validators.Required(), URLOptionalScheme()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
-    pissn = TextField('Journal ISSN',
+    pissn = TextField('Journal ISSN (print version)',
         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the ISSN with the hyphen "-" e.g. 1234-4321.',
+        description='Please provide either a print ISSN or an online ISSN, or both. At least one identifier is needed.<br><br>Enter the ISSN with the hyphen "-" e.g. 1234-4321.',
     )
-    eissn = TextField('Journal EISSN',
+    eissn = TextField('Journal ISSN (online version)',
         [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either an ISSN or an EISSN, or both. At least one identifier is needed.<br><br>Enter the EISSN with the hyphen "-" e.g. 1234-4321.',
+        description='Please provide either a print ISSN or an online ISSN, or both. At least one identifier is needed.<br><br>Enter the EISSN with the hyphen "-" e.g. 1234-4321.',
     )
     publisher = TextField('Publisher',
         [validators.Required()]
@@ -687,8 +687,8 @@ class ArticleForm(Form):
     fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()])
     publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = SelectField("Journal ISSN", [ThisOrThat("eissn")], choices=[]) # choices set at construction
-    eissn = SelectField("Journal E-ISSN", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+    pissn = SelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = SelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
  
     volume = TextField("Volume Number", [validators.Optional()])
     number = TextField("Issue Number", [validators.Optional()])
