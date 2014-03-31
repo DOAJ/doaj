@@ -41,6 +41,12 @@ for s in suggestion_iterator:
     if s.application_status == "answer received":
         s.set_application_status("in progress")
         
+    # remove any EzID from the persistent identifier schemes
+    pids = s.bibjson().persistent_identifier_scheme
+    if "EzID" in pids:
+        i = pids.index("EzID")
+        del pids[i]
+    s.bibjson().persistent_identifier_scheme = pids
     
     s.prep()
     batch.append(s.data)
