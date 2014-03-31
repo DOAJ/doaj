@@ -213,9 +213,14 @@ class GenericBibJSON(object):
     def subjects(self):
         return self.bibjson.get("subject", [])
     
+    def set_subjects(self, subjects):
+        self.bibjson["subject"] = subjects
+    
     def remove_subjects(self):
         if "subject" in self.bibjson:
             del self.bibjson["subject"]
+    
+    
 
 ############################################################################
 
@@ -799,8 +804,8 @@ class Journal(DomainObject):
         row.append( self.created_date ) # Date created
         row.append( multival_sep.join([subject['term'] for subject in bibjson.subjects()]) ) # Subject terms
         row.append( index.get('country', '') ) # Country
-        row.append( bibjson.author_pays ) # author pays
-        row.append(bibjson.author_pays_url) # author pays url
+        row.append( "" ) # author pays - DEPRECATED
+        row.append("") # author pays url - DEPRECATED
 
         # for now, follow the strange format of the CC License column
         # that the old CSV had. Also, only take the first CC license we see!

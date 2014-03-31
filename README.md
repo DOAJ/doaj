@@ -163,11 +163,7 @@ It is likely that history records will only be created upon request by the admin
                 "SA": true/false,
                 "embedded" : true|false # is the licence metadata embedded in the article pages>
             }
-        ],
-        
-        # Require migration to "apc"
-        "author_pays_url" : "<charging link>",
-        "author_pays" : true|false
+        ]
     },
     "history" : [
         {

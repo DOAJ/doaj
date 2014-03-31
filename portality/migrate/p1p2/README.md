@@ -22,6 +22,15 @@ They should be run individually in the following order:
 10. Set up the cron jobs for ingesting articles
 11. Set up cron job to generate CSV.
 
+==============================
+
+12. journalrestructure.py - data model restructuring on journal objects: remove author_pays/author_pays_url and DOAJ subject classifications
+13. suggestionrestructure.py - data model restructuring on suggestion objects: remove author_pays/author_pays_url
+
+
+n. Run journal info again ...
+
+
 The following files are scripts generated in the development of the migrate scripts and should NOT be run as part of the migration:
 
 1. uploadedfilenames.py - investigates uploaded files for the filenames and publishers to see if there are any obvious duplicates
