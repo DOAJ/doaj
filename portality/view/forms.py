@@ -429,7 +429,7 @@ class SuggestionForm(Form):
     )
     platform = TextField('Platform, Host or Aggregator', 
         [validators.Optional()],
-        description='The name of the platform, host or aggregator of the journal content. For example: HighWire Press, EBSCO.'
+        description='The name of the platform, host or aggregator of the journal content, e.g. OJS, HighWire Press, EBSCO etc.'
     )
     contact_name = TextField('Name of contact for this journal', 
         [validators.Required()],
