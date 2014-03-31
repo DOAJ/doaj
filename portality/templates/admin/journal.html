@@ -20,9 +20,28 @@
     {% endif %}
 
     {% from "_formhelpers.html" import render_field_horizontal %}
+    {% if journal['admin']['in_doaj'] %}
+      <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=journal['id']) }}" class="form-horizontal" id="journal_deactivate_form">
+        <fieldset>
+          <div class="control-group">
+              <div class="controls"><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></div>
+          </div>
+        <fieldset>
+      </form>
+
+    {% else %}
+      <form method="post" action="{{ url_for('admin.journal_activate', journal_id=journal['id']) }}" class="form-horizontal" id="journal_activate_form">
+        <fieldset>
+          <div class="control-group">
+              <div class="controls"><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></div>
+          </div>
+        <fieldset>
+      </form>
+
+    {% endif %}
+
     <form method="post" action="{{ url_for('admin.journal_page', journal_id=journal['id']) }}" class="form-horizontal" id="suggest_form">
       <fieldset>
-        {{ render_field_horizontal(form.in_doaj) }}
         {{ render_field_horizontal(form.url, class="input-xlarge") }}
         {{ render_field_horizontal(form.title, class="input-xlarge") }}
         {{ render_field_horizontal(form.alternative_title, class="input-xlarge") }}
