@@ -95,13 +95,15 @@ def query(path='Pages'):
                 qs = dict(request.form).keys()[-1]
         elif 'q' in request.values:
             qs = {'query': {'query_string': { 'query': request.values['q'] }}}
+            if 'default_operator' in request.values:
+                qs['query']['query_string']['default_operator'] = request.values['default_operator']
         elif 'source' in request.values:
             qs = json.loads(urllib2.unquote(request.values['source']))
         else: 
             qs = {'query': {'match_all': {}}}
 
         for item in request.values:
-            if item not in ['q','source','callback','_'] and isinstance(qs,dict):
+            if item not in ['q','source','callback','_', 'default_operator'] and isinstance(qs,dict):
                 qs[item] = request.values[item]
 
         if 'sort' not in qs and app.config.get('DEFAULT_SORT',False):
