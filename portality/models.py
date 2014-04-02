@@ -1421,7 +1421,7 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
     
-    def merge(self, old):
+    def merge(self, old, take_id=True):
         # this takes an old version of the article and brings
         # forward any useful information that is needed.  The rules of merge are:
         # - ignore "index" (it gets regenerated on save)
@@ -1433,7 +1433,7 @@ class Article(DomainObject):
         self.set_created(old.created_date)
         
         # take the id
-        if self.id is None:
+        if self.id is None or take_id:
             self.set_id(old.id)
         
         # take the history

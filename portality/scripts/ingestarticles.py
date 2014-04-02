@@ -10,7 +10,9 @@ if upload_dir is None:
 
 # our first task is to dereference and validate any remote files
 to_download = models.FileUpload.list_remote()
+do_sleep = False
 for remote in to_download:
+    do_sleep = True
     path = os.path.join(upload_dir, remote.local_filename)
     print "downloading", remote.filename
     try:
@@ -78,8 +80,9 @@ for remote in to_download:
     print "...success"
     
 # in between, issue a refresh request and wait for the index to sort itself out
-models.FileUpload.refresh()
-time.sleep(5)
+if do_sleep:
+    models.FileUpload.refresh()
+    time.sleep(5)
 
 to_process = models.FileUpload.list_valid() # returns an iterator
 for upload in to_process:
@@ -120,3 +123,7 @@ for upload in to_process:
             os.remove(path)
         except:
             pass
+    
+    # always refresh before moving on to the next file
+    models.Article.refresh()
+    time.sleep(5)
