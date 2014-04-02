@@ -1,0 +1,3016 @@
+<subjects>
+  <subject>
+    <name>Agriculture</name>
+    <code>S</code>
+  </subject>
+  <subject>
+    <name>Aquaculture. Fisheries. Angling</name>
+    <code>SH1-691</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>Forestry</name>
+    <code>SD1-669.5</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>Plant culture</name>
+    <code>SB1-1110</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>Fine Arts</name>
+    <code>N</code>
+  </subject>
+  <subject>
+    <name>Architecture</name>
+    <code>NA1-9428</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Education</name>
+    <code>L</code>
+  </subject>
+  <subject>
+    <name>History of education</name>
+    <code>LA5-2396</code>
+    <parent>Education</parent>
+  </subject>
+  <subject>
+    <name>Special aspects of education</name>
+    <code>LC8-6691</code>
+    <parent>Education</parent>
+  </subject>
+  <subject>
+    <name>Theory and practice of education</name>
+    <code>LB5-3640</code>
+    <parent>Education</parent>
+  </subject>
+  <subject>
+    <name>Technology</name>
+    <code>T</code>
+  </subject>
+  <subject>
+    <name>Bridge engineering</name>
+    <code>TG1-470</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Building construction</name>
+    <code>TH1-9745</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Chemical technology</name>
+    <code>TP1-1185</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Electrical engineering. Electronics. Nuclear engineering</name>
+    <code>TK1-9971</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Electronics</name>
+    <code>TK7800-8360</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Computer engineering. Computer hardware</name>
+    <code>TK7885-7895</code>
+    <parent>Electronics</parent>
+  </subject>
+  <subject>
+    <name>Engineering (General). Civil engineering (General)</name>
+    <code>TA1-2040</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Transportation engineering</name>
+    <code>TA1001-1280</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Environmental technology. Sanitary engineering</name>
+    <code>TD1-1066</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Environmental protection</name>
+    <code>TD169-171.8</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Environmental pollution</name>
+    <code>TD172-193.5</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Environmental effects of industries and plants</name>
+    <code>TD194-195</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Handicrafts. Arts and crafts</name>
+    <code>TT1-999</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Highway engineering. Roads and pavements</name>
+    <code>TE1-450</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Home economics</name>
+    <code>TX1-1110</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Hydraulic engineering</name>
+    <code>TC1-978</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Manufactures</name>
+    <code>TS1-2301</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Mechanical engineering and machinery</name>
+    <code>TJ1-1570</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Mining engineering. Metallurgy</name>
+    <code>TN1-997</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Motor vehicles. Aeronautics. Astronautics</name>
+    <code>TL1-4050</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Photography</name>
+    <code>TR1-1050</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Naval Science</name>
+    <code>V</code>
+  </subject>
+  <subject>
+    <name>Naval architecture. Shipbuilding. Marine engineering</name>
+    <code>VM1-989</code>
+    <parent>Naval Science</parent>
+  </subject>
+  <subject>
+    <name>General Works</name>
+    <code>A</code>
+  </subject>
+  <subject>
+    <name>Academies and learned societies</name>
+    <code>AS1-945</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Dictionaries and other general reference works</name>
+    <code>AG2-600</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>History of scholarship and learning. The humanities</name>
+    <code>AZ20-999</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Museums. Collectors and collecting</name>
+    <code>AM1-501</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Newspapers</name>
+    <code>AN</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Periodicals</name>
+    <code>AP1-271</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Geography. Anthropology. Recreation</name>
+    <code>G</code>
+  </subject>
+  <subject>
+    <name>Anthropology</name>
+    <code>GN1-890</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Ethnology. Social and cultural anthropology</name>
+    <code>GN301-674</code>
+    <parent>Anthropology</parent>
+  </subject>
+  <subject>
+    <name>Folklore</name>
+    <code>GR1-950</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Human ecology. Anthropogeography</name>
+    <code>GF1-900</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Manners and customs (General)</name>
+    <code>GT1-7070</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Recreation. Leisure</name>
+    <code>GV1-1860</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Environmental sciences</name>
+    <code>GE1-350</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Oceanography</name>
+    <code>GC1-1581</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Physical geography</name>
+    <code>GB3-5030</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Auxiliary sciences of history</name>
+    <code>C</code>
+  </subject>
+  <subject>
+    <name>Archaeology</name>
+    <code>CC1-960</code>
+    <parent>Auxiliary sciences of history</parent>
+  </subject>
+  <subject>
+    <name>Diplomatics. Archives. Seals</name>
+    <code>CD1-6471</code>
+    <parent>Auxiliary sciences of history</parent>
+  </subject>
+  <subject>
+    <name>Biography</name>
+    <code>CT21-9999</code>
+    <parent>Auxiliary sciences of history</parent>
+  </subject>
+  <subject>
+    <name>History of Civilization</name>
+    <code>CB3-482</code>
+    <parent>Auxiliary sciences of history</parent>
+  </subject>
+  <subject>
+    <name>History (General) and history of Europe</name>
+    <code>D</code>
+  </subject>
+  <subject>
+    <name>History of Africa</name>
+    <code>DT1-3415</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Asia</name>
+    <code>DS1-937</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Old Norse literature: Old Icelandic and Old Norwegian</name>
+    <code>PT7101-7338</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>History of France</name>
+    <code>DC1-947</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Germany</name>
+    <code>DD1-905</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Great Britain</name>
+    <code>DA1-995</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Greece</name>
+    <code>DF10-951</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Italy</name>
+    <code>DG11-999</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Northern Europe. Scandinavia</name>
+    <code>DL1-1180</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Oceania (South Seas)</name>
+    <code>DU1-950</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Russia. Soviet Union. Former Soviet Republics</name>
+    <code>DK1-4735</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Spain</name>
+    <code>DP1-402</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of the Greco-Roman World</name>
+    <code>DE1-100</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History America</name>
+    <code>E-F</code>
+  </subject>
+  <subject>
+    <name>America</name>
+    <code>E11-143</code>
+    <parent>History America</parent>
+  </subject>
+  <subject>
+    <name>United States</name>
+    <code>E151-889</code>
+    <parent>History America</parent>
+  </subject>
+  <subject>
+    <name>Language and Literature</name>
+    <code>P</code>
+  </subject>
+  <subject>
+    <name>American literature</name>
+    <code>PS1-3576</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>English language</name>
+    <code>PE1-3729</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>English literature</name>
+    <code>PR1-9680</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>French literature - Italian literature - Spanish literature - Portuguese literature</name>
+    <code>PQ1-3999</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>German literature</name>
+    <code>PT1-4897</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Greek language and literature. Latin language and literature</name>
+    <code>PA</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Greek philology and language</name>
+    <code>PA201-899</code>
+    <parent>Greek language and literature. Latin language and literature</parent>
+  </subject>
+  <subject>
+    <name>Indo-Iranian languages and literature</name>
+    <code>PK1-9601</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Languages and literature of Eastern Asia, Africa, Oceania</name>
+    <code>PL1-8844</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Literature (General)</name>
+    <code>PN1-6790</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Drama</name>
+    <code>PN1600-3307</code>
+    <parent>Literature (General)</parent>
+  </subject>
+  <subject>
+    <name>Motion pictures</name>
+    <code>PN1993-1999</code>
+    <parent>Drama</parent>
+  </subject>
+  <subject>
+    <name>Dramatic representation. The theater</name>
+    <code>PN2000-3307</code>
+    <parent>Drama</parent>
+  </subject>
+  <subject>
+    <name>Oriental languages and literatures</name>
+    <code>PJ</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Romanic languages</name>
+    <code>PC1-5498</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Slavic languages. Baltic languages. Albanian languages</name>
+    <code>PG1-9665</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Ural-Altaic languages</name>
+    <code>PH1-5490</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Law</name>
+    <code>K</code>
+  </subject>
+  <subject>
+    <name>History of Central Europe</name>
+    <code>DAW1001-1051</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Eastern Europe</name>
+    <code>DJK1-77</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Law of Europe</name>
+    <code>KJ-KKZ</code>
+    <parent>Law</parent>
+  </subject>
+  <subject>
+    <name>History of Law</name>
+    <code>KJ2-1040</code>
+    <parent>Law of Europe</parent>
+  </subject>
+  <subject>
+    <name>Drawing. Design. Illustration</name>
+    <code>NC1-1940</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Social legislation</name>
+    <code>K7585-7595</code>
+    <parent>Private international law. Conflict of laws</parent>
+  </subject>
+  <subject>
+    <name>Law of nations</name>
+    <code>KZ2-6785</code>
+    <parent>Law</parent>
+  </subject>
+  <subject>
+    <name>Architectural drawing and design</name>
+    <code>NA2695-2793</code>
+    <parent>Architecture</parent>
+  </subject>
+  <subject>
+    <name>Bibliography. Library science. Information resources</name>
+    <code>Z</code>
+  </subject>
+  <subject>
+    <name>Information resources (General)</name>
+    <code>ZA3040-5185</code>
+    <parent>Bibliography. Library science. Information resources</parent>
+  </subject>
+  <subject>
+    <name>Medicine</name>
+    <code>R</code>
+  </subject>
+  <subject>
+    <name>Dentistry</name>
+    <code>RK1-715</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Dermatology</name>
+    <code>RL1-803</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Gynecology and obstetrics</name>
+    <code>RG1-991</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Homeopathy</name>
+    <code>RX1-681</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Internal medicine</name>
+    <code>RC31-1245</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Neurosciences. Biological psychiatry. Neuropsychiatry</name>
+    <code>RC321-571</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Neurology. Diseases of the nervous system</name>
+    <code>RC346-429</code>
+    <parent>Neurosciences. Biological psychiatry. Neuropsychiatry</parent>
+  </subject>
+  <subject>
+    <name>Special situations and conditions</name>
+    <code>RC952-1245</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Geriatrics</name>
+    <code>RC952-954.6</code>
+    <parent>Special situations and conditions</parent>
+  </subject>
+  <subject>
+    <name>Nursing</name>
+    <code>RT1-120</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Ophthalmology</name>
+    <code>RE1-994</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Other systems of medicine</name>
+    <code>RZ201-999</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Otorhinolaryngology</name>
+    <code>RF1-547</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Pathology</name>
+    <code>RB1-214</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Pediatrics</name>
+    <code>RJ1-570</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Pharmacy and materia medica</name>
+    <code>RS1-441</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Public aspects of medicine</name>
+    <code>RA1-1270</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Surgery</name>
+    <code>RD1-811</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Therapeutics. Pharmacology</name>
+    <code>RM1-950</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Music and books on Music</name>
+    <code>M</code>
+  </subject>
+  <subject>
+    <name>Music</name>
+    <code>M1-5000</code>
+    <parent>Music and books on Music</parent>
+  </subject>
+  <subject>
+    <name>Computer applications to medicine. Medical informatics</name>
+    <code>R858-859.7</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>Military Science</name>
+    <code>U</code>
+  </subject>
+  <subject>
+    <name>Political science</name>
+    <code>J</code>
+  </subject>
+  <subject>
+    <name>Colonies and colonization. Emigration and immigration. International migration</name>
+    <code>JV1-9480</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>International relations</name>
+    <code>JZ2-6530</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>Political institutions and public administration (General)</name>
+    <code>JF20-2112</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>Political science (General)</name>
+    <code>JA1-92</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>Political theory</name>
+    <code>JC11-607</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>Philosophy. Psychology. Religion</name>
+    <code>B</code>
+  </subject>
+  <subject>
+    <name>Philosophy (General)</name>
+    <code>B1-5802</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Aesthetics</name>
+    <code>BH1-301</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Ethics</name>
+    <code>BJ1-1725</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Logic</name>
+    <code>BC1-199</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Psychology</name>
+    <code>BF1-990</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Buddhism</name>
+    <code>BQ1-9800</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Christian Denominations</name>
+    <code>BX1-9999</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Christianity</name>
+    <code>BR1-1725</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Doctrinal Theology</name>
+    <code>BT10-1480</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Islam. Bahai Faith. Theosophy, etc.</name>
+    <code>BP1-610</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Judaism</name>
+    <code>BM1-990</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Practical Theology</name>
+    <code>BV1-5099</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Religions. Mythology. Rationalism</name>
+    <code>BL1-2790</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>The Bible</name>
+    <code>BS1-2970</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Science</name>
+    <code>Q</code>
+  </subject>
+  <subject>
+    <name>Astronomy</name>
+    <code>QB1-991</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Botany</name>
+    <code>QK1-989</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Natural history (General)</name>
+    <code>QH1-278.5</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>General. Including alchemy</name>
+    <code>QD1-65</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Microbiology</name>
+    <code>QR1-502</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Physiology</name>
+    <code>QP1-981</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Zoology</name>
+    <code>QL1-991</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Chemistry</name>
+    <code>QD1-999</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Analytical chemistry</name>
+    <code>QD71-142</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Inorganic chemistry</name>
+    <code>QD146-197</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Organic chemistry</name>
+    <code>QD241-441</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Geology</name>
+    <code>QE1-996.5</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Mathematics</name>
+    <code>QA1-939</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Probabilities. Mathematical statistics</name>
+    <code>QA273-280</code>
+    <parent>Mathematics</parent>
+  </subject>
+  <subject>
+    <name>Instruments and machines</name>
+    <code>QA71-90</code>
+    <parent>Mathematics</parent>
+  </subject>
+  <subject>
+    <name>Electronic computers. Computer science</name>
+    <code>QA75.5-76.95</code>
+    <parent>Instruments and machines</parent>
+  </subject>
+  <subject>
+    <name>Physics</name>
+    <code>QC1-999</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Human anatomy</name>
+    <code>QM1-695</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Social Sciences</name>
+    <code>H</code>
+  </subject>
+  <subject>
+    <name>Commerce</name>
+    <code>HF1-6182</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Business</name>
+    <code>HF5001-6182</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Marketing. Distribution of products</name>
+    <code>HF5410-5417.5</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Accounting. Bookkeeping</name>
+    <code>HF5601-5689</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Communities. Classes. Races</name>
+    <code>HT51-1595</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Urban groups. The city. Urban sociology</name>
+    <code>HT101-395</code>
+    <parent>Communities. Classes. Races</parent>
+  </subject>
+  <subject>
+    <name>Urban renewal. Urban redevelopment</name>
+    <code>HT170-178</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Economic theory. Demography</name>
+    <code>HB1-3840</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Economics as a science</name>
+    <code>HB71-74</code>
+    <parent>Economic theory. Demography</parent>
+  </subject>
+  <subject>
+    <name>Economic history and conditions</name>
+    <code>HC10-1085</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Finance</name>
+    <code>HG1-9999</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Industries. Land use. Labor</name>
+    <code>HD28-9999</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Management. Industrial management</name>
+    <code>HD28-70</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Public finance</name>
+    <code>HJ9-9940</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Social history and conditions. Social problems. Social reform</name>
+    <code>HN1-995</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Social pathology. Social and public welfare. Criminology</name>
+    <code>HV1-9960</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Societies: secret, benevolent, etc.</name>
+    <code>HS1-3371</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Sociology (General)</name>
+    <code>HM401-1281</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Socialism. Communism. Anarchism</name>
+    <code>HX1-970.7</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Transportation and communications</name>
+    <code>HE1-9990</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>The family. Marriage. Woman</name>
+    <code>HQ1-2044</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Women. Feminism</name>
+    <code>HQ1101-2030.7</code>
+    <parent>The family. Marriage. Woman</parent>
+  </subject>
+  <subject>
+    <name>Statistics</name>
+    <code>HA1-4737</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Animal culture</name>
+    <code>SF1-1100</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>TMP</name>
+    <code></code>
+  </subject>
+  <subject>
+    <name>Chiropractic</name>
+    <code>RZ201-275</code>
+    <parent>Other systems of medicine</parent>
+  </subject>
+  <subject>
+    <name>Osteopathy</name>
+    <code>RZ301-397.5</code>
+    <parent>Other systems of medicine</parent>
+  </subject>
+  <subject>
+    <name>Mental healing</name>
+    <code>RZ400-408</code>
+    <parent>Other systems of medicine</parent>
+  </subject>
+  <subject>
+    <name>Osteo-magnetics, neuropathy, etc.</name>
+    <code>RZ399</code>
+    <parent>Other systems of medicine</parent>
+  </subject>
+  <subject>
+    <name>Miscellaneous systems and treatments</name>
+    <code>RZ409.7-999</code>
+    <parent>Other systems of medicine</parent>
+  </subject>
+  <subject>
+    <name>Industry</name>
+    <code>HD2321-4730.9</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Advertising</name>
+    <code>HF5801-6182</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Business ethics</name>
+    <code>HF5387-5387.5</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Personnel management. Employment management</name>
+    <code>HF5549-5549.5</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Insurance</name>
+    <code>HG8011-9999</code>
+    <parent>Finance</parent>
+  </subject>
+  <subject>
+    <name>Banking</name>
+    <code>HG1501-3550</code>
+    <parent>Finance</parent>
+  </subject>
+  <subject>
+    <name>Water supply for domestic and industrial purposes</name>
+    <code>TD201-500</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Telecommunication</name>
+    <code>TK5101-6720</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Law in general. Comparative and uniform law. Jurisprudence</name>
+    <code>K1-7720</code>
+    <parent>Law</parent>
+  </subject>
+  <subject>
+    <name>Land use</name>
+    <code>HD101-1395.5</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Real estate business</name>
+    <code>HD1361-1395.5</code>
+    <parent>Land use</parent>
+  </subject>
+  <subject>
+    <name>Office equipment and supplies</name>
+    <code>HF5520-5541</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Office management</name>
+    <code>HF5546-5548.6</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Business communication. Including business report writing, business correspondence</name>
+    <code>HF5717-5734.7</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Jurisprudence. Philosophy and theory of law</name>
+    <code>K201-487</code>
+    <parent>Law in general. Comparative and uniform law. Jurisprudence</parent>
+  </subject>
+  <subject>
+    <name>Civil law</name>
+    <code>K623-968</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Environmental law</name>
+    <code>K3581-3598</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Comparative law. International uniform law</name>
+    <code>K520-5582</code>
+    <parent>Law in general. Comparative and uniform law. Jurisprudence</parent>
+  </subject>
+  <subject>
+    <name>Commercial law</name>
+    <code>K1000-1395</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Criminal law and procedure</name>
+    <code>K5000-5582</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Medical legislation</name>
+    <code>K3601-3611</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Private international law. Conflict of laws</name>
+    <code>K7000-7720</code>
+    <parent>Law in general. Comparative and uniform law. Jurisprudence</parent>
+  </subject>
+  <subject>
+    <name>Public law</name>
+    <code>K3150</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Public finance</name>
+    <code>K4430-4675</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Philology. Linguistics</name>
+    <code>P1-1091</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Journalism. The periodical press, etc.</name>
+    <code>PN4699-5650</code>
+    <parent>Literature (General)</parent>
+  </subject>
+  <subject>
+    <name>Protection of buildings. Including proctection from dampness, fire, burglary</name>
+    <code>TH9025-9745</code>
+    <parent>Building construction</parent>
+  </subject>
+  <subject>
+    <name>Science (General)</name>
+    <code>Q1-390</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Social sciences (General)</name>
+    <code>H1-99</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Geography (General)</name>
+    <code>G1-922</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Agriculture (General)</name>
+    <code>S1-972</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>Education (General)</name>
+    <code>L7-991</code>
+    <parent>Education</parent>
+  </subject>
+  <subject>
+    <name>Medicine (General)</name>
+    <code>R5-920</code>
+    <parent>Medicine</parent>
+  </subject>
+  <subject>
+    <name>Technology (General)</name>
+    <code>T1-995</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Physical and theoretical chemistry</name>
+    <code>QD450-801</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Biology (General)</name>
+    <code>QH301-705.5</code>
+    <parent>Science</parent>
+  </subject>
+  <subject>
+    <name>Evolution</name>
+    <code>QH359-425</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Genetics</name>
+    <code>QH426-470</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Ecology</name>
+    <code>QH540-549.5</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Cytology</name>
+    <code>QH573-671</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Microscopy</name>
+    <code>QH201-278.5</code>
+    <parent>Natural history (General)</parent>
+  </subject>
+  <subject>
+    <name>Neurophysiology and neuropsychology</name>
+    <code>QP351-495</code>
+    <parent>Physiology</parent>
+  </subject>
+  <subject>
+    <name>Animal biochemistry</name>
+    <code>QP501-801</code>
+    <parent>Physiology</parent>
+  </subject>
+  <subject>
+    <name>Anesthesiology</name>
+    <code>RD78.3-87.3</code>
+    <parent>Surgery</parent>
+  </subject>
+  <subject>
+    <name>Swedish literature</name>
+    <code>PT9201-9999</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Other Finnic languages and dialects</name>
+    <code>PH501-1109</code>
+    <parent>Ural-Altaic languages</parent>
+  </subject>
+  <subject>
+    <name>Medical physics. Medical radiology. Nuclear medicine</name>
+    <code>R895-920</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>North Germanic. Scandinavian</name>
+    <code>PD1501-7159</code>
+    <parent>Germanic languages. Scandinavian languages</parent>
+  </subject>
+  <subject>
+    <name>United States local history</name>
+    <code>F1-975</code>
+    <parent>History America</parent>
+  </subject>
+  <subject>
+    <name>Finnic. Baltic-Finnic</name>
+    <code>PH91-98.5</code>
+    <parent>Ural-Altaic languages</parent>
+  </subject>
+  <subject>
+    <name>Technical hydraulics</name>
+    <code>TC160-181</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>Industrial medicine. Industrial hygiene</name>
+    <code>RC963-969</code>
+    <parent>Special situations and conditions</parent>
+  </subject>
+  <subject>
+    <name>Environmental engineering</name>
+    <code>TA170-171</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Recreation leadership. Administration of recreation services</name>
+    <code>GV181.35-181.6</code>
+    <parent>Recreation. Leisure</parent>
+  </subject>
+  <subject>
+    <name>Veterinary medicine</name>
+    <code>SF600-1100</code>
+    <parent>Animal culture</parent>
+  </subject>
+  <subject>
+    <name>History (General)</name>
+    <code>D1-2009</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Petroleum refining. Petrolueum products</name>
+    <code>TP690-692.5</code>
+    <parent>Oils, fats, and waxes</parent>
+  </subject>
+  <subject>
+    <name>Finnnish</name>
+    <code>PH101-405</code>
+    <parent>Ural-Altaic languages</parent>
+  </subject>
+  <subject>
+    <name>Chinese language and literature</name>
+    <code>PL1001-3208</code>
+    <parent>Languages and literature of Eastern Asia, Africa, Oceania</parent>
+  </subject>
+  <subject>
+    <name>Modern Icelandic literature</name>
+    <code>PT7351-7550</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Danish literature</name>
+    <code>PT7601-8260</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Norwegian literature</name>
+    <code>PT8301-9155</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Japanese language and litterature</name>
+    <code>PL501-889</code>
+    <parent>Languages and literature of Eastern Asia, Africa, Oceania</parent>
+  </subject>
+  <subject>
+    <name>Dancing</name>
+    <code>GV1580-1799.4</code>
+    <parent>Recreation. Leisure</parent>
+  </subject>
+  <subject>
+    <name>Sports</name>
+    <code>GV557-1198.995</code>
+    <parent>Recreation. Leisure</parent>
+  </subject>
+  <subject>
+    <name>Economic growth, development, planning</name>
+    <code>HD72-88</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>General works</name>
+    <code>R5-130.5</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>History of medicine. Medical expeditions</name>
+    <code>R131-687</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>Medical philosophy. Medical ethics</name>
+    <code>R723-726</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>Medical technology</name>
+    <code>R855-855.5</code>
+    <parent>Medicine (General)</parent>
+  </subject>
+  <subject>
+    <name>Dynamic and structural geology</name>
+    <code>QE500-639.5</code>
+    <parent>Geology</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the endocrine glands. Clinical endocrinology</name>
+    <code>RC648-665</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Paleontology</name>
+    <code>QE701-760</code>
+    <parent>Geology</parent>
+  </subject>
+  <subject>
+    <name>Arctic medicine. Tropical medicine</name>
+    <code>RC955-962</code>
+    <parent>Special situations and conditions</parent>
+  </subject>
+  <subject>
+    <name>Infectious and parasitic diseases</name>
+    <code>RC109-216</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the respiratory system</name>
+    <code>RC705-779</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Medical emergencies. Critical care. Intensive care. First aid</name>
+    <code>RC86-88.9</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Nutritional diseases. Deficiency diseases</name>
+    <code>RC620-627</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the blood and blood-forming organs</name>
+    <code>RC633-647.5</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Arts in general</name>
+    <code>NX1-820</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>History of the arts</name>
+    <code>NX440-632</code>
+    <parent>Arts in general</parent>
+  </subject>
+  <subject>
+    <name>Communication. Mass media</name>
+    <code>P87-96</code>
+    <parent>Philology. Linguistics</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the musculoskeletal system</name>
+    <code>RC925-935</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>History of Balkan Peninsula</name>
+    <code>DR1-2285</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Portugal</name>
+    <code>DP501-900.22</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Men</name>
+    <code>HQ1088-1090.7</code>
+    <parent>The family. Marriage. Woman</parent>
+  </subject>
+  <subject>
+    <name>Cybernetics</name>
+    <code>Q300-390</code>
+    <parent>Science (General)</parent>
+  </subject>
+  <subject>
+    <name>Information theory</name>
+    <code>Q350-390</code>
+    <parent>Cybernetics</parent>
+  </subject>
+  <subject>
+    <name>Descriptive and experimental mechanics</name>
+    <code>QC120-168.85</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Acoustics. Sound</name>
+    <code>QC221-246</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Heat</name>
+    <code>QC251-338.5</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Optics. Light</name>
+    <code>QC350-467</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Electricity and magnetism</name>
+    <code>QC501-766</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Nuclear and particle physics. Atomic energy. Radioactivity</name>
+    <code>QC770-798</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Geophysics. Cosmic physics</name>
+    <code>QC801-809</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Geomagnetism</name>
+    <code>QC811-849</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Meteorology. Climatology</name>
+    <code>QC851-999</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Biochemistry</name>
+    <code>QD415-436</code>
+    <parent>Organic chemistry</parent>
+  </subject>
+  <subject>
+    <name>Toxicology. Poisons</name>
+    <code>RA1190-1270</code>
+    <parent>Public aspects of medicine</parent>
+  </subject>
+  <subject>
+    <name>Sports medicine</name>
+    <code>RC1200-1245</code>
+    <parent>Special situations and conditions</parent>
+  </subject>
+  <subject>
+    <name>Neoplasms. Tumors. Oncology. Including cancer and carcinogens</name>
+    <code>RC254-282</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Psychiatry</name>
+    <code>RC435-571</code>
+    <parent>Neurology. Diseases of the nervous system</parent>
+  </subject>
+  <subject>
+    <name>Therapeutics. Psychotherapy</name>
+    <code>RC475-489</code>
+    <parent>Psychiatry</parent>
+  </subject>
+  <subject>
+    <name>Specialties of internal medicine</name>
+    <code>RC581-951</code>
+    <parent>Internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Immunologic diseases. Allergy</name>
+    <code>RC581-607</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the circulatory (Cardiovascular) system</name>
+    <code>RC666-701</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the digestive system. Gastroenterology</name>
+    <code>RC799-869</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Diseases of the genitourinary system. Urology</name>
+    <code>RC870-923</code>
+    <parent>Specialties of internal medicine</parent>
+  </subject>
+  <subject>
+    <name>Industrial engineering. Management engineering</name>
+    <code>T55.4-60.8</code>
+    <parent>Technology (General)</parent>
+  </subject>
+  <subject>
+    <name>Food processing and manufacture</name>
+    <code>TP368-456</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Materials of engineering and construction. Mechanics of materials</name>
+    <code>TA401-492</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Railroad engineering and operation</name>
+    <code>TF1-1620</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Chemical engineering</name>
+    <code>TP155-156</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Biotechnology</name>
+    <code>TP248.13-248.65</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Nutrition. Foods and food supply</name>
+    <code>TX341-641</code>
+    <parent>Home economics</parent>
+  </subject>
+  <subject>
+    <name>Oral communication. Speech</name>
+    <code>P95-95.6</code>
+    <parent>Communication. Mass media</parent>
+  </subject>
+  <subject>
+    <name>South Asia. Southeast Asia. East Asia</name>
+    <code>KN</code>
+    <parent>Asia and Eurasia, Africa, Pacific Area, and Antarctica</parent>
+  </subject>
+  <subject>
+    <name>Islamic law</name>
+    <code>KBP1-4860</code>
+    <parent>Law</parent>
+  </subject>
+  <subject>
+    <name>Ancient history</name>
+    <code>D51-90</code>
+    <parent>History (General)</parent>
+  </subject>
+  <subject>
+    <name>Medieval history</name>
+    <code>D111-203</code>
+    <parent>History (General)</parent>
+  </subject>
+  <subject>
+    <name>Modern history, 1453-</name>
+    <code>D204-475</code>
+    <parent>History (General)</parent>
+  </subject>
+  <subject>
+    <name>1789-</name>
+    <code>D299-475</code>
+    <parent>Modern history, 1453-</parent>
+  </subject>
+  <subject>
+    <name>Europe (General)</name>
+    <code>D900-2009</code>
+    <parent>1789-</parent>
+  </subject>
+  <subject>
+    <name>History of Low Countries - Benelux Countries</name>
+    <code>DH1-925</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Netherlands (Holland)</name>
+    <code>DJ1-500</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Latin America. Spanish America</name>
+    <code>F1201-3799</code>
+    <parent>History America</parent>
+  </subject>
+  <subject>
+    <name>Denmark</name>
+    <code>DL101-291</code>
+    <parent>History of Northern Europe. Scandinavia</parent>
+  </subject>
+  <subject>
+    <name>Iceland</name>
+    <code>DL301-398</code>
+    <parent>History of Northern Europe. Scandinavia</parent>
+  </subject>
+  <subject>
+    <name>Norway</name>
+    <code>DL401-596</code>
+    <parent>History of Northern Europe. Scandinavia</parent>
+  </subject>
+  <subject>
+    <name>Sweden</name>
+    <code>DL601-991</code>
+    <parent>History of Northern Europe. Scandinavia</parent>
+  </subject>
+  <subject>
+    <name>Finland</name>
+    <code>DL1002-1180</code>
+    <parent>History of Northern Europe. Scandinavia</parent>
+  </subject>
+  <subject>
+    <name>History of Austria. Liechtenstein. Hungary. Czechoslovakia</name>
+    <code>DB1-3150</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>Austria. Austro-Hungarian Empire</name>
+    <code>DB1-879</code>
+    <parent>History of Austria. Liechtenstein. Hungary. Czechoslovakia</parent>
+  </subject>
+  <subject>
+    <name>Hungary</name>
+    <code>DB901-999</code>
+    <parent>History of Austria. Liechtenstein. Hungary. Czechoslovakia</parent>
+  </subject>
+  <subject>
+    <name>Czechoslovakia</name>
+    <code>DB2000-3150</code>
+    <parent>History of Austria. Liechtenstein. Hungary. Czechoslovakia</parent>
+  </subject>
+  <subject>
+    <name>History of Switzerland</name>
+    <code>DQ1-851</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>History of Poland</name>
+    <code>DK4010-4800</code>
+    <parent>History (General) and history of Europe</parent>
+  </subject>
+  <subject>
+    <name>African languages and literature</name>
+    <code>PL8000-8844</code>
+    <parent>Languages and literature of Eastern Asia, Africa, Oceania</parent>
+  </subject>
+  <subject>
+    <name>Computational linguistics. Natural language processing</name>
+    <code>P98-98.5</code>
+    <parent>Philology. Linguistics</parent>
+  </subject>
+  <subject>
+    <name>Language. Linguistic theory. Comparative grammar</name>
+    <code>P101-410</code>
+    <parent>Philology. Linguistics</parent>
+  </subject>
+  <subject>
+    <name>Discourse analysis</name>
+    <code>P302-302.87</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Language acquisition</name>
+    <code>P118-118.7</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Lexicography</name>
+    <code>P327-327.5</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Comparative grammar</name>
+    <code>P201-299</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Semantics</name>
+    <code>P325-325.5</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Style. Composition. Rhetoric</name>
+    <code>P301-301.5</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>Translating and interpreting</name>
+    <code>P306-310</code>
+    <parent>Language. Linguistic theory. Comparative grammar</parent>
+  </subject>
+  <subject>
+    <name>History and principles of religions</name>
+    <code>BL660-2680</code>
+    <parent>Religions. Mythology. Rationalism</parent>
+  </subject>
+  <subject>
+    <name>Asian. Oriental</name>
+    <code>BL1000-2370</code>
+    <parent>History and principles of religions</parent>
+  </subject>
+  <subject>
+    <name>Unlocalized maps (Asian studies only)</name>
+    <code>G9900-9980</code>
+    <parent>Maps</parent>
+  </subject>
+  <subject>
+    <name>Foreign exchange (Asian studies only)</name>
+    <code>HG3810-4000</code>
+    <parent>Finance</parent>
+  </subject>
+  <subject>
+    <name>Social sciences and state - Asia (Asian studies only)</name>
+    <code>H53</code>
+    <parent>Social Sciences</parent>
+  </subject>
+  <subject>
+    <name>Political institutions and public administration - Asia (Asian studies only)</name>
+    <code>JQ1-6651</code>
+    <parent>Political science</parent>
+  </subject>
+  <subject>
+    <name>Maps</name>
+    <code>G3180-9980</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Asia and Eurasia, Africa, Pacific Area, and Antarctica</name>
+    <code>KL-KWX</code>
+    <parent>Law</parent>
+  </subject>
+  <subject>
+    <name>Encyclopedias</name>
+    <code>AE1-90</code>
+    <parent>General Works</parent>
+  </subject>
+  <subject>
+    <name>Bibliography</name>
+    <code>Z1001-8999</code>
+    <parent>Bibliography. Library science. Information resources</parent>
+  </subject>
+  <subject>
+    <name>General bibliography</name>
+    <code>Z1001-1121</code>
+    <parent>Bibliography</parent>
+  </subject>
+  <subject>
+    <name>Hunting sports</name>
+    <code>SK1-664</code>
+    <parent>Agriculture</parent>
+  </subject>
+  <subject>
+    <name>By period</name>
+    <code>CB305-430</code>
+    <parent>History of Civilization</parent>
+  </subject>
+  <subject>
+    <name>Physical anthropology. Somatology</name>
+    <code>GN49-298</code>
+    <parent>Anthropology</parent>
+  </subject>
+  <subject>
+    <name>Human evolution</name>
+    <code>GN281-289</code>
+    <parent>Physical anthropology. Somatology</parent>
+  </subject>
+  <subject>
+    <name>Fossil man. Human paleontology</name>
+    <code>GN282-286.7</code>
+    <parent>Human evolution</parent>
+  </subject>
+  <subject>
+    <name>Prehistoric archaeology</name>
+    <code>GN700-890</code>
+    <parent>Anthropology</parent>
+  </subject>
+  <subject>
+    <name>Engineering design</name>
+    <code>TA174</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Machine design and drawing</name>
+    <code>TJ227-240</code>
+    <parent>Mechanical engineering and machinery</parent>
+  </subject>
+  <subject>
+    <name>Mechanical drawing. Engineering graphics</name>
+    <code>T351-385</code>
+    <parent>Technology (General)</parent>
+  </subject>
+  <subject>
+    <name>Management information systems</name>
+    <code>T58.6-58.62</code>
+    <parent>Industrial engineering. Management engineering</parent>
+  </subject>
+  <subject>
+    <name>Production capacity. Manufacturing capacity</name>
+    <code>T58.7-58.8</code>
+    <parent>Industrial engineering. Management engineering</parent>
+  </subject>
+  <subject>
+    <name>Automation</name>
+    <code>T59.5</code>
+    <parent>Industrial engineering. Management engineering</parent>
+  </subject>
+  <subject>
+    <name>Engineering economy</name>
+    <code>TA177.4-185</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Production management. Operations management</name>
+    <code>TS155-194</code>
+    <parent>Manufactures</parent>
+  </subject>
+  <subject>
+    <name>Packaging</name>
+    <code>TS195-198.8</code>
+    <parent>Manufactures</parent>
+  </subject>
+  <subject>
+    <name>Industrial productivity</name>
+    <code>HD56-57.5</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Special types of environment</name>
+    <code>TD878-894</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Hazardous substances and their disposal</name>
+    <code>TD1020-1066</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Orthopedic surgery</name>
+    <code>RD701-811</code>
+    <parent>Surgery</parent>
+  </subject>
+  <subject>
+    <name>Visual arts</name>
+    <code>N1-9211</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Sculpture</name>
+    <code>NB1-1952</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Painting</name>
+    <code>ND25-3416</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Print media</name>
+    <code>NE1-3002</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Decorative arts</name>
+    <code>NK1-9990</code>
+    <parent>Fine Arts</parent>
+  </subject>
+  <subject>
+    <name>Literature on music</name>
+    <code>ML1-3930</code>
+    <parent>Music and books on Music</parent>
+  </subject>
+  <subject>
+    <name>Musical instruction and study</name>
+    <code>MT1-960</code>
+    <parent>Music and books on Music</parent>
+  </subject>
+  <subject>
+    <name>The performing arts. Show business</name>
+    <code>PN1560-1590</code>
+    <parent>Literature (General)</parent>
+  </subject>
+  <subject>
+    <name>Oratory. Elocution, etc.</name>
+    <code>PN4001-4355</code>
+    <parent>Literature (General)</parent>
+  </subject>
+  <subject>
+    <name>Boards of trade. Chambers of commerce. Merchants associations</name>
+    <code>HF294-343</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Balance of trade</name>
+    <code>HF1014</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Commercial geography. Economic geography</name>
+    <code>HF1021-1027</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Commodities. Commercial products</name>
+    <code>HF1040-1054</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Tariff. Free trade. Protectionism</name>
+    <code>HF1701-2701</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>By region or country</name>
+    <code>HF3000-4055</code>
+    <parent>Commerce</parent>
+  </subject>
+  <subject>
+    <name>Vocational guidance. Career development</name>
+    <code>HF5381-5386</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Wholesale trade</name>
+    <code>HF5419-5422</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Retail trade</name>
+    <code>HF5428-5429.6</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Shopping centers. Shopping malls</name>
+    <code>HF5429.7-5430.6</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Purchasing. Selling. Sales personnel. Sales executives</name>
+    <code>HF5437-5444</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Canvassing. Peddling</name>
+    <code>HF5446-5459</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Department stores. Mail order business. Supermarkets. Convenience stores</name>
+    <code>HF5460-5469.5</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Markets. Fairs</name>
+    <code>HF5469.7-5481</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Seconhand trade</name>
+    <code>HF5482-5482.4</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Black market</name>
+    <code>HF5482.6-5482.65</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Warhouses. Storage</name>
+    <code>HF5484-5495</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Industrial psychology</name>
+    <code>HF5548.7-5548.85</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Business mathematics. Commercial arithmetic. Including tables, etc.</name>
+    <code>HF5691-5716</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Business records management</name>
+    <code>HF5735-5746</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Shipment of goods. Delivery of goods</name>
+    <code>HF5761-5780</code>
+    <parent>Business</parent>
+  </subject>
+  <subject>
+    <name>Large industry. Factory system. Big business</name>
+    <code>HD2350.8-2356</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Labor. Work. Working class</name>
+    <code>HD4801-8943</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Special industries and trades</name>
+    <code>HD9000-9999</code>
+    <parent>Industries. Land use. Labor</parent>
+  </subject>
+  <subject>
+    <name>Capital. Capital investments</name>
+    <code>HD39-40.7</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Competition</name>
+    <code>HD41</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Technological innovations. Automation</name>
+    <code>HD45-45.2</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Costs</name>
+    <code>HD47-47.4</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Crisis management. Emergency management. Inflation</name>
+    <code>HD49-49.5</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Delegation of authority. Decentralization. Span of control</name>
+    <code>HD50-50.5</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Social responsibility of business</name>
+    <code>HD60-60.5</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Location industry</name>
+    <code>HD58</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Organizational behaviour, change and effectiveness. Corporate culture</name>
+    <code>HD58.7-58.95</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Public relations. Industrial publicity</name>
+    <code>HD59-59.6</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Risk in industry. Risk management</name>
+    <code>HD61</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Standardization. Simplification. Waste</name>
+    <code>HD62</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Management of special enterprises</name>
+    <code>HD62.2-62.8</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Work groups. Team work in industry. Quality circles</name>
+    <code>HD66-66.2</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Other</name>
+    <code>HD69</code>
+    <parent>Management. Industrial management</parent>
+  </subject>
+  <subject>
+    <name>Land tenure</name>
+    <code>HD1286-1339</code>
+    <parent>Land use</parent>
+  </subject>
+  <subject>
+    <name>Communal ownership</name>
+    <code>HD1286-1289</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Municipal ownership</name>
+    <code>HD1290-1291</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Nationalization (Agrarian socialism)</name>
+    <code>HD1301-1313</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Large holdings</name>
+    <code>HD1326-1329</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Landlord and peasant</name>
+    <code>HD1330-1331</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Land reform. Agrarian reform</name>
+    <code>HD1332-1333.5</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Consolidation of land holdings</name>
+    <code>HD1334-1335</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Small holdings. Peasant proprietors. Parcellation</name>
+    <code>HD1336-1339</code>
+    <parent>Land tenure</parent>
+  </subject>
+  <subject>
+    <name>Industrialization</name>
+    <code>HD2329</code>
+    <parent>Industry</parent>
+  </subject>
+  <subject>
+    <name>Rural industries</name>
+    <code>HD2330</code>
+    <parent>Industry</parent>
+  </subject>
+  <subject>
+    <name>Home labor. Home-based businesses</name>
+    <code>HD2331-2336</code>
+    <parent>Industry</parent>
+  </subject>
+  <subject>
+    <name>Sweatshops</name>
+    <code>HD2337-2339</code>
+    <parent>Industry</parent>
+  </subject>
+  <subject>
+    <name>Small and medium-sized businesses, artisans, handicrafts, trades</name>
+    <code>HD2340.8-2346.5</code>
+    <parent>Industry</parent>
+  </subject>
+  <subject>
+    <name>Contracting. Letting of contracts</name>
+    <code>HD2365-2385</code>
+    <parent>Large industry. Factory system. Big business</parent>
+  </subject>
+  <subject>
+    <name>Trade associations</name>
+    <code>HD2421-2429</code>
+    <parent>Large industry. Factory system. Big business</parent>
+  </subject>
+  <subject>
+    <name>Corporations</name>
+    <code>HD2709-2930.7</code>
+    <parent>Large industry. Factory system. Big business</parent>
+  </subject>
+  <subject>
+    <name>Cooperation. Cooperative societies</name>
+    <code>HD2951-3575</code>
+    <parent>Large industry. Factory system. Big business</parent>
+  </subject>
+  <subject>
+    <name>Industrial policy. The state and industrial organization</name>
+    <code>HD3611-4730.9</code>
+    <parent>Large industry. Factory system. Big business</parent>
+  </subject>
+  <subject>
+    <name>Labor systems</name>
+    <code>HD4861-4895</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Wages</name>
+    <code>HD4909-5100.9</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Hours of labor</name>
+    <code>HD5106-5267</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Labor disputes. Strikes and lockouts</name>
+    <code>HD5306-5474</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Industrial arbitration. Meditation and conciliation</name>
+    <code>HD5481-5630.7</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Employee participation in management. Employee ownership. Industrial democracy. Works councils</name>
+    <code>HD5650-5660</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Labor market. Labor supply. Labor demand</name>
+    <code>HD5701-6000.9</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Classes of labor</name>
+    <code>HD6050-6305</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Trade unions. Labor unions. Workers associations</name>
+    <code>HD6350-6940.7</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Employers associations</name>
+    <code>HD6941-6948</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Industrial sociology. Social conditions of labor</name>
+    <code>HD6951-6957</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Industrial relations</name>
+    <code>HD6958.5-6976</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Cost and standard of living</name>
+    <code>HD6977-7080</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Social insurance. Social security. Pension</name>
+    <code>HD7088-7252</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Vocational rehabilitation. Employment of people with disabilities</name>
+    <code>HD7255-7256</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Industrial hygiene. Industrial welfare</name>
+    <code>HD7260-7780.8</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Labor in politics. Political activity of the working class</name>
+    <code>HD8031</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Labor policy. Labor and the state</name>
+    <code>HD7795-8027</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Professions (General). Professional employees</name>
+    <code>HD8038</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>By industry or trade</name>
+    <code>HD8039</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>By region or country</name>
+    <code>HD8045-8943</code>
+    <parent>Labor. Work. Working class</parent>
+  </subject>
+  <subject>
+    <name>Agricultural industries</name>
+    <code>HD9000-9495</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Engery industries. Energy policy. Fuel trade</name>
+    <code>HD9502-9502.5</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Mineral industries. Metal trade</name>
+    <code>HD9506-9624</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Chemical industries</name>
+    <code>HD9650-9663</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Pharmaceutical industry</name>
+    <code>HD9665-9675</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Mechanical industries</name>
+    <code>HD9680-9714</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Construction industry</name>
+    <code>HD9715-9717.5</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Manufacturing industries</name>
+    <code>HD9720-9975</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Miscellaneous industries and trades</name>
+    <code>HD9999</code>
+    <parent>Special industries and trades</parent>
+  </subject>
+  <subject>
+    <name>Hospitality industry. Hotels, clubs, restaurants, etc. Food service</name>
+    <code>TX901-946.5</code>
+    <parent>Home economics</parent>
+  </subject>
+  <subject>
+    <name>Consciousness. Cognition</name>
+    <code>BF309-499</code>
+    <parent>Psychology</parent>
+  </subject>
+  <subject>
+    <name>Speculative philosophy</name>
+    <code>BD10-701</code>
+    <parent>Philosophy. Psychology. Religion</parent>
+  </subject>
+  <subject>
+    <name>Epistemology. Theory of knowledge</name>
+    <code>BD143-237</code>
+    <parent>Speculative philosophy</parent>
+  </subject>
+  <subject>
+    <name>Metaphysics</name>
+    <code>BD95-131</code>
+    <parent>Speculative philosophy</parent>
+  </subject>
+  <subject>
+    <name>Ontology</name>
+    <code>BD300-450</code>
+    <parent>Speculative philosophy</parent>
+  </subject>
+  <subject>
+    <name>General</name>
+    <code>QC1-75</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Radioactivity and radioactive substances</name>
+    <code>QC794.95-798</code>
+    <parent>Nuclear and particle physics. Atomic energy. Radioactivity</parent>
+  </subject>
+  <subject>
+    <name>Economic biology</name>
+    <code>QH705-705.5</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Reproduction</name>
+    <code>QH471-489</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>Life</name>
+    <code>QH501-531</code>
+    <parent>Biology (General)</parent>
+  </subject>
+  <subject>
+    <name>General. Including nature conservation, geographical distribution</name>
+    <code>QH1-199.5</code>
+    <parent>Natural history (General)</parent>
+  </subject>
+  <subject>
+    <name>Embryology</name>
+    <code>QL951-991</code>
+    <parent>Zoology</parent>
+  </subject>
+  <subject>
+    <name>Plant ecology</name>
+    <code>QK900-989</code>
+    <parent>Botany</parent>
+  </subject>
+  <subject>
+    <name>Microbial ecology</name>
+    <code>QR100-130</code>
+    <parent>Microbiology</parent>
+  </subject>
+  <subject>
+    <name>Crystallography</name>
+    <code>QD901-999</code>
+    <parent>Chemistry</parent>
+  </subject>
+  <subject>
+    <name>Mineralogy</name>
+    <code>QE351-399.2</code>
+    <parent>Geology</parent>
+  </subject>
+  <subject>
+    <name>Petrology</name>
+    <code>QE420-499</code>
+    <parent>Geology</parent>
+  </subject>
+  <subject>
+    <name>Stratigraphy</name>
+    <code>QE640-699</code>
+    <parent>Geology</parent>
+  </subject>
+  <subject>
+    <name>Analysis</name>
+    <code>QA299.6-433</code>
+    <parent>Mathematics</parent>
+  </subject>
+  <subject>
+    <name>Analytic mechanics</name>
+    <code>QA801-939</code>
+    <parent>Mathematics</parent>
+  </subject>
+  <subject>
+    <name>Applied mathematics. Quantitative methods</name>
+    <code>T57-57.97</code>
+    <parent>Industrial engineering. Management engineering</parent>
+  </subject>
+  <subject>
+    <name>Plasma engineering. Applied plasma dynamics</name>
+    <code>TA2001-2040</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Nuclear engineering. Atomic power</name>
+    <code>TK9001-9401</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Applied optics. Photonics</name>
+    <code>TA1501-1820</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Atomic physics. Constitution and properties of matter</name>
+    <code>QC170-197</code>
+    <parent>Physics</parent>
+  </subject>
+  <subject>
+    <name>Astrophysics</name>
+    <code>QB460-466</code>
+    <parent>Astronomy</parent>
+  </subject>
+  <subject>
+    <name>Elementary particle physics</name>
+    <code>QC793-793.5</code>
+    <parent>Nuclear and particle physics. Atomic energy. Radioactivity</parent>
+  </subject>
+  <subject>
+    <name>Electricity</name>
+    <code>QC501-721</code>
+    <parent>Electricity and magnetism</parent>
+  </subject>
+  <subject>
+    <name>Electric discharge</name>
+    <code>QC701-715.4</code>
+    <parent>Electricity</parent>
+  </subject>
+  <subject>
+    <name>Plasma physics. Ionized gases</name>
+    <code>QC717.6-718.8</code>
+    <parent>Electricity</parent>
+  </subject>
+  <subject>
+    <name>Thermodynamics</name>
+    <code>QC310.15-319</code>
+    <parent>Heat</parent>
+  </subject>
+  <subject>
+    <name>Mathematical geography. Cartography</name>
+    <code>GA1-1776</code>
+    <parent>Geography. Anthropology. Recreation</parent>
+  </subject>
+  <subject>
+    <name>Settlements</name>
+    <code>GF101-127</code>
+    <parent>Human ecology. Anthropogeography</parent>
+  </subject>
+  <subject>
+    <name>Cities. Urban geography</name>
+    <code>GF125</code>
+    <parent>Settlements</parent>
+  </subject>
+  <subject>
+    <name>Demography. Population. Vital events</name>
+    <code>HB848-3697</code>
+    <parent>Economic theory. Demography</parent>
+  </subject>
+  <subject>
+    <name>Economic geography of the oceans (General)</name>
+    <code>HC92</code>
+    <parent>Economic history and conditions</parent>
+  </subject>
+  <subject>
+    <name>Human settlements. Communities</name>
+    <code>HT51-65</code>
+    <parent>Communities. Classes. Races</parent>
+  </subject>
+  <subject>
+    <name>Garden cities. The city beautiful</name>
+    <code>HT161-165</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>City planning</name>
+    <code>HT165.5-169.9</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>City population. Including children in cities, immigration</name>
+    <code>HT201-221</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Effect of city life</name>
+    <code>HT231</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>The city as an economic factor. City promotion</name>
+    <code>HT321-325</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Metropolitan areas</name>
+    <code>HT330-334</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Suburban cities and towns</name>
+    <code>HT351-352</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Urbanization. City and country</name>
+    <code>HT361-384</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Regional economics. Space in economics</name>
+    <code>HT388</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Regional planning</name>
+    <code>HT390-395</code>
+    <parent>Urban groups. The city. Urban sociology</parent>
+  </subject>
+  <subject>
+    <name>Sewage collection and disposal systems. Sewerage</name>
+    <code>TD511-780</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Municipal refuse. Solid wastes</name>
+    <code>TD783-812.5</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Rural and farm sanitary engineering</name>
+    <code>TD920-934</code>
+    <parent>Environmental technology. Sanitary engineering</parent>
+  </subject>
+  <subject>
+    <name>Architectural engineering. Structural engineering of buildings</name>
+    <code>TH845-895</code>
+    <parent>Building construction</parent>
+  </subject>
+  <subject>
+    <name>Aesthetics of cities. City planning and beautifying</name>
+    <code>NA9000-9428</code>
+    <parent>Architecture</parent>
+  </subject>
+  <subject>
+    <name>Chemicals: Manufacture, use, etc.</name>
+    <code>TP200-248</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Industrial electrochemistry</name>
+    <code>TP250-261</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Explosives and pyrotechnics</name>
+    <code>TP267.5-301</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Fuel</name>
+    <code>TP315-360</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Low temperature engineering. Cryogenic engineering. Refrigeration</name>
+    <code>TP480-498</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Oils, fats, and waxes</name>
+    <code>TP670-699</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Illuminating industries (Nonelectric)</name>
+    <code>TP700-746</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Gas industry</name>
+    <code>TP751-762</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Clay industries. Ceramics. Glass</name>
+    <code>TP785-869</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Cement industries</name>
+    <code>TP875-888</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Textile bleaching, dyeing, printing, etc.</name>
+    <code>TP890-933</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Paints, pigments, varnishes, etc.</name>
+    <code>TP934-945</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Polymers and polymer manufacture</name>
+    <code>TP1080-1185</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Information technology</name>
+    <code>T58.5-58.64</code>
+    <parent>Industrial engineering. Management engineering</parent>
+  </subject>
+  <subject>
+    <name>Details in building design and construction. Including walls, roofs</name>
+    <code>TH2025-3000</code>
+    <parent>Building construction</parent>
+  </subject>
+  <subject>
+    <name>Computer software</name>
+    <code>QA76.75-76.765</code>
+    <parent>Electronic computers. Computer science</parent>
+  </subject>
+  <subject>
+    <name>Geodesy</name>
+    <code>QB275-343</code>
+    <parent>Astronomy</parent>
+  </subject>
+  <subject>
+    <name>Electric apparatus and materials. Electric circuits. Electric networks</name>
+    <code>TK452-454.4</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Production of electric energy or power. Powerplants. Central stations</name>
+    <code>TK1001-1841</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Distribution or transmission of electric power</name>
+    <code>TK3001-3521</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Applications of electric power</name>
+    <code>TK4001-4102</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Nuclear engineering. Atomic power</name>
+    <code>TK9001-9401</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Energy conservation</name>
+    <code>TJ163.26-163.5</code>
+    <parent>Mechanical engineering and machinery</parent>
+  </subject>
+  <subject>
+    <name>Renewable energy sources</name>
+    <code>TJ807-830</code>
+    <parent>Mechanical engineering and machinery</parent>
+  </subject>
+  <subject>
+    <name>Control engineering systems. Automatic machinerey (General)</name>
+    <code>TJ212-225</code>
+    <parent>Mechanical engineering and machinery</parent>
+  </subject>
+  <subject>
+    <name>Heating and ventilation. Air conditioning</name>
+    <code>TH7005-7699</code>
+    <parent>Building construction</parent>
+  </subject>
+  <subject>
+    <name>Systems of building construction. Including fireproof construction, concrete construction</name>
+    <code>TH1000-1725</code>
+    <parent>Building construction</parent>
+  </subject>
+  <subject>
+    <name>Industrial directories</name>
+    <code>T11.95-12.5</code>
+    <parent>Technology (General)</parent>
+  </subject>
+  <subject>
+    <name>Industrial safety. Industrial accident prevention</name>
+    <code>T55-55.3</code>
+    <parent>Industrial directories</parent>
+  </subject>
+  <subject>
+    <name>Disasters and engineering</name>
+    <code>TA495</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Engineering geology. Rock mechanics. Soil mechanics. Underground construction</name>
+    <code>TA703-712</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Earthwork. Foundations</name>
+    <code>TA715-787</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Engineering machinery, tools, and implements</name>
+    <code>TA213-215</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Mechanics of engineering. Applied mechanics</name>
+    <code>TA349-359</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Acoustics in engineering. Acoustical engineering</name>
+    <code>TA365-367</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Materials of engineering and construction. Mechanics of materials</name>
+    <code>TA401-492</code>
+    <parent>Electrical engineering. Electronics. Nuclear engineering</parent>
+  </subject>
+  <subject>
+    <name>Surveying</name>
+    <code>TA501-625</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Systems engineering</name>
+    <code>TA168</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Structural engineering (General)</name>
+    <code>TA630-695</code>
+    <parent>Engineering (General). Civil engineering (General)</parent>
+  </subject>
+  <subject>
+    <name>Fermentation industries. Beverages. Alcohol</name>
+    <code>TP500-660</code>
+    <parent>Chemical technology</parent>
+  </subject>
+  <subject>
+    <name>Cattle</name>
+    <code>SF191-275</code>
+    <parent>Animal culture</parent>
+  </subject>
+  <subject>
+    <name>Dairying</name>
+    <code>SF221-250</code>
+    <parent>Cattle</parent>
+  </subject>
+  <subject>
+    <name>Dairy processing. Dairy products</name>
+    <code>SF250.5-275</code>
+    <parent>Cattle</parent>
+  </subject>
+  <subject>
+    <name>Cookery</name>
+    <code>TX642-840</code>
+    <parent>Home economics</parent>
+  </subject>
+  <subject>
+    <name>Harbors and coast protective works. Costal engineering. Lighthouses</name>
+    <code>TC203-380</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>River, lake, and water-supply engineering (General)</name>
+    <code>TC401-506</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>River protective works. Regulation. Flood control</name>
+    <code>TC530-537</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>Dams. Barrages</name>
+    <code>TC540-558</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>Canals and inland navigation. Waterways</name>
+    <code>TC601-791</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>Irrigation engineering. Reclamation of wasteland. Drainage</name>
+    <code>TC801-978</code>
+    <parent>Hydraulic engineering</parent>
+  </subject>
+  <subject>
+    <name>Ocean engineering</name>
+    <code>TC1501-1800</code>
+    <parent>Technology</parent>
+  </subject>
+  <subject>
+    <name>Cartography</name>
+    <code>GA101-1776</code>
+    <parent>Mathematical geography. Cartography</parent>
+  </subject>
+  <subject>
+    <name>Surveys (General)</name>
+    <code>GA51-87</code>
+    <parent>Mathematical geography. Cartography</parent>
+  </subject>
+  <subject>
+    <name>Cadastral mapping</name>
+    <code>GA109.5</code>
+    <parent>Cartography</parent>
+  </subject>
+  <subject>
+    <name>Cellular telephone services industry. Wireless telephone industry</name>
+    <code>HE9713-9715</code>
+    <parent>Transportation and communications</parent>
+  </subject>
+  <subject>
+    <name>Revenue. Taxation. Internal revenue</name>
+    <code>HJ2240-5908</code>
+    <parent>Public finance</parent>
+  </subject>
+  <subject>
+    <name>Property tax</name>
+    <code>HJ4113-4601</code>
+    <parent>Revenue. Taxation. Internal revenue</parent>
+  </subject>
+  <subject>
+    <name>Property</name>
+    <code>K720-792</code>
+    <parent>Civil law</parent>
+  </subject>
+  <subject>
+    <name>Regulation of industry, trade, and commerce. Occupational law</name>
+    <code>K3840-4375</code>
+    <parent>Comparative law. International uniform law</parent>
+  </subject>
+  <subject>
+    <name>Transportation and communication</name>
+    <code>K4011-4343</code>
+    <parent>Regulation of industry, trade, and commerce. Occupational law</parent>
+  </subject>
+  <subject>
+    <name>Religion (General)</name>
+    <code>BL1-50</code>
+    <parent>Religions. Mythology. Rationalism</parent>
+  </subject>
+  <subject>
+    <name>Religions of the world</name>
+    <code>BL74-99</code>
+    <parent>Religions. Mythology. Rationalism</parent>
+  </subject>
+  <subject>
+    <name>Bahai Faith</name>
+    <code>BP300-395</code>
+    <parent>Islam. Bahai Faith. Theosophy, etc.</parent>
+  </subject>
+  <subject>
+    <name>Theosophy</name>
+    <code>BP500-585</code>
+    <parent>Islam. Bahai Faith. Theosophy, etc.</parent>
+  </subject>
+  <subject>
+    <name>Anthroposophy</name>
+    <code>BP595-597</code>
+    <parent>Islam. Bahai Faith. Theosophy, etc.</parent>
+  </subject>
+  <subject>
+    <name>Other beliefs and movements</name>
+    <code>BP600-610</code>
+    <parent>Islam. Bahai Faith. Theosophy, etc.</parent>
+  </subject>
+  <subject>
+    <name>Islam</name>
+    <code>BP1-253</code>
+    <parent>Islam. Bahai Faith. Theosophy, etc.</parent>
+  </subject>
+  <subject>
+    <name>Religious ethics</name>
+    <code>BJ1188-1295</code>
+    <parent>Ethics</parent>
+  </subject>
+  <subject>
+    <name>Practical religion. The Christian life</name>
+    <code>BV4485-5099</code>
+    <parent>Practical Theology</parent>
+  </subject>
+  <subject>
+    <name>Moral theology</name>
+    <code>BV4625-4780</code>
+    <parent>Practical religion. The Christian life</parent>
+  </subject>
+  <subject>
+    <name>Philosophy of religion. Psychology of religion. Religion in relation to other subjects</name>
+    <code>BL51-65</code>
+    <parent>Religions. Mythology. Rationalism</parent>
+  </subject>
+  <subject>
+    <name>By period</name>
+    <code>B108-5802</code>
+    <parent>Philosophy (General)</parent>
+  </subject>
+  <subject>
+    <name>Modern</name>
+    <code>B790-5802</code>
+    <parent>By period</parent>
+  </subject>
+  <subject>
+    <name>By religion</name>
+    <code>B5800-5802</code>
+    <parent>Modern</parent>
+  </subject>
+  <subject>
+    <name>History</name>
+    <code>BR140-1510</code>
+    <parent>Christianity</parent>
+  </subject>
+  <subject>
+    <name>Early Christian literature. Fathers of the Church, etc.</name>
+    <code>BR60-67</code>
+    <parent>Christianity</parent>
+  </subject>
+  <subject>
+    <name>History of specific doctrines and movements. Heresies and schisms</name>
+    <code>BT1313-1480</code>
+    <parent>Doctrinal Theology</parent>
+  </subject>
+  <subject>
+    <name>Old Testament</name>
+    <code>BS701-1830</code>
+    <parent>The Bible</parent>
+  </subject>
+  <subject>
+    <name>New Testament</name>
+    <code>BS1901-2970</code>
+    <parent>The Bible</parent>
+  </subject>
+  <subject>
+    <name>Germanic languages. Scandinavian languages</name>
+    <code>PD1-7159</code>
+    <parent>Language and Literature</parent>
+  </subject>
+  <subject>
+    <name>Genealogy</name>
+    <code>CS1-3090</code>
+    <parent>Auxiliary sciences of history</parent>
+  </subject>
+  <subject>
+    <name>Printmaking and engraving</name>
+    <code>NE1-978</code>
+    <parent>Print media</parent>
+  </subject>
+  <subject>
+    <name>Conservation and restoration of prints</name>
+    <code>NE380</code>
+    <parent>Printmaking and engraving</parent>
+  </subject>
+</subjects>

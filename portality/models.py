@@ -220,7 +220,14 @@ class GenericBibJSON(object):
         if "subject" in self.bibjson:
             del self.bibjson["subject"]
     
+
+class LCC(DomainObject):
+    __type__ = "lcc"
     
+    def save(self):
+        self.set_id("lcc")
+        super(LCC, self).save()
+
 
 ############################################################################
 
