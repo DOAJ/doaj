@@ -808,8 +808,7 @@ class JournalBibJSON(GenericBibJSON):
         """
         Deprecated - DO NOT USE
         """
-        return None
-        # url self.bibjson.get("author_pays_url")
+        return self.bibjson.get("author_pays_url")
         
         
     @author_pays_url.setter
@@ -817,24 +816,21 @@ class JournalBibJSON(GenericBibJSON):
         """
         Deprecated - DO NOT USE
         """
-        pass
-        # self.bibjson["author_pays_url"] = val
+        self.bibjson["author_pays_url"] = val
     
     @property
     def author_pays(self): 
         """
         Deprecated - DO NOT USE
         """
-        # return self.bibjson.get("author_pays")
-        return None
+        return self.bibjson.get("author_pays")
         
     @author_pays.setter
     def author_pays(self, val): 
         """
         Deprecated - DO NOT USE
         """
-        # self.bibjson["author_pays"] = val
-        pass
+        self.bibjson["author_pays"] = val
     
     @property
     def country(self): return self.bibjson.get("country")

@@ -78,12 +78,12 @@ def journal_page(journal_id):
     form = JournalForm(request.form, **current_info)
     form.country.description = '<span class="red">' + country_help_text + '</span>'
 
+    print '1', form.author_pays_url.data
+    print '2', j.bibjson().author_pays_url
     there_were_errors = False
     if request.method == 'POST':
         if form.validate():
             nj = j
-            nj.bibjson().active = form.in_doaj.data
-            nj.set_in_doaj(form.in_doaj.data)
             nj.bibjson().update_url(form.url.data, 'homepage')
             nj.bibjson().title = form.title.data
             nj.bibjson().alternative_title = form.alternative_title.data
@@ -97,6 +97,7 @@ def journal_page(journal_id):
             nj.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
             nj.bibjson().author_pays = form.author_pays.data
             nj.bibjson().author_pays_url = form.author_pays_url.data
+            print '3', j.bibjson().author_pays_url
             nj.bibjson().set_keywords(form.keywords.data)
             nj.bibjson().set_language(form.languages.data)
             nj.save()
