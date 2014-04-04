@@ -212,6 +212,10 @@ class GenericBibJSON(object):
     
     def subjects(self):
         return self.bibjson.get("subject", [])
+    
+    def remove_subjects(self):
+        if "subject" in self.bibjson:
+            del self.bibjson["subject"]
 
 ############################################################################
 
@@ -614,6 +618,25 @@ class Journal(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["owner"] = owner
+    
+    def known_issns(self):
+        """ all issns this journal has ever been known by """
+        issns = []
+        
+        # the places we're going to get those fields from
+        cbib = self.bibjson()
+        hist = self.history()
+        
+        # get the issns out of the current bibjson
+        issns += cbib.get_identifiers(cbib.P_ISSN)
+        issns += cbib.get_identifiers(cbib.E_ISSN)
+        
+        # now get the issns
+        for date, r, irb, hbib in hist:
+            issns += hbib.get_identifiers(hbib.P_ISSN)
+            issns += hbib.get_identifiers(hbib.E_ISSN)
+        
+        return issns
     
     def _generate_index(self):
         # the index fields we are going to generate
@@ -1314,6 +1337,18 @@ class Article(DomainObject):
         articles = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
         return articles
     
+    @classmethod
+    def list_volumes(cls, issns):
+        q = ArticleVolumesQuery(issns)
+        result = cls.query(q=q.query())
+        return [t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])]
+    
+    @classmethod
+    def get_by_volume(cls, issns, volume):
+        q = ArticleQuery(issns=issns, volume=volume)
+        articles = cls.iterate(q.query(), page_size=1000)
+        return articles
+    
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
@@ -1506,11 +1541,19 @@ class ArticleBibJSON(GenericBibJSON):
     def year(self): return self.bibjson.get("year")
     @year.setter
     def year(self, val) : self.bibjson["year"] = str(val)
+    @year.deleter
+    def year(self):
+        if "year" in self.bibjson:
+            del self.bibjson["year"]
     
     @property
     def month(self): return self.bibjson.get("month")
     @month.setter
     def month(self, val) : self.bibjson["month"] = str(val)
+    @month.deleter
+    def month(self):
+        if "month" in self.bibjson:
+            del self.bibjson["month"]
     
     @property
     def start_page(self): return self.bibjson.get("start_page")
@@ -1651,6 +1694,66 @@ class ArticleBibJSON(GenericBibJSON):
             except:
                 return ""
         return date
+    
+    def remove_journal_metadata(self):
+        if "journal" in self.bibjson:
+            del self.bibjson["journal"]
+
+class ArticleQuery(object):
+    base_query = { 
+        "query" : {
+            "bool" : {
+                "must" : []   
+            }
+        }
+    }
+    
+    _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} } 
+    _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
+    
+    def __init__(self, issns=None, volume=None):
+        self.issns = issns
+        self.volume = volume
+    
+    def query(self):
+        q = deepcopy(self.base_query)
+        
+        if self.issns is not None:
+            iq = deepcopy(self._issn_terms)
+            iq["terms"]["index.issn.exact"] = self.issns    
+            q["query"]["bool"]["must"].append(iq)
+        
+        if self.volume is not None:
+            vq = deepcopy(self._volume_term)
+            vq["term"]["bibjson.journal.volume.exact"] = self.volume 
+            q["query"]["bool"]["must"].append(vq)
+        
+        return q
+
+class ArticleVolumesQuery(object):
+    base_query = {
+        "query" : {
+            "terms" : {"index.issn.exact" : ["<list of issns here>"]}
+        },
+        "size" : 0,
+        "facets" : {
+            "vols" : {
+                "terms" : {
+                    "field" : "bibjson.journal.volume.exact",
+                    "size" : 1000
+                }
+            }
+        }
+    }
+    
+    def __init__(self, issns=None):
+        self.issns = issns
+    
+    def query(self):
+        q = deepcopy(self.base_query)
+        q["query"]["terms"]["index.issn.exact"] = self.issns
+        return q
+    
 
 class DuplicateArticleQuery(object):
     base_query = {
@@ -2111,10 +2214,221 @@ class Cache(DomainObject):
 ######################################################################
 
 
-class JournalToC(DomainObject):
+class JournalVolumeToC(DomainObject):
     __type__ = "toc"
+    
+    @classmethod
+    def get_id(cls, journal_id, volume):
+        q = ToCQuery(journal_id=journal_id, volume=volume, idonly=True)
+        result = cls.query(q=q.query())
+        ids = [hit.get("fields", {}).get("id") for hit in result.get("hits", {}).get("hits", [])]
+        if len(ids) == 1:
+            return ids[0]
+        return None
+    
+    @classmethod
+    def get_toc(cls, journal_id, volume):
+        q = ToCQuery(journal_id=journal_id, volume=volume)
+        result = cls.query(q=q.query())
+        vols = [hit.get("_source") for hit in result.get("hits", {}).get("hits", [])]
+        if len(vols) == 1:
+            return cls(**vols[0])
+        return None
+    
+    @classmethod
+    def list_volumes(cls, journal_id):
+        q = VolumesToCQuery(journal_id)
+        res = cls.query(q=q.query())
+        volumes = [term.get("term") for term in res.get("facets", {}).get("vols", {}).get("terms", [])]
+        return volumes
+    
+    @property
+    def about(self):
+        return self.data.get("about")
+    
+    def set_about(self, journal_id):
+        self.data["about"] = journal_id
+    
+    @property
+    def issn(self):
+        return self.data.get("issn", [])
+    
+    def set_issn(self, issns):
+        if not isinstance(issns, list):
+            issns = [issns]
+        self.data["issn"] = issns
+    
+    def add_issn(self, issn):
+        if "issn" not in self.data:
+            self.data["issn"] = []
+        self.data["issn"].append(issn)
+    
+    @property
+    def volume(self):
+        return self.data.get("volume")
+    
+    def set_volume(self, vol):
+        self.data["volume"] = vol
+    
+    @property
+    def issues(self):
+        return [JournalIssueToC(i) for i in self.data.get("issues", [])]
+    
+    def set_issues(self, issues):
+        if "issues" in self.data:
+            del self.data["issues"]
+        if not isinstance(issues, list):
+            issues = [issues]
+        for i in issues:
+            self.add_issue(i)
+    
+    def add_issue(self, issue):
+        if "issues" not in self.data:
+            self.data["issues"] = []
+        if isinstance(issue, JournalIssueToC):
+            issue = issue.data
+        self.data["issues"].append(issue)
+        self._sort_issues()
+    
+    def get_issue(self, number):
+        for issue in self.issues:
+            if issue.number == number:
+                return issue
+        return None
+    
+    def _sort_issues(self):
+        # first extract the array we want to sort on
+        # and make a map of that value to the issue itself
+        numbers = []
+        imap = {}
+        for iss in self.issues:
+            numbers.append(iss.number)
+            imap[iss.number] = iss
+        
+        # now do the combined numeric and non-numeric sorting
+        numeric = []
+        non_numeric = []
+        for n in numbers:
+            try:
+                numeric.append(int(n))
+            except:
+                non_numeric.append(n)
+        
+        numeric.sort(reverse=True)
+        non_numeric.sort(reverse=True)
+        
+        sorted_keys = [str(n) for n in numeric] + non_numeric
+        sorted_issues = [imap[n].data for n in sorted_keys]
+        
+        self.data["issues"] = sorted_issues
+    
+class JournalIssueToC(object):
+    
+    def __init__(self, raw=None):
+        self.data = raw if raw is not None else {}
+    
+    @property
+    def number(self):
+        return self.data.get("number")
+    
+    @number.setter
+    def number(self, num):
+        self.data["number"] = num
+    
+    @property
+    def year(self):
+        return self.data.get("year")
+    
+    @year.setter
+    def year(self, y):
+        self.data["year"] = y
+    
+    @property
+    def month(self):
+        return self.data.get("month")
+    
+    @month.setter
+    def month(self, m):
+        self.data["month"] = m
+    
+    @property
+    def articles(self):
+        return [Article(**a) for a in self.data.get("articles", [])]
+    
+    @articles.setter
+    def articles(self, arts):
+        if "articles" in self.data:
+            del self.data["articles"]
+        if not isinstance(arts, list):
+            arts = [arts]
+        for a in arts:
+            self.add_article(a)
+    
+    def add_article(self, article):
+        if "articles" not in self.data:
+            self.data["articles"] = []
+        if isinstance(article, Article):
+            article = article.data
+        self.data["articles"].append(article)
 
+class VolumesToCQuery(object):
+    base_query = {
+        "query" : {
+            "term" : {"about.exact" : "<journal id>"}
+        },
+        "size" : 0,
+        "facets" : {
+            "vols" : {
+                "terms" : {
+                    "field" : "volume.exact",
+                    "size" : 100
+                }
+            }
+        }
+    }
+    
+    def __init__(self, journal_id):
+        self.journal_id = journal_id
+    
+    def query(self):
+        q = deepcopy(self.base_query)
+        q["query"]["term"]["about.exact"] = self.journal_id
+        return q
 
+class ToCQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        }
+    }
+    
+    _journal_term = { "term" : {"about.exact" : "<journal id>"} }
+    _volume_term = { "term" : {"volume.exact" : "<volume id>"}}
+    
+    def __init__(self, journal_id=None, volume=None, idonly=False):
+        self.journal_id = journal_id
+        self.volume = volume
+        self.idonly = idonly
+    
+    def query(self):
+        q = deepcopy(self.base_query)
+        
+        if self.journal_id is not None:
+            jt = deepcopy(self._journal_term)
+            jt["term"]["about.exact"] = self.journal_id
+            q["query"]["bool"]["must"].append(jt)
+        
+        if self.volume is not None:
+            vt = deepcopy(self._volume_term)
+            vt["term"]["volume.exact"] = self.volume
+            q["query"]["bool"]["must"].append(vt)
+        
+        if self.idonly:
+            q["fields"] = ["id"]
+        
+        return q
 
 
 

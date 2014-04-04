@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+
+{% block content %}
+    
+<div class="row-fluid">
+    <div class="span9">
+        <h1>{{journal.bibjson().title}}</h1>
+        {% if journal.bibjson().alternative_title %}
+            <h2>{{journal.bibjson().alternative_title}}</h2>
+        {% endif %}
+        <p>
+        {% for identifier in journal.bibjson().get_identifiers(idtype='pissn') %}
+            <em>ISSN: {{identifier}}</em>&nbsp;&nbsp;
+        {% endfor %}
+        {% for identifier in journal.bibjson().get_identifiers(idtype='eissn') %}
+            <em>E-ISSN: {{identifier}}</em>
+        {% endfor %}
+        </p>
+    </div>
+    <div class="span3">
+        {% set CC_MAP = {
+                "CC by" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
+                "CC by-nc" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
+                "CC by-nc-nd" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
+                "CC by-nc-sa" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
+                "CC by-nd" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
+                "CC by-sa" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
+            }
+        %}
+        {% set lic = journal.bibjson().get_license() %}
+        {% if lic %}
+            {% set urls = CC_MAP.get(lic.get("type")) %}
+            <p><a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a></p>
+        {% endif %}
+        
+        <p><strong>active?</strong>&nbsp;{{ journal.bibjson().active }}</p>
+        <p><strong>allows fulltext indexing?</strong>&nbsp;{{ journal.bibjson().allows_fulltext_indexing }}</p>
+        
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span2">&nbsp;</div>
+    <div class="span4">
+        <div class="well" style="height: 120px">
+            {% if journal.bibjson().publisher %}
+                <p><strong>publisher</strong>:&nbsp;{{journal.bibjson().publisher}}</p>
+            {% endif %}
+            
+            {% if journal.bibjson().institution %}
+                <p><strong>society/institution</strong>:&nbsp;{{journal.bibjson().institution}}</p>
+            {% endif %}
+            
+            {% if journal.bibjson().provider %}
+                <p><strong>host/platform</strong>:&nbsp;{{journal.bibjson().provider}}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="span4">
+        <div class="well" style="height: 120px">
+            {% if journal.bibjson().country %}
+                <p><strong>country</strong>:&nbsp;{{journal.bibjson().country}}</p>
+            {% endif %}
+            
+            {% if journal.bibjson().language %}
+                <p><strong>language(s)</strong>:&nbsp;{{journal.bibjson().language|join(", ")}}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+</div>
+
+{% set URL_TYPES = {
+    "homepage" : "Journal Homepage",
+    "waiver_policy" : "Waiver Policy",
+    "editorial_board" : "Editorial Board",
+    "aims_scope" : "Aims and Scope",
+    "author_instructions" : "Instructions for Authors",
+    "oa_statement": "Open Access Statement"
+}
+%}
+
+<div class="row-fluid">
+    <div class="span12">
+        {% for url in journal.bibjson().get_urls() %}
+            <strong>{{URL_TYPES.get(url.get("type"), url.get("type"))}}</strong>: <a href="{{url.get('url')}}">{{url.get("url")}}</a><br>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid"><div class="span12">
+            <a href="#" id="journal_details_toggle">(more details)</a>
+        </div></div>
+        <div class="row-fluid" id="journal_details">
+            <div class="span12">
+                {% if journal.bibjson().oa_start.get("year") %}
+                    <strong>Year Open Access Began</strong>: {{journal.bibjson().oa_start.get("year")}}<br>
+                {% endif %}
+                {% if journal.bibjson().oa_end.get("year") %}
+                    <strong>Year Open Access Ceased</strong>: {{journal.bibjson().oa_end.get("year")}}<br>
+                {% endif %}
+                {% if journal.bibjson().apc %}
+                    <strong>APC</strong>: {{journal.bibjson().apc.get("currency")}} {{journal.bibjson().apc.get("average_price")}}<br>
+                {% endif %}
+                {% if journal.bibjson().submission_charges %}
+                    <strong>Submission Charges</strong>: {{journal.bibjson().submission_charges.get("currency")}} {{journal.bibjson().submission_charges.get("average_price")}}<br>
+                {% endif %}
+                {% if journal.bibjson().archiving_policy %}
+                    <strong>Archiving Policies</strong>: {{journal.bibjson().archiving_policy.get("policy")|join(", ")}} 
+                        (<a href="{{journal.bibjson().archiving_policy.get('url')}}">{{journal.bibjson().archiving_policy.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().editorial_review %}
+                    <strong>Editorial Review Process</strong>: {{journal.bibjson().editorial_review.get("process")}} 
+                        (<a href="{{journal.bibjson().editorial_review.get('url')}}">{{journal.bibjson().editorial_review.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().plagiarism_detection %}
+                    <strong>Has Plagiarism Detection</strong>: {{journal.bibjson().plagiarism_detection.get("detection")}} 
+                        (<a href="{{journal.bibjson().plagiarism_detection.get('url')}}">{{journal.bibjson().plagiarism_detection.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().article_statistics %}
+                    <strong>Has Article Statistics</strong>: {{journal.bibjson().article_statistics.get("statistics")}} 
+                        (<a href="{{journal.bibjson().article_statistics.get('url')}}">{{journal.bibjson().article_statistics.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().deposit_policy %}
+                    <strong>Deposit Policies</strong>: {{journal.bibjson().deposit_policy|join(", ")}}<br>
+                {% endif %}
+                {% if journal.bibjson().author_copyright %}
+                    <strong>Does Author Retain Copyright</strong>: {{journal.bibjson().author_copyright.get("copyright")}} 
+                        (<a href="{{journal.bibjson().author_copyright.get('url')}}">{{journal.bibjson().author_copyright.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().author_publishing_rights %}
+                    <strong>Does Author Retain Publishing Rights</strong>: {{journal.bibjson().author_publishing_rights.get("publishing_rights")}} 
+                        (<a href="{{journal.bibjson().author_publishing_rights.get('url')}}">{{journal.bibjson().author_publishing_rights.get("url")}}</a>)<br>
+                {% endif %}
+                {% if journal.bibjson().persistent_identifier_scheme|length > 0 %}
+                    <strong>Persistent Identifier Schemes</strong>: {{journal.bibjson().persistent_identifier_scheme|join(", ")}} <br>
+                {% endif %}
+                {% if journal.bibjson().format|length > 0 %}
+                    <strong>Full-text Formats</strong>: {{journal.bibjson().format|join(", ")}}<br>
+                {% endif %}
+                {% if journal.bibjson().publication_time %}
+                    <strong>Time From Submission to Publication</strong>: {{journal.bibjson().publication_time}} weeks<br>
+                {% endif %}
+                
+                <strong>Keywords and Subjects</strong><br>
+                {% if journal.bibjson().keywords %}{{journal.bibjson().keywords|join(", ")}}{% endif %}
+                {% for s in journal.bibjson().subjects() %}{% if loop.index0 > 0 %}, {% endif %}{{ s.get("term") }}{% endfor %}
+    
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if volumes|length > 0 %}
+
+<div class="row-fluid" style="margin-top: 50px"><div class="span12"><h3>Volumes</h3></div></div>
+
+<div class="row-fluid">
+  <div class="span12">
+    <ul class="nav nav-tabs">
+    {% for v in volumes %}
+        <li{% if current_volume == v %} class="active"{% endif %}><a href="{{url_for('doaj.toc', identifier=journal.id, volume=v)}}">{{v}}</a></li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <h3>Volume {{current_volume}}</h3>
+    </div>
+</div>
+
+{% set MONTHS = {
+    "1" : "Jan", "2" : "Feb", "3" : "Mar", "4" : "Apr", "5" : "May", "6" : "Jun", "7" : "Jul", "8" : "Aug", "9" : "Sept", "10" : "Oct", "11" : "Nov", "12" : "Dec",
+    "01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept", 
+}
+%}
+
+{% for issue in table.issues %}
+    
+<div class="row-fluid" style="border-bottom: 1px solid #cccccc; margin-bottom: 40px">
+    <div class="span12">
+        <h4 style="margin-bottom: 10px">
+            Issue {{issue.number}}
+            {% if issue.month or issue.year %}
+                ({% if issue.month %}{{MONTHS.get(issue.month, issue.month)}}{% endif %}{% if issue.year %}{% if issue.month %}&nbsp;{% endif %}{{issue.year}}{% endif %})
+            {% endif %}
+        </h4>
+        
+        {% for article in issue.articles %}
+        
+        <div class="row-fluid">
+            <div class="span12" style="padding-left: 20px; padding-bottom: 5px">
+                <strong>{{article.bibjson().title}}</strong><br>
+                {% for author in article.bibjson().author %}
+                    <em>
+                        {{author.name}}
+                        {% if author.affiliation %}
+                            ({{author.affiliation}})
+                        {% endif %}
+                    </em>
+                {% endfor %}<br>
+                {% for url in article.bibjson().get_urls("fulltext") %}
+                    fulltext: <a href="{{url}}">{{url}}</a><br>
+                {% endfor %}
+                {% if article.bibjson().abstract %}
+                    <a href="#" class="abstract_toggle" data-article="{{article.id}}">(abstract)</a>
+                    <p class="abstract_box" id="article_{{article.id}}">{{article.bibjson().abstract}}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% endfor %}
+        
+    </div>
+</div>
+    
+{% endfor %}
+
+{% else %}
+
+    <p style="margin-top: 40px">No Table of Contents available for this journal</p>
+
+{% endif %} {# if volumes| length > 0 #}
+   
+{% endblock %}
+
+{% block extra_js_bottom %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    $("#journal_details").hide()
+    $("#journal_details_toggle").click(function(event) {
+        event.preventDefault();
+        $("#journal_details").toggle()
+    })
+    
+    $(".abstract_box").hide()
+    $(".abstract_toggle").click(function(event) {
+        event.preventDefault();
+        var article_id = $(this).attr("data-article")
+        $("#article_" + article_id).toggle()
+    })
+
+});
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
