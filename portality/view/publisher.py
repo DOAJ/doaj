@@ -212,7 +212,7 @@ def metadata():
                 xwalk = article.FormXWalk()
                 art = xwalk.crosswalk_form(form)
                 art.save()
-                flash("New article created", "success")
+                flash("Article created/updated", "success")
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)
         else:

@@ -51,6 +51,13 @@ This will ingest all of the latest file uploads and remote URLs provided.  It sh
 
 This will generate the latest version of the csv to serve on request.  It should be run approximately every 30 minutes.
 
+    portality/scripts/toc.py
+
+This will re-generate all of the Table of Contents pages for performance purposes.  This script can take a long time to run (several hours) so should only be run daily at the most.
+
+    portality/scripts/sitemap.py
+
+This will generate the latest version of the sitemap to serve on request.  It should be run approximately every 30 minutes.
 
 ## Data Models
 
@@ -156,11 +163,7 @@ It is likely that history records will only be created upon request by the admin
                 "SA": true/false,
                 "embedded" : true|false # is the licence metadata embedded in the article pages>
             }
-        ],
-        
-        # Require migration to "apc"
-        "author_pays_url" : "<charging link>",
-        "author_pays" : true|false
+        ]
     },
     "history" : [
         {

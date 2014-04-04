@@ -99,12 +99,20 @@ class XWalk(object):
         use_doi = False
         use_fulltext = False
         
+        # if we get more than one result, we'll record them here, and then at the end
+        # if we haven't got a definitive match we'll pick the most likely candidate
+        # (this isn't as bad as it sounds - the identifiers are pretty reliable, this catches
+        # issues like where there are already duplicates in the data, and not matching one
+        # of them propagates the issue)
+        possible_articles = []
+        
         # first test is the most definitive - does the publisher's record id match
         if article.publisher_record_id() is not None:
             articles = models.Article.duplicates(issns=issns, publisher_record_id=article.publisher_record_id())
             if len(articles) == 1:
                 return articles[0]
             if len(articles) > 1:
+                possible_articles += articles
                 use_prid = True # we don't have a definitive answer, but we do have options
         
         # second test is to look by doi
@@ -117,6 +125,7 @@ class XWalk(object):
             if len(articles) == 1:
                 return articles[0]
             if len(articles) > 1:
+                possible_articles += articles
                 use_doi = True # we don't have a definitive answer, but we do have options
         
         # third test is to look by fulltext url
@@ -127,7 +136,20 @@ class XWalk(object):
             if len(articles) == 1:
                 return articles[0]
             if len(articles) > 1:
+                possible_articles += articles
                 use_fulltext = True # we don't have a definitive answer, but we do have options
+        
+        # now we need to try to do something about multiple hits one one or more of the above
+        if len(possible_articles) > 0:
+            latest = possible_articles[0]
+            latest_date = datetime.strptime(latest.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+            for a in possible_articles:
+                t = datetime.strptime(a.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+                if t > latest_date:
+                    latest = a
+                    latest_date = t
+            return latest
+        
         
         # NOTE: we may choose, at this point, to do some OR matching around the prid, doi and fulltext,
         # so we'll come back to it if the matching requirements arise.
@@ -194,7 +216,7 @@ class XWalk(object):
 class FormXWalk(XWalk):
     format_name = "form"
     
-    def crosswalk_form(self, form, add_journal_info=True):
+    def crosswalk_form(self, form, add_journal_info=True, limit_to_owner=None):
         article = models.Article()
         bibjson = article.bibjson()
         
@@ -270,6 +292,13 @@ class FormXWalk(XWalk):
         # add the journal info if requested
         if add_journal_info:
             self.add_journal_info(article)
+        
+        # before finalising, we need to determine whether this is a new article
+        # or an update
+        duplicate = self.get_duplicate(article, limit_to_owner)
+        # print duplicate
+        if duplicate is not None:
+            article.merge(duplicate) # merge will take the old id, so this will overwrite
         
         return article
 

@@ -188,6 +188,12 @@ def csv_data():
     csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
     return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
 
+@blueprint.route("/sitemap.xml")
+def sitemap():
+    sitemap_file = models.Cache.get_latest_sitemap()
+    sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
+    return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
+
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
     prefix = request.args.get('q','').lower()
@@ -203,11 +209,17 @@ def autocomplete(doc_type, field_name):
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
+@blueprint.route("/toc")
+def list_journals():
+    js = models.Journal.all_in_doaj(page_size=1000, minified=True)
+    return render_template("doaj/journals.html", journals=js)
+
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
 def toc(identifier=None, volume=None):
     # identifier may be the journal id or an issn
     journal = None
+    jid = identifier # track the journal id - this may be an issn, in which case this will get overwritten
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier)
         if len(js) > 1:
@@ -215,12 +227,13 @@ def toc(identifier=None, volume=None):
         if len(js) == 0:
             abort(404)
         journal = js[0]
+        jid = journal.id
     else:
         journal = models.Journal.pull(identifier)
     if journal is None:
         abort(404)
     
-    all_volumes = models.JournalVolumeToC.list_volumes(identifier)
+    all_volumes = models.JournalVolumeToC.list_volumes(jid)
     all_volumes = _sort_volumes(all_volumes)
     
     if volume is None and len(all_volumes) > 0:
@@ -228,7 +241,7 @@ def toc(identifier=None, volume=None):
     
     table = None
     if volume is not None:
-        table = models.JournalVolumeToC.get_toc(identifier, volume)
+        table = models.JournalVolumeToC.get_toc(jid, volume)
         if table is None:
             abort(404)
     
@@ -237,16 +250,22 @@ def toc(identifier=None, volume=None):
 def _sort_volumes(volumes):
     numeric = []
     non_numeric = []
+    nmap = {}
     for v in volumes:
         try:
-            numeric.append(int(v))
+            # try to convert n to an int
+            vint = int(v)
+            numeric.append(vint)
+            
+            # remember the original string (it may have leading 0s)
+            nmap[vint] = v
         except:
             non_numeric.append(v)
     
     numeric.sort(reverse=True)
     non_numeric.sort(reverse=True)
     
-    return [str(n) for n in numeric] + non_numeric
+    return [nmap[n] for n in numeric] + non_numeric # convert the integers back to their string representation
 
 ###############################################################
 ## The various static endpoints

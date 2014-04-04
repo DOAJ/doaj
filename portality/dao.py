@@ -237,7 +237,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid='', retry=10):
+    def send_query(cls, qobj, endpoint='_search', recid='', retry=50):
         '''Actually send a query object to the backend.'''
         r = None
         count = 0
@@ -273,6 +273,10 @@ class DomainObject(UserDict.IterableUserDict, object):
     def delete(self):        
         r = requests.delete(self.target() + self.id)
     
+    @classmethod
+    def remove_by_id(self, id):
+        r = requests.delete(self.target() + id)
+    
     def update(self, doc):
         """
         add the provided doc to the existing object
@@ -285,10 +289,11 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
     
     @classmethod
-    def iterate(cls, q, page_size=1000, limit=None):
+    def iterate(cls, q, page_size=1000, limit=None, wrap=True):
         q["size"] = page_size
         q["from"] = 0
-        q["sort"] = [{"id" : {"order" : "asc"}}]
+        if "sort" not in q: # to ensure complete coverage on a changing index, sort by id is our best bet
+            q["sort"] = [{"id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit
@@ -296,7 +301,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 break
             
             res = cls.query(q=q)
-            rs = [r.get("_source") for r in res.get("hits", {}).get("hits", [])]
+            rs = [r.get("_source") if "_source" in r else r.get("fields") for r in res.get("hits", {}).get("hits", [])]
             # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(q)
             if len(rs) == 0:
                 break
@@ -305,7 +310,10 @@ class DomainObject(UserDict.IterableUserDict, object):
                 if limit is not None and counter >= limit:
                     break
                 counter += 1
-                yield cls(**r)
+                if wrap:
+                    yield cls(**r)
+                else:
+                    yield r
             q["from"] += page_size   
     
     @classmethod

@@ -196,17 +196,13 @@
         <div class="row-fluid">
             <div class="span12" style="padding-left: 20px; padding-bottom: 5px">
                 <strong>{{article.bibjson().title}}</strong><br>
-                {% for author in article.bibjson().author %}
-                    <em>
-                        {{author.name}}
-                        {% if author.affiliation %}
-                            ({{author.affiliation}})
-                        {% endif %}
-                    </em>
-                {% endfor %}<br>
+                {% for author in article.bibjson().author %}<em>{% if not loop.first %}, {% endif %}{{author.name}}{% if author.affiliation %} ({{author.affiliation}}){% endif %}</em>{% endfor %}<br>
                 {% for url in article.bibjson().get_urls("fulltext") %}
                     fulltext: <a href="{{url}}">{{url}}</a><br>
                 {% endfor %}
+                {% if article.bibjson().start_page %}
+                    pages: {{article.bibjson().start_page}} {% if article.bibjson().end_page %}- {{article.bibjson().end_page}}{% endif %}<br>
+                {% endif %}
                 {% if article.bibjson().abstract %}
                     <a href="#" class="abstract_toggle" data-article="{{article.id}}">(abstract)</a>
                     <p class="abstract_box" id="article_{{article.id}}">{{article.bibjson().abstract}}</p>

@@ -213,9 +213,21 @@ class GenericBibJSON(object):
     def subjects(self):
         return self.bibjson.get("subject", [])
     
+    def set_subjects(self, subjects):
+        self.bibjson["subject"] = subjects
+    
     def remove_subjects(self):
         if "subject" in self.bibjson:
             del self.bibjson["subject"]
+    
+
+class LCC(DomainObject):
+    __type__ = "lcc"
+    
+    def save(self):
+        self.set_id("lcc")
+        super(LCC, self).save()
+
 
 ############################################################################
 
@@ -498,9 +510,10 @@ class Journal(DomainObject):
         return records
     
     @classmethod
-    def all_in_doaj(cls, page_size=5000):
-        q = JournalQuery()
-        return cls.iterate(q.all_in_doaj(), page_size=page_size)
+    def all_in_doaj(cls, page_size=5000, minified=False):
+        q = JournalQuery(minified=minified, sort_by_title=minified)
+        wrap = not minified
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=wrap)
     
     @classmethod
     def issns_by_owner(cls, owner):
@@ -798,8 +811,8 @@ class Journal(DomainObject):
         row.append( self.created_date ) # Date created
         row.append( multival_sep.join([subject['term'] for subject in bibjson.subjects()]) ) # Subject terms
         row.append( index.get('country', '') ) # Country
-        row.append( bibjson.author_pays ) # author pays
-        row.append(bibjson.author_pays_url) # author pays url
+        row.append( "" ) # author pays - DEPRECATED
+        row.append("") # author pays url - DEPRECATED
 
         # for now, follow the strange format of the CC License column
         # that the old CSV had. Also, only take the first CC license we see!
@@ -1157,15 +1170,24 @@ class JournalQuery(object):
         }
     }
     
-    def __init__(self):
+    _minified_fields = ["id", "bibjson.title", "last_updated"]
+    
+    def __init__(self, minified=False, sort_by_title=False):
         self.query = None
+        self.minified = minified
+        self.sort_by_title = sort_by_title
     
     def find_by_issn(self, issn):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
         
     def all_in_doaj(self):
-        return deepcopy(self.all_doaj)
+        q = deepcopy(self.all_doaj)
+        if self.minified:
+            q["fields"] = self._minified_fields
+        if self.sort_by_title:
+            q["sort"] = [{"bibjson.title.exact" : {"order" : "asc"}}]
+        return q
 
 class IssnQuery(object):
     base_query = {
@@ -1402,7 +1424,7 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
     
-    def merge(self, old):
+    def merge(self, old, take_id=True):
         # this takes an old version of the article and brings
         # forward any useful information that is needed.  The rules of merge are:
         # - ignore "index" (it gets regenerated on save)
@@ -1414,7 +1436,7 @@ class Article(DomainObject):
         self.set_created(old.created_date)
         
         # take the id
-        if self.id is None:
+        if self.id is None or take_id:
             self.set_id(old.id)
         
         # take the history
@@ -2191,6 +2213,21 @@ class Cache(DomainObject):
             return None
         return rec.get("filename")
     
+    @classmethod
+    def cache_sitemap(cls, filename):
+        cobj = cls(**{
+            "filename" : filename
+        })
+        cobj.set_id("sitemap")
+        cobj.save()
+    
+    @classmethod
+    def get_latest_sitemap(cls):
+        rec = cls.pull("sitemap")
+        if rec is None:
+            return None
+        return rec.get("filename")
+    
     def mark_for_regen(self):
         self.update({"regen" : True})
     
@@ -2308,16 +2345,22 @@ class JournalVolumeToC(DomainObject):
         # now do the combined numeric and non-numeric sorting
         numeric = []
         non_numeric = []
+        nmap = {}
         for n in numbers:
             try:
-                numeric.append(int(n))
+                # try to convert n to an int
+                nint = int(n)
+                numeric.append(nint)
+                
+                # remember the original string (it may have leading 0s)
+                nmap[nint] = n
             except:
                 non_numeric.append(n)
         
         numeric.sort(reverse=True)
         non_numeric.sort(reverse=True)
         
-        sorted_keys = [str(n) for n in numeric] + non_numeric
+        sorted_keys = [nmap[n] for n in numeric] + non_numeric # convert the numbers back to their original representations
         sorted_issues = [imap[n].data for n in sorted_keys]
         
         self.data["issues"] = sorted_issues
@@ -2370,6 +2413,55 @@ class JournalIssueToC(object):
         if isinstance(article, Article):
             article = article.data
         self.data["articles"].append(article)
+        self._sort_articles()
+    
+    def _sort_articles(self):
+        # first extract the array we want to sort on
+        # and make a map of that value to the issue itself
+        unsorted = []
+        numbers = []
+        imap = {}
+        for art in self.articles:
+            sp = art.bibjson().start_page
+            
+            # can't sort anything that doesn't have a start page
+            if sp is None:
+                unsorted.append(art)
+                continue
+            
+            # deal with start page clashes and record the start pages
+            # to sort by
+            if sp not in numbers:
+                numbers.append(sp)
+            if sp in imap:
+                imap[sp].append(art)
+            else:
+                imap[sp] = [art]
+        
+        # now do the combined numeric and non-numeric sorting
+        numeric = []
+        non_numeric = []
+        nmap = {}
+        for n in numbers:
+            try:
+                # try to convert n to an int
+                nint = int(n)
+                numeric.append(nint)
+                
+                # remember the original string
+                nmap[nint] = n
+            except:
+                non_numeric.append(n)
+        
+        numeric.sort()
+        non_numeric.sort()
+        
+        sorted_keys = [nmap[n] for n in numeric] + non_numeric # convert the numbers back to their original representations
+        s = []
+        for n in sorted_keys:
+            s += [x.data for x in imap[n]]
+        
+        self.data["articles"] = s
 
 class VolumesToCQuery(object):
     base_query = {

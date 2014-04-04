@@ -6,6 +6,8 @@ import os
 # base path, to the directory where this settings file lives
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
+BASE_URL = "http://doaj.org"
+
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
 
@@ -91,6 +93,7 @@ MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
 MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
 MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
+MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -164,8 +167,6 @@ REPOS = {
 
 FEED_TITLE = "Directory of Open Access Journals"
 
-BASE_URL = "http://doaj.org"
-
 # Maximum number of feed entries to be given in a single response.  If this is omitted, it will
 # default to 20
 MAX_FEED_ENTRIES = 100
@@ -221,6 +222,9 @@ SCHEMAS = {
     "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
 }
 
+# maximum size of files that can be provided by-reference (the default value is 250Mb)
+MAX_REMOTE_SIZE = 262144000
+
 # =================================
 # ReCaptcha settings
 # We use per-domain, not global keys
@@ -242,6 +246,44 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
+
+# where are static files served from - in case we need to serve a file
+# from there ourselves using Flask instead of nginx (e.g. to support a
+# legacy route to that file)
+STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
+
+
+
+# ===================================
+# Sitemap settings
+
+# approximate rate of change of the Table of Contents for journals
+TOC_CHANGEFREQ = "monthly"
+
+STATIC_PAGES = [
+    ("", "monthly"), # home page
+    ("/search", "daily"),
+    ("/toc", "monthly"),
+    ("/application/new", "monthly"),
+    ("/about", "monthly"),
+    ("/publishers", "monthly"),
+    ("/support", "monthly"),
+    ("/contact", "yearly"),
+    ("/supportDoaj", "monthly"),
+    ("/members", "monthly"),
+    ("/membership", "monthly"),
+    ("/publishermembers", "monthly"),
+    ("/faq", "monthly"),
+    ("/features", "monthly"),
+    ("/oainfo", "monthly"),
+    ("/sponsors", "monthly")
+]
+
+
+
+
+
+
 
 # where are static files served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a

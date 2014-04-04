@@ -400,7 +400,6 @@ class JournalInformationForm(Form):
     
 
 class JournalForm(JournalInformationForm):
-    in_doaj = BooleanField('In DOAJ?')
     provider = TextField('Provider', [validators.Optional()])
     author_pays = RadioField('Author pays to publish', [validators.Required()], choices=author_pays_options)
     author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])

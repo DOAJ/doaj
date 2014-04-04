@@ -10,16 +10,44 @@ if upload_dir is None:
 
 # our first task is to dereference and validate any remote files
 to_download = models.FileUpload.list_remote()
+do_sleep = False
 for remote in to_download:
+    do_sleep = True
     path = os.path.join(upload_dir, remote.local_filename)
     print "downloading", remote.filename
     try:
         r = requests.get(remote.filename, stream=True)
+
+        # check the content length
+        size_limit = app.config.get("MAX_REMOTE_SIZE", 262144000)
+        cl = r.headers.get("content-length")
+        if cl > size_limit:
+            remote.failed("The file at the URL was too large")
+            remote.save()
+            print "...too large"
+            continue
+        
+        too_large = False
         with open(path, 'wb') as f:
+            downloaded = 0
             for chunk in r.iter_content(chunk_size=1048576): # 1Mb chunks
+                downloaded += len(bytes(chunk))
+                # check the size limit again
+                if downloaded > size_limit:
+                    remote.failed("The file at the URL was too large")
+                    remote.save()
+                    print "...too large"
+                    too_large = True
+                    break
                 if chunk: # filter out keep-alive new chunks
                     f.write(chunk)
                     f.flush()
+        if too_large:
+            try:
+                os.remove(path)
+            except:
+                pass
+            continue
     except:
         remote.failed("The URL could not be accessed")
         remote.save()
@@ -52,8 +80,9 @@ for remote in to_download:
     print "...success"
     
 # in between, issue a refresh request and wait for the index to sort itself out
-models.FileUpload.refresh()
-time.sleep(5)
+if do_sleep:
+    models.FileUpload.refresh()
+    time.sleep(5)
 
 to_process = models.FileUpload.list_valid() # returns an iterator
 for upload in to_process:
@@ -94,3 +123,7 @@ for upload in to_process:
             os.remove(path)
         except:
             pass
+    
+    # always refresh before moving on to the next file
+    models.Article.refresh()
+    time.sleep(5)

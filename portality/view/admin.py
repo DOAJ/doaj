@@ -37,15 +37,19 @@ def journals():
                admin_page=True
            )
 
-@blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
-@login_required
-@ssl_required
-def journal_page(journal_id):
+def get_journal(journal_id):
     if not current_user.has_role("edit_journal"):
         abort(401)
     j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
+    return j
+
+@blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def journal_page(journal_id):
+    j = get_journal(journal_id)
 
     current_country = xwalk.get_country_code(j.bibjson().country)
 
@@ -111,6 +115,24 @@ def journal_page(journal_id):
     subject_final_str = ', '.join(subject_strings)
 
     return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subject_final_str, there_were_errors=there_were_errors)
+
+@blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def journal_activate(journal_id):
+    j = get_journal(journal_id)
+    j.set_in_doaj(True)
+    j.save()
+    return redirect(url_for('.journal_page', journal_id=journal_id))
+
+@blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def journal_deactivate(journal_id):
+    j = get_journal(journal_id)
+    j.set_in_doaj(False)
+    j.save()
+    return redirect(url_for('.journal_page', journal_id=journal_id))
 
 @blueprint.route("/applications")
 @login_required
