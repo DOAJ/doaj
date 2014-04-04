@@ -12,6 +12,12 @@ jQuery(document).ready(function() {
     <p><a href="/account">view a list of all user accounts</a>
 {% endif %}
 
+{% if current_user.has_role("admin_journals") %}
+    {% set Q1 = '{"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : "' %}
+    {% set Q2 = '"}}]}}}' %}
+    <p><a href="/admin/journals?source={{Q1}}{{account.id}}{{Q2}}">view a list of this user's journals</a>
+{% endif %}
+
 {% if current_user.id == account.id or current_user.is_super %}
 
     <div class="row-fluid">

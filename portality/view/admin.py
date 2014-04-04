@@ -31,6 +31,8 @@ def index():
 @login_required
 @ssl_required
 def journals():
+    if not current_user.has_role("admin_journals"):
+        abort(401)
     return render_template('admin/journals.html',
                search_page=True,
                facetviews=['journals'],

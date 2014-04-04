@@ -302,3 +302,22 @@ fv_country_name = (function (resultobj) {
     };
     return that;
 })();
+
+fv_owner = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.admin && resultobj.admin.owner !== undefined) {
+            var own = resultobj.admin.owner
+            return '<a href="/account/' + own + '">' + own + '</a>'
+        }
+        return false
+    };
+    return that;
+})();
+
+fv_user_journals = (function (resultobj) {
+    var that = function(resultobj) {
+        var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}}
+        return '<a class="pull-right" style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
+    };
+    return that;
+})();

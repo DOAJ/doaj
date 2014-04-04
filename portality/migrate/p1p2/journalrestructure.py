@@ -8,11 +8,11 @@ journal_iterator = models.Journal.iterall(page_size=10000)
 for j in journal_iterator:
     
     # remove any author-pays stuff
-    if "author_pays" in j.data.get("bibjson"):
-        del j.data["bibjson"]["author_pays"]
+    #if "author_pays" in j.data.get("bibjson"):
+    #    del j.data["bibjson"]["author_pays"]
     
-    if "author_pays_url" in j.data.get("bibjson"):
-        del j.data["bibjson"]["author_pays_url"]
+    #if "author_pays_url" in j.data.get("bibjson"):
+    #    del j.data["bibjson"]["author_pays_url"]
     
     # get rid of all DOAJ subject classifications
     subs = j.bibjson().subjects()
