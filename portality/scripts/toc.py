@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for journal in journals:
         issns = journal.known_issns()
         known_volumes = models.Article.list_volumes(issns)
-        print "Generating ToC for journal", journal.id, "with ISSNs", issns, "and volumes", known_volumes
+        print "Generating ToC for journal", journal.id, "with ISSNs", issns#, "and volumes", known_volumes
         
         if len(known_volumes) == 0:
             skipped += 1
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         js += 1
         
         for kv in known_volumes:
-            print "...Generating Volume ToC for", kv
+            print "...Generating Volume ToC for", unicode(kv).encode("utf-8", "replace")
             volumes += 1
             articles = models.Article.get_by_volume(issns, kv)
             
@@ -73,7 +73,7 @@ if __name__ == "__main__":
                         iss.year = bj.year
                     if bj.month is not None:
                         iss.month = bj.month
-                    print "......Generating Issue ToC for number", num, "(year:", bj.year, "month:", bj.month, ")"
+                    print "......Generating Issue ToC for number", unicode(num).encode("utf-8", "replace")#, "(year:", bj.year, "month:", bj.month, ")"
                     table.add_issue(iss)
                 
                 # iss is now bound to the toc, so we can update it without
