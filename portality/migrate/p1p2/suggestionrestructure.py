@@ -25,6 +25,9 @@ for d in deletable:
         models.Suggestion.remove_by_id(id)
         print "removing", id
 
+models.Suggestion.refresh()
+time.sleep(10)
+
 batch_size = 1000
 total=0
 
