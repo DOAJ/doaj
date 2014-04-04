@@ -13,7 +13,8 @@ jQuery(document).ready(function($) {
     post_init_callback: customise_facetview_init,
     freetext_submit_delay:"1000",
     results_render_callbacks: {
-        "edit_user" : fv_edit_user
+        "edit_user" : fv_edit_user,
+        "user_journals" : fv_user_journals
     },
     hide_inactive_facets: true,
     facets: [
@@ -74,13 +75,10 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Journals Managed</strong>: ",
-                "field": "journal"
-            }
-        ],
-        [
-            {
                 "field": "edit_user"
+            },
+            {
+                "field" : "user_journals"
             }
         ]
     ],

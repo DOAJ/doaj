@@ -25,11 +25,13 @@ jQuery(document).ready(function($) {
         "issns" : fv_issns,
         "edit_journal": fv_edit_journal,
         "in_doaj": fv_in_doaj,
-        "country_name": fv_country_name
+        "country_name": fv_country_name,
+        "owner" : fv_owner
     },
     hide_inactive_facets: true,
     facets: [
         {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
+        {'field': 'admin.owner', 'display': 'Owner'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
@@ -46,6 +48,7 @@ jQuery(document).ready(function($) {
         {'display':'Title','field':'index.title.exact'},
     ],
     searchbox_fieldselect: [
+        {'display':'Owner','field':'admin.owner'},
         {'display':'Title','field':'index.title'},
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
         {'display':'Subject','field':'index.subject'},
@@ -79,6 +82,12 @@ jQuery(document).ready(function($) {
             {
                 "pre" : "<strong>In DOAJ?</strong>: ",
                 "field" : "in_doaj"
+            }
+        ],
+        [
+            {
+                "pre" : "<strong>Owner</strong>: ",
+                "field" : "owner"
             }
         ],
         [
