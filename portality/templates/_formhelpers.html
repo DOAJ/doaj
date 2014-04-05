@@ -241,25 +241,8 @@
     {% endif %}
 {% endmacro %}
 
-{% macro render_fields(form, fields, from='', to='') %}
-  {% set seen_from_field = False %}
-
+{% macro render_fields(form, fields) %}
   {% for f_kwargs in fields %}
-
-    {% set f = f_kwargs['field'] %}
-  
-    {# if we need to start from a specific field, skip processing all fields before it #}
-    {% if from %}
-      {% if not seen_from_field %}
-        {% if f != from %}
-          {% continue %}
-        {% endif %}
-      {% else %}
-        {% if f == from %}
-          {% set seen_from_field = True %}
-        {% endif %}
-      {% endif %}
-    {% endif %}
 
     {# we need to delete the field name ('field' key) before passing it on to render,
        otherwise it will become a keyword argument to the field renderer #}
@@ -275,14 +258,6 @@
        to be modified when they pass it to a rendering
        function - or macro, in this case #}
     {% do f_kwargs.update({'field': f}) %}
-
-    {# if told to stop at a specific field, stop looping #}
-    {% if to %}
-      {% if f == to %}
-        {% break %}
-      {% endif %}
-    {% endif %}
-
 
   {% endfor %}
 {% endmacro %}
