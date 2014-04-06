@@ -208,7 +208,6 @@ class SuggestionFormXWalk(object):
 
         suggestion.set_suggester(form.suggester_name.data, form.suggester_email.data)
         if getattr(form, 'application_status', None):
-            print 'setting status', form.application_status.data
             suggestion.set_application_status(form.application_status.data)
 
         return suggestion
@@ -345,7 +344,6 @@ class SuggestionFormXWalk(object):
         forminfo['suggester_email_confirm'] = forminfo['suggester_email']
 
         forminfo['application_status'] = obj.application_status
-        print 'obj2form:', obj.application_status
 
         return forminfo
 
