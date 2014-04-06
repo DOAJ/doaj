@@ -54,6 +54,17 @@ fv_last_updated = (function (resultobj) {
     return that;
 })();
 
+fv_suggested_on = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {
+            return iso_datetime2date_and_time(resultobj['suggestion']['suggested_on']);
+        } else {
+            return false;
+        }
+    };
+    return that;
+})();
+
 
 fv_abstract = (function (resultobj) {
     var that = function(resultobj) {

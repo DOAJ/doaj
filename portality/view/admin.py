@@ -6,9 +6,11 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
+from portality.suggestion import suggestion_form, SuggestionFormXWalk
 import portality.util as util
 from portality import xwalk
-from portality.view.forms import JournalForm
+from portality.view.forms import JournalForm, SuggestionForm, \
+    EditSuggestionForm
 from portality.view.account import get_redirect_target
 from portality.datasets import country_options_two_char_code_index
 
@@ -155,16 +157,18 @@ def suggestion_page(suggestion_id):
     s = models.Suggestion.pull(suggestion_id)
     if s is None:
         abort(404)
-        
-    if request.method == "GET":
-        return render_template("admin/suggestion.html", suggestion=s, admin_page=True, edit_suggestion_page=True)
 
-    elif request.method == "POST":
-        req = json.loads(request.data)
-        new_status = req.get("status")
-        s.set_application_status(new_status)
-        s.save()
-        return "", 204
+    current_info = SuggestionFormXWalk.obj2form(s)
+    form = EditSuggestionForm(request.form, **current_info)
+
+    redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
+    # meaningless anchor to replace #first_problem used on the form
+    # anchors persist between 3xx redirects to the same resource
+    # (/application)
+
+    return suggestion_form(form, request, redirect_url_on_success, "admin/suggestion.html",
+                           existing_suggestion=s,
+                           suggestion=s, admin_page=True)
 
 @blueprint.route("/admin_site_search")
 @login_required

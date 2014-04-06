@@ -22,7 +22,9 @@ jQuery(document).ready(function($) {
         "links" : fv_links,
         "issns" : fv_issns,
         "edit_suggestion" : fv_edit_suggestion,
-        "country_name": fv_country_name
+        "country_name": fv_country_name,
+        'last_updated': fv_last_updated,
+        'suggested_on': fv_suggested_on
     },
     hide_inactive_facets: true,
     facets: [
@@ -42,6 +44,7 @@ jQuery(document).ready(function($) {
     ],
     search_sortby: [
         {'display':'Date applied','field':'suggestion.suggested_on.exact'},
+        {'display':'Last updated','field':'last_updated'},
         {'display':'Title','field':'bibjson.title.exact'},
     ],
     searchbox_fieldselect: [
@@ -77,7 +80,13 @@ jQuery(document).ready(function($) {
         [
             {
                 "pre": "<strong>Date applied</strong>: ",
-                "field": "suggestion.suggested_on",
+                "field": "suggested_on",
+            }
+        ],
+        [
+            {
+                "pre": "<strong>Last updated</strong>: ",
+                "field": "last_updated",
             }
         ],
         [

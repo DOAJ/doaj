@@ -52,6 +52,7 @@ jQuery(document).ready(function($) {
         })
     }
 
+    /*
     $("#submit_status").click(function(event) {
         event.preventDefault()
         
@@ -86,6 +87,7 @@ jQuery(document).ready(function($) {
         })
 
     });
+
     
     $("select[name=application_status]").change(function() {
         var original = $("input[name=current_status]").val()
@@ -99,6 +101,7 @@ jQuery(document).ready(function($) {
             $("#submit_status").attr("class", "btn")
         }
     });
+    */
     
     
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
@@ -181,7 +184,7 @@ function autocomplete(selector, doc_field, doc_type) {
     $(selector).select2({
         minimumInputLength: 3,
         ajax: {
-            url: "../autocomplete/" + doc_type + "/" + doc_field,
+            url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
                 return {
@@ -192,12 +195,16 @@ function autocomplete(selector, doc_field, doc_type) {
                 return { results: data["suggestions"] };
             }
         },
-        createSearchChoice: function(term) {return {"id":term, "text": term};}
+        createSearchChoice: function(term) {return {"id":term, "text": term};},
+        initSelection : function (element, callback) {
+            var data = {id: element.val(), text: element.val()};
+            callback(data);
+        }
     });
 }
 
 function exclusive_checkbox(field_name, exclusive_val) {
-    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(function() {
+    var doit = function() {
         if (this.checked) {
             $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', true);
             $('#' + field_name + ' .extra_input_field').prop('disabled', true);
@@ -205,7 +212,10 @@ function exclusive_checkbox(field_name, exclusive_val) {
             $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', false);
             $('#' + field_name + ' .extra_input_field').prop('disabled', false);
         }
-    });
+    };
+
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').each(doit); // on page load too
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(doit); // when exclusive checkbox ticked
 }
 
 function highlight_target() {

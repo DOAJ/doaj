@@ -1010,7 +1010,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def apc(self):
-        return self.bibjson.get("apc") 
+        return self.bibjson.get("apc", {})
     
     def set_submission_charges(self, currency, average_price):
         if "submission_charges" not in self.bibjson:
@@ -1020,7 +1020,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def submission_charges(self):
-        return self.bibjson.get("submission_charges")
+        return self.bibjson.get("submission_charges", {})
     
     def set_archiving_policy(self, policies, policy_url):
         if "archiving_policy" not in self.bibjson:
@@ -1037,7 +1037,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def archiving_policy(self): 
-        return self.bibjson.get("archiving_policy")
+        return self.bibjson.get("archiving_policy", {})
     
     def set_editorial_review(self, process, review_url):
         if "editorial_review" not in self.bibjson:
@@ -1047,7 +1047,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def editorial_review(self):
-        return self.bibjson.get("editorial_review") 
+        return self.bibjson.get("editorial_review", {})
         
     def set_plagiarism_detection(self, url, has_detection=True):
         if "plagiarism_detection" not in self.bibjson:
@@ -1057,7 +1057,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def plagiarism_detection(self):
-        return self.bibjson.get("plagiarism_detection")
+        return self.bibjson.get("plagiarism_detection", {})
         
     def set_article_statistics(self, url, has_statistics=True):
         if "article_statistics" not in self.bibjson:
@@ -1067,11 +1067,11 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def article_statistics(self):
-        return self.bibjson.get("article_statistics") 
+        return self.bibjson.get("article_statistics", {})
     
     @property
     def deposit_policy(self):
-        return self.bibjson.get("deposit_policy")
+        return self.bibjson.get("deposit_policy", [])
     
     @deposit_policy.setter
     def deposit_policy(self, policies):
@@ -1092,7 +1092,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def author_copyright(self):
-        return self.bibjson.get("author_copyright") 
+        return self.bibjson.get("author_copyright", {})
     
     def set_author_publishing_rights(self, url, holds_rights=True):
         if "author_publishing_rights" not in self.bibjson:
@@ -1102,7 +1102,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def author_publishing_rights(self):
-        return self.bibjson.get("author_publishing_rights")
+        return self.bibjson.get("author_publishing_rights", {})
     
     @property
     def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing", False)
