@@ -105,10 +105,16 @@
       {"field": "application_status", "class": "input-large"},
     ]
     %}
+
+    {% set admin_subject_fields =
+    [
+      {"field": "subject"},
+    ]
+    %}
 {% endif %}
 
 
-{% from "_formhelpers.html" import render_fields %}
+{% from "_formhelpers.html" import render_field, render_fields %}
 
 <form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
   {% if form.errors %}
@@ -127,6 +133,17 @@
 
       <div class="span6 with-borders form-section">
         <h3>Subject classification</h3>
+        {{ render_fields(form, admin_subject_fields) }}
+
+        <div class="control-group left-aligned">
+          <label class="control-label">Current subjects:</label>
+          <div class="controls">
+            <p>{{ subjectstr }}</p>
+          </div>
+        </div>
+
+        <h4>Prototype of visual subject classification</h4>
+        <div id="subject_tree"></div>
       </div>
 
     </div>
@@ -193,6 +210,16 @@
       </div>
     </div>
 
+    {% if admin_page %}
+    <div class="row-fluid">
+
+      <div class="span12 with-borders form-section">
+        <h3 class="heading-aligned-with-fields">Notes</h3>
+        {{ render_field(form.notes, render_subfields_horizontal=True) }}
+      </div>
+
+    </div>
+    {% endif %}
 
   </fieldset>
 </form>

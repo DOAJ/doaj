@@ -10,7 +10,7 @@ from portality.suggestion import suggestion_form, SuggestionFormXWalk
 import portality.util as util
 from portality import xwalk
 from portality.view.forms import JournalForm, SuggestionForm, \
-    EditSuggestionForm
+    EditSuggestionForm, subjects2str
 from portality.view.account import get_redirect_target
 from portality.datasets import country_options_two_char_code_index
 
@@ -110,12 +110,10 @@ def journal_page(journal_id):
         else:
             there_were_errors = True
 
-    subject_strings = []
-    for sub in j.bibjson().subjects():
-        subject_strings.append('[{scheme}] {term}'.format(scheme=sub.get('scheme'), term=sub.get('term')))
-    subject_final_str = ', '.join(subject_strings)
+    
+    subjectstr = subjects2str(j.bibjson().subjects())
 
-    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subject_final_str, there_were_errors=there_were_errors)
+    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subjectstr, there_were_errors=there_were_errors)
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
@@ -155,8 +153,18 @@ def suggestion_page(suggestion_id):
     if s is None:
         abort(404)
 
-    current_info = SuggestionFormXWalk.obj2form(s)
-    form = EditSuggestionForm(request.form, **current_info)
+    class ObjectDict(object):
+        def __init__(self, d):
+            super(ObjectDict, self).__setattr__('data', d)
+
+        def __getattr__(self, item):
+            return self.data[item]
+
+        def __setattr__(self, key, value):
+            self.data[key] = value
+
+    current_info = ObjectDict(SuggestionFormXWalk.obj2form(s))
+    form = EditSuggestionForm(request.form, current_info)
 
     redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
     # meaningless anchor to replace #first_problem used on the form
@@ -165,7 +173,10 @@ def suggestion_page(suggestion_id):
 
     return suggestion_form(form, request, redirect_url_on_success, "admin/suggestion.html",
                            existing_suggestion=s,
-                           suggestion=s, admin_page=True)
+                           suggestion=s,
+                           admin_page=True,
+                           subjectstr=subjects2str(s.bibjson().subjects())
+    )
 
 @blueprint.route("/admin_site_search")
 @login_required

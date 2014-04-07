@@ -19,6 +19,7 @@ from flask_wtf import RecaptchaField
 from portality.core import app
 from portality import models
 from portality.datasets import country_options, language_options, currency_options, main_license_options
+from portality import lcc
 
 blueprint = Blueprint('forms', __name__)
 
@@ -472,6 +473,18 @@ class MaxLen(object):
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
 
+class DisabledTextField(TextField):
+  def __call__(self, *args, **kwargs):
+    kwargs.setdefault('disabled', True)
+    return super(DisabledTextField, self).__call__(*args, **kwargs)
+
+
+def subjects2str(subjects):
+    subject_strings = []
+    for sub in subjects:
+        subject_strings.append('[{scheme}] {term}'.format(scheme=sub.get('scheme'), term=sub.get('term')))
+    return ', '.join(subject_strings)
+
 class JournalInformationForm(Form):
     
     title = TextField('Journal Title', [validators.Required()])
@@ -734,6 +747,8 @@ class SuggestionForm(Form):
         [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
 
+class NoteForm(Form):
+    note = TextAreaField('Note')
 
 class EditSuggestionForm(SuggestionForm):
     application_status = SelectField('Application Status',
@@ -741,7 +756,8 @@ class EditSuggestionForm(SuggestionForm):
         choices = application_status_choices,
         default = '',
     )
-
+    notes = FieldList(FormField(NoteForm), min_entries=1)
+    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
 
 
 ##########################################################################

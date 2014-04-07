@@ -20,7 +20,7 @@
             {% for subfield in field %}
                 {% if render_subfields_horizontal 
                 and not (subfield.type == 'CSRFTokenField' and not subfield.value)%}
-                    <div class="span3">
+                    <div class="span6 nested-field-container">
                         {{ __render_field(subfield, **kwargs) }}
                     </div>
                 {% else %}

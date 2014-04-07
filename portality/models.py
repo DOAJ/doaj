@@ -607,7 +607,10 @@ class Journal(DomainObject):
         if "notes" not in self.data.get("admin"):
             self.data["admin"]["notes"] = []
         self.data["admin"]["notes"].append({"date" : date, "note" : note})
-    
+
+    def remove_note(self, note):
+        self.notes().remove(note)
+
     def notes(self):
         return self.data.get("admin", {}).get("notes", [])
     

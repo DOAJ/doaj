@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import url_for, render_template, flash
+from portality import lcc
 
 from portality.models import Suggestion
 from portality.view import forms
@@ -12,6 +13,9 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
     first_field_with_error = ''
 
     #import json
+    #print json.dumps(request.form, indent=3)
+
+    #import json
     #print json.dumps(form.data, indent=3)
 
     # the code below will output only submitted values which were truthy
@@ -20,7 +24,8 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
     #print
     #print
     #for field in form:
-    #    if field.data and field.data != 'None':
+    #    #if field.data and field.data != 'None':
+    #    if field.short_name == 'subject':
     #        print field.short_name, '::', field.data, ',', type(field.data)
     #print
 
@@ -210,6 +215,34 @@ class SuggestionFormXWalk(object):
         if getattr(form, 'application_status', None):
             suggestion.set_application_status(form.application_status.data)
 
+
+        if getattr(form, 'notes', None):
+            # generate index of notes, just the text
+            curnotes = []
+            for curnote in suggestion.notes():
+                curnotes.append(curnote['note'])
+
+            # add any new notes
+            formnotes = []
+            for formnote in form.notes.data:
+                if formnote not in curnotes:
+                    suggestion.add_note(formnote['note'])
+                # also generate another text index of notes, this time an index of the form notes
+                formnotes.append(formnote['note'])
+
+            # delete all notes not coming back from the form, means they've been deleted
+            for curnote in suggestion.notes():
+                print curnote
+                if curnote['note'] not in formnotes:
+                    suggestion.remove_note(curnote)
+
+        if getattr(form, 'subject', None):
+            new_subjects = []
+            for code in form.subject.data:
+                sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
+                new_subjects.append(sobj)
+            bibjson.set_subjects(new_subjects)
+
         return suggestion
 
 
@@ -344,6 +377,12 @@ class SuggestionFormXWalk(object):
         forminfo['suggester_email_confirm'] = forminfo['suggester_email']
 
         forminfo['application_status'] = obj.application_status
+
+        forminfo['notes'] = obj.notes()
+
+        forminfo['subject'] = []
+        for s in bibjson.subjects():
+            forminfo['subject'].append(s['code'])
 
         return forminfo
 
