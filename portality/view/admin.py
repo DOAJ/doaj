@@ -6,9 +6,11 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
+from portality.suggestion import suggestion_form, SuggestionFormXWalk
 import portality.util as util
 from portality import xwalk
-from portality.view.forms import JournalForm
+from portality.view.forms import JournalForm, SuggestionForm, \
+    EditSuggestionForm, subjects2str
 from portality.view.account import get_redirect_target
 from portality.datasets import country_options_two_char_code_index
 
@@ -84,8 +86,6 @@ def journal_page(journal_id):
     form = JournalForm(request.form, **current_info)
     form.country.description = '<span class="red">' + country_help_text + '</span>'
 
-    print '1', form.author_pays_url.data
-    print '2', j.bibjson().author_pays_url
     there_were_errors = False
     if request.method == 'POST':
         if form.validate():
@@ -103,7 +103,6 @@ def journal_page(journal_id):
             nj.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
             nj.bibjson().author_pays = form.author_pays.data
             nj.bibjson().author_pays_url = form.author_pays_url.data
-            print '3', j.bibjson().author_pays_url
             nj.bibjson().set_keywords(form.keywords.data)
             nj.bibjson().set_language(form.languages.data)
             nj.save()
@@ -111,12 +110,10 @@ def journal_page(journal_id):
         else:
             there_were_errors = True
 
-    subject_strings = []
-    for sub in j.bibjson().subjects():
-        subject_strings.append('[{scheme}] {term}'.format(scheme=sub.get('scheme'), term=sub.get('term')))
-    subject_final_str = ', '.join(subject_strings)
+    
+    subjectstr = subjects2str(j.bibjson().subjects())
 
-    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subject_final_str, there_were_errors=there_were_errors)
+    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subjectstr, there_were_errors=there_were_errors)
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
@@ -155,16 +152,31 @@ def suggestion_page(suggestion_id):
     s = models.Suggestion.pull(suggestion_id)
     if s is None:
         abort(404)
-        
-    if request.method == "GET":
-        return render_template("admin/suggestion.html", suggestion=s, admin_page=True, edit_suggestion_page=True)
 
-    elif request.method == "POST":
-        req = json.loads(request.data)
-        new_status = req.get("status")
-        s.set_application_status(new_status)
-        s.save()
-        return "", 204
+    class ObjectDict(object):
+        def __init__(self, d):
+            super(ObjectDict, self).__setattr__('data', d)
+
+        def __getattr__(self, item):
+            return self.data[item]
+
+        def __setattr__(self, key, value):
+            self.data[key] = value
+
+    current_info = ObjectDict(SuggestionFormXWalk.obj2form(s))
+    form = EditSuggestionForm(request.form, current_info)
+
+    redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
+    # meaningless anchor to replace #first_problem used on the form
+    # anchors persist between 3xx redirects to the same resource
+    # (/application)
+
+    return suggestion_form(form, request, redirect_url_on_success, "admin/suggestion.html",
+                           existing_suggestion=s,
+                           suggestion=s,
+                           admin_page=True,
+                           subjectstr=subjects2str(s.bibjson().subjects())
+    )
 
 @blueprint.route("/admin_site_search")
 @login_required

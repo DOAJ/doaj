@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
     ],
     searchbox_fieldselect: [
         {'display':'Title','field':'index.title'},
-        {'display':'Keywords','field':'index.keywords'},
+        {'display':'Keywords','field':'bibjson.keywords'},
         {'display':'Subject','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
         {'display':'DOI', 'field' : 'bibjson.identifier.id'},

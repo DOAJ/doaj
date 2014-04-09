@@ -20,7 +20,7 @@
             {% for subfield in field %}
                 {% if render_subfields_horizontal 
                 and not (subfield.type == 'CSRFTokenField' and not subfield.value)%}
-                    <div class="span3">
+                    <div class="span6 nested-field-container">
                         {{ __render_field(subfield, **kwargs) }}
                     </div>
                 {% else %}
@@ -239,4 +239,25 @@
           </div>
       </div>
     {% endif %}
+{% endmacro %}
+
+{% macro render_fields(form, fields) %}
+  {% for f_kwargs in fields %}
+
+    {# we need to delete the field name ('field' key) before passing it on to render,
+       otherwise it will become a keyword argument to the field renderer #}
+    {% set f = f_kwargs.pop('field') %}
+
+    {% set field = getattr(form, f, None) %}
+    {% if field %}
+      {{ render_field(field, **f_kwargs) }}
+    {% endif %}
+
+    {# restore the data struct to the way it was,
+       just because people don't expect their data
+       to be modified when they pass it to a rendering
+       function - or macro, in this case #}
+    {% do f_kwargs.update({'field': f}) %}
+
+  {% endfor %}
 {% endmacro %}

@@ -72,7 +72,16 @@ def setup_error_logging(app):
 
 def setup_jinja(app):
     '''Add jinja extensions and other init-time config as needed.'''
+
     app.jinja_env.add_extension('jinja2.ext.do')
+    app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+    app.jinja_env.globals['getattr'] = getattr
+
+    # a jinja filter that prints to the Flask log
+    def jinja_debug(text):
+        print text
+        return ''
+    app.jinja_env.filters['debug']=jinja_debug
 
 app = create_app()
 

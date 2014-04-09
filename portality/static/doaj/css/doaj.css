@@ -176,6 +176,19 @@ select {
     padding: 0.5em 1.5em;  /* top/bottom, left/right */
 }
 
+
+.form-horizontal.wide .nested-field-container .control-label {
+    position: relative;
+    z-index: -1;
+}
+
+.nested-field-container textarea {
+    height: 10em;
+    width: 30em;
+    position: relative;
+    z-index: 9000;
+}
+
 .control-group.error .help-block,
 .control-group.error .help-inline,
 .control-group.error .radio {
@@ -286,6 +299,22 @@ footer > .box + .box {
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
+}
+
+.form-horizontal.wide #subject-container .control-label,
+.form-horizontal.wide .left-aligned .control-label {
+    width: 5em;
+    text-align: left;
+}
+
+.form-horizontal.wide #subject-container .controls,
+.form-horizontal.wide .left-aligned .controls {
+    margin-left: 5em;
+}
+
+.form-horizontal.wide #subject {
+    height: 20.5em;
+    width: 34em;
 }
 
 /* Custom responsive bits - elements, classes and id-s in that order */

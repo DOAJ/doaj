@@ -84,7 +84,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             except:
                 self.data['author'] = "anonymous"
         """
-        
+
         r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
         
         if r.status_code >= 400:
