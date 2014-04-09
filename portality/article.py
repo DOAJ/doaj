@@ -107,6 +107,12 @@ class XWalk(object):
         possible_articles = []
         
         # first test is the most definitive - does the publisher's record id match
+        """
+        NOTE: turns out that publishers aren't that good at managing their record ids, and this is
+        a terrible way of determining when two things are the same ...
+        
+        Deactivated for the time being
+        
         if article.publisher_record_id() is not None:
             articles = models.Article.duplicates(issns=issns, publisher_record_id=article.publisher_record_id())
             if len(articles) == 1:
@@ -114,7 +120,7 @@ class XWalk(object):
             if len(articles) > 1:
                 possible_articles += articles
                 use_prid = True # we don't have a definitive answer, but we do have options
-        
+        """
         # second test is to look by doi
         
         dois = b.get_identifiers(b.DOI)
