@@ -474,19 +474,20 @@ class MaxLen(object):
 
 
 class DisabledTextField(TextField):
-  def __call__(self, *args, **kwargs):
-    kwargs.setdefault('disabled', True)
-    return super(DisabledTextField, self).__call__(*args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        kwargs.setdefault('disabled', True)
+        return super(DisabledTextField, self).__call__(*args, **kwargs)
 
 
 def subjects2str(subjects):
     subject_strings = []
     for sub in subjects:
-        subject_strings.append('[{scheme}] {term}'.format(scheme=sub.get('scheme'), term=sub.get('term')))
+        subject_strings.append('{term}'.format(term=sub.get('term')))
     return ', '.join(subject_strings)
 
+
 class JournalInformationForm(Form):
-    
     title = TextField('Journal Title', [validators.Required()])
     url = TextField('URL', [validators.Required(), validators.URL()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
