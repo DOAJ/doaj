@@ -170,7 +170,7 @@ jQuery(document).ready(function($) {
         });
 
     
-    $('#subject_tree_container').prepend('<div class="control-group" id="subject_tree_search-container"><label class="control-label" for="subject_tree_search">Search through the subjects</label><div class="controls"><input class="input-large" id="subject_tree_search" type="text" placeholder="start typing..."></div></div>')
+    $('#subject_tree_container').prepend('<div class="control-group" id="subject_tree_search-container"><label class="control-label" for="subject_tree_search">Search through the subjects</label><div class="controls"><input class="input-large" id="subject_tree_search" type="text" placeholder="start typing..."><p class="help-block">Selecting a subject will <strong>not automatically select its sub-categories</strong>.</p></div></div>')
 
     var to = false;
     $('#subject_tree_search').keyup(function () {
