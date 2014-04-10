@@ -53,6 +53,10 @@ for s in suggestion_iterator:
         del pids[i]
     s.bibjson().persistent_identifier_scheme = pids
     
+    # remove any owner_correspondence
+    if "owner_correspondence" in s.data.get("admin", {}):
+        del s.data["admin"]["owner_correspondence"]
+    
     s.prep()
     batch.append(s.data)
     
