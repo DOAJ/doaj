@@ -157,6 +157,15 @@ select {
     margin-left: 220px;
 }
 
+.form-horizontal .nested-field-container .control-label {
+    width: auto;
+    margin-right: 1em;
+}
+
+.form-horizontal .nested-field-container .controls {
+    margin-left: 0;
+}
+
 .form-horizontal.wide h1,
 .form-horizontal.wide h2,
 .form-horizontal.wide h3,
@@ -176,17 +185,8 @@ select {
     padding: 0.5em 1.5em;  /* top/bottom, left/right */
 }
 
-
-.form-horizontal.wide .nested-field-container .control-label {
-    position: relative;
-    z-index: -1;
-}
-
 .nested-field-container textarea {
-    height: 10em;
-    width: 30em;
-    position: relative;
-    z-index: 9000;
+    height: 5em;
 }
 
 .control-group.error .help-block,
@@ -299,6 +299,16 @@ footer > .box + .box {
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
+}
+
+#add_note_btn {
+    width: 20em;
+    margin-left: 40px; // width of Note field label + its margin
+}
+
+button[target^="notes-"][target$="-container"] {
+    margin-left: 2em;
+    margin-top: 27px; // single row label height + padding + 4px aesthetics to line it up with the date field
 }
 
 .form-horizontal.wide #subject-container .control-label,

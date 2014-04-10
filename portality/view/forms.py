@@ -750,6 +750,7 @@ class SuggestionForm(Form):
 
 class NoteForm(Form):
     note = TextAreaField('Note')
+    date = DisabledTextField('Date')
 
 class EditSuggestionForm(SuggestionForm):
     application_status = SelectField('Application Status',
@@ -757,7 +758,7 @@ class EditSuggestionForm(SuggestionForm):
         choices = application_status_choices,
         default = '',
     )
-    notes = FieldList(FormField(NoteForm), min_entries=1)
+    notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
 
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import url_for, render_template, flash
+from flask import render_template, flash
 from portality import lcc
 
 from portality.models import Suggestion
@@ -31,7 +31,7 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
 
     if request.method == 'POST':
         if form.validate():
-            suggestion = SuggestionFormXWalk.form2obj(form)
+            suggestion = SuggestionFormXWalk.form2obj(form, existing_suggestion)
             if not existing_suggestion:
                 suggestion.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 suggestion.set_application_status('pending')
@@ -97,7 +97,7 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
 class SuggestionFormXWalk(object):
 
     @staticmethod
-    def form2obj(form):
+    def form2obj(form, existing_suggestion=None):
         suggestion = Suggestion()
         bibjson = suggestion.bibjson()
 
@@ -217,6 +217,12 @@ class SuggestionFormXWalk(object):
 
 
         if getattr(form, 'notes', None):
+            # need to copy over the notes from the existing suggestion object, if any, otherwise
+            # the dates on all the notes will get reset to right now (i.e. last_updated)
+            # since the suggestion object we're creating in this xwalk is a new, empty one
+            if existing_suggestion:
+                suggestion.set_notes(existing_suggestion.notes())
+
             # generate index of notes, just the text
             curnotes = []
             for curnote in suggestion.notes():
@@ -225,15 +231,16 @@ class SuggestionFormXWalk(object):
             # add any new notes
             formnotes = []
             for formnote in form.notes.data:
-                if formnote not in curnotes:
-                    suggestion.add_note(formnote['note'])
-                # also generate another text index of notes, this time an index of the form notes
-                formnotes.append(formnote['note'])
+                if formnote['note']:
+                    if formnote['note'] not in curnotes:
+                        suggestion.add_note(formnote['note'])
+                    # also generate another text index of notes, this time an index of the form notes
+                    formnotes.append(formnote['note'])
 
             # delete all notes not coming back from the form, means they've been deleted
-            for curnote in suggestion.notes():
-                print curnote
-                if curnote['note'] not in formnotes:
+            # also if one of the saved notes is completely blank, delete it
+            for curnote in suggestion.notes()[:]:
+                if not curnote['note'] or curnote['note'] not in formnotes:
                     suggestion.remove_note(curnote)
 
         if getattr(form, 'subject', None):

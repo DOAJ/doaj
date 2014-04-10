@@ -215,8 +215,17 @@
     <div class="row-fluid">
 
       <div class="span12 with-borders form-section">
-        <h3 class="heading-aligned-with-fields">Notes</h3>
-        {{ render_field(form.notes, render_subfields_horizontal=True) }}
+        <h3>Notes</h3>
+        {% set subfield_display = {'note': '8', 'date': '3'} %}
+
+        {% set subfield_display_kwargs = {} %}
+        {% for subfield, span_width in subfield_display.items() %}
+          {% do subfield_display_kwargs.update({'subfield_display-' + subfield: span_width}) %}
+        {% endfor %}
+
+        <div class="addable-field-container" id="notes-outer-container">
+          {{ render_field(form.notes, render_subfields_horizontal=True, container_class="deletable", **subfield_display_kwargs) }}
+        </div>
       </div>
 
     </div>
