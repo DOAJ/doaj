@@ -202,7 +202,7 @@
     <div class="row-fluid">
       <div class="span3">&nbsp;</div>
       <div class="span6 with-borders form-section">
-        <h3 class="heading-aligned-with-fields">Information about You</h3>
+        <h3 class="heading-aligned-with-fields">Information about {% if admin_page %} the suggester{% else %} You{% endif %}</h3>
           {{ render_fields(form, submitter_info_fields) }}
         <div class="control-group">
             <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>

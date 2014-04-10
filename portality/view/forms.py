@@ -141,6 +141,10 @@ application_status_choices = [
     ('rejected', 'rejected')
 ]
 
+suggester_name_validators = [validators.Required()]
+suggester_email_validators = [validators.Required(), validators.Email(message='Invalid email address.')]
+suggester_email_confirm_validators = [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+
 def interpret_special(val):
     # if you modify this, make sure to modify reverse_interpret_special as well
     if isinstance(val, basestring):
@@ -738,14 +742,14 @@ class SuggestionForm(Form):
     publishing_rights_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('publishing_rights', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
-    suggester_name = TextField('Your Name', 
-        [validators.Required()]
+    suggester_name = TextField('Your name',
+        suggester_name_validators
     )
     suggester_email = TextField('Your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
+        suggester_email_validators
     )
     suggester_email_confirm = TextField('Confirm your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+        suggester_email_confirm_validators
     )
 
 class NoteForm(Form):
@@ -760,6 +764,17 @@ class EditSuggestionForm(SuggestionForm):
     )
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
+
+    # overrides
+    suggester_name = TextField("Suggester's name",
+        suggester_name_validators
+    )
+    suggester_email = TextField("Suggester's email address",
+        suggester_email_validators
+    )
+    suggester_email_confirm = TextField("Confirm suggester's email address",
+        suggester_email_confirm_validators
+    )
 
 
 ##########################################################################
