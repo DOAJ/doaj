@@ -140,19 +140,25 @@ jQuery(document).ready(function($) {
         $('a.animated').anchorAnimate();
     }
 
+    setup_subject_tree();
+    setup_remove_buttons();
+    setup_add_buttons();
+});
+
+function setup_subject_tree() {
     $(function () {
         $('#subject_tree').jstree({
-        'plugins':["wholerow","checkbox","sort","search"],
-        'core' : {
-            'data' : lcc_jstree
-        },
-        "checkbox" : {
-            "three_state" : false
-        },
-        "search" : {
-            "fuzzy" : false,
-            "show_only_matches" : true
-        },
+            'plugins':["wholerow","checkbox","sort","search"],
+            'core' : {
+                'data' : lcc_jstree
+            },
+            "checkbox" : {
+                "three_state" : false
+            },
+            "search" : {
+                "fuzzy" : false,
+                "show_only_matches" : true
+            },
         });
     });
 
@@ -182,7 +188,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#subject-container').hide();
-});
+}
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
     var values_to_show_for = values_to_show_for || ["True"];
@@ -295,8 +301,104 @@ function add_more_nested_fields(button_selector, nested_field_prefix, nested_fie
         e.after(ne);
 
         $(".remove_button").unbind("click")
-        $(".remove_button").click(removeAuthor)
+        $(".remove_button").click(remove_nested_field(nested_field_prefix, nested_field_suffix))
 	});
+}
+
+function setup_add_buttons() {
+    var customisations = {
+        // by container element id - container of the add more button and the fields being added
+        'notes-outer-container': {'value': 'Add a note', 'id': 'add_note_btn'}
+    };
+
+    $('.addable-field-container').each(function() {
+        e = $(this);
+        id = e.attr('id')
+        var value = customisations[id]['value'] || 'Add';
+
+        var thebtn = '<button class="btn btn-info add_button"';
+        thebtn += ' value="' + value + '"';
+        if (customisations[id]['id']) {
+            thebtn += ' id="' + customisations[id]['id'] + '"';
+        }
+        thebtn += '>' + value + '</button>';
+        e.append(thebtn);
+    });
+    setup_add_button_handlers();
+}
+
+function setup_add_button_handlers() {
+    // this isn't as generic as the other functions - each button has to
+    // have its own click handler defined here for it to work
+    
+    var add_note_btn = function () {
+        event.preventDefault();
+
+        if (typeof cur_number_of_notes == 'undefined') {
+            cur_number_of_notes = 0; // yes, global
+
+            $('[id^=notes-][id$="-container"]').each(function(){
+                cur_number_of_notes += 1;  // it doesn't have to be sequential or exact or anything like that,
+                                           // it just needs to be DIFFERENT for every note
+                                           // so count the number of notes already on the page
+            });
+        }
+
+        thefield = [
+            '<div class="control-group row-fluid deletable " id="notes-' + cur_number_of_notes + '-container">',
+            '    <div class="span8 nested-field-container">',
+            '        <label class="control-label" for="note">',
+            '          Note',
+            '        </label>',
+            '        <div class="controls ">',
+            '                <textarea class="span11" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>',
+            '        </div>',
+            '    </div>',
+            '    <div class="span3 nested-field-container">',
+            '        <label class="control-label" for="date">',
+            '          Date',
+            '        </label>',
+            '        <div class="controls ">',
+            '                <input class="span11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
+            '        </div>',
+            '    </div>',
+            '</div>',
+        ].join('\n');
+
+        cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
+            // even if the ID-s go 0, 2, 7, 13 etc.
+        $(this).before(thefield);
+        setup_remove_buttons();
+    };
+
+    var button_handlers = {
+        // by button element id
+        'add_note_btn': add_note_btn
+    };
+    for (var button_id in button_handlers) {
+        $('#' + button_id).unbind('click');
+        $('#' + button_id).click(button_handlers[button_id]);
+    }
+}
+
+function setup_remove_buttons() {
+    $('.deletable').each(function() {
+        e = $(this);
+        id = e.attr('id');
+        if(e.find('button[id="remove_'+id+'"]').length == 0) {
+            e.append('<button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="icon icon-remove-sign"></i></button>');
+        }
+        setup_remove_button_handler();
+    });
+}
+
+function setup_remove_button_handler() {
+    $(".remove_button").unbind("click")
+    $(".remove_button").click( function() {
+        event.preventDefault();
+        var toremove = $(this).attr('target');
+        $('#' + toremove).remove();
+    });
 }
 
 function remove_nested_field(nested_field_prefix, nested_field_suffix) {
