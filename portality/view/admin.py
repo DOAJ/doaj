@@ -13,6 +13,7 @@ from portality.view.forms import JournalForm, SuggestionForm, \
     EditSuggestionForm, subjects2str
 from portality.view.account import get_redirect_target
 from portality.datasets import country_options_two_char_code_index
+from portality.lcc import lcc_jstree
 
 
 blueprint = Blueprint('admin', __name__)
@@ -175,7 +176,8 @@ def suggestion_page(suggestion_id):
                            existing_suggestion=s,
                            suggestion=s,
                            admin_page=True,
-                           subjectstr=subjects2str(s.bibjson().subjects())
+                           subjectstr=subjects2str(s.bibjson().subjects()),
+                           lcc_jstree=json.dumps(lcc_jstree),
     )
 
 @blueprint.route("/admin_site_search")

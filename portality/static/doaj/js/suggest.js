@@ -142,28 +142,46 @@ jQuery(document).ready(function($) {
 
     $(function () {
         $('#subject_tree').jstree({
-        'plugins':["wholerow","checkbox","sort"],
+        'plugins':["wholerow","checkbox","sort","search"],
         'core' : {
-            'data' : [
-                {
-                    "text" : "Medicine",
-                    "children" : [
-                        { "text" : "Medicine (General)", "state" : { "opened" : true }},
-                        { "text" : "Health Sciences", "state" : { "opened" : true },
-                            "children" : [
-                                {"text": "Public Health", "state" : { "opened" : true }, "a_attr": {"code": "somecode"}}
-                            ]
-                        },
-                    ],
-                    "state" : { "opened" : true }
-                }
-            ]
+            'data' : lcc_jstree
         },
         "checkbox" : {
             "three_state" : false
         },
+        "search" : {
+            "fuzzy" : false,
+            "show_only_matches" : true
+        },
         });
     });
+
+    $('#subject_tree')
+        .on('ready.jstree', function (e, data) {
+            var subjects = $('#subject').val();
+            for (var i = 0; i < subjects.length; i++) {
+                $('#subject_tree').jstree('select_node', subjects[i]);
+            }
+        });
+
+    $('#subject_tree')
+        .on('changed.jstree', function (e, data) {
+            var subjects = $('#subject').val(data.selected);
+        });
+
+    
+    $('#subject_tree_container').prepend('<div class="control-group" id="subject_tree_search-container"><label class="control-label" for="subject_tree_search">Search through the subjects</label><div class="controls"><input class="input-large" id="subject_tree_search" type="text" placeholder="start typing..."><p class="help-block">Selecting a subject will <strong>not automatically select its sub-categories</strong>.</p></div></div>')
+
+    var to = false;
+    $('#subject_tree_search').keyup(function () {
+        if(to) { clearTimeout(to); }
+        to = setTimeout(function () {
+          var v = $('#subject_tree_search').val();
+          $('#subject_tree').jstree(true).search(v);
+        }, 750);
+    });
+
+    $('#subject-container').hide();
 });
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {

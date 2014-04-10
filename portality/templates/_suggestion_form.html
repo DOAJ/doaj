@@ -131,19 +131,20 @@
         {{ render_fields(form, admin_appstatus_fields) }}
       </div>
 
-      <div class="span6 with-borders form-section">
+      <div class="span6 with-borders form-section" id="subjects_outer_container">
         <h3>Subject classification</h3>
-        {{ render_fields(form, admin_subject_fields) }}
 
         <div class="control-group left-aligned">
           <label class="control-label">Current subjects:</label>
-          <div class="controls">
+          <div class="controls" style="margin-top: 5px">
             <p>{{ subjectstr }}</p>
           </div>
         </div>
 
-        <h4>Prototype of visual subject classification</h4>
-        <div id="subject_tree"></div>
+        <div id="subject_tree_container">
+          <div id="subject_tree"></div>
+          {{ render_fields(form, admin_subject_fields) }}
+        </div>
       </div>
 
     </div>
