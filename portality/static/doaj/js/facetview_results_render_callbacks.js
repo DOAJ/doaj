@@ -246,6 +246,23 @@ fv_edit_suggestion = (function (resultobj) {
     return that;
 })();
 
+fv_delete_article = (function (resultobj) {
+    var that = function(resultobj) {
+        if (!resultobj.suggestion && resultobj.bibjson.journal) {
+            // if it's not a suggestion or a journal .. (it's an article!)
+            // we really need to expose _type ...
+            var result = '<a class="delete_article_link pull-right" href="';
+            result += "/admin/article/";
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Delete this article</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
 fv_edit_journal = (function (resultobj) {
     var that = function(resultobj) {
         if (!resultobj.suggestion && !resultobj.bibjson.journal) {

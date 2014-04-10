@@ -50,6 +50,25 @@ def get_journal(journal_id):
         abort(404)
     return j
 
+@blueprint.route("/article/<article_id>", methods=["POST"])
+@login_required
+@ssl_required
+def article_endpoint(article_id):
+    if not current_user.has_role("delete_article"):
+        abort(401)
+    a = models.Article.pull(article_id)
+    if a is None:
+        abort(404)
+    delete = request.values.get("delete", "false")
+    if delete != "true":
+        abort(400)
+    a.snapshot()
+    a.delete()
+    # return a json response
+    resp = make_response(json.dumps({"success" : True}))
+    resp.mimetype = "application/json"
+    return resp
+
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
