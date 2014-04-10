@@ -1356,7 +1356,7 @@ class Article(DomainObject):
                                     number=number,
                                     start=start,
                                     should_match=should_match)
-        # print json.dumps(q.query())
+        print json.dumps(q.query())
         
         res = cls.query(q=q.query())
         articles = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
@@ -1446,9 +1446,12 @@ class Article(DomainObject):
         if len(self.data.get("history", [])) == 0:
             self.data["history"] = deepcopy(old.data.get("history", []))
         
-        # take the bibjson
+        # take the bibjson (or store a historical copy)
         if "bibjson" not in self.data:
             self.set_bibjson(deepcopy(old.bibjson()))
+        else:
+            self.add_history(deepcopy(old.bibjson()))
+            
         
         # take the admin if there isn't one
         if "admin" not in self.data:
@@ -2463,6 +2466,7 @@ class JournalIssueToC(object):
         s = []
         for n in sorted_keys:
             s += [x.data for x in imap[n]]
+        s += [x.data for x in unsorted]
         
         self.data["articles"] = s
 
