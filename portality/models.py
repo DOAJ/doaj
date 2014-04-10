@@ -1338,6 +1338,32 @@ class Suggestion(Journal):
 # Article and related classes
 ####################################################################
 
+class ArticleHistory(DomainObject):
+    __type__ = "article_history"
+    
+    @classmethod
+    def get_history_for(cls, about):
+        q = ArticleHistoryQuery(about)
+        res = cls.query(q=q.query())
+        hists = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        return hists
+
+class ArticleHistoryQuery(object):
+    def __init__(self, about):
+        self.about = about
+    def query(self):
+        q = {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"about.exact" : self.about}}
+                    ]
+                }
+            },
+            "sort" : [{"created_date" : {"order" : "desc"}}]
+        }
+        return q
+
 class Article(DomainObject):
     __type__ = "article"
     
@@ -1356,7 +1382,7 @@ class Article(DomainObject):
                                     number=number,
                                     start=start,
                                     should_match=should_match)
-        print json.dumps(q.query())
+        # print json.dumps(q.query())
         
         res = cls.query(q=q.query())
         articles = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
@@ -1391,10 +1417,26 @@ class Article(DomainObject):
         return tuples
     
     def snapshot(self):
-        snap = deepcopy(self.data.get("bibjson"))
-        self.add_history(snap)
+        snap = deepcopy(self.data)
+        if "id" in snap:
+            snap["about"] = snap["id"]
+            del snap["id"]
+        if "index" in snap:
+            del snap["index"]
+        if "last_updated" in snap:
+            del snap["last_updated"]
+        if "created_date" in snap:
+            del snap["created_date"]
+        
+        hist = ArticleHistory(**snap)
+        hist.save()
+        
+        # FIXME: make this use the article history class
+        #snap = deepcopy(self.data.get("bibjson"))
+        #self.add_history(snap)
     
     def add_history(self, bibjson, date=None):
+        """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1435,6 +1477,11 @@ class Article(DomainObject):
         # - any top level field that does not exist in the current item (esp "id" and "history")
         # - in "admin", copy any field that does not already exist
         
+        # first thing to do is create a snapshot of the old record
+        old.snapshot()
+        
+        # now go on and do the merge
+        
         # always take the created date
         self.set_created(old.created_date)
         
@@ -1442,16 +1489,13 @@ class Article(DomainObject):
         if self.id is None or take_id:
             self.set_id(old.id)
         
-        # take the history
+        # take the history (deprecated)
         if len(self.data.get("history", [])) == 0:
             self.data["history"] = deepcopy(old.data.get("history", []))
         
-        # take the bibjson (or store a historical copy)
+        # take the bibjson 
         if "bibjson" not in self.data:
             self.set_bibjson(deepcopy(old.bibjson()))
-        else:
-            self.add_history(deepcopy(old.bibjson()))
-            
         
         # take the admin if there isn't one
         if "admin" not in self.data:
