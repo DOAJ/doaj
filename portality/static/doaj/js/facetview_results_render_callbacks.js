@@ -54,6 +54,17 @@ fv_last_updated = (function (resultobj) {
     return that;
 })();
 
+fv_suggested_on = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {
+            return iso_datetime2date_and_time(resultobj['suggestion']['suggested_on']);
+        } else {
+            return false;
+        }
+    };
+    return that;
+})();
+
 
 fv_abstract = (function (resultobj) {
     var that = function(resultobj) {
@@ -228,6 +239,23 @@ fv_edit_suggestion = (function (resultobj) {
             result += resultobj['id'];
             result += '" target="_blank"';
             result += '>Edit this application</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
+fv_delete_article = (function (resultobj) {
+    var that = function(resultobj) {
+        if (!resultobj.suggestion && resultobj.bibjson.journal) {
+            // if it's not a suggestion or a journal .. (it's an article!)
+            // we really need to expose _type ...
+            var result = '<a class="delete_article_link pull-right" href="';
+            result += "/admin/article/";
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Delete this article</a>';
             return result;
         }
         return false;

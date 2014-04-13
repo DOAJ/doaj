@@ -52,6 +52,7 @@ jQuery(document).ready(function($) {
         })
     }
 
+    /*
     $("#submit_status").click(function(event) {
         event.preventDefault()
         
@@ -86,6 +87,7 @@ jQuery(document).ready(function($) {
         })
 
     });
+
     
     $("select[name=application_status]").change(function() {
         var original = $("input[name=current_status]").val()
@@ -99,6 +101,7 @@ jQuery(document).ready(function($) {
             $("#submit_status").attr("class", "btn")
         }
     });
+    */
     
     
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
@@ -136,7 +139,56 @@ jQuery(document).ready(function($) {
         window.onhashchange = highlight_target();
         $('a.animated').anchorAnimate();
     }
+
+    setup_subject_tree();
+    setup_remove_buttons();
+    setup_add_buttons();
 });
+
+function setup_subject_tree() {
+    $(function () {
+        $('#subject_tree').jstree({
+            'plugins':["wholerow","checkbox","sort","search"],
+            'core' : {
+                'data' : lcc_jstree
+            },
+            "checkbox" : {
+                "three_state" : false
+            },
+            "search" : {
+                "fuzzy" : false,
+                "show_only_matches" : true
+            },
+        });
+    });
+
+    $('#subject_tree')
+        .on('ready.jstree', function (e, data) {
+            var subjects = $('#subject').val();
+            for (var i = 0; i < subjects.length; i++) {
+                $('#subject_tree').jstree('select_node', subjects[i]);
+            }
+        });
+
+    $('#subject_tree')
+        .on('changed.jstree', function (e, data) {
+            var subjects = $('#subject').val(data.selected);
+        });
+
+    
+    $('#subject_tree_container').prepend('<div class="control-group" id="subject_tree_search-container"><label class="control-label" for="subject_tree_search">Search through the subjects</label><div class="controls"><input class="input-large" id="subject_tree_search" type="text" placeholder="start typing..."><p class="help-block">Selecting a subject will <strong>not automatically select its sub-categories</strong>.</p></div></div>')
+
+    var to = false;
+    $('#subject_tree_search').keyup(function () {
+        if(to) { clearTimeout(to); }
+        to = setTimeout(function () {
+          var v = $('#subject_tree_search').val();
+          $('#subject_tree').jstree(true).search(v);
+        }, 750);
+    });
+
+    $('#subject-container').hide();
+}
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
     var values_to_show_for = values_to_show_for || ["True"];
@@ -181,7 +233,7 @@ function autocomplete(selector, doc_field, doc_type) {
     $(selector).select2({
         minimumInputLength: 3,
         ajax: {
-            url: "../autocomplete/" + doc_type + "/" + doc_field,
+            url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
                 return {
@@ -192,12 +244,16 @@ function autocomplete(selector, doc_field, doc_type) {
                 return { results: data["suggestions"] };
             }
         },
-        createSearchChoice: function(term) {return {"id":term, "text": term};}
+        createSearchChoice: function(term) {return {"id":term, "text": term};},
+        initSelection : function (element, callback) {
+            var data = {id: element.val(), text: element.val()};
+            callback(data);
+        }
     });
 }
 
 function exclusive_checkbox(field_name, exclusive_val) {
-    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(function() {
+    var doit = function() {
         if (this.checked) {
             $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', true);
             $('#' + field_name + ' .extra_input_field').prop('disabled', true);
@@ -205,10 +261,207 @@ function exclusive_checkbox(field_name, exclusive_val) {
             $('#' + field_name + ' :checkbox:not([value="' + exclusive_val + '"])').prop('disabled', false);
             $('#' + field_name + ' .extra_input_field').prop('disabled', false);
         }
-    });
+    };
+
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').each(doit); // on page load too
+    $('#' + field_name + ' :checkbox[value="' + exclusive_val + '"]').change(doit); // when exclusive checkbox ticked
 }
 
 function highlight_target() {
-    console.log(window.location.hash);
     $(window.location.hash).highlight()
+}
+
+function add_more_nested_fields(button_selector, nested_field_prefix, nested_field_suffix) {
+    var nested_field_suffix = nested_field_suffix || '-container';
+
+    $(button_selector).click( function (event) {
+        event.preventDefault();
+
+        // get the last div in the list
+        var all_e = $('[id^=' + nested_field_prefix + '][id$="' + nested_field_suffix + '"]');
+        var e = all_e.last();
+
+        // make a clone of the last div
+        var ne = e.clone()[0];
+
+        // extract the last number from the div id and increment it
+        var items = ne.id.split('-');
+        var number = parseInt(items[1]);
+        number = number + 1;
+
+        // increment all the numbers
+        _prepare_nested_container({
+            nested_field_prefix: nested_field_prefix,
+            nested_field_suffix: nested_field_suffix,
+            element : ne,
+            number : number,
+            reset_value : true
+        })
+
+        e.after(ne);
+
+        $(".remove_button").unbind("click")
+        $(".remove_button").click(remove_nested_field(nested_field_prefix, nested_field_suffix))
+	});
+}
+
+function setup_add_buttons() {
+    var customisations = {
+        // by container element id - container of the add more button and the fields being added
+        'notes-outer-container': {'value': 'Add a note', 'id': 'add_note_btn'}
+    };
+
+    $('.addable-field-container').each(function() {
+        e = $(this);
+        id = e.attr('id')
+        var value = customisations[id]['value'] || 'Add';
+
+        var thebtn = '<button class="btn btn-info add_button"';
+        thebtn += ' value="' + value + '"';
+        if (customisations[id]['id']) {
+            thebtn += ' id="' + customisations[id]['id'] + '"';
+        }
+        thebtn += '>' + value + '</button>';
+        e.append(thebtn);
+    });
+    setup_add_button_handlers();
+}
+
+function setup_add_button_handlers() {
+    // this isn't as generic as the other functions - each button has to
+    // have its own click handler defined here for it to work
+    
+    var add_note_btn = function () {
+        event.preventDefault();
+
+        if (typeof cur_number_of_notes == 'undefined') {
+            cur_number_of_notes = 0; // yes, global
+
+            $('[id^=notes-][id$="-container"]').each(function(){
+                cur_number_of_notes += 1;  // it doesn't have to be sequential or exact or anything like that,
+                                           // it just needs to be DIFFERENT for every note
+                                           // so count the number of notes already on the page
+            });
+        }
+
+        thefield = [
+            '<div class="control-group row-fluid deletable " id="notes-' + cur_number_of_notes + '-container">',
+            '    <div class="span8 nested-field-container">',
+            '        <label class="control-label" for="note">',
+            '          Note',
+            '        </label>',
+            '        <div class="controls ">',
+            '                <textarea class="span11" id="notes-' + cur_number_of_notes + '-note" name="notes-' + cur_number_of_notes + '-note"></textarea>',
+            '        </div>',
+            '    </div>',
+            '    <div class="span3 nested-field-container">',
+            '        <label class="control-label" for="date">',
+            '          Date',
+            '        </label>',
+            '        <div class="controls ">',
+            '                <input class="span11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
+            '        </div>',
+            '    </div>',
+            '</div>',
+        ].join('\n');
+
+        cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
+            // even if the ID-s go 0, 2, 7, 13 etc.
+        $(this).before(thefield);
+        setup_remove_buttons();
+    };
+
+    var button_handlers = {
+        // by button element id
+        'add_note_btn': add_note_btn
+    };
+    for (var button_id in button_handlers) {
+        $('#' + button_id).unbind('click');
+        $('#' + button_id).click(button_handlers[button_id]);
+    }
+}
+
+function setup_remove_buttons() {
+    $('.deletable').each(function() {
+        e = $(this);
+        id = e.attr('id');
+        if(e.find('button[id="remove_'+id+'"]').length == 0) {
+            e.append('<button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="icon icon-remove-sign"></i></button>');
+        }
+        setup_remove_button_handler();
+    });
+}
+
+function setup_remove_button_handler() {
+    $(".remove_button").unbind("click")
+    $(".remove_button").click( function() {
+        event.preventDefault();
+        var toremove = $(this).attr('target');
+        $('#' + toremove).remove();
+    });
+}
+
+function remove_nested_field(nested_field_prefix, nested_field_suffix) {
+    var nested_field_suffix = nested_field_suffix || '-container';
+    event.preventDefault();
+
+    var id = $(this).attr("id")
+    var short_name = id.split("_")[1]
+    var container = short_name + nested_field_suffix
+
+    $("#" + container).remove()
+
+    var count = 0
+    $('[id^=' + nested_field_prefix + '][id$="' + nested_field_suffix + '"]').each(function() {
+        _prepare_nested_container({
+            nested_field_prefix: nested_field_prefix,
+            nested_field_suffix: nested_field_suffix,
+            element : this,
+            number: count,
+            reset_value: false
+        })
+        count++;
+    })
+}
+
+function _prepare_nested_container(params) {
+    var nested_field_prefix = params.nested_field_prefix
+    var nested_field_suffix = params.nested_field_suffix
+    var ne = params.element
+    var reset = params.reset_value
+    var number = params.number
+    
+    var new_id = nested_field_prefix + number + nested_field_suffix;
+    ne.id = new_id;
+    
+    ne = $(ne)
+    ne.find('[id^=' + nested_field_prefix + ']').each( function () {
+        var ce = $(this);
+        
+        // reset the value
+        if (reset) {
+            ce.attr('value', '');
+        }
+        
+        // set the id as requestsed
+        items = ce.attr('id').split('-');
+        var id = nested_field_prefix + number + '-' + items[2];
+        
+        // set both the id and the name to the new id, as per wtforms requirements
+        ce.attr('id', id);
+        ce.attr('name', id);
+    });
+    
+    // we also need to update the remove button
+    ne.find("[id^=remove_' + nested_field_prefix + ']").each(function() {
+        var ce = $(this);
+        
+        // update the id as above - saving us a closure again
+        items = ce.attr('id').split('-');
+        var id = 'remove_' + nested_field_prefix + number;
+        
+        // set both the id and the name to the new id
+        ce.attr('id', id);
+        ce.attr('name', id);
+    })
 }

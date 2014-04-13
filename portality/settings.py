@@ -46,6 +46,8 @@ SMTP_PORT = 587
 
 # amount of time a reset token is valid for (86400 is 24 hours)
 PASSWORD_RESET_TIMEOUT = 86400
+# amount of time a reset token for a new account is valid for
+PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 # ========================
 # authorisation settings
@@ -94,6 +96,7 @@ MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
 MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
 MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
+MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 
 
 # ========================

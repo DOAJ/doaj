@@ -1,6 +1,7 @@
 {% macro render_field(
             field,
             render_subfields_horizontal=False,
+            container_class='',
             hidden=False,
             first_field_with_error=''
             )
@@ -14,14 +15,29 @@
         <div class="control-group
         {% if field.errors %} error{% endif %}
         {% if render_subfields_horizontal %} row-fluid{% endif %}
+        {% if container_class %} {{container_class}} {% endif %}
         " id="{{field.short_name}}-container"
         {% if hidden %} style="display: none;" {% endif %} 
         >
             {% for subfield in field %}
                 {% if render_subfields_horizontal 
                 and not (subfield.type == 'CSRFTokenField' and not subfield.value)%}
-                    <div class="span3">
-                        {{ __render_field(subfield, **kwargs) }}
+
+                    {# we're not allowed to modify variables inside loops, so use a dict #}
+                    {% set vars = {'subfield_width': ''} %}
+
+                    {% for kwarg, val in kwargs.items() %}
+                      {% if kwarg == 'subfield_display-' + subfield.short_name %}
+                        {% do vars.update({'subfield_width': kwargs.pop(kwarg)}) %}
+                      {% endif %}
+                    {% endfor %}
+
+                    {% if not vars.subfield_width %}
+                      {% do vars.update({'subfield_width': '3'}) %}
+                    {% endif %}
+
+                    <div class="span{{vars.subfield_width}} nested-field-container">
+                        {{ __render_field(subfield, maximise_width=True, **kwargs) }}
                     </div>
                 {% else %}
                     {{ __render_field(subfield, **kwargs) }}
@@ -33,6 +49,7 @@
             {% if subfield.type == 'FormField' %}
                 {{ render_field(subfield,
                       render_subfields_horizontal=render_subfields_horizontal,
+                      container_class=container_class,
                       **kwargs
                    )
                 }}
@@ -48,7 +65,9 @@
         {% endfor %}    
     {% else %}
         <div class="control-group
-        {% if field.errors %} error {% endif %}"
+        {% if field.errors %} error {% endif %}
+        {% if container_class %} {{container_class}} {% endif %}
+        "
         {% if hidden %} style="display: none;" {% endif %}
         id="{{field.short_name}}-container"
         >
@@ -61,7 +80,8 @@
 {% macro __render_field(field,
             extra_input_field='', display_extra_when_label_is='other',
             extra_input_field2='', display_extra2_when_label_is='other',
-            q_num=''
+            q_num='',
+            maximise_width=False
             ) %}
 
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
@@ -85,7 +105,7 @@
         {% if is_checkbox %}
             {% set extra_class = extra_class + ' checkboxes' %}
         {% endif %}
-          
+
         <div class="controls {{extra_class}}">
             {% if field.type == 'RadioField' %}
                 {% for subfield in field %}
@@ -110,7 +130,13 @@
                 {% endfor %}
                 </ul>
             {% else %}
-                {{ field(**kwargs) }}
+
+                {% set class = kwargs.pop('class', '') %}
+                {% if maximise_width %}
+                  {% set class = 'span11 ' + class %}
+                {% endif %}
+          
+                {{ field(class=class, **kwargs) }}
 
                 {% if extra_input_field and display_extra_when_label_is.lower() == field.value.lower() %}
                   {{ extra_input_field(class="extra_input_field") }}
@@ -239,4 +265,25 @@
           </div>
       </div>
     {% endif %}
+{% endmacro %}
+
+{% macro render_fields(form, fields) %}
+  {% for f_kwargs in fields %}
+
+    {# we need to delete the field name ('field' key) before passing it on to render,
+       otherwise it will become a keyword argument to the field renderer #}
+    {% set f = f_kwargs.pop('field') %}
+
+    {% set field = getattr(form, f, None) %}
+    {% if field %}
+      {{ render_field(field, **f_kwargs) }}
+    {% endif %}
+
+    {# restore the data struct to the way it was,
+       just because people don't expect their data
+       to be modified when they pass it to a rendering
+       function - or macro, in this case #}
+    {% do f_kwargs.update({'field': f}) %}
+
+  {% endfor %}
 {% endmacro %}

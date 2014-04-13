@@ -19,6 +19,7 @@ from flask_wtf import RecaptchaField
 from portality.core import app
 from portality import models
 from portality.datasets import country_options, language_options, currency_options, main_license_options
+from portality import lcc
 
 blueprint = Blueprint('forms', __name__)
 
@@ -28,16 +29,19 @@ ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
 URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
 
-optional_url_binary_choices = [('False', 'No')]
+true_val = 'True'
+false_val = 'False'
+none_val = 'None'
+
+optional_url_binary_choices = [(false_val, 'No')]
 optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices]
-binary_choices = [('True', 'Yes')] + optional_url_binary_choices
+binary_choices = [(true_val, 'Yes')] + optional_url_binary_choices
 
 other_val = 'Other'
 other_choice = (other_val, other_val)
 ternary_choices = binary_choices + [other_choice]
 optional_url_ternary_choices_optvals = optional_url_binary_choices_optvals  # "No" still makes the URL optional, from ["Yes", "No", "Other"]
-
-none_val = 'None'
+ternary_choices_list = [v[0] for v in ternary_choices]
 
 license_options = [
     ('', ''),
@@ -74,6 +78,7 @@ __digital_archiving_policy_choices = [
 
 digital_archiving_policy_choices = digital_archiving_policy_optional_url_choices  + __digital_archiving_policy_choices
 
+digital_archiving_policy_choices_list = [v[0] for v in digital_archiving_policy_choices]
 
 deposit_policy_choices = [
     (none_val, none_val), 
@@ -84,11 +89,13 @@ deposit_policy_choices = [
     ('Diadorum', 'Diadorum'), 
 ] + [other_choice]
 
+deposit_policy_choices_list = [v[0] for v in deposit_policy_choices]
 
 license_optional_url_choices = [ ('not-cc-like', 'No') ]
 license_optional_url_choices_optvals = [v[0] for v in license_optional_url_choices]
 
 license_choices = main_license_options + license_optional_url_choices + [other_choice]
+license_choices_list = [v[0] for v in license_choices]
 
 license_checkbox_choices = [
     ('by', 'Attribution'),
@@ -116,6 +123,8 @@ fulltext_format_choices = [
     ('XML', 'XML'), 
 ] + [other_choice]
 
+fulltext_format_choices_list = [v[0] for v in fulltext_format_choices]
+
 article_identifiers_choices = [
     (none_val, none_val),
     ('DOI', 'DOI'),
@@ -123,13 +132,31 @@ article_identifiers_choices = [
     ('ARK', 'ARK'),
 ] + [other_choice]
 
+article_identifiers_choices_list = [v[0] for v in article_identifiers_choices]
+
+application_status_choices_optional_owner = [
+    ('', ' '),
+    ('pending', 'Pending'),
+    ('in progress', 'In progress'),
+    ('rejected', 'Rejected'),
+]
+
+application_status_choices = application_status_choices_optional_owner + [('accepted', 'Accepted')]
+
+application_status_choices_optvals = [v[0] for v in application_status_choices_optional_owner]
+
+suggester_name_validators = [validators.Required()]
+suggester_email_validators = [validators.Required(), validators.Email(message='Invalid email address.')]
+suggester_email_confirm_validators = [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+
 def interpret_special(val):
+    # if you modify this, make sure to modify reverse_interpret_special as well
     if isinstance(val, basestring):
-        if val.lower() == 'true':
+        if val.lower() == true_val.lower():
             return True
-        elif val.lower() == 'false':
+        elif val.lower() == false_val.lower():
             return False
-        elif val.lower() == 'none':
+        elif val.lower() == none_val.lower():
             return None
         elif val == digital_archiving_policy_no_policy_value:
             return None
@@ -140,9 +167,38 @@ def interpret_special(val):
             if not actual_val:
                 return []
             return val
+
         return val
 
     return val
+
+def reverse_interpret_special(val, field=''):
+    # if you modify this, make sure to modify interpret_special as well
+
+    if val == None:
+        return none_val
+    elif val == True:
+        return true_val
+    elif val == False:
+        return false_val
+    # no need to handle digital archiving policy or other list
+    # fields here - empty lists handled below
+
+    if isinstance(val, list):
+        if len(val) == 1:
+            reverse_actual_val = reverse_interpret_special(val[0], field=field)
+            return [reverse_actual_val]
+        elif len(val) == 0:
+            # mostly it'll just be a None val
+            if field == 'digital_archiving_policy':
+                return [digital_archiving_policy_no_policy_value]
+
+            return [none_val]
+
+        return val
+
+    return val
+        
 
 
 def interpret_other(value, other_field_data, other_value=other_val):
@@ -161,6 +217,7 @@ def interpret_other(value, other_field_data, other_value=other_val):
     :param other_value: Which checkbox has an extra field? Put its value in here. It's "Other" by default.
         More technically: the value which triggers considering and adding the data in other_field to value.
     '''
+    # if you modify this, make sure to modify reverse_interpret_other too
     if isinstance(value, basestring):
         if value == other_value:
             return other_field_data
@@ -172,6 +229,44 @@ def interpret_other(value, other_field_data, other_value=other_val):
             value.append(other_field_data)
     # don't know what else to do, just return it as-is
     return value
+
+
+def reverse_interpret_other(interpreted_value, possible_original_values, other_value=other_val):
+    '''
+    Returns tuple: (main field value or list of values, other field value)
+    '''
+    # if you modify this, make sure to modify interpret_other too
+    other_field_val = ''
+
+    if isinstance(interpreted_value, basestring):
+        # if the stored (a.k.a. interpreted) value is not one of the
+        # possible values, then the "Other" option must have been
+        # selected during initial submission
+        # if so, all we've got to do is swap them
+        # so the main field gets a value of "Other" or similar
+        # and the secondary (a.k.a. other) field gets the currently
+        # stored value - resulting in a form that looks exactly like the
+        # one initially submitted
+        if interpreted_value not in possible_original_values:
+            return other_value, interpreted_value
+
+    elif isinstance(interpreted_value, list):
+        # 2 copies of the list needed
+        interpreted_value = interpreted_value[:]  # don't modify the original list passed in
+        for iv in interpreted_value[:]:  # don't modify the list while iterating over it
+
+            # same deal here, if the original list was ['LOCKSS', 'Other']
+            # and the secondary field was 'some other policy'
+            # then it would have been interpreted by interpret_other
+            # into ['LOCKSS', 'some other policy']
+            # so now we need to turn that back into
+            # (['LOCKSS', 'Other'], 'some other policy')
+            if iv not in possible_original_values:
+                other_field_val = iv
+                interpreted_value.remove(iv)
+                interpreted_value.append(other_value)
+
+    return interpreted_value, other_field_val
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -386,8 +481,21 @@ class MaxLen(object):
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
 
+class DisabledTextField(TextField):
+
+    def __call__(self, *args, **kwargs):
+        kwargs.setdefault('disabled', True)
+        return super(DisabledTextField, self).__call__(*args, **kwargs)
+
+
+def subjects2str(subjects):
+    subject_strings = []
+    for sub in subjects:
+        subject_strings.append('{term}'.format(term=sub.get('term')))
+    return ', '.join(subject_strings)
+
+
 class JournalInformationForm(Form):
-    
     title = TextField('Journal Title', [validators.Required()])
     url = TextField('URL', [validators.Required(), validators.URL()])
     alternative_title = TextField('Alternative Title', [validators.Optional()])
@@ -406,7 +514,8 @@ class JournalForm(JournalInformationForm):
     oa_end_year = IntegerField('Year in which the journal <strong>stopped</strong> publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
     keywords = TagListField('Keywords', [validators.Optional()], description='(<strong>use commas</strong> to separate multiple keywords)')
     languages = TagListField('Languages', [validators.Optional()], description='(What languages is the <strong>full text</strong> published in? <strong>Use commas</strong> to separate multiple languages.)')
-    
+
+
 class SuggestionForm(Form):
     title = TextField('Journal Title', [validators.Required()])
     url = URLField('URL', [validators.Required(), URLOptionalScheme()])
@@ -637,17 +746,56 @@ class SuggestionForm(Form):
     publishing_rights_url = URLField('Enter the URL where this information can be found', 
         [OptionalIf('publishing_rights', optvals=optional_url_ternary_choices_optvals), URLOptionalScheme()]
     )
-    suggester_name = TextField('Your Name', 
-        [validators.Required()]
+    suggester_name = TextField('Your name',
+        suggester_name_validators
     )
     suggester_email = TextField('Your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.')]
+        suggester_email_validators
     )
     suggester_email_confirm = TextField('Confirm your email address', 
-        [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+        suggester_email_confirm_validators
     )
 
+class NoteForm(Form):
+    note = TextAreaField('Note')
+    date = DisabledTextField('Date')
 
+class EditSuggestionForm(SuggestionForm):
+    application_status = SelectField('Application Status',
+        [validators.Required()],
+        choices = application_status_choices,
+        default = '',
+        description='Setting this to Accepted will send an email to the'
+                    ' owner of the suggestion telling them their journal'
+                    ' is now in the DOAJ. The Owner field must not be'
+                    ' blank when the status is set to Accepted.'
+    )
+    notes = FieldList(FormField(NoteForm))
+    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
+    owner = TextField('Owner',
+        [OptionalIf('application_status', optvals=application_status_choices_optvals)],
+        description='DOAJ account to which the suggestion belongs to.'
+                    '<br><br>'
+                    'This field is optional unless the application status is set to Accepted.'
+                    '<br><br>'
+                    'Entering a non-existent account <strong>and'
+                    ' setting the application status to Accepted</strong>'
+                    ' will automatically'
+                    ' create the account using the suggester information'
+                    ' at the bottom of this form, and send an email with'
+                    ' username + password to the suggester email address.'
+    )
+
+    # overrides
+    suggester_name = TextField("Suggester's name",
+        suggester_name_validators
+    )
+    suggester_email = TextField("Suggester's email address",
+        suggester_email_validators
+    )
+    suggester_email_confirm = TextField("Confirm suggester's email address",
+        suggester_email_confirm_validators
+    )
 
 
 ##########################################################################

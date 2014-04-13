@@ -3,6 +3,7 @@ from copy import deepcopy
 import json
 import locale
 import sys
+import uuid
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -24,6 +25,17 @@ def lookup_model(name='', capitalize=True):
 ############################################################################
 # Generic/Utility classes and functions
 ############################################################################
+class ObjectDict(object):
+    """WTForms requires an object in order to work properly, not a dict or an unpacked dict."""
+    def __init__(self, d):
+        super(ObjectDict, self).__setattr__('data', d)
+
+    def __getattr__(self, item):
+        return self.data[item]
+
+    def __setattr__(self, key, value):
+        self.data[key] = value
+
 
 class GenericBibJSON(object):
     # vocab of known identifier types
@@ -388,6 +400,24 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     @classmethod
+    def make_account(cls, username, name=None, email=None, roles=[], associated_journal_ids=[]):
+        a = cls.pull(username)
+        if a:
+            return a
+
+        a = Account(id=username)
+        a.set_name(name) if name else None
+        a.set_email(email) if email else None
+        for role in roles:
+            a.add_role(role)
+        for jid in associated_journal_ids:
+            a.add_journal(jid)
+        reset_token = uuid.uuid4().hex
+        # give them 14 days to create their first password if timeout not specified in config
+        a.set_reset_token(reset_token, app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
+        return a
+
+    @classmethod
     def pull_by_email(cls, email):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits',{}).get('total',0) == 1:
@@ -448,7 +478,10 @@ class Account(DomainObject, UserMixin):
         if "journal" not in self.data:
             return
         self.data["journal"].remove(jid)
-    
+
+    @property
+    def reset_token(self): return self.data.get('reset_token')
+
     def set_reset_token(self, token, timeout):
         expires = datetime.now() + timedelta(0, timeout)
         self.data["reset_token"] = token
@@ -607,7 +640,15 @@ class Journal(DomainObject):
         if "notes" not in self.data.get("admin"):
             self.data["admin"]["notes"] = []
         self.data["admin"]["notes"].append({"date" : date, "note" : note})
-    
+
+    def remove_note(self, note):
+        self.notes().remove(note)
+
+    def set_notes(self, notes):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data['admin']['notes'] = notes
+
     def notes(self):
         return self.data.get("admin", {}).get("notes", [])
     
@@ -625,7 +666,7 @@ class Journal(DomainObject):
     
     @property
     def owner(self):
-        return self.data.get("admin", {}).get("owner")
+        return self.data.get("admin", {}).get("owner", '')
     
     def set_owner(self, owner):
         if "admin" not in self.data:
@@ -1010,7 +1051,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def apc(self):
-        return self.bibjson.get("apc") 
+        return self.bibjson.get("apc", {})
     
     def set_submission_charges(self, currency, average_price):
         if "submission_charges" not in self.bibjson:
@@ -1020,7 +1061,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def submission_charges(self):
-        return self.bibjson.get("submission_charges")
+        return self.bibjson.get("submission_charges", {})
     
     def set_archiving_policy(self, policies, policy_url):
         if "archiving_policy" not in self.bibjson:
@@ -1037,7 +1078,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def archiving_policy(self): 
-        return self.bibjson.get("archiving_policy")
+        return self.bibjson.get("archiving_policy", {})
     
     def set_editorial_review(self, process, review_url):
         if "editorial_review" not in self.bibjson:
@@ -1047,7 +1088,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def editorial_review(self):
-        return self.bibjson.get("editorial_review") 
+        return self.bibjson.get("editorial_review", {})
         
     def set_plagiarism_detection(self, url, has_detection=True):
         if "plagiarism_detection" not in self.bibjson:
@@ -1057,7 +1098,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def plagiarism_detection(self):
-        return self.bibjson.get("plagiarism_detection")
+        return self.bibjson.get("plagiarism_detection", {})
         
     def set_article_statistics(self, url, has_statistics=True):
         if "article_statistics" not in self.bibjson:
@@ -1067,11 +1108,11 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def article_statistics(self):
-        return self.bibjson.get("article_statistics") 
+        return self.bibjson.get("article_statistics", {})
     
     @property
     def deposit_policy(self):
-        return self.bibjson.get("deposit_policy")
+        return self.bibjson.get("deposit_policy", [])
     
     @deposit_policy.setter
     def deposit_policy(self, policies):
@@ -1092,7 +1133,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def author_copyright(self):
-        return self.bibjson.get("author_copyright") 
+        return self.bibjson.get("author_copyright", {})
     
     def set_author_publishing_rights(self, url, holds_rights=True):
         if "author_publishing_rights" not in self.bibjson:
@@ -1102,7 +1143,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def author_publishing_rights(self):
-        return self.bibjson.get("author_publishing_rights")
+        return self.bibjson.get("author_publishing_rights", {})
     
     @property
     def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing", False)
@@ -1335,6 +1376,32 @@ class Suggestion(Journal):
 # Article and related classes
 ####################################################################
 
+class ArticleHistory(DomainObject):
+    __type__ = "article_history"
+    
+    @classmethod
+    def get_history_for(cls, about):
+        q = ArticleHistoryQuery(about)
+        res = cls.query(q=q.query())
+        hists = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        return hists
+
+class ArticleHistoryQuery(object):
+    def __init__(self, about):
+        self.about = about
+    def query(self):
+        q = {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"about.exact" : self.about}}
+                    ]
+                }
+            },
+            "sort" : [{"created_date" : {"order" : "desc"}}]
+        }
+        return q
+
 class Article(DomainObject):
     __type__ = "article"
     
@@ -1388,10 +1455,26 @@ class Article(DomainObject):
         return tuples
     
     def snapshot(self):
-        snap = deepcopy(self.data.get("bibjson"))
-        self.add_history(snap)
+        snap = deepcopy(self.data)
+        if "id" in snap:
+            snap["about"] = snap["id"]
+            del snap["id"]
+        if "index" in snap:
+            del snap["index"]
+        if "last_updated" in snap:
+            del snap["last_updated"]
+        if "created_date" in snap:
+            del snap["created_date"]
+        
+        hist = ArticleHistory(**snap)
+        hist.save()
+        
+        # FIXME: make this use the article history class
+        #snap = deepcopy(self.data.get("bibjson"))
+        #self.add_history(snap)
     
     def add_history(self, bibjson, date=None):
+        """Deprecated"""
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -1432,6 +1515,11 @@ class Article(DomainObject):
         # - any top level field that does not exist in the current item (esp "id" and "history")
         # - in "admin", copy any field that does not already exist
         
+        # first thing to do is create a snapshot of the old record
+        old.snapshot()
+        
+        # now go on and do the merge
+        
         # always take the created date
         self.set_created(old.created_date)
         
@@ -1439,11 +1527,11 @@ class Article(DomainObject):
         if self.id is None or take_id:
             self.set_id(old.id)
         
-        # take the history
+        # take the history (deprecated)
         if len(self.data.get("history", [])) == 0:
             self.data["history"] = deepcopy(old.data.get("history", []))
         
-        # take the bibjson
+        # take the bibjson 
         if "bibjson" not in self.data:
             self.set_bibjson(deepcopy(old.bibjson()))
         
@@ -2460,6 +2548,7 @@ class JournalIssueToC(object):
         s = []
         for n in sorted_keys:
             s += [x.data for x in imap[n]]
+        s += [x.data for x in unsorted]
         
         self.data["articles"] = s
 

@@ -1,4 +1,38 @@
 jQuery(document).ready(function($) {
+
+  function postSearch() {
+    // first to the default post search callback
+    customise_facetview_results()
+    
+    // now add the handlers for the article delete
+    $(".delete_article_link").unbind("click")
+    $(".delete_article_link").click(function(event) {
+        event.preventDefault();
+        
+        function success_callback(data) {
+            alert("The article was successfully deleted")
+            $(".facetview_freetext").trigger("keyup") // cause a search
+        }
+        
+        function error_callback() {
+            alert("There was an error deleting the article")
+        }
+        
+        var c = confirm("Are you really really sure?  You can't undo this operation!")
+        if (c) {
+            var href = $(this).attr("href")
+            var obj = {"delete" : "true"}
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: obj,
+                success : success_callback,
+                error: error_callback
+            })
+        }
+    });
+  }
+
   $('.facetview.admin_journals_and_articles').each(function() {
   $(this).facetview({
     search_url: es_scheme + '//' + es_domain + '/admin_query/journal,article/_search?',
@@ -9,7 +43,8 @@ jQuery(document).ready(function($) {
     pager_slider: true,
     display_images: false,
     pre_search_callback: customise_facetview_presearch,
-    post_search_callback: customise_facetview_results,
+    // post_search_callback: customise_facetview_results,
+    post_search_callback: postSearch,
     post_init_callback: customise_facetview_init,
     freetext_submit_delay:"1000",
     results_render_callbacks: {
@@ -24,6 +59,7 @@ jQuery(document).ready(function($) {
         "links" : fv_links,
         "issns" : fv_issns,
         "edit_journal": fv_edit_journal,
+        "delete_article" : fv_delete_article,
         "in_doaj": fv_in_doaj,
         "country_name": fv_country_name
     },
@@ -302,9 +338,15 @@ jQuery(document).ready(function($) {
         [
             {
                 "field": "edit_journal",
+            },
+            {
+                "field" : "delete_article"
             }
         ],
     ],
   });
   });
+  
+  
+  
 });

@@ -157,6 +157,15 @@ select {
     margin-left: 220px;
 }
 
+.form-horizontal .nested-field-container .control-label {
+    width: auto;
+    margin-right: 1em;
+}
+
+.form-horizontal .nested-field-container .controls {
+    margin-left: 0;
+}
+
 .form-horizontal.wide h1,
 .form-horizontal.wide h2,
 .form-horizontal.wide h3,
@@ -174,6 +183,10 @@ select {
 .form-horizontal.wide .form-section {
     margin-top: 1em;
     padding: 0.5em 1.5em;  /* top/bottom, left/right */
+}
+
+.nested-field-container textarea {
+    height: 5em;
 }
 
 .control-group.error .help-block,
@@ -286,6 +299,32 @@ footer > .box + .box {
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
+}
+
+#add_note_btn {
+    width: 20em;
+    margin-left: 40px; // width of Note field label + its margin
+}
+
+button[target^="notes-"][target$="-container"] {
+    margin-left: 2em;
+    margin-top: 27px; // single row label height + padding + 4px aesthetics to line it up with the date field
+}
+
+.form-horizontal.wide #subject-container .control-label,
+.form-horizontal.wide .left-aligned .control-label {
+    width: 5em;
+    text-align: left;
+}
+
+.form-horizontal.wide #subject-container .controls,
+.form-horizontal.wide .left-aligned .controls {
+    margin-left: 5em;
+}
+
+.form-horizontal.wide #subject {
+    height: 20.5em;
+    width: 34em;
 }
 
 /* Custom responsive bits - elements, classes and id-s in that order */
