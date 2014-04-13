@@ -12,6 +12,7 @@ def suggestion2journal(suggestion):
     del journal_data['id']
     del journal_data['created_date']
     del journal_data['last_updated']
+    journal_data['bibjson']['active'] = True
     new_j = Journal(**journal_data)
     return new_j
 
