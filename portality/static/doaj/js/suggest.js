@@ -148,7 +148,7 @@ jQuery(document).ready(function($) {
 function setup_subject_tree() {
     $(function () {
         $('#subject_tree').jstree({
-            'plugins':["wholerow","checkbox","sort","search"],
+            'plugins':["checkbox","sort","search"],
             'core' : {
                 'data' : lcc_jstree
             },
