@@ -3,6 +3,7 @@ from copy import deepcopy
 import json
 import locale
 import sys
+import uuid
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -24,6 +25,17 @@ def lookup_model(name='', capitalize=True):
 ############################################################################
 # Generic/Utility classes and functions
 ############################################################################
+class ObjectDict(object):
+    """WTForms requires an object in order to work properly, not a dict or an unpacked dict."""
+    def __init__(self, d):
+        super(ObjectDict, self).__setattr__('data', d)
+
+    def __getattr__(self, item):
+        return self.data[item]
+
+    def __setattr__(self, key, value):
+        self.data[key] = value
+
 
 class GenericBibJSON(object):
     # vocab of known identifier types
@@ -388,6 +400,24 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     @classmethod
+    def make_account(cls, username, name=None, email=None, roles=[], associated_journal_ids=[]):
+        a = cls.pull(username)
+        if a:
+            return a
+
+        a = Account(id=username)
+        a.set_name(name) if name else None
+        a.set_email(email) if email else None
+        for role in roles:
+            a.add_role(role)
+        for jid in associated_journal_ids:
+            a.add_journal(jid)
+        reset_token = uuid.uuid4().hex
+        # give them 14 days to create their first password if timeout not specified in config
+        a.set_reset_token(reset_token, app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
+        return a
+
+    @classmethod
     def pull_by_email(cls, email):
         res = cls.query(q='email:"' + email + '"')
         if res.get('hits',{}).get('total',0) == 1:
@@ -448,7 +478,10 @@ class Account(DomainObject, UserMixin):
         if "journal" not in self.data:
             return
         self.data["journal"].remove(jid)
-    
+
+    @property
+    def reset_token(self): return self.data.get('reset_token')
+
     def set_reset_token(self, token, timeout):
         expires = datetime.now() + timedelta(0, timeout)
         self.data["reset_token"] = token
@@ -633,7 +666,7 @@ class Journal(DomainObject):
     
     @property
     def owner(self):
-        return self.data.get("admin", {}).get("owner")
+        return self.data.get("admin", {}).get("owner", '')
     
     def set_owner(self, owner):
         if "admin" not in self.data:

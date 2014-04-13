@@ -1,15 +1,22 @@
 from datetime import datetime
-from flask import render_template, flash
-from portality import lcc
+from time import sleep
+from flask import render_template, flash, url_for, json
 
-from portality.models import Suggestion
+from portality import lcc
+from portality import journal
+from portality.account import create_account_on_suggestion_approval, \
+    send_suggestion_approved_email
+from portality.models import Suggestion, Account
+from portality.util import flash_with_url
 from portality.view import forms
 from portality.datasets import licenses
 from portality.view.forms import other_val, digital_archiving_policy_specific_library_value
 from werkzeug.utils import redirect
 
 
-def suggestion_form(form, request, redirect_url_on_success, template_name, existing_suggestion=None, **kwargs):
+# provide reusability to the view functions
+def suggestion_form(form, request, redirect_url_on_success, template_name, existing_suggestion=None, process_the_form=True, **kwargs):
+
     first_field_with_error = ''
 
     #import json
@@ -30,59 +37,75 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
     #print
 
     if request.method == 'POST':
-        if form.validate():
-            suggestion = SuggestionFormXWalk.form2obj(form, existing_suggestion)
-            if not existing_suggestion:
-                suggestion.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-                suggestion.set_application_status('pending')
-            else:
-                suggestion.suggested_on = existing_suggestion.suggested_on
-                suggestion.data['id'] = existing_suggestion.data['id']
-
-            # the code below can be used to quickly debug objects which
-            # fail to serialise as JSON - there should be none of those
-            # in the suggestion!
-            '''
-            import json
-            for thing in suggestion.data:
-                try:
-                    if thing == 'bibjson':
-                        bibjson = suggestion.bibjson().bibjson
-                        for thing2 in bibjson:
-                            try:
-                                print json.dumps(bibjson[thing2])
-                            except TypeError as e:
-                                print 'This is it:',thing2
-                                print e
-                                print
-                                print json.dumps(bibjson[thing2])
-                except TypeError as e:
-                    print 'This is it:',thing
-                    print e
-                    print
-            '''
-
-            # the code below produces a dump of the object returned by
-            # the crosswalk
-            '''
-            import json
-            print
-            print
-            print 'Now all the data!'
-
-            print json.dumps(suggestion.data, indent=3)
-            '''
-
-            suggestion.save()
+        if not process_the_form:
             if existing_suggestion:
-                flash('Application updated.', 'success')
-
-            return redirect(redirect_url_on_success)
+                return redirect(url_for('admin.suggestion_page', suggestion_id=existing_suggestion.id, _anchor='cannot_edit'))
         else:
-            for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
-                if field.errors:
-                    first_field_with_error = field.short_name
-                    break
+            if form.validate():
+                suggestion = SuggestionFormXWalk.form2obj(form, existing_suggestion)
+                if not existing_suggestion:
+                    suggestion.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                    suggestion.set_application_status('pending')
+                else:
+                    suggestion.suggested_on = existing_suggestion.suggested_on
+                    suggestion.data['id'] = existing_suggestion.data['id']
+
+                # the code below can be used to quickly debug objects which
+                # fail to serialise as JSON - there should be none of those
+                # in the suggestion!
+                '''
+                import json
+                for thing in suggestion.data:
+                    try:
+                        if thing == 'bibjson':
+                            bibjson = suggestion.bibjson().bibjson
+                            for thing2 in bibjson:
+                                try:
+                                    print json.dumps(bibjson[thing2])
+                                except TypeError as e:
+                                    print 'This is it:',thing2
+                                    print e
+                                    print
+                                    print json.dumps(bibjson[thing2])
+                    except TypeError as e:
+                        print 'This is it:',thing
+                        print e
+                        print
+                '''
+
+                # the code below produces a dump of the object returned by
+                # the crosswalk
+                '''
+                import json
+                print
+                print
+                print 'Now all the data!'
+
+                print json.dumps(suggestion.data, indent=3)
+                '''
+
+                suggestion.save()
+                if existing_suggestion:
+                    flash('Application updated.', 'success')
+                    if suggestion.application_status == 'accepted':
+                        # this suggestion is just getting accepted
+                        j = journal.suggestion2journal(suggestion)
+                        j.set_in_doaj(True)
+                        j.save()
+                        sleep(2)  # let the index make it searchable by id first
+                        print j.is_in_doaj()
+                        qobj = j.make_query(q=j.id)
+                        jurl = url_for('admin.admin_site_search') + '?source=' + json.dumps(qobj).replace('"', '&quot;')
+                        flash_with_url('<a href="{url}" target="_blank">New journal created</a>'.format(url=jurl), 'success')
+                        owner = create_account_on_suggestion_approval(suggestion, j)
+                        send_suggestion_approved_email(j.bibjson().title, owner.email)
+
+                return redirect(redirect_url_on_success)
+            else:
+                for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
+                    if field.errors:
+                        first_field_with_error = field.short_name
+                        break
     return render_template(
             template_name,
             form=form,
@@ -93,6 +116,7 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
             edit_suggestion_page=True,
             **kwargs
     )
+
 
 class SuggestionFormXWalk(object):
 
@@ -212,9 +236,10 @@ class SuggestionFormXWalk(object):
         )
 
         suggestion.set_suggester(form.suggester_name.data, form.suggester_email.data)
+        
+        # admin stuff
         if getattr(form, 'application_status', None):
             suggestion.set_application_status(form.application_status.data)
-
 
         if getattr(form, 'notes', None):
             # need to copy over the notes from the existing suggestion object, if any, otherwise
@@ -249,6 +274,9 @@ class SuggestionFormXWalk(object):
                 sobj = {"scheme": 'LCC', "term": lcc.lookup_code(code), "code": code}
                 new_subjects.append(sobj)
             bibjson.set_subjects(new_subjects)
+            
+        if getattr(form, 'owner', None):
+            suggestion.set_owner(form.owner.data.strip())
 
         return suggestion
 
@@ -390,6 +418,8 @@ class SuggestionFormXWalk(object):
         forminfo['subject'] = []
         for s in bibjson.subjects():
             forminfo['subject'].append(s['code'])
+
+        forminfo['owner'] = obj.owner
 
         return forminfo
 

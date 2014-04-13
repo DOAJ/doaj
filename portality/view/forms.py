@@ -134,12 +134,16 @@ article_identifiers_choices = [
 
 article_identifiers_choices_list = [v[0] for v in article_identifiers_choices]
 
-application_status_choices = [
+application_status_choices_optional_owner = [
     ('', ' '),
-    ('pending', 'pending'),
-    ('in progress', 'in progress'),
-    ('rejected', 'rejected')
+    ('pending', 'Pending'),
+    ('in progress', 'In progress'),
+    ('rejected', 'Rejected'),
 ]
+
+application_status_choices = application_status_choices_optional_owner + [('accepted', 'Accepted')]
+
+application_status_choices_optvals = [v[0] for v in application_status_choices_optional_owner]
 
 suggester_name_validators = [validators.Required()]
 suggester_email_validators = [validators.Required(), validators.Email(message='Invalid email address.')]
@@ -761,9 +765,26 @@ class EditSuggestionForm(SuggestionForm):
         [validators.Required()],
         choices = application_status_choices,
         default = '',
+        description='Setting this to Accepted will send an email to the'
+                    ' owner of the suggestion telling them their journal'
+                    ' is now in the DOAJ. The Owner field must not be'
+                    ' blank when the status is set to Accepted.'
     )
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
+    owner = TextField('Owner',
+        [OptionalIf('application_status', optvals=application_status_choices_optvals)],
+        description='DOAJ account to which the suggestion belongs to.'
+                    '<br><br>'
+                    'This field is optional unless the application status is set to Accepted.'
+                    '<br><br>'
+                    'Entering a non-existent account <strong>and'
+                    ' setting the application status to Accepted</strong>'
+                    ' will automatically'
+                    ' create the account using the suggester information'
+                    ' at the bottom of this form, and send an email with'
+                    ' username + password to the suggester email address.'
+    )
 
     # overrides
     suggester_name = TextField("Suggester's name",

@@ -173,18 +173,13 @@ def suggestion_page(suggestion_id):
     if s is None:
         abort(404)
 
-    class ObjectDict(object):
-        def __init__(self, d):
-            super(ObjectDict, self).__setattr__('data', d)
-
-        def __getattr__(self, item):
-            return self.data[item]
-
-        def __setattr__(self, key, value):
-            self.data[key] = value
-
-    current_info = ObjectDict(SuggestionFormXWalk.obj2form(s))
+    current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
     form = EditSuggestionForm(request.form, current_info)
+
+    process_the_form = True
+    if request.method == 'POST' and s.application_status == 'accepted':
+        flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
+        process_the_form = False
 
     redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
     # meaningless anchor to replace #first_problem used on the form
@@ -194,6 +189,7 @@ def suggestion_page(suggestion_id):
     return suggestion_form(form, request, redirect_url_on_success, "admin/suggestion.html",
                            existing_suggestion=s,
                            suggestion=s,
+                           process_the_form=process_the_form,
                            admin_page=True,
                            subjectstr=subjects2str(s.bibjson().subjects()),
                            lcc_jstree=json.dumps(lcc_jstree),
