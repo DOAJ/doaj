@@ -4,9 +4,10 @@ from functools import wraps
 from flask import Flask
 from flask import request, redirect, url_for, flash
 
-from portality import settings, secret_settings
+from portality import settings
 from flask.ext.login import LoginManager, current_user
 login_manager = LoginManager()
+
 
 def create_app():
     app = Flask(__name__)
@@ -19,12 +20,47 @@ def create_app():
 
 def configure_app(app):
     app.config.from_object(settings)
-    app.config.from_object(secret_settings)
     # parent directory
     here = os.path.dirname(os.path.abspath( __file__ ))
     config_path = os.path.join(os.path.dirname(here), 'app.cfg')
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
+
+    app.config['DOAJENV'] = get_app_env(app)
+    config_path = os.path.join(os.path.dirname(here), app.config['DOAJENV'] + '.cfg')
+    print 'Running in ' + app.config['DOAJENV']  # the app.logger is not set up yet (?)
+    if os.path.exists(config_path):
+        app.config.from_pyfile(config_path)
+        print 'Loaded final config from ' + config_path
+
+def get_app_env(app):
+    if not app.config.get('VALID_ENVIRONMENTS'):
+        raise Exception('VALID_ENVIRONMENTS must be set in the config. There shouldn\'t be a reason to change it in different set ups, or not have it.')
+
+    try:
+        env = app.config['DOAJENV']
+    except KeyError:
+        env = os.getenv('DOAJENV')
+
+    if not env:
+        raise Exception(
+"""
+Set the DOAJENV environment variable when running the app please, guessing is futile and fraught with peril.
+DOAJENV=test python portality/app.py
+to run the app will do.
+Or use the supervisord options - put this in the config: environment= DOAJENV="test" .
+
+Finally, the least preferred approach is to put DOAJENV="dev" in app.cfg in the root of the repo.
+Only do this for dev environments so you don't have to bother specifying it each time.
+
+Valid values are: {valid_doajenv_vals}
+
+You can put environment-specific secret settings in <environment>.cfg , e.g. dev.cfg .
+""".format(valid_doajenv_vals=', '.join(app.config['VALID_ENVIRONMENTS']))
+        )
+
+    return env
+
 
 def initialise_index(app):
     mappings = app.config["MAPPINGS"]

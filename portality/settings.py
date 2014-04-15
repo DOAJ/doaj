@@ -21,25 +21,18 @@ SUPPRESS_ERROR_EMAILS = False
 SERVICE_NAME = "Directory of Open Access Journals"
 SERVICE_TAGLINE = ""
 HOST = "0.0.0.0"
-DEBUG = True
+DEBUG = False
 PORT = 5004
 SSL = True
+VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
-#ELASTIC_SEARCH_HOST = "http://93.93.131.168:9200"
 ELASTIC_SEARCH_DB = "doaj"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
-
-# =======================
-# email settings
-
-SMTP_SERVER = "smtp.mandrillapp.com"
-
-SMTP_PORT = 587
 
 # ========================
 # user login settings
