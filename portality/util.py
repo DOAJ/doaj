@@ -52,7 +52,10 @@ def send_mail(to, fro, subject, text, files=[], server="localhost"):
     smtp_user = app.config.get("SMTP_USER")
     smtp_pass = app.config.get("SMTP_PASS")
     
-    smtp = smtplib.SMTP(server, server_port)
+    smtp = smtplib.SMTP()  # just doing SMTP(server, server_port) does not work with Mailtrap
+    # but doing .connect explicitly afterwards works both with Mailtrap and with Mandrill
+    smtp.connect(server, server_port)
+
     if smtp_user is not None:
         smtp.login(smtp_user, smtp_pass)
     
