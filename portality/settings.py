@@ -24,6 +24,7 @@ HOST = "0.0.0.0"
 DEBUG = True
 PORT = 5004
 SSL = True
+VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production']
 
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://

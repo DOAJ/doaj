@@ -10,7 +10,7 @@ dist/*
 # vim swap files
 .*.swp
 
-app.cfg
+*.cfg
 
 media/*
 portality/default_templates/pagemanager/content/*
