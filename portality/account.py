@@ -137,7 +137,7 @@ def send_suggestion_approved_email(journal_name, email):
     to = [email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - journal accepted"
-    text = SUGGESTION_ACCEPTED_EMAIL_TEMPLATE.format(journal_name=journal_name, url_root=url_root)
+    text = SUGGESTION_ACCEPTED_EMAIL_TEMPLATE.format(journal_name=journal_name.encode('utf-8', 'replace'), url_root=url_root)
 
     try:
         util.send_mail(to=to, fro=fro, subject=subject, text=text)
