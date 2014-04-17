@@ -76,11 +76,14 @@ def lcc2flat_code_index(thelcc):
 
 
 lcc = LCC.pull('lcc')
-lcc_choices = lcc2choices(lcc)
-lcc_jstree = lcc2jstree(lcc)
-
-lcc_index_by_code = lcc2flat_code_index(lcc)
+lcc_choices = []
+lcc_jstree = []
+lcc_index_by_code = {}
+if lcc:
+    lcc_choices = lcc2choices(lcc)
+    lcc_jstree = lcc2jstree(lcc)
+    lcc_index_by_code = lcc2flat_code_index(lcc)
 
 
 def lookup_code(code):
-    return lcc_index_by_code[code]
+    return lcc_index_by_code.get(code)
