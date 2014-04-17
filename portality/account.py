@@ -23,10 +23,18 @@ def create_account_on_suggestion_approval(suggestion, journal):
         o.save()
         return o
 
+    suggestion_contact = util.listpop(suggestion.contacts())
+    if not suggestion_contact.get('email'):
+        msg = ERROR_MSG_TEMPLATE.format(username=o.id, missing_thing='journal contact email in the application')
+        app.logger.error(msg)
+        flash(msg)
+        return o
+
+    send_info_to = suggestion_contact.get('email')
     o = Account.make_account(
         suggestion.owner,
-        name=suggestion.suggester.get('name'),
-        email=suggestion.suggester.get('email'),
+        name=suggestion_contact.get('name'),
+        email=send_info_to,
         roles=['publisher'],
         associated_journal_ids=[journal.id]
     )
@@ -46,26 +54,21 @@ def create_account_on_suggestion_approval(suggestion, journal):
     reset_url = url_root + url_for('account.reset', reset_token=o.reset_token)
     forgot_pw_url = url_root + url_for('account.forgot')
 
-    if not suggestion.suggester.get('email'):
-        msg = ERROR_MSG_TEMPLATE.format(username=o.id, missing_thing='suggester email')
-        app.logger.error(msg)
-        flash(msg)
-        return o
 
     password_create_timeout_seconds = int(app.config.get("PASSWORD_CREATE_TIMEOUT", app.config.get('PASSWORD_RESET_TIMEOUT', 86400) * 14))
     password_create_timeout_days = password_create_timeout_seconds / (60*60*24)
 
-    to = [suggestion.suggester.get('email'), app.config['ADMIN_EMAIL']]
-    fro = app.config['ADMIN_EMAIL']
+    to = [send_info_to]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - account created"
     text = \
-"""An account has created for you at the DOAJ.
+"""An account has been created for you at DOAJ. You will need this account to see your journals, upload article metadata and update your details.
 
-Username: {username}
+Your username is: {username}
 
 Please visit {reset_url} and choose a password. You have {timeout_days} days from the date of this email.
 
-If you do not set a password within {timeout_days} days, simply go to {forgot_pw_url} and enter your username. This will let you set your password.
+If you do not set a password within {timeout_days} days, go to {forgot_pw_url} and enter your username. This will let you set your password.
 
 Regards,
 The DOAJ Team
@@ -73,7 +76,7 @@ The DOAJ Team
 
     try:
         util.send_mail(to=to, fro=fro, subject=subject, text=text)
-        flash('Sent email to ' + suggestion.suggester.get('email', '') + ' to tell them about the new account.', 'success')
+        flash('Sent email to ' + send_info_to + ' to tell them about the new account.', 'success')
         if app.config.get('DEBUG',False):
             util.flash_with_url('Debug mode - url for create is <a href="{url}">{url}</a>'.format(url=reset_url))
     except Exception as e:
@@ -91,10 +94,10 @@ SUGGESTION_ACCEPTED_EMAIL_TEMPLATE = \
 """
 Dear publisher,
 
-The journal {journal_name} has now been added to DOAJ. It will be visible within 1 hour.
+The journal {journal_name} has now been added to DOAJ.
 You may access the journal in your Publisher Area: {url_root}/publisher/ .
 You will need your username and password.
-If you do not already have a DOAJ account, you will receive more information in a separate email. (If you did not get an email containing your username and instructions to set your password then please contact us: {url_root}/contact .)
+If you do not already have a DOAJ account, you will receive more information in a separate email. (If you do not have your username or the instructions to set your password then please contact us: {url_root}/contact .)
 
 To increase the visibility, impact, distribution and usage* of your journal, we urge you to upload the journal's article metadata to us. You may do this from the Publisher Area in two ways:
 
@@ -104,7 +107,7 @@ Find out more about the XML file structure here: {url_root}/features in the sect
 If you need further help with XML, we recommend you do a search online as there are many resources available.
 
 2) Enter Article Metadata: {url_root}/publisher/metadata
-You may enter article metadata manually. You will need to complete the form for each article. If you make a mistake, re-enter the metadata again and the new file will overwrite the old one. New articles will appear on the site after 1 hour.
+You may enter article metadata manually. You will need to complete the form for each article. If you make a mistake, re-enter the metadata again and the new file will overwrite the old one. New articles will appear on the site immediately.
 
 If you are adding content to an existing issue, you only need to supply the latest content to us. DOAJ does not accept PDFs.
 
@@ -118,10 +121,9 @@ You can check that your articles have been successfully added to your journal by
 - Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visbility
 - Many aggregators and database providers regularly harvest DOAJ content in order to include it to their commercial databases.
 - DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.
-= If you have any questions, please do not hesitate to contact us.
 
 The DOAJ Team
-Twitter: @doajplus
+Twitter: https://twitter.com/DOAJplus
 Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
 LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
@@ -132,9 +134,9 @@ def send_suggestion_approved_email(journal_name, email):
     if url_root.endswith("/"):
         url_root = url_root[:-1]
 
-    to = [email, app.config['ADMIN_EMAIL']]
-    fro = app.config['ADMIN_EMAIL']
-    subject = app.config.get("SERVICE_NAME","") + " - journal accepted into DOAJ"
+    to = [email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - journal accepted"
     text = SUGGESTION_ACCEPTED_EMAIL_TEMPLATE.format(journal_name=journal_name, url_root=url_root)
 
     try:

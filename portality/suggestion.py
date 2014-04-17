@@ -1,13 +1,12 @@
 from datetime import datetime
-from time import sleep
 from flask import render_template, flash, url_for, json
 
 from portality import lcc
 from portality import journal
 from portality.account import create_account_on_suggestion_approval, \
     send_suggestion_approved_email
-from portality.models import Suggestion, Account
-from portality.util import flash_with_url
+from portality.models import Suggestion
+from portality.util import flash_with_url, listpop
 from portality.view import forms
 from portality.datasets import licenses
 from portality.view.forms import other_val, digital_archiving_policy_specific_library_value
@@ -92,11 +91,9 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
                         j = journal.suggestion2journal(suggestion)
                         j.set_in_doaj(True)
                         j.save()
-                        sleep(2)  # let the index make it searchable by id first
-                        print j.is_in_doaj()
                         qobj = j.make_query(q=j.id)
                         jurl = url_for('admin.admin_site_search') + '?source=' + json.dumps(qobj).replace('"', '&quot;')
-                        flash_with_url('<a href="{url}" target="_blank">New journal created</a>'.format(url=jurl), 'success')
+                        flash_with_url('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl), 'success')
                         owner = create_account_on_suggestion_approval(suggestion, j)
                         send_suggestion_approved_email(j.bibjson().title, owner.email)
 
@@ -422,7 +419,3 @@ class SuggestionFormXWalk(object):
         forminfo['owner'] = obj.owner
 
         return forminfo
-
-
-def listpop(l):
-    return l[0] if l else ''
