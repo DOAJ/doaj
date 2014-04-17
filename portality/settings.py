@@ -16,6 +16,7 @@ ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
 SUPPRESS_ERROR_EMAILS = False
+SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
