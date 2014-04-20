@@ -42,10 +42,13 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
         else:
             if form.validate():
                 suggestion = SuggestionFormXWalk.form2obj(form, existing_suggestion)
+                now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 if not existing_suggestion:
-                    suggestion.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                    suggestion.suggested_on = now
                     suggestion.set_application_status('pending')
                 else:
+                    created_date = existing_suggestion.created_date if existing_suggestion.created_date else now
+                    suggestion.set_created(created_date)
                     suggestion.suggested_on = existing_suggestion.suggested_on
                     suggestion.data['id'] = existing_suggestion.data['id']
 

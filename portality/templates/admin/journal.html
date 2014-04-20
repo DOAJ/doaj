@@ -2,7 +2,7 @@
 
 {% block admin_content %}
 
-{# NOTE: requires suggest.js to be enabled (see _js_includes.html) #}
+{# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
 
 <div class="row-fluid" style="margin-bottom: 3em;">
   <div class="span12">
@@ -13,67 +13,7 @@
   </div>
 </div>
 
-<div class="row-fluid">
-  <div class="span12">
-    {% if there_were_errors %}
-      <h4 class="red">There is a problem with the submitted form.</h4>
-    {% endif %}
-
-    {% from "_formhelpers.html" import render_field_horizontal %}
-    {% if journal['admin']['in_doaj'] %}
-      <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=journal['id']) }}" class="form-horizontal" id="journal_deactivate_form">
-        <fieldset>
-          <div class="control-group">
-              <div class="controls"><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></div>
-          </div>
-        <fieldset>
-      </form>
-
-    {% else %}
-      <form method="post" action="{{ url_for('admin.journal_activate', journal_id=journal['id']) }}" class="form-horizontal" id="journal_activate_form">
-        <fieldset>
-          <div class="control-group">
-              <div class="controls"><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></div>
-          </div>
-        <fieldset>
-      </form>
-
-    {% endif %}
-
-    <form method="post" action="{{ url_for('admin.journal_page', journal_id=journal['id']) }}" class="form-horizontal" id="suggest_form">
-      <fieldset>
-        {{ render_field_horizontal(form.url, class="input-xlarge") }}
-        {{ render_field_horizontal(form.title, class="input-xlarge") }}
-        {{ render_field_horizontal(form.alternative_title, class="input-xlarge") }}
-        <p>Either an ISSN or an EISSN has to be provided. Providing both is preferred.</p>
-        {{ render_field_horizontal(form.pissn, class="input-small", size="9", maxlength="9") }}
-        {{ render_field_horizontal(form.eissn, class="input-small", size="9", maxlength="9") }}
-        {{ render_field_horizontal(form.publisher, class="input-xlarge") }}
-        {{ render_field_horizontal(form.provider, class="input-xlarge") }}
-        {{ render_field_horizontal(form.oa_start_year, class="input-mini", size="4", maxlength="4") }}
-        {{ render_field_horizontal(form.oa_end_year, class="input-mini", size="4", maxlength="4") }}
-        {{ render_field_horizontal(form.country) }}
-        {{ render_field_horizontal(form.license) }}
-        {{ render_field_horizontal(form.author_pays) }}
-        {{ render_field_horizontal(form.author_pays_url, class="input-xlarge") }}
-        {{ render_field_horizontal(form.keywords, class="input-xlarge") }}
-        <div class="control-group">
-          <label class="control-label">Subject:</label>
-          <div class="controls">
-            <p>{{ subject }}</p>
-            <p class="help-block">Editing coming soon</p> 
-          </div>
-        </div>
-        {{ render_field_horizontal(form.languages, class="input-xlarge") }}
-        <div class="control-group">
-            <div class="controls"><button class="btn btn-success" type="submit">Submit &gt;</button></div>
-        </div>
-      </fieldset>
-    </form>
-    
-  </div>
-</div>
-  
+{% include "_journal_form.html" %}
 
 {% endblock %}
 

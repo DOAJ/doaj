@@ -805,6 +805,14 @@ class Journal(DomainObject):
         # though note that switching active to True does not put something IN the DOAJ
         if not self.bibjson().active:
             self.set_in_doaj(False)
+
+    def all_articles(self):
+        return Article.find_by_issns(self.known_issns())
+
+    def propagate_in_doaj_status_to_articles(self):
+        for article in self.all_articles():
+            article.set_in_doaj(self.is_in_doaj())
+            article.save()
     
     def prep(self):
         self._ensure_in_doaj()
@@ -1435,6 +1443,12 @@ class Article(DomainObject):
     @classmethod
     def get_by_volume(cls, issns, volume):
         q = ArticleQuery(issns=issns, volume=volume)
+        articles = cls.iterate(q.query(), page_size=1000)
+        return articles
+
+    @classmethod
+    def find_by_issns(cls, issns):
+        q = ArticleQuery(issns=issns)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
     

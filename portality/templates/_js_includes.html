@@ -67,8 +67,8 @@ displayed. #}
 
 {% endif %} 
 
-{% if edit_suggestion_page %}
+{% if edit_suggestion_page or edit_journal_page %}
 <script type="text/javascript">var lcc_jstree = {{lcc_jstree | safe}};</script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.jstree/3.0.0-beta10/jstree.min.js"></script>
-<script type="text/javascript" src="/static/doaj/js/suggest.js"></script>
+<script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js"></script>
 {% endif %}
