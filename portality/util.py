@@ -129,5 +129,5 @@ def generate_password(length=8):
 def flash_with_url(message, category=''):
     flash(message, category + '+contains-url')
 
-def listpop(l):
-    return l[0] if l else None
+def listpop(l, default=None):
+    return l[0] if l else default
