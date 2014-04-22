@@ -239,7 +239,7 @@ class JournalFormXWalk(object):
 
         forminfo['editorial_board_url'] = bibjson.get_single_url('editorial_board')
 
-        forminfo['review_process'] = bibjson.editorial_review.get('process')
+        forminfo['review_process'] = bibjson.editorial_review.get('process', '')
         forminfo['review_process_url'] = bibjson.editorial_review.get('url')
 
         forminfo['aims_scope_url'] = bibjson.get_single_url('aims_scope')
@@ -274,14 +274,14 @@ class JournalFormXWalk(object):
 
         forminfo['copyright'], forminfo['copyright_other'] = \
             forms.reverse_interpret_other(
-                forms.reverse_interpret_special(bibjson.author_copyright.get('copyright')),
+                forms.reverse_interpret_special(bibjson.author_copyright.get('copyright', '')),
                 forms.ternary_choices_list
             )
         forminfo['copyright_url'] = bibjson.author_copyright.get('url')
 
         forminfo['publishing_rights'], forminfo['publishing_rights_other'] = \
             forms.reverse_interpret_other(
-                forms.reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights')),
+                forms.reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', '')),
                 forms.ternary_choices_list
             )
         forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
