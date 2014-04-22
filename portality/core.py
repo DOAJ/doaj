@@ -37,10 +37,9 @@ def get_app_env(app):
     if not app.config.get('VALID_ENVIRONMENTS'):
         raise Exception('VALID_ENVIRONMENTS must be set in the config. There shouldn\'t be a reason to change it in different set ups, or not have it.')
 
-    try:
-        env = app.config['DOAJENV']
-    except KeyError:
-        env = os.getenv('DOAJENV')
+    env = os.getenv('DOAJENV')
+    if not env:
+        env = app.config.get('DOAJENV')
 
     if not env:
         raise Exception(
@@ -56,6 +55,9 @@ Only do this for dev environments so you don't have to bother specifying it each
 Valid values are: {valid_doajenv_vals}
 
 You can put environment-specific secret settings in <environment>.cfg , e.g. dev.cfg .
+
+The environment specified in the DOAJENV environment variable will override that specified in the
+application configuration (settings.py or app.cfg).
 """.format(valid_doajenv_vals=', '.join(app.config['VALID_ENVIRONMENTS']))
         )
 
