@@ -165,6 +165,18 @@ class JournalFormXWalk(object):
 
         journal.set_owner(form.owner.data.strip())
 
+        # old fields - only create them in the journal record if the values actually exist
+        if getattr(form, 'author_pays', None):
+            if form.author_pays.data:
+                bibjson.author_pays = form.author_pays.data
+        if getattr(form, 'author_pays_url', None):
+            if form.author_pays_url.data:
+                bibjson.author_pays_url = form.author_pays_url.data
+        if getattr(form, 'oa_end_year', None):
+            if form.oa_end_year.data:
+                bibjson.set_oa_end(form.oa_end_year.data)
+
+
         return journal
 
 
@@ -293,5 +305,13 @@ class JournalFormXWalk(object):
             forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
+        
+        # old fields - only show them if the values actually exist in the journal record
+        if bibjson.author_pays:
+            forminfo['author_pays'] = bibjson.author_pays
+        if bibjson.author_pays_url:
+            forminfo['author_pays_url'] = bibjson.author_pays_url
+        if bibjson.oa_end:
+            forminfo['oa_end_year'] = bibjson.oa_end.get('year')
 
         return forminfo

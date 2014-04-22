@@ -889,32 +889,19 @@ class JournalBibJSON(GenericBibJSON):
     def alternative_title(self, val) : self.bibjson["alternative_title"] = val
     
     @property
-    def author_pays_url(self): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays_url(self):
         return self.bibjson.get("author_pays_url")
-        
-        
+
     @author_pays_url.setter
-    def author_pays_url(self, val): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays_url(self, val):
         self.bibjson["author_pays_url"] = val
     
     @property
-    def author_pays(self): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays(self):
         return self.bibjson.get("author_pays")
         
     @author_pays.setter
-    def author_pays(self, val): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays(self, val):
         self.bibjson["author_pays"] = val
     
     @property
@@ -1050,6 +1037,8 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def oa_end(self):
         return self.bibjson.get("oa_end", {})
+
+
     
     def set_apc(self, currency, average_price):
         if "apc" not in self.bibjson:
