@@ -175,11 +175,11 @@ def interpret_special(val):
 def reverse_interpret_special(val, field=''):
     # if you modify this, make sure to modify interpret_special as well
 
-    if val == None:
+    if val is None:
         return none_val
-    elif val == True:
+    elif val is True:
         return true_val
-    elif val == False:
+    elif val is False:
         return false_val
     # no need to handle digital archiving policy or other list
     # fields here - empty lists handled below
