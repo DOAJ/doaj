@@ -1154,7 +1154,7 @@ class JournalBibJSON(GenericBibJSON):
         return self.bibjson.get("author_publishing_rights", {})
     
     @property
-    def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing", False)
+    def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing")
     @allows_fulltext_indexing.setter
     def allows_fulltext_indexing(self, allows): self.bibjson["allows_fulltext_indexing"] = allows
     

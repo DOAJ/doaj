@@ -113,7 +113,7 @@ function setup_subject_tree() {
 
     $('#subject_tree')
         .on('ready.jstree', function (e, data) {
-            var subjects = $('#subject').val();
+            var subjects = $('#subject').val() || [];
             for (var i = 0; i < subjects.length; i++) {
                 $('#subject_tree').jstree('select_node', subjects[i]);
             }
@@ -246,7 +246,7 @@ function setup_add_button_handlers() {
     // this isn't as generic as the other functions - each button has to
     // have its own click handler defined here for it to work
     
-    var add_note_btn = function () {
+    var add_note_btn = function (event) {
         event.preventDefault();
 
         if (typeof cur_number_of_notes == 'undefined') {
@@ -309,7 +309,7 @@ function setup_remove_buttons() {
 
 function setup_remove_button_handler() {
     $(".remove_button").unbind("click")
-    $(".remove_button").click( function() {
+    $(".remove_button").click( function(event) {
         event.preventDefault();
         var toremove = $(this).attr('target');
         $('#' + toremove).remove();

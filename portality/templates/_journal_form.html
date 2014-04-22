@@ -171,6 +171,9 @@
                         <button class="btn btn-success" type="submit">Save journal &gt;</button>
                     </div>
                   </div>
+
+
+                  {{ render_field(form.make_all_fields_optional) }}
               </div>
           </div>
       </div>
@@ -222,10 +225,6 @@
         {{ render_fields(form, copyright_fields) }}
       </div>
 
-    </div>
-
-    <div class="row-fluid">
-      <div class="span3">&nbsp;</div>
       <div class="span6 with-borders form-section">
         <div class="control-group">
             <div class="controls">
@@ -233,9 +232,17 @@
                     Save journal &gt;
                 </button>
             </div>
+
+            {{ render_field(form.make_all_fields_optional) }}
         </div>
 
       </div>
+
+    </div>
+
+    <div class="row-fluid">
+      <div class="span3">&nbsp;</div>
+
     </div>
 
     <div class="row-fluid">

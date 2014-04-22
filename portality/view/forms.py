@@ -175,11 +175,11 @@ def interpret_special(val):
 def reverse_interpret_special(val, field=''):
     # if you modify this, make sure to modify interpret_special as well
 
-    if val == None:
+    if val is None:
         return none_val
-    elif val == True:
+    elif val is True:
         return true_val
-    elif val == False:
+    elif val is False:
         return false_val
     # no need to handle digital archiving policy or other list
     # fields here - empty lists handled below
@@ -727,6 +727,12 @@ class JournalForm(JournalInformationForm):
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
     owner = TextField('Owner', [validators.Required()])
+    make_all_fields_optional = BooleanField('Allow incomplete form',
+        description='<strong>Only tick this box if:</strong>'
+                    '<br>a/ you are editing an old, incomplete record;'
+                    '<br>b/ you really, really need to change a value without filling in the whole record;'
+                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
+    )
 
 
 class SuggestionForm(JournalInformationForm):
