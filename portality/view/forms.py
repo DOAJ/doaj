@@ -727,6 +727,12 @@ class JournalForm(JournalInformationForm):
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
     owner = TextField('Owner', [validators.Required()])
+    make_all_fields_optional = BooleanField('Allow incomplete form',
+        description='<strong>Only tick this box if:</strong>'
+                    '<br>a/ you are editing an old, incomplete record;'
+                    '<br>b/ you really, really need to change a value without filling in the whole record;'
+                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
+    )
 
 
 class SuggestionForm(JournalInformationForm):

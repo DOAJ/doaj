@@ -95,7 +95,11 @@ def journal_page(journal_id):
     first_field_with_error = ''
 
     if request.method == 'POST':
-        if form.validate():
+        if form.make_all_fields_optional.data:
+            valid = True
+        else:
+            valid = form.validate()
+        if valid:
             # even though you can only edit journals right now, keeping the same
             # method as editing suggestions (i.e. creating a new object
             # and editing its properties)
