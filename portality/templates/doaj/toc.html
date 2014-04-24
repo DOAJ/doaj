@@ -39,32 +39,32 @@
     </div>
 </div>
 
-<div class="row-fluid">
+<div class="row-fluid" style="margin-bottom: 30px">
     <div class="span2">&nbsp;</div>
     <div class="span4">
-        <div class="well" style="height: 120px">
+        <div class="box with-borders" style="height: 120px">
             {% if journal.bibjson().publisher %}
-                <p><strong>publisher</strong>:&nbsp;{{journal.bibjson().publisher}}</p>
+                <p><strong>Publisher</strong>:&nbsp;{{journal.bibjson().publisher}}</p>
             {% endif %}
             
             {% if journal.bibjson().institution %}
-                <p><strong>society/institution</strong>:&nbsp;{{journal.bibjson().institution}}</p>
+                <p><strong>Society/Institution</strong>:&nbsp;{{journal.bibjson().institution}}</p>
             {% endif %}
             
             {% if journal.bibjson().provider %}
-                <p><strong>host/platform</strong>:&nbsp;{{journal.bibjson().provider}}</p>
+                <p><strong>Host/Platform</strong>:&nbsp;{{journal.bibjson().provider}}</p>
             {% endif %}
         </div>
     </div>
     
     <div class="span4">
-        <div class="well" style="height: 120px">
+        <div class="box with-borders" style="height: 120px">
             {% if journal.bibjson().country %}
-                <p><strong>country</strong>:&nbsp;{{journal.bibjson().country}}</p>
+                <p><strong>Country</strong>:&nbsp;{{ countries.get(journal.bibjson().country, {}).get("name", journal.bibjson().country)}}</p>
             {% endif %}
             
             {% if journal.bibjson().language %}
-                <p><strong>language(s)</strong>:&nbsp;{{journal.bibjson().language|join(", ")}}</p>
+                <p><strong>Language(s)</strong>:&nbsp;{{journal.bibjson().language|join(", ")}}</p>
             {% endif %}
         </div>
     </div>
@@ -92,7 +92,7 @@
 <div class="row-fluid">
     <div class="span12">
         <div class="row-fluid"><div class="span12">
-            <a href="#" id="journal_details_toggle">(more details)</a>
+            <a href="#" id="journal_details_toggle">(more detail)</a>
         </div></div>
         <div class="row-fluid" id="journal_details">
             <div class="span12">
@@ -144,10 +144,17 @@
                 {% if journal.bibjson().publication_time %}
                     <strong>Time From Submission to Publication</strong>: {{journal.bibjson().publication_time}} weeks<br>
                 {% endif %}
-                
-                <strong>Keywords and Subjects</strong><br>
-                {% if journal.bibjson().keywords %}{{journal.bibjson().keywords|join(", ")}}{% endif %}
-                {% for s in journal.bibjson().subjects() %}{% if loop.index0 > 0 %}, {% endif %}{{ s.get("term") }}{% endfor %}
+
+                {% if journal.bibjson().keywords %}
+                    <strong>Keywords</strong>: {{journal.bibjson().keywords|join(", ")}}<br>
+                {% endif %}
+
+                {% for s in journal.bibjson().subjects() %}
+                    {% if loop.index0 == 0 %}<strong>Subjects</strong>: {% endif %}
+                    {% if loop.index0 > 0 %}, {% endif %}
+                    {{ s.get("term") }}
+                    {% if loop.last %}<br>{% endif %}
+                {% endfor %}
     
             </div>
         </div>
@@ -234,6 +241,11 @@ $(document).ready(function() {
     $("#journal_details_toggle").click(function(event) {
         event.preventDefault();
         $("#journal_details").toggle()
+        if ($("#journal_details_toggle").html() == "(more detail)") {
+            $("#journal_details_toggle").html("(less detail)")
+        } else {
+            $("#journal_details_toggle").html("(more detail)")
+        }
     })
     
     $(".abstract_box").hide()
