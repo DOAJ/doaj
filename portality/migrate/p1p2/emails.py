@@ -8,7 +8,13 @@ APP = "application_emails.csv"
 def get_publisher(acc):
     q = {
         "query" : {
-            "term" : {"admin.owner.exact" : acc.id}
+            "bool" : {
+                "must" : [
+                    {"term" : {"admin.owner.exact" : acc.id}},
+                    {"term" : {"admin.in_doaj" : True}}
+                ]
+            }
+
         },
         "size" : 0,
         "facets" : {
@@ -22,6 +28,8 @@ def get_publisher(acc):
     }
     es = Journal.query(q=q)
     pubs = [term.get("term") for term in es.get("facets", {}).get("publishers", {}).get("terms", [])]
+    if len(pubs) == 0:
+        return None
     return ", ".join(pubs)
 
 fall = open(ALL, "wb")
@@ -41,10 +49,14 @@ for a in Account.iterall():
     if email is None:
         continue
     
-    publisher = ""
+    publisher = None
     if count > 0:
         publisher = get_publisher(a)
-    
+
+    # if they don't publish any journals in the doaj, ignore their account
+    if publisher is None:
+        continue
+
     if name is not None:
         name = unicode(name).encode("utf8", "replace")
     if name is None or name == "":
