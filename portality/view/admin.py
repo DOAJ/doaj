@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
@@ -7,11 +8,12 @@ from flask.ext.login import current_user, login_required
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
 from portality.suggestion import suggestion_form, SuggestionFormXWalk
+from portality.journal import JournalFormXWalk
 import portality.util as util
 from portality import xwalk
 from portality.view.forms import JournalForm, SuggestionForm, \
-    EditSuggestionForm, subjects2str
-from portality.view.account import get_redirect_target
+    EditSuggestionForm, subjects2str, other_val, \
+    digital_archiving_policy_specific_library_value
 from portality.datasets import country_options_two_char_code_index
 from portality.lcc import lcc_jstree
 
@@ -41,6 +43,7 @@ def journals():
                facetviews=['journals'],
                admin_page=True
            )
+
 
 def get_journal(journal_id):
     if not current_user.has_role("edit_journal"):
@@ -75,6 +78,9 @@ def article_endpoint(article_id):
 def journal_page(journal_id):
     j = get_journal(journal_id)
 
+    current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
+    form = JournalForm(request.form, current_info)
+
     current_country = xwalk.get_country_code(j.bibjson().country)
 
     if current_country not in country_options_two_char_code_index:
@@ -84,64 +90,64 @@ def journal_page(journal_id):
     else:
         country_help_text = ''
 
-    current_info = {
-        'in_doaj': j.is_in_doaj(),
-        'url': j.bibjson().get_single_url(urltype='homepage'),
-        'title': j.bibjson().title,
-        'alternative_title': j.bibjson().alternative_title,
-        'pissn': j.bibjson().get_one_identifier(j.bibjson().P_ISSN),
-        'eissn': j.bibjson().get_one_identifier(j.bibjson().E_ISSN),
-        'publisher': j.bibjson().publisher,
-        'provider': j.bibjson().provider,
-        'oa_start_year': j.bibjson().oa_start.get('year', ''),
-        'oa_end_year': j.bibjson().oa_end.get('year', ''),
-        'country': current_country,
-        'license': j.bibjson().get_license_type(),
-        'author_pays': j.bibjson().author_pays,
-        'author_pays_url': j.bibjson().author_pays_url,
-        'keywords': j.bibjson().keywords,
-        'languages': j.bibjson().language,
-    }
-
-    form = JournalForm(request.form, **current_info)
     form.country.description = '<span class="red">' + country_help_text + '</span>'
 
-    there_were_errors = False
+    first_field_with_error = ''
+
     if request.method == 'POST':
-        if form.validate():
-            nj = j
-            nj.bibjson().update_url(form.url.data, 'homepage')
-            nj.bibjson().title = form.title.data
-            nj.bibjson().alternative_title = form.alternative_title.data
-            nj.bibjson().update_identifier(nj.bibjson().P_ISSN, form.pissn.data)
-            nj.bibjson().update_identifier(nj.bibjson().E_ISSN, form.eissn.data)
-            nj.bibjson().publisher = form.publisher.data
-            nj.bibjson().provider = form.provider.data
-            nj.bibjson().set_oa_start(year=form.oa_start_year.data)
-            nj.bibjson().set_oa_end(year=form.oa_end_year.data)
-            nj.bibjson().country = form.country.data
-            nj.bibjson().set_license(license_title=form.license.data, license_type=form.license.data)
-            nj.bibjson().author_pays = form.author_pays.data
-            nj.bibjson().author_pays_url = form.author_pays_url.data
-            nj.bibjson().set_keywords(form.keywords.data)
-            nj.bibjson().set_language(form.languages.data)
-            nj.save()
-            return redirect(url_for('admin.journal_page', journal_id=journal_id))  # observe the POST->redirect pattern
+        if form.make_all_fields_optional.data:
+            valid = True
         else:
-            there_were_errors = True
+            valid = form.validate()
+        if valid:
+            # even though you can only edit journals right now, keeping the same
+            # method as editing suggestions (i.e. creating a new object
+            # and editing its properties)
 
-    
-    subjectstr = subjects2str(j.bibjson().subjects())
+            # some of the properties (id, in_doaj, etc.) have to be carried over
+            # otherwise they implicitly end up getting changed to their defaults
+            # when a journal gets edited (e.g. it always gets taken out of DOAJ)
+            # if we don't copy over the in_doaj attribute to the new journal object
+            journal = JournalFormXWalk.form2obj(form, existing_journal=j)
+            journal['id'] = j['id']
+            created_date = j.created_date if j.created_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            journal.set_created(created_date)
+            journal.bibjson().active = j.is_in_doaj()
+            journal.set_in_doaj(j.is_in_doaj())
+            journal.save()
+            flash('Journal updated.', 'success')
+            return redirect(url_for('.journal_page', journal_id=journal_id, _anchor='done'))
+                # meaningless anchor to replace #first_problem used on the form
+                # anchors persist between 3xx redirects to the same resource
+        else:
+            for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
+                if field.errors:
+                    first_field_with_error = field.short_name
+                    break
 
-    return render_template("admin/journal.html", form=form, journal=j, admin_page=True, subject=subjectstr, there_were_errors=there_were_errors)
+    return render_template(
+            "admin/journal.html",
+            form=form,
+            first_field_with_error=first_field_with_error,
+            q_numbers=xrange(1, 10000).__iter__(),  # a generator for the purpose of displaying numbered questions
+            other_val=other_val,
+            digital_archiving_policy_specific_library_value=digital_archiving_policy_specific_library_value,
+            edit_journal_page=True,
+            admin_page=True,
+            journal=j,
+            subjectstr=subjects2str(j.bibjson().subjects()),
+            lcc_jstree=json.dumps(lcc_jstree),
+    )
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def journal_activate(journal_id):
     j = get_journal(journal_id)
+    j.bibjson().active = True
     j.set_in_doaj(True)
     j.save()
+    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
@@ -149,8 +155,10 @@ def journal_activate(journal_id):
 @ssl_required
 def journal_deactivate(journal_id):
     j = get_journal(journal_id)
+    j.bibjson().active = False
     j.set_in_doaj(False)
     j.save()
+    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
 @blueprint.route("/applications")

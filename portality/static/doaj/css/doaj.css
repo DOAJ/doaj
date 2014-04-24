@@ -308,7 +308,6 @@ footer > .box + .box {
 
 button[target^="notes-"][target$="-container"] {
     margin-left: 2em;
-    margin-top: 27px; // single row label height + padding + 4px aesthetics to line it up with the date field
 }
 
 .form-horizontal.wide #subject-container .control-label,

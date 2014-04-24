@@ -805,6 +805,14 @@ class Journal(DomainObject):
         # though note that switching active to True does not put something IN the DOAJ
         if not self.bibjson().active:
             self.set_in_doaj(False)
+
+    def all_articles(self):
+        return Article.find_by_issns(self.known_issns())
+
+    def propagate_in_doaj_status_to_articles(self):
+        for article in self.all_articles():
+            article.set_in_doaj(self.is_in_doaj())
+            article.save()
     
     def prep(self):
         self._ensure_in_doaj()
@@ -881,32 +889,19 @@ class JournalBibJSON(GenericBibJSON):
     def alternative_title(self, val) : self.bibjson["alternative_title"] = val
     
     @property
-    def author_pays_url(self): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays_url(self):
         return self.bibjson.get("author_pays_url")
-        
-        
+
     @author_pays_url.setter
-    def author_pays_url(self, val): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays_url(self, val):
         self.bibjson["author_pays_url"] = val
     
     @property
-    def author_pays(self): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays(self):
         return self.bibjson.get("author_pays")
         
     @author_pays.setter
-    def author_pays(self, val): 
-        """
-        Deprecated - DO NOT USE
-        """
+    def author_pays(self, val):
         self.bibjson["author_pays"] = val
     
     @property
@@ -1042,6 +1037,8 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def oa_end(self):
         return self.bibjson.get("oa_end", {})
+
+
     
     def set_apc(self, currency, average_price):
         if "apc" not in self.bibjson:
@@ -1146,7 +1143,7 @@ class JournalBibJSON(GenericBibJSON):
         return self.bibjson.get("author_publishing_rights", {})
     
     @property
-    def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing", False)
+    def allows_fulltext_indexing(self): return self.bibjson.get("allows_fulltext_indexing")
     @allows_fulltext_indexing.setter
     def allows_fulltext_indexing(self, allows): self.bibjson["allows_fulltext_indexing"] = allows
     
@@ -1435,6 +1432,12 @@ class Article(DomainObject):
     @classmethod
     def get_by_volume(cls, issns, volume):
         q = ArticleQuery(issns=issns, volume=volume)
+        articles = cls.iterate(q.query(), page_size=1000)
+        return articles
+
+    @classmethod
+    def find_by_issns(cls, issns):
+        q = ArticleQuery(issns=issns)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
     

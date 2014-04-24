@@ -26,9 +26,11 @@ def is_safe_url(target):
     else:
         return '/'
 
-def send_mail(to, fro, subject, text, files=[], server="localhost"):
+def send_mail(to, fro, subject, text, files=[], server="localhost", bcc=[]):
     assert type(to)==list
     assert type(files)==list
+    if bcc and not isinstance(bcc, list):
+        bcc = [bcc]
  
     msg = MIMEMultipart()
     msg['From'] = fro
@@ -58,8 +60,8 @@ def send_mail(to, fro, subject, text, files=[], server="localhost"):
 
     if smtp_user is not None:
         smtp.login(smtp_user, smtp_pass)
-    
-    smtp.sendmail(fro, to, msg.as_string())
+
+    smtp.sendmail(fro, to + bcc, msg.as_string())
     smtp.close()
 
 
@@ -126,3 +128,6 @@ def generate_password(length=8):
 
 def flash_with_url(message, category=''):
     flash(message, category + '+contains-url')
+
+def listpop(l, default=None):
+    return l[0] if l else default

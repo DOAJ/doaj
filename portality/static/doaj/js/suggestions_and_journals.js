@@ -113,7 +113,7 @@ function setup_subject_tree() {
 
     $('#subject_tree')
         .on('ready.jstree', function (e, data) {
-            var subjects = $('#subject').val();
+            var subjects = $('#subject').val() || [];
             for (var i = 0; i < subjects.length; i++) {
                 $('#subject_tree').jstree('select_node', subjects[i]);
             }
@@ -220,40 +220,6 @@ function highlight_target() {
     $(window.location.hash).highlight()
 }
 
-function add_more_nested_fields(button_selector, nested_field_prefix, nested_field_suffix) {
-    var nested_field_suffix = nested_field_suffix || '-container';
-
-    $(button_selector).click( function (event) {
-        event.preventDefault();
-
-        // get the last div in the list
-        var all_e = $('[id^=' + nested_field_prefix + '][id$="' + nested_field_suffix + '"]');
-        var e = all_e.last();
-
-        // make a clone of the last div
-        var ne = e.clone()[0];
-
-        // extract the last number from the div id and increment it
-        var items = ne.id.split('-');
-        var number = parseInt(items[1]);
-        number = number + 1;
-
-        // increment all the numbers
-        _prepare_nested_container({
-            nested_field_prefix: nested_field_prefix,
-            nested_field_suffix: nested_field_suffix,
-            element : ne,
-            number : number,
-            reset_value : true
-        })
-
-        e.after(ne);
-
-        $(".remove_button").unbind("click")
-        $(".remove_button").click(remove_nested_field(nested_field_prefix, nested_field_suffix))
-	});
-}
-
 function setup_add_buttons() {
     var customisations = {
         // by container element id - container of the add more button and the fields being added
@@ -280,7 +246,7 @@ function setup_add_button_handlers() {
     // this isn't as generic as the other functions - each button has to
     // have its own click handler defined here for it to work
     
-    var add_note_btn = function () {
+    var add_note_btn = function (event) {
         event.preventDefault();
 
         if (typeof cur_number_of_notes == 'undefined') {
@@ -343,74 +309,9 @@ function setup_remove_buttons() {
 
 function setup_remove_button_handler() {
     $(".remove_button").unbind("click")
-    $(".remove_button").click( function() {
+    $(".remove_button").click( function(event) {
         event.preventDefault();
         var toremove = $(this).attr('target');
         $('#' + toremove).remove();
     });
-}
-
-function remove_nested_field(nested_field_prefix, nested_field_suffix) {
-    var nested_field_suffix = nested_field_suffix || '-container';
-    event.preventDefault();
-
-    var id = $(this).attr("id")
-    var short_name = id.split("_")[1]
-    var container = short_name + nested_field_suffix
-
-    $("#" + container).remove()
-
-    var count = 0
-    $('[id^=' + nested_field_prefix + '][id$="' + nested_field_suffix + '"]').each(function() {
-        _prepare_nested_container({
-            nested_field_prefix: nested_field_prefix,
-            nested_field_suffix: nested_field_suffix,
-            element : this,
-            number: count,
-            reset_value: false
-        })
-        count++;
-    })
-}
-
-function _prepare_nested_container(params) {
-    var nested_field_prefix = params.nested_field_prefix
-    var nested_field_suffix = params.nested_field_suffix
-    var ne = params.element
-    var reset = params.reset_value
-    var number = params.number
-    
-    var new_id = nested_field_prefix + number + nested_field_suffix;
-    ne.id = new_id;
-    
-    ne = $(ne)
-    ne.find('[id^=' + nested_field_prefix + ']').each( function () {
-        var ce = $(this);
-        
-        // reset the value
-        if (reset) {
-            ce.attr('value', '');
-        }
-        
-        // set the id as requestsed
-        items = ce.attr('id').split('-');
-        var id = nested_field_prefix + number + '-' + items[2];
-        
-        // set both the id and the name to the new id, as per wtforms requirements
-        ce.attr('id', id);
-        ce.attr('name', id);
-    });
-    
-    // we also need to update the remove button
-    ne.find("[id^=remove_' + nested_field_prefix + ']").each(function() {
-        var ce = $(this);
-        
-        // update the id as above - saving us a closure again
-        items = ce.attr('id').split('-');
-        var id = 'remove_' + nested_field_prefix + number;
-        
-        // set both the id and the name to the new id
-        ce.attr('id', id);
-        ce.attr('name', id);
-    })
 }
