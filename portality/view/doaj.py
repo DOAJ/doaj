@@ -7,6 +7,7 @@ from portality import models
 from portality.core import app
 from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
 from portality.suggestion import SuggestionFormXWalk, suggestion_form
+from portality.datasets import countries_dict
 
 import json
 import os
@@ -173,7 +174,7 @@ def toc(identifier=None, volume=None):
         if table is None:
             abort(404)
     
-    return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume)
+    return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume, countries=countries_dict)
 
 def _sort_volumes(volumes):
     numeric = []

@@ -173,6 +173,18 @@ def list_identifiers_params(req):
         "metadata_prefix" : metadata_prefix
     }
 
+def valid_XML_char_ordinal(i):
+    return ( # conditions ordered by presumed frequency
+        0x20 <= i <= 0xD7FF
+        or i in (0x9, 0xA, 0xD)
+        or 0xE000 <= i <= 0xFFFD
+        or 0x10000 <= i <= 0x10FFFF
+        )
+
+def xml_clean(input_string):
+    cleaned_string = ''.join(c for c in input_string if valid_XML_char_ordinal(ord(c)))
+    return cleaned_string
+
 #####################################################################
 ## OAI-PMH protocol operations implemented
 #####################################################################
@@ -791,7 +803,10 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
-            title.text = bibjson.title
+            try:
+                title.text = bibjson.title
+            except ValueError:
+                title.text = xml_clean(bibjson.title)
         
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
@@ -817,7 +832,11 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
-            abstract.text = bibjson.abstract
+            try:
+                abstract.text = bibjson.abstract
+            except ValueError:
+                # we need to clean the abstract of disallowed characters
+                abstract.text = xml_clean(bibjson.abstract)
         
         if len(bibjson.author) > 0:
             for author in bibjson.author:
