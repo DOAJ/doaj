@@ -30,12 +30,11 @@
         {% set lic = journal.bibjson().get_license() %}
         {% if lic %}
             {% set urls = CC_MAP.get(lic.get("type")) %}
-            <p><a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a></p>
+            {% if urls %}
+                <p><a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a></p>
+            {% endif %}
         {% endif %}
-        
-        <p><strong>active?</strong>&nbsp;{{ journal.bibjson().active }}</p>
-        <p><strong>allows fulltext indexing?</strong>&nbsp;{{ journal.bibjson().allows_fulltext_indexing }}</p>
-        
+
     </div>
 </div>
 
@@ -99,48 +98,89 @@
                 {% if journal.bibjson().oa_start.get("year") %}
                     <strong>Year Open Access Began</strong>: {{journal.bibjson().oa_start.get("year")}}<br>
                 {% endif %}
+
                 {% if journal.bibjson().oa_end.get("year") %}
                     <strong>Year Open Access Ceased</strong>: {{journal.bibjson().oa_end.get("year")}}<br>
                 {% endif %}
+
                 {% if journal.bibjson().apc %}
-                    <strong>APC</strong>: {{journal.bibjson().apc.get("currency")}} {{journal.bibjson().apc.get("average_price")}}<br>
+                    {% if journal.bibjson().apc.get("currency") or journal.bibjson().apc.get("average_price") %}
+                    <strong>APC</strong>: {{journal.bibjson().apc.get("currency", "currency unknown")}} {{journal.bibjson().apc.get("average_price", "price unknown")}}<br>
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().submission_charges %}
-                    <strong>Submission Charges</strong>: {{journal.bibjson().submission_charges.get("currency")}} {{journal.bibjson().submission_charges.get("average_price")}}<br>
+                    {% if journal.bibjson().submission_charges.get("currency") or journal.bibjson().submission_charges.get("average_price") %}
+                    <strong>Submission Charges</strong>: {{journal.bibjson().submission_charges.get("currency", "currency unknown")}} {{journal.bibjson().submission_charges.get("average_price", "price unknown")}}<br>
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().archiving_policy %}
-                    <strong>Archiving Policies</strong>: {{journal.bibjson().archiving_policy.get("policy")|join(", ")}} 
+                    {% if journal.bibjson().archiving_policy.get("policy") or journal.bibjson().archiving_policy.get("url") %}
+                    <strong>Archiving Policies</strong>: {{journal.bibjson().archiving_policy.get("policy", [])|join(", ")}}
+                        {% if journal.bibjson().archiving_policy.get("url") %}
                         (<a href="{{journal.bibjson().archiving_policy.get('url')}}">{{journal.bibjson().archiving_policy.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().editorial_review %}
-                    <strong>Editorial Review Process</strong>: {{journal.bibjson().editorial_review.get("process")}} 
+                    {% if journal.bibjson().editorial_review.get("process") or journal.bibjson().editorial_review.get("url") %}
+                    <strong>Editorial Review Process</strong>: {{journal.bibjson().editorial_review.get("process", "unknown process")}}
+                        {% if journal.bibjson().editorial_review.get("url") %}
                         (<a href="{{journal.bibjson().editorial_review.get('url')}}">{{journal.bibjson().editorial_review.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().plagiarism_detection %}
-                    <strong>Has Plagiarism Detection</strong>: {{journal.bibjson().plagiarism_detection.get("detection")}} 
+                    {% if journal.bibjson().plagiarism_detection.get("detection") or journal.bibjson().plagiarism_detection.get("url") %}
+                    <strong>Has Plagiarism Detection</strong>: {{journal.bibjson().plagiarism_detection.get("detection", "uncertain")}}
+                        {% if journal.bibjson().plagiarism_detection.get("url") %}
                         (<a href="{{journal.bibjson().plagiarism_detection.get('url')}}">{{journal.bibjson().plagiarism_detection.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().article_statistics %}
-                    <strong>Has Article Statistics</strong>: {{journal.bibjson().article_statistics.get("statistics")}} 
+                    {% if journal.bibjson().article_statistics.get("statistics") or journal.bibjson().article_statistics.get("url") %}
+                    <strong>Has Article Statistics</strong>: {{journal.bibjson().article_statistics.get("statistics", "uncertain")}}
+                        {% if journal.bibjson().article_statistics.get("url") %}
                         (<a href="{{journal.bibjson().article_statistics.get('url')}}">{{journal.bibjson().article_statistics.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().deposit_policy %}
                     <strong>Deposit Policies</strong>: {{journal.bibjson().deposit_policy|join(", ")}}<br>
                 {% endif %}
+
                 {% if journal.bibjson().author_copyright %}
-                    <strong>Does Author Retain Copyright</strong>: {{journal.bibjson().author_copyright.get("copyright")}} 
+                    {% if journal.bibjson().author_copyright.get("copyright") or journal.bibjson().author_copyright.get("url") %}
+                    <strong>Does Author Retain Copyright</strong>: {{journal.bibjson().author_copyright.get("copyright", "uncertain")}}
+                        {% if journal.bibjson().author_copyright.get("url") %}
                         (<a href="{{journal.bibjson().author_copyright.get('url')}}">{{journal.bibjson().author_copyright.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().author_publishing_rights %}
-                    <strong>Does Author Retain Publishing Rights</strong>: {{journal.bibjson().author_publishing_rights.get("publishing_rights")}} 
+                    {% if journal.bibjson().author_publishing_rights.get("publishing_rights") or journal.bibjson().author_publishing_rights.get("url") %}
+                    <strong>Does Author Retain Publishing Rights</strong>: {{journal.bibjson().author_publishing_rights.get("publishing_rights", "uncertain")}}
+                        {% if journal.bibjson().author_publishing_rights.get("url") %}
                         (<a href="{{journal.bibjson().author_publishing_rights.get('url')}}">{{journal.bibjson().author_publishing_rights.get("url")}}</a>)<br>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
+
                 {% if journal.bibjson().persistent_identifier_scheme|length > 0 %}
                     <strong>Persistent Identifier Schemes</strong>: {{journal.bibjson().persistent_identifier_scheme|join(", ")}} <br>
                 {% endif %}
+
                 {% if journal.bibjson().format|length > 0 %}
                     <strong>Full-text Formats</strong>: {{journal.bibjson().format|join(", ")}}<br>
                 {% endif %}
+
                 {% if journal.bibjson().publication_time %}
                     <strong>Time From Submission to Publication</strong>: {{journal.bibjson().publication_time}} weeks<br>
                 {% endif %}
