@@ -501,11 +501,11 @@ class JournalInformationForm(Form):
     alternative_title = TextField('Alternative Title', [validators.Optional()])
     pissn = TextField('Journal ISSN (print version)',
         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either a print ISSN or an online ISSN, or both. At least one identifier is needed.<br><br>Enter the ISSN with the hyphen "-" e.g. 1234-4321.',
+        description='Only provide the print ISSN if your journal has one, otherwise leave this field blank. Write the ISSN with the hyphen "-" e.g. 1234-4321.',
     )
     eissn = TextField('Journal ISSN (online version)',
         [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Please provide either a print ISSN or an online ISSN, or both. At least one identifier is needed.<br><br>Enter the EISSN with the hyphen "-" e.g. 1234-4321.',
+        description='Write the EISSN with the hyphen "-" e.g. 1234-4321.',
     )
     publisher = TextField('Publisher',
         [validators.Required()]
@@ -522,10 +522,10 @@ class JournalInformationForm(Form):
         [validators.Required()],
         description='Somebody who DOAJ can contact about this journal',
     )
-    contact_email = TextField('Contact email address',
+    contact_email = TextField('Contact\'s email address',
         [validators.Required(), validators.Email(message='Invalid email address.')]
     )
-    confirm_contact_email = TextField('Confirm contact email address',
+    confirm_contact_email = TextField('Confirm contact\'s email address',
         [validators.Required(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
     )
     country = SelectField('In which country is the publisher of the journal based?',
@@ -533,9 +533,9 @@ class JournalInformationForm(Form):
         description='Select the country where the publishing company is legally registered',
         choices=country_options,
     )
-    processing_charges = RadioField('Does the journal have article processing charges (APCs)? Include relevant currency.',
+    processing_charges = RadioField('Does the journal have article processing charges (APCs)?',
         [validators.Required()],
-        description = 'If "Yes" then add the amount (average price) with currency',
+        description = 'If "No" proceed to question below',
         choices = binary_choices
     )
     processing_charges_amount = IntegerField('Amount',
@@ -546,9 +546,9 @@ class JournalInformationForm(Form):
         choices = currency_options,
     )
 
-    submission_charges = RadioField('Does the journal have article submission charges? Include relevant currency.',
+    submission_charges = RadioField('Does the journal have article submission charges?',
         [validators.Required()],
-        description = 'If "Yes" then add the amount (average price) with currency',
+        description = 'If "No" proceed to question below',
         choices = binary_choices
     )
     submission_charges_amount = IntegerField('Amount',
@@ -599,6 +599,7 @@ class JournalInformationForm(Form):
     )
     download_statistics = RadioField('Does the journal provide download statistics?',
         [validators.Required()],
+        description = 'If "No" proceed to question below',
         choices = binary_choices
     )
     download_statistics_url = TextField('Enter the URL where this information can be found',
@@ -628,7 +629,7 @@ class JournalInformationForm(Form):
     )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
         [validators.Required(), URLOptionalScheme()],
-        description = 'The journal must have either an editor or an editorial board with clearly identifiable members including affiliation information and email addresses.'
+        description = 'The journal must have either an editor or an editorial board with at least 5 clearly identifiable members including affiliation information and email addresses.'
     )
     review_process = SelectField('Please select the review process for papers',
         [validators.Required()],
@@ -647,12 +648,13 @@ class JournalInformationForm(Form):
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?',
         [validators.Required()],
+        description = 'If "No" proceed to question below',
         choices = binary_choices
     )
     plagiarism_screening_url = URLField("Enter the URL where this information can be found",
         [OptionalIf('plagiarism_screening', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
-    publication_time = IntegerField('What is the average number of weeks between submission and publication',
+    publication_time = IntegerField('What is the average number of weeks between submission and publication?',
         [validators.Required(), validators.NumberRange(min=0, max=53)]
     )
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
@@ -661,19 +663,19 @@ class JournalInformationForm(Form):
     license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?',
         [validators.Required()],
         choices = binary_choices,
-        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/Marking_works">http://wiki.creativecommons.org/Marking_works</a>',
+        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/Marking_works">http://wiki.creativecommons.org/Marking_works</a><br><br>If "No" proceed to question below.',
     )
     license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
     )
-    license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC-BY, CC-BY-NC, or CC-BY-ND license?',
+    license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC license?',
         [validators.Required(), ExtraFieldRequiredIf('license_other', reqval=other_val)],
         choices = license_choices,
         description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
     )
     license_other = TextField('',
     )
-    license_checkbox = SelectMultipleField('Does it require',
+    license_checkbox = SelectMultipleField('Which of the following does the content require? (Tick all that apply.)',
         choices = license_checkbox_choices,
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False),
@@ -736,7 +738,7 @@ class JournalForm(JournalInformationForm):
 
 
 class SuggestionForm(JournalInformationForm):
-    articles_last_year = IntegerField('How many articles did the journal publish in the last calendar year?',
+    articles_last_year = IntegerField('How many research and review articles did the journal publish in the last calendar year?',
         [validators.Required(), validators.NumberRange(min=0)],
         description='A journal must publish at least 5 articles per year to stay in the DOAJ',
     )
