@@ -178,7 +178,7 @@ class SuggestionFormXWalk(object):
         if form.metadata_provision.data and form.metadata_provision.data != 'None':
             suggestion.article_metadata = forms.interpret_special(form.metadata_provision.data)  # just binary
 
-        if form.download_statistics.data or form.download_statistics_url.data:
+        if (form.download_statistics.data and form.download_statistics.data != 'None') or form.download_statistics_url.data:
             bibjson.set_article_statistics(form.download_statistics_url.data, forms.interpret_special(form.download_statistics.data))
 
         if form.first_fulltext_oa_year.data:
@@ -203,7 +203,7 @@ class SuggestionFormXWalk(object):
         bibjson.add_url(form.aims_scope_url.data, urltype='aims_scope')
         bibjson.add_url(form.instructions_authors_url.data, urltype='author_instructions')
 
-        if form.plagiarism_screening.data or form.plagiarism_screening_url.data:
+        if (form.plagiarism_screening.data and form.plagiarism_screening.data != 'None') or form.plagiarism_screening_url.data:
             bibjson.set_plagiarism_detection(
                 form.plagiarism_screening_url.data,
                 has_detection=forms.interpret_special(form.plagiarism_screening.data)
