@@ -21,21 +21,43 @@ def suggestion2journal(suggestion):
 
 
 class JournalFormXWalk(object):
+    # NOTE: if you change something here, you will probably
+    # need to change the same thing in SuggestionFormXWalk in portality.suggestion .
+    # TODO: refactor suggestion and journal xwalks to put the common code in one place
+
     @staticmethod
     def form2obj(form, existing_journal):
         journal = Journal()
         bibjson = journal.bibjson()
 
-        bibjson.title = form.title.data
+        # The if statements that wrap practically every field are there due to this
+        # form being used to edit old journals which don't necessarily have most of
+        # this info.
+        # It also allows admins to delete the contents of any field if they wish,
+        # by ticking the "Allow incomplete form" checkbox and deleting the contents
+        # of that field. The if condition(s) will then *not* add the relevant field to the
+        # new journal object being constructed.
+        # add_url in the journal model has a safeguard against empty URL-s.
+
+        if form.title.data:
+            bibjson.title = form.title.data
         bibjson.add_url(form.url.data, urltype='homepage')
-        bibjson.alternative_title = form.alternative_title.data
-        bibjson.add_identifier(bibjson.P_ISSN, form.pissn.data)
-        bibjson.add_identifier(bibjson.E_ISSN, form.eissn.data)
-        bibjson.publisher = form.publisher.data
-        bibjson.institution = form.society_institution.data
-        bibjson.provider = form.platform.data
-        journal.add_contact(form.contact_name.data, form.contact_email.data)
-        bibjson.country = form.country.data
+        if form.alternative_title.data:
+            bibjson.alternative_title = form.alternative_title.data
+        if form.pissn.data:
+            bibjson.add_identifier(bibjson.P_ISSN, form.pissn.data)
+        if form.eissn.data:
+            bibjson.add_identifier(bibjson.E_ISSN, form.eissn.data)
+        if form.publisher.data:
+            bibjson.publisher = form.publisher.data
+        if form.society_institution.data:
+            bibjson.institution = form.society_institution.data
+        if form.platform.data:
+            bibjson.provider = form.platform.data
+        if form.contact_name.data or form.contact_email.data:
+            journal.add_contact(form.contact_name.data, form.contact_email.data)
+        if form.country.data:
+            bibjson.country = form.country.data
 
         if forms.interpret_special(form.processing_charges.data):
             bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
@@ -47,90 +69,106 @@ class JournalFormXWalk(object):
             bibjson.add_url(form.waiver_policy_url.data, 'waiver_policy')
 
         # checkboxes
-        archiving_policies = forms.interpret_special(form.digital_archiving_policy.data)
-        archiving_policies = forms.interpret_other(archiving_policies, form.digital_archiving_policy_other.data)
-        archiving_policies = forms.interpret_other(archiving_policies, form.digital_archiving_policy_library.data, forms.digital_archiving_policy_specific_library_value)
-        bibjson.set_archiving_policy(archiving_policies, form.digital_archiving_policy_url.data)
+        if forms.interpret_special(form.digital_archiving_policy.data) or form.digital_archiving_policy_url.data:
+            archiving_policies = forms.interpret_special(form.digital_archiving_policy.data)
+            archiving_policies = forms.interpret_other(archiving_policies, form.digital_archiving_policy_other.data, store_other_label=True)
+            archiving_policies = forms.interpret_other(archiving_policies, form.digital_archiving_policy_library.data, forms.digital_archiving_policy_specific_library_value, store_other_label=True)
+            bibjson.set_archiving_policy(archiving_policies, form.digital_archiving_policy_url.data)
 
-        bibjson.allows_fulltext_indexing = forms.interpret_special(form.crawl_permission.data)  # just binary
+        if form.crawl_permission.data and form.crawl_permission.data != 'None':
+            bibjson.allows_fulltext_indexing = forms.interpret_special(form.crawl_permission.data)  # just binary
 
         # checkboxes
         article_ids = forms.interpret_special(form.article_identifiers.data)
-        bibjson.persistent_identifier_scheme = forms.interpret_other(article_ids, form.article_identifiers_other.data)
+        article_ids = forms.interpret_other(article_ids, form.article_identifiers_other.data)
+        if article_ids:
+            bibjson.persistent_identifier_scheme = article_ids
 
-        bibjson.set_article_statistics(form.download_statistics_url.data, forms.interpret_special(form.download_statistics.data))
+        if form.download_statistics.data or form.download_statistics_url.data:
+            bibjson.set_article_statistics(form.download_statistics_url.data, forms.interpret_special(form.download_statistics.data))
 
-        bibjson.set_oa_start(year=form.first_fulltext_oa_year.data)
+        if form.first_fulltext_oa_year.data:
+            bibjson.set_oa_start(year=form.first_fulltext_oa_year.data)
 
         # checkboxes
-        bibjson.format = forms.interpret_other(form.fulltext_format.data, form.fulltext_format_other.data)
+        fulltext_format = forms.interpret_other(form.fulltext_format.data, form.fulltext_format_other.data)
+        if fulltext_format:
+            bibjson.format = fulltext_format
 
-        bibjson.set_keywords(form.keywords.data)  # tag list field
+        if form.keywords.data:
+            bibjson.set_keywords(form.keywords.data)  # tag list field
 
-        bibjson.set_language(form.languages.data)  # select multiple field - gives a list back
+        if form.languages.data:
+            bibjson.set_language(form.languages.data)  # select multiple field - gives a list back
 
         bibjson.add_url(form.editorial_board_url.data, urltype='editorial_board')
 
-        bibjson.set_editorial_review(form.review_process.data, form.review_process_url.data)
+        if form.review_process.data or form.review_process_url.data:
+            bibjson.set_editorial_review(form.review_process.data, form.review_process_url.data)
 
         bibjson.add_url(form.aims_scope_url.data, urltype='aims_scope')
         bibjson.add_url(form.instructions_authors_url.data, urltype='author_instructions')
 
-        bibjson.set_plagiarism_detection(
-            form.plagiarism_screening_url.data,
-            has_detection=forms.interpret_special(form.plagiarism_screening.data)
-        )
+        if form.plagiarism_screening.data or form.plagiarism_screening_url.data:
+            bibjson.set_plagiarism_detection(
+                form.plagiarism_screening_url.data,
+                has_detection=forms.interpret_special(form.plagiarism_screening.data)
+            )
 
-        bibjson.publication_time = form.publication_time.data
+        if form.publication_time.data:
+            bibjson.publication_time = form.publication_time.data
 
         bibjson.add_url(form.oa_statement_url.data, urltype='oa_statement')
 
         license_type = forms.interpret_other(form.license.data, form.license_other.data)
-        if license_type in licenses:
-            by = licenses[license_type]['BY']
-            nc = licenses[license_type]['NC']
-            nd = licenses[license_type]['ND']
-            sa = licenses[license_type]['SA']
-            license_title = licenses[license_type]['title']
-        elif form.license_checkbox.data:
-            by = True if 'by' in form.license_checkbox.data else False
-            nc = True if 'nc' in form.license_checkbox.data else False
-            nd = True if 'nd' in form.license_checkbox.data else False
-            sa = True if 'sa' in form.license_checkbox.data else False
-            license_title = license_type
-        else:
-            by = None; nc = None; nd = None; sa = None;
-            license_title = license_type
+        if forms.interpret_special(license_type):
+        # "None" and "False" as strings like they come out of the WTForms processing)
+        # would get interpreted correctly by this check, so "None" licenses should not appear
+            if license_type in licenses:
+                by = licenses[license_type]['BY']
+                nc = licenses[license_type]['NC']
+                nd = licenses[license_type]['ND']
+                sa = licenses[license_type]['SA']
+                license_title = licenses[license_type]['title']
+            elif form.license_checkbox.data:
+                by = True if 'by' in form.license_checkbox.data else False
+                nc = True if 'nc' in form.license_checkbox.data else False
+                nd = True if 'nd' in form.license_checkbox.data else False
+                sa = True if 'sa' in form.license_checkbox.data else False
+                license_title = license_type
+            else:
+                by = None; nc = None; nd = None; sa = None;
+                license_title = license_type
 
-        bibjson.set_license(
-            license_title,
-            license_type,
-            url=form.license_url.data,
-            open_access=forms.interpret_special(form.open_access.data),
-            by=by, nc=nc, nd=nd, sa=sa,
-            embedded=forms.interpret_special(form.license_embedded.data),
-            embedded_example_url=form.license_embedded_url.data
-        )
+            bibjson.set_license(
+                license_title,
+                license_type,
+                url=form.license_url.data,
+                open_access=forms.interpret_special(form.open_access.data),
+                by=by, nc=nc, nd=nd, sa=sa,
+                embedded=forms.interpret_special(form.license_embedded.data),
+                embedded_example_url=form.license_embedded_url.data
+            )
 
         # checkboxes
         deposit_policies = forms.interpret_special(form.deposit_policy.data)  # need empty list if it's just "None"
-        bibjson.deposit_policy = forms.interpret_other(deposit_policies, form.deposit_policy_other.data)
+        deposit_policies = forms.interpret_other(deposit_policies, form.deposit_policy_other.data)
+        if deposit_policies:
+            bibjson.deposit_policy = deposit_policies
 
-        bibjson.set_author_copyright(
-            form.copyright_url.data,
-            holds_copyright=forms.interpret_other(
+        if form.copyright.data and form.copyright.data != 'None':
+            holds_copyright = forms.interpret_other(
                 forms.interpret_special(form.copyright.data),
                 form.copyright_other.data
             )
-        )
+            bibjson.set_author_copyright(form.copyright_url.data, holds_copyright=holds_copyright)
 
-        bibjson.set_author_publishing_rights(
-            form.publishing_rights_url.data,
-            holds_rights=forms.interpret_other(
+        if form.publishing_rights.data and form.publishing_rights.data != 'None':
+            publishing_rights = forms.interpret_other(
                 forms.interpret_special(form.publishing_rights.data),
                 form.publishing_rights_other.data
             )
-        )
+            bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
         # need to copy over the notes from the existing journal object, if any, otherwise
         # the dates on all the notes will get reset to right now (i.e. last_updated)
@@ -163,19 +201,21 @@ class JournalFormXWalk(object):
             new_subjects.append(sobj)
         bibjson.set_subjects(new_subjects)
 
-        journal.set_owner(form.owner.data.strip())
+        owner = form.owner.data.strip()
+        if owner:
+            journal.set_owner(owner)
 
         # old fields - only create them in the journal record if the values actually exist
+        # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
-            if form.author_pays.data:
+            if forms.interpret_special(form.author_pays.data):
                 bibjson.author_pays = form.author_pays.data
         if getattr(form, 'author_pays_url', None):
-            if form.author_pays_url.data:
+            if forms.interpret_special(form.author_pays_url.data):
                 bibjson.author_pays_url = form.author_pays_url.data
         if getattr(form, 'oa_end_year', None):
-            if form.oa_end_year.data:
+            if forms.interpret_special(form.oa_end_year.data):
                 bibjson.set_oa_end(form.oa_end_year.data)
-
 
         return journal
 
@@ -219,10 +259,20 @@ class JournalFormXWalk(object):
 
         # checkboxes
         archiving_policies = forms.reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
-        archiving_policies, forminfo['digital_archiving_policy_library'] = \
-            forms.reverse_interpret_other(archiving_policies, forms.digital_archiving_policy_choices_list, other_value=forms.digital_archiving_policy_specific_library_value)
+
+        # for backwards compatibility we keep the "Other" field first in the reverse xwalk
+        # previously we didn't store which free text value was which (Other, or specific national library)
+        # so in those cases, just put it in "Other", it'll be correct most of the time
         archiving_policies, forminfo['digital_archiving_policy_other'] = \
             forms.reverse_interpret_other(archiving_policies, forms.digital_archiving_policy_choices_list)
+
+        archiving_policies, forminfo['digital_archiving_policy_library'] = \
+            forms.reverse_interpret_other(
+                archiving_policies,
+                forms.digital_archiving_policy_choices_list,
+                other_value=forms.digital_archiving_policy_specific_library_value,
+                replace_label=forms.digital_archiving_policy_specific_library_label
+            )
 
         forminfo['digital_archiving_policy'] = archiving_policies
         forminfo['digital_archiving_policy_url'] = bibjson.archiving_policy.get('url')

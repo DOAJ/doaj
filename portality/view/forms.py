@@ -38,6 +38,7 @@ optional_url_binary_choices_optvals = [v[0] for v in optional_url_binary_choices
 binary_choices = [(true_val, 'Yes')] + optional_url_binary_choices
 
 other_val = 'Other'
+other_label = other_val
 other_choice = (other_val, other_val)
 ternary_choices = binary_choices + [other_choice]
 optional_url_ternary_choices_optvals = optional_url_binary_choices_optvals  # "No" still makes the URL optional, from ["Yes", "No", "Other"]
@@ -62,6 +63,7 @@ author_pays_options = [
 
 digital_archiving_policy_no_policy_value = "No policy in place"
 digital_archiving_policy_specific_library_value = 'A national library'
+digital_archiving_policy_specific_library_label = digital_archiving_policy_specific_library_value
 
 digital_archiving_policy_optional_url_choices = [
     (digital_archiving_policy_no_policy_value, digital_archiving_policy_no_policy_value), 
@@ -198,10 +200,10 @@ def reverse_interpret_special(val, field=''):
         return val
 
     return val
-        
 
 
-def interpret_other(value, other_field_data, other_value=other_val):
+
+def interpret_other(value, other_field_data, other_value=other_val, store_other_label=False):
     '''
     Interpret a value list coming from (e.g.) checkboxes when one of
     them says "Other" and allows free-text input.
@@ -225,13 +227,23 @@ def interpret_other(value, other_field_data, other_value=other_val):
         value = value[:]
         # if "Other" (or some custom value) is in the there, remove it and take the data from the extra text field
         if other_value in value and other_field_data:
-            value.remove(other_value)
-            value.append(other_field_data)
+            # preserve the order, important for reversing this process when displaying the edit form
+            where = value.index(other_value)
+            if store_other_label:
+                # Needed when multiple items in the list could be freely specified,
+                # i.e. unrestricted by the choices for that field.
+                # Digital archiving policies is such a field, with both an
+                # "Other" choice requiring free text input and a "A national library"
+                # choice requiring free text input, presumably with the name
+                # of the library.
+                value[where] = [other_value, other_field_data]
+            else:
+                value[where] = other_field_data
     # don't know what else to do, just return it as-is
     return value
 
 
-def reverse_interpret_other(interpreted_value, possible_original_values, other_value=other_val):
+def reverse_interpret_other(interpreted_value, possible_original_values, other_value=other_val, replace_label=other_label):
     '''
     Returns tuple: (main field value or list of values, other field value)
     '''
@@ -239,6 +251,13 @@ def reverse_interpret_other(interpreted_value, possible_original_values, other_v
     other_field_val = ''
 
     if isinstance(interpreted_value, basestring):
+        # A special case first: where the value is the empty string.
+        # In that case, the main field was never submitted (e.g. if it was
+        # a choice of "Yes", "No" and "Other", none of those were submitted
+        # as an answer - maybe it was an optional field).
+        if not interpreted_value:
+            return None, None
+
         # if the stored (a.k.a. interpreted) value is not one of the
         # possible values, then the "Other" option must have been
         # selected during initial submission
@@ -262,11 +281,35 @@ def reverse_interpret_other(interpreted_value, possible_original_values, other_v
             # so now we need to turn that back into
             # (['LOCKSS', 'Other'], 'some other policy')
             if iv not in possible_original_values:
-                other_field_val = iv
-                interpreted_value.remove(iv)
-                interpreted_value.append(other_value)
+                where = interpreted_value.index(iv)
+
+                if isinstance(iv, list):
+                    # This is a field with two or more choices which require
+                    # further specification via free text entry.
+                    # If we only recorded the free text values, we wouldn't
+                    # be able to tell which one relates to which choice.
+                    # E.g. ["some other archiving policy", "Library of Chile"]
+                    # does not tell us that "some other archiving policy"
+                    # is related to the "Other" field, and "Library of Chile"
+                    # is related to the "A national library field.
+                    #
+                    # [["Other", "some other archiving policy"], ["A national library", "Library of Chile"]]
+                    # does tell us that, on the other hand.
+                    # It is this case that we are dealing with here.
+                    label = iv[0]
+                    val = iv[1]
+                    if label == replace_label:
+                        other_field_val = val
+                        interpreted_value[where] = label
+                    else:
+                        continue
+                else:
+                    other_field_val = iv
+                    interpreted_value[where] = other_value
+                    break
 
     return interpreted_value, other_field_val
+
 
 class TagListField(Field):
     widget = widgets.TextInput()
