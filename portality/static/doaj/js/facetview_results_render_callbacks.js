@@ -317,8 +317,8 @@ fv_in_doaj = (function(resultobj) {
 })();
 
 fv_in_doaj.mapping = {
-    false: {"text": "No", "class": "red"},
-    true: {"text": "Yes", "class": "green"},
+    "false": {"text": "No", "class": "red"},
+    "true": {"text": "Yes", "class": "green"}
 }
 
 fv_country_name = (function (resultobj) {
