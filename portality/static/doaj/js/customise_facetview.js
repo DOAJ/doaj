@@ -39,9 +39,12 @@ function customise_facets() {
     // 1. facet itself
     $('#facetview_bibjson_author_pays_exact .facetview_filterchoice_text').each(
             function() {
-                thespan = $(this);
-                if (fv_author_pays.mapping[thespan.html()]['text']) {
-                    thespan.html(fv_author_pays.mapping[thespan.html()]['text']);
+                var thespan = $(this);
+                if (fv_author_pays.mapping.hasOwnProperty(thespan.html())) {
+                    var meaning = fv_author_pays.mapping[thespan.html()];
+                    if (meaning.hasOwnProperty('text') && meaning['text']) {
+                        thespan.html(fv_author_pays.mapping[thespan.html()]['text']);
+                    }
                 }
             }
         );
@@ -49,9 +52,12 @@ function customise_facets() {
     // 2. don't forget filter buttons
     $('a.facetview_filterselected[rel="bibjson.author_pays.exact"] > .facetview_filterselected_text').each(
             function() {
-                thespan = $(this);
-                if (fv_author_pays.mapping[thespan.text()]['text']) {
-                    thespan.text(fv_author_pays.mapping[thespan.text()]['text']);
+                var thespan = $(this);
+                if (fv_author_pays.mapping.hasOwnProperty(thespan.text())) {
+                    var meaning = fv_author_pays.mapping[thespan.text()];
+                    if (meaning.hasOwnProperty('text') && meaning['text']) {
+                        thespan.text(fv_author_pays.mapping[thespan.text()]['text']);
+                    }
                 }
             }
         );
