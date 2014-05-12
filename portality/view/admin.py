@@ -92,6 +92,17 @@ def journal_page(journal_id):
 
     form.country.description = '<span class="red">' + country_help_text + '</span>'
 
+    # add the contents of a few fields to their descriptions since select2 autocomplete
+    # would otherwise obscure the full values
+    if form.publisher.data:
+        form.publisher.description = 'Full contents: ' + form.publisher.data
+
+    if form.society_institution.data:
+        form.society_institution.description = 'Full contents: ' + form.society_institution.data
+
+    if form.platform.data:
+        form.platform.description = 'Full contents: ' + form.platform.data
+
     first_field_with_error = ''
 
     if request.method == 'POST':
@@ -188,6 +199,17 @@ def suggestion_page(suggestion_id):
     if request.method == 'POST' and s.application_status == 'accepted':
         flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
         process_the_form = False
+
+    # add the contents of a few fields to their descriptions since select2 autocomplete
+    # would otherwise obscure the full values
+    if form.publisher.data:
+        form.publisher.description = 'Full contents: ' + form.publisher.data
+
+    if form.society_institution.data:
+        form.society_institution.description = 'Full contents: ' + form.society_institution.data
+
+    if form.platform.data:
+        form.platform.description = 'Full contents: ' + form.platform.data
 
     redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
     # meaningless anchor to replace #first_problem used on the form
