@@ -203,13 +203,22 @@ def suggestion_page(suggestion_id):
     # add the contents of a few fields to their descriptions since select2 autocomplete
     # would otherwise obscure the full values
     if form.publisher.data:
-        form.publisher.description = 'Full contents: ' + form.publisher.data
+        if not form.publisher.description:
+            form.publisher.description = 'Full contents: ' + form.publisher.data
+        else:
+            form.publisher.description = '<br><br>Full contents: ' + form.publisher.data
 
     if form.society_institution.data:
-        form.society_institution.description = 'Full contents: ' + form.society_institution.data
+        if not form.society_institution.description:
+            form.society_institution.description = 'Full contents: ' + form.society_institution.data
+        else:
+            form.society_institution.description = '<br><br>Full contents: ' + form.society_institution.data
 
     if form.platform.data:
-        form.platform.description = 'Full contents: ' + form.platform.data
+        if not form.platform.description:
+            form.platform.description = 'Full contents: ' + form.platform.data
+        else:
+            form.platform.description = '<br><br>Full contents: ' + form.platform.data
 
     redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
     # meaningless anchor to replace #first_problem used on the form
