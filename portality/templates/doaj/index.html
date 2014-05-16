@@ -38,4 +38,24 @@
         </div>
     </div>
 </div>
+
+<!-- news feed -->
+<div class="row-fluid" style="margin-top: 1em;">
+    <div class="span12 with-borders">
+        <div style="margin: 0.5em 1.5em;">
+            <h2>Latest News</h2>
+            {% for n in news %}
+                <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
+                    <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
+                    <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
+                    <em>{{n.updated_formatted()}}</em>
+                </div>
+
+            {% endfor %}
+            <br>
+            <p>Read more DOAJ news on our <a href="{{url_for('doaj.news')}}">news page</a></p>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

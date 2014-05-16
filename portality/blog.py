@@ -1,6 +1,8 @@
 from portality.core import app
 import feedparser
 from portality.dao import DomainObject as DomainObject
+from copy import deepcopy
+from datetime import datetime
 
 class FeedError(Exception):
     pass
@@ -11,6 +13,13 @@ class News(DomainObject):
     @classmethod
     def by_remote_id(cls, remote_id):
         q = NewsQuery(remote_id)
+        es_result = cls.query(q=q.query())
+        records = [News(**r.get("_source")) for r in es_result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def latest(cls, n):
+        q = NewsQuery(size=n)
         es_result = cls.query(q=q.query())
         records = [News(**r.get("_source")) for r in es_result.get("hits", {}).get("hits", [])]
         return records
@@ -40,15 +49,28 @@ class News(DomainObject):
     @summary.setter
     def summary(self, s): self.data["summary"] = s
 
+    def updated_formatted(self, format="%a, %d %b %Y at %H:%M"):
+        try:
+            dt = datetime.strptime(self.updated, "%Y-%m-%dT%H:%M:%SZ")
+            return dt.strftime(format)
+        except:
+            return self.updated
+
 class NewsQuery(object):
-    def __init__(self, remote_id):
+    _remote_term =  { "term" : { "remote_id.exact" : "<remote id>" } }
+
+    def __init__(self, remote_id=None, size=5):
         self.remote_id = remote_id
+        self.size = size
+
     def query(self):
-        q = {
-            "query" : {
-                "term" : { "remote_id.exact" : self.remote_id }
-            }
-        }
+        q = {"query" : {}, "size" : self.size, "sort" : {"updated" : {"order" : "desc"}}}
+        if self.remote_id is not None:
+            rt = deepcopy(self._remote_term)
+            rt["term"]["remote_id.exact"] = self.remote_id
+            q["query"].update(rt)
+        else:
+            q["query"]["match_all"] = {}
         return q
 
 def read_feed():
