@@ -51,10 +51,21 @@ PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 SUPER_USER_ROLE = "admin"
 
-# FIXME: something like this required for hierarchical roles, but not yet needed
-#ROLE_MAP = {
-#    "admin" : {"publisher", "create_user"}
-#}
+ROLE_MAP = {
+    "editor": [
+        "edit_journal",
+        "edit_suggestion",
+        "editor_area",
+        "assign_to_associate",
+        "list_group_journals",
+        "list_group_suggestions"
+    ],
+    "associate_editor" : [
+        "edit_journal",
+        "edit_suggestion",
+        "editor_area"
+    ]
+}
 
 # ========================
 # MAPPING SETTINGS

@@ -11,10 +11,20 @@ class Authorise(object):
         if role in reference:
             return True
         
-        # later we will want to expand the user's roles to the full set and see if the role is in there
-        # as and when that level of functionality is required
-        
-        # but for now, if we get here we have failed to authorise
+        # get the de-duplicated list of roles that the user has
+        full = cls.get_roles(reference)
+        if role in full:
+            return True
+
         return False
+
+    @classmethod
+    def get_roles(cls, reference):
+        role_map = app.config.get("ROLE_MAP", {})
+        roles = []
+        for r in reference:
+            roles += role_map.get(r, [])
+        return list(set(roles))
+
         
         
