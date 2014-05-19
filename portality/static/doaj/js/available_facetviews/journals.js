@@ -177,7 +177,7 @@ jQuery(document).ready(function($) {
             {
                 "field": "edit_journal",
             }
-        ],
+        ]
     ],
   });
   });

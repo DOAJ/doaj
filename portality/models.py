@@ -504,7 +504,8 @@ class Account(DomainObject, UserMixin):
     def add_role(self, role):
         if "role" not in self.data:
             self.data["role"] = []
-        self.data["role"].append(role)
+        if role not in self.data["role"]:
+            self.data["role"].append(role)
     
     @property
     def role(self):
@@ -517,6 +518,54 @@ class Account(DomainObject, UserMixin):
             
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+class EditorGroup(DomainObject):
+    __type__ = "editor_group"
+
+    @classmethod
+    def group_exists_by_name(cls, name):
+        q = EditorGroupQuery(name)
+        res = cls.query(q=q.query())
+        ids = [hit.get("_source", {}).get("id") for hit in res.get("hits", {}).get("hits", []) if "_source" in hit]
+        if len(ids) == 0:
+            return None
+        if len(ids) > 0:
+            return ids[0]
+
+    @property
+    def name(self):
+        return self.data.get("name")
+
+    def set_name(self, val):
+        self.data["name"] = val
+
+    @property
+    def editor(self):
+        return self.data.get("editor")
+
+    def set_editor(self, val):
+        self.data["editor"] = val
+
+    @property
+    def associates(self):
+        return self.data.get("associates", [])
+
+    def set_associates(self, val):
+        if not isinstance(val, list):
+            val = [val]
+        self.data["associates"] = val
+
+    def add_associate(self, val):
+        if "associates" not in self.data:
+            self.data["associates"] = []
+        self.data["associates"].append(val)
+
+class EditorGroupQuery(object):
+    def __init__(self, name):
+        self.name = name
+    def query(self):
+        q = {"query" : {"term" : {"name.exact" : self.name}}}
+        return q
 
 #########################################################################
 

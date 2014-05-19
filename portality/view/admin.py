@@ -13,7 +13,7 @@ import portality.util as util
 from portality import xwalk
 from portality.view.forms import JournalForm, SuggestionForm, \
     EditSuggestionForm, subjects2str, other_val, \
-    digital_archiving_policy_specific_library_value
+    digital_archiving_policy_specific_library_value, EditorGroupForm
 from portality.datasets import country_options_two_char_code_index
 from portality.lcc import lcc_jstree
 
@@ -248,3 +248,100 @@ def suggestion_page(suggestion_id):
 @ssl_required
 def admin_site_search():
     return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin_journals_and_articles'])
+
+@blueprint.route("/editor_groups")
+@login_required
+@ssl_required
+def editor_group_search():
+    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['editor_group'])
+
+@blueprint.route("/editor_group", methods=["GET", "POST"])
+@blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def editor_group(group_id=None):
+    if not current_user.has_role("modify_editor_groups"):
+        abort(401)
+
+    if request.method == "GET":
+        form = EditorGroupForm()
+        if group_id is not None:
+            eg = models.EditorGroup.pull(group_id)
+            form.group_id.data = eg.id
+            form.name.data = eg.name
+            form.editor.data = eg.editor
+            form.associates.data = ",".join(eg.associates)
+        return render_template("admin/editor_group.html", admin_page=True, form=form)
+
+    elif request.method == "POST":
+
+        if request.values.get("delete", "false") == "true":
+            # we have been asked to delete the id
+            if group_id is None:
+                # we can only delete things that exist
+                abort(400)
+            eg = models.EditorGroup.pull(group_id)
+            if eg is None:
+                abort(404)
+
+            eg.delete()
+
+            # return a json response
+            resp = make_response(json.dumps({"success" : True}))
+            resp.mimetype = "application/json"
+            return resp
+
+        # otherwise, we want to edit the content of the form or the object
+        form = EditorGroupForm(request.form)
+
+        if form.validate():
+            # get the group id from the url or from the request parameters
+            if group_id is None:
+                group_id = request.values.get("group_id")
+                group_id = group_id if group_id != "" else None
+
+            # if we have a group id, this is an edit, so get the existing group
+            if group_id is not None:
+                eg = models.EditorGroup.pull(group_id)
+                if eg is None:
+                    abort(404)
+            else:
+                eg = models.EditorGroup()
+
+            associates = form.associates.data
+            if associates is not None:
+                associates = [a.strip() for a in associates.split(",") if a.strip() != ""]
+
+            # prep the user accounts with the correct role(s)
+            ed = models.Account.pull(form.editor.data)
+            ed.add_role("editor")
+            ed.save()
+            if associates is not None:
+                for a in associates:
+                    ae = models.Account.pull(a)
+                    ae.add_role("associate_editor")
+                    ae.save()
+
+            eg.set_name(form.name.data)
+            eg.set_editor(form.editor.data)
+            if associates is not None:
+                eg.set_associates(associates)
+            eg.save()
+
+            flash("Group was updated - changes may not be reflected below immediately.  Reload the page to see the update.", "success")
+            return redirect(url_for('admin.editor_group_search'))
+        else:
+            return render_template("admin/editor_group.html", admin_page=True, form=form)
+
+@blueprint.route("/autocomplete/user")
+@login_required
+@ssl_required
+def user_autocomplete():
+    q = request.values.get("q")
+    s = request.values.get("s", 10)
+    ac = models.Account.autocomplete("id", q, size=s)
+
+    # return a json response
+    resp = make_response(json.dumps(ac))
+    resp.mimetype = "application/json"
+    return resp

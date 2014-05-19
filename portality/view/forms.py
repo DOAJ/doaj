@@ -12,7 +12,7 @@ from flask import Blueprint, request, abort, make_response, render_template, fla
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError
+from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
 from wtforms import widgets 
 from flask_wtf import RecaptchaField
 
@@ -900,6 +900,58 @@ class ArticleForm(Form):
             pass
 
 
+##########################################################################
+## Editor Group Forms
+##########################################################################
+
+class UniqueGroupName(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, form, field):
+        exists_id = models.EditorGroup.group_exists_by_name(field.data)
+        if exists_id is None:
+            # if there is no group of the same name, we are fine
+            return
+
+        # if there is a group of the same name, we need to check whether it's the
+        # same group as we are currently editing
+        id_field = form._fields.get("group_id")
+        if id_field is None or id_field.data == "" or id_field.data is None:
+            # if there is no id field then this is a new group, and so the name clashes
+            # with an existing group
+            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
+
+        # if we get to here, the id_field exists, so we need to check whether it matches
+        # the group with the same id
+        if id_field.data != exists_id:
+            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
+
+class NotRole(object):
+    def __init__(self, role, *args, **kwargs):
+        self.role = role
+
+    def __call__(self, form, field):
+        accounts = [a.strip() for a in field.data.split(",") if a.strip() != ""]
+        if len(accounts) == 0:
+            return
+        fails = []
+        for a in accounts:
+            acc = models.Account.pull(a)
+            if acc.has_role(self.role) and not acc.is_super:
+                fails.append(acc.id)
+        if len(fails) == 0:
+            return
+        have_or_has = "have" if len(fails) > 1 else "has"
+        msg = ", ".join(fails) + " " + have_or_has + " role " + self.role + " so cannot be assigned to an Editor Group"
+        raise validators.ValidationError(msg)
+
+
+class EditorGroupForm(Form):
+    group_id = HiddenField("Group ID", [validators.Optional()])
+    name = TextField("Group Name", [validators.Required(), UniqueGroupName()])
+    editor = TextField("Editor", [validators.Required(), NotRole("publisher")])
+    associates = TextField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
 
 
