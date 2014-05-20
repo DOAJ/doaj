@@ -137,7 +137,6 @@ class DomainObject(UserDict.IterableUserDict, object):
         else:
             return None
 
-
     @classmethod
     def keys(cls,mapping=False,prefix=''):
         # return a sorted list of all the keys in the index
@@ -155,7 +154,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return keys
         
     @staticmethod
-    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, **kwargs):
         '''
         Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
@@ -212,12 +211,18 @@ class DomainObject(UserDict.IterableUserDict, object):
                 boolean['must'].append( query['query'] )
             query['query'] = {'bool': boolean}
 
+        # FIXME: this may only work if a term is also supplied above - code is a bit tricky to read
+        if should_terms is not None and len(should_terms) > 0:
+            for s in should_terms:
+                if not isinstance(should_terms[s],list): should_terms[s] = [should_terms[s]]
+                query["query"]["bool"]["must"].append({"terms" : {s : should_terms[s]}})
+
         for k,v in kwargs.items():
             if k == '_from':
                 query['from'] = v
             else:
                 query[k] = v
-        
+        print json.dumps(query)
         return query
 
     @classmethod

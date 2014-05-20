@@ -1,7 +1,15 @@
 <div class="row-fluid">
-  <div class="span12">
-    <ul class="nav nav-tabs">
-      {# <li{% if request.path == url_for('admin.journals') %} class="active"{% endif %}><a href="{{ url_for('admin.journals') }}">Journals</a></li> #}
-    </ul>
-  </div>
+    <div class="span12">
+        <ul class="nav nav-tabs">
+            <li{% if request.path == url_for('editor.index') %} class="active"{% endif %}><a href="{{ url_for('editor.index') }}">Group Info</a></li>
+
+            {% if current_user.has_role("list_group_journals") %}
+            <li{% if request.path == url_for('editor.group_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.group_journals') }}">Your Group's Journals</a></li>
+            {% endif %}
+
+            {% if current_user.has_role("list_group_suggestions") %}
+            <li{% if request.path == url_for('editor.group_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.group_suggestions') }}">Your Group's Applications</a></li>
+            {% endif %}
+        </ul>
+    </div>
 </div>
