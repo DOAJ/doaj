@@ -23,7 +23,7 @@ def get_journal(journal_id):
     j = models.Journal.pull(journal_id)
     return j
 
-def request_handler(request, journal_id):
+def request_handler(request, journal_id, redirect_route="admin.journal_page"):
     j = get_journal(journal_id)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
@@ -89,7 +89,7 @@ def request_handler(request, journal_id):
             if email_editor:
                 send_editor_group_email(journal)
 
-            return redirect(url_for('admin.journal_page', journal_id=journal_id, _anchor='done'))
+            return redirect(url_for(redirect_route, journal_id=journal_id, _anchor='done'))
                 # meaningless anchor to replace #first_problem used on the form
                 # anchors persist between 3xx redirects to the same resource
         else:

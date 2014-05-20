@@ -1,12 +1,11 @@
-import json
-from datetime import datetime
-
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 from portality import models
+
+from portality import journal as journal_handler
 
 blueprint = Blueprint('editor', __name__)
 
@@ -40,4 +39,22 @@ def group_suggestions():
 @login_required
 @ssl_required
 def journal_page(journal_id):
-    return render_template("editor/group_journals.html", search_page=True, facetviews=["group_journals"])
+    # user must have the role "edit_journal"
+    if not current_user.has_role("edit_journal"):
+        abort(401)
+    # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
+    j = journal_handler.get_journal(journal_id)
+
+    passed = False
+    if j.editor == current_user.id:
+        passed = True
+
+    if not passed:
+        eg = models.EditorGroup.pull_by_key("name", j.editor_group)
+        if eg is not None and eg.editor == current_user.id:
+            passed = True
+
+    if not passed:
+        abort(401)
+    
+    return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page")
