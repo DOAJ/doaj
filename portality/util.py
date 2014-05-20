@@ -38,7 +38,7 @@ def send_mail(to, fro, subject, text, files=[], server="localhost", bcc=[]):
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = subject
  
-    msg.attach( MIMEText(text) )
+    msg.attach( MIMEText(text, 'plain', 'utf-8') )
  
     for file in files:
         part = MIMEBase('application', "octet-stream")

@@ -1,4 +1,9 @@
+import json
 from copy import deepcopy
+from datetime import datetime
+
+from flask import flash
+from flask import render_template, redirect, url_for
 
 from portality import lcc
 from portality.util import listpop
@@ -6,8 +11,106 @@ from portality.datasets import licenses
 from portality.models import Journal, EditorGroup, Account
 from portality.view import forms
 from portality.core import app
-from portality import util
+import portality.models as models
+import portality.util as util
+from portality import xwalk
+from portality.view.forms import JournalForm, subjects2str, other_val, digital_archiving_policy_specific_library_value
 
+from portality.datasets import country_options_two_char_code_index
+from portality.lcc import lcc_jstree
+
+def get_journal(journal_id):
+    j = models.Journal.pull(journal_id)
+    return j
+
+def request_handler(request, journal_id):
+    j = get_journal(journal_id)
+
+    current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
+    form = JournalForm(request.form, current_info)
+
+    current_country = xwalk.get_country_code(j.bibjson().country)
+
+    if current_country not in country_options_two_char_code_index:
+        # couldn't find it, better warn the user to look for it
+        # themselves
+        country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
+    else:
+        country_help_text = ''
+
+    form.country.description = '<span class="red">' + country_help_text + '</span>'
+
+    # add the contents of a few fields to their descriptions since select2 autocomplete
+    # would otherwise obscure the full values
+    if form.publisher.data:
+        if not form.publisher.description:
+            form.publisher.description = 'Full contents: ' + form.publisher.data
+        else:
+            form.publisher.description += '<br><br>Full contents: ' + form.publisher.data
+
+    if form.society_institution.data:
+        if not form.society_institution.description:
+            form.society_institution.description = 'Full contents: ' + form.society_institution.data
+        else:
+            form.society_institution.description += '<br><br>Full contents: ' + form.society_institution.data
+
+    if form.platform.data:
+        if not form.platform.description:
+            form.platform.description = 'Full contents: ' + form.platform.data
+        else:
+            form.platform.description += '<br><br>Full contents: ' + form.platform.data
+
+    first_field_with_error = ''
+
+    if request.method == 'POST':
+        if form.make_all_fields_optional.data:
+            valid = True
+        else:
+            valid = form.validate()
+        if valid:
+            # even though you can only edit journals right now, keeping the same
+            # method as editing suggestions (i.e. creating a new object
+            # and editing its properties)
+
+            # some of the properties (id, in_doaj, etc.) have to be carried over
+            # otherwise they implicitly end up getting changed to their defaults
+            # when a journal gets edited (e.g. it always gets taken out of DOAJ)
+            # if we don't copy over the in_doaj attribute to the new journal object
+            email_editor = JournalFormXWalk.is_new_editor_group(form, j)
+            journal = JournalFormXWalk.form2obj(form, existing_journal=j)
+            journal['id'] = j['id']
+            created_date = j.created_date if j.created_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            journal.set_created(created_date)
+            journal.bibjson().active = j.is_in_doaj()
+            journal.set_in_doaj(j.is_in_doaj())
+            journal.save()
+            flash('Journal updated.', 'success')
+
+            if email_editor:
+                send_editor_group_email(journal)
+
+            return redirect(url_for('admin.journal_page', journal_id=journal_id, _anchor='done'))
+                # meaningless anchor to replace #first_problem used on the form
+                # anchors persist between 3xx redirects to the same resource
+        else:
+            for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
+                if field.errors:
+                    first_field_with_error = field.short_name
+                    break
+
+    return render_template(
+            "admin/journal.html",
+            form=form,
+            first_field_with_error=first_field_with_error,
+            q_numbers=xrange(1, 10000).__iter__(),  # a generator for the purpose of displaying numbered questions
+            other_val=other_val,
+            digital_archiving_policy_specific_library_value=digital_archiving_policy_specific_library_value,
+            edit_journal_page=True,
+            admin_page=True,
+            journal=j,
+            subjectstr=subjects2str(j.bibjson().subjects()),
+            lcc_jstree=json.dumps(lcc_jstree),
+    )
 
 def suggestion2journal(suggestion):
     journal_data = deepcopy(suggestion.data)
@@ -37,6 +140,8 @@ LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj
 
 def send_editor_group_email(journal):
     eg = EditorGroup.pull_by_key("name", journal.editor_group)
+    if eg is None:
+        return
     editor = Account.pull(eg.editor)
 
     url_root = app.config.get("BASE_URL")
@@ -56,7 +161,7 @@ class JournalFormXWalk(object):
     def is_new_editor_group(cls, form, old_journal):
         old_eg = old_journal.editor_group
         new_eg = form.editor_group.data
-        return old_eg != new_eg
+        return old_eg != new_eg and new_eg is not None and new_eg != ""
 
     @staticmethod
     def form2obj(form, existing_journal):
