@@ -778,6 +778,9 @@ class JournalForm(JournalInformationForm):
                     '<br>b/ you really, really need to change a value without filling in the whole record;'
                     '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
     )
+    # fields for assigning to editor group
+    editor_group = TextField("Editor Group", [validators.Optional()])
+    editor = TextField("Editor", [validators.Optional()])
 
 
 class SuggestionForm(JournalInformationForm):

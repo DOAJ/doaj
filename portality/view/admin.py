@@ -8,7 +8,7 @@ from flask.ext.login import current_user, login_required
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
 from portality.suggestion import suggestion_form, SuggestionFormXWalk
-from portality.journal import JournalFormXWalk
+from portality.journal import JournalFormXWalk, send_editor_group_email
 import portality.util as util
 from portality import xwalk
 from portality.view.forms import JournalForm, SuggestionForm, \
@@ -128,6 +128,7 @@ def journal_page(journal_id):
             # otherwise they implicitly end up getting changed to their defaults
             # when a journal gets edited (e.g. it always gets taken out of DOAJ)
             # if we don't copy over the in_doaj attribute to the new journal object
+            email_editor = JournalFormXWalk.is_new_editor_group(form, j)
             journal = JournalFormXWalk.form2obj(form, existing_journal=j)
             journal['id'] = j['id']
             created_date = j.created_date if j.created_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -136,6 +137,10 @@ def journal_page(journal_id):
             journal.set_in_doaj(j.is_in_doaj())
             journal.save()
             flash('Journal updated.', 'success')
+
+            if email_editor:
+                send_editor_group_email(journal)
+
             return redirect(url_for('.journal_page', journal_id=journal_id, _anchor='done'))
                 # meaningless anchor to replace #first_problem used on the form
                 # anchors persist between 3xx redirects to the same resource

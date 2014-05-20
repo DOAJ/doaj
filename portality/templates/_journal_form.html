@@ -107,6 +107,13 @@
       {"field": "subject"},
     ]
     %}
+
+    {% set editorial_fields =
+    [
+        {"field" : "editor_group", "class" : "input-large"},
+        {"field" : "editor", "class" : "input-large"}
+    ]
+    %}
 {% endif %}
 
 
@@ -145,6 +152,17 @@
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Owner</h3>
                 {{ render_fields(form, admin_owner_fields) }}
+              </div>
+
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                <h3 class="heading-aligned-with-fields">Editorial</h3>
+                  {{ render_field(form.editor_group, class="input-large") }}
+                  {{ render_field(form.editor, class="input-large", disabled="disabled") }}
+                  <div class="control-group">
+                    <div class="controls">
+                        <button id="remove_group_button" class="btn btn-danger" type="submit">Remove Group</button>
+                    </div>
+                  </div>
               </div>
 
               {% set display_old_journal_fields = {'display_old_journal_fields': False} %}

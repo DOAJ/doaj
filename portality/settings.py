@@ -35,6 +35,15 @@ INITIALISE_INDEX = True # whether or not to try creating the index and required 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
+# =======================
+# email settings
+#
+# These should be set in your app.cfg
+SMTP_SERVER = None
+SMTP_PORT = 0
+SMTP_USER = None
+SMTP_PASS = None
+
 # ========================
 # user login settings
 

@@ -74,11 +74,12 @@ jQuery(document).ready(function($) {
     });
     
     $("#languages").select2();
-          
+
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
     autocomplete('#owner', 'id', 'account');
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     exclusive_checkbox('digital_archiving_policy', 'No policy in place');
     exclusive_checkbox('article_identifiers', 'None');
@@ -92,6 +93,11 @@ jQuery(document).ready(function($) {
     setup_subject_tree();
     setup_remove_buttons();
     setup_add_buttons();
+
+    $("#remove_group_button").click(function(event) {
+        event.preventDefault()
+        $("#editor_group").select2("val", "")
+    })
 });
 
 function setup_subject_tree() {
@@ -177,11 +183,12 @@ function __init_optional_field(elem, optional_field_selectors, values_to_show_fo
     }
 }
 
-function autocomplete(selector, doc_field, doc_type) {
+function autocomplete(selector, doc_field, doc_type, mininput, include_input) {
     var doc_type = doc_type || "journal";
-    $(selector).select2({
-        minimumInputLength: 3,
-        ajax: {
+    var mininput = mininput === undefined ? 3 : mininput
+    var include_input = include_input === undefined ? true : include_input
+
+    var ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
@@ -192,13 +199,29 @@ function autocomplete(selector, doc_field, doc_type) {
             results: function (data, page) {
                 return { results: data["suggestions"] };
             }
-        },
-        createSearchChoice: function(term) {return {"id":term, "text": term};},
-        initSelection : function (element, callback) {
+        }
+    var csc = function(term) {return {"id":term, "text": term};}
+    var initSel = function (element, callback) {
             var data = {id: element.val(), text: element.val()};
             callback(data);
         }
-    });
+
+    if (include_input) {
+        // apply the create search choice
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            createSearchChoice: csc,
+            initSelection : initSel
+        });
+    } else {
+        // go without the create search choice option
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            initSelection : initSel
+        });
+    }
 }
 
 function exclusive_checkbox(field_name, exclusive_val) {

@@ -13,9 +13,11 @@ from portality import xwalk
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-def lookup_model(name='', capitalize=True):
+def lookup_model(name='', capitalize=True, split_on="_"):
+    parts = name.split(split_on)
     if capitalize:
-        name = name.capitalize()
+        parts = [p.capitalize() for p in parts]
+    name = "".join(parts)
     try:
         return getattr(sys.modules[__name__], name)
     except:
@@ -721,6 +723,24 @@ class Journal(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["owner"] = owner
+
+    @property
+    def editor_group(self):
+        return self.data.get("admin", {}).get("editor_group")
+
+    def set_editor_group(self, eg):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["editor_group"] = eg
+
+    @property
+    def editor(self):
+        return self.data.get("admin", {}).get("editor")
+
+    def set_editor(self, ed):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["editor"] = ed
     
     def known_issns(self):
         """ all issns this journal has ever been known by """

@@ -3,8 +3,10 @@ from copy import deepcopy
 from portality import lcc
 from portality.util import listpop
 from portality.datasets import licenses
-from portality.models import Journal
+from portality.models import Journal, EditorGroup, Account
 from portality.view import forms
+from portality.core import app
+from portality import util
 
 
 def suggestion2journal(suggestion):
@@ -19,11 +21,42 @@ def suggestion2journal(suggestion):
     new_j = Journal(**journal_data)
     return new_j
 
+JOURNAL_ASSIGNED_TEMPLATE = \
+"""
+Dear {editor},
+
+The journal {journal_name} has been assigned to your Editor Group by a Managing Editor.
+You may access the journal in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+
+def send_editor_group_email(journal):
+    eg = EditorGroup.pull_by_key("name", journal.editor_group)
+    editor = Account.pull(eg.editor)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
+    text = JOURNAL_ASSIGNED_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=journal.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
 class JournalFormXWalk(object):
     # NOTE: if you change something here, you will probably
     # need to change the same thing in SuggestionFormXWalk in portality.suggestion .
     # TODO: refactor suggestion and journal xwalks to put the common code in one place
+
+    @classmethod
+    def is_new_editor_group(cls, form, old_journal):
+        old_eg = old_journal.editor_group
+        new_eg = form.editor_group.data
+        return old_eg != new_eg
 
     @staticmethod
     def form2obj(form, existing_journal):
@@ -205,6 +238,12 @@ class JournalFormXWalk(object):
         if owner:
             journal.set_owner(owner)
 
+        editor_group = form.editor_group.data.strip()
+        if editor_group:
+            journal.set_editor_group(editor_group)
+
+        # FIXME: add editor when we better understand the way that we will work with it
+
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
@@ -355,6 +394,9 @@ class JournalFormXWalk(object):
             forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
+        forminfo['editor_group'] = obj.editor_group
+
+        # FIXME: also do editor when we understand better how we will work with it
         
         # old fields - only show them if the values actually exist in the journal record
         if bibjson.author_pays:
