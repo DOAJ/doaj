@@ -56,6 +56,7 @@ def query(path='Pages'):
             role = qr[qroute].get("role")
             owner_filter = qr[qroute].get("owner_filter")
             editor_filter = qr[qroute].get("editor_filter", False)
+            associate_filter = qr[qroute].get("associate_filter", False)
             break
     
     # if there is a role, then check that the user is not anonymous and
@@ -139,11 +140,17 @@ def query(path='Pages'):
         if editor_filter:
             shoulds.update(_editor_filter())
 
+        if associate_filter:
+            terms.update(_associate_filter())
+
         print terms
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms, should_terms=shoulds)) )
 
     resp.mimetype = "application/json"
     return resp
+
+def _associate_filter():
+    return {"admin.editor.exact" : current_user.id}
 
 def _editor_filter():
     """

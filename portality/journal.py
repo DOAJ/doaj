@@ -24,7 +24,7 @@ def get_journal(journal_id):
     return j
 
 def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html",
-                    activate_deactivate=False, group_editable=False, editor_editable=False, editors=None):
+                    activate_deactivate=False, group_editable=False, editors=None, editorial_available=False):
     j = get_journal(journal_id)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
@@ -98,8 +98,11 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             journal.bibjson().active = j.is_in_doaj()
             journal.set_in_doaj(j.is_in_doaj())
 
-            if not group_editable:
+            if not group_editable or not editorial_available:
                 journal.set_editor_group(j.editor_group)
+
+            if not editorial_available:
+                journal.set_editor(j.editor)
 
             # FIXME: probably should check that the editor is in the editor_group and remove if not
 
@@ -133,7 +136,7 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             lcc_jstree=json.dumps(lcc_jstree),
             activate_deactivate=activate_deactivate,
             group_editable=group_editable,
-            editor_editable=editor_editable
+            editorial_available=editorial_available
     )
 
 def suggestion2journal(suggestion):

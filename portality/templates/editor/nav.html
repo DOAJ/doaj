@@ -10,6 +10,10 @@
             {% if current_user.has_role("list_group_suggestions") %}
             <li{% if request.path == url_for('editor.group_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.group_suggestions') }}">Your Group's Applications</a></li>
             {% endif %}
+
+            <li{% if request.path == url_for('editor.associate_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_journals') }}">Your Journals</a></li>
+
+            <li{% if request.path == url_for('editor.associate_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_suggestions') }}">Your Applications</a></li>
         </ul>
     </div>
 </div>

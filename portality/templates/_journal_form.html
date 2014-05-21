@@ -156,6 +156,7 @@
                 {{ render_fields(form, admin_owner_fields) }}
               </div>
 
+              {% if editorial_available %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Editorial</h3>
                   {% if group_editable %}
@@ -164,11 +165,7 @@
                     {{ render_field(form.editor_group, class="input-large", disabled="disabled") }}
                   {% endif %}
 
-                  {# {% if editor_editable %} #}
-                    {{ render_field(form.editor, class="input-large") }}
-                  {#{% else %}
-                    {{ render_field(form.editor, class="input-large", disabled="disabled") }}
-                  {% endif %}#}
+                  {{ render_field(form.editor, class="input-large") }}
 
                   {% if group_editable %}
                   <div class="control-group">
@@ -178,6 +175,7 @@
                   </div>
                   {% endif %}
               </div>
+              {% endif %}
 
               {% set display_old_journal_fields = {'display_old_journal_fields': False} %}
 

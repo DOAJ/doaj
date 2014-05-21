@@ -63,7 +63,7 @@ def article_endpoint(article_id):
 @login_required
 @ssl_required
 def journal_page(journal_id):
-    return journal_handler.request_handler(request, journal_id, activate_deactivate=True, group_editable=True)
+    return journal_handler.request_handler(request, journal_id, activate_deactivate=True, group_editable=True, editorial_available=True)
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
