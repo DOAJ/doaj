@@ -85,6 +85,10 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             if group_editable:
                 email_editor = JournalFormXWalk.is_new_editor_group(form, j)
 
+            email_associate = False
+            if editorial_available:
+                email_associate = JournalFormXWalk.is_new_editor(form, j)
+
             # do the core crosswalk
             journal = JournalFormXWalk.form2obj(form, existing_journal=j)
 
@@ -112,6 +116,9 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             # only actually send the email when we've successfully processed the form
             if email_editor:
                 send_editor_group_email(journal)
+
+            if email_associate:
+                send_editor_email(journal)
 
             return redirect(url_for(redirect_route, journal_id=journal_id, _anchor='done'))
                 # meaningless anchor to replace #first_problem used on the form
@@ -151,11 +158,11 @@ def suggestion2journal(suggestion):
     new_j = Journal(**journal_data)
     return new_j
 
-JOURNAL_ASSIGNED_TEMPLATE = \
+JOURNAL_ASSIGNED_GROUP_TEMPLATE = \
 """
 Dear {editor},
 
-The journal {journal_name} has been assigned to your Editor Group by a Managing Editor.
+The journal "{journal_name}" has been assigned to your Editor Group by a Managing Editor.
 You may access the journal in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
@@ -175,7 +182,34 @@ def send_editor_group_email(journal):
     to = [editor.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
-    text = JOURNAL_ASSIGNED_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=journal.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
+    text = JOURNAL_ASSIGNED_GROUP_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=journal.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+
+JOURNAL_ASSIGNED_EDITOR_TEMPLATE = \
+"""
+Dear {editor},
+
+The journal "{journal_name}" has been assigned to you by the Editor in your Editor Group "{group_name}".
+You may access the journal in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+def send_editor_email(journal):
+    editor = Account.pull(journal.editor)
+    eg = EditorGroup.pull_by_key("name", journal.editor_group)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
+    text = JOURNAL_ASSIGNED_EDITOR_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'),
+                                                   journal_name=journal.bibjson().title.encode('utf-8', 'replace'),
+                                                   group_name=eg.name.encode("utf-8", "replace"), url_root=url_root)
 
     util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
@@ -189,6 +223,12 @@ class JournalFormXWalk(object):
         old_eg = old_journal.editor_group
         new_eg = form.editor_group.data
         return old_eg != new_eg and new_eg is not None and new_eg != ""
+
+    @classmethod
+    def is_new_editor(cls, form, old_journal):
+        old_ed = old_journal.editor
+        new_ed = form.editor.data
+        return old_ed != new_ed and new_ed is not None and new_ed != ""
 
     @staticmethod
     def form2obj(form, existing_journal):
