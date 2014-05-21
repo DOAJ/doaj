@@ -56,5 +56,12 @@ def journal_page(journal_id):
 
     if not passed:
         abort(401)
-    
-    return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page")
+
+    egs = models.EditorGroup.groups_by_editor(current_user.id)
+    editors = [current_user.id]
+    for eg in egs:
+        editors += eg.associates
+    editors = list(set(editors))
+
+    return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page",
+                                           template="editor/journal.html", editor_editable=True, editors=editors)

@@ -222,7 +222,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 query['from'] = v
             else:
                 query[k] = v
-        print json.dumps(query)
+        # print json.dumps(query)
         return query
 
     @classmethod

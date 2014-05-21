@@ -1,0 +1,19 @@
+{% extends "editor/editor_base.html" %}
+
+{% block editor_content %}
+
+{# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
+
+<div class="row-fluid" style="margin-bottom: 3em;">
+  <div class="span12">
+    <h1>Journal: {{journal.bibjson().title}}</h1>
+    {% if journal.last_updated %}
+      <h4>Last updated: {{journal.last_updated}}</h4>
+    {% endif %}
+  </div>
+</div>
+
+{% include "_journal_form.html" %}
+
+{% endblock %}
+

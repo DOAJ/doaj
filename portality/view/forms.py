@@ -780,7 +780,7 @@ class JournalForm(JournalInformationForm):
     )
     # fields for assigning to editor group
     editor_group = TextField("Editor Group", [validators.Optional()])
-    editor = TextField("Editor", [validators.Optional()])
+    editor = SelectField("Editor") # choices to be assigned at form render time
 
 
 class SuggestionForm(JournalInformationForm):

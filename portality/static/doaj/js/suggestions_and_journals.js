@@ -97,6 +97,12 @@ jQuery(document).ready(function($) {
     $("#remove_group_button").click(function(event) {
         event.preventDefault()
         $("#editor_group").select2("val", "")
+        $("#editor").html("<option val='' selected='selected'></option>")
+    })
+
+    $("#editor_group").change(function(event) {
+        event.preventDefault()
+        $("#editor").html("<option val='' selected='selected'></option>")
     })
 });
 

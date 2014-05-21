@@ -23,7 +23,8 @@ def get_journal(journal_id):
     j = models.Journal.pull(journal_id)
     return j
 
-def request_handler(request, journal_id, redirect_route="admin.journal_page"):
+def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html",
+                    activate_deactivate=False, group_editable=False, editor_editable=False, editors=None):
     j = get_journal(journal_id)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
@@ -62,6 +63,14 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page"):
 
     first_field_with_error = ''
 
+    if editors is not None:
+        form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+    else:
+        if j.editor is not None:
+            form.editor.choices = [(j.editor, j.editor)]
+        else:
+            form.editor.choices = [("", "")]
+
     if request.method == 'POST':
         if form.make_all_fields_optional.data:
             valid = True
@@ -72,20 +81,32 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page"):
             # method as editing suggestions (i.e. creating a new object
             # and editing its properties)
 
+            email_editor = False
+            if group_editable:
+                email_editor = JournalFormXWalk.is_new_editor_group(form, j)
+
+            # do the core crosswalk
+            journal = JournalFormXWalk.form2obj(form, existing_journal=j)
+
             # some of the properties (id, in_doaj, etc.) have to be carried over
             # otherwise they implicitly end up getting changed to their defaults
             # when a journal gets edited (e.g. it always gets taken out of DOAJ)
             # if we don't copy over the in_doaj attribute to the new journal object
-            email_editor = JournalFormXWalk.is_new_editor_group(form, j)
-            journal = JournalFormXWalk.form2obj(form, existing_journal=j)
             journal['id'] = j['id']
             created_date = j.created_date if j.created_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
             journal.set_created(created_date)
             journal.bibjson().active = j.is_in_doaj()
             journal.set_in_doaj(j.is_in_doaj())
+
+            if not group_editable:
+                journal.set_editor_group(j.editor_group)
+
+            # FIXME: probably should check that the editor is in the editor_group and remove if not
+
             journal.save()
             flash('Journal updated.', 'success')
 
+            # only actually send the email when we've successfully processed the form
             if email_editor:
                 send_editor_group_email(journal)
 
@@ -99,7 +120,7 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page"):
                     break
 
     return render_template(
-            "admin/journal.html",
+            template,
             form=form,
             first_field_with_error=first_field_with_error,
             q_numbers=xrange(1, 10000).__iter__(),  # a generator for the purpose of displaying numbered questions
@@ -110,6 +131,9 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page"):
             journal=j,
             subjectstr=subjects2str(j.bibjson().subjects()),
             lcc_jstree=json.dumps(lcc_jstree),
+            activate_deactivate=activate_deactivate,
+            group_editable=group_editable,
+            editor_editable=editor_editable
     )
 
 def suggestion2journal(suggestion):
@@ -344,10 +368,14 @@ class JournalFormXWalk(object):
             journal.set_owner(owner)
 
         editor_group = form.editor_group.data.strip()
+        print "editor_group", editor_group
         if editor_group:
             journal.set_editor_group(editor_group)
 
-        # FIXME: add editor when we better understand the way that we will work with it
+        editor = form.editor.data.strip()
+        print "editor", editor
+        if editor:
+            journal.set_editor(editor)
 
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
@@ -499,9 +527,10 @@ class JournalFormXWalk(object):
             forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
-        forminfo['editor_group'] = obj.editor_group
-
-        # FIXME: also do editor when we understand better how we will work with it
+        if obj.editor_group is not None:
+            forminfo['editor_group'] = obj.editor_group
+        if obj.editor is not None:
+            forminfo['editor'] = obj.editor
         
         # old fields - only show them if the values actually exist in the journal record
         if bibjson.author_pays:
