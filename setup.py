@@ -15,6 +15,7 @@ setup(
         "gitpython",
         "lxml",
         "nose",
+        "feedparser",
         "futures==2.1.6",
         # for deployment
         "gunicorn",
