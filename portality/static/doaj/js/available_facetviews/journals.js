@@ -33,6 +33,7 @@ jQuery(document).ready(function($) {
         {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
         {'field': 'admin.owner', 'display': 'Owner'},
         {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
+        {'field': 'admin.editor.exact', 'display': 'Editor'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
