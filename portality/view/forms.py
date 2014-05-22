@@ -806,6 +806,17 @@ class SuggestionForm(JournalInformationForm):
         suggester_email_confirm_validators
     )
 
+    make_all_fields_optional = BooleanField('Allow incomplete form',
+        description='<strong>Only tick this box if:</strong>'
+                    '<br>a/ you are editing an old, incomplete record;'
+                    '<br>b/ you really, really need to change a value without filling in the whole record;'
+                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
+    )
+
+    # fields for assigning to editor group
+    editor_group = TextField("Editor Group", [validators.Optional()])
+    editor = SelectField("Editor", default="") # choices to be assigned at form render time
+
 
 class EditSuggestionForm(SuggestionForm):
     application_status = SelectField('Application Status',

@@ -3,7 +3,8 @@ from copy import deepcopy
 from datetime import datetime
 
 from flask import flash
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, abort
+from flask.ext.login import current_user
 
 from portality import lcc
 from portality.util import listpop
@@ -25,7 +26,12 @@ def get_journal(journal_id):
 
 def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html",
                     activate_deactivate=False, group_editable=False, editors=None, editorial_available=False):
+    # check our permissions
+    if not current_user.has_role("edit_journal"):
+        abort(401)
     j = get_journal(journal_id)
+    if j is None:
+        abort(404)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
     form = JournalForm(request.form, current_info)
@@ -411,12 +417,10 @@ class JournalFormXWalk(object):
             journal.set_owner(owner)
 
         editor_group = form.editor_group.data.strip()
-        print "editor_group", editor_group
         if editor_group:
             journal.set_editor_group(editor_group)
 
         editor = form.editor.data.strip()
-        print "editor", editor
         if editor:
             journal.set_editor(editor)
 

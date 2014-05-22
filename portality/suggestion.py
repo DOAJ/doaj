@@ -1,20 +1,85 @@
 from datetime import datetime
-from flask import render_template, flash, url_for, json
+from flask import render_template, flash, url_for, json, abort
 
+from flask.ext.login import current_user
+
+from portality.core import app
 from portality import lcc
 from portality import journal
 from portality.account import create_account_on_suggestion_approval, \
     send_suggestion_approved_email
-from portality.models import Suggestion
+from portality import models
 from portality.util import flash_with_url, listpop
 from portality.view import forms
 from portality.datasets import licenses
 from portality.view.forms import other_val, digital_archiving_policy_specific_library_value
 from werkzeug.utils import redirect
 
+from portality.view.forms import EditSuggestionForm, subjects2str
+from portality.lcc import lcc_jstree
+from portality import util
+
+def request_handler(request, suggestion_id, redirect_route="admin.suggestion_page", template="admin/suggestion.html",
+                    editors=None, group_editable=False, editorial_available=False):
+    if not current_user.has_role("edit_suggestion"):
+        abort(401)
+    s = models.Suggestion.pull(suggestion_id)
+    if s is None:
+        abort(404)
+
+    current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
+    form = EditSuggestionForm(request.form, current_info)
+
+    process_the_form = True
+    if request.method == 'POST' and s.application_status == 'accepted':
+        flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
+        process_the_form = False
+
+    # add the contents of a few fields to their descriptions since select2 autocomplete
+    # would otherwise obscure the full values
+    if form.publisher.data:
+        if not form.publisher.description:
+            form.publisher.description = 'Full contents: ' + form.publisher.data
+        else:
+            form.publisher.description += '<br><br>Full contents: ' + form.publisher.data
+
+    if form.society_institution.data:
+        if not form.society_institution.description:
+            form.society_institution.description = 'Full contents: ' + form.society_institution.data
+        else:
+            form.society_institution.description += '<br><br>Full contents: ' + form.society_institution.data
+
+    if form.platform.data:
+        if not form.platform.description:
+            form.platform.description = 'Full contents: ' + form.platform.data
+        else:
+            form.platform.description += '<br><br>Full contents: ' + form.platform.data
+
+    if editors is not None:
+        form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+    else:
+        if s.editor is not None:
+            form.editor.choices = [(s.editor, s.editor)]
+        else:
+            form.editor.choices = [("", "")]
+
+
+
+    return suggestion_form(form, request, template,
+                           existing_suggestion=s,
+                           suggestion=s,
+                           process_the_form=process_the_form,
+                           admin_page=True,
+                           subjectstr=subjects2str(s.bibjson().subjects()),
+                           lcc_jstree=json.dumps(lcc_jstree),
+                           group_editable=group_editable,
+                           editorial_available=editorial_available,
+                           redirect_route=redirect_route
+    )
 
 # provide reusability to the view functions
-def suggestion_form(form, request, redirect_url_on_success, template_name, existing_suggestion=None, process_the_form=True, **kwargs):
+def suggestion_form(form, request, template_name, existing_suggestion=None, success_url=None,
+                    process_the_form=True, group_editable=False, editorial_available=False, redirect_route=None, **kwargs):
 
     first_field_with_error = ''
 
@@ -38,10 +103,29 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
     if request.method == 'POST':
         if not process_the_form:
             if existing_suggestion:
-                return redirect(url_for('admin.suggestion_page', suggestion_id=existing_suggestion.id, _anchor='cannot_edit'))
+                # this is not a success, so we do not consider the success_url
+                return redirect(url_for(redirect_route, suggestion_id=existing_suggestion.id, _anchor='cannot_edit'))
         else:
-            if form.validate():
+            if form.make_all_fields_optional.data:
+                valid = True
+            else:
+                valid = form.validate()
+            if not valid:
+                print "eg", form.editor_group.errors
+                print "ed", form.editor.errors
+
+            if valid:
+                email_editor = False
+                if group_editable:
+                    email_editor = SuggestionFormXWalk.is_new_editor_group(form, existing_suggestion)
+
+                email_associate = False
+                if editorial_available:
+                    email_associate = SuggestionFormXWalk.is_new_editor(form, existing_suggestion)
+
+                # do the core crosswalk
                 suggestion = SuggestionFormXWalk.form2obj(form, existing_suggestion)
+
                 now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
                 if not existing_suggestion:
                     suggestion.suggested_on = now
@@ -51,6 +135,14 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
                     suggestion.set_created(created_date)
                     suggestion.suggested_on = existing_suggestion.suggested_on
                     suggestion.data['id'] = existing_suggestion.data['id']
+
+                    if not group_editable or not editorial_available:
+                        suggestion.set_editor_group(existing_suggestion.editor_group)
+
+                    if not editorial_available:
+                        suggestion.set_editor(existing_suggestion.editor)
+
+                    # FIXME: probably should check that the editor is in the editor_group and remove if not
 
                 # the code below can be used to quickly debug objects which
                 # fail to serialise as JSON - there should be none of those
@@ -100,7 +192,17 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
                         owner = create_account_on_suggestion_approval(suggestion, j)
                         send_suggestion_approved_email(j.bibjson().title, owner.email)
 
-                return redirect(redirect_url_on_success)
+                # only actually send the email when we've successfully processed the form
+                if email_editor:
+                    send_editor_group_email(suggestion)
+
+                if email_associate:
+                    send_editor_email(suggestion)
+
+                if success_url:
+                    return redirect(success_url)
+                else:
+                    return redirect(url_for(redirect_route, suggestion_id=suggestion.id, _anchor='done'))
             else:
                 for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
                     if field.errors:
@@ -114,18 +216,86 @@ def suggestion_form(form, request, redirect_url_on_success, template_name, exist
             other_val=other_val,
             digital_archiving_policy_specific_library_value=digital_archiving_policy_specific_library_value,
             edit_suggestion_page=True,
+            group_editable=group_editable,
+            editorial_available=editorial_available,
             **kwargs
     )
 
+SUGGESTION_ASSIGNED_GROUP_TEMPLATE = \
+"""
+Dear {editor},
+
+A new application for the journal "{journal_name}" has been assigned to your Editor Group by a Managing Editor.
+You may access the application in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+
+def send_editor_group_email(suggestion):
+    eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
+    if eg is None:
+        return
+    editor = models.Account.pull(eg.editor)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
+    text = SUGGESTION_ASSIGNED_GROUP_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+
+SUGGESTION_ASSIGNED_EDITOR_TEMPLATE = \
+"""
+Dear {editor},
+
+A new application for the journal "{journal_name}" has been assigned to you by the Editor in your Editor Group "{group_name}".
+You may access the application in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+def send_editor_email(suggestion):
+    editor = models.Account.pull(suggestion.editor)
+    eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
+    text = SUGGESTION_ASSIGNED_EDITOR_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'),
+                                                   journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                                                   group_name=eg.name.encode("utf-8", "replace"), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
 class SuggestionFormXWalk(object):
     # NOTE: if you change something here, unless it only relates to suggestions, you will probably
     # need to change the same thing in JournalFormXWalk in portality.journal .
     # TODO: refactor suggestion and journal xwalks to put the common code in one place
 
+    @classmethod
+    def is_new_editor_group(cls, form, old_suggestion):
+        old_eg = old_suggestion.editor_group
+        new_eg = form.editor_group.data
+        return old_eg != new_eg and new_eg is not None and new_eg != ""
+
+    @classmethod
+    def is_new_editor(cls, form, old_suggestion):
+        old_ed = old_suggestion.editor
+        new_ed = form.editor.data
+        return old_ed != new_ed and new_ed is not None and new_ed != ""
+
     @staticmethod
     def form2obj(form, existing_suggestion=None):
-        suggestion = Suggestion()
+        suggestion = models.Suggestion()
         bibjson = suggestion.bibjson()
 
         if form.title.data:
@@ -306,7 +476,19 @@ class SuggestionFormXWalk(object):
             bibjson.set_subjects(new_subjects)
             
         if getattr(form, 'owner', None):
-            suggestion.set_owner(form.owner.data.strip())
+            owns = form.owner.data.strip()
+            if owns:
+                suggestion.set_owner(form.owner.data.strip())
+
+        if getattr(form, 'editor_group', None):
+            editor_group = form.editor_group.data.strip()
+            if editor_group:
+                suggestion.set_editor_group(editor_group)
+
+        if getattr(form, "editor", None):
+            editor = form.editor.data.strip()
+            if editor:
+                suggestion.set_editor(editor)
 
         return suggestion
 
@@ -460,5 +642,9 @@ class SuggestionFormXWalk(object):
             forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
+        if obj.editor_group is not None:
+            forminfo['editor_group'] = obj.editor_group
+        if obj.editor is not None:
+            forminfo['editor'] = obj.editor
 
         return forminfo

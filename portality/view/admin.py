@@ -6,13 +6,10 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
-from portality.suggestion import suggestion_form, SuggestionFormXWalk
+
 from portality import journal as journal_handler
-from portality.view.forms import EditSuggestionForm, subjects2str, EditorGroupForm
-
-# from portality.datasets import country_options_two_char_code_index
-from portality.lcc import lcc_jstree
-
+from portality import suggestion as suggestion_handler
+from portality.view.forms import EditorGroupForm
 
 blueprint = Blueprint('admin', __name__)
 
@@ -105,53 +102,7 @@ def suggestions():
 @login_required
 @ssl_required
 def suggestion_page(suggestion_id):
-    if not current_user.has_role("edit_suggestion"):
-        abort(401)
-    s = models.Suggestion.pull(suggestion_id)
-    if s is None:
-        abort(404)
-
-    current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
-    form = EditSuggestionForm(request.form, current_info)
-
-    process_the_form = True
-    if request.method == 'POST' and s.application_status == 'accepted':
-        flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
-        process_the_form = False
-
-    # add the contents of a few fields to their descriptions since select2 autocomplete
-    # would otherwise obscure the full values
-    if form.publisher.data:
-        if not form.publisher.description:
-            form.publisher.description = 'Full contents: ' + form.publisher.data
-        else:
-            form.publisher.description += '<br><br>Full contents: ' + form.publisher.data
-
-    if form.society_institution.data:
-        if not form.society_institution.description:
-            form.society_institution.description = 'Full contents: ' + form.society_institution.data
-        else:
-            form.society_institution.description += '<br><br>Full contents: ' + form.society_institution.data
-
-    if form.platform.data:
-        if not form.platform.description:
-            form.platform.description = 'Full contents: ' + form.platform.data
-        else:
-            form.platform.description += '<br><br>Full contents: ' + form.platform.data
-
-    redirect_url_on_success = url_for('.suggestion_page', suggestion_id=suggestion_id, _anchor='done')
-    # meaningless anchor to replace #first_problem used on the form
-    # anchors persist between 3xx redirects to the same resource
-    # (/application)
-
-    return suggestion_form(form, request, redirect_url_on_success, "admin/suggestion.html",
-                           existing_suggestion=s,
-                           suggestion=s,
-                           process_the_form=process_the_form,
-                           admin_page=True,
-                           subjectstr=subjects2str(s.bibjson().subjects()),
-                           lcc_jstree=json.dumps(lcc_jstree),
-    )
+    return suggestion_handler.request_handler(request, suggestion_id, group_editable=True, editorial_available=True)
 
 @blueprint.route("/admin_site_search")
 @login_required

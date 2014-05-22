@@ -30,7 +30,8 @@ jQuery(document).ready(function($) {
     facets: [
         {'field': 'admin.application_status.exact', 'display': 'Application Status'},
         {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
-
+        {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
+        {'field': 'admin.editor.exact', 'display': 'Editor'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
         {'field': 'index.country.exact', 'display': 'Journal Country'},
@@ -99,6 +100,12 @@ jQuery(document).ready(function($) {
             {
                 "pre" : "<strong>Application status</strong>: ",
                 "field" : "admin.application_status"
+            }
+        ],
+        [
+            {
+                "pre" : "<strong>Editor Group</strong>: ",
+                "field" : "admin.editor_group"
             }
         ],
         [
