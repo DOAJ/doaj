@@ -110,6 +110,12 @@ jQuery(document).ready(function($) {
         ],
         [
             {
+                "pre" : "<strong>Editor</strong>: ",
+                "field" : "admin.editor"
+            }
+        ],
+        [
+            {
                 "pre" : "<strong>Description</strong>: ",
                 "field" : "suggestion.description"
             }

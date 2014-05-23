@@ -100,6 +100,12 @@ jQuery(document).ready(function($) {
         ],
         [
             {
+                "pre" : "<strong>Editor</strong>: ",
+                "field" : "admin.editor"
+            }
+        ],
+        [
+            {
                 "pre" : "<strong>ISSN(s)</strong>: ",
                 "field" : "issns"
             }

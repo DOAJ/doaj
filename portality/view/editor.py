@@ -6,6 +6,7 @@ from portality.core import app, ssl_required, restrict_to_role
 from portality import models
 
 from portality import journal as journal_handler
+from portality import suggestion as suggestion_handler
 
 blueprint = Blueprint('editor', __name__)
 
@@ -96,4 +97,45 @@ def journal_page(journal_id):
 @login_required
 @ssl_required
 def suggestion_page(suggestion_id):
-    pass
+    # user must have the role "edit_journal"
+    if not current_user.has_role("edit_suggestion"):
+        abort(401)
+
+    # get the journal, so we can check our permissions against it
+    s = models.Suggestion.pull(suggestion_id)
+    if s is None:
+        abort(404)
+
+    # flag which we can set to determine whether this user can access the editorial
+    # features of the journal form
+    editorial_available = False
+
+    # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
+
+    # is the user the currently assigned editor of the journal?
+    passed = False
+    if s.editor == current_user.id:
+        passed = True
+
+    # now check whether the user is the editor of the editor group
+    # and simultaneously determine whether they have editorial rights
+    # on this journal
+    eg = models.EditorGroup.pull_by_key("name", s.editor_group)
+    if eg is not None and eg.editor == current_user.id:
+        passed = True
+        editorial_available = True
+
+    # if the user wasn't the editor or the owner of the editor group, unauthorised
+    if not passed:
+        abort(401)
+
+    # create the list of allowable editors for this journal (the editor
+    # and all the associates in this editor group)
+    # egs = models.EditorGroup.groups_by_editor(current_user.id)
+    editors = [current_user.id]
+    editors += eg.associates
+    editors = list(set(editors))
+
+    return suggestion_handler.request_handler(request, suggestion_id, redirect_route="editor.suggestion_page",
+                                           template="editor/suggestion.html", editors=editors,
+                                           editorial_available=editorial_available)
