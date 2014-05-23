@@ -33,7 +33,7 @@ def group_journals():
 @login_required
 @ssl_required
 def group_suggestions():
-    pass
+    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["group_suggestions"])
 
 @blueprint.route('/your_journals')
 @login_required
@@ -91,3 +91,9 @@ def journal_page(journal_id):
     return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page",
                                            template="editor/journal.html", editors=editors,
                                            editorial_available=editorial_available)
+
+@blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
+@login_required
+@ssl_required
+def suggestion_page(suggestion_id):
+    pass
