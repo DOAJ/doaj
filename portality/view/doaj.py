@@ -5,6 +5,7 @@ from flask.ext.login import current_user
 from portality import dao
 from portality import models
 from portality.core import app
+from portality import blog
 from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
 from portality.suggestion import SuggestionFormXWalk, suggestion_form
 from portality.datasets import countries_dict
@@ -65,7 +66,13 @@ SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an
 
 @blueprint.route("/")
 def home():
-    return render_template('doaj/index.html')
+    news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
+    return render_template('doaj/index.html', news=news)
+
+@blueprint.route("/news")
+def news():
+    news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
+    return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
 @blueprint.route("/search", methods=['GET'])
 def search():

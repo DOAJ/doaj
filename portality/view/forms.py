@@ -672,7 +672,7 @@ class JournalInformationForm(Form):
     )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
         [validators.Required(), URLOptionalScheme()],
-        description = 'The journal must have either an editor or an editorial board with at least 5 clearly identifiable members including affiliation information and email addresses.'
+        description = 'The journal must have either an editor or an editorial board with at least 5 clearly identifiable members and affiliation information. We will ask for email addresses as part of our checks.'
     )
     review_process = SelectField('Please select the review process for papers',
         [validators.Required()],

@@ -113,6 +113,7 @@ MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
 MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
 MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
+MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -302,7 +303,16 @@ STATIC_PAGES = [
 
 
 
+# =====================================
+# News feed settings
 
+BLOG_URL = "http://doajournals.wordpress.com/"
+
+BLOG_FEED_URL = "http://doajournals.wordpress.com/feed/atom/"
+
+FRONT_PAGE_NEWS_ITEMS = 3
+
+NEWS_PAGE_NEWS_ITEMS = 20
 
 
 

@@ -59,6 +59,10 @@ This will re-generate all of the Table of Contents pages for performance purpose
 
 This will generate the latest version of the sitemap to serve on request.  It should be run approximately every 30 minutes.
 
+    portality/scripts/news.py
+
+This will import the latest news from the DOAJ wordpress blog.  It should be run daily.
+
 ## Data Models
 
 Notes on the data model
