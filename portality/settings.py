@@ -114,6 +114,7 @@ MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
 MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
 MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
+MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -314,7 +315,11 @@ FRONT_PAGE_NEWS_ITEMS = 3
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
+# =====================================
+# Edit Lock settings
 
+# amount of time loading an editable page locks it for, in seconds.
+EDIT_LOCK_TIMEOUT = 1200
 
 # where are static files served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a

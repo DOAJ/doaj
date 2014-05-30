@@ -5,15 +5,51 @@
 {# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
 
 <div class="row-fluid" style="margin-bottom: 3em;">
-  <div class="span12">
+  <div class="span9">
     <h1>Journal: {{journal.bibjson().title}}</h1>
     {% if journal.last_updated %}
       <h4>Last updated: {{journal.last_updated}}</h4>
     {% endif %}
   </div>
+    <div class="span3">
+        {% if lock %}
+            You have an edit-lock on this journal which expires at {{lock.expire_formatted()}}<br>
+            <a href="#" class="unlock" data-id="{{journal.id}}">Close page and unlock</a>
+        {% endif %}
+    </div>
 </div>
 
 {% include "_journal_form.html" %}
+
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+
+    $(".unlock").click(function(event) {
+        event.preventDefault()
+        var id = $(this).attr("data-id")
+
+        function success_callback(data) {
+            var newWindow = window.open('', '_self', ''); //open the current window
+            window.close(url);
+        }
+
+        function error_callback(data) {
+            alert("error releasing lock")
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/service/unlock/journal/" + id,
+            contentType: "application/json",
+            dataType: "json",
+            success : success_callback,
+            error: error_callback
+        })
+    })
+
+</script>
+{% endblock extra_js_bottom %}
 
 {% endblock %}
 

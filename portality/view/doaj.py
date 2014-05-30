@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user
 
@@ -9,6 +9,7 @@ from portality import blog
 from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
 from portality.suggestion import SuggestionFormXWalk, suggestion_form
 from portality.datasets import countries_dict
+from portality import lock
 
 import json
 import os

@@ -18,14 +18,21 @@ from werkzeug.utils import redirect
 from portality.view.forms import EditSuggestionForm, subjects2str
 from portality.lcc import lcc_jstree
 from portality import util
+from portality import lock
 
-def request_handler(request, suggestion_id, redirect_route="admin.suggestion_page", template="admin/suggestion.html",
+def request_handler(request, suggestion_id, redirect_route="admin.suggestion_page", template="admin/suggestion.html", locked_template="admin/suggestion_locked.html",
                     editors=None, group_editable=False, editorial_available=False, status_options="admin"):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
     s = models.Suggestion.pull(suggestion_id)
     if s is None:
         abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
+    except lock.Locked as l:
+        return render_template(locked_template, suggestion=s, lock=l.lock)
 
     current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
     form = EditSuggestionForm(request.form, current_info)
@@ -83,12 +90,13 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
                            lcc_jstree=json.dumps(lcc_jstree),
                            group_editable=group_editable,
                            editorial_available=editorial_available,
-                           redirect_route=redirect_route
+                           redirect_route=redirect_route,
+                           lock=lockinfo
     )
 
 # provide reusability to the view functions
 def suggestion_form(form, request, template_name, existing_suggestion=None, success_url=None,
-                    process_the_form=True, group_editable=False, editorial_available=False, redirect_route=None, **kwargs):
+                    process_the_form=True, group_editable=False, editorial_available=False, redirect_route=None, lock=None, **kwargs):
 
     first_field_with_error = ''
 
@@ -227,6 +235,7 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
             edit_suggestion_page=True,
             group_editable=group_editable,
             editorial_available=editorial_available,
+            lock=lock,
             **kwargs
     )
 

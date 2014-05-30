@@ -90,7 +90,7 @@ def journal_page(journal_id):
     editors = list(set(editors))
 
     return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page",
-                                           template="editor/journal.html", editors=editors,
+                                           template="editor/journal.html", editors=editors, locked_template="editor/journal_locked.html",
                                            editorial_available=editorial_available)
 
 @blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
@@ -137,5 +137,5 @@ def suggestion_page(suggestion_id):
     editors = list(set(editors))
 
     return suggestion_handler.request_handler(request, suggestion_id, redirect_route="editor.suggestion_page",
-                                           template="editor/suggestion.html", editors=editors,
+                                           template="editor/suggestion.html", locked_template="editor/suggestion_locked.html", editors=editors,
                                            editorial_available=editorial_available, status_options="editor")

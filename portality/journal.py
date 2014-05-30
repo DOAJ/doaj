@@ -19,12 +19,13 @@ from portality.view.forms import JournalForm, subjects2str, other_val, digital_a
 
 from portality.datasets import country_options_two_char_code_index
 from portality.lcc import lcc_jstree
+from portality import lock
 
 def get_journal(journal_id):
     j = models.Journal.pull(journal_id)
     return j
 
-def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html",
+def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html", locked_template="admin/journal_locked.html",
                     activate_deactivate=False, group_editable=False, editors=None, editorial_available=False):
     # check our permissions
     if not current_user.has_role("edit_journal"):
@@ -32,6 +33,12 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
     j = get_journal(journal_id)
     if j is None:
         abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("journal", journal_id, current_user.id)
+    except lock.Locked as l:
+        return render_template(locked_template, journal=j, lock=l.lock)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
     form = JournalForm(request.form, current_info)
@@ -149,7 +156,8 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             lcc_jstree=json.dumps(lcc_jstree),
             activate_deactivate=activate_deactivate,
             group_editable=group_editable,
-            editorial_available=editorial_available
+            editorial_available=editorial_available,
+            lock=lockinfo
     )
 
 def suggestion2journal(suggestion):
