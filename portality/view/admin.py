@@ -102,7 +102,7 @@ def suggestions():
 @login_required
 @ssl_required
 def suggestion_page(suggestion_id):
-    return suggestion_handler.request_handler(request, suggestion_id, group_editable=True, editorial_available=True)
+    return suggestion_handler.request_handler(request, suggestion_id, group_editable=True, editorial_available=True, status_options="admin")
 
 @blueprint.route("/admin_site_search")
 @login_required

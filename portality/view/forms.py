@@ -143,7 +143,9 @@ application_status_choices_optional_owner = [
     ('rejected', 'Rejected'),
 ]
 
-application_status_choices = application_status_choices_optional_owner + [('accepted', 'Accepted')]
+application_status_choices_editor = application_status_choices_optional_owner + [('ready', "Ready")]
+
+application_status_choices_admin = application_status_choices_editor + [('accepted', 'Accepted')]
 
 application_status_choices_optvals = [v[0] for v in application_status_choices_optional_owner]
 
@@ -821,7 +823,7 @@ class SuggestionForm(JournalInformationForm):
 class EditSuggestionForm(SuggestionForm):
     application_status = SelectField('Application Status',
         [validators.Required()],
-        choices = application_status_choices,
+        # choices = application_status_choices, # choices are late-binding as they depend on the user
         default = '',
         description='Setting this to Accepted will send an email to the'
                     ' owner of the suggestion telling them their journal'

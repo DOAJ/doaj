@@ -138,4 +138,4 @@ def suggestion_page(suggestion_id):
 
     return suggestion_handler.request_handler(request, suggestion_id, redirect_route="editor.suggestion_page",
                                            template="editor/suggestion.html", editors=editors,
-                                           editorial_available=editorial_available)
+                                           editorial_available=editorial_available, status_options="editor")

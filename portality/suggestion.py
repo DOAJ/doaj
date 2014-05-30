@@ -20,7 +20,7 @@ from portality.lcc import lcc_jstree
 from portality import util
 
 def request_handler(request, suggestion_id, redirect_route="admin.suggestion_page", template="admin/suggestion.html",
-                    editors=None, group_editable=False, editorial_available=False):
+                    editors=None, group_editable=False, editorial_available=False, status_options="admin"):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
     s = models.Suggestion.pull(suggestion_id)
@@ -30,9 +30,18 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
     current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
     form = EditSuggestionForm(request.form, current_info)
 
+    if status_options == "admin":
+        form.application_status.choices = forms.application_status_choices_admin
+    else:
+        form.application_status.choices = forms.application_status_choices_editor
+
     process_the_form = True
     if request.method == 'POST' and s.application_status == 'accepted':
         flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
+        process_the_form = False
+
+    if form.application_status.data == "accepted" and form.make_all_fields_optional.data:
+        flash("You cannot accept a suggestion into the DOAJ without fully validating it", "error")
         process_the_form = False
 
     # add the contents of a few fields to their descriptions since select2 autocomplete
