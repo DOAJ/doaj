@@ -17,6 +17,8 @@ ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
 SUPPRESS_ERROR_EMAILS = False
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
+ENABLE_EMAIL = True
+ENABLE_PUBLISHER_EMAIL = True
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"

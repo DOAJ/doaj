@@ -75,8 +75,11 @@ The DOAJ Team
 """.format(reset_url=reset_url, username=o.id, timeout_days=password_create_timeout_days, forgot_pw_url=forgot_pw_url)
 
     try:
-        util.send_mail(to=to, fro=fro, subject=subject, text=text)
-        flash('Sent email to ' + send_info_to + ' to tell them about the new account.', 'success')
+        if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+            util.send_mail(to=to, fro=fro, subject=subject, text=text)
+            flash('Sent email to ' + send_info_to + ' to tell them about the new account.', 'success')
+        else:
+            flash('Did not email to ' + send_info_to + ' to tell them about the new account, as publisher emailing is disabled.', 'error')
         if app.config.get('DEBUG',False):
             util.flash_with_url('Debug mode - url for create is <a href="{url}">{url}</a>'.format(url=reset_url))
     except Exception as e:
@@ -140,8 +143,11 @@ def send_suggestion_approved_email(journal_name, email):
     text = SUGGESTION_ACCEPTED_EMAIL_TEMPLATE.format(journal_name=journal_name.encode('utf-8', 'replace'), url_root=url_root)
 
     try:
-        util.send_mail(to=to, fro=fro, subject=subject, text=text)
-        flash('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.', 'success')
+        if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+            util.send_mail(to=to, fro=fro, subject=subject, text=text)
+            flash('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.', 'success')
+        else:
+            flash('Did not send email to ' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.', 'error')
     except Exception as e:
         magic = str(uuid.uuid1())
         util.flash_with_url('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!', 'error')

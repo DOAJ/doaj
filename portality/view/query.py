@@ -15,7 +15,6 @@ import portality.util as util
 
 blueprint = Blueprint('query', __name__)
 
-
 # pass queries direct to index. POST only for receipt of complex query objects
 @blueprint.route('/<path:path>', methods=['GET','POST'])
 @blueprint.route('/', methods=['GET','POST'])

@@ -27,6 +27,11 @@ def is_safe_url(target):
         return '/'
 
 def send_mail(to, fro, subject, text, files=[], server="localhost", bcc=[]):
+
+    # ensure that email isn't sent if it is disabled
+    if not app.config.get("ENABLE_EMAIL", False):
+        return
+
     assert type(to)==list
     assert type(files)==list
     if bcc and not isinstance(bcc, list):
