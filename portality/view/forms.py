@@ -87,8 +87,8 @@ deposit_policy_choices = [
     ('Sherpa/Romeo', 'Sherpa/Romeo'),
     ('Dulcinea', 'Dulcinea'),
     ('OAKlist', 'OAKlist'),
-    ('H\xc3\xa9loise'.decode('utf-8'), 'H\xc3\xa9loise'.decode('utf-8')),
-    ('Diadorum', 'Diadorum'), 
+    ('H\xc3\xa9lo\xc3\xafse'.decode('utf-8'), 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8')),
+    ('Diadorim', 'Diadorim'),
 ] + [other_choice]
 
 deposit_policy_choices_list = [v[0] for v in deposit_policy_choices]
