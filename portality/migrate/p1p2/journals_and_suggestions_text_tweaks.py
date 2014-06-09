@@ -19,7 +19,7 @@ for s in suggestion_iterator:
             s.bibjson().deposit_policy[replace_index] = new
             changed = True
         except ValueError:
-            pass
+            pass  # doesn't have the policy we're currently checking for
 
     if changed:
         s.prep()
@@ -54,7 +54,7 @@ for j in journal_iterator:
             j.bibjson().deposit_policy[replace_index] = new
             changed = True
         except ValueError:
-            pass
+            pass  # doesn't have the policy we're currently checking for
 
     if changed:
         j.prep()
