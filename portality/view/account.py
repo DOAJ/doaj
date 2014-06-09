@@ -188,7 +188,7 @@ def forgot():
         reset_url = request.url_root + sep + "account/reset/" + reset_token
         
         to = [account.data['email'],app.config['ADMIN_EMAIL']]
-        fro = app.config['ADMIN_EMAIL']
+        fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
         subject = app.config.get("SERVICE_NAME","") + " - password reset"
         text = "A password reset request for account '" + account.id + "' has been received and processed.\n\n"
         text += "Please visit " + reset_url + " and enter your new password.\n\n"

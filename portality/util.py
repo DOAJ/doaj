@@ -26,11 +26,14 @@ def is_safe_url(target):
     else:
         return '/'
 
-def send_mail(to, fro, subject, text, files=[], server="localhost", bcc=[]):
+def send_mail(to, fro, subject, text, files=[], bcc=[]):
     assert type(to)==list
     assert type(files)==list
     if bcc and not isinstance(bcc, list):
         bcc = [bcc]
+
+    if app.config.get('CC_ALL_EMAILS_TO'):
+        bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
  
     msg = MIMEMultipart()
     msg['From'] = fro
@@ -49,8 +52,8 @@ def send_mail(to, fro, subject, text, files=[], server="localhost", bcc=[]):
         msg.attach(part)
     
     # now deal with connecting to the server
-    server = app.config.get("SMTP_SERVER")
-    server_port = app.config.get("SMTP_PORT")
+    server = app.config.get("SMTP_SERVER", "localhost")
+    server_port = app.config.get("SMTP_PORT", 25)
     smtp_user = app.config.get("SMTP_USER")
     smtp_pass = app.config.get("SMTP_PASS")
     
