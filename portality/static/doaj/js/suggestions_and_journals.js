@@ -197,7 +197,9 @@ function autocomplete(selector, doc_field, doc_type) {
         initSelection : function (element, callback) {
             var data = {id: element.val(), text: element.val()};
             callback(data);
-        }
+        },
+        placeholder: "",
+        allowClear: true
     });
 }
 
