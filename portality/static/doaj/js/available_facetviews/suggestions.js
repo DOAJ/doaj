@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
         {'field': 'index.country.exact', 'display': 'Journal Country'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
+        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'bibjson.oa_start.exact', 'display': 'Started publishing OA content (year)'},
@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
         {'display':'Publisher','field':'index.publisher'},
 
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-        {'display':'Journal: Provider','field':'bibjson.provider'},
+        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -151,7 +151,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Provider</strong>: ",
+                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
                 "field": "bibjson.provider",
             }
         ],

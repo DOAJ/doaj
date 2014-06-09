@@ -99,7 +99,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Provider</strong>: ",
+                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
                 "field": "bibjson.provider",
             }
         ],
