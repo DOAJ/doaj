@@ -661,7 +661,7 @@ class JournalInformationForm(Form):
     )
     fulltext_format_other = TextField('',
     )
-    keywords = TagListField('Add keyword(s) that best describe the journal',
+    keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
         [validators.Required(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
         description='Maximum 6'
     )
@@ -703,10 +703,10 @@ class JournalInformationForm(Form):
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
         [validators.Required(), URLOptionalScheme()]
     )
-    license_embedded = RadioField('Does the journal embed machine-readable CC licensing information in its article metadata?',
+    license_embedded = RadioField('Does the journal embed or display simple machine-readable CC licensing information in its articles?',
         [validators.Required()],
         choices = binary_choices,
-        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/Marking_works">http://wiki.creativecommons.org/Marking_works</a><br><br>If "No" proceed to question below.',
+        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/CC_REL">http://wiki.creativecommons.org/CC_REL</a><br><br>If "No" proceed to question below.',
     )
     license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=optional_url_binary_choices_optvals), URLOptionalScheme()]
