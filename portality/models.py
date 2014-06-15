@@ -933,7 +933,7 @@ class JournalBibJSON(GenericBibJSON):
     
     @property
     def language(self): 
-        return self.bibjson.get("language")
+        return self.bibjson.get("language", [])
     
     def set_language(self, language):
         if isinstance(language, list):
