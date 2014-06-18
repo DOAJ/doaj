@@ -26,5 +26,9 @@ class Authorise(object):
             roles += role_map.get(r, [])
         return list(set(roles))
 
+    @classmethod
+    def top_level_roles(cls):
+        return app.config.get("TOP_LEVEL_ROLES", [])
+
         
         

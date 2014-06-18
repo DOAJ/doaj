@@ -2,12 +2,6 @@
 
 {% block content %}
 
-<script type="text/javascript">
-jQuery(document).ready(function() {
-    jQuery('#panel').facetview( {{ search_options | safe }} )
-});
-</script>
-
 {% if current_user.has_role("list_users") %}
     <p><a href="/account">view a list of all user accounts</a>
 {% endif %}
@@ -48,7 +42,7 @@ jQuery(document).ready(function() {
                 <h4>Edit your user roles</h4>
                 <form action="" method="POST">
                     {% if current_user.is_super %}
-                        <input type="text" name="role" value="{{account.role|join(',')}}">
+                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 90%"><br><br>
                         <input type="submit" class="btn btn-success" name="submit" value="Update">
                     {% else %}
                         <input type="text" name="role" value="{{account.role|join(',')}}" disabled="disabled">
@@ -98,4 +92,14 @@ jQuery(document).ready(function() {
 {% endif %}
 
 {% endblock %}
+
+{% block extra_js_bottom %}
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#editable_role').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"]})
+});
+</script>
+
+{% endblock extra_js_bottom %}
 

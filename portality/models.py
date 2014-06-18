@@ -502,6 +502,10 @@ class Account(DomainObject, UserMixin):
     
     def has_role(self, role):
         return Authorise.has_role(role, self.data.get("role", []))
+
+    @classmethod
+    def all_top_level_roles(cls):
+        return Authorise.top_level_roles()
     
     def add_role(self, role):
         if "role" not in self.data:

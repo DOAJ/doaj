@@ -62,6 +62,8 @@ PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 SUPER_USER_ROLE = "admin"
 
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor"]
+
 ROLE_MAP = {
     "editor": [
         "associate_editor", # note, these don't cascade, so we still need to list all the low-level roles
