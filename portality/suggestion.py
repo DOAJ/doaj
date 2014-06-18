@@ -80,7 +80,6 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
             form.editor.choices = [("", "")]
 
 
-
     return suggestion_form(form, request, template,
                            existing_suggestion=s,
                            suggestion=s,
@@ -127,9 +126,6 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
                 valid = True
             else:
                 valid = form.validate()
-            if not valid:
-                print "eg", form.editor_group.errors
-                print "ed", form.editor.errors
 
             if valid:
                 email_editor = False
@@ -148,10 +144,13 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
                     suggestion.suggested_on = now
                     suggestion.set_application_status('pending')
                 else:
+                    # copy over any important fields from the previous version of the object
                     created_date = existing_suggestion.created_date if existing_suggestion.created_date else now
                     suggestion.set_created(created_date)
                     suggestion.suggested_on = existing_suggestion.suggested_on
                     suggestion.data['id'] = existing_suggestion.data['id']
+                    if ((suggestion.owner is None or suggestion.owner == "") and (existing_suggestion.owner is not None)) or not current_user.has_role("admin"):
+                        suggestion.set_owner(existing_suggestion.owner)
 
                     if not group_editable or not editorial_available:
                         suggestion.set_editor_group(existing_suggestion.editor_group)

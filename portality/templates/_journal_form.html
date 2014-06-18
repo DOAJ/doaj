@@ -151,10 +151,12 @@
       <div class="span6">
           <div class="row-fluid">
 
+              {% if current_user.is_super %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Owner</h3>
                 {{ render_fields(form, admin_owner_fields) }}
               </div>
+              {% endif %}
 
               {% if editorial_available %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">

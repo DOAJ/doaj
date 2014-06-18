@@ -145,10 +145,12 @@
                 {{ render_fields(form, admin_appstatus_fields) }}
               </div>
 
+              {% if current_user.is_super %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Assign to account</h3>
                 {{ render_fields(form, admin_assign_account_fields) }}
               </div>
+              {% endif %}
 
               {% if editorial_available %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
@@ -160,14 +162,6 @@
                   {% endif %}
 
                   {{ render_field(form.editor, class="input-large") }}
-
-                  {% if group_editable %}
-                  <div class="control-group">
-                    <div class="controls">
-                        <button id="remove_group_button" class="btn btn-danger" type="submit">Remove Group</button>
-                    </div>
-                  </div>
-                  {% endif %}
               </div>
               {% endif %}
 

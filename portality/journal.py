@@ -114,6 +114,8 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
             journal.set_created(created_date)
             journal.bibjson().active = j.is_in_doaj()
             journal.set_in_doaj(j.is_in_doaj())
+            if ((journal.owner is None or journal.owner == "") and (j.owner is not None)) or not current_user.has_role("admin"):
+                journal.set_owner(j.owner)
 
             if not group_editable or not editorial_available:
                 journal.set_editor_group(j.editor_group)
