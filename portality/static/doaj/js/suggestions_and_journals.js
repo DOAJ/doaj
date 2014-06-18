@@ -79,7 +79,7 @@ jQuery(document).ready(function($) {
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
     autocomplete('#owner', 'id', 'account');
-    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false, true);
 
     exclusive_checkbox('digital_archiving_policy', 'No policy in place');
     exclusive_checkbox('article_identifiers', 'None');
@@ -93,12 +93,6 @@ jQuery(document).ready(function($) {
     setup_subject_tree();
     setup_remove_buttons();
     setup_add_buttons();
-
-    $("#remove_group_button").click(function(event) {
-        event.preventDefault()
-        $("#editor_group").select2("val", "")
-        $("#editor").html("<option val='' selected='selected'></option>")
-    })
 
     $("#editor_group").change(function(event) {
         event.preventDefault()
@@ -189,10 +183,11 @@ function __init_optional_field(elem, optional_field_selectors, values_to_show_fo
     }
 }
 
-function autocomplete(selector, doc_field, doc_type, mininput, include_input) {
+function autocomplete(selector, doc_field, doc_type, mininput, include_input, allow_clear) {
     var doc_type = doc_type || "journal";
     var mininput = mininput === undefined ? 3 : mininput
     var include_input = include_input === undefined ? true : include_input
+    var allow_clear = allow_clear === undefined ? false : allow_clear
 
     var ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
@@ -218,14 +213,18 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input) {
             minimumInputLength: mininput,
             ajax: ajax,
             createSearchChoice: csc,
-            initSelection : initSel
+            initSelection : initSel,
+            placeholder: "",
+            allowClear: allow_clear
         });
     } else {
         // go without the create search choice option
         $(selector).select2({
             minimumInputLength: mininput,
             ajax: ajax,
-            initSelection : initSel
+            initSelection : initSel,
+            placeholder: "",
+            allowClear: allow_clear
         });
     }
 }
