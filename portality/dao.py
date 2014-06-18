@@ -349,7 +349,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         facet_field = query_field + app.config['FACET_FIELD']
 
         q = {
-            "query": {"prefix" : { query_field : prefix } },
+            "query": {"prefix" : { query_field : prefix.lower() } },
             "size": 0,
             "facets" : {
               field : { "terms" : {"field" : facet_field, "size": size} }
