@@ -32,7 +32,7 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
     try:
         lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
     except lock.Locked as l:
-        return render_template(locked_template, suggestion=s, lock=l.lock)
+        return render_template(locked_template, suggestion=s, lock=l.lock, edit_suggestion_page=True)
 
     current_info = models.ObjectDict(SuggestionFormXWalk.obj2form(s))
     form = EditSuggestionForm(request.form, current_info)

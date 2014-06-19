@@ -15,7 +15,7 @@
     <div class="span12">
         <p><strong>You cannot currently edit this application</strong></p>
 
-        <p>The user {{lock.username}} is currently editing this record, and has an edit-lock until {{lock.expire_formatted()}}</p>
+        <p>The user {{lock.username}} is currently editing this record, and has an edit-lock until <strong><span id="lock_expires" data-timestamp="{{lock.utc_expires()}}">{{lock.expire_formatted()}}</span></strong></p>
 
         <p>Please try again later!</p>
     </div>

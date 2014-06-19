@@ -130,7 +130,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             return None
 
     @classmethod
-    def pull_by_key(cls,key,value):
+    def pull_by_key(cls, key, value):
         res = cls.query(q={"query":{"term":{key+app.config['FACET_FIELD']:value}}})
         if res.get('hits',{}).get('total',0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )

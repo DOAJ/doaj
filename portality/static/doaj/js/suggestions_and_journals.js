@@ -1,5 +1,58 @@
 jQuery(document).ready(function($) {
 
+    ////// functions for handling edit locks ///////////////////////
+
+    function setLockTimeout() {
+        var ts = $("#lock_expires").attr("data-timestamp")
+        var d = new Date(ts)
+        var hours = d.getHours()
+        var minutes = d.getMinutes()
+        if (String(minutes).length == 1) { minutes = "0" + minutes }
+        var formatted = hours + ":" + minutes
+        $("#lock_expires").html(formatted)
+    }
+    setLockTimeout()
+
+    function unlock(params) {
+        var type = params.type
+        var id = params.id
+
+        function success_callback(data) {
+            var newWindow = window.open('', '_self', ''); //open the current window
+            window.close(url);
+        }
+
+        function error_callback(jqXHR, textStatus, errorThrown) {
+            alert("error releasing lock: " + textStatus + " " + errorThrown)
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/service/unlock/" + type + "/" + id,
+            contentType: "application/json",
+            dataType: "json",
+            success : success_callback,
+            error: error_callback
+        })
+    }
+
+    $("#unlock").click(function(event) {
+        event.preventDefault()
+        var id = $(this).attr("data-id")
+        var type = $(this).attr("data-type")
+        unlock({type : type, id : id})
+    })
+
+    // NOTE: this does not play well with page reloads, so not using it
+    //$(window).unload(function() {
+    //   var id = $("#unlock").attr("data-id")
+    //    var type = $("#unlock").attr("data-type")
+    //    unlock({type : type, id : id})
+    //});
+
+    ////////////////////////////////////////////////////
+
+
     // define a new highlight function, letting us highlight any element
     // on a page
     // adapted from http://stackoverflow.com/a/11589350

@@ -4,6 +4,7 @@ import json
 import locale
 import sys
 import uuid
+import tzlocal
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -657,6 +658,14 @@ class Lock(DomainObject):
     def is_expired(self):
         ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
         return ed <= datetime.now()
+
+    def utc_expires(self):
+        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        local = tzlocal.get_localzone()
+        ld = local.localize(ed)
+        tt = ld.utctimetuple()
+        utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)
+        return utcdt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def expire_formatted(self, format="%H:%M"):
         ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")

@@ -38,7 +38,7 @@ def request_handler(request, journal_id, redirect_route="admin.journal_page", te
     try:
         lockinfo = lock.lock("journal", journal_id, current_user.id)
     except lock.Locked as l:
-        return render_template(locked_template, journal=j, lock=l.lock)
+        return render_template(locked_template, journal=j, lock=l.lock, edit_journal_page=True)
 
     current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
     form = JournalForm(request.form, current_info)

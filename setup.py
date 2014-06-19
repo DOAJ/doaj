@@ -16,6 +16,7 @@ setup(
         "lxml",
         "nose",
         "feedparser",
+        "tzlocal",
         "futures==2.1.6",
         # for deployment
         "gunicorn",

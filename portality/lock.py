@@ -14,7 +14,6 @@ def lock(type, id, username):
     l = models.Lock.pull_by_key("about", id)
 
     if l is None:
-        print "no lock"
         l = models.Lock()
         l.set_about(id)
         l.set_type(type)
@@ -25,8 +24,6 @@ def lock(type, id, username):
 
     indate = not l.is_expired()
     yours = l.username == username
-
-    print "in date", indate, "yours", yours
 
     if not yours and not indate:
         # overwrite the old lock with a new one
@@ -50,6 +47,8 @@ def lock(type, id, username):
 
 def unlock(type, id, username):
     l = models.Lock.pull_by_key("about", id)
+    if not l:
+        return True
     if l.username == username:
         l.delete()
         return True
