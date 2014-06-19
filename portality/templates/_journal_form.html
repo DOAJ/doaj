@@ -151,13 +151,6 @@
       <div class="span6">
           <div class="row-fluid">
 
-              {% if current_user.is_super %}
-              <div class="span12 with-borders form-section" style="margin-left: 0;">
-                <h3 class="heading-aligned-with-fields">Owner</h3>
-                {{ render_fields(form, admin_owner_fields) }}
-              </div>
-              {% endif %}
-
               {% if editorial_available %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Editorial</h3>
@@ -168,6 +161,24 @@
                   {% endif %}
 
                   {{ render_field(form.editor, class="input-large") }}
+              </div>
+              {% endif %}
+
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                  <div class="control-group">
+                    <div class="controls">
+                        <button class="btn btn-success" type="submit">Save journal &gt;</button>
+                    </div>
+                  </div>
+
+
+                  {{ render_field(form.make_all_fields_optional) }}
+              </div>
+
+              {% if current_user.is_super %}
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                <h3 class="heading-aligned-with-fields">Owner</h3>
+                {{ render_fields(form, admin_owner_fields) }}
               </div>
               {% endif %}
 
@@ -188,17 +199,6 @@
                     {{ render_fields(form, old_fields) }}
                   </div>
               {% endif %}
-
-              <div class="span12 with-borders form-section" style="margin-left: 0;">
-                  <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success" type="submit">Save journal &gt;</button>
-                    </div>
-                  </div>
-
-
-                  {{ render_field(form.make_all_fields_optional) }}
-              </div>
           </div>
       </div>
 

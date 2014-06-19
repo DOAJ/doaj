@@ -140,18 +140,6 @@
 
       <div class="span6">
           <div class="row-fluid">
-              <div class="span12 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Application status</h3>
-                {{ render_fields(form, admin_appstatus_fields) }}
-              </div>
-
-              {% if current_user.is_super %}
-              <div class="span12 with-borders form-section" style="margin-left: 0;">
-                <h3 class="heading-aligned-with-fields">Assign to account</h3>
-                {{ render_fields(form, admin_assign_account_fields) }}
-              </div>
-              {% endif %}
-
               {% if editorial_available %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Editorial</h3>
@@ -173,6 +161,18 @@
                   </div>
                   {{ render_field(form.make_all_fields_optional) }}
               </div>
+
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                <h3 class="heading-aligned-with-fields">Application status</h3>
+                {{ render_fields(form, admin_appstatus_fields) }}
+              </div>
+
+              {% if current_user.is_super %}
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                <h3 class="heading-aligned-with-fields">Assign to account</h3>
+                {{ render_fields(form, admin_assign_account_fields) }}
+              </div>
+              {% endif %}
           </div>
       </div>
 
