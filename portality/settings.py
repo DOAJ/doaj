@@ -19,6 +19,7 @@ SUPPRESS_ERROR_EMAILS = False
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
+MANAGING_EDITOR_EMAIL = "managing_editor@doaj.org"
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
