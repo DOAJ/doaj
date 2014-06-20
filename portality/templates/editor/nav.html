@@ -11,9 +11,9 @@
             <li{% if request.path == url_for('editor.group_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.group_suggestions') }}">Your Group's Applications</a></li>
             {% endif %}
 
-            <li{% if request.path == url_for('editor.associate_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_journals') }}">Your Journals</a></li>
+            <li{% if request.path == url_for('editor.associate_journals') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_journals') }}">Journals Assigned to You</a></li>
 
-            <li{% if request.path == url_for('editor.associate_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_suggestions') }}">Your Applications</a></li>
+            <li{% if request.path == url_for('editor.associate_suggestions') %} class="active"{% endif %}><a href="{{ url_for('editor.associate_suggestions') }}">Applications Assigned to You</a></li>
         </ul>
     </div>
 </div>
