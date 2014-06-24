@@ -81,7 +81,7 @@ def username(username):
             else:
                 newdata['api_key'] = acc.data['api_key']
         for k, v in newdata.items():
-            if k not in ['submit','password', 'role', 'confirm']:
+            if k not in ['submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             acc.set_password(newdata['password'])
