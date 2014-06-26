@@ -246,9 +246,6 @@ A new application for the journal "{journal_name}" has been assigned to your Edi
 You may access the application in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 
@@ -274,9 +271,6 @@ A new application for the journal "{journal_name}" has been assigned to you by t
 You may access the application in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 def send_editor_email(suggestion):

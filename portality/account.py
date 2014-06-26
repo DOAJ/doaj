@@ -126,9 +126,6 @@ You can check that your articles have been successfully added to your journal by
 - DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 
