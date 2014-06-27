@@ -43,6 +43,10 @@
                   {% if current_user.has_role("admin_area") %}
                     <li{% if request.path.startswith('/admin') %} class="active"{% endif %}><a alt="go to the admin area" title="go to the admin area" href="{{ url_for('admin.index') }}">Admin</a></li>
                   {% endif %}
+
+                  {% if current_user.has_role("editor_area") %}
+                    <li{% if request.path.startswith('/editor') %} class="active"{% endif %}><a alt="go to the editor area" title="go to the editor area" href="{{ url_for('editor.index') }}">Editor</a></li>
+                  {% endif %}
                   
                   {% if current_user.has_role("publisher") %}
                     <li{% if request.path.startswith('/publisher') and not request.path.startswith("/publishers") %} class="active"{% endif %}><a alt="go to the publisher area" title="go to the publisher area" href="{{ url_for('publisher.index') }}">Publisher Area</a></li>

@@ -1,0 +1,12 @@
+{% extends "admin/admin_base.html" %}
+
+{% block admin_content %}
+
+<a href="{{url_for('admin.editor_group')}}"><button class="btn btn-info">New Editor Group</button></a>
+
+<div class="facetview editor_group"></div>
+{% endblock %}
+
+{% block extra_js_bottom %}
+    <script type="text/javascript">var editor_group_edit_url = "{{ url_for('admin.editor_group', group_id='') }}";</script>
+{% endblock %}

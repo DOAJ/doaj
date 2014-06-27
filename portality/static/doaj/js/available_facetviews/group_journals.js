@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-  $('.facetview.journals').each(function() {
+  $('.facetview.group_journals').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/admin_query/journal/_search?',
+    search_url: es_scheme + '//' + es_domain + '/editor_query/journal/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
+        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'index.classification.exact', 'display': 'Classification'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
         {'display':'Journal Country','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
-        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
+        {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -100,6 +100,12 @@ jQuery(document).ready(function($) {
         ],
         [
             {
+                "pre" : "<strong>Editor</strong>: ",
+                "field" : "admin.editor"
+            }
+        ],
+        [
+            {
                 "pre" : "<strong>ISSN(s)</strong>: ",
                 "field" : "issns"
             }
@@ -135,7 +141,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
+                "pre": "<strong>Provider</strong>: ",
                 "field": "bibjson.provider",
             }
         ],

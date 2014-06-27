@@ -12,41 +12,12 @@ from portality import util
 
 blueprint = Blueprint('account', __name__)
 
-"""
-if len(app.config.get('SUPER_USER',[])) > 0:
-    firstsu = app.config['SUPER_USER'][0]
-    if models.Account.pull(firstsu) is None:
-        su = models.Account(id=firstsu)
-        su.set_password(firstsu)
-        su.save()
-        print 'superuser account named - ' + firstsu + ' created.'
-        print 'default password matches username. Change it.'
-"""
-
 @blueprint.route('/')
 @login_required
 @ssl_required
 def index():
     if not current_user.has_role("list_users"):
         abort(401)
-    """
-    users = models.Account.query() #{"sort":{'id':{'order':'asc'}}},size=1000000
-    if users['hits']['total'] != 0:
-        accs = [models.Account.pull(i['_source']['id']) for i in users['hits']['hits']]
-        # explicitly mapped to ensure no leakage of sensitive data. augment as necessary
-        users = []
-        for acc in accs:
-            user = {'id':acc.id, "email":acc.email, "role" : acc.role}
-            if 'created_date' in acc.data:
-                user['created_date'] = acc.data['created_date']
-            users.append(user)
-    if util.request_wants_json():
-        resp = make_response( json.dumps(users, sort_keys=True, indent=4) )
-        resp.mimetype = "application/json"
-        return resp
-    else:
-        return render_template('account/users.html', users=users)
-    """
     return render_template("account/users.html", search_page=True, facetviews=["users"])
 
 

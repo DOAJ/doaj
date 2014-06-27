@@ -15,7 +15,6 @@ import portality.util as util
 
 blueprint = Blueprint('query', __name__)
 
-
 # pass queries direct to index. POST only for receipt of complex query objects
 @blueprint.route('/<path:path>', methods=['GET','POST'])
 @blueprint.route('/', methods=['GET','POST'])
@@ -46,6 +45,7 @@ def query(path='Pages'):
     #
     owner_filter = False # don't apply the owner filter unless expressly requested
     default_filter = True # always apply the default filter unless asked otherwise
+    editor_filter = False # don't apply the editor group filter unless expressly requested
     role = None
     qr = app.config.get("QUERY_ROUTE", {})
     frag = request.path
@@ -54,6 +54,8 @@ def query(path='Pages'):
             default_filter = qr[qroute].get("default_filter", True)
             role = qr[qroute].get("role")
             owner_filter = qr[qroute].get("owner_filter")
+            editor_filter = qr[qroute].get("editor_filter", False)
+            associate_filter = qr[qroute].get("associate_filter", False)
             break
     
     # if there is a role, then check that the user is not anonymous and
@@ -125,27 +127,39 @@ def query(path='Pages'):
                     qs['query']['bool']['must'] = []
                 qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][path.lower()]
 
-        # if ONLY articles and/or journals are being requested, apply a
-        # filter by default, unless the user should be allowed to see
-        # all records
+
         terms = {}
-        """
-        if current_user.is_anonymous() or (request.referrer is not None and "/search?" in request.referrer): # FIXME: hardcoded for the time being - should probably be configurable
-            terms = _default_filter(subpaths)
-        else:
-            if not current_user.has_role("view_not_in_doaj"):
-                terms = _default_filter(subpaths)
-        """
+        shoulds = {}
         if default_filter:
             terms.update(_default_filter(subpaths))
         
         if owner_filter:
             terms.update(_owner_filter())
-        
-        resp = make_response( json.dumps(klass().query(q=qs, terms=terms)) )
+
+        if editor_filter:
+            shoulds.update(_editor_filter())
+
+        if associate_filter:
+            terms.update(_associate_filter())
+
+        print terms
+        resp = make_response( json.dumps(klass().query(q=qs, terms=terms, should_terms=shoulds)) )
 
     resp.mimetype = "application/json"
     return resp
+
+def _associate_filter():
+    return {"admin.editor.exact" : current_user.id}
+
+def _editor_filter():
+    """
+    Apply filter to include only items assigned to editor groups that the current user is the editor for
+    """
+    gnames = []
+    groups = models.EditorGroup.groups_by_editor(current_user.id)
+    for g in groups:
+        gnames.append(g.name)
+    return {"admin.editor_group.exact" : gnames}
 
 def _owner_filter():
     return {"admin.owner.exact" : current_user.id}

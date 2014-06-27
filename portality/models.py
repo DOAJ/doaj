@@ -4,6 +4,7 @@ import json
 import locale
 import sys
 import uuid
+import tzlocal
 
 from portality.core import app
 from portality.dao import DomainObject as DomainObject
@@ -13,9 +14,11 @@ from portality import xwalk
 from werkzeug import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 
-def lookup_model(name='', capitalize=True):
+def lookup_model(name='', capitalize=True, split_on="_"):
+    parts = name.split(split_on)
     if capitalize:
-        name = name.capitalize()
+        parts = [p.capitalize() for p in parts]
+    name = "".join(parts)
     try:
         return getattr(sys.modules[__name__], name)
     except:
@@ -500,11 +503,16 @@ class Account(DomainObject, UserMixin):
     
     def has_role(self, role):
         return Authorise.has_role(role, self.data.get("role", []))
+
+    @classmethod
+    def all_top_level_roles(cls):
+        return Authorise.top_level_roles()
     
     def add_role(self, role):
         if "role" not in self.data:
             self.data["role"] = []
-        self.data["role"].append(role)
+        if role not in self.data["role"]:
+            self.data["role"].append(role)
     
     @property
     def role(self):
@@ -517,6 +525,154 @@ class Account(DomainObject, UserMixin):
             
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+class EditorGroup(DomainObject):
+    __type__ = "editor_group"
+
+    @classmethod
+    def group_exists_by_name(cls, name):
+        q = EditorGroupQuery(name)
+        res = cls.query(q=q.query())
+        ids = [hit.get("_source", {}).get("id") for hit in res.get("hits", {}).get("hits", []) if "_source" in hit]
+        if len(ids) == 0:
+            return None
+        if len(ids) > 0:
+            return ids[0]
+
+    @classmethod
+    def groups_by_editor(cls, editor):
+        q = EditorGroupMemberQuery(editor=editor)
+        iter = cls.iterate(q.query(), page_size=100)
+        return iter
+
+    @classmethod
+    def groups_by_associate(cls, associate):
+        q = EditorGroupMemberQuery(associate=associate)
+        print q.query()
+        iter = cls.iterate(q.query(), page_size=100)
+        return iter
+
+    @property
+    def name(self):
+        return self.data.get("name")
+
+    def set_name(self, val):
+        self.data["name"] = val
+
+    @property
+    def editor(self):
+        return self.data.get("editor")
+
+    def set_editor(self, val):
+        self.data["editor"] = val
+
+    def get_editor_account(self):
+        return Account.pull(self.editor)
+
+    @property
+    def associates(self):
+        return self.data.get("associates", [])
+
+    def set_associates(self, val):
+        if not isinstance(val, list):
+            val = [val]
+        self.data["associates"] = val
+
+    def add_associate(self, val):
+        if "associates" not in self.data:
+            self.data["associates"] = []
+        self.data["associates"].append(val)
+
+    def get_associate_accounts(self):
+        accs = []
+        for a in self.associates:
+            acc = Account.pull(a)
+            accs.append(acc)
+        return accs
+
+class EditorGroupQuery(object):
+    def __init__(self, name):
+        self.name = name
+    def query(self):
+        q = {"query" : {"term" : {"name.exact" : self.name}}}
+        return q
+
+class EditorGroupMemberQuery(object):
+    def __init__(self, editor=None, associate=None):
+        self.editor = editor
+        self.associate = associate
+
+    def query(self):
+        q = {"query" : {"bool" : {"should" : []}}}
+        if self.editor is not None:
+            et = {"term" : {"editor.exact" : self.editor}}
+            q["query"]["bool"]["should"].append(et)
+        if self.associate is not None:
+            at = {"term" : {"associates.exact" : self.associate}}
+            q["query"]["bool"]["should"].append(at)
+        return q
+
+class Lock(DomainObject):
+    __type__ = "lock"
+    """
+    {
+        "id" : "<opaque id for this lock>",
+        "about" : "<opaque id for the journal/suggestion to which it applies>",
+        "type" : "<journal/suggestion>",
+        "created_date" : "<timestamp this lock record was created>",
+        "expires" : "<timestamp for when this lock record expires>",
+        "username" : "<user name of the user who holds the lock>"
+    }
+    """
+    @property
+    def about(self):
+        return self.data.get("about")
+
+    def set_about(self, val):
+        self.data["about"] = val
+
+    @property
+    def type(self):
+        return self.data.get("type")
+
+    def set_type(self, val):
+        if val not in ["journal", "suggestion"]:
+            return
+        self.data["type"] = val
+
+    @property
+    def username(self):
+        return self.data.get("username")
+
+    def set_username(self, val):
+        self.data["username"] = val
+
+    @property
+    def expires(self):
+        return self.data.get('expires')
+
+    def expires_in(self, timeout):
+        expires = datetime.now() + timedelta(0, timeout)
+        self.data["expires"] = expires.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    def is_expired(self):
+        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        return ed <= datetime.now()
+
+    def utc_expires(self):
+        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        local = tzlocal.get_localzone()
+        ld = local.localize(ed)
+        tt = ld.utctimetuple()
+        utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec)
+        return utcdt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    def expire_formatted(self, format="%H:%M"):
+        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        formatted = ed.strftime(format)
+        return formatted
+
+
 
 #########################################################################
 
@@ -672,6 +828,24 @@ class Journal(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["owner"] = owner
+
+    @property
+    def editor_group(self):
+        return self.data.get("admin", {}).get("editor_group")
+
+    def set_editor_group(self, eg):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["editor_group"] = eg
+
+    @property
+    def editor(self):
+        return self.data.get("admin", {}).get("editor")
+
+    def set_editor(self, ed):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["editor"] = ed
     
     def known_issns(self):
         """ all issns this journal has ever been known by """

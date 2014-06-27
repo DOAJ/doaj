@@ -73,7 +73,7 @@ The objective of the "history" section of the records is to record old versions 
 
 It is likely that history records will only be created upon request by the administrator.
 
-### Journal Data Model
+### Journal/Application Data Model
 
 ```python
 {
@@ -201,20 +201,16 @@ It is likely that history records will only be created upon request by the admin
                 "note" : "<note>", 
                 "date" : "<date>"
             }
-        ],
-        "owner_correspondence" : [
-            {
-                "note" : "<note>", 
-                "date" : "<date>"
-            }
-        ],
+        ]
         "contact" : [
             { 
                 "email" : "<email of journal contact>",
                 "name" : "<name of journal contact>"
             }
         ],
-        "owner" : "<account id of owner>"
+        "owner" : "<account id of owner>",
+        "editor_group" : "<name of editor group which controls this object>",
+        "editor" : "<username of associate editor assigned to this object>"
     },
     "index" : {
         "issn" : [<list of all print and electronic issns for all time>],
@@ -396,6 +392,34 @@ The Journal ToC data model stores a cache of the Table of Contents on a per-volu
     "last_updated" : "<date record last modified>"
 }
 ```
+
+## Edit Lock Data Model
+
+```python
+{
+    "id" : "<opaque id for this lock>",
+    "about" : "<opaque id for the journal/suggestion to which it applies>",
+    "type" : "<journal/suggestion>",
+    "created_date" : "<timestamp this lock record was created>",
+    "expires" : "<timestamp for when this lock record expires>",
+    "username" : "<user name of the user who holds the lock>"
+}
+```
+
+## Editor Group Data Model
+
+```python
+{
+    "id" : "<opaque id for this editor group>",
+    "name" : "<human readable name for this editor group>",
+    "editor" : "<username of editor which runs this group>",
+    "associates" : ["<associate who is part of this group>"],
+    "created_date" : "<timestamp for when this group was created>",
+    "last_updated" : "<timestamp for when this group was last modified>"
+}
+```
+
+Note: Editor group names need to be unique within the index
 
 ## Authentication and Authorisation System
 

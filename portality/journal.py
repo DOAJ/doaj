@@ -1,11 +1,166 @@
+import json
 from copy import deepcopy
+from datetime import datetime
+
+from flask import flash
+from flask import render_template, redirect, url_for, abort
+from flask.ext.login import current_user
 
 from portality import lcc
 from portality.util import listpop
 from portality.datasets import licenses
-from portality.models import Journal
+from portality.models import Journal, EditorGroup, Account
 from portality.view import forms
+from portality.core import app
+import portality.models as models
+import portality.util as util
+from portality import xwalk
+from portality.view.forms import JournalForm, subjects2str, other_val, digital_archiving_policy_specific_library_value
 
+from portality.datasets import country_options_two_char_code_index
+from portality.lcc import lcc_jstree
+from portality import lock
+
+def get_journal(journal_id):
+    j = models.Journal.pull(journal_id)
+    return j
+
+def request_handler(request, journal_id, redirect_route="admin.journal_page", template="admin/journal.html", locked_template="admin/journal_locked.html",
+                    activate_deactivate=False, group_editable=False, editors=None, editorial_available=False):
+    # check our permissions
+    if not current_user.has_role("edit_journal"):
+        abort(401)
+    j = get_journal(journal_id)
+    if j is None:
+        abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("journal", journal_id, current_user.id)
+    except lock.Locked as l:
+        return render_template(locked_template, journal=j, lock=l.lock, edit_journal_page=True)
+
+    current_info = models.ObjectDict(JournalFormXWalk.obj2form(j))
+    form = JournalForm(request.form, current_info)
+
+    current_country = xwalk.get_country_code(j.bibjson().country)
+
+    if current_country not in country_options_two_char_code_index:
+        # couldn't find it, better warn the user to look for it
+        # themselves
+        country_help_text = "This journal's country has been recorded as \"{country}\". Please select it in the Country menu.".format(country=current_country)
+    else:
+        country_help_text = ''
+
+    form.country.description = '<span class="red">' + country_help_text + '</span>'
+
+    # add the contents of a few fields to their descriptions since select2 autocomplete
+    # would otherwise obscure the full values
+    if form.publisher.data:
+        if not form.publisher.description:
+            form.publisher.description = 'Full contents: ' + form.publisher.data
+        else:
+            form.publisher.description += '<br><br>Full contents: ' + form.publisher.data
+
+    if form.society_institution.data:
+        if not form.society_institution.description:
+            form.society_institution.description = 'Full contents: ' + form.society_institution.data
+        else:
+            form.society_institution.description += '<br><br>Full contents: ' + form.society_institution.data
+
+    if form.platform.data:
+        if not form.platform.description:
+            form.platform.description = 'Full contents: ' + form.platform.data
+        else:
+            form.platform.description += '<br><br>Full contents: ' + form.platform.data
+
+    first_field_with_error = ''
+
+    if editors is not None:
+        form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+    else:
+        if j.editor is not None:
+            form.editor.choices = [(j.editor, j.editor)]
+        else:
+            form.editor.choices = [("", "")]
+
+    if request.method == 'POST':
+        if form.make_all_fields_optional.data:
+            valid = True
+        else:
+            valid = form.validate()
+        if valid:
+            # even though you can only edit journals right now, keeping the same
+            # method as editing suggestions (i.e. creating a new object
+            # and editing its properties)
+
+            email_editor = False
+            if group_editable:
+                email_editor = JournalFormXWalk.is_new_editor_group(form, j)
+
+            email_associate = False
+            if editorial_available:
+                email_associate = JournalFormXWalk.is_new_editor(form, j)
+
+            # do the core crosswalk
+            journal = JournalFormXWalk.form2obj(form, existing_journal=j)
+
+            # some of the properties (id, in_doaj, etc.) have to be carried over
+            # otherwise they implicitly end up getting changed to their defaults
+            # when a journal gets edited (e.g. it always gets taken out of DOAJ)
+            # if we don't copy over the in_doaj attribute to the new journal object
+            journal['id'] = j['id']
+            created_date = j.created_date if j.created_date else datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            journal.set_created(created_date)
+            journal.bibjson().active = j.is_in_doaj()
+            journal.set_in_doaj(j.is_in_doaj())
+            if ((journal.owner is None or journal.owner == "") and (j.owner is not None)) or not current_user.has_role("admin"):
+                journal.set_owner(j.owner)
+
+            if not group_editable or not editorial_available:
+                journal.set_editor_group(j.editor_group)
+
+            if not editorial_available:
+                journal.set_editor(j.editor)
+
+            # FIXME: probably should check that the editor is in the editor_group and remove if not
+
+            journal.save()
+            flash('Journal updated.', 'success')
+
+            # only actually send the email when we've successfully processed the form
+            if email_editor:
+                send_editor_group_email(journal)
+
+            if email_associate:
+                send_editor_email(journal)
+
+            return redirect(url_for(redirect_route, journal_id=journal_id, _anchor='done'))
+                # meaningless anchor to replace #first_problem used on the form
+                # anchors persist between 3xx redirects to the same resource
+        else:
+            for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
+                if field.errors:
+                    first_field_with_error = field.short_name
+                    break
+
+    return render_template(
+            template,
+            form=form,
+            first_field_with_error=first_field_with_error,
+            q_numbers=xrange(1, 10000).__iter__(),  # a generator for the purpose of displaying numbered questions
+            other_val=other_val,
+            digital_archiving_policy_specific_library_value=digital_archiving_policy_specific_library_value,
+            edit_journal_page=True,
+            admin_page=True,
+            journal=j,
+            subjectstr=subjects2str(j.bibjson().subjects()),
+            lcc_jstree=json.dumps(lcc_jstree),
+            activate_deactivate=activate_deactivate,
+            group_editable=group_editable,
+            editorial_available=editorial_available,
+            lock=lockinfo
+    )
 
 def suggestion2journal(suggestion):
     journal_data = deepcopy(suggestion.data)
@@ -19,11 +174,77 @@ def suggestion2journal(suggestion):
     new_j = Journal(**journal_data)
     return new_j
 
+JOURNAL_ASSIGNED_GROUP_TEMPLATE = \
+"""
+Dear {editor},
+
+The journal "{journal_name}" has been assigned to your Editor Group by a Managing Editor.
+You may access the journal in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+
+def send_editor_group_email(journal):
+    eg = EditorGroup.pull_by_key("name", journal.editor_group)
+    if eg is None:
+        return
+    editor = Account.pull(eg.editor)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
+    text = JOURNAL_ASSIGNED_GROUP_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=journal.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+
+JOURNAL_ASSIGNED_EDITOR_TEMPLATE = \
+"""
+Dear {editor},
+
+The journal "{journal_name}" has been assigned to you by the Editor in your Editor Group "{group_name}".
+You may access the journal in your Editor Area: {url_root}/editor/ .
+
+The DOAJ Team
+Twitter: https://twitter.com/DOAJplus
+Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
+LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
+"""
+
+def send_editor_email(journal):
+    editor = Account.pull(journal.editor)
+    eg = EditorGroup.pull_by_key("name", journal.editor_group)
+
+    url_root = app.config.get("BASE_URL")
+    to = [editor.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
+    text = JOURNAL_ASSIGNED_EDITOR_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'),
+                                                   journal_name=journal.bibjson().title.encode('utf-8', 'replace'),
+                                                   group_name=eg.name.encode("utf-8", "replace"), url_root=url_root)
+
+    util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
 class JournalFormXWalk(object):
     # NOTE: if you change something here, you will probably
     # need to change the same thing in SuggestionFormXWalk in portality.suggestion .
     # TODO: refactor suggestion and journal xwalks to put the common code in one place
+
+    @classmethod
+    def is_new_editor_group(cls, form, old_journal):
+        old_eg = old_journal.editor_group
+        new_eg = form.editor_group.data
+        return old_eg != new_eg and new_eg is not None and new_eg != ""
+
+    @classmethod
+    def is_new_editor(cls, form, old_journal):
+        old_ed = old_journal.editor
+        new_ed = form.editor.data
+        return old_ed != new_ed and new_ed is not None and new_ed != ""
 
     @staticmethod
     def form2obj(form, existing_journal):
@@ -205,6 +426,14 @@ class JournalFormXWalk(object):
         if owner:
             journal.set_owner(owner)
 
+        editor_group = form.editor_group.data.strip()
+        if editor_group:
+            journal.set_editor_group(editor_group)
+
+        editor = form.editor.data.strip()
+        if editor:
+            journal.set_editor(editor)
+
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
@@ -355,6 +584,10 @@ class JournalFormXWalk(object):
             forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
+        if obj.editor_group is not None:
+            forminfo['editor_group'] = obj.editor_group
+        if obj.editor is not None:
+            forminfo['editor'] = obj.editor
         
         # old fields - only show them if the values actually exist in the journal record
         if bibjson.author_pays:

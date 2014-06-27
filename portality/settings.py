@@ -18,6 +18,8 @@ ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
 SUPPRESS_ERROR_EMAILS = False
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
+ENABLE_EMAIL = True
+ENABLE_PUBLISHER_EMAIL = True
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
@@ -36,6 +38,15 @@ INITIALISE_INDEX = True # whether or not to try creating the index and required 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
+# =======================
+# email settings
+#
+# These should be set in your app.cfg
+SMTP_SERVER = None
+SMTP_PORT = 0
+SMTP_USER = None
+SMTP_PASS = None
+
 # ========================
 # user login settings
 
@@ -52,10 +63,24 @@ PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 SUPER_USER_ROLE = "admin"
 
-# FIXME: something like this required for hierarchical roles, but not yet needed
-#ROLE_MAP = {
-#    "admin" : {"publisher", "create_user"}
-#}
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor"]
+
+ROLE_MAP = {
+    "editor": [
+        "associate_editor", # note, these don't cascade, so we still need to list all the low-level roles
+        "edit_journal",
+        "edit_suggestion",
+        "editor_area",
+        "assign_to_associate",
+        "list_group_journals",
+        "list_group_suggestions"
+    ],
+    "associate_editor" : [
+        "edit_journal",
+        "edit_suggestion",
+        "editor_area"
+    ]
+}
 
 # ========================
 # MAPPING SETTINGS
@@ -92,7 +117,9 @@ MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
 MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
 MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
 MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
+MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
 MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
+MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
 
 
 # ========================
@@ -120,7 +147,9 @@ DEFAULT_SORT = {
 QUERY_ROUTE = {
     "query" : {"role": None, "default_filter": True},
     "admin_query" : {"role" : "admin", "default_filter": False},
-    "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True}
+    "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
+    "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
+    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True}
 }
 
 # ========================
@@ -291,7 +320,11 @@ FRONT_PAGE_NEWS_ITEMS = 3
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
+# =====================================
+# Edit Lock settings
 
+# amount of time loading an editable page locks it for, in seconds.
+EDIT_LOCK_TIMEOUT = 1200
 
 # where are static files served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a

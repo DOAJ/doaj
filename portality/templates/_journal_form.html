@@ -107,11 +107,19 @@
       {"field": "subject"},
     ]
     %}
+
+    {% set editorial_fields =
+    [
+        {"field" : "editor_group", "class" : "input-large"},
+        {"field" : "editor", "class" : "input-large"}
+    ]
+    %}
 {% endif %}
 
 
 {% from "_formhelpers.html" import render_field, render_fields %}
 
+{% if activate_deactivate %}
 <div class="row-fluid">
   <div class="span3">&nbsp;</div>
   <div class="span6 with-borders form-section centre-text-container" style="margin-left: 0;">
@@ -128,6 +136,7 @@
     <p class="centre-text-container">This button will not save any other changes on this page!</p>
   </div>
 </div>
+{% endif %}
 
 
 <form method="post" action="#first_problem" class="form-horizontal wide" id="journal_form">
@@ -142,10 +151,36 @@
       <div class="span6">
           <div class="row-fluid">
 
+              {% if editorial_available %}
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                <h3 class="heading-aligned-with-fields">Editorial</h3>
+                  {% if group_editable %}
+                    {{ render_field(form.editor_group, class="input-large") }}
+                  {% else %}
+                    {{ render_field(form.editor_group, class="input-large", disabled="disabled") }}
+                  {% endif %}
+
+                  {{ render_field(form.editor, class="input-large") }}
+              </div>
+              {% endif %}
+
+              <div class="span12 with-borders form-section" style="margin-left: 0;">
+                  <div class="control-group">
+                    <div class="controls">
+                        <button class="btn btn-success" type="submit">Save journal &gt;</button>
+                    </div>
+                  </div>
+
+
+                  {{ render_field(form.make_all_fields_optional) }}
+              </div>
+
+              {% if current_user.is_super %}
               <div class="span12 with-borders form-section" style="margin-left: 0;">
                 <h3 class="heading-aligned-with-fields">Owner</h3>
                 {{ render_fields(form, admin_owner_fields) }}
               </div>
+              {% endif %}
 
               {% set display_old_journal_fields = {'display_old_journal_fields': False} %}
 
@@ -164,17 +199,6 @@
                     {{ render_fields(form, old_fields) }}
                   </div>
               {% endif %}
-
-              <div class="span12 with-borders form-section" style="margin-left: 0;">
-                  <div class="control-group">
-                    <div class="controls">
-                        <button class="btn btn-success" type="submit">Save journal &gt;</button>
-                    </div>
-                  </div>
-
-
-                  {{ render_field(form.make_all_fields_optional) }}
-              </div>
           </div>
       </div>
 

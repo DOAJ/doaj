@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-  $('.facetview.suggestions').each(function() {
+  $('.facetview.associate_suggestions').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
+    search_url: es_scheme + '//' + es_domain + '/associate_query/suggestion/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
@@ -30,14 +30,12 @@ jQuery(document).ready(function($) {
     facets: [
         {'field': 'admin.application_status.exact', 'display': 'Application Status'},
         {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
-        {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
-        {'field': 'admin.editor.exact', 'display': 'Editor'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
         {'field': 'index.country.exact', 'display': 'Journal Country'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
+        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'bibjson.oa_start.exact', 'display': 'Started publishing OA content (year)'},
@@ -58,7 +56,7 @@ jQuery(document).ready(function($) {
         {'display':'Publisher','field':'index.publisher'},
 
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
+        {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -100,12 +98,6 @@ jQuery(document).ready(function($) {
             {
                 "pre" : "<strong>Application status</strong>: ",
                 "field" : "admin.application_status"
-            }
-        ],
-        [
-            {
-                "pre" : "<strong>Editor Group</strong>: ",
-                "field" : "admin.editor_group"
             }
         ],
         [
@@ -158,7 +150,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
+                "pre": "<strong>Provider</strong>: ",
                 "field": "bibjson.provider",
             }
         ],

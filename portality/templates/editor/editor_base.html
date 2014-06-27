@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="row-fluid">
+    <div class="span12">
+      {% include 'editor/nav.html' %}
+
+      {% block editor_content %}
+      {% endblock %}
+
+    </div>
+  </div>
+
+{% endblock %}

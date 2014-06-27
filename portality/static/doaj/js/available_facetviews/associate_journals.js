@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-  $('.facetview.journals').each(function() {
+  $('.facetview.associate_journals').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/admin_query/journal/_search?',
+    search_url: es_scheme + '//' + es_domain + '/associate_query/journal/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
@@ -32,12 +32,10 @@ jQuery(document).ready(function($) {
     facets: [
         {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
         {'field': 'admin.owner', 'display': 'Owner'},
-        {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
-        {'field': 'admin.editor.exact', 'display': 'Editor'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
+        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'index.classification.exact', 'display': 'Classification'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
@@ -59,7 +57,7 @@ jQuery(document).ready(function($) {
         {'display':'Journal Country','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
-        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
+        {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -90,12 +88,6 @@ jQuery(document).ready(function($) {
             {
                 "pre" : "<strong>Owner</strong>: ",
                 "field" : "owner"
-            }
-        ],
-        [
-            {
-                "pre" : "<strong>Editor Group</strong>: ",
-                "field" : "admin.editor_group"
             }
         ],
         [
@@ -135,7 +127,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
+                "pre": "<strong>Provider</strong>: ",
                 "field": "bibjson.provider",
             }
         ],

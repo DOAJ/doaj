@@ -130,13 +130,12 @@ class DomainObject(UserDict.IterableUserDict, object):
             return None
 
     @classmethod
-    def pull_by_key(cls,key,value):
+    def pull_by_key(cls, key, value):
         res = cls.query(q={"query":{"term":{key+app.config['FACET_FIELD']:value}}})
         if res.get('hits',{}).get('total',0) == 1:
             return cls.pull( res['hits']['hits'][0]['_source']['id'] )
         else:
             return None
-
 
     @classmethod
     def keys(cls,mapping=False,prefix=''):
@@ -155,7 +154,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return keys
         
     @staticmethod
-    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, **kwargs):
         '''
         Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
@@ -212,12 +211,18 @@ class DomainObject(UserDict.IterableUserDict, object):
                 boolean['must'].append( query['query'] )
             query['query'] = {'bool': boolean}
 
+        # FIXME: this may only work if a term is also supplied above - code is a bit tricky to read
+        if should_terms is not None and len(should_terms) > 0:
+            for s in should_terms:
+                if not isinstance(should_terms[s],list): should_terms[s] = [should_terms[s]]
+                query["query"]["bool"]["must"].append({"terms" : {s : should_terms[s]}})
+
         for k,v in kwargs.items():
             if k == '_from':
                 query['from'] = v
             else:
                 query[k] = v
-        
+        # print json.dumps(query)
         return query
 
     @classmethod
@@ -344,7 +349,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         facet_field = query_field + app.config['FACET_FIELD']
 
         q = {
-            "query": {"prefix" : { query_field : prefix } },
+            "query": {"prefix" : { query_field : prefix.lower() } },
             "size": 0,
             "facets" : {
               field : { "terms" : {"field" : facet_field, "size": size} }

@@ -27,6 +27,11 @@ def is_safe_url(target):
         return '/'
 
 def send_mail(to, fro, subject, text, files=[], bcc=[]):
+
+    # ensure that email isn't sent if it is disabled
+    if not app.config.get("ENABLE_EMAIL", False):
+        return
+
     assert type(to)==list
     assert type(files)==list
     if bcc and not isinstance(bcc, list):
@@ -41,7 +46,7 @@ def send_mail(to, fro, subject, text, files=[], bcc=[]):
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = subject
  
-    msg.attach( MIMEText(text) )
+    msg.attach( MIMEText(text, 'plain', 'utf-8') )
  
     for file in files:
         part = MIMEBase('application', "octet-stream")

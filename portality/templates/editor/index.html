@@ -1,0 +1,42 @@
+{% extends "editor/editor_base.html" %}
+
+{% block editor_content %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <h1>Your Group Info</h1>
+
+        {% for group in editor_of %}
+        <div class="row-fluid" style="padding: 10px"><div class="span12">
+            <strong>{{group.name}}</strong> (you are the Editor)<br>
+            {% set associates = group.get_associate_accounts() %}
+            {% if associates and associates|length > 0 %}
+                Associate Editors:
+                {% for ass in group.get_associate_accounts() %}
+                    <a href="mailto:{{ass.email}}">{{ass.id}}</a>
+                {% endfor %}
+            {% else %}
+                There are no Associate Editors in this group
+            {% endif %}
+        </div></div>
+        {% endfor %}
+
+        {% for group in associate_of %}
+        <div class="row-fluid" style="padding: 10px"><div class="span12">
+            <strong>{{group.name}}</strong> (you are an Associate Editor)<br>
+            {% set editor = group.get_editor_account() %}
+            Group Editor: <a href="mailto:{{editor.email}}">{{editor.id}}</a><br>
+            {% set associates = group.get_associate_accounts() %}
+            {% if associates and associates|length > 0 %}
+                Associate Editors:
+                {% for ass in group.get_associate_accounts() %}
+                    <a href="mailto:{{ass.email}}">{{ass.id}}</a>
+                {% endfor %}
+            {% endif %}
+        </div></div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+

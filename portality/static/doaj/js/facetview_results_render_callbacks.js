@@ -349,3 +349,46 @@ fv_user_journals = (function (resultobj) {
     };
     return that;
 })();
+
+
+fv_linked_associates = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.associates) {
+            frag = "Associate Editors: "
+            for (var i = 0; i < resultobj.associates.length; i++) {
+                if (i > 0) {
+                    frag += ", "
+                }
+                var ass = resultobj.associates[i]
+                frag += '<a href="/account/' + ass + '">' + ass + '</a>'
+            }
+            return frag
+        }
+        return false
+    };
+    return that;
+})();
+
+fv_edit_editor_group = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = '<a style="padding-left: 10px; padding-right: 10px" class="edit_editor_group_link pull-right" href="';
+        result += editor_group_edit_url;
+        result += resultobj['id'];
+        result += '" target="_blank"';
+        result += '>Edit this group</a>';
+        return result;
+    };
+    return that;
+})();
+
+fv_delete_editor_group = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = '<a class="delete_editor_group_link pull-right" href="';
+        result += editor_group_edit_url;
+        result += resultobj['id'];
+        result += '" target="_blank"';
+        result += '>Delete this group</a>';
+        return result;
+    };
+    return that;
+})();

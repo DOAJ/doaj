@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-  $('.facetview.suggestions').each(function() {
+  $('.facetview.group_suggestions').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
+    search_url: es_scheme + '//' + es_domain + '/editor_query/suggestion/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
@@ -11,7 +11,7 @@ jQuery(document).ready(function($) {
     pre_search_callback: customise_facetview_presearch,
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
-    freetext_submit_delay:"500",
+    freetext_submit_delay:"1000",
     results_render_callbacks: {
         'bibjson.author_pays': fv_author_pays,
         'created_date': fv_created_date,
@@ -37,7 +37,7 @@ jQuery(document).ready(function($) {
         {'field': 'index.country.exact', 'display': 'Journal Country'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
+        {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         {'field': 'bibjson.oa_start.exact', 'display': 'Started publishing OA content (year)'},
@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
         {'display':'Publisher','field':'index.publisher'},
 
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
+        {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -106,6 +106,12 @@ jQuery(document).ready(function($) {
             {
                 "pre" : "<strong>Editor Group</strong>: ",
                 "field" : "admin.editor_group"
+            }
+        ],
+        [
+            {
+                "pre" : "<strong>Editor</strong>: ",
+                "field" : "admin.editor"
             }
         ],
         [
@@ -158,7 +164,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
+                "pre": "<strong>Provider</strong>: ",
                 "field": "bibjson.provider",
             }
         ],

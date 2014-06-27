@@ -1,5 +1,58 @@
 jQuery(document).ready(function($) {
 
+    ////// functions for handling edit locks ///////////////////////
+
+    function setLockTimeout() {
+        var ts = $("#lock_expires").attr("data-timestamp")
+        var d = new Date(ts)
+        var hours = d.getHours()
+        var minutes = d.getMinutes()
+        if (String(minutes).length == 1) { minutes = "0" + minutes }
+        var formatted = hours + ":" + minutes
+        $("#lock_expires").html(formatted)
+    }
+    setLockTimeout()
+
+    function unlock(params) {
+        var type = params.type
+        var id = params.id
+
+        function success_callback(data) {
+            var newWindow = window.open('', '_self', ''); //open the current window
+            window.close(url);
+        }
+
+        function error_callback(jqXHR, textStatus, errorThrown) {
+            alert("error releasing lock: " + textStatus + " " + errorThrown)
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/service/unlock/" + type + "/" + id,
+            contentType: "application/json",
+            dataType: "json",
+            success : success_callback,
+            error: error_callback
+        })
+    }
+
+    $("#unlock").click(function(event) {
+        event.preventDefault()
+        var id = $(this).attr("data-id")
+        var type = $(this).attr("data-type")
+        unlock({type : type, id : id})
+    })
+
+    // NOTE: this does not play well with page reloads, so not using it
+    //$(window).unload(function() {
+    //   var id = $("#unlock").attr("data-id")
+    //    var type = $("#unlock").attr("data-type")
+    //    unlock({type : type, id : id})
+    //});
+
+    ////////////////////////////////////////////////////
+
+
     // define a new highlight function, letting us highlight any element
     // on a page
     // adapted from http://stackoverflow.com/a/11589350
@@ -74,11 +127,12 @@ jQuery(document).ready(function($) {
     });
     
     $("#languages").select2();
-          
+
     autocomplete('#publisher', 'bibjson.publisher');
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
     autocomplete('#owner', 'id', 'account');
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false, true);
 
     exclusive_checkbox('digital_archiving_policy', 'No policy in place');
     exclusive_checkbox('article_identifiers', 'None');
@@ -92,6 +146,11 @@ jQuery(document).ready(function($) {
     setup_subject_tree();
     setup_remove_buttons();
     setup_add_buttons();
+
+    $("#editor_group").change(function(event) {
+        event.preventDefault()
+        $("#editor").html("<option val='' selected='selected'></option>")
+    })
 });
 
 function setup_subject_tree() {
@@ -177,11 +236,13 @@ function __init_optional_field(elem, optional_field_selectors, values_to_show_fo
     }
 }
 
-function autocomplete(selector, doc_field, doc_type) {
+function autocomplete(selector, doc_field, doc_type, mininput, include_input, allow_clear) {
     var doc_type = doc_type || "journal";
-    $(selector).select2({
-        minimumInputLength: 3,
-        ajax: {
+    var mininput = mininput === undefined ? 3 : mininput
+    var include_input = include_input === undefined ? true : include_input
+    var allow_clear = allow_clear === undefined ? false : allow_clear
+
+    var ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
             dataType: 'json',
             data: function (term, page) {
@@ -192,15 +253,33 @@ function autocomplete(selector, doc_field, doc_type) {
             results: function (data, page) {
                 return { results: data["suggestions"] };
             }
-        },
-        createSearchChoice: function(term) {return {"id":term, "text": term};},
-        initSelection : function (element, callback) {
+        }
+    var csc = function(term) {return {"id":term, "text": term};}
+    var initSel = function (element, callback) {
             var data = {id: element.val(), text: element.val()};
             callback(data);
-        },
-        placeholder: "",
-        allowClear: true
-    });
+        }
+
+    if (include_input) {
+        // apply the create search choice
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            createSearchChoice: csc,
+            initSelection : initSel,
+            placeholder: "",
+            allowClear: allow_clear
+        });
+    } else {
+        // go without the create search choice option
+        $(selector).select2({
+            minimumInputLength: mininput,
+            ajax: ajax,
+            initSelection : initSel,
+            placeholder: "",
+            allowClear: allow_clear
+        });
+    }
 }
 
 function exclusive_checkbox(field_name, exclusive_val) {

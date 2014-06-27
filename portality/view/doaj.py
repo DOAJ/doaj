@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user
 
@@ -9,6 +9,7 @@ from portality import blog
 from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
 from portality.suggestion import SuggestionFormXWalk, suggestion_form
 from portality.datasets import countries_dict
+from portality import lock
 
 import json
 import os
@@ -100,13 +101,14 @@ def search_post():
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
     form = SuggestionForm(request.form)
+    form.editor.choices = [("","")]
 
     redirect_url_on_success = url_for('doaj.suggestion_thanks', _anchor='thanks')
     # meaningless anchor to replace #first_problem used on the form
     # anchors persist between 3xx redirects to the same resource
     # (/application)
 
-    return suggestion_form(form, request, redirect_url_on_success, 'doaj/suggestion.html')
+    return suggestion_form(form, request, 'doaj/suggestion.html', success_url=redirect_url_on_success)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():
