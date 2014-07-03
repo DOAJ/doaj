@@ -79,7 +79,6 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
         else:
             form.editor.choices = [("", "")]
 
-
     return suggestion_form(form, request, template,
                            existing_suggestion=s,
                            suggestion=s,
@@ -122,11 +121,11 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
                 # this is not a success, so we do not consider the success_url
                 return redirect(url_for(redirect_route, suggestion_id=existing_suggestion.id, _anchor='cannot_edit'))
         else:
-            if form.make_all_fields_optional.data:
-                valid = True
-            else:
-                valid = form.validate()
-
+            #if form.make_all_fields_optional.data:
+            #    valid = True
+            #else:
+            #    valid = form.validate()
+            valid = form.validate()
             if valid:
                 email_editor = False
                 if group_editable:
@@ -223,6 +222,7 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
                 for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
                     if field.errors:
                         first_field_with_error = field.short_name
+                        print first_field_with_error
                         break
     return render_template(
             template_name,
@@ -246,9 +246,6 @@ A new application for the journal "{journal_name}" has been assigned to your Edi
 You may access the application in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 
@@ -274,9 +271,6 @@ A new application for the journal "{journal_name}" has been assigned to you by t
 You may access the application in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 def send_editor_email(suggestion):

@@ -525,6 +525,20 @@ class MaxLen(object):
         if len(field.data) > self.max_len:
             raise validators.ValidationError(self.message.format(max_len=self.max_len))
 
+class RequiredIfRole(validators.Required):
+    '''
+    Makes a field required, if the user has the specified role
+    '''
+    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
+    # except where it will simplify a 50-field form, k?
+
+    def __init__(self, role, *args, **kwargs):
+        self.role = role
+        super(RequiredIfRole, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        if current_user.has_role(self.role):
+            super(RequiredIfRole, self).__call__(form, field)
 
 class DisabledTextField(TextField):
 
@@ -832,8 +846,20 @@ class EditSuggestionForm(SuggestionForm):
     )
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
-    owner = TextField('Owner',
-        [OptionalIf('application_status', optvals=application_status_choices_optvals)],
+    #owner = TextField('Owner',
+    #    [OptionalIf('application_status', optvals=application_status_choices_optvals)],
+    #    description='DOAJ account to which the suggestion belongs to.'
+    #                '<br><br>'
+    #                'This field is optional unless the application status is set to Accepted.'
+    #                '<br><br>'
+    #                'Entering a non-existent account <strong>and'
+    #                ' setting the application status to Accepted</strong>'
+    #                ' will automatically'
+    #                ' create the account using the suggester information'
+    #                ' at the bottom of this form, and send an email with'
+    #                ' username + password to the suggester email address.'
+    #)
+    owner = TextField('Owner', [RequiredIfRole("admin")],
         description='DOAJ account to which the suggestion belongs to.'
                     '<br><br>'
                     'This field is optional unless the application status is set to Accepted.'

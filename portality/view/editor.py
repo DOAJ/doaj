@@ -22,7 +22,7 @@ def restrict():
 def index():
     editor_of = models.EditorGroup.groups_by_editor(current_user.id)
     associate_of = models.EditorGroup.groups_by_associate(current_user.id)
-    return render_template('editor/index.html', editor_of=editor_of, associate_of=associate_of)
+    return render_template('editor/index.html', editor_of=editor_of, associate_of=associate_of, managing_editor=app.config.get("MANAGING_EDITOR_EMAIL"))
 
 @blueprint.route('/group_journals')
 @login_required

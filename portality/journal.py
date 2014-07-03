@@ -182,9 +182,6 @@ The journal "{journal_name}" has been assigned to your Editor Group by a Managin
 You may access the journal in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 
@@ -210,9 +207,6 @@ The journal "{journal_name}" has been assigned to you by the Editor in your Edit
 You may access the journal in your Editor Area: {url_root}/editor/ .
 
 The DOAJ Team
-Twitter: https://twitter.com/DOAJplus
-Facebook: http://www.facebook.com/DirectoryofOpenAccessJournals
-LinkedIn: http://www.linkedin.com/company/directory-of-open-access-journals-doaj-
 """
 
 def send_editor_email(journal):
