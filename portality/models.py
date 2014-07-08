@@ -2500,7 +2500,12 @@ class Cache(DomainObject):
         self.update({"regen" : True})
     
     def is_stale(self):
-        lu = datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        if not self.last_updated:
+            lu = '1970-01-01T00:00:00Z'
+        else:
+            lu = self.last_updated
+
+        lu = datetime.strptime(lu, "%Y-%m-%dT%H:%M:%SZ")
         now = datetime.now()
         dt = now - lu
 
