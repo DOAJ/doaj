@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
     autocomplete('#society_institution', 'bibjson.institution');
     autocomplete('#platform', 'bibjson.provider');
     autocomplete('#owner', 'id', 'account');
-    autocomplete('#editor_group', 'name', 'editor_group', 1, false, true);
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     exclusive_checkbox('digital_archiving_policy', 'No policy in place');
     exclusive_checkbox('article_identifiers', 'None');
@@ -240,7 +240,7 @@ function autocomplete(selector, doc_field, doc_type, mininput, include_input, al
     var doc_type = doc_type || "journal";
     var mininput = mininput === undefined ? 3 : mininput
     var include_input = include_input === undefined ? true : include_input
-    var allow_clear = allow_clear === undefined ? false : allow_clear
+    var allow_clear = allow_clear === undefined ? true : allow_clear
 
     var ajax = {
             url: current_scheme + "//" + current_domain + "/autocomplete/" + doc_type + "/" + doc_field,
