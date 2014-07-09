@@ -45,7 +45,7 @@ jQuery(document).ready(function($) {
         {'display':'Article: Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']},
     ],
     searchbox_fieldselect: [
-        {'display':'Title','field':'index.title'},
+        {'display':'Title','field':'bibjson.title'},
         {'display':'Keywords','field':'bibjson.keywords'},
         {'display':'Subject','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
