@@ -796,7 +796,7 @@ class JournalForm(JournalInformationForm):
     )
     # fields for assigning to editor group
     editor_group = TextField("Editor Group", [validators.Optional()])
-    editor = SelectField("Editor") # choices to be assigned at form render time
+    editor = SelectField("Assigned to") # choices to be assigned at form render time
 
 
 class SuggestionForm(JournalInformationForm):
@@ -831,7 +831,7 @@ class SuggestionForm(JournalInformationForm):
 
     # fields for assigning to editor group
     editor_group = TextField("Editor Group", [validators.Optional()])
-    editor = SelectField("Editor", default="") # choices to be assigned at form render time
+    editor = SelectField("Assigned to", default="") # choices to be assigned at form render time
 
 
 class EditSuggestionForm(SuggestionForm):
