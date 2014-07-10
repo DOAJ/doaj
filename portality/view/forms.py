@@ -864,12 +864,7 @@ class EditSuggestionForm(SuggestionForm):
                     '<br><br>'
                     'This field is optional unless the application status is set to Accepted.'
                     '<br><br>'
-                    'Entering a non-existent account <strong>and'
-                    ' setting the application status to Accepted</strong>'
-                    ' will automatically'
-                    ' create the account using the suggester information'
-                    ' at the bottom of this form, and send an email with'
-                    ' username + password to the suggester email address.'
+                    'Entering a non-existent account and setting the application status to Accepted will automatically create the account using the Contact information in Questions 9 & 10, and send an email containing the Contact\'s username + password.'
     )
 
     # overrides
