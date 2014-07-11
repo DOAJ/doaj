@@ -76,10 +76,21 @@ for a in Account.iterall():
 fall.close()
 fmulti.close()
 
+
 def get_suggesters():
     q = {
         "query" : {
-            "terms" : {"admin.application_status.exact" : ["pending", "answer received"]}
+            "filtered" : {
+                "filter" : {
+                    "bool": {
+                        "should" : [
+                            {"terms" : {"admin.application_status.exact" : ["pending", "answer received"]}},
+                            {"missing" : {"field" : "admin.application_status"}}
+                        ]
+                    }
+                }
+            }
+
         },
         "size" : 0,
         "facets" : {
@@ -98,13 +109,17 @@ def get_suggesters():
 def get_suggestions(email):
     q = {
         "query" : {
-            "bool" : {
-                "must" : [
-                    {"term" : {"suggestion.suggester.email.exact" : email}},
-                    {"terms" : {"admin.application_status.exact" : ["pending", "answer received"]}}
-                ]
+            "filtered" : {
+                "filter" : {
+                    "bool" : {
+                        "must" : [{"term" : {"suggestion.suggester.email.exact" : email}}],
+                        "should" : [
+                            {"terms" : {"admin.application_status.exact" : ["pending", "answer received"]}},
+                            {"missing" : {"field" : "admin.application_status"}}
+                        ]
+                    }
+                }
             }
-            
         }
     }
     return Suggestion.iterate(q)
