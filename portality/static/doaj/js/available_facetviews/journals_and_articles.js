@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
-        {'field': 'index.country.exact', 'display': 'Journal Country'},
+        {'field': 'index.country.exact', 'display': 'Country of Publication'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
@@ -51,7 +51,7 @@ jQuery(document).ready(function($) {
         {'display':'ISSN', 'field':'index.issn.exact'},
         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
         // {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
-        {'display':'Journal Country','field':'index.country'},
+        {'display':'Country of Publication','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
 
@@ -131,12 +131,6 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
                 "field": "bibjson.oa_end.year",
-            }
-        ],
-        [
-            {
-                "pre": "<strong>Journal Country</strong>: ",
-                "field": "country_name",
             }
         ],
         [
