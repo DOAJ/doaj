@@ -863,13 +863,13 @@ class EditSuggestionForm(SuggestionForm):
     #)
 
     # overrides
-    suggester_name = TextField("Suggester's name",
+    suggester_name = TextField("Name",
         suggester_name_validators
     )
-    suggester_email = TextField("Suggester's email address",
+    suggester_email = TextField("Email address",
         suggester_email_validators
     )
-    suggester_email_confirm = TextField("Confirm suggester's email address",
+    suggester_email_confirm = TextField("Confirm email address",
         suggester_email_confirm_validators
     )
 
