@@ -881,9 +881,9 @@ DOI_REGEX = "^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 
 # use the year choices in settings.py or default to 15 years previous.
-if settings.METADATA_START_YEAR:
+try:
     start_year = settings.METADATA_START_YEAR
-else:
+except AttributeError:
     start_year = datetime.now().year - 15
 
 YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year, -1)]
