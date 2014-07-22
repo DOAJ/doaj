@@ -221,7 +221,7 @@ def metadata():
 @blueprint.route("/help")
 @login_required
 @ssl_required
-def index():
+def help():
     return render_template("publisher/help.html")
 
 def _validate_authors(form, require=1):
