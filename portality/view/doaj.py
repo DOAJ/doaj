@@ -265,6 +265,10 @@ def support_doaj():
 def support_doaj_thanks():
     return render_template("doaj/support_thanks.html")
 
+@blueprint.route("/translated")
+def translated():
+    return render_template("doaj/translated.html")
+
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
