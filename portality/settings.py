@@ -57,6 +57,13 @@ PASSWORD_RESET_TIMEOUT = 86400
 PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 
 # ========================
+# publisher settings
+
+# the earliest date accepted on the publisher's 'enter article metadata' form.
+# code will default to 15 years before current year if commented out.
+METADATA_START_YEAR = 1968
+
+# ========================
 # authorisation settings
 
 # Can people register publicly? If false, only the superuser can create new accounts

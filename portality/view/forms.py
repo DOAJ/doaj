@@ -17,9 +17,8 @@ from wtforms import widgets
 from flask_wtf import RecaptchaField
 
 from portality.core import app
-from portality import models
+from portality import models, lcc
 from portality.datasets import country_options, language_options, currency_options, main_license_options
-from portality import lcc
 
 blueprint = Blueprint('forms', __name__)
 
@@ -881,7 +880,10 @@ class EditSuggestionForm(SuggestionForm):
 DOI_REGEX = "^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)"
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 
-YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, datetime.now().year - 15, -1)]
+# use the year choices in app.cfg or default to 15 years previous.
+start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
+
+YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year, -1)]
 MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
 
 class ThisOrThat(object):
