@@ -129,7 +129,7 @@
 
   {% if admin_page %}
       {% if form.application_status.data == 'accepted' %}
-        <h4 class="form-status">Please note you <span class="red">cannot edit</span> this suggestion as it has been accepted into the DOAJ.</h4>
+        <h4 class="form-status">Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.</h4>
       {% endif %}
   {% endif %}
 
@@ -250,7 +250,7 @@
     <div class="row-fluid">
       <div class="span3">&nbsp;</div>
       <div class="span6 with-borders form-section">
-        <h3 class="heading-aligned-with-fields">Information about {% if admin_page %} the suggester{% else %} You{% endif %}</h3>
+        <h3 class="heading-aligned-with-fields">{% if admin_page %}Details of person making this application{% else %}Your details{% endif %}</h3>
           {{ render_fields(form, submitter_info_fields) }}
         <div class="control-group">
             <div class="controls">
@@ -258,7 +258,7 @@
                     {% if not admin_page %}
                         Submit &gt;
                     {% else %}
-                        Save suggestion &gt;
+                        Save application &gt;
                     {% endif %}
                 </button>
             </div>

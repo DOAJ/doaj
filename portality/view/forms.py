@@ -840,7 +840,7 @@ class EditSuggestionForm(SuggestionForm):
         # choices = application_status_choices, # choices are late-binding as they depend on the user
         default = '',
         description='Setting this to Accepted will send an email to the'
-                    ' owner of the suggestion telling them their journal'
+                    ' owner of the application telling them their journal'
                     ' is now in the DOAJ. The Owner field must not be'
                     ' blank when the status is set to Accepted.'
     )
@@ -848,7 +848,7 @@ class EditSuggestionForm(SuggestionForm):
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
     owner = TextField('Owner',
         [OptionalIf('application_status', optvals=application_status_choices_optvals)],
-        description='DOAJ account to which the suggestion belongs to.'
+        description='DOAJ account to which the application belongs to.'
                     '<br><br>'
                     'This field is optional unless the application status is set to Accepted.'
                     '<br><br>'
@@ -863,13 +863,13 @@ class EditSuggestionForm(SuggestionForm):
     #)
 
     # overrides
-    suggester_name = TextField("Suggester's name",
+    suggester_name = TextField("Name",
         suggester_name_validators
     )
-    suggester_email = TextField("Suggester's email address",
+    suggester_email = TextField("Email address",
         suggester_email_validators
     )
-    suggester_email_confirm = TextField("Confirm suggester's email address",
+    suggester_email_confirm = TextField("Confirm email address",
         suggester_email_confirm_validators
     )
 

@@ -44,11 +44,11 @@ def request_handler(request, suggestion_id, redirect_route="admin.suggestion_pag
 
     process_the_form = True
     if request.method == 'POST' and s.application_status == 'accepted':
-        flash('You cannot edit suggestions which have been accepted into DOAJ.', 'error')
+        flash('You cannot edit applications which have been accepted into DOAJ.', 'error')
         process_the_form = False
 
     if form.application_status.data == "accepted" and form.make_all_fields_optional.data:
-        flash("You cannot accept a suggestion into the DOAJ without fully validating it", "error")
+        flash("You cannot accept an application into the DOAJ without fully validating it", "error")
         process_the_form = False
 
     # add the contents of a few fields to their descriptions since select2 autocomplete
