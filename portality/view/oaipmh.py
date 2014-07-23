@@ -866,7 +866,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
-            for language in bibjson.jlangs:
+            for language in jlangs:
                 langel = etree.SubElement(oai_dc, self.DC + "language")
                 set_text(langel, language)
         
