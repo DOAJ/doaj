@@ -2283,7 +2283,7 @@ class OAIPMHArticle(OAIPMHRecord, Article):
     def pull(self, identifier):
         # override the default pull, as we care about whether the item is in_doaj
         record = super(OAIPMHArticle, self).pull(identifier)
-        if record.is_in_doaj():
+        if record is not None and record.is_in_doaj():
             return record
         return None
 
@@ -2296,7 +2296,7 @@ class OAIPMHJournal(OAIPMHRecord, Journal):
     def pull(self, identifier):
         # override the default pull, as we care about whether the item is in_doaj
         record = super(OAIPMHJournal, self).pull(identifier)
-        if record.is_in_doaj():
+        if record is not None and record.is_in_doaj():
             return record
         return None
 

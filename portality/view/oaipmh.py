@@ -185,6 +185,12 @@ def xml_clean(input_string):
     cleaned_string = ''.join(c for c in input_string if valid_XML_char_ordinal(ord(c)))
     return cleaned_string
 
+def set_text(element, input_string):
+    try:
+        element.text = input_string
+    except ValueError:
+        element.text = xml_clean(input_string)
+
 #####################################################################
 ## OAI-PMH protocol operations implemented
 #####################################################################
@@ -803,75 +809,70 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
-            try:
-                title.text = bibjson.title
-            except ValueError:
-                title.text = xml_clean(bibjson.title)
+            set_text(title, bibjson.title)
         
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
-            idel.text = identifier.get("id")
+            set_text(idel, identifier.get("id"))
         
         # our internal identifier (currently just links to the search results page)
         query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
         url = app.config['BASE_URL'] + "/search?" + query
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
-        idel.text = url
+        set_text(idel, url)
         
         # work out the date of publication
         date = bibjson.get_publication_date()
         if date != "":
             monthyear = etree.SubElement(oai_dc, self.DC + "date")
-            monthyear.text = date
+            set_text(monthyear, date)
         
         if len(bibjson.get_urls()) > 0:
             for url in bibjson.get_urls():
                 urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                urlel.text = url.get("url")
+                set_text(urlel, url.get("url"))
         
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
-            try:
-                abstract.text = bibjson.abstract
-            except ValueError:
-                # we need to clean the abstract of disallowed characters
-                abstract.text = xml_clean(bibjson.abstract)
+            set_text(abstract, bibjson.abstract)
         
         if len(bibjson.author) > 0:
             for author in bibjson.author:
                 ael = etree.SubElement(oai_dc, self.DC + "creator")
-                ael.text = author.get("name")
+                set_text(ael, author.get("name"))
         
         if bibjson.publisher is not None:
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
-            pubel.text = bibjson.publisher
+            set_text(pubel, bibjson.publisher)
         
         for keyword in bibjson.keywords:
             subj = etree.SubElement(oai_dc, self.DC + "subject")
-            subj.text = keyword
+            set_text(subj, keyword)
         
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
-        objecttype.text = "article"
+        set_text(objecttype, "article")
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
             
             subel = etree.SubElement(oai_dc, self.DC + "subject")
-            subel.text = scheme + ":" + term
+            set_text(subel, scheme + ":" + term)
             
             if "code" in subs:
                 sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                sel2.text = scheme + ":" + subs.get("code")
-        
-        for language in bibjson.journal_language:
-            langel = etree.SubElement(oai_dc, self.DC + "language")
-            langel.text = language
+                set_text(sel2, scheme + ":" + subs.get("code"))
+
+        jlangs = bibjson.journal_language
+        if jlangs is not None:
+            for language in bibjson.jlangs:
+                langel = etree.SubElement(oai_dc, self.DC + "language")
+                set_text(langel, language)
         
         if bibjson.get_journal_license() is not None:
             rights = etree.SubElement(oai_dc, self.DC + "rights")
-            rights.text = bibjson.get_journal_license().get("title")
+            set_text(rights, bibjson.get_journal_license().get("title"))
         
         return metadata
         
@@ -880,17 +881,17 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
         
         identifier = etree.SubElement(head, self.PMH + "identifier")
-        identifier.text = make_oai_identifier(record.id, "article")
+        set_text(identifier, make_oai_identifier(record.id, "article"))
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.last_updated)
+        set_text(datestamp, normalise_date(record.last_updated))
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
             
             subel = etree.SubElement(head, self.PMH + "setSpec")
-            subel.text = make_set_spec(scheme + ":" + term)
+            set_text(subel, make_set_spec(scheme + ":" + term))
         
         return head
 
@@ -905,66 +906,66 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
-            title.text = bibjson.title
+            set_text(title, bibjson.title)
         
         # external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
-            idel.text = identifier.get("id")
+            set_text(idel, identifier.get("id"))
         
         # our internal identifier (currently just links to the search results page)
         #query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
         #url = app.config['BASE_URL'] + "/search?" + query
         url = app.config["BASE_URL"] + "/toc/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
-        idel.text = url
+        set_text(idel, url)
         
         for keyword in bibjson.keywords:
             subj = etree.SubElement(oai_dc, self.DC + "subject")
-            subj.text = keyword
+            set_text(subj, keyword)
         
         if bibjson.language is not None and len(bibjson.language) > 0:
             for language in bibjson.language:
                 lang = etree.SubElement(oai_dc, self.DC + "language")
-                lang.text = language
+                set_text(lang, language)
         
         if bibjson.author_pays_url is not None:
             relation = etree.SubElement(oai_dc, self.DC + "relation")
-            relation.text = bibjson.author_pays_url
+            set_text(relation, bibjson.author_pays_url)
         
         if bibjson.get_license() is not None:
             rights = etree.SubElement(oai_dc, self.DC + "rights")
-            rights.text = bibjson.get_license().get("title")
+            set_text(rights, bibjson.get_license().get("title"))
         
         if bibjson.publisher is not None:
             pub = etree.SubElement(oai_dc, self.DC + "publisher")
-            pub.text = bibjson.publisher
+            set_text(pub, bibjson.publisher)
         
         if len(bibjson.get_urls()) > 0:
             for url in bibjson.get_urls():
                 urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                urlel.text = url.get("url")
+                set_text(urlel, url.get("url"))
         
         if bibjson.provider is not None:
             prov = etree.SubElement(oai_dc, self.DC + "publisher")
-            prov.text = bibjson.provider
+            set_text(prov, bibjson.provider)
         
         created = etree.SubElement(oai_dc, self.DC + "date")
-        created.text = normalise_date(record.created_date)
+        set_text(created, normalise_date(record.created_date))
         
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
-        objecttype.text = "journal"
+        set_text(objecttype, "journal")
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
             
             subel = etree.SubElement(oai_dc, self.DC + "subject")
-            subel.text = scheme + ":" + term
+            set_text(subel, scheme + ":" + term)
             
             if "code" in subs:
                 sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                sel2.text = scheme + ":" + subs.get("code")
+                set_text(sel2, scheme + ":" + subs.get("code"))
             
         return metadata
     
@@ -973,17 +974,17 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
         
         identifier = etree.SubElement(head, self.PMH + "identifier")
-        identifier.text = make_oai_identifier(record.id, "journal")
+        set_text(identifier, make_oai_identifier(record.id, "journal"))
         
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
-        datestamp.text = normalise_date(record.last_updated)
+        set_text(datestamp, normalise_date(record.last_updated))
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
             
             subel = etree.SubElement(head, self.PMH + "setSpec")
-            subel.text = make_set_spec(scheme + ":" + term)
+            set_text(subel, make_set_spec(scheme + ":" + term))
         
         return head
 
