@@ -1614,7 +1614,21 @@ class Article(DomainObject):
         q = ArticleQuery(issns=issns)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
-    
+
+    @classmethod
+    def delete_selected(cls, query=None, owner=None, snapshot=True):
+        if owner is not None:
+            issns = Journal.issns_by_owner(owner)
+            q = ArticleQuery(issns=issns)
+            query = q.query()
+
+        if snapshot:
+            articles = cls.iterate(query, page_size=1000)
+            for article in articles:
+                article.snapshot()
+
+        cls.delete_by_query(query)
+
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
