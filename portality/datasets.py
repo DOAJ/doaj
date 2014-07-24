@@ -555,11 +555,11 @@ licenses = {
     # journals in the DOAJ for now - they can be cleaned up but it might
     # not be such a small job
     # Also DOAJ currently assumes type and title are the same.
-    "CC by": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC-BY'},
-    "CC by-sa": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC-BY-SA'},
-    "CC by-nc": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC-BY-NC'},
-    "CC by-nd": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC-BY-ND'},
-    "CC by-nc-nd": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC-BY-NC-ND'},
+    "CC by": {'BY': True, 'NC': False, 'ND': False, 'SA': False, 'form_label': 'CC BY'},
+    "CC by-sa": {'BY': True, 'NC': False, 'ND': False, 'SA': True, 'form_label': 'CC BY SA'},
+    "CC by-nc": {'BY': True, 'NC': True, 'ND': False, 'SA': False, 'form_label': 'CC BY-NC'},
+    "CC by-nd": {'BY': True, 'NC': False, 'ND': True, 'SA': False, 'form_label': 'CC BY-ND'},
+    "CC by-nc-nd": {'BY': True, 'NC': True, 'ND': True, 'SA': False, 'form_label': 'CC BY-NC-ND'},
 }
 
 for lic_type, lic_info in licenses.iteritems():
