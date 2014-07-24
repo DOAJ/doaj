@@ -1478,7 +1478,12 @@ class TitleQuery(object):
 
 class Suggestion(Journal):
     __type__ = "suggestion"
-    
+
+    @classmethod
+    def delete_selected(cls, email=None, statuses=None):
+        q = SuggestionQuery(email=email, statuses=statuses)
+        r = cls.delete_by_query(q.query())
+
     def _set_suggestion_property(self, name, value):
         if "suggestion" not in self.data:
             self.data["suggestion"] = {}
@@ -1540,6 +1545,27 @@ class Suggestion(Journal):
     def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
     def set_suggester(self, name, email):
         self._set_suggestion_property("suggester", {"name" : name, "email" : email})
+
+class SuggestionQuery(object):
+    _base_query = { "query" : { "bool" : {"must" : []}}}
+    _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
+    _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
+
+    def __init__(self, email, statuses):
+        self.email = email
+        self.statuses = statuses
+
+    def query(self):
+        q = deepcopy(self._base_query)
+        if self.email:
+            et = deepcopy(self._email_term)
+            et["term"]["suggestion.suggester.email.exact"] = self.email
+            q["query"]["bool"]["must"].append(et)
+        if self.statuses and len(self.statuses) > 0:
+            st = deepcopy(self._status_terms)
+            st["terms"]["admin.application_status.exact"] = self.statuses
+            q["query"]["bool"]["must"].append(st)
+        return q
 
 ############################################################################
 
