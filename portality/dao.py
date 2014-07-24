@@ -279,8 +279,13 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.delete(self.target() + self.id)
     
     @classmethod
-    def remove_by_id(self, id):
-        r = requests.delete(self.target() + id)
+    def remove_by_id(cls, id):
+        r = requests.delete(cls.target() + id)
+
+    @classmethod
+    def delete_by_query(cls, query):
+        r = requests.delete(cls.target() + "_query", data=json.dumps(query.get("query")))
+        print r
     
     def update(self, doc):
         """
