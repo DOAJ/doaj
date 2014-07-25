@@ -909,7 +909,7 @@ class ArticleForm(Form):
     authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = TextField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
-    fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()])
+    fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()], description="(The URL for each article must be unique)")
     publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
     pissn = SelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
