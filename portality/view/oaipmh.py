@@ -873,7 +873,12 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if bibjson.get_journal_license() is not None:
             rights = etree.SubElement(oai_dc, self.DC + "rights")
             set_text(rights, bibjson.get_journal_license().get("title"))
-        
+
+        citation = self._make_citation(bibjson)
+        if citation is not None:
+            cite = etree.SubElement(oai_dc, self.DC + "bibliographicCitation")
+            set_text(cite, citation)
+
         return metadata
         
     def header(self, record):
@@ -894,6 +899,50 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             set_text(subel, make_set_spec(scheme + ":" + term))
         
         return head
+
+    def _make_citation(self, bibjson):
+        # [title], Vol [vol], Iss [iss], Pp [start]-end (year)
+        ctitle = bibjson.journal_title
+        cvol = bibjson.volume
+        ciss = bibjson.number
+        cstart = bibjson.start_page
+        cend = bibjson.end_page
+        cyear = bibjson.year
+
+        citation = ""
+        if ctitle is not None:
+            citation += ctitle
+
+        if cvol is not None:
+            if citation != "":
+                citation += ", "
+            citation += "Vol " + cvol
+
+        if ciss is not None:
+            if citation != "":
+                citation += ", "
+            citation += "Iss " + ciss
+
+        if cstart is not None or cend is not None:
+            if citation != "":
+                citation += ", "
+            if (cstart is None and cend is not None) or (cstart is not None and cend is None):
+                citation += "p "
+            else:
+                citation += "Pp "
+            if cstart is not None:
+                citation += cstart
+            if cend is not None:
+                if cstart is not None:
+                    citation += "-"
+                citation += cend
+
+        if cyear is not None:
+            if citation != "":
+                citation += " "
+            citation += "(" + cyear + ")"
+
+        return citation if citation != "" else None
 
 class OAI_DC_Journal(OAI_DC_Crosswalk):
     def crosswalk(self, record):
