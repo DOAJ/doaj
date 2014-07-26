@@ -281,7 +281,11 @@
         {% endfor %}
 
         <div class="addable-field-container" id="notes-outer-container">
-          {{ render_field(form.notes, render_subfields_horizontal=True, container_class="deletable", **subfield_display_kwargs) }}
+            {% if current_user.has_role("delete_note") %}
+                {{ render_field(form.notes, render_subfields_horizontal=True, container_class="deletable", **subfield_display_kwargs) }}
+            {% else %}
+                {{ render_field(form.notes, render_subfields_horizontal=True, **subfield_display_kwargs) }}
+            {% endif %}
         </div>
       </div>
 

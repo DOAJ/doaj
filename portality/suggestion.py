@@ -468,16 +468,17 @@ class SuggestionFormXWalk(object):
             formnotes = []
             for formnote in form.notes.data:
                 if formnote['note']:
-                    if formnote['note'] not in curnotes:
+                    if formnote['note'] not in curnotes and formnote["note"] != "":
                         suggestion.add_note(formnote['note'])
                     # also generate another text index of notes, this time an index of the form notes
                     formnotes.append(formnote['note'])
 
-            # delete all notes not coming back from the form, means they've been deleted
-            # also if one of the saved notes is completely blank, delete it
-            for curnote in suggestion.notes()[:]:
-                if not curnote['note'] or curnote['note'] not in formnotes:
-                    suggestion.remove_note(curnote)
+            if current_user.has_role("delete_note"):
+                # delete all notes not coming back from the form, means they've been deleted
+                # also if one of the saved notes is completely blank, delete it
+                for curnote in suggestion.notes()[:]:
+                    if not curnote['note'] or curnote['note'] not in formnotes:
+                        suggestion.remove_note(curnote)
 
         if getattr(form, 'subject', None):
             new_subjects = []
