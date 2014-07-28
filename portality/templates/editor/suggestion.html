@@ -23,5 +23,11 @@
 
 {% include "_suggestion_form.html" %}
 
+{% block extra_js_bottom %}
+<script type="text/javascript">
+    var notes_deletable = {% if current_user.has_role("admin") %}true{% else %}false{% endif %}
+</script>
+{% endblock extra_js_bottom %}
+
 {% endblock %}
 

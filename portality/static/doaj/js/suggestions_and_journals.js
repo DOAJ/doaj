@@ -340,8 +340,14 @@ function setup_add_button_handlers() {
             });
         }
 
+        // FIXME: this is a duplicate of what the jinja template does, meaning we have 2 places
+        // where we need to update it if it changes.  Should clone a similar element instead.
+        var delclass = ""
+        if (notes_deletable) { // global variable set by template
+            delclass = " deletable "
+        }
         thefield = [
-            '<div class="control-group row-fluid deletable " id="notes-' + cur_number_of_notes + '-container">',
+            '<div class="control-group row-fluid' + delclass + '" id="notes-' + cur_number_of_notes + '-container">',
             '    <div class="span8 nested-field-container">',
             '        <label class="control-label" for="note">',
             '          Note',
@@ -364,7 +370,9 @@ function setup_add_button_handlers() {
         cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
             // even if the ID-s go 0, 2, 7, 13 etc.
         $(this).before(thefield);
-        setup_remove_buttons();
+        if (notes_deletable) {
+            setup_remove_buttons();
+        }
     };
 
     var button_handlers = {
