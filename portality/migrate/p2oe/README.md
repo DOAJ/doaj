@@ -1,0 +1,1 @@
+This file contains all the scripts that need to run to migrate the p2 version of DOAJ through the Odds & Ends work
