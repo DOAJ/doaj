@@ -6,24 +6,23 @@ total=0
 batch = []
 journal_iterator = models.Journal.iterall(page_size=10000)
 for j in journal_iterator:
+    bibjson = j.bibjson()
+    ap = bibjson.author_pays
 
-    # remove any author-pays stuff
-    #if "author_pays" in j.data.get("bibjson"):
-    #    del j.data["bibjson"]["author_pays"]
+    # migrate contiditonal (CON) to yes (Y)
+    mod = False
+    if ap == "CON":
+        mod = True
+        bibjson.author_pays = "Y"
 
-    #if "author_pays_url" in j.data.get("bibjson"):
-    #    del j.data["bibjson"]["author_pays_url"]
+    # delete any unknowns
+    elif ap == "NY":
+        mod = True
+        del bibjson.author_pays
 
-    # get rid of all DOAJ subject classifications
-    subs = j.bibjson().subjects()
-    keep = []
-    for sub in subs:
-        if sub.get("scheme") == "LCC":
-            keep.append(sub)
-    j.bibjson().set_subjects(keep)
-
-    j.prep()
-    batch.append(j.data)
+    if mod:
+        j.prep()
+        batch.append(j.data)
 
     if len(batch) >= batch_size:
         total += len(batch)

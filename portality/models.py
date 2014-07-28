@@ -1077,6 +1077,11 @@ class JournalBibJSON(GenericBibJSON):
     @author_pays.setter
     def author_pays(self, val):
         self.bibjson["author_pays"] = val
+
+    @author_pays.deleter
+    def author_pays(self):
+        if "author_pays" in self.bibjson:
+            del self.bibjson["author_pays"]
     
     @property
     def country(self): return self.bibjson.get("country")
