@@ -217,7 +217,13 @@ def metadata():
                 return render_template('publisher/metadata.html', form=form)
         else:
             return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
-    
+
+@blueprint.route("/help")
+@login_required
+@ssl_required
+def help():
+    return render_template("publisher/help.html")
+
 def _validate_authors(form, require=1):
     counted = 0
     for entry in form.authors.entries:
