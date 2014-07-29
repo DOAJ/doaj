@@ -1,12 +1,8 @@
 from portality import models
 
 # these are the ids of the journal and the issn of the erroneous continuation
-#id = "d241030fda0b419f9aaaf542d57a61af"
-#issn = "0049-3449"
-
-# FIXME: values for testing only
-id = "9f23a462b7164c97b2f786af4ce6c2f7"
-issn = "1516-9332"
+id = "d241030fda0b419f9aaaf542d57a61af"
+issn = "0049-3449"
 
 # get the journal and the other journal's bibjson from the history
 para = models.Journal.pull(id)
