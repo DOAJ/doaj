@@ -737,7 +737,20 @@ class Journal(DomainObject):
     def history(self):
         histories = self.data.get("history", [])
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
-    
+
+    def get_history_for(self, issn):
+        histories = self.data.get("history", [])
+        for h in histories:
+            bibjson = h.get("bibjson")
+            if bibjson is None:
+                continue
+            jbj = JournalBibJSON(bibjson)
+            eissns = jbj.get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
+            if issn in eissns or issn in pissns:
+                return jbj
+        return None
+
     def snapshot(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
         self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
@@ -756,11 +769,32 @@ class Journal(DomainObject):
             if isinstance(isreplacedby, list):
                 snobj["isreplacedby"] = isreplacedby
             else:
-                snobj["isreplacedby"] = [replaces]
+                snobj["isreplacedby"] = [isreplacedby]
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
-    
+
+    def remove_history(self, issn):
+        histories = self.data.get("history")
+        if histories is None:
+            return
+        remove = -1
+        for i in range(len(histories)):
+            h = histories[i]
+            bibjson = h.get("bibjson")
+            if bibjson is None:
+                continue
+            jbj = JournalBibJSON(bibjson)
+            eissns = jbj.get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
+            if issn in eissns or issn in pissns:
+                remove = i
+                break
+        if remove >= 0:
+            del histories[i]
+        if len(histories) == 0:
+            del self.data["history"]
+
     def is_in_doaj(self):
         return self.data.get("admin", {}).get("in_doaj", False)
     
