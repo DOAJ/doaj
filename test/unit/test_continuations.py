@@ -46,7 +46,7 @@ class TestSnapshot(TestCase):
         # delete the continuation
         j.remove_history("1234-5678")
 
-        # check that it is cone
+        # check that it is gone
         history = j.history()
         assert len(history) == 0
 
@@ -63,3 +63,21 @@ class TestSnapshot(TestCase):
 
         old = j.get_history_for("1234-5678")
         assert old.title == "An example Journal"
+
+    def test_04_remove_wrong_history(self):
+        # make a journal that is a continuation
+        j = models.Journal()
+        bibjson = j.bibjson()
+        bibjson.title = "An example Journal"
+        bibjson.add_identifier(bibjson.E_ISSN, "1234-5678")
+        j.snapshot(isreplacedby="9876-5432")
+        bibjson.remove_identifiers(bibjson.E_ISSN)
+        bibjson.add_identifier(bibjson.E_ISSN, "9876-5432")
+        bibjson.title = "An updated journal"
+
+        # delete the (wrong) continuation
+        j.remove_history("7564-0912")
+
+        # check the history is unchanged
+        history = j.history()
+        assert len(history) == 1

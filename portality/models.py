@@ -792,6 +792,8 @@ class Journal(DomainObject):
                 break
         if remove >= 0:
             del histories[i]
+        if len(histories) == 0:
+            del self.data["history"]
 
     def is_in_doaj(self):
         return self.data.get("admin", {}).get("in_doaj", False)
