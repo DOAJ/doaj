@@ -838,10 +838,10 @@ class EditSuggestionForm(SuggestionForm):
         [validators.Required()],
         # choices = application_status_choices, # choices are late-binding as they depend on the user
         default = '',
-        description='Setting this to Accepted will send an email to the'
-                    ' owner of the application telling them their journal'
-                    ' is now in the DOAJ. The Owner field must not be'
-                    ' blank when the status is set to Accepted.'
+        description='Setting the status to In Progress will tell others'
+                    ' that you have started your review. Setting the status'
+                    ' to Ready will alert the Managing Editors that you have'
+                    ' completed your review.'
     )
     notes = FieldList(FormField(NoteForm))
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
