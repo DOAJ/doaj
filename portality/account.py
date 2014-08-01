@@ -61,6 +61,7 @@ def create_account_on_suggestion_approval(suggestion, journal):
     to = [send_info_to]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - account created"
+    # TODO: New email template system
     text = \
 """An account has been created for you at DOAJ. You will need this account to see your journals, upload article metadata and update your details.
 
@@ -93,6 +94,7 @@ The DOAJ Team
     flash('Account {username} created'.format(username=o.id), 'success')
     return o
 
+# TODO: New email template system
 SUGGESTION_ACCEPTED_EMAIL_TEMPLATE = \
 """
 Dear publisher,

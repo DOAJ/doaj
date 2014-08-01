@@ -238,6 +238,7 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
             **kwargs
     )
 
+# TODO: use new email template system
 SUGGESTION_ASSIGNED_GROUP_TEMPLATE = \
 """
 Dear {editor},
@@ -263,6 +264,7 @@ def send_editor_group_email(suggestion):
 
     util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
+# TODO: use new email template system
 SUGGESTION_ASSIGNED_EDITOR_TEMPLATE = \
 """
 Dear {editor},

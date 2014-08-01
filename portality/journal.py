@@ -174,6 +174,7 @@ def suggestion2journal(suggestion):
     new_j = Journal(**journal_data)
     return new_j
 
+# TODO: New email template system
 JOURNAL_ASSIGNED_GROUP_TEMPLATE = \
 """
 Dear {editor},
@@ -199,6 +200,7 @@ def send_editor_group_email(journal):
 
     util.send_mail(to=to, fro=fro, subject=subject, text=text)
 
+# TODO: New email template system
 JOURNAL_ASSIGNED_EDITOR_TEMPLATE = \
 """
 Dear {editor},
