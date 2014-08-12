@@ -28,42 +28,6 @@ else:
 
 blueprint = Blueprint('doaj', __name__)
 
-SPONSORS = {
-        # the key should correspond to the sponsor logo name in
-        # /static/doaj/images/sponsors without the extension for
-        # consistency - no code should rely on this though
-        'biomed-central': {'name':'BioMed Central', 'logo': 'biomed-central.gif', 'url': 'http://www.biomedcentral.com/'},
-        'coaction': {'name': 'Co-Action Publishing', 'logo': 'coaction.gif', 'url': 'http://www.co-action.net/'},
-        'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
-        'dovepress': {'name': 'Dove Medical Press', 'logo': 'dovepress.png', 'url': 'http://www.dovepress.com/'},
-        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.gif', 'url': 'http://www.frontiersin.org/'},
-        'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.jpg', 'url': 'http://www.hindawi.com/'},
-        'inasp': {'name': 'International Network for the Availability of Scientific Publications (INASP)', 'logo': 'inasp.png', 'url': 'http://www.inasp.info/'},
-        'lund-university': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'http://www.lunduniversity.lu.se/'},
-        'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.png', 'url': 'http://www.mdpi.com/'},
-        'springer': {'name': 'Springer Science+Business Media', 'logo': 'springer.gif', 'url': 'http://www.springer.com/'},
-        'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.gif', 'url': 'http://www.taylorandfrancisgroup.com/'},
-}
-SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
-
-# @blueprint.context_processor
-# def additional_context():
-#     '''
-#     Inserts variables into every template this blueprint renders.  This
-#     one deals with the announcement in the header, which can't be built
-#     into the template directly, as various styles are applied only if a
-#     header is present on the page. It also makes the list of DOAJ
-#     sponsors available and may include similar minor pieces of
-#     information.
-#     '''
-#     return {
-#         'heading_title': '',
-#         'heading_text': '',
-#         'sponsors': SPONSORS,
-#         'settings': settings,
-#         'statistics' : models.JournalArticle.site_statistics()
-#         }
 
 @blueprint.route("/")
 def home():

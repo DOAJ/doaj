@@ -876,7 +876,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
 
         citation = self._make_citation(bibjson)
         if citation is not None:
-            cite = etree.SubElement(oai_dc, self.DC + "bibliographicCitation")
+            cite = etree.SubElement(oai_dc, self.DC + "source")
             set_text(cite, citation)
 
         return metadata
