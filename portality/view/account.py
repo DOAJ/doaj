@@ -157,7 +157,8 @@ def forgot():
         if request.url_root.endswith("/"):
             sep = ""
         reset_url = request.url_root + sep + "account/reset/" + reset_token
-        
+
+        # TODO: New email template system
         to = [account.data['email']]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
         subject = app.config.get("SERVICE_NAME","") + " - password reset"

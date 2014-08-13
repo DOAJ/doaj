@@ -1,10 +1,10 @@
 An account has been created for you at DOAJ. You will need this account to see your journals, upload article metadata and update your details.
 
-Your username is: {username}
+Your username is: {{ username }}
 
-Please visit {reset_url} and choose a password. You have {timeout_days} days from the date of this email.
+Please visit {{ reset_url }} and choose a password. You have {{ timeout_days }} days from the date of this email.
 
-If you do not set a password within {timeout_days} days, go to {forgot_pw_url} and enter your username. This will let you set your password.
+If you do not set a password within {{ timeout_days }} days, go to {{ forgot_pw_url }} and enter your username. This will let you set your password.
 
 Regards,
 The DOAJ Team
