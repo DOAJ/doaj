@@ -5,7 +5,7 @@ A contact-form backend mailer endpoint
 from flask import Blueprint, request, abort, render_template, flash
 
 from portality.core import app
-import portality.util as util
+import portality.app_email as app_email
 
 
 blueprint = Blueprint('contact', __name__)
@@ -23,6 +23,12 @@ def mailer():
                     'website enquiry',
                     request.values['message']
                 )
+                app_email.send_mail(to=[app.config['ADMIN_NAME'] + ' <' + app.config['ADMIN_EMAIL'] + '>'],
+                                    fro=request.values.get('email',app.config['ADMIN_NAME'] + ' <' + app.config['ADMIN_EMAIL'] + '>'),
+                                    subject='website enquiry',
+                                    template_name=None,
+                                    msg_body=request.values['message']
+                                    )
                 flash('Thank you very much for you enquiry. We will get back to you as soon as possible.', 'success')
             else:
                 flash('Sorry. Your message could not be delivered. Please try again.', 'error')

@@ -13,7 +13,7 @@ from portality.models import Journal, EditorGroup, Account
 from portality.view import forms
 from portality.core import app
 import portality.models as models
-import portality.util as util
+import portality.app_email as app_email
 from portality import xwalk
 from portality.view.forms import JournalForm, subjects2str, other_val, digital_archiving_policy_specific_library_value
 
@@ -174,18 +174,6 @@ def suggestion2journal(suggestion):
     new_j = Journal(**journal_data)
     return new_j
 
-# TODO: New email template system
-JOURNAL_ASSIGNED_GROUP_TEMPLATE = \
-"""
-Dear {editor},
-
-The journal "{journal_name}" has been assigned to your Editor Group by a Managing Editor.
-You may access the journal in your Editor Area: {url_root}/editor/ .
-
-The DOAJ Team
-"""
-
-
 def send_editor_group_email(journal):
     eg = EditorGroup.pull_by_key("name", journal.editor_group)
     if eg is None:
@@ -196,20 +184,15 @@ def send_editor_group_email(journal):
     to = [editor.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
-    text = JOURNAL_ASSIGNED_GROUP_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=journal.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
 
-    util.send_mail(to=to, fro=fro, subject=subject, text=text)
-
-# TODO: New email template system
-JOURNAL_ASSIGNED_EDITOR_TEMPLATE = \
-"""
-Dear {editor},
-
-The journal "{journal_name}" has been assigned to you by the Editor in your Editor Group "{group_name}".
-You may access the journal in your Editor Area: {url_root}/editor/ .
-
-The DOAJ Team
-"""
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/journal_assigned_group.txt",
+                        editor=editor.id.encode('utf-8', 'replace'),
+                        journal_name=journal.bibjson().title.encode('utf-8', 'replace'),
+                        url_root=url_root
+                        )
 
 def send_editor_email(journal):
     editor = Account.pull(journal.editor)
@@ -219,11 +202,16 @@ def send_editor_email(journal):
     to = [editor.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
-    text = JOURNAL_ASSIGNED_EDITOR_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'),
-                                                   journal_name=journal.bibjson().title.encode('utf-8', 'replace'),
-                                                   group_name=eg.name.encode("utf-8", "replace"), url_root=url_root)
 
-    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/journal_assigned_editor.txt",
+                        editor=editor.id.encode('utf-8', 'replace'),
+                        journal_name=journal.bibjson().title.encode('utf-8', 'replace'),
+                        group_name=eg.name.encode("utf-8", "replace"),
+                        url_root=url_root
+                        )
 
 class JournalFormXWalk(object):
     # NOTE: if you change something here, you will probably
