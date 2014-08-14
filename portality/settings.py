@@ -41,12 +41,6 @@ PUBLIC_ACCESSIBLE_JSON = True
 
 # =======================
 # email settings
-#
-# These should be set in your app.cfg
-SMTP_SERVER = None
-SMTP_PORT = 0
-SMTP_USER = None
-SMTP_PASS = None
 
 # Settings for Flask-Mail. Set in app.cfg
 MAIL_SERVER = None          # default localhost
