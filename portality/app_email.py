@@ -1,12 +1,9 @@
 from flask import render_template
 from flask_mail import Mail, Message
-from email.utils import formatdate
 from portality.core import app
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name, bcc=[], files=[], msg_body=None, **template_params):
-
-    mail = Mail(app)
+def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=None, **template_params):
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
@@ -38,8 +35,10 @@ def send_mail(to, fro, subject, template_name, bcc=[], files=[], msg_body=None, 
                   bcc=bcc,
                   attachments=files,
                   reply_to=None,
-                  date=formatdate(localtime=True),
+                  date=None,
                   charset=None,
                   extra_headers=None
     )
+
+    mail = Mail(app)
     mail.send(msg)
