@@ -8,15 +8,6 @@ from random import choice
 
 from urlparse import urlparse, urljoin
 
-import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
-from email.MIMEText import MIMEText
-from email.Utils import COMMASPACE, formatdate
-from email import Encoders
-
-from portality.core import app
-
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
@@ -25,53 +16,6 @@ def is_safe_url(target):
         return target
     else:
         return '/'
-
-def send_mail(to, fro, subject, text, files=[], bcc=[]):
-
-    # ensure that email isn't sent if it is disabled
-    if not app.config.get("ENABLE_EMAIL", False):
-        return
-
-    assert type(to)==list
-    assert type(files)==list
-    if bcc and not isinstance(bcc, list):
-        bcc = [bcc]
-
-    if app.config.get('CC_ALL_EMAILS_TO'):
-        bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
- 
-    msg = MIMEMultipart()
-    msg['From'] = fro
-    msg['To'] = COMMASPACE.join(to)
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = subject
- 
-    msg.attach( MIMEText(text, 'plain', 'utf-8') )
- 
-    for file in files:
-        part = MIMEBase('application', "octet-stream")
-        part.set_payload( open(file,"rb").read() )
-        Encoders.encode_base64(part)
-        part.add_header('Content-Disposition', 'attachment; filename="%s"'
-                       % os.path.basename(file))
-        msg.attach(part)
-    
-    # now deal with connecting to the server
-    server = app.config.get("SMTP_SERVER", "localhost")
-    server_port = app.config.get("SMTP_PORT", 25)
-    smtp_user = app.config.get("SMTP_USER")
-    smtp_pass = app.config.get("SMTP_PASS")
-    
-    smtp = smtplib.SMTP()  # just doing SMTP(server, server_port) does not work with Mailtrap
-    # but doing .connect explicitly afterwards works both with Mailtrap and with Mandrill
-    smtp.connect(server, server_port)
-
-    if smtp_user is not None:
-        smtp.login(smtp_user, smtp_pass)
-
-    smtp.sendmail(fro, to + bcc, msg.as_string())
-    smtp.close()
-
 
 def jsonp(f):
     """Wraps JSONified output for JSONP"""

@@ -17,7 +17,7 @@ from werkzeug.utils import redirect
 
 from portality.view.forms import EditSuggestionForm, subjects2str
 from portality.lcc import lcc_jstree
-from portality import util
+from portality import app_email
 from portality import lock
 
 def request_handler(request, suggestion_id, redirect_route="admin.suggestion_page", template="admin/suggestion.html", locked_template="admin/suggestion_locked.html",
@@ -238,17 +238,6 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
             **kwargs
     )
 
-SUGGESTION_ASSIGNED_GROUP_TEMPLATE = \
-"""
-Dear {editor},
-
-A new application for the journal "{journal_name}" has been assigned to your Editor Group by a Managing Editor.
-You may access the application in your Editor Area: {url_root}/editor/ .
-
-The DOAJ Team
-"""
-
-
 def send_editor_group_email(suggestion):
     eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
     if eg is None:
@@ -259,19 +248,16 @@ def send_editor_group_email(suggestion):
     to = [editor.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
-    text = SUGGESTION_ASSIGNED_GROUP_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'), journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'), url_root=url_root)
 
-    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/suggestion_assigned_group.txt",
+                        editor=editor.id.encode('utf-8', 'replace'),
+                        journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                        url_root=url_root
+                        )
 
-SUGGESTION_ASSIGNED_EDITOR_TEMPLATE = \
-"""
-Dear {editor},
-
-A new application for the journal "{journal_name}" has been assigned to you by the Editor in your Editor Group "{group_name}".
-You may access the application in your Editor Area: {url_root}/editor/ .
-
-The DOAJ Team
-"""
 
 def send_editor_email(suggestion):
     editor = models.Account.pull(suggestion.editor)
@@ -281,11 +267,17 @@ def send_editor_email(suggestion):
     to = [editor.email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
-    text = SUGGESTION_ASSIGNED_EDITOR_TEMPLATE.format(editor=editor.id.encode('utf-8', 'replace'),
-                                                   journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
-                                                   group_name=eg.name.encode("utf-8", "replace"), url_root=url_root)
 
-    util.send_mail(to=to, fro=fro, subject=subject, text=text)
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/suggestion_assigned_editor.txt",
+                        editor=editor.id.encode('utf-8', 'replace'),
+                        journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                        group_name=eg.name.encode("utf-8", "replace"),
+                        url_root=url_root
+                        )
+
 
 class SuggestionFormXWalk(object):
     # NOTE: if you change something here, unless it only relates to suggestions, you will probably

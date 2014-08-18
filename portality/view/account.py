@@ -8,7 +8,7 @@ from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
 from portality.core import app, ssl_required
 from portality import models
-from portality import util
+from portality import util, app_email
 
 blueprint = Blueprint('account', __name__)
 
@@ -157,17 +157,18 @@ def forgot():
         if request.url_root.endswith("/"):
             sep = ""
         reset_url = request.url_root + sep + "account/reset/" + reset_token
-        
+
         to = [account.data['email']]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
         subject = app.config.get("SERVICE_NAME","") + " - password reset"
-        text = "A password reset request for account '" + account.id + "' has been received and processed.\n\n"
-        text += "Please visit " + reset_url + " and enter your new password.\n\n"
-        text += "If you are the user '" + account.id + "' and you requested this change, please visit that link now and set the password to something of your preference.\n\n"
-        text += "If you are the user '" + account.id + "' and you did not request this change, you can ignore this email.\n\n"
-        text += "Regards, The DOAJ Team"
         try:
-            util.send_mail(to=to, fro=fro, subject=subject, text=text)
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/password_reset.txt",
+                                account_id=account.id,
+                                reset_url=reset_url,
+                                )
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
             if app.config.get('DEBUG',False):
                 flash('Debug mode - url for reset is ' + reset_url)
@@ -175,7 +176,7 @@ def forgot():
             magic = str(uuid.uuid1())
             util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
             if app.config.get('DEBUG',False):
-                flash('Debug mode - url for reset is' + reset_url)
+                flash('Debug mode - url for reset is ' + reset_url)
             app.logger.error(magic + "\n" + repr(e))
 
     return render_template('account/forgot.html')

@@ -10,6 +10,7 @@ setup(
         "Flask==0.9",
         "Flask-Login==0.1.3",
         "Flask-WTF==0.8.3",
+        "Flask-Mail==0.9.0",
         "requests==1.1.0",
         "markdown",
         "gitpython",
