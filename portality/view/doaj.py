@@ -157,17 +157,22 @@ def _sort_volumes(volumes):
         try:
             # try to convert n to an int
             vint = int(v)
-            numeric.append(vint)
-            
+
             # remember the original string (it may have leading 0s)
-            nmap[vint] = v
+            try:
+                nmap[vint].append(v)
+            except KeyError:
+                nmap[vint] = [v]
+                numeric.append(vint)
         except:
             non_numeric.append(v)
-    
+
     numeric.sort(reverse=True)
     non_numeric.sort(reverse=True)
-    
-    return [nmap[n] for n in numeric] + non_numeric # convert the integers back to their string representation
+
+    # convert the integers back to their string representation
+    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric]) + non_numeric
+
 
 ###############################################################
 ## The various static endpoints
