@@ -45,12 +45,12 @@ ternary_choices_list = [v[0] for v in ternary_choices]
 
 license_options = [
     ('', ''),
-    ('CC by', 'Attribution'),
-    ('CC by-nc', 'Attribution NonCommercial'),
-    ('CC by-nc-nd', 'Attribution NonCommercial NoDerivatives'),
-    ('CC by-nc-sa', 'Attribution NonCommercial ShareAlike'),
-    ('CC by-nd', 'Attribution NoDerivatives'),
-    ('CC by-sa', 'Attribution ShareAlike'),
+    ('CC BY', 'Attribution'),
+    ('CC BY-NC', 'Attribution NonCommercial'),
+    ('CC BY-NC-ND', 'Attribution NonCommercial NoDerivatives'),
+    ('CC BY-NC-SA', 'Attribution NonCommercial ShareAlike'),
+    ('CC BY-ND', 'Attribution NoDerivatives'),
+    ('CC BY-SA', 'Attribution ShareAlike'),
 ]
 
 author_pays_options = [
