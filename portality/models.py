@@ -2630,7 +2630,12 @@ class JournalVolumeToC(DomainObject):
         res = cls.query(q=q.query())
         volumes = [term.get("term") for term in res.get("facets", {}).get("vols", {}).get("terms", [])]
         return volumes
-    
+
+    @classmethod
+    def delete_by_volume(cls, journal_id, volume):
+        q = ToCQuery(journal_id=journal_id, volume=volume)
+        cls.delete_by_query(q.query())
+
     @property
     def about(self):
         return self.data.get("about")
