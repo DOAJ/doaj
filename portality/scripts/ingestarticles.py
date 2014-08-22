@@ -21,6 +21,10 @@ for remote in to_download:
         # check the content length
         size_limit = app.config.get("MAX_REMOTE_SIZE", 262144000)
         cl = r.headers.get("content-length")
+        try:
+            cl = int(cl)
+        except:
+            cl = 0
         if cl > size_limit:
             remote.failed("The file at the URL was too large")
             remote.save()
