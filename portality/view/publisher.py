@@ -1,13 +1,12 @@
-from flask import Blueprint, request, abort, make_response, Response
+from flask import Blueprint, request, make_response, Response
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 
-from portality import settings, models, article
-from portality.view.forms import SuggestionForm
+from portality import models, article
 from portality.view.forms import ArticleForm
-from portality import article
+
 import os, requests
 
 
