@@ -171,7 +171,7 @@ def _sort_volumes(volumes):
     non_numeric.sort(reverse=True)
 
     # convert the integers back to their string representation
-    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric]) + non_numeric
+    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
 
 
 ###############################################################
