@@ -22,7 +22,7 @@ license_correct_dict = { "CC by" : "CC BY",
 keys_by_len = sorted(license_correct_dict.keys(), key=len, reverse=True)
 match_licenses = re.compile(r'(' + '|'.join(keys_by_len) + r')')
 
-# Method to update the license in the json
+# Function to update the license in the json (as string)
 def update_license_entry(old_string):
     return match_licenses.sub(lambda x: license_correct_dict[x.group()], old_string)
 
@@ -44,30 +44,35 @@ while journals:
             # Change the license
             j_license = journal_model.bibjson().get_license()
             if j_license:
-                # print journal_model.data['bibjson']['license']
-                journal_model.data['bibjson']['license'] = update_license_entry(str(j_license))
+                print "\nold:\t{0}".format(journal_model.data['bibjson']['license'])
+                journal_model.data['bibjson']['license'] = '[{0}]'.format(update_license_entry(str(j_license)))
                 write_batch.append(journal_model.data)
+                print "new:\t{0}".format(journal_model.data['bibjson']['license'])
         except ValueError:
             print "Failed to create a model"
         except KeyError:
             # No license present, pass
             pass
 
+    # When we have enough, do some writing
     if len(write_batch) >= batch_size:
         print "writing ", len(write_batch)
         models.Journal.bulk(write_batch)
         write_batch = []
 
-    # Load the next batch of journals
+    # Read the next batch of journals by scrolling again
     try:
         sid = resp.json()['_scroll_id']
         resp = raw.scroll_next(conn, scroll_id=sid)
         journals = raw.unpack_result(resp)
     except ValueError:
         print "Reading JSON failed on: " + resp.text
-        print "Aborting"
+        print "Aborting - cannae scroll further"
         break
 
+# Write the last part-batch to index
 if len(write_batch) > 0:
     print "writing ", len(write_batch)
-    models.Journal.bulk(write_batch)
+    print models.Journal.bulk(write_batch)
+
+# TODO: update the articles too (they pull the license from the journals)
