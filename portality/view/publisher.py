@@ -1,14 +1,14 @@
-from flask import Blueprint, request, abort, make_response, Response
+from flask import Blueprint, request, make_response, Response
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 
-from portality import settings, models, article
-from portality.view.forms import SuggestionForm
+from portality import models, article
 from portality.view.forms import ArticleForm
-from portality import article
-import os, requests
+
+import os, requests, ftplib
+from urlparse import urlparse
 
 
 blueprint = Blueprint('publisher', __name__)
@@ -119,24 +119,15 @@ def _file_upload(f, schema, previous):
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
         return render_template('publisher/uploadfile.html', previous=previous)
 
+
 def _url_upload(url, schema, previous):
-    # prep a record to go into the index, to record this upload.  The filename is the url
-    record = models.FileUpload()
-    record.upload(current_user.id, url)
-    record.set_id()
-    record.set_schema(schema) # although it could be wrong, this will get checked later
-    
-    # now we attempt to verify that the file is retrievable
-    try:
+    # first define a few functions
+    def __http_upload(record, previous, url):
         # first thing to try is a head request, supporting redirects
         head = requests.head(url, allow_redirects=True)
         if head.status_code == requests.codes.ok:
-            record.exists()
-            record.save()
-            previous = [record] + previous
-            flash("File reference successfully received - it will be processed shortly", "success")
-            return render_template('publisher/uploadfile.html', previous=previous)
-        
+            return __ok(record, previous)
+
         # if we get to here, the head request failed.  This might be because the file
         # isn't there, but it might also be that the server doesn't support HEAD (a lot
         # of webapps [including this one] don't implement it)
@@ -146,18 +137,72 @@ def _url_upload(url, schema, previous):
         get = requests.get(url, stream=True)
         get.close()
         if get.status_code == requests.codes.ok:
-            record.exists()
-            record.save()
-            previous = [record] + previous
-            flash("File reference successfully received - it will be processed shortly", "success")
-            return render_template('publisher/uploadfile.html', previous=previous)
-        
-    except:
-        record.failed("The URL could not be accessed")
+            return __ok(previous, record)
+        return __fail(record, previous, error='error while checking submitted file reference: ' + get.status_code)
+
+
+    def __ftp_upload(record, previous, parsed_url):
+        # 1. find out whether the file exists
+        # 2. that's it, return OK
+
+        # We might as well check if the file exists using the SIZE command.
+        # If the FTP server does not support SIZE, our article ingestion
+        # script is going to refuse to process the file anyway, so might as
+        # well get a failure now.
+        # Also it's more of a faff to check file existence using LIST commands.
+        try:
+            f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
+            r = f.sendcmd('TYPE I')  # SIZE is not usually allowed in ASCII mode, so set to binary mode
+            if not r.startswith('2'):
+                return __fail(record, previous, error='could not set binary '
+                    'mode in target FTP server while checking file exists')
+            if f.size(parsed_url.path) < 0:
+                # this will either raise an error which will get caught below
+                # or, very rarely, will return an invalid size
+                return __fail(record, previous, error='file does not seem to exist on FTP server')
+
+        except Exception as e:
+            return __fail(record, previous, error='error during FTP file existence check: ' + str(e.args))
+
+        return __ok(record, previous)
+
+
+    def __ok(record, previous):
+        record.exists()
         record.save()
         previous = [record] + previous
-        flash("The URL provided could not be accessed; please check it before submitting again", "error")
+        flash("File reference successfully received - it will be processed shortly", "success")
         return render_template('publisher/uploadfile.html', previous=previous)
+
+
+    def __fail(record, previous, error):
+        message = 'The URL could not be accessed; ' + error
+        record.failed(message)
+        record.save()
+        previous = [record] + previous
+        flash(message, "error")
+        return render_template('publisher/uploadfile.html', previous=previous)
+
+
+    # prep a record to go into the index, to record this upload.  The filename is the url
+    record = models.FileUpload()
+    record.upload(current_user.id, url)
+    record.set_id()
+    record.set_schema(schema) # although it could be wrong, this will get checked later
+
+    # now we attempt to verify that the file is retrievable
+    try:
+        # first, determine if ftp or http
+        parsed_url = urlparse(url)
+        if parsed_url.scheme == 'http':
+            return __http_upload(record, previous, url)
+        elif parsed_url.scheme == 'ftp':
+            return __ftp_upload(record, previous, parsed_url)
+        else:
+            return __fail(record, previous, error='unsupported URL scheme "{0}". Only HTTP and FTP are supported.'.format(parsed_url.scheme))
+
+    except:
+        return __fail(record, previous, error="please check it before submitting again")
     
 
 @blueprint.route("/metadata", methods=["GET", "POST"])

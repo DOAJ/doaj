@@ -7,8 +7,7 @@ new ones as required too.
 '''
 import os
 
-from flask import Flask, request, abort, render_template, redirect, send_file
-from flask.views import View
+from flask import request, abort, render_template, redirect, send_file, url_for
 from flask.ext.login import login_user, current_user
 
 import portality.models as models
@@ -88,9 +87,11 @@ SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an
 def legacy():
     func = request.values.get("func")
     if func == "csv":
-        return redirect("/csv"), 301
+        return redirect(url_for('doaj.csv_data')), 301
     elif func == "rss":
-        return redirect("/feed"), 301
+        return redirect(url_for('atom.feed')), 301
+    elif func == "browse" or func == 'byPublicationFee  ':
+        return redirect(url_for('doaj.search')), 301
     abort(404)
 
 @app.route("/doaj2csv")
