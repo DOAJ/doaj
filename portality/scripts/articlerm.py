@@ -1,4 +1,5 @@
 from portality import models
+import json
 
 if __name__ == "__main__":
     import argparse
@@ -6,14 +7,36 @@ if __name__ == "__main__":
 
     parser.add_argument("-u", "--username", help="username of user whose articles to remove.")
     parser.add_argument("-g", "--ghost", help="specify if you want the articles being deleted not to be snapshot", action="store_true")
+    parser.add_argument("-q", "--query", help="file page of json document containing delete-by query")
 
     args = parser.parse_args()
 
-    if not args.username:
-        print "Please specify a username with the -u option"
+    if not args.username and not args.query:
+        print "Please specify a username with the -u option, or a query file with the -q option"
+        exit()
+
+    if args.username and args.query:
+        print "You can't specify both a username and a query - pick one!"
         exit()
 
     snapshot = not args.ghost
 
-    models.Article.delete_selected(owner=args.username, snapshot=snapshot)
+    if not args.query:
+        models.Article.delete_selected(owner=args.username, snapshot=snapshot)
+        print "Articles deleted"
+    else:
+        f = open(args.query)
+        query = json.loads(f.read())
+
+        res = models.Article.query(q=query)
+        total = res.get("hits", {}).get("total")
+
+        go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
+        if go_on.lower() == "y":
+            models.Article.delete_selected(query=query, snapshot=snapshot)
+            print "Articles deleted"
+        else:
+            print "Aborted"
+
+
 
