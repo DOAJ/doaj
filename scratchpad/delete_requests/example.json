@@ -1,0 +1,15 @@
+{
+    "query":{
+        "filtered":{
+            "query":{"match_all":{}},
+            "filter":{
+                "bool":{
+                    "must":[
+                        {"term":{"_type":"article"}},
+                        {"term":{"index.language.exact":"Russian"}}
+                    ]
+                }
+            }
+        }
+    }
+}
