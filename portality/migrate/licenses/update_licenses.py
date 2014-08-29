@@ -22,6 +22,10 @@ conn = raw.make_connection(None, 'localhost', 9200, 'doaj')
 write_batch = []
 batch_size = 1000
 
+edited = 0
+failed = 0
+unchanged = 0
+
 # Process the previous set of journals
 for j in tasks.scroll(conn, 'journal'):
     try:
@@ -31,13 +35,19 @@ for j in tasks.scroll(conn, 'journal'):
         if j_license:
             j_license['type'] = license_correct_dict[j_license['type']]
             j_license['title'] = license_correct_dict[j_license['title']]
+            print "edited\t{0}".format(journal_model.id)
+            edited += 1
             journal_model.prep()
             write_batch.append(journal_model.data)
     except ValueError:
         print "Failed to create a model"
+        print "no model\t{0}".format(j)
+        failed += 1
     except KeyError:
         # No license present, pass
-        pass
+        print "unchanged\t{0}".format(j)
+        unchanged += 1
+        #pass
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
@@ -48,6 +58,7 @@ for j in tasks.scroll(conn, 'journal'):
 # Write the last part-batch to index
 if len(write_batch) > 0:
     print "writing ", len(write_batch)
-    print models.Journal.bulk(write_batch)
+    models.Journal.bulk(write_batch)
 
-# TODO: update the articles too (they pull the license from the journals)
+print "\nCompleted. Run scripts/journalinfo.py to update the articles with the new license labels."
+print "{0} journals were updated, {1} were left unchanged, and {2} failed.".format(edited, unchanged, failed)
