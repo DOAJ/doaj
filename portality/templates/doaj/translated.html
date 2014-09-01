@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>DOAJ Translated page</h2>
+<h2>DOAJ Translated Versions of the Application Form</h2>
 
-Translated placeholder text.
+<p>We have created guides in several languages to help you fill in the <a href="{{ url_for('http://doaj.org/application/new') }}">
+Application Form</a>.</p>
+
+<ul>
+  <!-- <li>Chinese</li> -->
+  <li><a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdHZ3d0FLRTdCWTZIMWJSaHVkM2Y1Qmc&usp=sharing">
+  Portuguese</a></li>
+  <li>Spanish</li>
+</ul>
+
+<p>DOAJ thanks the following people for their translation work:<br/>
+Caio Coelho<br/>
+Maria Manuel Borges<br/>
+Remedios Melero</p>
 
 {% endblock %}
