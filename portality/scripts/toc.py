@@ -5,7 +5,6 @@ from copy import deepcopy
 SKIPPED = 1
 PROCESSED = 2
 
-
 def minimise_article(full_article):
     # we want to keep the id and the bibjson
     id = full_article.id
@@ -99,12 +98,17 @@ def generate_toc(journal, verbose=False):
                 print "......Replacing existing ToC at", existing_id
             table.set_id(existing_id)
 
-        table.save()
+        try:
+            table.save(retries=10)
+        except:
+            print "........Unable to save ToC at", existing_id
+            continue
 
     return PROCESSED, len(known_volumes)
 
 def generate_tocs(verbose=False):
     skipped = 0
+    failed = 0
     js = 0
     volumes = 0
 
