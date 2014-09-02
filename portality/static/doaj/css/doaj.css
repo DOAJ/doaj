@@ -326,6 +326,16 @@ button[target^="notes-"][target$="-container"] {
     width: 34em;
 }
 
+/* The Tick */
+
+i.doaj_tick_short {
+   content:url('/static/doaj/images/tick_short.png');
+}
+
+i.doaj_tick_long {
+   content:url('/static/doaj/images/tick_long.png');
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
