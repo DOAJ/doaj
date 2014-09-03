@@ -34,7 +34,10 @@
                 <p><a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a></p>
             {% endif %}
         {% endif %}
-        <i class='doaj_tick_long'></i>​
+        {% set tick = journal.is_ticked() %}
+        {% if tick %}
+            <i class='doaj_tick_long'></i>​
+        {% endif %}
     </div>
 </div>
 

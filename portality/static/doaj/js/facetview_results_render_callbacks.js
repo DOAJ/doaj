@@ -162,11 +162,11 @@ fv_title_field = (function (resultobj) {
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a>";
+                field += "&nbsp<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a>";
             } else {
-                field += resultobj.bibjson.title;
+                field += "&nbsp" + resultobj.bibjson.title;
             }
-            if (true) {
+            if (resultobj.ticked && resultobj['ticked']) {  //  relies on short circuit
                 field += "&nbsp<i class='doaj_tick_short'></i>​";
             }
             return field + "</span>"
@@ -176,9 +176,6 @@ fv_title_field = (function (resultobj) {
     };
     return that;
 })();
-
-//
-//<img src=\"/static/doaj/images/tick_short.png\">
 
 fv_doi_link = (function (resultobj) {
     var that = function(resultobj) {

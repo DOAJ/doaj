@@ -899,6 +899,13 @@ class Journal(DomainObject):
             issns += hbib.get_identifiers(hbib.E_ISSN)
         
         return issns
+
+    def is_ticked(self):
+        print self.data.get("ticked")
+        return self.data.get("ticked", False)
+
+    def set_ticked(self, ticked):
+        self.data["ticked"] = ticked
     
     def _generate_index(self):
         # the index fields we are going to generate
