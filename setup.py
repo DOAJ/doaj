@@ -19,6 +19,7 @@ setup(
         "feedparser",
         "tzlocal",
         "futures==2.1.6",
+        "esprit==0.0.2",
         # for deployment
         "gunicorn",
         "newrelic",
