@@ -1,0 +1,17 @@
+{
+    "query":{
+        "filtered":{
+            "query":{
+                "query_string":{"query":"Vestnik MGSU","default_operator":"AND"}
+            },
+            "filter":{
+                "bool":{
+                    "must":[
+                        {"term":{"_type":"article"}},
+                        {"term":{"bibjson.year.exact":"2012"}}
+                    ]
+                }
+            }
+        }
+    }
+}

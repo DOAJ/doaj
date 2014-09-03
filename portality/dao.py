@@ -65,7 +65,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     def last_updated(self):
         return self.data.get("last_updated")
 
-    def save(self):
+    def save(self, retries=0, back_off_factor=1):
         if 'id' in self.data:
             id_ = self.data['id'].strip()
         else:
@@ -76,19 +76,28 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if 'created_date' not in self.data:
             self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        
-        """
-        if 'author' not in self.data:
-            try:
-                self.data['author'] = current_user.id
-            except:
-                self.data['author'] = "anonymous"
-        """
 
-        r = requests.post(self.target() + self.data['id'], data=json.dumps(self.data))
-        
-        if r.status_code >= 400:
-            print r.json()
+        attempt = 0
+        url = self.target() + self.data['id']
+        d = json.dumps(self.data)
+        while attempt <= retries:
+            try:
+                r = requests.post(url, data=d)
+                if r.status_code >= 400 and r.status_code < 500:
+                    # bad request, no retry
+                    print r.json()
+                    break
+                elif r.status_code >= 500:
+                    print r.json()
+                    attempt += 1
+                else:
+                    return r
+
+            except requests.exceptions.ConnectionError:
+                attempt += 1
+
+            # wait before retrying
+            time.sleep((2**attempt) * back_off_factor)
 
     def save_from_form(self,request):
         newdata = request.json if request.json else request.values
