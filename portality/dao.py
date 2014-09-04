@@ -2,6 +2,8 @@ import os, json, UserDict, requests, uuid
 from copy import deepcopy
 from datetime import datetime
 import time
+# debugging
+import traceback, sys
 
 from portality.core import app, current_user
 
@@ -85,10 +87,11 @@ class DomainObject(UserDict.IterableUserDict, object):
                 r = requests.post(url, data=d)
                 if r.status_code >= 400 and r.status_code < 500:
                     # bad request, no retry
-                    print r.json()
+                    print "bad request", r.json()
+                    traceback.print_stack(file=sys.stdout)
                     break
                 elif r.status_code >= 500:
-                    print r.json()
+                    print "server error", r.json()
                     attempt += 1
                 else:
                     return r

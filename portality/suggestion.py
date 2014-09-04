@@ -222,7 +222,7 @@ def suggestion_form(form, request, template_name, existing_suggestion=None, succ
                 for field in form:  # in order of definition of fields, so the order of rendering should be (manually) kept the same as the order of definition for this to work
                     if field.errors:
                         first_field_with_error = field.short_name
-                        print first_field_with_error
+                        print "field with error", first_field_with_error
                         break
     return render_template(
             template_name,
