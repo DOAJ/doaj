@@ -140,9 +140,10 @@ application_status_choices_optional_owner = [
     ('pending', 'Pending'),
     ('in progress', 'In progress'),
     ('rejected', 'Rejected'),
+    ('ready', 'Ready')
 ]
 
-application_status_choices_editor = application_status_choices_optional_owner + [('ready', "Ready")]
+application_status_choices_editor = application_status_choices_optional_owner# + [('ready', "Ready")]
 
 application_status_choices_admin = application_status_choices_editor + [('accepted', 'Accepted')]
 
