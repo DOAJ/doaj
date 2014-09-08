@@ -45,12 +45,12 @@ ternary_choices_list = [v[0] for v in ternary_choices]
 
 license_options = [
     ('', ''),
-    ('CC by', 'Attribution'),
-    ('CC by-nc', 'Attribution NonCommercial'),
-    ('CC by-nc-nd', 'Attribution NonCommercial NoDerivatives'),
-    ('CC by-nc-sa', 'Attribution NonCommercial ShareAlike'),
-    ('CC by-nd', 'Attribution NoDerivatives'),
-    ('CC by-sa', 'Attribution ShareAlike'),
+    ('CC BY', 'Attribution'),
+    ('CC BY-NC', 'Attribution NonCommercial'),
+    ('CC BY-NC-ND', 'Attribution NonCommercial NoDerivatives'),
+    ('CC BY-NC-SA', 'Attribution NonCommercial ShareAlike'),
+    ('CC BY-ND', 'Attribution NoDerivatives'),
+    ('CC BY-SA', 'Attribution ShareAlike'),
 ]
 
 author_pays_options = [
@@ -92,17 +92,17 @@ deposit_policy_choices = [
 
 deposit_policy_choices_list = [v[0] for v in deposit_policy_choices]
 
-license_optional_url_choices = [ ('not-cc-like', 'No') ]
+license_optional_url_choices = [ ('Not CC-like', 'No') ]
 license_optional_url_choices_optvals = [v[0] for v in license_optional_url_choices]
 
 license_choices = main_license_options + license_optional_url_choices + [other_choice]
 license_choices_list = [v[0] for v in license_choices]
 
 license_checkbox_choices = [
-    ('by', 'Attribution'),
-    ('nc', 'No Commercial Usage'),
-    ('nd', 'No Derivatives'),
-    ('sa', 'Share Alike'),
+    ('BY', 'Attribution'),
+    ('NC', 'No Commercial Usage'),
+    ('ND', 'No Derivatives'),
+    ('SA', 'Share Alike'),
 ]
 
 review_process_optional_url_choices_1 = [ ('', ' ') ]
@@ -140,9 +140,10 @@ application_status_choices_optional_owner = [
     ('pending', 'Pending'),
     ('in progress', 'In progress'),
     ('rejected', 'Rejected'),
+    ('ready', 'Ready')
 ]
 
-application_status_choices_editor = application_status_choices_optional_owner + [('ready', "Ready")]
+application_status_choices_editor = application_status_choices_optional_owner# + [('ready', "Ready")]
 
 application_status_choices_admin = application_status_choices_editor + [('accepted', 'Accepted')]
 
