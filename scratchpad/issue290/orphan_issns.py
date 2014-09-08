@@ -81,13 +81,17 @@ name_query = {
 }
 
 new_info = []
+unfound = []
 for i, n in info:
     q = deepcopy(name_query)
     q["query"]["bool"]["must"][1]["term"]["index.title.exact"] = n
     resp = esprit.raw.search(doaj, "journal,article", q, method="GET")
     res = esprit.raw.unpack_result(resp)
+    if len(res) == 0:
+        unfound.append((i, n))
     for r in res:
         issns = r.get("index", {}).get("issn", [])
         new_info.append((i, n, issns))
+        print i, n, "=>", issns
 
-print new_info
+print unfound
