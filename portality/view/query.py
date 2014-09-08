@@ -100,7 +100,11 @@ def query(path='Pages'):
             if 'default_operator' in request.values:
                 qs['query']['query_string']['default_operator'] = request.values['default_operator']
         elif 'source' in request.values:
-            qs = json.loads(urllib2.unquote(request.values['source']))
+            unquoted_source = urllib2.unquote(request.values['source'])
+            try:
+                qs = json.loads(unquoted_source)
+            except ValueError:
+                app.logger.exception("Problematic query:\n    {0}\n".format(unquoted_source))
         else: 
             qs = {'query': {'match_all': {}}}
 
