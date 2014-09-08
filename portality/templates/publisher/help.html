@@ -3,8 +3,40 @@
 {% block publisher_content %}
 
 <h2>Help</h2>
-<p>Placeholder help text.</p>
+<p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
-<p><a href="{{ url_for('doaj.translated') }}">Link to translated page.</a></p>
+<h3>Application Form</h3>
+<p>Guides to filling in the <a href="{{url_for('doaj.suggestion')}}">Application Form</a> are available in other 
+languages. <a href="{{ url_for('doaj.translated') }}">Download the language of your choice</a> and refer to it when 
+filling in the form.</p>
+
+<h3>Creating DOAJ XML</h3>
+<p>For help with creating DOAJ XML and details on XML tags, read the 
+<a href="{{ url_for('doaj.features#xml_upload') }}">File Upload Info section</a> 
+on our Features pages.</p>
+
+<h3>Problems with XML files</h3>
+<p>For problems with XML file uploads that have failed or have errors, read the <a href="{{ url_for('doaj.publishers') }}">
+Failed XML Uploads section</a> on our 'For Publishers' page.
+
+<h3>Correcting articles on DOAJ</h3>
+<p>If you need to correct an article on DOAJ, upload it to us again. Read <a href="{{ url_for('doaj.publishers') }}">
+How Do I Correct An Error in Article Metadata?</a> on our 'For Publishers' page for more details.
+
+<h3>Deleting articles from DOAJ</h3>
+<p>If an article or a range of articles needs to be deleted, please <a href="{{ url_for('doaj.contact') }}">Contact Us</a>. 
+Please email us ALL of the following information:</p>
+<ol>
+  <li>Name of the journal, as it appears in DOAJ</li>
+  <li>The URL of the journal in DOAJ ( which will look something like 
+  http://doaj.org/toc/ec02cdfe6de44d4d98be2927640245c8 )</li>
+  <li>The title of EVERY article to be deleted. If an article appears twice, include details of what is wrong 
+  so we know which one to delete.</li>
+  <li>If you are asking us to delete a range of content, include the volume and issue range. For example, Volume 1, 
+  Issue 1, Jan 2010 to Volume 2, Issue 4, Dec 2011.</li>
+  <li>Send a screenshot if it will help.</li>
+</ol>
+
+<p></p>
 
 {% endblock %}
