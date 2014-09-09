@@ -15,6 +15,7 @@ SECRET_KEY = "default-key"
 ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
+ERROR_LOGGING_EMAIL = 'doaj.internal@gmail.com'
 SUPPRESS_ERROR_EMAILS = False
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
