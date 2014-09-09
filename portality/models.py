@@ -1021,6 +1021,19 @@ class Journal(DomainObject):
         if not self.bibjson().active:
             self.set_in_doaj(False)
 
+    def _calculate_tick(self):
+        created_date = self.data.get("created_date", None)
+        if not created_date:
+            return
+        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
+        threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
+
+        if created > threshold:
+            self.set_ticked(True)
+        else:
+            self.set_ticked(False)
+
     def all_articles(self):
         return Article.find_by_issns(self.known_issns())
 
@@ -1032,8 +1045,9 @@ class Journal(DomainObject):
     def prep(self):
         self._ensure_in_doaj()
         self._generate_index()
+        self._calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-    
+
     def save(self):
         self.prep()
         super(Journal, self).save()
