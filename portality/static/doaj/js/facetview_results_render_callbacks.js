@@ -150,25 +150,28 @@ fv_title_field = (function (resultobj) {
         var isjournal = false;
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // this is an article
-            field += "<i class='icon icon-file'></i> "
+            field += "<i class='icon icon-file'></i>";
         }
         else if (resultobj.suggestion) {
             // this is a suggestion
-            field += "<i class='icon icon-signin' style=\"margin-right: 0.5em;\"></i>"
+            field += "<i class='icon icon-signin' style=\"margin-right: 0.5em;\"></i>";
         } else {
             // this is a journal
-            field += "<i class='icon icon-book'></i> "
-            isjournal = true
+            field += "<i class='icon icon-book'></i>";
+            isjournal = true;
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span>"
+                field += "&nbsp<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a>";
             } else {
-                field += resultobj.bibjson.title + "</span>"
+                field += "&nbsp" + resultobj.bibjson.title;
             }
-            return field
+            if (resultobj.ticked && resultobj['ticked']) {  //  relies on short circuit
+                field += "&nbsp<i class='doaj_tick_short'></i>​";
+            }
+            return field + "</span>"
         } else {
-            return false
+            return false;
         }
     };
     return that;

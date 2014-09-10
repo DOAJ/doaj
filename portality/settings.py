@@ -70,6 +70,9 @@ PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 # code will default to 15 years before current year if commented out.
 METADATA_START_YEAR = 1960
 
+# tick (on toc) and doaj seal settings
+TICK_THRESHOLD = '2014-03-19T00:00:00Z'
+
 # ========================
 # authorisation settings
 
