@@ -58,11 +58,10 @@ for j in tasks.scroll(conn, 'journal'):
         failed += 1
         fa.append(journal_model.id)
     except KeyError:
-        # No license present, pass
+        # No license present
         print "unchanged\t{0}".format(journal_model.id)
         unchanged += 1
         un.append(journal_model.id)
-        #pass
 
     # When we have enough, do some writing
     if len(write_batch) >= batch_size:
@@ -89,7 +88,7 @@ fa_sug = []
 un_sug = []
 nl_sug = []
 
-# Process the previous set of journals
+# Scroll through all journals
 for s in tasks.scroll(conn, 'suggestion'):
     try:
         suggestion_model = models.Suggestion(_source=s)
@@ -130,6 +129,6 @@ if len(write_batch) > 0:
     print "writing ", len(write_batch)
     models.Suggestion.bulk(write_batch)
 
-print "\nCompleted. Run scripts/journalinfo.py to update the articles with the new license labels."
+print "\nCompleted. Run scripts/journalinfo.py to update the articles with the new license labels, and missed_journals.py for the missing journals."
 print "{0} journals were updated, {1} were left unchanged, {2} had no licence object, and {3} failed.".format(edited, unchanged, nolicence, failed)
 print "{0} suggestions were updated, {1} were left unchanged, {2} had no licence object, and {3} failed.".format(edited_sug, unchanged_sug, nolicence_sug, failed_sug)
