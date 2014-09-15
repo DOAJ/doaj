@@ -167,7 +167,7 @@ fv_title_field = (function (resultobj) {
                 field += "&nbsp" + resultobj.bibjson.title;
             }
             if (resultobj.ticked && resultobj['ticked']) {  //  relies on short circuit
-                field += "&nbsp<i class='doaj_tick_short'></i>​";
+                field += "&nbsp<i class='doaj_tick_short' title='Accepted after March 2014'></i>​";
             }
             return field + "</span>"
         } else {
