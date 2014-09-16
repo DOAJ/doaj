@@ -167,7 +167,7 @@ fv_title_field = (function (resultobj) {
                 field += "&nbsp" + resultobj.bibjson.title;
             }
             if (resultobj.ticked && resultobj['ticked']) {  //  relies on short circuit
-                field += "&nbsp<i class='doaj_tick_short' title='Accepted after March 2014'></i>​";
+                field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
             }
             return field + "</span>"
         } else {
