@@ -212,6 +212,7 @@ It is likely that history records will only be created upon request by the admin
         "editor_group" : "<name of editor group which controls this object>",
         "editor" : "<username of associate editor assigned to this object>"
     },
+    "ticked" : true|false,
     "index" : {
         "issn" : [<list of all print and electronic issns for all time>],
         "title" : [<list of all titles the journal has been known by>],
