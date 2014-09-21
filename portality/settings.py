@@ -37,6 +37,11 @@ ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
+# PyCharm debug settings
+DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
+DEBUG_PYCHARM_SERVER = 'localhost'
+DEBUG_PYCHARM_PORT = 6000
+
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
 
