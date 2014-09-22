@@ -171,6 +171,7 @@ if __name__ == "__main__":
             pycharm_debug = True
 
     if pycharm_debug:
+        app.config['DEBUG'] = False
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
