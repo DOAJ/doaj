@@ -239,9 +239,9 @@ class GenericBibJSON(object):
 class LCC(DomainObject):
     __type__ = "lcc"
     
-    def save(self):
+    def save(self, **kwargs):
         self.set_id("lcc")
-        super(LCC, self).save()
+        super(LCC, self).save(**kwargs)
 
 
 ############################################################################
@@ -901,7 +901,6 @@ class Journal(DomainObject):
         return issns
 
     def is_ticked(self):
-        print self.data.get("ticked")
         return self.data.get("ticked", False)
 
     def set_ticked(self, ticked):
@@ -1021,15 +1020,17 @@ class Journal(DomainObject):
         if not self.bibjson().active:
             self.set_in_doaj(False)
 
-    def _calculate_tick(self):
+    def calculate_tick(self):
         created_date = self.data.get("created_date", None)
+
         if not created_date:
             return
+
         created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
 
-        if created > threshold:
+        if created > threshold and self.is_in_doaj():
             self.set_ticked(True)
         else:
             self.set_ticked(False)
@@ -1045,12 +1046,12 @@ class Journal(DomainObject):
     def prep(self):
         self._ensure_in_doaj()
         self._generate_index()
-        self._calculate_tick()
+        self.calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self):
+    def save(self, **kwargs):
         self.prep()
-        super(Journal, self).save()
+        super(Journal, self).save(**kwargs)
 
     def csv(self, multival_sep=','):
         """
@@ -1159,7 +1160,7 @@ class JournalBibJSON(GenericBibJSON):
     def institution(self, val) : self.bibjson["institution"] = val
     
     @property
-    def active(self): return self.bibjson.get("active")
+    def active(self): return self.bibjson.get("active", True)
     @active.setter
     def active(self, val) : self.bibjson["active"] = val
     
@@ -1538,6 +1539,10 @@ class TitleQuery(object):
 
 class Suggestion(Journal):
     __type__ = "suggestion"
+
+    # We don't want to calculate the tick on applications, only Journals
+    def calculate_tick(self):
+        pass
 
     @classmethod
     def delete_selected(cls, email=None, statuses=None):

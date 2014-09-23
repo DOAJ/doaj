@@ -20,6 +20,7 @@ setup(
         "tzlocal",
         "futures==2.1.6",
         "esprit==0.0.2",
+        "nose",
         # for deployment
         "gunicorn",
         "newrelic",
