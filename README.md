@@ -210,7 +210,9 @@ It is likely that history records will only be created upon request by the admin
         ],
         "owner" : "<account id of owner>",
         "editor_group" : "<name of editor group which controls this object>",
-        "editor" : "<username of associate editor assigned to this object>"
+        "editor" : "<username of associate editor assigned to this object>",
+        "current_application" : "<id of re-application created from this journal record (mutually exclusive with the below)>",
+        "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
     "ticked" : true|false,
     "index" : {
@@ -231,7 +233,8 @@ It is likely that history records will only be created upon request by the admin
         "oa_statement_url" : "<OA statment url>"
     },
     "created_date" : "<date created>",
-    "last_updated" : "<date record last modified>"
+    "last_updated" : "<date record last modified>",
+    "last_reapplication": "<date this journal was updated via a re-application>"
 }
 ```
 

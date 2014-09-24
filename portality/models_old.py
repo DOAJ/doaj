@@ -880,7 +880,16 @@ class Journal(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["editor"] = ed
-    
+
+    @property
+    def current_application(self):
+        return self.data.get("admin", {}).get("current_application")
+
+    def set_current_application(self, application_id):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["current_application"] = application_id
+
     def known_issns(self):
         """ all issns this journal has ever been known by """
         issns = []
@@ -905,6 +914,16 @@ class Journal(DomainObject):
 
     def set_ticked(self, ticked):
         self.data["ticked"] = ticked
+
+    @property
+    def last_reapplication(self):
+        return self.data.get("last_reapplication")
+
+    def set_last_reapplication(self, date=None):
+        if date is None:
+            self.data['last_reapplication'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        else:
+            self.data['last_reapplication'] = date
     
     def _generate_index(self):
         # the index fields we are going to generate
@@ -1540,9 +1559,29 @@ class TitleQuery(object):
 class Suggestion(Journal):
     __type__ = "suggestion"
 
+    ###############################################################
+    # Overrides on Journal methods
+    ###############################################################
+
     # We don't want to calculate the tick on applications, only Journals
     def calculate_tick(self):
         pass
+
+    @property
+    def current_application(self):
+        return None
+
+    def set_current_application(self, application_id):
+        pass
+
+    @property
+    def current_journal(self):
+        return self.data.get("admin", {}).get("current_journal")
+
+    def set_current_journal(self, journal_id):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["current_journal"] = journal_id
 
     @classmethod
     def delete_selected(cls, email=None, statuses=None):
