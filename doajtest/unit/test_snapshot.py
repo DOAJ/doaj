@@ -1,26 +1,19 @@
-from unittest import TestCase
+import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
+from doajtest.helpers import DoajTestCase
 from portality import models
-import uuid, time
+import time
 
-id = uuid.uuid4().hex
-id2 = uuid.uuid4().hex
-hid = None
-
-class TestSnapshot(TestCase):
+class TestSnapshot(DoajTestCase):
 
     def setUp(self):
-        hid = None
+        super(TestSnapshot, self).setUp()
 
     def tearDown(self):    
-        models.Article.remove_by_id(id)
-        models.Article.remove_by_id(id2)
-        if hid is not None:
-            models.ArticleHistory.remove_by_id(hid)
+        super(TestSnapshot, self).tearDown()
 
     def test_01_snapshot(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example article with a fulltext url"
         b.add_url("http://examplejournal.telfor.rs/Published/Vol1No1/Vol1No1_A5.pdf", urltype="fulltext")
@@ -32,16 +25,13 @@ class TestSnapshot(TestCase):
         # let the index catch up, then we can check this worked
         time.sleep(2)
         
-        hist = models.ArticleHistory.get_history_for(id)
-        if hist is not None:
-            hid = hist[0].data.get("id")
+        hist = models.ArticleHistory.get_history_for(a.id)
         assert len(hist) == 1
         assert hist[0].data.get("bibjson", {}).get("title") == "Example article with a fulltext url"
     
     def test_02_merge(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example 2 article with a fulltext url"
         b.add_url("http://examplejournal.telfor.rs/Published/Vol1No1/Vol1No1_A5.pdf", urltype="fulltext")
@@ -49,7 +39,6 @@ class TestSnapshot(TestCase):
         
         # create a replacement article
         z = models.Article()
-        z.set_id(id2)
         y = z.bibjson()
         y.title = "Replacement article for fulltext url"
         y.add_url("http://examplejournal.telfor.rs/Published/Vol1No1/Vol1No1_A5.pdf", urltype="fulltext")
@@ -60,9 +49,9 @@ class TestSnapshot(TestCase):
         # let the index catch up, then we can check this worked
         time.sleep(2)
         
-        hist = models.ArticleHistory.get_history_for(id)
-        if hist is not None:
-            hid = hist[0].data.get("id")
+        hist = models.ArticleHistory.get_history_for(a.id)
+        print hist
+        print len(hist)
         assert len(hist) == 1
         assert hist[0].data.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
         

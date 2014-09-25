@@ -1,0 +1,1 @@
+from doajtest import bootstrap

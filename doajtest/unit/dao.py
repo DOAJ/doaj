@@ -1,3 +1,4 @@
+import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
 from unittest import TestCase
 from portality import dao
 

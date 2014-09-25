@@ -1,24 +1,19 @@
-from unittest import TestCase
+import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
+from doajtest.helpers import DoajTestCase
 from portality import article, models
 import uuid, time
 
-id = uuid.uuid4().hex
-id2 = uuid.uuid4().hex
-
-class TestArticleMatch(TestCase):
+class TestArticleMatch(DoajTestCase):
 
     def setUp(self):
-        pass
+        super(TestArticleMatch, self).setUp()
 
-    def tearDown(self):    
-        models.Article.remove_by_id(id)
-        models.Article.remove_by_id(id2)
-        # pass
+    def tearDown(self):
+        super(TestArticleMatch, self).tearDown()
 
     def test_01(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example article with a fulltext url"
         b.add_url("http://examplejournal.telfor.rs/Published/Vol1No1/Vol1No1_A5.pdf", urltype="fulltext")
@@ -43,7 +38,6 @@ class TestArticleMatch(TestCase):
     def test_02(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example 2 article with a fulltext url"
         b.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
@@ -68,7 +62,6 @@ class TestArticleMatch(TestCase):
     def test_03(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example 2 article with a fulltext url"
         b.add_url("http://www.ujcem.med.sumdu.edu.ua/images/sampledata/2013/4/408_412_IV-020.pdf", urltype="fulltext")
@@ -93,7 +86,6 @@ class TestArticleMatch(TestCase):
     def test_04(self):
         # make ourselves an example article
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example 2 article with a fulltext url"
         b.add_url("http://www.psychologie-aktuell.com/fileadmin/download/ptam/1-2014_20140324/01_Geiser.pdf", urltype="fulltext")
@@ -118,7 +110,6 @@ class TestArticleMatch(TestCase):
     def test_05(self):
         # make ourselves a couple of example articles
         a = models.Article()
-        a.set_id(id)
         b = a.bibjson()
         b.title = "Example A article with a fulltext url"
         b.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
@@ -128,7 +119,6 @@ class TestArticleMatch(TestCase):
         time.sleep(2)
         
         a2 = models.Article()
-        a2.set_id(id2)
         b2 = a2.bibjson()
         b2.title = "Example B article with a fulltext url"
         b2.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
@@ -151,13 +141,17 @@ class TestArticleMatch(TestCase):
         assert d.bibjson().title == "Example B article with a fulltext url", d.bibjson().title
     
     def test_06(self):
+        id1 = uuid.uuid4().hex
+        id2 = uuid.uuid4().hex
+
         a = models.Article()
-        a.set_id(id)
+        a.set_id(id1)
         b = a.bibjson()
         b.title = "Example A article with a fulltext url"
         b.abstract = "a bunch of text"
         b.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
-        
+
+
         a2 = models.Article()
         a2.set_id(id2)
         b2 = a2.bibjson()
@@ -168,13 +162,14 @@ class TestArticleMatch(TestCase):
         
         a2.merge(a)
         
-        assert a2.id == id, (a2.id, id, id2)
+        assert a2.id == id1, (a2.id, id1, id2)
         assert a2.bibjson().title == "Example B article with a fulltext url"
         assert a2.bibjson().abstract is None
     
     def test_07(self):
         a = models.Article()
-        a.set_id(id)
+        id_ = uuid.uuid4().hex
+        a.set_id(id_)
         b = a.bibjson()
         b.title = "Example A article with a fulltext url"
         b.abstract = "a bunch of text"
@@ -187,7 +182,7 @@ class TestArticleMatch(TestCase):
         
         a2.merge(a)
         
-        assert a2.id == id, (a2.id, id, id2)
+        assert a2.id == id_, (a2.id, id_)
         assert a2.bibjson().title == "Example B article with a fulltext url"
         assert a2.bibjson().abstract is None
         
