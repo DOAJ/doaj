@@ -17,7 +17,7 @@ class TestClient(TestCase):
         from portality.models import GenericBibJSON
         from portality.models import Cache
         from portality.models import EditorGroupQuery, EditorGroup, EditorGroupMemberQuery
-        from portality.models import ArticleHistory, ArticleHistoryQuery
+        from portality.models import ArticleHistory, ArticleHistoryQuery, JournalHistory, JournalHistoryQuery
         from portality.models import IssnQuery, Journal, JournalBibJSON, JournalQuery, PublisherQuery, TitleQuery
         from portality.models import LCC
         from portality.models import Lock
