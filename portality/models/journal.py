@@ -249,6 +249,15 @@ class Journal(DomainObject):
         else:
             self.data['last_reapplication'] = date
 
+    @property
+    def bulk_upload_id(self):
+        return self.data.get("admin", {}).get("bulk_upload")
+
+    def set_bulk_upload_id(self, bulk_upload_id):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["bulk_upload"] = bulk_upload_id
+
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []

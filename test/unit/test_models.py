@@ -27,6 +27,7 @@ class TestClient(TestCase):
         from portality.models import JournalIssueToC, JournalVolumeToC, ToCQuery, VolumesToCQuery
         from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
         from portality.models import ObjectDict
+        from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -39,10 +40,12 @@ class TestClient(TestCase):
         j = models.Journal()
         j.set_current_application("1234567")
         j.set_last_reapplication("2001-04-19T01:01:01Z")
+        j.set_bulk_upload_id("abcdef")
 
         assert j.data.get("admin", {}).get("current_application") == "1234567"
         assert j.current_application == "1234567"
         assert j.last_reapplication == "2001-04-19T01:01:01Z"
+        assert j.bulk_upload_id == "abcdef"
 
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         j.set_last_reapplication()
@@ -52,6 +55,41 @@ class TestClient(TestCase):
         """Read and write properties into the suggestion model"""
         s = models.Suggestion()
         s.set_current_journal("9876543")
+        s.set_bulk_upload_id("abcdef")
 
         assert s.data.get("admin", {}).get("current_journal") == "9876543"
         assert s.current_journal == "9876543"
+        assert s.bulk_upload_id == "abcdef"
+
+    def test_04_bulk_reapplication_rw(self):
+        """Read and write properties into the BulkReapplication Model"""
+        br = models.BulkReApplication()
+        br.set_owner("richard")
+        br.set_spreadsheet_name("richard.csv")
+
+        assert br.owner == "richard"
+        assert br.spreadsheet_name == "richard.csv"
+
+    def test_05_bulk_upload(self):
+        """Read and write properties into the BulkUpload model"""
+        br = models.BulkUpload()
+        br.upload("richard", "reapplication.csv")
+
+        assert br.owner == "richard"
+        assert br.filename == "reapplication.csv"
+        assert br.status == "incoming"
+
+        br.failed("Broke, innit")
+
+        assert br.status == "failed"
+        assert br.error == "Broke, innit"
+        assert br.processed_date is not None
+        assert br.processed_timestamp is not None
+
+        br.processed(10, 5)
+
+        assert br.status == "processed"
+        assert br.reapplied == 10
+        assert br.skipped == 5
+        assert br.processed_date is not None
+        assert br.processed_timestamp is not None
