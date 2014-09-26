@@ -1,8 +1,8 @@
-from unittest import TestCase
+from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
 
-class TestClient(TestCase):
+class TestClient(DoajTestCase):
     def setUp(self):
         pass
 
