@@ -420,7 +420,12 @@ class Journal(DomainObject):
         index = self.data.get('index', {})
         row.append(bibjson.title) # Title
         row.append(bibjson.alternative_title) # Title Alternative
-        row.append( multival_sep.join([u.get("url") for u in bibjson.get_urls()]) ) # Identifier
+        # Identifier
+        homepage = bibjson.get_urls(urltype="homepage")
+        if len(homepage) > 0:
+            row.append(homepage[0])
+        else:
+            row.append("")
         row.append(bibjson.publisher)
         row.append( multival_sep.join(bibjson.language))
 
