@@ -23,11 +23,17 @@ class DomainObject(UserDict.IterableUserDict, object):
             del self.meta['_source']
         else:
             self.data = dict(kwargs)
+
+    @classmethod
+    def target_whole_index(cls):
+        t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
+        t += app.config['ELASTIC_SEARCH_DB'] + '/'
+        return t
             
     @classmethod
     def target(cls):
-        t = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/') + '/'
-        t += app.config['ELASTIC_SEARCH_DB'] + '/' + cls.__type__ + '/'
+        t = cls.target_whole_index()
+        t += cls.__type__ + '/'
         return t
     
     @classmethod
@@ -297,6 +303,11 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def delete_by_query(cls, query):
         r = requests.delete(cls.target() + "_query", data=json.dumps(query.get("query")))
+        return r
+
+    @classmethod
+    def destroy_index(cls):
+        r = requests.delete(cls.target_whole_index())
         return r
     
     def update(self, doc):

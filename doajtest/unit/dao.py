@@ -1,13 +1,7 @@
-from unittest import TestCase
 from portality import dao
+from doajtest.helpers import DoajTestCase
 
-class TestWorkflow(TestCase):
-
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
+class TestWorkflow(DoajTestCase):
 
     def test_generic_csv(self):
         data = {'col1': 2, 'col2': 'string', 'keywords': ['hoppity', 'hop', 'hop 2']}
