@@ -1,6 +1,10 @@
 from portality.models import Journal
 import sys
 
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+from doajtest.bootstrap import prepare_for_test
+prepare_for_test()
+
 journals = [
     {'title':'Title 1', 'publisher': 'Publisher 1', 'identifier':[{'type':'pissn', 'id': '1234-5678'}], 'active':True},
     {'title':'Title 2', 'publisher': 'Publisher 2', 'identifier':[{'type':'pissn', 'id': '0123-4567'}, {'type':'eissn', 'id': '7654-3210'}], 'license': [{'type': 'cc-by','open_access': True, 'url': 'http://opendefinition.org/licenses/cc-by/'}], 'active': True},

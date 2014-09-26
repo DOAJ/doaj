@@ -35,6 +35,7 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production']
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
+ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
 # PyCharm debug settings
@@ -143,7 +144,9 @@ MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
 MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
 MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
-
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
+MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
+MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS

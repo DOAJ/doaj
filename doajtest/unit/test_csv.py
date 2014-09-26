@@ -1,12 +1,12 @@
-from unittest import TestCase
+from doajtest.helpers import DoajTestCase
 from portality import models
 
-class TestClient(TestCase):
+class TestClient(DoajTestCase):
     def setUp(self):
-        pass
+        super(TestClient, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestClient, self).tearDown()
 
     def test_01_row(self):
         j = models.Journal()

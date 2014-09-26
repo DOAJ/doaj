@@ -1,6 +1,11 @@
 import requests
 from lxml import etree
 
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+# Plus, this test requires a non-empty index, so providing it with a blank index isn't useful
+#from doajtest.bootstrap import prepare_for_test
+#prepare_for_test()
+
 NS = "{http://www.openarchives.org/OAI/2.0/}"
 
 JOURNAL_BASE_URL = "http://localhost:5004/oai"
