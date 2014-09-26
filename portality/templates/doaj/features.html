@@ -238,6 +238,7 @@
      <td width=100%>
 
 <br><br>
+<a name="xml_upload"></a>
 
        <table width=100%><a name="xml"></a>
           <tr>
@@ -249,27 +250,28 @@
 
              <br>
 
-If you happen to have a database full of articles then you need
-to convert your data to XML file format before you can add it to the
+You need
+to convert your data to the DOAJ XML file format before you can add them to the
 DOAJ database.
 <br>
-If you are newbie in the world of file formats then please be assured
+If you are a newbie in the world of file formats then please be assured
 that the XML file format is a simple and transparent form of data
 storage. Unlike some other data formats this one can be read and edited
 using an ordinary text editor.
 <br>
-You need to run a script or a program that converts your
+You need to first run a script or a program that converts your
 database into the accepted XML format.
 <br>
 However, for our receiving database to be able to accept your input
 it is important that it is well written. That is its format must
-strictly adhere to a set of rules encoded in an XML schema file that
+strictly adhere to <a href="https://doaj.org/static/doaj/doajArticles.xsd">a set of rules encoded in an XML schema file</a>
+that
 we supply.
 <br>
 There are XML checkers/validators that can be found for free on the 
 internet or may already be on your machine. These accepts as input 
 your XML file as well as a description of the format that your XML 
-file must adhere to.
+file must adhere to. There is also help on our <a href="https://doaj.org/publishers">'For Publishers' page</a>. 
 <br>
 <br>
 
@@ -296,7 +298,8 @@ The example file below contains only one record.<br>
     <<b>publisherRecordId></b>12345<<b>/publisherRecordId></b>
     <<b>documentType></b>article<<b>/documentType></b>
     <<b>title language="eng"></b>Roses and Lilies<<b>/title></b>
-    <<b>title language="ger"></b>Roses und Lilies<<b>/title></b>
+    <!--
+    <<b>title language="ger"></b>Roses und Lilies<<b>/title></b> -->
     <<b>authors></b>
       <<b>author></b>
         <<b>name></b>Fritz Haber <<b>/name></b>
@@ -337,12 +340,12 @@ The example file below contains only one record.<br>
     after the issn tag. 
 
 
-
+<!--
  <= If the title occurs in more than one language
     then you may list the titles here. The title tag
     has got the attribute language that must be set
     according to the ISO 639-2b standard.
-
+ -->
 
 
  <= Note that the affilitationId numbers denote the
