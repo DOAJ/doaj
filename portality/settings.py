@@ -144,7 +144,9 @@ MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
 MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
 MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
-
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
+MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
+MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS
