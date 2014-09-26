@@ -1,7 +1,11 @@
-import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
 from portality import models
 from portality.scripts import toc
 import time
+
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+# Plus, this test requires a non-empty index, so providing it with a blank index isn't useful
+#from doajtest.bootstrap import prepare_for_test
+#prepare_for_test()
 
 ISSN = "2345-6789"
 

@@ -1,4 +1,3 @@
-import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
 import requests
 import json
 import sys
@@ -7,6 +6,10 @@ import logging
 import threading
 import time
 import inspect
+
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+from doajtest.bootstrap import prepare_for_test
+prepare_for_test()
 
 MAX_REQUESTS_DEFAULT = 10000
 

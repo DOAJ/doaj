@@ -1,6 +1,9 @@
-import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
 from portality.models import Journal
 import sys
+
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+from doajtest.bootstrap import prepare_for_test
+prepare_for_test()
 
 journals = [
     {'title':'Title 1', 'publisher': 'Publisher 1', 'identifier':[{'type':'pissn', 'id': '1234-5678'}], 'active':True},

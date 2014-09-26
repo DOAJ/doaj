@@ -1,4 +1,3 @@
-import doajtest  # runs the __init__.py which runs the tests bootstrap code. All tests should import this.
 from doajtest.helpers import DoajTestCase
 from portality import models
 
