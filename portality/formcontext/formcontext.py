@@ -41,6 +41,10 @@ class FormContext(object):
     def target(self):
         return self._target
 
+    @target.setter
+    def target(self, val):
+        self._target = val
+
     ############################################################
     # Lifecycle functions that subclasses should implement
     ############################################################
@@ -111,7 +115,7 @@ class FormContext(object):
         pass
 
 
-class ApplicationFormFactory(object):
+class JournalFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
@@ -141,10 +145,10 @@ class PublicApplicationForm(FormContext):
         pass
 
     def data2form(self):
-        self.form = forms.JournalInformationForm(self.form_data)
+        self.form = forms.JournalInformationForm(formdata=self.form_data)
 
     def source2form(self):
-        self.form = forms.JournalInformationForm(xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.JournalInformationForm(obj=xwalk.SuggestionFormXWalk.obj2form(self.source))
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
