@@ -1,5 +1,5 @@
-from portality.formcontext import forms
-from portality.formcontext import xwalk
+from portality.formcontext import forms, xwalk, render
+from flask import render_template
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -8,6 +8,8 @@ class FormContext(object):
         self._target = None
         self._form_data = form_data
         self._form = None
+        self._renderer = None
+        self._template = None
 
         # now create our form instance, with the form_data (if there is any)
         if form_data is not None:
@@ -16,6 +18,18 @@ class FormContext(object):
         # if there isn't any form data, then we should create the form properties from source instead
         elif source is not None:
             self.source2form()
+
+        # if there is no source, then a blank form object
+        else:
+            self.blank_form()
+
+        # initialise the renderer (falling back to a default if necessary)
+        self.make_renderer()
+        if self.renderer is None:
+            self.renderer = render.DefaultRenderer()
+
+        # specify the jinja template that will wrap the renderer
+        self.set_template()
 
     ############################################################
     # getters and setters on the main FormContext properties
@@ -45,13 +59,37 @@ class FormContext(object):
     def target(self, val):
         self._target = val
 
+    @property
+    def renderer(self):
+        return self._renderer
+
+    @renderer.setter
+    def renderer(self, val):
+        self._renderer = val
+
+    @property
+    def template(self):
+        return self._template
+
+    @template.setter
+    def template(self, val):
+        self._template = val
+
     ############################################################
     # Lifecycle functions that subclasses should implement
     ############################################################
 
-    def is_disabled(self, form_field):
-        """Is the given field to be displayed as a disabled form field?"""
-        return False
+    def make_renderer(self):
+        """
+        This will be called during init, and must populate the self.render property
+        """
+        pass
+
+    def set_template(self):
+        """
+        This will be called during init, and must populate the self.template property with the path to the jinja template
+        """
+        pass
 
     def pre_validate(self):
         """
@@ -60,15 +98,24 @@ class FormContext(object):
         """
         pass
 
+    def blank_form(self):
+        """
+        This will be called during init, and must populate the self.form_data property with an instance of the form in this
+        context, based on no originating source or form data
+        """
+        pass
+
     def data2form(self):
         """
-        Convert the form_data into an instance of the form in this context, and write to self.form
+        This will be called during init, and must convert the form_data into an instance of the form in this context,
+        and write to self.form
         """
         pass
 
     def source2form(self):
         """
-        Convert the source object into an instance of the form in this context, and write to self.form
+        This will be called during init, and must convert the source object into an instance of the form in this
+        context, and write to self.form
         """
         pass
 
@@ -90,6 +137,10 @@ class FormContext(object):
         """
         self.patch_target()
 
+    def is_disabled(self, form_field):
+        """Is the given field to be displayed as a disabled form field?"""
+        return False
+
     ############################################################
     # Functions which can be called directly, but may be overridden if desired
     ############################################################
@@ -101,18 +152,23 @@ class FormContext(object):
             return f.validate()
         return False
 
-    ############################################################
-    # Render functions to be overridden
-    ############################################################
+    def errors(self):
+        f = self.form
+        if f is not None:
+            return f.errors
+        return False
+
+    def render_template(self, **kwargs):
+        return render_template(self.template, form_context=self, **kwargs)
 
     def render_form(self):
-        pass
+        return self.renderer.render_form(self)
 
-    def render_fields(self, field_list):
-        pass
+    def render_field_group(self, field_group_name):
+        return self.renderer.render_field_group(self, field_group_name)
 
     def render_field(self, field):
-        pass
+        return self.renderer.render_field(self, field)
 
 
 class JournalFormFactory(object):
@@ -128,7 +184,7 @@ class PublicApplicationForm(FormContext):
     one, so it will do unnecessary things like override methods that don't actually need to be overridden
     """
 
-    def __init__(self, form_data=None, source=None):
+    def __init__(self, form_data=None, source=None, renderer=None):
         #  initialise the object through the superclass
         super(PublicApplicationForm, self).__init__(form_data=form_data, source=source)
 
@@ -136,13 +192,18 @@ class PublicApplicationForm(FormContext):
     # PublicApplicationForm versions of FormContext lifecycle functions
     ############################################################
 
-    def is_disabled(self, form_field):
-        # There are no disabled fields
-        return False
+    def make_renderer(self):
+        self.renderer = render.SuggestionFormRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/public_application_form.html"
 
     def pre_validate(self):
         # no pre-validation requirements
         pass
+
+    def blank_form(self):
+        self.form = forms.JournalInformationForm()
 
     def data2form(self):
         self.form = forms.JournalInformationForm(formdata=self.form_data)
@@ -164,4 +225,8 @@ class PublicApplicationForm(FormContext):
 
         # What happens next?  We probably need to save the target
         self.target.save()
+
+    def is_disabled(self, form_field):
+        # There are no disabled fields
+        return False
 
