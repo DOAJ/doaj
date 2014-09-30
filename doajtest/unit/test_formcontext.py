@@ -175,3 +175,10 @@ class TestFormContext(DoajTestCase):
         assert fc.form_data is not None
         assert fc.form is not None
         assert fc.source is None
+
+    def test_03_public_form_render(self):
+        """Test that we can render the basic form """
+        fc = formcontext.JournalFormFactory.get_form_context()
+        frag = fc.render_field_group("basic_info")
+
+        assert frag != ""

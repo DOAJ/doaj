@@ -80,6 +80,16 @@ SPONSORS = {
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
 
+@app.route("/formcontext/<example>")
+def formcontext(example):
+    from portality.formcontext import formcontext
+    fc = None
+    if example == "public":
+        fc = formcontext.JournalFormFactory.get_form_context()
+    if fc is not None:
+        return fc.render_template(edit_suggestion_page=True)
+    abort(404)
+
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 
 # alongside the DOAJ codebase.  I know they could also go into the
