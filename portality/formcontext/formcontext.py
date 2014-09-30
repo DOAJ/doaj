@@ -26,7 +26,7 @@ class FormContext(object):
         # initialise the renderer (falling back to a default if necessary)
         self.make_renderer()
         if self.renderer is None:
-            self.renderer = render.DefaultRenderer()
+            self.renderer = render.Renderer()
 
         # specify the jinja template that will wrap the renderer
         self.set_template()
@@ -152,6 +152,7 @@ class FormContext(object):
             return f.validate()
         return False
 
+    @property
     def errors(self):
         f = self.form
         if f is not None:
@@ -161,14 +162,9 @@ class FormContext(object):
     def render_template(self, **kwargs):
         return render_template(self.template, form_context=self, **kwargs)
 
-    def render_form(self):
-        return self.renderer.render_form(self)
-
-    def render_field_group(self, field_group_name):
+    def render_field_group(self, field_group_name=None):
         return self.renderer.render_field_group(self, field_group_name)
 
-    def render_field(self, field):
-        return self.renderer.render_field(self, field)
 
 
 class JournalFormFactory(object):
@@ -176,7 +172,27 @@ class JournalFormFactory(object):
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
             return PublicApplicationForm(source=source, form_data=form_data)
+        elif role == "testing":
+            return ContactFormContext(source=source, form_data=form_data)
 
+from wtforms import Form, IntegerField, StringField, FormField, validators
+class TelephoneForm(Form):
+    country_code = IntegerField('Country Code', [validators.required()])
+    area_code    = IntegerField('Area Code/Exchange', [validators.required()])
+    number       = StringField('Number')
+
+class ContactForm(Form):
+    first_name   = StringField()
+    last_name    = StringField()
+    mobile_phone = FormField(TelephoneForm)
+    office_phone = FormField(TelephoneForm)
+
+class ContactFormContext(FormContext):
+    def set_template(self):
+        self.template = "formcontext/contact_form.html"
+
+    def blank_form(self):
+        self.form = ContactForm()
 
 class PublicApplicationForm(FormContext):
     """

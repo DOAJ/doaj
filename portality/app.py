@@ -86,6 +86,8 @@ def formcontext(example):
     fc = None
     if example == "public":
         fc = formcontext.JournalFormFactory.get_form_context()
+    elif example == "contact":
+        fc = formcontext.JournalFormFactory.get_form_context(role="testing")
     if fc is not None:
         return fc.render_template(edit_suggestion_page=True)
     abort(404)
