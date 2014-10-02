@@ -1,10 +1,11 @@
 from portality.formcontext.formhelper import FormHelper
+from portality.formcontext.choices import Choices
+from copy import deepcopy
 
 class Renderer(object):
-    FIELD_GROUPS = {}
-
-    # FIXME: a bit implementation specific - could make static, or part of the init method
-    fh = FormHelper()
+    def __init__(self):
+        self.FIELD_GROUPS = {}
+        self.fh = FormHelper()
 
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name is None:
@@ -17,10 +18,24 @@ class Renderer(object):
 
         # build the frag
         frag = ""
-        for field_name, config in group_def.iteritems():
-            frag += self.fh.render_field(form_context, field_name, **config)
+        for entry in group_def:
+            field_name = entry.keys()[0]
+            config = entry.get(field_name)
+
+            config = self._rewrite_extra_fields(form_context, config)
+            field = form_context.form[field_name]
+
+            frag += self.fh.render_field(field, **config)
 
         return frag
+
+    def _rewrite_extra_fields(self, form_context, config):
+        if "extra_input_fields" in config:
+            config = deepcopy(config)
+            for opt, field_ref in config.get("extra_input_fields").iteritems():
+                extra_field = form_context.form[field_ref]
+                config["extra_input_fields"][opt] = extra_field
+        return config
 
     def _render_all(self, form_context):
         frag = ""
@@ -28,102 +43,137 @@ class Renderer(object):
             frag += self.fh.render_field(form_context, field.short_name)
         return frag
 
-# FIXME: factor this out to choices.py
-other_val = 'Other'
-digital_archiving_policy_specific_library_value = 'A national library'
 
-class SuggestionFormRenderer(Renderer):
+class PublicApplicationRenderer(Renderer):
+    def __init__(self):
+        super(PublicApplicationRenderer, self).__init__()
 
-    FIELD_GROUPS = {
-        "basic_info" : {
-            "title" : {"class" : "input-xlarge"},
-            "url" : {"class" : "input-xlarge"},
-            "digital_archiving_policy" : {
-                "extra_input_fields" : [
-                    {"field" : "digital_archiving_policy_other", "when_label_is" : other_val},
-                    {"field" : "digital_archiving_policy_library", "when_label_is" : digital_archiving_policy_specific_library_value}
-                ]
-            }
+        # define the basic field groups
+        self.FIELD_GROUPS = {
+            "basic_info" : [
+                {"title" : {"class": "input-xlarge"}},
+                {"url" : {"class": "input-xlarge"}},
+                {"alternative_title" : {"class": "input-xlarge"}},
+                {"pissn" : {"class": "input-small", "size": "9", "maxlength": "9"}},
+                {"eissn" : {"class": "input-small", "size": "9", "maxlength": "9"}},
+                {"publisher" : {"class": "input-xlarge"}},
+                {"society_institution" : {"class": "input-xlarge"}},
+                {"platform" : {"class": "input-xlarge"}},
+                {"contact_name" : {}},
+                {"contact_email" : {}},
+                {"confirm_contact_email" : {}},
+                {"country" : {"class": "input-large"}},
+                {"processing_charges" : {}},
+                {"processing_charges_amount" : {"class": "input-mini"}},
+                {"processing_charges_currency" : {"class": "input-large"}},
+                {"submission_charges" : {}},
+                {"submission_charges_amount" : {"class": "input-mini"}},
+                {"submission_charges_currency" : {"class": "input-large"}},
+                {"articles_last_year" : {"class": "input-mini"}},
+                {"articles_last_year_url" : {"class": "input-xlarge"}},
+                {"waiver_policy" : {}},
+                {
+                    "digital_archiving_policy" : {
+                        "extra_input_fields" : {
+                            Choices.digital_archiving_policy_val("other") : "digital_archiving_policy_other",
+                            Choices.digital_archiving_policy_val("library") : "digital_archiving_policy_library"
+                        }
+                    }
+                },
+                {"digital_archiving_policy_url" : {"class": "input-xlarge"}},
+                {"crawl_permission" : {}},
+                {
+                    "article_identifiers" : {
+                        "extra_input_fields": {
+                            Choices.article_identifiers_val("other") : "article_identifiers_other"
+                        }
+                    }
+                },
+                {"metadata_provision" : {}},
+                {"download_statistics" : {}},
+                {"download_statistics_url" : {"class": "input-xlarge"}},
+                {"first_fulltext_oa_year" : {"class": "input-mini"}},
+                {
+                    "fulltext_format" : {
+                        "extra_input_fields": {
+                            Choices.fulltext_format_val("other") : "fulltext_format_other"
+                        }
+                    }
+                },
+                {"keywords" : {"class": "input-xlarge"}},
+                {"languages" : {"class": "input-xlarge"}}
+            ],
+
+            "editorial_process" : [
+                {"editorial_board_url" : {"class": "input-xlarge"}},
+                {"review_process" : {}},
+                {"review_process_url" : {"class": "input-xlarge"}},
+                {"aims_scope_url" : {"class": "input-xlarge"}},
+                {"instructions_authors_url" : {"class": "input-xlarge"}},
+                {"plagiarism_screening" : {}},
+                {"plagiarism_screening_url" : {"class": "input-xlarge"}},
+                {"publication_time" : {"class": "input-tiny"}}
+            ],
+
+            "openness" : [
+                {"oa_statement_url" : {"class": "input-xlarge"}}
+            ],
+
+            "content_licensing" : [
+                {"license_embedded" : {}},
+                {"license_embedded_url" : {"class": "input-xlarge"}},
+                {
+                    "license" : {
+                        "extra_input_fields": {
+                            Choices.licence_val("other") : "license_other"
+                        }
+                    }
+                },
+                {"license_checkbox" : {}},
+                {"license_url" : {"class": "input-xlarge"}},
+                {"open_access" : {}},
+                {
+                    "deposit_policy" : {
+                        "extra_input_fields": {
+                            Choices.open_access_val("other") : "deposit_policy_other"
+                        }
+                    }
+                }
+            ],
+
+            "copyright" : [
+                {
+                    "copyright" : {
+                        "extra_input_fields": {
+                            Choices.copyright_val("other") :  "copyright_other"
+                        }
+                    }
+                },
+                {"copyright_url" : {"class": "input-xlarge"}},
+                {
+                    "publishing_rights" : {
+                        "extra_input_fields": {
+                            Choices.publishing_rights_val("other") : "publishing_rights_other"
+                        }
+                    }
+                },
+                {"publishing_rights_url" : {"class": "input-xlarge"}}
+            ],
+
+            "submitter_info" : [
+                {"suggester_name" : {}},
+                {"suggester_email" : {"class": "input-xlarge"}},
+                {"suggester_email_confirm" : {"class": "input-xlarge"}},
+            ]
         }
-    }
-    """
-    basic_info_fields = [
-        {"field": "title", "class": "input-xlarge"},
-        {"field": "url", "class": "input-xlarge"},
-        {"field": "alternative_title", "class": "input-xlarge"},
-        {"field": "pissn", "class": "input-small", "size": "9", "maxlength": "9"},
-        {"field": "eissn", "class": "input-small", "size": "9", "maxlength": "9"},
-        {"field": "publisher", "class": "input-xlarge"},
-        {"field": "society_institution", "class": "input-xlarge"},
-        {"field": "platform", "class": "input-xlarge"},
-        {"field": "contact_name", },
-        {"field": "contact_email", },
-        {"field": "confirm_contact_email", },
-        {"field": "country", "class": "input-large"},
-        {"field": "processing_charges", },
-        {"field": "processing_charges_amount", "class": "input-mini"},
-        {"field": "processing_charges_currency", "class": "input-large"},
-        {"field": "submission_charges", },
-        {"field": "submission_charges_amount", "class": "input-mini"},
-        {"field": "submission_charges_currency", "class": "input-large"},
-        {"field": "articles_last_year", "class": "input-mini"},
-        {"field": "articles_last_year_url", "class": "input-xlarge"},
-        {"field": "waiver_policy", },
-        {"field": "waiver_policy_url", "class": "input-xlarge"},
-        {
-            "field": "digital_archiving_policy",
-            "extra_input_field": form.digital_archiving_policy_other,
-            "display_extra_when_label_is": other_val,
-            "extra_input_field2": form.digital_archiving_policy_library,
-            "display_extra2_when_label_is": digital_archiving_policy_specific_library_value,
-        },
-        {"field": "digital_archiving_policy_url", "class": "input-xlarge"},
-        {"field": "crawl_permission", },
-        {"field": "article_identifiers", "extra_input_field": form.article_identifiers_other, "display_extra_when_label_is": other_val},
-        {"field": "metadata_provision", },
-        {"field": "download_statistics", },
-        {"field": "download_statistics_url", "class": "input-xlarge"},
-        {"field": "first_fulltext_oa_year", "class": "input-mini"},
-        {"field": "fulltext_format", "extra_input_field": form.fulltext_format_other, "display_extra_when_label_is": other_val},
-        {"field": "keywords", "class": "input-xlarge"},
-        {"field": "languages", "class": "input-xlarge"}
-    ]
 
-    editorial_process_fields = [
-        {"field": "editorial_board_url", "class": "input-xlarge"},
-        {"field": "review_process", },
-        {"field": "review_process_url", "class": "input-xlarge"},
-        {"field": "aims_scope_url", "class": "input-xlarge"},
-        {"field": "instructions_authors_url", "class": "input-xlarge"},
-        {"field": "plagiarism_screening", },
-        {"field": "plagiarism_screening_url", "class": "input-xlarge"},
-        {"field": "publication_time", "class": "input-tiny"},
-    ]
+        # now apply some standard bits of info across all groups
+        group_order = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
+        q = 1
+        for g in group_order:
+            cfg = self.FIELD_GROUPS.get(g)
+            for obj in cfg:
+                field = obj.keys()[0]
+                obj[field]["q_num"] = str(q)
+                q += 1
 
-    openness_fields = [
-        {"field": "oa_statement_url", "class": "input-xlarge"},
-    ]
-
-    content_licensing_fields = [
-      {"field": "license_embedded", },
-      {"field": "license_embedded_url", "class": "input-xlarge"},
-      {"field": "license", "extra_input_field": form.license_other, "display_extra_when_label_is": other_val},
-      {"field": "license_checkbox", },
-      {"field": "license_url", "class": "input-xlarge"},
-      {"field": "open_access", },
-      {"field": "deposit_policy", "extra_input_field": form.deposit_policy_other, "display_extra_when_label_is": other_val},
-    ]
-
-    copyright_fields = [
-        {"field": "copyright", "extra_input_field": form.copyright_other, "display_extra_when_label_is": other_val},
-        {"field": "copyright_url", "class": "input-xlarge"},
-        {"field": "publishing_rights", "extra_input_field": form.publishing_rights_other, "display_extra_when_label_is": other_val},
-        {"field": "publishing_rights_url", "class": "input-xlarge"},
-    ]
-
-    submitter_info_fields = [
-        {"field": "suggester_name", },
-        {"field": "suggester_email", "class": "input-xlarge"},
-        {"field": "suggester_email_confirm", "class": "input-xlarge"},
-    ]
-    """

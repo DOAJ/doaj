@@ -1,18 +1,13 @@
 class FormHelper(object):
 
-    def render_field(self, form_context, field_name, **kwargs):
-        # pull useful data out of the kwargs and form_context
-        first_error = kwargs.get("field_with_first_error")
-        disabled = form_context.is_disabled(field_name)
-        hidden = kwargs.get("hidden", False)
-        render_subfields_horizontal = kwargs.get("render_subfields_horizontal", False)
-        container_class = kwargs.get("container_class")
-
-        # get the field itself
-        field = form_context.form[field_name]
+    def render_field(self, field, **kwargs):
+        # FIXME: disabled = form_context.is_disabled(field_name)
 
         # begin the frag
         frag = ""
+
+        # deal with the first error if it is relevant
+        first_error = kwargs.pop("field_with_first_error", None)
         if first_error == field.short_name:
             frag += '<a name="first_problem"></a>'
 
@@ -22,6 +17,9 @@ class FormHelper(object):
         elif field.type == "FieldList":
             frag += self._field_list(field, **kwargs)
         else:
+            hidden = kwargs.pop("hidden", False)
+            container_class = kwargs.pop("container_class", None)
+
             frag = '<div class="control-group'
             if field.errors:
                 frag += " error"
@@ -100,12 +98,9 @@ class FormHelper(object):
 
     def _render_field(self, field, **kwargs):
         # interesting arguments from keywords
-        extra_input_field = kwargs.get("extra_input_field")
-        display_extra_when_label_is = kwargs.get("display_extra_when_label_is", "other")
-        extra_input_field2 = kwargs.get("extra_input_field2")
-        display_extra2_when_label_is = kwargs.get("display_extra2_when_label_is", "other")
-        q_num = kwargs.get("q_num", "")
-        maximise_width = kwargs.get("maximise_width", False)
+        extra_input_fields = kwargs.get("extra_input_fields")
+        q_num = kwargs.pop("q_num", None)
+        maximise_width = kwargs.pop("maximise_width", False)
         clazz = kwargs.get("class", "")
 
         if field.type == 'CSRFTokenField' and not field.value:
@@ -115,11 +110,11 @@ class FormHelper(object):
 
         # If this is the kind of field that requires a label, give it one
         if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField']:
-            if q_num:
+            if q_num is not None:
                 frag += '<a class="animated" name="' + q_num + '"></a>'
             frag += '<label class="control-label" for="' + field.short_name + '">'
-            if q_num:
-                frag += '<a class="animated orange" href="#' + field.short_name + '-container" title="Link to this question" tabindex="-1">' + q_num + ')</a>'
+            if q_num is not None:
+                frag += '<a class="animated orange" href="#' + field.short_name + '-container" title="Link to this question" tabindex="-1">' + q_num + ')</a>&nbsp;'
             frag += field.label.text
             if field.flags.required or field.flags.display_required_star:
                 frag += '&nbsp;<span class="red">*</span>'
@@ -136,7 +131,7 @@ class FormHelper(object):
         if is_checkbox:
             extra_class += " checkboxes"
 
-        frag += '<div class="controls ' + extra_class + '">'
+        frag += '<div class="controls' + extra_class + '">'
         if field.type == "RadioField":
             for subfield in field:
                 frag += self._render_radio(subfield, **kwargs)
@@ -151,11 +146,9 @@ class FormHelper(object):
                 kwargs["class"] = clazz
             frag += field(**kwargs) # FIXME: this is probably going to do some weird stuff
 
-            # FIXME: exactly 2 allowed?  Plus, how to actually pass in the form elements from the parent render object?
-            if extra_input_field and display_extra_when_label_is.lower() == field.value.lower():
-                frag += extra_input_field(**{"class" : "extra_input_field"})
-            if extra_input_field2  and display_extra2_when_label_is.lower() == field.value.lower():
-                frag += extra_input_field2(**{"class" : "extra_input_field"})
+            # FIXME: field.value isn't always set
+            #if field.value in extra_input_fields.keys():
+            #    extra_input_fields[field.value](**{"class" : "extra_input_field"})
 
         if field.errors:
             frag += '<ul class="errors">'
@@ -170,61 +163,28 @@ class FormHelper(object):
         return frag
 
     def _render_radio(self, field, **kwargs):
-        """
-        {% macro __render_radio(field,
-                      extra_input_field='', display_extra_when_label_is='',
-                      extra_input_field2='', display_extra2_when_label_is=''
-                 )
-        %}
-        <label class="radio" for="{{field.short_name}}">
-            {{ field(**kwargs) }}
-            <span class="label-text">{{field.label.text}}</span>
+        extra_input_fields = kwargs.pop("extra_input_fields", {})
 
-            {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
-              {{ extra_input_field(class="extra_input_field") }}
-            {% endif %}
-
-            {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
-              {{ extra_input_field2(class="extra_input_field") }}
-            {% endif %}
-        </label>
-        {% endmacro %}
-        """
         frag = '<label class="radio" for="' + field.short_name + '">'
         frag += field(**kwargs)
+        frag += '<span class="label-text">' + field.label.text + '</span>'
 
-        # FIXME: deal with extra input fields....
+        if field.label.text in extra_input_fields.keys():
+            frag += "&nbsp;" + extra_input_fields[field.label.text](**{"class" : "extra_input_field"})
 
         frag += "</label>"
         return frag
 
 
     def _render_checkbox(self, field, **kwargs):
-        """
-        {% macro __render_checkbox(field,
-                      extra_input_field='', display_extra_when_label_is='',
-                      extra_input_field2='', display_extra2_when_label_is=''
-                 )
-        %}
-        <li>
-            {{ field(**kwargs) }}
-            <label for="{{field.short_name}}">{{field.label.text}}</label>
+        extra_input_fields = kwargs.pop("extra_input_fields", {})
 
-            {% if extra_input_field and display_extra_when_label_is.lower() == field.label.text.lower() %}
-              {{ extra_input_field(class="extra_input_field") }}
-            {% endif %}
-
-            {% if extra_input_field2 and display_extra2_when_label_is.lower() == field.label.text.lower() %}
-              {{ extra_input_field2(class="extra_input_field") }}
-            {% endif %}
-        </li>
-        {% endmacro %}
-        """
         frag = "<li>"
         frag += field(**kwargs)
         frag += '<label for="' + field.short_name + '">' + field.label.text + '</label>'
 
-        # FIXME: deal with extra input fields ...
+        if field.label.text in extra_input_fields.keys():
+            frag += "&nbsp;" + extra_input_fields[field.label.text](**{"class" : "extra_input_field"})
 
         frag += "</li>"
         return frag

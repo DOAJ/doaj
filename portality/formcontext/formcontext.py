@@ -171,30 +171,9 @@ class JournalFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
-            return PublicApplicationForm(source=source, form_data=form_data)
-        elif role == "testing":
-            return ContactFormContext(source=source, form_data=form_data)
+            return PublicApplication(source=source, form_data=form_data)
 
-from wtforms import Form, IntegerField, StringField, FormField, validators
-class TelephoneForm(Form):
-    country_code = IntegerField('Country Code', [validators.required()])
-    area_code    = IntegerField('Area Code/Exchange', [validators.required()])
-    number       = StringField('Number')
-
-class ContactForm(Form):
-    first_name   = StringField()
-    last_name    = StringField()
-    mobile_phone = FormField(TelephoneForm)
-    office_phone = FormField(TelephoneForm)
-
-class ContactFormContext(FormContext):
-    def set_template(self):
-        self.template = "formcontext/contact_form.html"
-
-    def blank_form(self):
-        self.form = ContactForm()
-
-class PublicApplicationForm(FormContext):
+class PublicApplication(FormContext):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
     one, so it will do unnecessary things like override methods that don't actually need to be overridden
@@ -202,14 +181,14 @@ class PublicApplicationForm(FormContext):
 
     def __init__(self, form_data=None, source=None, renderer=None):
         #  initialise the object through the superclass
-        super(PublicApplicationForm, self).__init__(form_data=form_data, source=source)
+        super(PublicApplication, self).__init__(form_data=form_data, source=source)
 
     ############################################################
     # PublicApplicationForm versions of FormContext lifecycle functions
     ############################################################
 
     def make_renderer(self):
-        self.renderer = render.SuggestionFormRenderer()
+        self.renderer = render.PublicApplicationRenderer()
 
     def set_template(self):
         self.template = "formcontext/public_application_form.html"
@@ -219,13 +198,13 @@ class PublicApplicationForm(FormContext):
         pass
 
     def blank_form(self):
-        self.form = forms.JournalInformationForm()
+        self.form = forms.PublicApplicationForm()
 
     def data2form(self):
-        self.form = forms.JournalInformationForm(formdata=self.form_data)
+        self.form = forms.PublicApplicationForm(formdata=self.form_data)
 
     def source2form(self):
-        self.form = forms.JournalInformationForm(obj=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublicApplicationForm(obj=xwalk.SuggestionFormXWalk.obj2form(self.source))
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)

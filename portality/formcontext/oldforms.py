@@ -174,39 +174,7 @@ class JournalForm(JournalInformationForm):
     editor = SelectField("Assigned to") # choices to be assigned at form render time
 
 
-class SuggestionForm(JournalInformationForm):
-    articles_last_year = IntegerField('How many research and review articles did the journal publish in the last calendar year?',
-        [validators.Required(), validators.NumberRange(min=0)],
-        description='A journal must publish at least 5 articles per year to stay in the DOAJ',
-    )
-    articles_last_year_url = URLField('Enter the URL where this information can be found', 
-        [validators.Required(), URLOptionalScheme()]
-    )
-    metadata_provision = RadioField('Does the journal provide, or intend to provide, article level metadata to DOAJ?',
-        [validators.Required()],
-        description='For new applications, metadata must be provided within 3 months of acceptance into DOAJ',
-        choices=binary_choices
-    )
-    suggester_name = TextField('Your name',
-        suggester_name_validators
-    )
-    suggester_email = TextField('Your email address', 
-        suggester_email_validators
-    )
-    suggester_email_confirm = TextField('Confirm your email address', 
-        suggester_email_confirm_validators
-    )
 
-    make_all_fields_optional = BooleanField('Allow incomplete form',
-        description='<strong>Only tick this box if:</strong>'
-                    '<br>a/ you are editing an old, incomplete record;'
-                    '<br>b/ you really, really need to change a value without filling in the whole record;'
-                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
-    )
-
-    # fields for assigning to editor group
-    editor_group = TextField("Editor Group", [validators.Optional()])
-    editor = SelectField("Assigned to", default="") # choices to be assigned at form render time
 
 
 class EditSuggestionForm(SuggestionForm):
