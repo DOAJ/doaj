@@ -92,6 +92,7 @@ def formcontext(example):
             fc = formcontext.JournalFormFactory.get_form_context(form_data=request.form)
             if fc.validate():
                 fc.finalise()
+                return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 return fc.render_template(edit_suggestion_page=True)
 
