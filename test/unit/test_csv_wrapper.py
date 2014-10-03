@@ -7,9 +7,11 @@ import os
 
 class TestCsvWrapper(TestCase):
 
+    PRFX = 'test/unit/resources/'
+
     def setUp(self):
         # Create a CSV file to read, and objects to write
-        self.gold_csv = open('csv_gold_standard', 'wb')
+        self.gold_csv = open(self.PRFX + 'rescsv_gold_standard', 'wb')
 
         writer = csv.writer(self.gold_csv)
         writer.writerow(['', 'issn1', 'issn2', 'issn3', 'issn4'])
@@ -25,14 +27,18 @@ class TestCsvWrapper(TestCase):
 
         # attempt to remove items created in tests
         try:
-            os.remove('test_write_csv')
-            os.remove('test_overwrite_csv')
+            os.remove(self.PRFX + 'test_write_csv')
+        except OSError:
+            pass
+
+        try:
+            os.remove(self.PRFX + 'test_overwrite_csv')
         except OSError:
             pass
 
     def a_test_read_01(self):
         # Check that reading the gold standard file gives the right object
-        clcsv = ClCsv('csv_gold_standard')
+        clcsv = ClCsv(self.gold_csv.name)
         assert clcsv.get_column(1) == ('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         assert clcsv.get_column('issn1') == ('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         assert clcsv.get_column(0) == ('', ['q1', 'q2', 'q3', 'q4'])
@@ -52,7 +58,7 @@ class TestCsvWrapper(TestCase):
 
     def b_test_write_01(self):
         # write an object to a file, and check against pre-bult one
-        wr_csv = ClCsv('test_write_csv', 'wb')
+        wr_csv = ClCsv(self.PRFX + 'test_write_csv', 'wb')
         wr_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
         wr_csv.set_column('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         wr_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
@@ -66,18 +72,30 @@ class TestCsvWrapper(TestCase):
 
     def b_test_write_02(self):
         # Check we can overwrite an existing column.
-        ow_csv = ClCsv('test_overwrite_csv', 'wb')
+        ow_csv = ClCsv(self.PRFX + 'test_overwrite_csv', 'wb')
         ow_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
         ow_csv.set_column('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
-        ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
+        ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'WRONG'])
         ow_csv.set_column('issn3', ['i3a1', 'i3a2', 'i3a3', 'i3a4'])
-        ow_csv.set_column('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4'])
-        #ow_csv.set_column('issnX', ['iXa1', 'iXa2', 'iXa3', 'iXa4'])
+        ow_csv.set_column('issnX', ['iXa1', 'iXa2', 'iXa3', 'iXa4'])
         ow_csv.save()
+
+        ow_csv = ClCsv(ow_csv.file_object.name, 'r+b')
+        ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
+        ow_csv.set_column(4, ('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4']))
+        ow_csv.save()
+
+        # The changes above should make the file the same as our gold standard
+        ow_lines = open(ow_csv.file_object.name, 'rb').readlines()
+        gold_lines = open(self.gold_csv.name, 'rb').readlines()
+        assert gold_lines == ow_lines
 
     def c_test_gets(self):
         # test the functions which get
-        rd_csv = ClCsv('test_write_csv', 'rb')
+        rd_csv = ClCsv(self.gold_csv.name, 'rb')
 
         assert rd_csv.get_colnumber('issn3') == 3
+        assert rd_csv.get_colnumber('pineapple') == None
+
         assert rd_csv.get_rownumber('q4') == 4
+        assert rd_csv.get_rownumber('nothing') == None
