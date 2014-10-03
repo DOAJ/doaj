@@ -80,16 +80,21 @@ SPONSORS = {
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
 
-@app.route("/formcontext/<example>")
+@app.route("/formcontext/<example>", methods=["GET", "POST"])
 def formcontext(example):
     from portality.formcontext import formcontext
     fc = None
     if example == "public":
-        fc = formcontext.JournalFormFactory.get_form_context()
-    elif example == "contact":
-        fc = formcontext.JournalFormFactory.get_form_context(role="testing")
-    if fc is not None:
-        return fc.render_template(edit_suggestion_page=True)
+        if request.method == "GET":
+            fc = formcontext.JournalFormFactory.get_form_context()
+            return fc.render_template(edit_suggestion_page=True)
+        elif request.method == "POST":
+            fc = formcontext.JournalFormFactory.get_form_context(form_data=request.form)
+            if fc.validate():
+                fc.finalise()
+            else:
+                return fc.render_template(edit_suggestion_page=True)
+
     abort(404)
 
 # Redirects from previous DOAJ app.

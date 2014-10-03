@@ -148,9 +148,21 @@ class FormContext(object):
     def validate(self):
         self.pre_validate()
         f = self.form
+        valid = False
         if f is not None:
-            return f.validate()
-        return False
+            valid = f.validate()
+
+        # if this isn't a valid form, record the fields that have errors
+        # with the renderer for use later
+        if not valid:
+            error_fields = []
+            for field in self.form:
+                if field.errors:
+                    error_fields.append(field.short_name)
+            if self.renderer is not None:
+                self.renderer.set_error_fields(error_fields)
+
+        return valid
 
     @property
     def errors(self):
@@ -160,6 +172,7 @@ class FormContext(object):
         return False
 
     def render_template(self, **kwargs):
+
         return render_template(self.template, form_context=self, **kwargs)
 
     def render_field_group(self, field_group_name=None):
