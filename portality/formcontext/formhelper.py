@@ -7,8 +7,8 @@ class FormHelper(object):
         frag = ""
 
         # deal with the first error if it is relevant
-        first_error = kwargs.pop("field_with_first_error", None)
-        if first_error == field.short_name:
+        first_error = kwargs.pop("first_error", False)
+        if first_error:
             frag += '<a name="first_problem"></a>'
 
         # call the correct render function on the field type
@@ -20,7 +20,7 @@ class FormHelper(object):
             hidden = kwargs.pop("hidden", False)
             container_class = kwargs.pop("container_class", None)
 
-            frag = '<div class="control-group'
+            frag += '<div class="control-group'
             if field.errors:
                 frag += " error"
             if container_class is not None:

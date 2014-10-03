@@ -6,6 +6,7 @@ class Renderer(object):
     def __init__(self):
         self.FIELD_GROUPS = {}
         self.fh = FormHelper()
+        self._error_fields = []
 
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name is None:
@@ -28,6 +29,13 @@ class Renderer(object):
             frag += self.fh.render_field(field, **config)
 
         return frag
+
+    @property
+    def error_fields(self):
+        return self._error_fields
+
+    def set_error_fields(self, fields):
+        self._error_fields = fields
 
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
@@ -72,6 +80,7 @@ class PublicApplicationRenderer(Renderer):
                 {"articles_last_year" : {"class": "input-mini"}},
                 {"articles_last_year_url" : {"class": "input-xlarge"}},
                 {"waiver_policy" : {}},
+                {"waiver_policy_url" : {"class": "input-xlarge"}},
                 {
                     "digital_archiving_policy" : {
                         "extra_input_fields" : {
@@ -168,12 +177,28 @@ class PublicApplicationRenderer(Renderer):
         }
 
         # now apply some standard bits of info across all groups
-        group_order = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
+        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
+
         q = 1
-        for g in group_order:
+        for g in self.GROUP_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
                 field = obj.keys()[0]
                 obj[field]["q_num"] = str(q)
                 q += 1
 
+    def set_error_fields(self, fields):
+        super(PublicApplicationRenderer, self).set_error_fields(fields)
+
+        # find the first error in the form and tag it
+        found = False
+        for g in self.GROUP_ORDER:
+            cfg = self.FIELD_GROUPS.get(g)
+            for obj in cfg:
+                field = obj.keys()[0]
+                if field in self.error_fields:
+                    obj[field]["first_error"] = True
+                    found = True
+                    break
+            if found:
+                break
