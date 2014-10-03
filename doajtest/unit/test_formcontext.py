@@ -1,10 +1,10 @@
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality.formcontext import formcontext, xwalk
+from portality.formcontext import formcontext, xwalk, render
 
 from werkzeug.datastructures import MultiDict
-
+from wtforms import Form, StringField, validators
 
 JOURNAL_SOURCE = {
     "index": {
@@ -136,15 +136,131 @@ APPLICATION_SOURCE = {
     }
 }
 
+class FailValidation(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, form, field):
+        raise validators.ValidationError("validation failed")
+
+class TestForm(Form):
+    one = StringField("One", [FailValidation()])
+    two = StringField("Two")
+
+class TestRenderer(render.Renderer):
+    def __init__(self):
+        super(TestRenderer, self).__init__()
+        self.FIELD_GROUPS = {
+            "test" : [
+                {"one" : {}},
+                {"two" : {}}
+            ]
+        }
+
+class TestContext(formcontext.FormContext):
+    def data2form(self):
+        self.form = TestForm(formdata=self.form_data)
+
+    def source2form(self):
+        self.form = TestForm(data=self.source)
+
+    def blank_form(self):
+        self.form = TestForm()
+
+    def form2target(self):
+        self.target = {"three" : "three"}
+
+    def patch_target(self):
+        self.target.update({"four" : "four"})
+
+    def make_renderer(self):
+        self.renderer = TestRenderer()
+
+    def set_template(self):
+        self.template = "test_template.html"
+
+    def pre_validate(self):
+        self.did_pre_validation = True
+
+TEST_SOURCE = {"one" : "one", "two" : "two"}
+
 class TestFormContext(DoajTestCase):
     def setUp(self): pass
     def tearDown(self): pass
 
     ###########################################################
+    # Tests on the base classes
+    ###########################################################
+
+    def test_01_formcontext_init(self):
+        fc = formcontext.FormContext()
+        assert fc.source is None
+        assert fc.form_data is None
+        assert fc.target is None
+
+        fc = formcontext.FormContext(form_data=MultiDict(TEST_SOURCE))
+        assert fc.source is None
+        assert fc.form_data is not None
+        assert fc.target is None
+
+        fc = formcontext.FormContext(source=TEST_SOURCE)
+        assert fc.source is not None
+        assert fc.form_data is None
+        assert fc.target is None
+
+    def test_02_formcontext_subclass_init(self):
+        fc = TestContext()
+        assert fc.form["one"].data is None
+        assert fc.form["two"].data is None
+
+        fc = TestContext(form_data=MultiDict(TEST_SOURCE))
+        assert fc.form["one"].data == "one"
+        assert fc.form["two"].data == "two"
+
+        fc = TestContext(source=TEST_SOURCE)
+        assert fc.form["one"].data == "one"
+        assert fc.form["two"].data == "two"
+
+        assert isinstance(fc.renderer, TestRenderer)
+        assert fc.template == "test_template.html"
+
+    def test_03_formcontext_subclass_finalise(self):
+        fc = TestContext(source=TEST_SOURCE)
+        fc.finalise()
+
+        assert fc.target["three"] == "three"
+        assert fc.target["four"] == "four"
+
+    def test_04_formcontext_validate(self):
+        fc = TestContext(source=TEST_SOURCE)
+        valid = fc.validate()
+
+        assert not valid
+        assert fc.did_pre_validation
+        assert len(fc.renderer.error_fields) == 1
+        assert "one" in fc.renderer.error_fields
+        assert fc.errors
+
+    def test_05_formcontext_subclass_render(self):
+        fc = TestContext(source=TEST_SOURCE)
+        html = fc.render_field_group("test")
+        print html
+
+        assert html is not None
+        assert html != ""
+        assert '<input id="one"' in html
+        assert '<input id="two"' in html
+
+
+    ###########################################################
+    # Tests on the factory
+    ###########################################################
+
+    ###########################################################
     # Tests on the public application form
     ###########################################################
 
-    def test_01_public_from_source(self):
+    def test_06_public_from_source(self):
         """Test that we can build the most basic kind of form from source, and that all its properties are right"""
 
         # make ourselves a form context from the source
@@ -152,14 +268,14 @@ class TestFormContext(DoajTestCase):
         fc = formcontext.JournalFormFactory.get_form_context(source=source)
 
         # first check that we got the kind of object we expected
-        assert isinstance(fc, formcontext.PublicApplicationForm)
+        assert isinstance(fc, formcontext.PublicApplication)
 
         # we should have populated the source and form aspects of the object
         assert fc.form_data is None
         assert fc.source is not None
         assert fc.form is not None
 
-    def test_02_public_from_formdata(self):
+    def test_07_public_from_formdata(self):
         """Test that we can build the most basic kind of form from form data"""
 
         # take the source and explicitly convert it to form data form
@@ -169,14 +285,14 @@ class TestFormContext(DoajTestCase):
         fc = formcontext.JournalFormFactory.get_form_context(form_data=formdata)
 
         # first check that we got the kind of object we expected
-        assert isinstance(fc, formcontext.PublicApplicationForm)
+        assert isinstance(fc, formcontext.PublicApplication)
 
         # we should have populated the source and form aspects of the object
         assert fc.form_data is not None
         assert fc.form is not None
         assert fc.source is None
 
-    def test_03_public_form_render(self):
+    def test_08_public_form_render(self):
         """Test that we can render the basic form """
         fc = formcontext.JournalFormFactory.get_form_context()
         frag = fc.render_field_group("basic_info")

@@ -173,7 +173,6 @@ class FormContext(object):
         return False
 
     def render_template(self, **kwargs):
-
         return render_template(self.template, form_context=self, **kwargs)
 
     def render_field_group(self, field_group_name=None):
@@ -193,7 +192,7 @@ class PublicApplication(FormContext):
     one, so it will do unnecessary things like override methods that don't actually need to be overridden
     """
 
-    def __init__(self, form_data=None, source=None, renderer=None):
+    def __init__(self, form_data=None, source=None):
         #  initialise the object through the superclass
         super(PublicApplication, self).__init__(form_data=form_data, source=source)
 
@@ -218,7 +217,7 @@ class PublicApplication(FormContext):
         self.form = forms.PublicApplicationForm(formdata=self.form_data)
 
     def source2form(self):
-        self.form = forms.PublicApplicationForm(obj=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublicApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
