@@ -3,11 +3,12 @@ import csv
 
 class ClCsv():
 
-    # Store the csv contents in a list of tuples, [ (column_header, [contents]) ]
-    data = []
-
     def __init__(self, file_path, mode='r+b'):
+
+        # Store the csv contents in a list of tuples, [ (column_header, [contents]) ]
         self.data = []
+
+        # Get an open file object from the given file_path or file object
         if type(file_path) == file:
             self.file_object = file_path
             if self.file_object.closed:
@@ -65,19 +66,15 @@ class ClCsv():
         """
         try:
             if type(col_identifier) == int:
-                self.data[col_identifier] = (col_identifier, col_contents)
+                self.data[col_identifier] = col_contents
             elif type(col_identifier) == str:
-
-                # set column by title. Raises IndexErrors like int indexes above.
-                if len(self.data) == 0:
+                # set column by title.
+                num = self.get_colnumber(col_identifier)
+                if num and type(col_contents) == list:
+                    self.set_column(num, (col_identifier, col_contents))
+                else:
                     raise IndexError
 
-                for i in range(0, len(self.data)):
-                    (col_title, contents) = self.data[i]
-                    if col_title == col_identifier:
-                        self.data[i] = (col_identifier, col_contents)
-                    else:
-                        raise IndexError
         except IndexError:
             # The column isn't there already; append a new one
             if type(col_identifier) == int:
@@ -116,8 +113,6 @@ class ClCsv():
         """
         Write and close the file.
         """
-        print "self.data:"
-        print self.data
         rows = []
         for i in range(0, len(self.data)):
             row = []
@@ -126,6 +121,11 @@ class ClCsv():
                 row.append(col_data[i])
             rows.insert(i, row)
 
+        # Remove current contents of file
+        self.file_object.seek(0)
+        self.file_object.truncate()
+
+        # Write new CSV data
         writer = csv.writer(self.file_object)
         writer.writerows(rows)
         self.file_object.close()
@@ -134,6 +134,8 @@ class ClCsv():
     def _populate_data(self, csv_rows):
         # Reset the stored data
         self.data = []
+
+        # Add new data
         for i in range(0, len(csv_rows[0])):
             col_data = []
             for row in csv_rows[1:]:
