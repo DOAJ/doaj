@@ -135,6 +135,7 @@ class FormContext(object):
         """
         Finish up with the FormContext.  Carry out any final workflow tasks, etc.
         """
+        self.form2target()
         self.patch_target()
 
     def is_disabled(self, form_field):
@@ -228,8 +229,7 @@ class PublicApplication(FormContext):
         pass
 
     def finalise(self):
-        # we can call patch_target, though it won't have any effect.
-        self.patch_target()
+        super(PublicApplication, self).finalise()
 
         # What happens next?  We probably need to save the target
         self.target.save()
