@@ -7,7 +7,7 @@ import os
 
 class TestCsvWrapper(TestCase):
 
-    PRFX = 'test/unit/resources/'
+    PRFX = 'doajtest/unit/resources/'
 
     def setUp(self):
         # Create a CSV file to read, and objects to write
