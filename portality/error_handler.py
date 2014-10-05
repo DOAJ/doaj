@@ -51,18 +51,19 @@ def setup_error_logging(app):
 
     send_to = app.config.get('ERROR_LOGGING_EMAIL', app.config.get('ADMIN_EMAIL'))
     if send_to and not app.config.get('SUPPRESS_ERROR_EMAILS'):
-        import platform
-        hostname = platform.uname()[1]
-        mail_handler = TlsSMTPHandler(
-            ('smtp.gmail.com', 587),
-           'server-error@' + hostname,
-           send_to,
-           'DOAJ Flask Error',
-           credentials=(app.config['ERROR_MAIL_USERNAME'], app.config['ERROR_MAIL_PASSWORD'])
-        )
-        mail_handler.setLevel(logging.ERROR)
-        mail_handler.setFormatter(formatter)
-        app.logger.addHandler(mail_handler)
+        if 'ERROR_MAIL_USERNAME' in app.config and 'ERROR_MAIL_PASSWORD' in app.config:
+            import platform
+            hostname = platform.uname()[1]
+            mail_handler = TlsSMTPHandler(
+                ('smtp.gmail.com', 587),
+               'server-error@' + hostname,
+               send_to,
+               'DOAJ Flask Error',
+               credentials=(app.config['ERROR_MAIL_USERNAME'], app.config['ERROR_MAIL_PASSWORD'])
+            )
+            mail_handler.setLevel(logging.ERROR)
+            mail_handler.setFormatter(formatter)
+            app.logger.addHandler(mail_handler)
 
     # send errors to stderr, supervisord will capture them in the app's
     # error log
