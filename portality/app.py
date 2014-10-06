@@ -81,7 +81,8 @@ SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an
 
 
 @app.route("/formcontext/<example>", methods=["GET", "POST"])
-def formcontext(example):
+@app.route("/formcontext/<example>/<id>", methods=["GET", "POST"])
+def formcontext(example, id=None):
     from portality.formcontext import formcontext
     fc = None
     if example == "public":
@@ -95,7 +96,18 @@ def formcontext(example):
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 return fc.render_template(edit_suggestion_page=True)
-
+    elif example == "admin":
+        if request.method == "GET":
+            ap = models.Suggestion.pull(id)
+            fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
+            return fc.render_template(edit_suggestion_page=True)
+        elif request.method == "POST":
+            fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form)
+            if fc.validate():
+                fc.finalise()
+                return redirect(url_for("admin.suggestion_page", suggestion_id=fc.target.id, _anchor='done'))
+            else:
+                return fc.render_template(edit_suggestion_page=True)
     abort(404)
 
 # Redirects from previous DOAJ app.

@@ -5,7 +5,7 @@ from wtforms import Form, validators
 from wtforms import TextField, StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
 from wtforms import widgets
 
-from portality.formcontext.fields import URLField, TagListField
+from portality.formcontext.fields import URLField, TagListField, DisabledTextField
 from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen
 
 from portality.formcontext.choices import Choices
@@ -19,6 +19,8 @@ EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not mat
 ###########################################################################
 
 class JournalInformation(Form):
+    """All the bibliographic metadata associated with a journal in the DOAJ"""
+
     title = StringField('Journal Title', [validators.InputRequired()])
     url = URLField('URL', [validators.InputRequired(), URLOptionalScheme()])
     alternative_title = StringField('Alternative Title', [validators.Optional()])
@@ -233,7 +235,7 @@ class JournalInformation(Form):
         [validators.Required(), ExtraFieldRequiredIf('publishing_rights_other', reqval=Choices.publishing_rights_other_val("other"))],
         choices = Choices.publishing_rights()
     )
-    publishing_rights_other = TextField('',
+    publishing_rights_other = StringField('',
     )
     publishing_rights_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('publishing_rights', optvals=Choices.publishing_rights_url_optional()), URLOptionalScheme()]
@@ -241,6 +243,8 @@ class JournalInformation(Form):
 
 
 class Suggestion(Form):
+    """ Additional bibliographic metadata required when suggesting a journal to the DOAJ """
+
     articles_last_year = IntegerField('How many research and review articles did the journal publish in the last calendar year?',
         [validators.InputRequired(), validators.NumberRange(min=0)],
         description='A journal must publish at least 5 articles per year to stay in the DOAJ',
@@ -253,6 +257,10 @@ class Suggestion(Form):
         description='For new applications, metadata must be provided within 3 months of acceptance into DOAJ',
         choices=Choices.metadata_provision()
     )
+
+class PublicSuggester(Form):
+    """ Suggester's contact details to be provided via the public application form """
+
     suggester_name = StringField('Your name',
         [validators.InputRequired()]
     )
@@ -263,11 +271,110 @@ class Suggestion(Form):
         [validators.InputRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
 
+class AdminSuggester(Form):
+    """ Suggester's contact details as presented to administrators/editors in the DOAJ workflow"""
 
+    suggester_name = StringField("Name",
+        [validators.InputRequired()]
+    )
+    suggester_email = StringField("Email address",
+        [validators.InputRequired(), validators.Email(message='Invalid email address.')]
+    )
+    suggester_email_confirm = StringField("Confirm email address",
+        [validators.InputRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+    )
+
+class Note(Form):
+    """ Note form for use in admin area - recommended to be included by the composing form as a FormField, so it can be
+        represented as a multi-field.  Use Notes to achieve this """
+
+    note = TextAreaField('Note')
+    date = DisabledTextField('Date')
+
+class Notes(Form):
+    """ Multiple notes form for inclusion into admin forms """
+    notes = FieldList(FormField(Note))
+
+class Subject(Form):
+    """ Subject classification entry """
+
+    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=Choices.subjects())
+
+class JournalLegacy(Form):
+    """ Legacy information required by some journals that are already in the DOAJ """
+
+    author_pays = RadioField('Author pays to publish', [validators.Optional()], choices=Choices.author_pays())
+    author_pays_url = StringField('Author pays - guide link', [validators.Optional(), validators.URL()])
+    oa_end_year = IntegerField('Year in which the journal stopped publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
+
+class RequiredOwner(Form):
+    """ An Owner field which is required - validation will fail if it is not provided.  For use in some admin forms """
+
+    owner = StringField('Owner', [validators.InputRequired()])
+
+class ApplicationOwner(Form):
+    """ An Owner field which is optional under certain conditions.  For use in some admin forms """
+
+    owner = StringField('Owner',
+        [OptionalIf('application_status', optvals=Choices.application_status_optional())],
+        description='DOAJ account to which the application belongs to.'
+                    '<br><br>'
+                    'This field is optional unless the application status is set to Accepted.'
+                    '<br><br>'
+                    'Entering a non-existent account and setting the application status to Accepted will automatically create the account using the Contact information in Questions 9 & 10, and send an email containing the Contact\'s username + password.'
+    )
+
+class OptionalValidation(Form):
+    """ Make the form provide an option to bypass validation """
+
+    make_all_fields_optional = BooleanField('Allow incomplete form',
+        description='<strong>Only tick this box if:</strong>'
+                    '<br>a/ you are editing an old, incomplete record;'
+                    '<br>b/ you really, really need to change a value without filling in the whole record;'
+                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
+    )
+
+class Editorial(Form):
+    """ Editorial group fields """
+
+    editor_group = StringField("Editor Group", [validators.Optional()])
+    editor = SelectField("Assigned to", default="") # choices to be assigned at form render time
+
+class Workflow(Form):
+    """ Administrator workflow field """
+
+    application_status = SelectField('Application Status',  # choices are late-binding as they depend on the user
+        [validators.InputRequired()],
+        description='Setting the status to In Progress will tell others'
+                    ' that you have started your review. Setting the status'
+                    ' to Ready will alert the Managing Editors that you have'
+                    ' completed your review.'
+    )
 
 #####################################################################
 # The context sensitive forms themselves
 #####################################################################
 
-class PublicApplicationForm(JournalInformation, Suggestion):
+class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
+    """
+    The Public Application Form.  It consists of:
+        * JournalInformation - journal bibliographic data
+        * Suggestion - additional application metadata
+        * PublicSuggested - suggester's contact details, from the suggester's perspective
+    """
+    pass
+
+
+class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
+    """
+    Managing Editor's Application Review form.  It contains a broad set of form controls, such as:
+        * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
+        * Workflow - ability to change application status
+        * ApplicationOwner - able to set the owner, and for the owner assignment to be optional except under certain circumstances
+        * JournalInformation - journal bibliographic data
+        * Suggestion - additional application metadata
+        * Subject - ability to use subject hierarchy browser
+        * AdminSuggester - suggester's contact details, from an administrator's perspective
+        * Notes - repeatable notes field
+    """
     pass

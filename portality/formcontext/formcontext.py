@@ -1,5 +1,9 @@
-from portality.formcontext import forms, xwalk, render
+from portality.formcontext import forms, xwalk, render, choices
 from flask import render_template
+
+import json
+
+from portality.lcc import lcc_jstree
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -185,6 +189,79 @@ class JournalFormFactory(object):
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
             return PublicApplication(source=source, form_data=form_data)
+        elif role == "admin":
+            return ManEdApplicationReview(source=source, form_data=form_data)
+
+class ManEdApplicationReview(FormContext):
+    def make_renderer(self):
+        self.renderer = render.ManEdApplicationReviewRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/maned_application_review.html"
+
+    def blank_form(self):
+        self.form = forms.ManEdApplicationReviewForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
+        self._set_choices()
+        self._update_descriptions()
+
+    def source2form(self):
+        self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._update_descriptions()
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        # no need to patch the target, there is no source for this kind of form, and no complexity
+        # in how it is handled
+        pass
+
+    def finalise(self):
+        super(ManEdApplicationReview, self).finalise()
+
+        # What happens next?  We probably need to save the target
+        self.target.save()
+
+    def is_disabled(self, form_field):
+        # There are no disabled fields
+        return False
+
+    def _set_choices(self):
+        self.form.application_status.choices = choices.Choices.application_status("admin")
+        editor = self.form.editor.data
+        if editor is not None:
+            self.form.editor.choices = [(editor, editor)]
+        else:
+            self.form.editor.choices = [("", "")]
+
+    def _update_descriptions(self):
+        # add the contents of a few fields to their descriptions since select2 autocomplete
+        # would otherwise obscure the full values
+        if self.form.publisher.data:
+            if not self.form.publisher.description:
+                self.form.publisher.description = 'Full contents: ' + self.form.publisher.data
+            else:
+                self.form.publisher.description += '<br><br>Full contents: ' + self.form.publisher.data
+
+        if self.form.society_institution.data:
+            if not self.form.society_institution.description:
+                self.form.society_institution.description = 'Full contents: ' + self.form.society_institution.data
+            else:
+                self.form.society_institution.description += '<br><br>Full contents: ' + self.form.society_institution.data
+
+        if self.form.platform.data:
+            if not self.form.platform.description:
+                self.form.platform.description = 'Full contents: ' + self.form.platform.data
+            else:
+                self.form.platform.description += '<br><br>Full contents: ' + self.form.platform.data
+
+    def render_template(self, **kwargs):
+        return super(ManEdApplicationReview, self).render_template(lcc_jstree=json.dumps(lcc_jstree), **kwargs)
 
 class PublicApplication(FormContext):
     """

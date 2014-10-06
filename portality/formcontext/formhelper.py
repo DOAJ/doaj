@@ -24,7 +24,7 @@ class FormHelper(object):
             if field.errors:
                 frag += " error"
             if container_class is not None:
-                frag += container_class
+                frag += " " + container_class
             frag += '" id="'
             frag += field.short_name + '-container"'
             if hidden:
@@ -37,9 +37,9 @@ class FormHelper(object):
 
     def _form_field(self, field, **kwargs):
         # get the useful kwargs
-        hidden = kwargs.get("hidden", False)
-        render_subfields_horizontal = kwargs.get("render_subfields_horizontal", False)
-        container_class = kwargs.get("container_class")
+        hidden = kwargs.pop("hidden", False)
+        render_subfields_horizontal = kwargs.pop("render_subfields_horizontal", False)
+        container_class = kwargs.pop("container_class", None)
 
         # start the div for this group of fields
         frag = '<div class="control-group'
@@ -48,7 +48,7 @@ class FormHelper(object):
         if render_subfields_horizontal:
             frag += " row-fluid"
         if container_class is not None:
-            frag += container_class
+            frag += " " + container_class
         frag += '" id="'
         frag += field.short_name + '-container"'
         if hidden:
@@ -59,9 +59,13 @@ class FormHelper(object):
         for subfield in field:
             if render_subfields_horizontal and not (subfield.type == 'CSRFTokenField' and not subfield.value):
                 subfield_width = "3"
+                remove = []
                 for kwarg, val in kwargs.iteritems():
                     if kwarg == 'subfield_display-' + subfield.short_name:
                         subfield_width = val
+                        remove.append(kwarg)
+                for rm in remove:
+                    del kwargs[rm]
                 frag += '<div class="span' + subfield_width + ' nested-field-container">'
                 frag += self._render_field(subfield, maximise_width=True, **kwargs)
                 frag += "</div>"
@@ -74,14 +78,13 @@ class FormHelper(object):
         return frag
 
     def _field_list(self, field, **kwargs):
-        # get the useful kwargs
-        hidden = kwargs.get("hidden", False)
-
         # for each subfield, do the render
+        frag = ""
         for subfield in field:
             if subfield.type == "FormField":
-                return self.render_field(subfield, **kwargs)
+                frag += self.render_field(subfield, **kwargs)
             else:
+                hidden = kwargs.pop("hidden", False)
                 frag = '<div class="control-group'
                 if field.errors:
                     frag += " error"
@@ -90,11 +93,9 @@ class FormHelper(object):
                 if hidden:
                     frag += ' style="display:none;"'
                 frag += ">"
-
                 frag += self._render_field(subfield, **kwargs)
-
                 frag += "</div>"
-                return frag
+        return frag
 
     def _render_field(self, field, **kwargs):
         # interesting arguments from keywords

@@ -9,64 +9,8 @@
 
     <fieldset>
 
-        <div class="row-fluid">
-
-            <div class="span6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Basic Journal Information</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("basic_info") }}
-                {% endautoescape %}
-            </div>
-
-            <div class="span6 with-borders form-section">
-                <h3>Quality and Transparency of the Editorial Process</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("editorial_process") }}
-                {% endautoescape %}
-            </div>
-
-            <div class="span6 with-borders form-section">
-                <h3>How Open is the Journal?</h3>
-                <p>Please remember that <strong>all</strong> the content of the journal you are applying about <strong>must</strong> be available <strong>immediately</strong> upon publication.</p>
-                {% autoescape off %}
-                {{ form_context.render_field_group("openness") }}
-                {% endautoescape %}
-            </div>
-
-            <div class="span6 with-borders form-section">
-                <h3>Content Licensing</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("content_licensing") }}
-                {% endautoescape %}
-            </div>
-
-            <div class="span6 with-borders form-section">
-                <h3>Copyright and Permissions</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("copyright") }}
-                {% endautoescape %}
-            </div>
-
-            <div class="span6 with-borders form-section">
-                <h3>A note about the qualifiers for the DOAJ Seal</h3>
-                <p>DOAJ promotes best practice in Open Access publishing. To that end, we are introducing the DOAJ Seal for Open Access journals.</p>
-
-                <p>The qualifiers for the Seal will highlight features related to the openness, indexability and discoverability of the journal and, as such, have nothing to do with <strong>the scholarly quality of the papers published in the journal</strong>.</p>
-
-                <p>To qualify for the Seal the journal must:</p>
-                <ol>
-                    <li>have an archival arrangement in place with an external party. <a class="animated" href="#digital_archiving_policy-container">(scroll to digital archiving policy question)</a> If 'No policy in place' is selected, the journal will not qualify for the Seal.</li>
-                    <li>provide permanent identifiers in the papers published. <a class="animated" href="#article_identifiers-container">(scroll to article identifiers question)</a> If 'None' is selected, the journal will not qualify for the Seal.</li>
-                    <li>provide article level metadata to DOAJ. <a class="animated" href="#metadata_provision-container">(scroll to metadata provision question)</a> If 'No' is selected or the journal fails to provide metadata within 3 months, the journal will not qualify for the Seal.</li>
-                    <li>embed machine-readable CC licensing information in its article level metadata. <a class="animated" href="#license_embedded-container">(scroll to embedded licensing data question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
-                    <li>allow reuse and remixing of its content in accordance with a CC BY or CC BY-NC. <a class="animated" href="#license-container">(scroll to licensing question)</a> If CC BY-ND, 'No' or '{{other_val}}' is selected the journal will not qualify for the Seal.</li>
-                    <li>have a deposit policy registered in a deposit policy directory. <a class="animated" href="#deposit_policy-container">(scroll to deposit policy question)</a> If 'No' is selected the journal will not qualify for the Seal.</li>
-                </ol>
-
-                <p>A journal cannot apply for the Seal. The Seal will be awarded to a journal by the DOAJ Editorial staff depending on the information provided in the application form.</p>
-            </div>
-
-        </div>
+        {# include the base application form which contains all the biblio data #}
+        {% include 'formcontext/_base_application_form.html' %}
 
         <div class="row-fluid">
             <div class="span3">&nbsp;</div>
