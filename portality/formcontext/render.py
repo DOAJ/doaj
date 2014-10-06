@@ -52,9 +52,13 @@ class Renderer(object):
         return frag
 
 
-class PublicApplicationRenderer(Renderer):
+class ApplicationRenderer(Renderer):
     def __init__(self):
-        super(PublicApplicationRenderer, self).__init__()
+        super(ApplicationRenderer, self).__init__()
+
+        # allow the subclass to define the order the groups should be considered in.  This is useful for
+        # numbering questions and determining first errors
+        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
 
         # define the basic field groups
         self.FIELD_GROUPS = {
@@ -176,9 +180,7 @@ class PublicApplicationRenderer(Renderer):
             ]
         }
 
-        # now apply some standard bits of info across all groups
-        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
-
+    def number_questions(self):
         q = 1
         for g in self.GROUP_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
@@ -188,7 +190,7 @@ class PublicApplicationRenderer(Renderer):
                 q += 1
 
     def set_error_fields(self, fields):
-        super(PublicApplicationRenderer, self).set_error_fields(fields)
+        super(ApplicationRenderer, self).set_error_fields(fields)
 
         # find the first error in the form and tag it
         found = False
@@ -202,3 +204,44 @@ class PublicApplicationRenderer(Renderer):
                     break
             if found:
                 break
+
+
+
+class PublicApplicationRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(PublicApplicationRenderer, self).__init__()
+
+        # explicitly call number questions, as it is not called by default (because other implementations may want
+        # to mess with the group order and field groups first
+        self.number_questions()
+
+class ManEdApplicationReviewRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(ManEdApplicationReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["status"] = [
+            {"application_status" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["account"] = [
+            {"owner" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+        self.FIELD_GROUPS["editorial"] = [
+            {"editor_group" : {"class" : "input-large"}},
+            {"editor" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "container_class" : "deletable",
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.number_questions()

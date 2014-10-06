@@ -151,70 +151,9 @@ def subjects2str(subjects):
 
 
 
-class NoteForm(Form):
-    note = TextAreaField('Note')
-    date = DisabledTextField('Date')
-
-
-class JournalForm(JournalInformationForm):
-    author_pays = RadioField('Author pays to publish', [validators.Optional()], choices=author_pays_options)
-    author_pays_url = TextField('Author pays - guide link', [validators.Optional(), validators.URL()])
-    oa_end_year = IntegerField('Year in which the journal stopped publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
-    notes = FieldList(FormField(NoteForm))
-    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
-    owner = TextField('Owner', [validators.Required()])
-    make_all_fields_optional = BooleanField('Allow incomplete form',
-        description='<strong>Only tick this box if:</strong>'
-                    '<br>a/ you are editing an old, incomplete record;'
-                    '<br>b/ you really, really need to change a value without filling in the whole record;'
-                    '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
-    )
-    # fields for assigning to editor group
-    editor_group = TextField("Editor Group", [validators.Optional()])
-    editor = SelectField("Assigned to") # choices to be assigned at form render time
 
 
 
-
-
-class EditSuggestionForm(SuggestionForm):
-    application_status = SelectField('Application Status',
-        [validators.Required()],
-        # choices = application_status_choices, # choices are late-binding as they depend on the user
-        default = '',
-        description='Setting the status to In Progress will tell others'
-                    ' that you have started your review. Setting the status'
-                    ' to Ready will alert the Managing Editors that you have'
-                    ' completed your review.'
-    )
-    notes = FieldList(FormField(NoteForm))
-    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=lcc.lcc_choices)
-    owner = TextField('Owner',
-        [OptionalIf('application_status', optvals=application_status_choices_optvals)],
-        description='DOAJ account to which the application belongs to.'
-                    '<br><br>'
-                    'This field is optional unless the application status is set to Accepted.'
-                    '<br><br>'
-                    'Entering a non-existent account and setting the application status to Accepted will automatically create the account using the Contact information in Questions 9 & 10, and send an email containing the Contact\'s username + password.'
-    )
-    #owner = TextField('Owner', [RequiredIfRole("admin")],
-    #    description='DOAJ account to which the suggestion belongs to.'
-    #                '<br><br>'
-    #                'This field is optional unless the application status is set to Accepted.'
-    #                '<br><br>'
-    #                'Entering a non-existent account and setting the application status to Accepted will automatically create the account using the Contact information in Questions 9 & 10, and send an email containing the Contact\'s username + password.'
-    #)
-
-    # overrides
-    suggester_name = TextField("Name",
-        suggester_name_validators
-    )
-    suggester_email = TextField("Email address",
-        suggester_email_validators
-    )
-    suggester_email_confirm = TextField("Confirm email address",
-        suggester_email_confirm_validators
-    )
 
 
 ##########################################################################
@@ -277,59 +216,6 @@ class ArticleForm(Form):
             # probably you are loading the class from the command line
             pass
 
-
-##########################################################################
-## Editor Group Forms
-##########################################################################
-
-class UniqueGroupName(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, form, field):
-        exists_id = models.EditorGroup.group_exists_by_name(field.data)
-        if exists_id is None:
-            # if there is no group of the same name, we are fine
-            return
-
-        # if there is a group of the same name, we need to check whether it's the
-        # same group as we are currently editing
-        id_field = form._fields.get("group_id")
-        if id_field is None or id_field.data == "" or id_field.data is None:
-            # if there is no id field then this is a new group, and so the name clashes
-            # with an existing group
-            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
-
-        # if we get to here, the id_field exists, so we need to check whether it matches
-        # the group with the same id
-        if id_field.data != exists_id:
-            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
-
-class NotRole(object):
-    def __init__(self, role, *args, **kwargs):
-        self.role = role
-
-    def __call__(self, form, field):
-        accounts = [a.strip() for a in field.data.split(",") if a.strip() != ""]
-        if len(accounts) == 0:
-            return
-        fails = []
-        for a in accounts:
-            acc = models.Account.pull(a)
-            if acc.has_role(self.role) and not acc.is_super:
-                fails.append(acc.id)
-        if len(fails) == 0:
-            return
-        have_or_has = "have" if len(fails) > 1 else "has"
-        msg = ", ".join(fails) + " " + have_or_has + " role " + self.role + " so cannot be assigned to an Editor Group"
-        raise validators.ValidationError(msg)
-
-
-class EditorGroupForm(Form):
-    group_id = HiddenField("Group ID", [validators.Optional()])
-    name = TextField("Group Name", [validators.Required(), UniqueGroupName()])
-    editor = TextField("Editor", [validators.Required(), NotRole("publisher")])
-    associates = TextField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
 
 

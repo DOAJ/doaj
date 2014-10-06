@@ -1,4 +1,5 @@
 from portality.datasets import language_options, main_license_options, country_options, currency_options
+from portality import lcc
 
 class Choices(object):
     NONE = "None"
@@ -75,6 +76,25 @@ class Choices(object):
         (OTHER, OTHER)
     ]
 
+    _author_pays = [
+        ('N', 'No charges'),
+        ('CON', 'Conditional charges'),
+        ('Y', 'Has charges'),
+        ('NY', 'No information'),
+    ]
+
+    _application_status_base = [
+        ('', ' '),
+        ('pending', 'Pending'),
+        ('in progress', 'In progress'),
+        ('rejected', 'Rejected'),
+        ('ready', 'Ready')
+    ]
+
+    _application_status_admin = _application_status_base + [
+        ('accepted', 'Accepted')
+    ]
+
     ############################################################
     # General utility functions
     ############################################################
@@ -110,6 +130,10 @@ class Choices(object):
     @classmethod
     def licence(cls):
         return cls._licence
+
+    @classmethod
+    def subjects(cls):
+        return lcc.lcc_choices
 
     ############################################################
     # Choices for specific fields
@@ -297,3 +321,19 @@ class Choices(object):
     @classmethod
     def metadata_provision(cls):
         return cls.binary()
+
+
+    @classmethod
+    def author_pays(cls):
+        return cls._author_pays
+
+    @classmethod
+    def application_status_optional(cls):
+        return [v[0] for v in cls._application_status_base]
+
+    @classmethod
+    def application_status(cls, role=None):
+        if role == "admin":
+            return cls._application_status_admin
+        else:
+            return cls._application_status_base
