@@ -7,12 +7,13 @@ new ones as required too.
 '''
 import os
 
-from flask import request, abort, render_template, redirect, send_file, url_for
+from flask import request, abort, render_template, redirect, send_file, url_for, flash
 from flask.ext.login import login_user, current_user
 
 import portality.models as models
 from portality.core import app, login_manager
 from portality import settings
+from portality.util import flash_with_url
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -85,6 +86,8 @@ SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an
 def formcontext(example, id=None):
     from portality.formcontext import formcontext
     fc = None
+
+    # public application form
     if example == "public":
         if request.method == "GET":
             fc = formcontext.JournalFormFactory.get_form_context()
@@ -96,16 +99,25 @@ def formcontext(example, id=None):
                 return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
             else:
                 return fc.render_template(edit_suggestion_page=True)
+
+    # managing editor's application form
     elif example == "admin":
+        ap = models.Suggestion.pull(id)
         if request.method == "GET":
-            ap = models.Suggestion.pull(id)
             fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
             return fc.render_template(edit_suggestion_page=True)
         elif request.method == "POST":
-            fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form)
+            fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
             if fc.validate():
-                fc.finalise()
-                return redirect(url_for("admin.suggestion_page", suggestion_id=fc.target.id, _anchor='done'))
+                try:
+                    fc.finalise()
+                    flash('Application updated.', 'success')
+                    for a in fc.alert:
+                        flash_with_url(a, "success")
+                    return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
+                except formcontext.FormContextException as e:
+                    flash(e.message)
+                    return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
             else:
                 return fc.render_template(edit_suggestion_page=True)
     abort(404)
