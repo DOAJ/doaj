@@ -1,9 +1,15 @@
-from portality.formcontext import forms, xwalk, render, choices
-from flask import render_template
-
+from flask import render_template, url_for
 import json
+from datetime import datetime
 
+from portality.formcontext import forms, xwalk, render, choices
 from portality.lcc import lcc_jstree
+from portality import models, journal, app_email
+from portality.core import app
+from portality.account import create_account_on_suggestion_approval, send_suggestion_approved_email
+
+class FormContextException(Exception):
+    pass
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -14,6 +20,7 @@ class FormContext(object):
         self._form = None
         self._renderer = None
         self._template = None
+        self._alert = []
 
         # now create our form instance, with the form_data (if there is any)
         if form_data is not None:
@@ -78,6 +85,13 @@ class FormContext(object):
     @template.setter
     def template(self, val):
         self._template = val
+
+    @property
+    def alert(self):
+        return self._alert
+
+    def add_alert(self, val):
+        self._alert.append(val)
 
     ############################################################
     # Lifecycle functions that subclasses should implement
@@ -217,15 +231,53 @@ class ManEdApplicationReview(FormContext):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
-        # no need to patch the target, there is no source for this kind of form, and no complexity
-        # in how it is handled
-        pass
+        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # copy over any important fields from the previous version of the object
+        created_date = self.source.created_date if self.source.created_date else now
+        self.target.set_created(created_date)
+        self.target.suggested_on = self.source.suggested_on
+        self.target.data['id'] = self.source.data['id']
+        if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
+            self.target.set_owner(self.source.owner)
+
 
     def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source.application_status == "accepted":
+            raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
+
+        # if we are allowed to finalise, kick this up to the superclass
         super(ManEdApplicationReview, self).finalise()
 
-        # What happens next?  We probably need to save the target
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        email_editor = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
+        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+
+        # Save the target
         self.target.save()
+
+        # if this application is being accepted, then do the conversion to a journal
+        if self.target.application_status == 'accepted':
+            # this suggestion is just getting accepted
+            j = journal.suggestion2journal(self.target)  # FIXME: rationalise with journal xwalk/module
+            j.set_in_doaj(True)
+            j.save()
+
+            # record the url the journal is available at in the admin are and alert the user
+            jurl = url_for("admin.journal_page", journal_id=j.id)
+            self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
+
+            # create the user account for the owner and send the notification email
+            owner = create_account_on_suggestion_approval(self.target, j)
+            send_suggestion_approved_email(j.bibjson().title, owner.email)
+
+        # if we need to email the editor and/or the associate, handle those here
+        if email_editor:
+            self._send_editor_group_email(self.target)
+        if email_associate:
+            self._send_editor_email(self.target)
 
     def is_disabled(self, form_field):
         # There are no disabled fields
@@ -259,6 +311,46 @@ class ManEdApplicationReview(FormContext):
                 self.form.platform.description = 'Full contents: ' + self.form.platform.data
             else:
                 self.form.platform.description += '<br><br>Full contents: ' + self.form.platform.data
+
+    def _send_editor_group_email(self, suggestion):
+        eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
+        if eg is None:
+            return
+        editor = models.Account.pull(eg.editor)
+
+        url_root = app.config.get("BASE_URL")
+        to = [editor.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/suggestion_assigned_group.txt",
+                            editor=editor.id.encode('utf-8', 'replace'),
+                            journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                            url_root=url_root
+                            )
+
+
+    def _send_editor_email(self, suggestion):
+        editor = models.Account.pull(suggestion.editor)
+        eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
+
+        url_root = app.config.get("BASE_URL")
+        to = [editor.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/suggestion_assigned_editor.txt",
+                            editor=editor.id.encode('utf-8', 'replace'),
+                            journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                            group_name=eg.name.encode("utf-8", "replace"),
+                            url_root=url_root
+                            )
 
     def render_template(self, **kwargs):
         return super(ManEdApplicationReview, self).render_template(lcc_jstree=json.dumps(lcc_jstree), **kwargs)
@@ -307,7 +399,12 @@ class PublicApplication(FormContext):
     def finalise(self):
         super(PublicApplication, self).finalise()
 
-        # What happens next?  We probably need to save the target
+        # set some administrative data
+        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.target.suggested_on = now
+        self.target.set_application_status('pending')
+
+        # Finally save the target
         self.target.save()
 
     def is_disabled(self, form_field):
