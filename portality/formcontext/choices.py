@@ -332,8 +332,10 @@ class Choices(object):
         return [v[0] for v in cls._application_status_base]
 
     @classmethod
-    def application_status(cls, role=None):
-        if role == "admin":
+    def application_status(cls, context=None):
+        if context == "admin":
             return cls._application_status_admin
+        elif context == "accepted":
+            return [cls._application_status_admin[5]] # just the one status - Accepted
         else:
             return cls._application_status_base

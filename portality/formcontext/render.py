@@ -7,6 +7,7 @@ class Renderer(object):
         self.FIELD_GROUPS = {}
         self.fh = FormHelper()
         self._error_fields = []
+        self._disabled_fields = []
 
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name is None:
@@ -26,6 +27,10 @@ class Renderer(object):
             config = self._rewrite_extra_fields(form_context, config)
             field = form_context.form[field_name]
 
+            if field_name in self.disabled_fields:
+                config = deepcopy(config)
+                config["disabled"] = "disabled"
+
             frag += self.fh.render_field(field, **config)
 
         return frag
@@ -36,6 +41,13 @@ class Renderer(object):
 
     def set_error_fields(self, fields):
         self._error_fields = fields
+
+    @property
+    def disabled_fields(self):
+        return self._disabled_fields
+
+    def set_disabled_fields(self, fields):
+        self._disabled_fields = fields
 
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
@@ -238,6 +250,33 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                 "notes" : {
                     "render_subfields_horizontal" : True,
                     "container_class" : "deletable",
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.number_questions()
+
+class EditorApplicationReviewRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(EditorApplicationReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["status"] = [
+            {"application_status" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+        self.FIELD_GROUPS["editorial"] = [
+            {"editor_group" : {"class" : "input-large"}},
+            {"editor" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
                     "subfield_display-note" : "8",
                     "subfield_display-date" : "3"
                 }
