@@ -43,12 +43,6 @@
                         {% endautoescape %}
                     </div>
 
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Assign to account</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("account") }}
-                        {% endautoescape %}
-                    </div>
                 </div>
             </div>
 
@@ -73,9 +67,9 @@
 
         </div>
 
+
         {# include the base application form which contains all the biblio data #}
         {% include 'formcontext/_base_application_form.html' %}
-
 
         <div class="row-fluid">
             <div class="span3">&nbsp;</div>
@@ -109,14 +103,12 @@
 
         </div>
 
-
     </fieldset>
 </form>
-
 {% endblock %}
 
 {% block extra_js_bottom %}
 <script type="text/javascript">
-    var notes_deletable = true;
+    var notes_deletable = false;
 </script>
 {% endblock extra_js_bottom %}
