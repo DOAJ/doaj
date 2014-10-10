@@ -284,3 +284,26 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
         ]
 
         self.number_questions()
+
+class AssEdApplicationReviewRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(AssEdApplicationReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["status"] = [
+            {"application_status" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.number_questions()

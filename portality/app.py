@@ -142,6 +142,27 @@ def formcontext(example, id=None):
             else:
                 return fc.render_template(edit_suggestion_page=True)
 
+    # associate editor's application form
+    elif example == "associate_editor":
+        ap = models.Suggestion.pull(id)
+        if request.method == "GET":
+            fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=ap)
+            return fc.render_template(edit_suggestion_page=True)
+        elif request.method == "POST":
+            fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", form_data=request.form, source=ap)
+            if fc.validate():
+                try:
+                    fc.finalise()
+                    flash('Application updated.', 'success')
+                    for a in fc.alert:
+                        flash_with_url(a, "success")
+                    return redirect(url_for("editor.suggestion_page", suggestion_id=ap.id, _anchor='done'))
+                except formcontext.FormContextException as e:
+                    flash(e.message)
+                    return redirect(url_for("editor.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+            else:
+                return fc.render_template(edit_suggestion_page=True)
+
     abort(404)
 
 # Redirects from previous DOAJ app.
