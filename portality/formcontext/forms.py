@@ -367,7 +367,7 @@ class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
 
 class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
     """
-    Managing Editor's Application Review form.  It contains a broad set of form controls:
+    Managing Editor's Application Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
         * Workflow - ability to change application status
         * ApplicationOwner - able to set the owner, and for the owner assignment to be optional except under certain circumstances
@@ -381,8 +381,20 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
 
 class EditorApplicationReviewForm(Editorial, Workflow, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
     """
-    Editor's Application Review form.  It contains a broad set of form controls:
+    Editor's Application Review form.  It consists of:
         * Editorial - ability to add associate editors (but not change editorial group)
+        * Workflow - ability to change application status
+        * JournalInformation - journal bibliographic data
+        * Suggestion - additional application metadata
+        * Subject - ability to use subject hierarchy browser
+        * AdminSuggester - suggester's contact details, from an administrator's perspective
+        * Notes - repeatable notes field
+    """
+    pass
+
+class AssEdApplicationReviewForm(Workflow, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
+    """
+    Editor's Application Review form.  It consists of:
         * Workflow - ability to change application status
         * JournalInformation - journal bibliographic data
         * Suggestion - additional application metadata

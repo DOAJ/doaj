@@ -261,8 +261,16 @@ class JournalFormFactory(object):
             return ManEdApplicationReview(source=source, form_data=form_data)
         elif role == "editor":
             return EditorApplicationReview(source=source, form_data=form_data)
+        elif role == "associate_editor":
+            return AssEdApplicationReview(source=source, form_data=form_data)
+
 
 class ManEdApplicationReview(ApplicationAdmin):
+    """
+    Managing Editor's Application Review form.  Should be used in a context where the form warrants full
+    admin priviledges.  It will permit conversion of applications to journals, and assignment of owner account
+    as well as assignment to editorial group.
+    """
     def make_renderer(self):
         self.renderer = render.ManEdApplicationReviewRenderer()
 
@@ -342,6 +350,12 @@ class ManEdApplicationReview(ApplicationAdmin):
         return super(ManEdApplicationReview, self).render_template(lcc_jstree=json.dumps(lcc_jstree), **kwargs)
 
 class EditorApplicationReview(ApplicationAdmin):
+    """
+    Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
+    is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
+    editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
+    be used to create journals from applications
+    """
     def make_renderer(self):
         self.renderer = render.EditorApplicationReviewRenderer()
         self.renderer.set_disabled_fields(["editor_group"])
@@ -398,7 +412,6 @@ class EditorApplicationReview(ApplicationAdmin):
     def render_template(self, **kwargs):
         return super(EditorApplicationReview, self).render_template(lcc_jstree=json.dumps(lcc_jstree), **kwargs)
 
-
     def _set_choices(self):
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
@@ -415,10 +428,78 @@ class EditorApplicationReview(ApplicationAdmin):
         else:
             self.form.editor.choices = [("", "")]
 
+class AssEdApplicationReview(ApplicationAdmin):
+    """
+    Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
+    is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
+    editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
+    be used to create journals from applications
+    """
+    def make_renderer(self):
+        self.renderer = render.AssEdApplicationReviewRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/assed_application_review.html"
+
+    def blank_form(self):
+        self.form = forms.AssEdApplicationReviewForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.AssEdApplicationReviewForm(formdata=self.form_data)
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.AssEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def pre_validate(self):
+        if "application_status" in self.renderer.disabled_fields:
+            self.form.application_status.data = "accepted"
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        self._carry_fixed_aspects()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source.application_status == "accepted":
+            raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(AssEdApplicationReview, self).finalise()
+
+        # Save the target
+        self.target.save()
+
+    def render_template(self, **kwargs):
+        return super(AssEdApplicationReview, self).render_template(lcc_jstree=json.dumps(lcc_jstree), **kwargs)
+
+    def _set_choices(self):
+        if self.form.application_status.data == "accepted":
+            self.form.application_status.choices = choices.Choices.application_status("accepted")
+            self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
+        else:
+            self.form.application_status.choices = choices.Choices.application_status()
+
 class PublicApplication(FormContext):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
-    one, so it will do unnecessary things like override methods that don't actually need to be overridden
+    one, so it will do unnecessary things like override methods that don't actually need to be overridden.
+
+    This should be used in a context where an unauthenticated user is making a request to put a journal into the
+    DOAJ.  It does not have any edit capacity (i.e. the form can only be submitted once), and it does not provide
+    any form fields other than the essential journal bibliographic, application bibliographc and contact information
+    for the suggester.  On submission, it will set the status to "pending" and the item will be available for review
+    by the editors
     """
 
     def __init__(self, form_data=None, source=None):
