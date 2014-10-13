@@ -398,10 +398,10 @@ class SuggestionFormXWalk(object):
                 sa = licenses[license_type]['SA']
                 license_title = licenses[license_type]['title']
             elif form.license_checkbox.data:
-                by = True if 'by' in form.license_checkbox.data else False
-                nc = True if 'nc' in form.license_checkbox.data else False
-                nd = True if 'nd' in form.license_checkbox.data else False
-                sa = True if 'sa' in form.license_checkbox.data else False
+                by = True if 'BY' in form.license_checkbox.data else False
+                nc = True if 'NC' in form.license_checkbox.data else False
+                nd = True if 'ND' in form.license_checkbox.data else False
+                sa = True if 'SA' in form.license_checkbox.data else False
                 license_title = license_type
             else:
                 by = None; nc = None; nd = None; sa = None;
@@ -605,10 +605,10 @@ class SuggestionFormXWalk(object):
 
         if forminfo['license_other']:
             forminfo['license_checkbox'] = []
-            if license.get('BY'): forminfo['license_checkbox'].append('by')
-            if license.get('SA'): forminfo['license_checkbox'].append('sa')
-            if license.get('NC'): forminfo['license_checkbox'].append('nc')
-            if license.get('ND'): forminfo['license_checkbox'].append('nd')
+            if license.get('BY'): forminfo['license_checkbox'].append('BY')
+            if license.get('SA'): forminfo['license_checkbox'].append('SA')
+            if license.get('NC'): forminfo['license_checkbox'].append('NC')
+            if license.get('ND'): forminfo['license_checkbox'].append('ND')
 
         forminfo['license_url'] = license.get('url')
         forminfo['open_access'] = forms.reverse_interpret_special(license.get('open_access'))
