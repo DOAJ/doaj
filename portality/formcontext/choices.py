@@ -111,6 +111,10 @@ class Choices(object):
     def ternary(cls):
         return cls._ternary
 
+    @classmethod
+    def ternary_list(cls):
+        return [v[0] for v in cls._ternary]
+
     ############################################################
     # Loaded from datasets
     ############################################################
@@ -130,6 +134,10 @@ class Choices(object):
     @classmethod
     def licence(cls):
         return cls._licence
+
+    @classmethod
+    def licence_list(cls):
+        return [v[0] for v in cls._licence]
 
     @classmethod
     def subjects(cls):
@@ -188,6 +196,15 @@ class Choices(object):
             return cls.OTHER
 
     @classmethod
+    def digital_archiving_policy_label(cls, type):
+        if type == "library":
+            return cls._digital_archiving_policy[5][1]
+
+    @classmethod
+    def digital_archiving_policy_list(cls):
+        return [v[0] for v in cls._digital_archiving_policy]
+
+    @classmethod
     def digital_archiving_policy_url_optional(cls):
         return cls._digital_archiving_policy[0]
 
@@ -206,6 +223,9 @@ class Choices(object):
         if type == "other":
             return cls.OTHER
 
+    @classmethod
+    def article_identifiers_list(cls):
+        return [v[0] for v in cls._article_identifiers]
 
     @classmethod
     def download_statistics(cls):
@@ -221,6 +241,9 @@ class Choices(object):
         if type == "other":
             return cls.OTHER
 
+    @classmethod
+    def fulltext_format_list(cls):
+        return [v[0] for v in cls._fulltext_format]
 
     @classmethod
     def review_process(cls):
@@ -280,6 +303,10 @@ class Choices(object):
     def deposit_policy_other_val(cls, type):
         if type == "other":
             return cls.OTHER
+
+    @classmethod
+    def deposit_policy_list(cls):
+        return [v[0] for v in cls._deposit_policy]
 
     @classmethod
     def copyright(cls):

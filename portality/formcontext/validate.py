@@ -2,7 +2,7 @@ from flask.ext.login import current_user
 from wtforms import validators
 import re
 
-NONE_VAL = 'None'
+from portality.formcontext.choices import Choices
 
 class OptionalIf(validators.Optional):
     # A validator which makes a field optional if # another field is set
@@ -14,9 +14,9 @@ class OptionalIf(validators.Optional):
     # sufficient.
     field_flags = ('display_required_star', )
 
-    def __init__(self, other_field_name, optvals=[], *args, **kwargs):
+    def __init__(self, other_field_name, optvals=None, *args, **kwargs):
         self.other_field_name = other_field_name
-        self.optvals = optvals
+        self.optvals = optvals if optvals is not None else []
         super(OptionalIf, self).__init__(*args, **kwargs)
 
     def __call__(self, form, field):
@@ -108,7 +108,7 @@ class ExclusiveCheckbox(object):
     # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
     # except where it will simplify a 50-field form, k?
 
-    def __init__(self, exclusive_checkbox_value=NONE_VAL, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
+    def __init__(self, exclusive_checkbox_value=Choices.NONE, message='When you have selected "{exclusive_checkbox_value}" you are not allowed to tick any other checkboxes.', *args, **kwargs):
         self.exclusive_checkbox_value = exclusive_checkbox_value
         self.message = message
 
@@ -157,7 +157,7 @@ class URLOptionalScheme(validators.Regexp):
         regex = r'^([a-z]+://){0,1}?([^/:]+%s|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$' % tld_part
         super(URLOptionalScheme, self).__init__(regex, re.IGNORECASE, message)
 
-    def __call__(self, form, field):
+    def __call__(self, form, field, message=None):
         message = self.message
         if message is None:
             message = field.gettext('Invalid URL.')
@@ -197,45 +197,3 @@ class RequiredIfRole(validators.Required):
     def __call__(self, form, field):
         if current_user.has_role(self.role):
             super(RequiredIfRole, self).__call__(form, field)
-
-class UniqueGroupName(object):
-    def __init__(self, *args, **kwargs):
-        pass
-
-    def __call__(self, form, field):
-        exists_id = models.EditorGroup.group_exists_by_name(field.data)
-        if exists_id is None:
-            # if there is no group of the same name, we are fine
-            return
-
-        # if there is a group of the same name, we need to check whether it's the
-        # same group as we are currently editing
-        id_field = form._fields.get("group_id")
-        if id_field is None or id_field.data == "" or id_field.data is None:
-            # if there is no id field then this is a new group, and so the name clashes
-            # with an existing group
-            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
-
-        # if we get to here, the id_field exists, so we need to check whether it matches
-        # the group with the same id
-        if id_field.data != exists_id:
-            raise validators.ValidationError("The group's name must be unique among the Editor Groups")
-
-class NotRole(object):
-    def __init__(self, role, *args, **kwargs):
-        self.role = role
-
-    def __call__(self, form, field):
-        accounts = [a.strip() for a in field.data.split(",") if a.strip() != ""]
-        if len(accounts) == 0:
-            return
-        fails = []
-        for a in accounts:
-            acc = models.Account.pull(a)
-            if acc.has_role(self.role) and not acc.is_super:
-                fails.append(acc.id)
-        if len(fails) == 0:
-            return
-        have_or_has = "have" if len(fails) > 1 else "has"
-        msg = ", ".join(fails) + " " + have_or_has + " role " + self.role + " so cannot be assigned to an Editor Group"
-        raise validators.ValidationError(msg)
