@@ -1,9 +1,13 @@
-# Class to wrap the Python CSV library
 import csv
+
 
 class ClCsv():
 
-    def __init__(self, file_path, mode='r+b'):
+    def __init__(self, file_path):
+        """
+        Class to wrap the Python CSV library. Allows reading and writing by column.
+        :param file_path: A file object or path to a file. Will create one at specified path if it does not exist.
+        """
 
         # Store the csv contents in a list of tuples, [ (column_header, [contents]) ]
         self.data = []
@@ -12,14 +16,14 @@ class ClCsv():
         if type(file_path) == file:
             self.file_object = file_path
             if self.file_object.closed:
-                self.file_object = open(self.file_object.name, mode)
+                self.file_object = open(self.file_object.name, 'r+b')
             self.read_file()
         else:
             try:
-                self.file_object = open(file_path, mode)
+                self.file_object = open(file_path, 'r+b')
                 self.read_file()
             except IOError:
-                # If the file doesn't exist, force its creation
+                # If the file doesn't exist, create it.
                 self.file_object = open(file_path, 'w+b')
 
     def read_file(self):
@@ -38,7 +42,6 @@ class ClCsv():
         self._populate_data(rows)
         return rows
 
-
     def get_column(self, col_identifier):
         """
         Get a column from the CSV file.
@@ -56,7 +59,6 @@ class ClCsv():
                         return col
         except IndexError:
             return None
-
 
     def set_column(self, col_identifier, col_contents):
         """
@@ -82,7 +84,6 @@ class ClCsv():
             elif type(col_identifier) == str:
                 self.data.append((col_identifier, col_contents))
 
-
     def get_colnumber(self, header):
         """
         Return the column number of a given header
@@ -92,7 +93,6 @@ class ClCsv():
         for i in range(0, len(self.data)):
             if self.data[i][0] == header:
                 return i
-
 
     def get_rownumber(self, first_col_val):
         """
@@ -107,7 +107,6 @@ class ClCsv():
             return col_data.index(first_col_val)
         except ValueError:
             return None
-
 
     def save(self):
         """
@@ -130,7 +129,6 @@ class ClCsv():
         writer.writerows(rows)
         self.file_object.close()
 
-
     def _populate_data(self, csv_rows):
         # Reset the stored data
         self.data = []
@@ -141,4 +139,3 @@ class ClCsv():
             for row in csv_rows[1:]:
                 col_data.append(row[i])
             self.data.append((csv_rows[0][i], col_data))
-
