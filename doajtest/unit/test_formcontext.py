@@ -6,6 +6,10 @@ from portality.formcontext import formcontext, xwalk, render
 from werkzeug.datastructures import MultiDict
 from wtforms import Form, StringField, validators
 
+#####################################################################
+# Source objects to be used for testing
+#####################################################################
+
 JOURNAL_SOURCE = {
     "index": {
         "publisher": ["Centro Centroamericano de Poblaci\u00f3n"],
@@ -136,6 +140,81 @@ APPLICATION_SOURCE = {
     }
 }
 
+APPLICATION_FORM = {
+    'aims_scope_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#focusAndScope',
+    'alternative_title': None,
+    'application_status': 'accepted',
+    'article_identifiers': ['DOI'],
+    'article_identifiers_other': '',
+    'articles_last_year': 19,
+    'articles_last_year_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/issue/archive',
+    'confirm_contact_email': 'm.akser@ulster.ac.uk',
+    'contact_email': 'm.akser@ulster.ac.uk',
+    'contact_name': 'Murat Akser',
+    'copyright': 'True',
+    'copyright_other': '',
+    'copyright_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/submissions#copyrightNotice',
+    'country': 'US',
+    'crawl_permission': 'True',
+    'deposit_policy': ['Sherpa/Romeo'],
+    'deposit_policy_other': '',
+    'digital_archiving_policy': ['LOCKSS'],
+    'digital_archiving_policy_library': '',
+    'digital_archiving_policy_other': '',
+    'digital_archiving_policy_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#archiving',
+    'download_statistics': 'True',
+    'download_statistics_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#custom-1',
+    'editorial_board_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/displayMembership/2',
+    'eissn': '2158-8724',
+    'first_fulltext_oa_year': 2011,
+    'fulltext_format': ['PDF'],
+    'fulltext_format_other': '',
+    'instructions_authors_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/submissions#authorGuidelines',
+    'keywords': ['cinema studies','film','media','television','communication'],
+    'languages': ['EN'],
+    'license': 'Other',
+    'license_checkbox': ['BY'],
+    'license_embedded': 'True',
+    'license_embedded_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about',
+    'license_other': 'CC by',
+    'license_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about',
+    'metadata_provision': 'True',
+    'notes': [{'date': '2014-05-21T14:02:45Z', 'note': 'ok/RZ'}],
+    'oa_statement_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#openAccessPolicy',
+    'open_access': 'True',
+    'owner': '15624730',
+    'pissn': '2159-2411',
+    'plagiarism_screening': 'True',
+    'plagiarism_screening_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#custom-2',
+    'platform': 'D-Scribe Digital Publishing Program',
+    'processing_charges': 'False',
+    'publication_time': 12,
+    'publisher': 'University of Pittsburgh',
+    'publishing_rights': 'True',
+    'publishing_rights_other': '',
+    'publishing_rights_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/submissions#copyrightNotice',
+    'review_process': 'Double blind peer review',
+    'review_process_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/submissions#authorGuidelines',
+    'society_institution': 'University Library Systems',
+    'subject': ['N1-9211', 'P87-96'],
+    'submission_charges': 'False',
+    'suggester_email': 'm.akser@ulster.ac.uk',
+    'suggester_email_confirm': 'm.akser@ulster.ac.uk',
+    'suggester_name': 'Murat Akser',
+    'title': 'CINEJ Cinema Journal',
+    'url': 'http://cinej.pitt.edu/',
+    'waiver_policy': False,
+    'waiver_policy_url': None
+}
+
+######################################################
+# Extensions of base form context classes for use in
+# testing
+######################################################
+
+TEST_SOURCE = {"one" : "one", "two" : "two"}
+TEST_SOURCE2 = {"one" : "three", "two" : "four"}
+
 class FailValidation(object):
     def __init__(self, *args, **kwargs):
         pass
@@ -168,9 +247,11 @@ class TestContext(formcontext.FormContext):
         self.form = TestForm()
 
     def form2target(self):
+        self.add_alert("xwalking")
         self.target = {"three" : "three"}
 
     def patch_target(self):
+        self.add_alert("finalising")
         self.target.update({"four" : "four"})
 
     def make_renderer(self):
@@ -182,11 +263,16 @@ class TestContext(formcontext.FormContext):
     def pre_validate(self):
         self.did_pre_validation = True
 
-TEST_SOURCE = {"one" : "one", "two" : "two"}
+######################################################
+# Main test class
+######################################################
 
 class TestFormContext(DoajTestCase):
-    def setUp(self): pass
-    def tearDown(self): pass
+    def setUp(self):
+        super(TestFormContext, self).setUp()
+
+    def tearDown(self):
+        super(TestFormContext, self).tearDown()
 
     ###########################################################
     # Tests on the base classes
@@ -208,6 +294,11 @@ class TestFormContext(DoajTestCase):
         assert fc.form_data is None
         assert fc.target is None
 
+        fc = formcontext.FormContext(form_data=MultiDict(TEST_SOURCE), source=TEST_SOURCE)
+        assert fc.source is not None
+        assert fc.form_data is not None
+        assert fc.target is None
+
     def test_02_formcontext_subclass_init(self):
         fc = TestContext()
         assert fc.form["one"].data is None
@@ -217,7 +308,12 @@ class TestFormContext(DoajTestCase):
         assert fc.form["one"].data == "one"
         assert fc.form["two"].data == "two"
 
-        fc = TestContext(source=TEST_SOURCE)
+        fc = TestContext(source=TEST_SOURCE2)
+        assert fc.form["one"].data == "three"
+        assert fc.form["two"].data == "four"
+
+        # this shows that the form data takes precedence over the source
+        fc = TestContext(form_data=MultiDict(TEST_SOURCE), source=TEST_SOURCE2)
         assert fc.form["one"].data == "one"
         assert fc.form["two"].data == "two"
 
@@ -230,6 +326,10 @@ class TestFormContext(DoajTestCase):
 
         assert fc.target["three"] == "three"
         assert fc.target["four"] == "four"
+
+        assert len(fc.alert) == 2
+        assert "xwalking" in fc.alert
+        assert "finalising" in fc.alert
 
     def test_04_formcontext_validate(self):
         fc = TestContext(source=TEST_SOURCE)
@@ -244,7 +344,6 @@ class TestFormContext(DoajTestCase):
     def test_05_formcontext_subclass_render(self):
         fc = TestContext(source=TEST_SOURCE)
         html = fc.render_field_group("test")
-        print html
 
         assert html is not None
         assert html != ""
@@ -256,45 +355,95 @@ class TestFormContext(DoajTestCase):
     # Tests on the factory
     ###########################################################
 
+    def test_07_formcontext_factory(self):
+        fc = formcontext.JournalFormFactory.get_form_context()
+        assert isinstance(fc, formcontext.PublicApplication)
+        assert fc.form is not None
+        assert fc.form_data is None
+        assert fc.source is None
+
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
+        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert fc.form is not None
+        assert fc.form_data is None
+        assert fc.source is not None
+
+        fc = formcontext.JournalFormFactory.get_form_context(role="editor", form_data=MultiDict(APPLICATION_FORM))
+        assert isinstance(fc, formcontext.EditorApplicationReview)
+        assert fc.form is not None
+        assert fc.form_data is not None
+        assert fc.source is None
+
+        fc = formcontext.JournalFormFactory.get_form_context("associate_editor", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        assert fc.form is not None
+        assert fc.form_data is not None
+        assert fc.source is not None
+
     ###########################################################
     # Tests on the public application form
     ###########################################################
 
-    def test_06_public_from_source(self):
-        """Test that we can build the most basic kind of form from source, and that all its properties are right"""
+    def test_08_public_init(self):
+        """Test that we can build the most basic kind of form in its initial condition - a blank form"""
 
         # make ourselves a form context from the source
-        source = models.Suggestion(**APPLICATION_SOURCE)
-        fc = formcontext.JournalFormFactory.get_form_context(source=source)
+        fc = formcontext.JournalFormFactory.get_form_context()
 
         # first check that we got the kind of object we expected
         assert isinstance(fc, formcontext.PublicApplication)
 
         # we should have populated the source and form aspects of the object
         assert fc.form_data is None
-        assert fc.source is not None
+        assert fc.source is None
         assert fc.form is not None
 
-    def test_07_public_from_formdata(self):
+        # check that the other implementation aspects of the context have been populated (but let's not get too specific about what they are)
+        assert fc.renderer is not None
+        assert isinstance(fc.renderer, render.Renderer) # the parent class of renderers
+        assert fc.template is not None and fc.template != ""
+
+    def test_09_public_from_formdata(self):
         """Test that we can build the most basic kind of form from form data"""
 
-        # take the source and explicitly convert it to form data form
-        # (note, we need to have tested the xwalks elsewhere)
-        source = models.Suggestion(**APPLICATION_SOURCE)
-        formdata = MultiDict(xwalk.SuggestionFormXWalk.obj2form(source))
+        formdata = MultiDict(APPLICATION_FORM)
         fc = formcontext.JournalFormFactory.get_form_context(form_data=formdata)
 
         # first check that we got the kind of object we expected
         assert isinstance(fc, formcontext.PublicApplication)
 
-        # we should have populated the source and form aspects of the object
+        # we should have populated the form_data and form aspects of the object
         assert fc.form_data is not None
         assert fc.form is not None
         assert fc.source is None
 
-    def test_08_public_form_render(self):
+
+    def test_10_public_form_workflow(self):
+        """Test that the active functions on the public application form work"""
+
+        # create our form from the data
+        formdata = MultiDict(APPLICATION_FORM)
+        fc = formcontext.JournalFormFactory.get_form_context(form_data=formdata)
+
+        # pre validate (should do nothing)
+        fc.pre_validate()
+
+        # crosswalk
+        fc.form2target()
+        assert fc.target is not None
+
+        # patch the target (should do nothing)
+        fc.patch_target()
+
+        # now, finalise (which will run all the above stuff again)
+        fc.finalise()
+        assert fc.target is not None
+        assert fc.target.application_status == "pending"
+        assert fc.target.suggested_on is not None
+
+
+    def test_11_public_form_render(self):
         """Test that we can render the basic form """
         fc = formcontext.JournalFormFactory.get_form_context()
         frag = fc.render_field_group("basic_info")
-
         assert frag != ""
