@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 
 from portality import models
-from portality.formcontext import formcontext, xwalk, render
+from portality.formcontext import formcontext, render
 
 from werkzeug.datastructures import MultiDict
 from wtforms import Form, StringField, validators
