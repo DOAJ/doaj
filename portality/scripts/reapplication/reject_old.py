@@ -4,6 +4,8 @@ from datetime import datetime
 
 '''Reject all applications with created_date prior to 19 March 2014, add note to explain.'''
 
+APPLICATION_NOTE = "This application has been rejected because the criteria has changed."
+
 # Connection to the ES index
 conn = raw.make_connection(None, 'localhost', 9200, 'doaj')
 
@@ -35,7 +37,10 @@ for s in tasks.scroll(conn, 'suggestion'):
                 unchanged_sug += 1
                 un_sug.append(suggestion_model.id)
             else:
+                # If it's older than the threshold, reject it and set a note.
                 suggestion_model.set_application_status('rejected')
+                suggestion_model.add_note(APPLICATION_NOTE, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))
+
                 suggestion_model.prep()
                 write_batch.append(suggestion_model.data)
                 edited_sug += 1
