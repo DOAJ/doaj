@@ -210,6 +210,9 @@ class ApplicationAdmin(FormContext):
                     self.form[field].description += '<br><br>Full contents: ' + self.form[field].data
 
     def _carry_fixed_aspects(self):
+        if self.source is None:
+            raise FormContextException("Cannot carry data from a non-existant source")
+
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         # copy over any important fields from the previous version of the object
@@ -407,6 +410,9 @@ class ManEdApplicationReview(ApplicationAdmin):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
         self._carry_fixed_aspects()
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
@@ -416,6 +422,10 @@ class ManEdApplicationReview(ApplicationAdmin):
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
+
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
@@ -451,6 +461,9 @@ class ManEdApplicationReview(ApplicationAdmin):
             self._send_editor_email(self.target)
 
     def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
@@ -502,6 +515,9 @@ class EditorApplicationReview(ApplicationAdmin):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
         self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
@@ -509,6 +525,9 @@ class EditorApplicationReview(ApplicationAdmin):
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
@@ -526,6 +545,9 @@ class EditorApplicationReview(ApplicationAdmin):
             self._send_editor_email(self.target)
 
     def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         return super(EditorApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
@@ -538,14 +560,18 @@ class EditorApplicationReview(ApplicationAdmin):
         else:
             self.form.application_status.choices = choices.Choices.application_status()
 
-        eg = models.EditorGroup.pull_by_key("name", self.source.editor_group)
-        if eg is not None:
-            editors = [eg.editor]
-            editors += eg.associates
-            editors = list(set(editors))
-            self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
-        else:
+        egn = self.form.editor_group.data
+        if egn is None:
             self.form.editor.choices = [("", "")]
+        else:
+            eg = models.EditorGroup.pull_by_key("name", egn)
+            if eg is not None:
+                editors = [eg.editor]
+                editors += eg.associates
+                editors = list(set(editors))
+                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+            else:
+                self.form.editor.choices = [("", "")]
 
 
 
@@ -584,6 +610,9 @@ class AssEdApplicationReview(ApplicationAdmin):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
         self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
@@ -592,6 +621,9 @@ class AssEdApplicationReview(ApplicationAdmin):
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
@@ -602,6 +634,9 @@ class AssEdApplicationReview(ApplicationAdmin):
         self.target.save()
 
     def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
         return super(AssEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
