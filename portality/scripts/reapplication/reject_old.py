@@ -4,7 +4,7 @@ from datetime import datetime
 
 '''Reject all applications with created_date prior to 19 March 2014, add note to explain.'''
 
-APPLICATION_NOTE = "This application has been rejected because the criteria has changed."
+APPLICATION_NOTE = "Application invalid. Automatically rejected as this was received before the new Application Form was launched. This note has been automatically generated."
 
 # Connection to the ES index
 conn = raw.make_connection(None, 'localhost', 9200, 'doaj')
