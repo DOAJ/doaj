@@ -66,7 +66,7 @@ def upload_file():
     previous = models.FileUpload.by_owner(current_user.id)
     
     if request.method == "GET":
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
@@ -84,7 +84,7 @@ def upload_file():
         return _url_upload(url, schema, previous)
     
     flash("No file or URL provided", "error")
-    return render_template('publisher/uploadfile.html', previous=previous)
+    return render_template('publisher/uploadmetadata.html', previous=previous)
 
 def _file_upload(f, schema, previous):
     
@@ -115,7 +115,7 @@ def _file_upload(f, schema, previous):
             pass
         
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
         
     # now we have the record in the index and on disk, we can attempt to
     # validate it
@@ -136,21 +136,21 @@ def _file_upload(f, schema, previous):
         record.save()
         previous = [record] + previous
         flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     
     if actual_schema:
         record.validated(actual_schema)
         record.save()
         previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     else:
         record.failed("File could not be validated against a known schema")
         record.save()
         os.remove(xml)
         previous = [record] + previous
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
 def _url_upload(url, schema, previous):
@@ -205,7 +205,7 @@ def _url_upload(url, schema, previous):
         record.save()
         previous = [record] + previous
         flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
     def __fail(record, previous, error):
@@ -214,7 +214,7 @@ def _url_upload(url, schema, previous):
         record.save()
         previous = [record] + previous
         flash(message, "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
     # prep a record to go into the index, to record this upload.  The filename is the url
@@ -301,6 +301,12 @@ def metadata():
 @ssl_required
 def help():
     return render_template("publisher/help.html")
+
+@blueprint.route("/reapply")
+@login_required
+@ssl_required
+def bulk():
+    return render_template("publisher/bulk_reapplication.html")
 
 def _validate_authors(form, require=1):
     counted = 0
