@@ -649,8 +649,6 @@ class AssEdApplicationReview(ApplicationAdmin):
         else:
             self.form.application_status.choices = choices.Choices.application_status()
 
-
-
 class PublicApplication(FormContext):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
@@ -708,4 +706,20 @@ class PublicApplication(FormContext):
 
         # Finally save the target
         self.target.save()
+
+        self._send_received_email()
+
+    def _send_received_email(self):
+        suggester = self.target.suggester
+
+        to = [suggester.get("email")]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - your application to DOAJ has been received"
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/suggestion_received.txt",
+                            suggestion=self.target,
+                            )
 
