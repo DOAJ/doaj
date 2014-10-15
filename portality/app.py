@@ -166,6 +166,27 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
+        # publisher's re-application form
+        elif example == "publisher":
+            ap = models.Suggestion.pull(id)
+            if request.method == "GET":
+                fc = formcontext.JournalFormFactory.get_form_context(role="publisher", source=ap)
+                return fc.render_template(edit_suggestion_page=True)
+            elif request.method == "POST":
+                fc = formcontext.JournalFormFactory.get_form_context(role="publisher", form_data=request.form, source=ap)
+                if fc.validate():
+                    try:
+                        fc.finalise()
+                        flash('Re-application updated.', 'success')
+                        for a in fc.alert:
+                            flash_with_url(a, "success")
+                        return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='done'))
+                    except formcontext.FormContextException as e:
+                        flash(e.message)
+                        return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+                else:
+                    return fc.render_template(edit_suggestion_page=True)
+
     elif context_type == 'journal':
         if example == 'admin':
             pass
