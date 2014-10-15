@@ -378,6 +378,8 @@ class JournalFormFactory(object):
             return EditorApplicationReview(source=source, form_data=form_data)
         elif role == "associate_editor":
             return AssEdApplicationReview(source=source, form_data=form_data)
+        elif role == "publisher":
+            return PublisherReApplication(source=source, form_data=form_data)
 
 
 class ManEdApplicationReview(ApplicationAdmin):
@@ -648,6 +650,105 @@ class AssEdApplicationReview(ApplicationAdmin):
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             self.form.application_status.choices = choices.Choices.application_status()
+
+class PublisherReApplication(ApplicationAdmin):
+    def make_renderer(self):
+        self.renderer = render.PublisherReApplicationRenderer()
+        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
+
+    def set_template(self):
+        self.template = "formcontext/publisher_reapplication.html"
+
+    def blank_form(self):
+        self.form = forms.PublisherReApplicationForm()
+
+    def data2form(self):
+        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def pre_validate(self):
+        if self.source is None:
+            raise FormContextException("You cannot validate a form from a non-existant source")
+
+        bj = self.source.bibjson()
+        contacts = self.source.contacts()
+
+        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
+        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+
+        if len(contacts) == 0:
+            return
+
+        contact = contacts[0]
+        self.form.contact_name.data = contact.get("name")
+        self.form.contact_email.data = contact.get("email")
+        self.form.confirm_contact_email.data = contact.get("email")
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
+        self._carry_fixed_aspects()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PublisherReApplication, self).finalise()
+
+        # set the status to updated
+        self.target.set_application_status('updated')
+
+        # Save the target
+        self.target.save()
+
+        # email the publisher to tell them we received their re-application
+        self._send_received_email()
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
+        return super(PublisherReApplication, self).render_template(**kwargs)
+
+    def _send_received_email(self):
+        acc = models.Account.pull(self.target.owner)
+        journal_name = self.target.bibjson().title.encode('utf-8', 'replace')
+
+        to = [acc.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - re-application received"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/reapplication_received.txt",
+                                    journal_name=journal_name.encode('utf-8', 'replace')
+                )
+                self.add_alert('Sent email to ' + acc.email + ' to tell them about their reapplication being received.')
+            else:
+                self.add_alert('Did not send email to ' + acc.email + ' to tell them about their reapplication being received, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
 
 class PublicApplication(FormContext):
     """

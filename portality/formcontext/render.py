@@ -217,6 +217,16 @@ class ApplicationRenderer(Renderer):
             if found:
                 break
 
+class PublisherReApplicationRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(PublisherReApplicationRenderer, self).__init__()
+
+        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
+        del self.FIELD_GROUPS["submitter_info"]
+
+        # explicitly call number questions, as it is not called by default (because other implementations may want
+        # to mess with the group order and field groups first
+        self.number_questions()
 
 
 class PublicApplicationRenderer(ApplicationRenderer):

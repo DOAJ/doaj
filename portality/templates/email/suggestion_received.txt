@@ -1,5 +1,3 @@
-Subject: your application to DOAJ has been received
-
 {{ suggestion.bibjson().title.encode('utf-8', 'replace') }}
 {{ suggestion.bibjson().get_single_url(urltype="homepage") }}
 

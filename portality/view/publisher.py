@@ -24,6 +24,11 @@ def restrict():
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
 
+# FIXME: placeholder for actual reapplication page
+@blueprint.route("/reapply")
+def reapplication_page():
+    return make_response("Thank you for your reapplication")
+
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
