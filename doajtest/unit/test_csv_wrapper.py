@@ -7,6 +7,7 @@ import os
 
 class TestCsvWrapper(TestCase):
 
+    # Set this file prefix to the resources dir relative to where tests are run from.
     PRFX = 'doajtest/unit/resources/'
 
     def setUp(self):
@@ -58,7 +59,7 @@ class TestCsvWrapper(TestCase):
 
     def b_test_write_01(self):
         # write an object to a file, and check against pre-bult one
-        wr_csv = ClCsv(self.PRFX + 'test_write_csv', 'wb')
+        wr_csv = ClCsv(self.PRFX + 'test_write_csv')
         wr_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
         wr_csv.set_column('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         wr_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
@@ -72,7 +73,7 @@ class TestCsvWrapper(TestCase):
 
     def b_test_write_02(self):
         # Check we can overwrite an existing column.
-        ow_csv = ClCsv(self.PRFX + 'test_overwrite_csv', 'wb')
+        ow_csv = ClCsv(self.PRFX + 'test_overwrite_csv')
         ow_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
         ow_csv.set_column('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'WRONG'])
@@ -80,7 +81,7 @@ class TestCsvWrapper(TestCase):
         ow_csv.set_column('issnX', ['iXa1', 'iXa2', 'iXa3', 'iXa4'])
         ow_csv.save()
 
-        ow_csv = ClCsv(ow_csv.file_object.name, 'r+b')
+        ow_csv = ClCsv(ow_csv.file_object.name)
         ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
         ow_csv.set_column(4, ('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4']))
         ow_csv.save()
@@ -92,7 +93,7 @@ class TestCsvWrapper(TestCase):
 
     def c_test_gets(self):
         # test the functions which get
-        rd_csv = ClCsv(self.gold_csv.name, 'rb')
+        rd_csv = ClCsv(self.gold_csv.name)
 
         assert rd_csv.get_colnumber('issn3') == 3
         assert rd_csv.get_colnumber('pineapple') == None
