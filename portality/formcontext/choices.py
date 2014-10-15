@@ -201,8 +201,11 @@ class Choices(object):
             return cls._digital_archiving_policy[5][1]
 
     @classmethod
-    def digital_archiving_policy_list(cls):
-        return [v[0] for v in cls._digital_archiving_policy]
+    def digital_archiving_policy_list(cls, type=None):
+        if type is None:
+            return [v[0] for v in cls._digital_archiving_policy]
+        elif type == "optional":
+            return [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]
 
     @classmethod
     def digital_archiving_policy_url_optional(cls):

@@ -103,7 +103,8 @@ It is likely that history records will only be created upon request by the admin
         "subject" : [
             {
                 "scheme" : "<scheme>", 
-                "term" : "<term>"
+                "term" : "<term>",
+                "code" : "<code>"
             }
         ],
         
@@ -165,7 +166,8 @@ It is likely that history records will only be created upon request by the admin
                 "NC": true/false,
                 "ND": true/false,
                 "SA": true/false,
-                "embedded" : true|false # is the licence metadata embedded in the article pages>
+                "embedded" : true|false # is the licence metadata embedded in the article pages>,
+                "embedded_example_url" :  "<url for example of embedded licence>"
             }
         ]
     },
