@@ -221,6 +221,45 @@ class ApplicationAdmin(FormContext):
         self.target.suggested_on = self.source.suggested_on
         self.target.data['id'] = self.source.data['id']
 
+    def _merge_notes_forward(self, allow_delete=False):
+        if self.source is None:
+            raise FormContextException("Cannot carry data from a non-existant source")
+        if self.target is None:
+            raise FormContextException("Cannot carry data on to a non-existant target - run the xwalk first")
+
+        # first off, get the notes (by reference) in the target and the notes from the source
+        tnotes = self.target.notes()
+        snotes = self.source.notes()
+
+        # for each of the target notes we need to get the original dates from the source notes
+        for n in tnotes:
+            for sn in snotes:
+                if n.get("note") == sn.get("note"):
+                    n["date"] = sn.get("date")
+
+        # record the positions of any blank notes
+        i = 0
+        removes = []
+        for n in tnotes:
+            if n.get("note").strip() == "":
+                removes.append(i)
+            i += 1
+
+        # actually remove all the notes marked for deletion
+        removes.sort(reverse=True)
+        for r in removes:
+            tnotes.pop(r)
+
+        # finally, carry forward any notes that aren't already in the target
+        if not allow_delete:
+            for sn in snotes:
+                found = False
+                for tn in tnotes:
+                    if sn.get("note") == tn.get("note"):
+                        found = True
+                if not found:
+                    tnotes.append(sn)
+
     def _send_editor_group_email(self, suggestion):
         eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
         if eg is None:
@@ -416,6 +455,7 @@ class ManEdApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -521,6 +561,7 @@ class EditorApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
 
@@ -616,6 +657,7 @@ class AssEdApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
@@ -696,6 +738,7 @@ class PublisherReApplication(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
