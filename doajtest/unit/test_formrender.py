@@ -141,7 +141,8 @@ class TestRender(DoajTestCase):
         r = render.ApplicationRenderer()
         assert len(r.disabled_fields) == 0
         assert len(r.error_fields) == 0
-        assert len(r.GROUP_ORDER) == 6
+        assert len(r.NUMBERING_ORDER) == 6
+        assert len(r.NUMBERING_ORDER) == len(r.ERROR_CHECK_ORDER)
         assert len(r.FIELD_GROUPS.keys()) == 6
 
         # number the questions
@@ -149,7 +150,7 @@ class TestRender(DoajTestCase):
 
         # check the numbering is what we'd expect it to be
         q = 1
-        for g in r.GROUP_ORDER:
+        for g in r.NUMBERING_ORDER:
             cfg = r.FIELD_GROUPS.get(g)
             for obj in cfg:
                 field = obj.keys()[0]
@@ -165,7 +166,7 @@ class TestRender(DoajTestCase):
 
         # go and look for the first error (we'd expect it to be "publisher")
         q = 1
-        for g in r.GROUP_ORDER:
+        for g in r.ERROR_CHECK_ORDER:
             cfg = r.FIELD_GROUPS.get(g)
             for obj in cfg:
                 field = obj.keys()[0]
