@@ -127,7 +127,10 @@ It is likely that history records will only be created upon request by the admin
             "average_price" : "<average price of submission charge>"
         },
         "archiving_policy" : {
-            "policy" : ["<policy type (e.g. LOCKSS)>"]
+            "policy" : [
+                "<known policy type (e.g. LOCKSS)>",
+                ["<policy category>", "<previously unknown policy type>"]
+            ],
             "url" : "<url to policy information page>"
         },
         "editorial_review" : {
