@@ -58,6 +58,23 @@ class Journal(DomainObject):
         bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         self.data["bibjson"] = bibjson
 
+    def snapshot(self):
+        from portality.models import JournalHistory
+
+        snap = deepcopy(self.data)
+        if "id" in snap:
+            snap["about"] = snap["id"]
+            del snap["id"]
+        if "index" in snap:
+            del snap["index"]
+        if "last_updated" in snap:
+            del snap["last_updated"]
+        if "created_date" in snap:
+            del snap["created_date"]
+
+        hist = JournalHistory(**snap)
+        hist.save()
+
     def history(self):
         histories = self.data.get("history", [])
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
@@ -73,9 +90,10 @@ class Journal(DomainObject):
             pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
             if issn in eissns or issn in pissns:
                 return jbj
+
         return None
 
-    def snapshot(self, replaces=None, isreplacedby=None):
+    def make_continuation(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
         self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
 
@@ -402,9 +420,11 @@ class Journal(DomainObject):
         self.calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self, **kwargs):
+    def save(self, snapshot=True, **kwargs):
         self.prep()
         super(Journal, self).save(**kwargs)
+        if snapshot:
+            self.snapshot()
 
     def csv(self, multival_sep=','):
         """

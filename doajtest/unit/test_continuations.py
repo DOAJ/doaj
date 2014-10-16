@@ -15,7 +15,7 @@ class TestContinuations(DoajTestCase):
         bibjson = j.bibjson()
         bibjson.title = "An example Journal"
         bibjson.add_identifier(bibjson.E_ISSN, "1234-5678")
-        j.snapshot(isreplacedby="9876-5432")
+        j.make_continuation(isreplacedby="9876-5432")
         bibjson.remove_identifiers(bibjson.E_ISSN)
         bibjson.add_identifier(bibjson.E_ISSN, "9876-5432")
         bibjson.title = "An updated journal"
@@ -38,7 +38,7 @@ class TestContinuations(DoajTestCase):
         bibjson = j.bibjson()
         bibjson.title = "An example Journal"
         bibjson.add_identifier(bibjson.E_ISSN, "1234-5678")
-        j.snapshot(isreplacedby="9876-5432")
+        j.make_continuation(isreplacedby="9876-5432")
         bibjson.remove_identifiers(bibjson.E_ISSN)
         bibjson.add_identifier(bibjson.E_ISSN, "9876-5432")
         bibjson.title = "An updated journal"
@@ -56,7 +56,7 @@ class TestContinuations(DoajTestCase):
         bibjson = j.bibjson()
         bibjson.title = "An example Journal"
         bibjson.add_identifier(bibjson.E_ISSN, "1234-5678")
-        j.snapshot(isreplacedby="9876-5432")
+        j.make_continuation(isreplacedby="9876-5432")
         bibjson.remove_identifiers(bibjson.E_ISSN)
         bibjson.add_identifier(bibjson.E_ISSN, "9876-5432")
         bibjson.title = "An updated journal"
@@ -70,7 +70,7 @@ class TestContinuations(DoajTestCase):
         bibjson = j.bibjson()
         bibjson.title = "An example Journal"
         bibjson.add_identifier(bibjson.E_ISSN, "1234-5678")
-        j.snapshot(isreplacedby="9876-5432")
+        j.make_continuation(isreplacedby="9876-5432")
         bibjson.remove_identifiers(bibjson.E_ISSN)
         bibjson.add_identifier(bibjson.E_ISSN, "9876-5432")
         bibjson.title = "An updated journal"
