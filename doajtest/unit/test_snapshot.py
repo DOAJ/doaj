@@ -64,9 +64,6 @@ class TestSnapshot(DoajTestCase):
         # the snapshot is part of the save method
         j.save()
 
-        # # snapshot it
-        # j.snapshot()
-
         # let the index catch up, then we can check this worked
         time.sleep(5)
 
