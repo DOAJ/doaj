@@ -192,13 +192,7 @@ class FormContext(object):
         return self.renderer.render_field_group(self, field_group_name)
 
 
-class ApplicationAdmin(FormContext):
-    ERROR_MSG_TEMPLATE = \
-        """Problem while creating account while turning suggestion into journal.
-        There should be a {missing_thing} on user {username} but there isn't.
-        Created the user but not sending the email.
-        """.replace("\n", ' ')
-
+class AdminContext(FormContext):
     def _expand_descriptions(self, fields):
         # add the contents of a few fields to their descriptions since select2 autocomplete
         # would otherwise obscure the full values
@@ -211,7 +205,7 @@ class ApplicationAdmin(FormContext):
 
     def _carry_fixed_aspects(self):
         if self.source is None:
-            raise FormContextException("Cannot carry data from a non-existant source")
+            raise FormContextException("Cannot carry data from a non-existent source")
 
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -220,6 +214,22 @@ class ApplicationAdmin(FormContext):
         self.target.set_created(created_date)
         self.target.suggested_on = self.source.suggested_on
         self.target.data['id'] = self.source.data['id']
+
+    @staticmethod
+    def _subjects2str(subjects):
+        subject_strings = []
+        for sub in subjects:
+            subject_strings.append('{term}'.format(term=sub.get('term')))
+        return ', '.join(subject_strings)
+
+
+class ApplicationAdmin(AdminContext):
+    ERROR_MSG_TEMPLATE = \
+        """Problem while creating account while turning suggestion into journal.
+        There should be a {missing_thing} on user {username} but there isn't.
+        Created the user but not sending the email.
+        """.replace("\n", ' ')
+
 
     def _send_editor_group_email(self, suggestion):
         eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
@@ -361,13 +371,8 @@ class ApplicationAdmin(FormContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
-    def _subjects2str(self, subjects):
-        subject_strings = []
-        for sub in subjects:
-            subject_strings.append('{term}'.format(term=sub.get('term')))
-        return ', '.join(subject_strings)
 
-class JournalFormFactory(object):
+class ApplicationFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
         if role is None:
@@ -378,6 +383,17 @@ class JournalFormFactory(object):
             return EditorApplicationReview(source=source, form_data=form_data)
         elif role == "associate_editor":
             return AssEdApplicationReview(source=source, form_data=form_data)
+
+
+class JournalFormFactory(object):
+    @classmethod
+    def get_form_context(cls, role, source=None, form_data=None):
+        if role == "admin":
+            return ManEdJournalReview(source=source, form_data=form_data)
+        elif role == "editor":
+            pass
+        elif role == "associate_editor":
+            pass
 
 
 class ManEdApplicationReview(ApplicationAdmin):
@@ -708,4 +724,87 @@ class PublicApplication(FormContext):
 
         # Finally save the target
         self.target.save()
+
+### Journal form contexts ###
+
+
+class ManEdJournalReview(AdminContext):
+    """
+    Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
+    admin privileges.  It will permit doing every.
+    """
+    def make_renderer(self):
+        self.renderer = render.ManEdJournalReviewRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/maned_application_review.html"  # TODO Next - finishing the template, then change name here
+
+    # TODO Most of these are simple renames, the form is just a bunch of subclassing, description expansion are the same, need to check patch_target is OK for a journal, double check strange editor stuff in xwalk, not sure if we need to email editors on journal editing finalise or not (as opposed to app editing)
+    # aand that's it, wire into app.formcontext and test
+
+    def blank_form(self):
+        self.form = forms.ManEdApplicationReviewForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
+        self._carry_fixed_aspects()
+
+        # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
+        if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
+            self.target.set_owner(self.source.owner)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(ManEdJournalReview, self).finalise()
+
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        email_editor = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
+        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+
+        # Save the target
+        self.target.save()
+
+        # if we need to email the editor and/or the associate, handle those here
+        # if email_editor:
+        #     self._send_editor_group_email(self.target)
+        # if email_associate:
+        #     self._send_editor_email(self.target)
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(ManEdJournalReview, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs)
+
+    def _set_choices(self):
+        editor = self.form.editor.data
+        if editor is not None:
+            self.form.editor.choices = [(editor, editor)]
+        else:
+            self.form.editor.choices = [("", "")]
 

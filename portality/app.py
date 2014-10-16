@@ -93,10 +93,10 @@ def formcontext(context_type, example, id=None):
         # public application form
         if example == "public":
             if request.method == "GET":
-                fc = formcontext.JournalFormFactory.get_form_context()
+                fc = formcontext.ApplicationFormFactory.get_form_context()
                 return fc.render_template(edit_suggestion_page=True)
             elif request.method == "POST":
-                fc = formcontext.JournalFormFactory.get_form_context(form_data=request.form)
+                fc = formcontext.ApplicationFormFactory.get_form_context(form_data=request.form)
                 if fc.validate():
                     fc.finalise()
                     return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
@@ -107,10 +107,10 @@ def formcontext(context_type, example, id=None):
         elif example == "admin":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
-                fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ap)
                 return fc.render_template(edit_suggestion_page=True)
             elif request.method == "POST":
-                fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
                 if fc.validate():
                     try:
                         fc.finalise()
@@ -128,10 +128,10 @@ def formcontext(context_type, example, id=None):
         elif example == "editor":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
-                fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=ap)
                 return fc.render_template(edit_suggestion_page=True)
             elif request.method == "POST":
-                fc = formcontext.JournalFormFactory.get_form_context(role="editor", form_data=request.form, source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", form_data=request.form, source=ap)
                 if fc.validate():
                     try:
                         fc.finalise()
@@ -149,10 +149,10 @@ def formcontext(context_type, example, id=None):
         elif example == "associate_editor":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
-                fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", source=ap)
                 return fc.render_template(edit_suggestion_page=True)
             elif request.method == "POST":
-                fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", form_data=request.form, source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", form_data=request.form, source=ap)
                 if fc.validate():
                     try:
                         fc.finalise()
@@ -168,7 +168,24 @@ def formcontext(context_type, example, id=None):
 
     elif context_type == 'journal':
         if example == 'admin':
-            pass
+            ap = models.Journal.pull(id)
+            if request.method == "GET":
+                fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
+                return fc.render_template(edit_suggestion_page=True)  # TODO change param
+            elif request.method == "POST":
+                fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
+                if fc.validate():
+                    try:
+                        fc.finalise()
+                        flash('Journal updated.', 'success')
+                        for a in fc.alert:
+                            flash_with_url(a, "success")
+                        return redirect(url_for("admin.suggestion_page", journal_id=ap.id, _anchor='done'))  # TODO change url target
+                    except formcontext.FormContextException as e:
+                        flash(e.message)
+                        return redirect(url_for("admin.suggestion_page", journal_id=ap.id, _anchor='cannot_edit'))  # TODO change URL target
+                else:
+                    return fc.render_template(edit_suggestion_page=True)  # TODO change param
         elif example == 'editor':
             pass
         elif example == 'associate_editor':

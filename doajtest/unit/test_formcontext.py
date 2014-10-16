@@ -356,25 +356,25 @@ class TestFormContext(DoajTestCase):
     ###########################################################
 
     def test_07_formcontext_factory(self):
-        fc = formcontext.JournalFormFactory.get_form_context()
+        fc = formcontext.ApplicationFormFactory.get_form_context()
         assert isinstance(fc, formcontext.PublicApplication)
         assert fc.form is not None
         assert fc.form_data is None
         assert fc.source is None
 
-        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
         assert isinstance(fc, formcontext.ManEdApplicationReview)
         assert fc.form is not None
         assert fc.form_data is None
         assert fc.source is not None
 
-        fc = formcontext.JournalFormFactory.get_form_context(role="editor", form_data=MultiDict(APPLICATION_FORM))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", form_data=MultiDict(APPLICATION_FORM))
         assert isinstance(fc, formcontext.EditorApplicationReview)
         assert fc.form is not None
         assert fc.form_data is not None
         assert fc.source is None
 
-        fc = formcontext.JournalFormFactory.get_form_context("associate_editor", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
+        fc = formcontext.ApplicationFormFactory.get_form_context("associate_editor", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
         assert isinstance(fc, formcontext.AssEdApplicationReview)
         assert fc.form is not None
         assert fc.form_data is not None
@@ -388,7 +388,7 @@ class TestFormContext(DoajTestCase):
         """Test that we can build the most basic kind of form in its initial condition - a blank form"""
 
         # make ourselves a form context from the source
-        fc = formcontext.JournalFormFactory.get_form_context()
+        fc = formcontext.ApplicationFormFactory.get_form_context()
 
         # first check that we got the kind of object we expected
         assert isinstance(fc, formcontext.PublicApplication)
@@ -407,7 +407,7 @@ class TestFormContext(DoajTestCase):
         """Test that we can build the most basic kind of form from form data"""
 
         formdata = MultiDict(APPLICATION_FORM)
-        fc = formcontext.JournalFormFactory.get_form_context(form_data=formdata)
+        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=formdata)
 
         # first check that we got the kind of object we expected
         assert isinstance(fc, formcontext.PublicApplication)
@@ -423,7 +423,7 @@ class TestFormContext(DoajTestCase):
 
         # create our form from the data
         formdata = MultiDict(APPLICATION_FORM)
-        fc = formcontext.JournalFormFactory.get_form_context(form_data=formdata)
+        fc = formcontext.ApplicationFormFactory.get_form_context(form_data=formdata)
 
         # pre validate (should do nothing)
         fc.pre_validate()
@@ -444,6 +444,6 @@ class TestFormContext(DoajTestCase):
 
     def test_11_public_form_render(self):
         """Test that we can render the basic form """
-        fc = formcontext.JournalFormFactory.get_form_context()
+        fc = formcontext.ApplicationFormFactory.get_form_context()
         frag = fc.render_field_group("basic_info")
         assert frag != ""

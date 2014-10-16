@@ -64,13 +64,14 @@ class Renderer(object):
         return frag
 
 
-class ApplicationRenderer(Renderer):
+class BasicJournalInformationRenderer(Renderer):
     def __init__(self):
-        super(ApplicationRenderer, self).__init__()
+        super(BasicJournalInformationRenderer, self).__init__()
 
         # allow the subclass to define the order the groups should be considered in.  This is useful for
         # numbering questions and determining first errors
-        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright", "submitter_info"]
+        self.NUMBERING_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
+        self.ERROR_CHECK_ORDER = self.NUMBERING_ORDER
 
         # define the basic field groups
         self.FIELD_GROUPS = {
@@ -183,18 +184,12 @@ class ApplicationRenderer(Renderer):
                     }
                 },
                 {"publishing_rights_url" : {"class": "input-xlarge"}}
-            ],
-
-            "submitter_info" : [
-                {"suggester_name" : {}},
-                {"suggester_email" : {"class": "input-xlarge"}},
-                {"suggester_email_confirm" : {"class": "input-xlarge"}},
             ]
         }
 
     def number_questions(self):
         q = 1
-        for g in self.GROUP_ORDER:
+        for g in self.NUMBERING_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
                 field = obj.keys()[0]
@@ -202,11 +197,11 @@ class ApplicationRenderer(Renderer):
                 q += 1
 
     def set_error_fields(self, fields):
-        super(ApplicationRenderer, self).set_error_fields(fields)
+        super(BasicJournalInformationRenderer, self).set_error_fields(fields)
 
         # find the first error in the form and tag it
         found = False
-        for g in self.GROUP_ORDER:
+        for g in self.ERROR_CHECK_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
             for obj in cfg:
                 field = obj.keys()[0]
@@ -218,6 +213,20 @@ class ApplicationRenderer(Renderer):
                 break
 
 
+class ApplicationRenderer(BasicJournalInformationRenderer):
+    def __init__(self):
+        super(ApplicationRenderer, self).__init__()
+
+        # allow the subclass to define the order the groups should be considered in.  This is useful for
+        # numbering questions and determining first errors
+        self.NUMBERING_ORDER.append("submitter_info")
+
+        self.FIELD_GROUPS["submitter_info"] = [
+            {"suggester_name" : {}},
+            {"suggester_email" : {"class": "input-xlarge"}},
+            {"suggester_email_confirm" : {"class": "input-xlarge"}},
+        ]
+
 
 class PublicApplicationRenderer(ApplicationRenderer):
     def __init__(self):
@@ -226,6 +235,7 @@ class PublicApplicationRenderer(ApplicationRenderer):
         # explicitly call number questions, as it is not called by default (because other implementations may want
         # to mess with the group order and field groups first
         self.number_questions()
+
 
 class ManEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -304,6 +314,42 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                     "subfield_display-date" : "3"
                 }
             }
+        ]
+
+        self.number_questions()
+
+
+class JournalRenderer(BasicJournalInformationRenderer):
+    pass  # will be used either for common code between all journal renderers
+
+
+class ManEdJournalReviewRenderer(JournalRenderer):
+    def __init__(self):
+        super(ManEdJournalReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["account"] = [
+            {"owner" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+        self.FIELD_GROUPS["editorial"] = [
+            {"editor_group" : {"class" : "input-large"}},
+            {"editor" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "container_class" : "deletable",
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+        self.FIELD_GROUPS["make_all_fields_optional"] = [
+            {"make_all_fields_optional": {}}
         ]
 
         self.number_questions()
