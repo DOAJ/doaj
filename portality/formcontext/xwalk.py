@@ -365,32 +365,9 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             suggestion.set_application_status(form.application_status.data)
 
         if getattr(form, 'notes', None):
-            # need to copy over the notes from the existing suggestion object, if any, otherwise
-            # the dates on all the notes will get reset to right now (i.e. last_updated)
-            # since the suggestion object we're creating in this xwalk is a new, empty one
-            if existing_suggestion:
-                suggestion.set_notes(existing_suggestion.notes())
-
-            # generate index of notes, just the text
-            curnotes = []
-            for curnote in suggestion.notes():
-                curnotes.append(curnote['note'])
-
-            # add any new notes
-            formnotes = []
             for formnote in form.notes.data:
-                if formnote['note']:
-                    if formnote['note'] not in curnotes and formnote["note"] != "":
-                        suggestion.add_note(formnote['note'])
-                    # also generate another text index of notes, this time an index of the form notes
-                    formnotes.append(formnote['note'])
-
-            if current_user.has_role("delete_note"):
-                # delete all notes not coming back from the form, means they've been deleted
-                # also if one of the saved notes is completely blank, delete it
-                for curnote in suggestion.notes()[:]:
-                    if not curnote['note'] or curnote['note'] not in formnotes:
-                        suggestion.remove_note(curnote)
+                if formnote["note"]:
+                    suggestion.add_note(formnote["note"])
 
         if getattr(form, 'subject', None):
             new_subjects = []
@@ -735,31 +712,9 @@ class JournalFormXWalk(JournalGenericXWalk):
             )
             bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
-        # need to copy over the notes from the existing journal object, if any, otherwise
-        # the dates on all the notes will get reset to right now (i.e. last_updated)
-        # since the journal object we're creating in this xwalk is a new, empty one
-        journal.set_notes(existing_journal.notes())
-
-        # generate index of notes, just the text
-        curnotes = []
-        for curnote in journal.notes():
-            curnotes.append(curnote['note'])
-
-        # add any new notes
-        formnotes = []
         for formnote in form.notes.data:
-            if formnote['note']:
-                if formnote['note'] not in curnotes and formnote["note"] != "":
-                    journal.add_note(formnote['note'])
-                # also generate another text index of notes, this time an index of the form notes
-                formnotes.append(formnote['note'])
-
-        if current_user.has_role("delete_note"):
-            # delete all notes not coming back from the form, means they've been deleted
-            # also if one of the saved notes is completely blank, delete it
-            for curnote in journal.notes()[:]:
-                if not curnote['note'] or curnote['note'] not in formnotes:
-                    journal.remove_note(curnote)
+            if formnote["note"]:
+                journal.add_note(formnote["note"])
 
         new_subjects = []
         for code in form.subject.data:
