@@ -71,7 +71,7 @@ class BasicJournalInformationRenderer(Renderer):
         # allow the subclass to define the order the groups should be considered in.  This is useful for
         # numbering questions and determining first errors
         self.NUMBERING_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
-        self.ERROR_CHECK_ORDER = self.NUMBERING_ORDER
+        self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)
 
         # define the basic field groups
         self.FIELD_GROUPS = {
@@ -212,17 +212,6 @@ class BasicJournalInformationRenderer(Renderer):
             if found:
                 break
 
-class PublisherReApplicationRenderer(ApplicationRenderer):
-    def __init__(self):
-        super(PublisherReApplicationRenderer, self).__init__()
-
-        self.GROUP_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
-        del self.FIELD_GROUPS["submitter_info"]
-
-        # explicitly call number questions, as it is not called by default (because other implementations may want
-        # to mess with the group order and field groups first
-        self.number_questions()
-
 class ApplicationRenderer(BasicJournalInformationRenderer):
     def __init__(self):
         super(ApplicationRenderer, self).__init__()
@@ -230,6 +219,7 @@ class ApplicationRenderer(BasicJournalInformationRenderer):
         # allow the subclass to define the order the groups should be considered in.  This is useful for
         # numbering questions and determining first errors
         self.NUMBERING_ORDER.append("submitter_info")
+        self.ERROR_CHECK_ORDER.append("submitter_info")
 
         self.FIELD_GROUPS["submitter_info"] = [
             {"suggester_name" : {}},
@@ -243,9 +233,20 @@ class PublicApplicationRenderer(ApplicationRenderer):
         super(PublicApplicationRenderer, self).__init__()
 
         # explicitly call number questions, as it is not called by default (because other implementations may want
-        # to mess with the group order and field groups first
+        # to mess with the group order and field groups first)
         self.number_questions()
 
+class PublisherReApplicationRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(PublisherReApplicationRenderer, self).__init__()
+
+        self.NUMBERING_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
+        self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)
+        del self.FIELD_GROUPS["submitter_info"]
+
+        # explicitly call number questions, as it is not called by default (because other implementations may want
+        # to mess with the group order and field groups first
+        self.number_questions()
 
 class ManEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -276,6 +277,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
             }
         ]
 
+        self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
         self.number_questions()
 
 class EditorApplicationReviewRenderer(ApplicationRenderer):
@@ -303,6 +306,8 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
             }
         ]
 
+        self.ERROR_CHECK_ORDER = ["status", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
         self.number_questions()
 
 class AssEdApplicationReviewRenderer(ApplicationRenderer):
@@ -325,6 +330,8 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
                 }
             }
         ]
+
+        self.ERROR_CHECK_ORDER = ["status", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
 
         self.number_questions()
 
