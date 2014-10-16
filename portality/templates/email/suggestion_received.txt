@@ -1,0 +1,10 @@
+{{ suggestion.bibjson().title.encode('utf-8', 'replace') }}
+{{ suggestion.bibjson().get_single_url(urltype="homepage") }}
+
+Thank you for your application to DOAJ which has been safely received! One of our team will contact the journal Contact listed in the application soon.
+
+Please save this email as a record of when you submitted your application. We are unable to reply to emails requesting a status update for applications that are less than 3 months old.
+
+Yours faithfully,
+
+The DOAJ Editorial Team

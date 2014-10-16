@@ -403,3 +403,11 @@ class AssEdApplicationReviewForm(Workflow, JournalInformation, Suggestion, Subje
         * Notes - repeatable notes field
     """
     pass
+
+class PublisherReApplicationForm(JournalInformation, Suggestion):
+    """
+    Publisher's ReApplication form.  It consists of:
+        * JournalInformation - journal bibliographic data
+        * Suggestion - additional application metadata
+    """
+    pass

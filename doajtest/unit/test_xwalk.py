@@ -116,14 +116,27 @@ WORKFLOW = {
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_FORM = deepcopy(JOURNAL_INFO)
-APPLICATION_FORM.update(deepcopy(SUGGESTION))
-APPLICATION_FORM.update(deepcopy(SUGGESTER))
-APPLICATION_FORM.update(deepcopy(NOTES))
-APPLICATION_FORM.update(deepcopy(SUBJECT))
-APPLICATION_FORM.update(deepcopy(OWNER))
-APPLICATION_FORM.update(deepcopy(EDITORIAL))
-APPLICATION_FORM.update(deepcopy(WORKFLOW))
+APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
+APPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
+APPLICATION_FORMINFO.update(deepcopy(SUGGESTER))
+APPLICATION_FORMINFO.update(deepcopy(NOTES))
+APPLICATION_FORMINFO.update(deepcopy(SUBJECT))
+APPLICATION_FORMINFO.update(deepcopy(OWNER))
+APPLICATION_FORMINFO.update(deepcopy(EDITORIAL))
+APPLICATION_FORMINFO.update(deepcopy(WORKFLOW))
+
+APPLICATION_FORM = deepcopy(APPLICATION_FORMINFO)
+APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
+notes = APPLICATION_FORM["notes"]
+del APPLICATION_FORM["notes"]
+i = 0
+for n in notes:
+    notekey = "notes-" + str(i) + "-note"
+    datekey = "notes-" + str(i) + "-date"
+    APPLICATION_FORM[notekey] = n.get("note")
+    APPLICATION_FORM[datekey] = n.get("date")
+    i += 1
+
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -165,7 +178,11 @@ APPLICATION_SOURCE = {
             "average_price" : 4
         },
         "archiving_policy" : {
-            "policy" : ["LOCKSS", "CLOCKSS", "Trinity", "A safe place"], # FIXME
+            "policy" : [
+                "LOCKSS", "CLOCKSS",
+                ["A national library", "Trinity"],
+                ["Other", "A safe place"]
+            ],
             "url" : "http://digital.archiving.policy"
         },
         "editorial_review" : {
@@ -182,11 +199,11 @@ APPLICATION_SOURCE = {
         },
         "deposit_policy" : ["Sherpa/Romeo", "Store it"],
         "author_copyright" : {
-            "copyright" : "Sometimes", # FIXME: Sometimes
+            "copyright" : "Sometimes",
             "url" : "http://copyright"
         },
         "author_publishing_rights" : {
-            "publishing_rights" : "Occasionally", # FIXME: Occasionally
+            "publishing_rights" : "Occasionally",
             "url" : "http://publishing.rights"
         },
         "allows_fulltext_indexing" : True,
@@ -249,11 +266,11 @@ class TestXwalk(DoajTestCase):
 
     def test_02_application(self):
         forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))
-        assert forminfo == APPLICATION_FORM
+        assert forminfo == APPLICATION_FORMINFO
 
-        #form = forms.ManEdApplicationReviewForm(form_data=MultiDict(APPLICATION_FORM))
-        #obj = xwalk.SuggestionFormXWalk.form2obj(form)
-        #assert obj == APPLICATION_SOURCE
+        form = forms.ManEdApplicationReviewForm(formdata=MultiDict(APPLICATION_FORM))
+        obj = xwalk.SuggestionFormXWalk.form2obj(form)
+        assert obj == APPLICATION_SOURCE
 
     def test_03_application_to_journal(self):
         pass

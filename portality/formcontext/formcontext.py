@@ -222,6 +222,45 @@ class AdminContext(FormContext):
             subject_strings.append('{term}'.format(term=sub.get('term')))
         return ', '.join(subject_strings)
 
+    def _merge_notes_forward(self, allow_delete=False):
+        if self.source is None:
+            raise FormContextException("Cannot carry data from a non-existant source")
+        if self.target is None:
+            raise FormContextException("Cannot carry data on to a non-existant target - run the xwalk first")
+
+        # first off, get the notes (by reference) in the target and the notes from the source
+        tnotes = self.target.notes()
+        snotes = self.source.notes()
+
+        # for each of the target notes we need to get the original dates from the source notes
+        for n in tnotes:
+            for sn in snotes:
+                if n.get("note") == sn.get("note"):
+                    n["date"] = sn.get("date")
+
+        # record the positions of any blank notes
+        i = 0
+        removes = []
+        for n in tnotes:
+            if n.get("note").strip() == "":
+                removes.append(i)
+            i += 1
+
+        # actually remove all the notes marked for deletion
+        removes.sort(reverse=True)
+        for r in removes:
+            tnotes.pop(r)
+
+        # finally, carry forward any notes that aren't already in the target
+        if not allow_delete:
+            for sn in snotes:
+                found = False
+                for tn in tnotes:
+                    if sn.get("note") == tn.get("note"):
+                        found = True
+                if not found:
+                    tnotes.append(sn)
+
 
 class ApplicationAdmin(AdminContext):
     ERROR_MSG_TEMPLATE = \
@@ -230,8 +269,8 @@ class ApplicationAdmin(AdminContext):
         Created the user but not sending the email.
         """.replace("\n", ' ')
 
-
-    def _send_editor_group_email(self, suggestion):
+    @staticmethod
+    def _send_editor_group_email(suggestion):
         eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
         if eg is None:
             return
@@ -251,7 +290,8 @@ class ApplicationAdmin(AdminContext):
                             url_root=url_root
                             )
 
-    def _send_editor_email(self, suggestion):
+    @staticmethod
+    def _send_editor_email(suggestion):
         editor = models.Account.pull(suggestion.editor)
         eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
 
@@ -383,6 +423,8 @@ class ApplicationFormFactory(object):
             return EditorApplicationReview(source=source, form_data=form_data)
         elif role == "associate_editor":
             return AssEdApplicationReview(source=source, form_data=form_data)
+        elif role == "publisher":
+            return PublisherReApplication(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -430,6 +472,7 @@ class ManEdApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward(allow_delete=True)
 
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
@@ -535,6 +578,7 @@ class EditorApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
 
@@ -630,6 +674,7 @@ class AssEdApplicationReview(ApplicationAdmin):
             raise FormContextException("You cannot patch a target from a non-existant source")
 
         self._carry_fixed_aspects()
+        self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
@@ -665,6 +710,104 @@ class AssEdApplicationReview(ApplicationAdmin):
         else:
             self.form.application_status.choices = choices.Choices.application_status()
 
+class PublisherReApplication(ApplicationAdmin):
+    def make_renderer(self):
+        self.renderer = render.PublisherReApplicationRenderer()
+        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
+
+    def set_template(self):
+        self.template = "formcontext/publisher_reapplication.html"
+
+    def blank_form(self):
+        self.form = forms.PublisherReApplicationForm()
+
+    def data2form(self):
+        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def pre_validate(self):
+        if self.source is None:
+            raise FormContextException("You cannot validate a form from a non-existant source")
+
+        bj = self.source.bibjson()
+        contacts = self.source.contacts()
+
+        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
+        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+
+        if len(contacts) == 0:
+            return
+
+        contact = contacts[0]
+        self.form.contact_name.data = contact.get("name")
+        self.form.contact_email.data = contact.get("email")
+        self.form.confirm_contact_email.data = contact.get("email")
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existant source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PublisherReApplication, self).finalise()
+
+        # set the status to updated
+        self.target.set_application_status('updated')
+
+        # Save the target
+        self.target.save()
+
+        # email the publisher to tell them we received their re-application
+        self._send_received_email()
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existant application")
+
+        return super(PublisherReApplication, self).render_template(**kwargs)
+
+    def _send_received_email(self):
+        acc = models.Account.pull(self.target.owner)
+        journal_name = self.target.bibjson().title.encode('utf-8', 'replace')
+
+        to = [acc.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - re-application received"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/reapplication_received.txt",
+                                    journal_name=journal_name.encode('utf-8', 'replace')
+                )
+                self.add_alert('Sent email to ' + acc.email + ' to tell them about their reapplication being received.')
+            else:
+                self.add_alert('Did not send email to ' + acc.email + ' to tell them about their reapplication being received, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 
 class PublicApplication(FormContext):
@@ -725,8 +868,23 @@ class PublicApplication(FormContext):
         # Finally save the target
         self.target.save()
 
-### Journal form contexts ###
+        self._send_received_email()
 
+    def _send_received_email(self):
+        suggester = self.target.suggester
+
+        to = [suggester.get("email")]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - your application to DOAJ has been received"
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/suggestion_received.txt",
+                            suggestion=self.target,
+                            )
+
+### Journal form contexts ###
 
 class ManEdJournalReview(AdminContext):
     """
@@ -807,4 +965,3 @@ class ManEdJournalReview(AdminContext):
             self.form.editor.choices = [(editor, editor)]
         else:
             self.form.editor.choices = [("", "")]
-
