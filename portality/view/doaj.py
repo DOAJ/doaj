@@ -6,10 +6,9 @@ from portality import dao
 from portality import models
 from portality.core import app
 from portality import blog
-from portality.view.forms import SuggestionForm, other_val, digital_archiving_policy_specific_library_value
-from portality.suggestion import SuggestionFormXWalk, suggestion_form
 from portality.datasets import countries_dict
 from portality import lock
+from portality.formcontext import formcontext
 
 import json
 import os
@@ -64,15 +63,16 @@ def search_post():
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
-    form = SuggestionForm(request.form)
-    form.editor.choices = [("","")]
-
-    redirect_url_on_success = url_for('doaj.suggestion_thanks', _anchor='thanks')
-    # meaningless anchor to replace #first_problem used on the form
-    # anchors persist between 3xx redirects to the same resource
-    # (/application)
-
-    return suggestion_form(form, request, 'doaj/suggestion.html', success_url=redirect_url_on_success)
+    if request.method == "GET":
+        fc = formcontext.JournalFormFactory.get_form_context()
+        return fc.render_template(edit_suggestion_page=True)
+    elif request.method == "POST":
+        fc = formcontext.JournalFormFactory.get_form_context(form_data=request.form)
+        if fc.validate():
+            fc.finalise()
+            return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
+        else:
+            return fc.render_template(edit_suggestion_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():
