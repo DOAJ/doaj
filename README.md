@@ -147,11 +147,11 @@ It is likely that history records will only be created upon request by the admin
         },
         "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
         "author_copyright" : {
-            "copyright" : true|false,
+            "copyright" : "<copyright status>",
             "url" : "<url for information about copyright position>"
         },
         "author_publishing_rights" : {
-            "publishing_rights" : true|false,
+            "publishing_rights" : "<publishing rights status>",
             "url" : "<url for information about publishing rights>"
         },
         "allows_fulltext_indexing" : true|false,
