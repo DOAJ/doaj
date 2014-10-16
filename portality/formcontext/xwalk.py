@@ -460,34 +460,34 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         forminfo['waiver_policy'] = reverse_interpret_special(forminfo['waiver_policy_url'] is not None and forminfo['waiver_policy_url'] != '')
 
 
-        archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
-        substitutions = [
-            {"default": Choices.digital_archiving_policy_val("library"), "field" : "digital_archiving_policy_library" },
-            {"default": Choices.digital_archiving_policy_val("other"), "field" : "digital_archiving_policy_other"}
-        ]
-        archiving_policies, special_fields = interpret_list(
-            archiving_policies, # current values
-            Choices.digital_archiving_policy_list(), # allowed values
-            substitutions # substitution instructions
-        )
-        forminfo.update(special_fields)
+        #archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
+        #substitutions = [
+        #    {"default": Choices.digital_archiving_policy_val("library"), "field" : "digital_archiving_policy_library" },
+        #    {"default": Choices.digital_archiving_policy_val("other"), "field" : "digital_archiving_policy_other"}
+        #]
+        #archiving_policies, special_fields = interpret_list(
+        #    archiving_policies, # current values
+        #    Choices.digital_archiving_policy_list(), # allowed values
+        #    substitutions # substitution instructions
+        #)
+        #forminfo.update(special_fields)
 
         # checkboxes
-        #archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
+        archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
 
         # for backwards compatibility we keep the "Other" field first in the reverse xwalk
         # previously we didn't store which free text value was which (Other, or specific national library)
         # so in those cases, just put it in "Other", it'll be correct most of the time
-        #archiving_policies, forminfo['digital_archiving_policy_other'] = \
-        #    reverse_interpret_other(archiving_policies, Choices.digital_archiving_policy_list())
+        archiving_policies, forminfo['digital_archiving_policy_other'] = \
+            reverse_interpret_other(archiving_policies, Choices.digital_archiving_policy_list())
 
-        #archiving_policies, forminfo['digital_archiving_policy_library'] = \
-        #    reverse_interpret_other(
-        #        archiving_policies,
-        #        Choices.digital_archiving_policy_list(),
-        #        other_value=Choices.digital_archiving_policy_val("library"),
-        #        replace_label=Choices.digital_archiving_policy_label("library")
-        #    )
+        archiving_policies, forminfo['digital_archiving_policy_library'] = \
+            reverse_interpret_other(
+                archiving_policies,
+                Choices.digital_archiving_policy_list(),
+                other_value=Choices.digital_archiving_policy_val("library"),
+                replace_label=Choices.digital_archiving_policy_label("library")
+            )
 
         forminfo['digital_archiving_policy'] = archiving_policies
         forminfo['digital_archiving_policy_url'] = bibjson.archiving_policy.get('url')
@@ -831,34 +831,34 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo['waiver_policy_url'] = bibjson.get_single_url(urltype='waiver_policy')
         forminfo['waiver_policy'] = reverse_interpret_special(forminfo['waiver_policy_url'] is not None and forminfo['waiver_policy_url'] != '')
 
-        archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
-        substitutions = [
-            {"default": Choices.digital_archiving_policy_val("library"), "field" : "digital_archiving_policy_library" },
-            {"default": Choices.digital_archiving_policy_val("other"), "field" : "digital_archiving_policy_other"}
-        ]
-        archiving_policies, special_fields = interpret_list(
-            archiving_policies, # current values
-            Choices.digital_archiving_policy_list(), # allowed values
-            substitutions # substitution instructions
-        )
-        forminfo.update(special_fields)
+        #archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
+        #substitutions = [
+        #    {"default": Choices.digital_archiving_policy_val("library"), "field" : "digital_archiving_policy_library" },
+        #    {"default": Choices.digital_archiving_policy_val("other"), "field" : "digital_archiving_policy_other"}
+        #]
+        #archiving_policies, special_fields = interpret_list(
+        #    archiving_policies, # current values
+        #    Choices.digital_archiving_policy_list(), # allowed values
+        #    substitutions # substitution instructions
+        #)
+        #forminfo.update(special_fields)
 
         # checkboxes
-        #archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
+        archiving_policies = reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
 
         # for backwards compatibility we keep the "Other" field first in the reverse xwalk
         # previously we didn't store which free text value was which (Other, or specific national library)
         # so in those cases, just put it in "Other", it'll be correct most of the time
-        #archiving_policies, forminfo['digital_archiving_policy_other'] = \
-        #    reverse_interpret_other(archiving_policies, Choices.digital_archiving_policy_list())
+        archiving_policies, forminfo['digital_archiving_policy_other'] = \
+            reverse_interpret_other(archiving_policies, Choices.digital_archiving_policy_list())
 
-        #archiving_policies, forminfo['digital_archiving_policy_library'] = \
-        #    reverse_interpret_other(
-        #        archiving_policies,
-        #        Choices.digital_archiving_policy_list(),
-        #        other_value=Choices.digital_archiving_policy_val("library"),
-        #        replace_label=Choices.digital_archiving_policy_label("library")
-        #    )
+        archiving_policies, forminfo['digital_archiving_policy_library'] = \
+            reverse_interpret_other(
+                archiving_policies,
+                Choices.digital_archiving_policy_list(),
+                other_value=Choices.digital_archiving_policy_val("library"),
+                replace_label=Choices.digital_archiving_policy_label("library")
+            )
 
         forminfo['digital_archiving_policy'] = archiving_policies
         forminfo['digital_archiving_policy_url'] = bibjson.archiving_policy.get('url')

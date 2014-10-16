@@ -165,7 +165,11 @@ APPLICATION_SOURCE = {
             "average_price" : 4
         },
         "archiving_policy" : {
-            "policy" : ["LOCKSS", "CLOCKSS", "Trinity", "A safe place"], # FIXME
+            "policy" : [
+                "LOCKSS", "CLOCKSS",
+                ["A national library", "Trinity"],
+                ["Other", "A safe place"]
+            ], # FIXME
             "url" : "http://digital.archiving.policy"
         },
         "editorial_review" : {
