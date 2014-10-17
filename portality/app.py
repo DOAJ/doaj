@@ -170,10 +170,10 @@ def formcontext(context_type, example, id=None):
         elif example == "publisher":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
-                fc = formcontext.JournalFormFactory.get_form_context(role="publisher", source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=ap)
                 return fc.render_template(edit_suggestion_page=True)
             elif request.method == "POST":
-                fc = formcontext.JournalFormFactory.get_form_context(role="publisher", form_data=request.form, source=ap)
+                fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=ap)
                 if fc.validate():
                     try:
                         fc.finalise()

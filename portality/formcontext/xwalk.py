@@ -357,8 +357,9 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             )
             bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
-        if form.suggester_name.data or form.suggester_email.data:
-            suggestion.set_suggester(form.suggester_name.data, form.suggester_email.data)
+        if getattr(form, "suggester", None):
+            if form.suggester_name.data or form.suggester_email.data:
+                suggestion.set_suggester(form.suggester_name.data, form.suggester_email.data)
 
         # admin stuff
         if getattr(form, 'application_status', None):
