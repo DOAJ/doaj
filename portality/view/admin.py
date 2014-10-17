@@ -6,6 +6,9 @@ from flask.ext.login import current_user, login_required
 
 from portality.core import app, ssl_required, restrict_to_role
 import portality.models as models
+from portality.formcontext import formcontext
+from portality import lock
+from portality.util import flash_with_url
 
 from portality import journal as journal_handler
 from portality import suggestion as suggestion_handler
@@ -102,6 +105,36 @@ def suggestions():
 @login_required
 @ssl_required
 def suggestion_page(suggestion_id):
+    if not current_user.has_role("edit_suggestion"):
+        abort(401)
+    ap = models.Suggestion.pull(suggestion_id)
+    if ap is None:
+        abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("admin/suggestion_locked.html", suggestion=ap, lock=l.lock, edit_suggestion_page=True)
+
+    if request.method == "GET":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ap)
+        return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+    elif request.method == "POST":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Application updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(e.message)
+                return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+
     return suggestion_handler.request_handler(request, suggestion_id, group_editable=True, editorial_available=True, status_options="admin")
 
 @blueprint.route("/admin_site_search")
