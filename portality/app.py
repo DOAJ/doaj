@@ -90,7 +90,7 @@ def formcontext(context_type, example, id=None):
 
     if context_type == 'application':
 
-        # public application form
+        # public application form (DONE)
         if example == "public":
             if request.method == "GET":
                 fc = formcontext.ApplicationFormFactory.get_form_context()
