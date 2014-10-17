@@ -212,7 +212,8 @@ class AdminContext(FormContext):
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
         self.target.set_created(created_date)
-        self.target.suggested_on = self.source.suggested_on
+        if self.source.suggested_on is not None:
+            self.target.suggested_on = self.source.suggested_on
         self.target.data['id'] = self.source.data['id']
 
     @staticmethod
@@ -231,6 +232,10 @@ class AdminContext(FormContext):
         # first off, get the notes (by reference) in the target and the notes from the source
         tnotes = self.target.notes()
         snotes = self.source.notes()
+
+        # if there are no notes, we might not have the notes by reference, so later will
+        # need to set them by value
+        apply_notes_by_value = len(tnotes) == 0
 
         # for each of the target notes we need to get the original dates from the source notes
         for n in tnotes:
@@ -260,6 +265,9 @@ class AdminContext(FormContext):
                         found = True
                 if not found:
                     tnotes.append(sn)
+
+        if apply_notes_by_value:
+            self.target.set_notes(tnotes)
 
 
 class ApplicationAdmin(AdminContext):
@@ -760,6 +768,9 @@ class PublisherReApplication(ApplicationAdmin):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
 
+        # we carry this over for completeness, although it will be overwritten in the finalise() method
+        self.target.set_application_status(self.source.application_status)
+
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
@@ -770,7 +781,7 @@ class PublisherReApplication(ApplicationAdmin):
         super(PublisherReApplication, self).finalise()
 
         # set the status to updated
-        self.target.set_application_status('updated')
+        self.target.set_application_status('submitted')
 
         # Save the target
         self.target.save()
@@ -786,6 +797,10 @@ class PublisherReApplication(ApplicationAdmin):
 
     def _send_received_email(self):
         acc = models.Account.pull(self.target.owner)
+        if acc is None:
+            self.add_alert("Unable to locate account for specified owner")
+            return
+
         journal_name = self.target.bibjson().title.encode('utf-8', 'replace')
 
         to = [acc.email]

@@ -21,8 +21,8 @@ EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not mat
 class JournalInformation(Form):
     """All the bibliographic metadata associated with a journal in the DOAJ"""
 
-    title = StringField('Journal Title', [validators.InputRequired()])
-    url = URLField('URL', [validators.InputRequired(), URLOptionalScheme()])
+    title = StringField('Journal Title', [validators.DataRequired()])
+    url = URLField('URL', [validators.DataRequired(), URLOptionalScheme()])
     alternative_title = StringField('Alternative Title', [validators.Optional()])
     pissn = StringField('Journal ISSN (print version)',
         [OptionalIf('eissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
@@ -33,7 +33,7 @@ class JournalInformation(Form):
         description='Write the EISSN with the hyphen "-" e.g. 1234-4321.',
     )
     publisher = StringField('Publisher',
-        [validators.InputRequired()]
+        [validators.DataRequired()]
     )
     society_institution = StringField('Society or Institution',
         [validators.Optional()],
@@ -44,22 +44,22 @@ class JournalInformation(Form):
         description='The name of the platform, host or aggregator of the journal content, e.g. OJS, HighWire Press, EBSCO etc.'
     )
     contact_name = StringField('Name of contact for this journal',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description='Somebody who DOAJ can contact about this journal',
     )
     contact_email = StringField('Contact\'s email address',
-        [validators.InputRequired(), validators.Email(message='Invalid email address.')]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.')]
     )
     confirm_contact_email = StringField('Confirm contact\'s email address',
-        [validators.InputRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('contact_email', EMAIL_CONFIRM_ERROR)]
     )
     country = SelectField('In which country is the publisher of the journal based?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description='Select the country where the publishing company is legally registered',
         choices=Choices.country(),
     )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description = 'If "No" proceed to question below',
         choices = Choices.processing_charges()
     )
@@ -72,7 +72,7 @@ class JournalInformation(Form):
     )
 
     submission_charges = RadioField('Does the journal have article submission charges?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description = 'If "No" proceed to question below',
         choices = Choices.submission_charges()
     )
@@ -84,7 +84,7 @@ class JournalInformation(Form):
         choices = Choices.currency(),
     )
     waiver_policy = RadioField('Does the journal have a waiver policy (for developing country authors etc)?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.waiver_policy()
     )
     waiver_policy_url = URLField('Enter the URL where this information can be found',
@@ -92,7 +92,7 @@ class JournalInformation(Form):
     )
     digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?',
         [
-            validators.InputRequired(),
+            validators.DataRequired(),
             ExclusiveCheckbox(Choices.digital_archiving_policy_val("none")),
             ExtraFieldRequiredIf('digital_archiving_policy_library', reqval=Choices.digital_archiving_policy_val("library")),
             ExtraFieldRequiredIf('digital_archiving_policy_other', reqval=Choices.digital_archiving_policy_val("other")),
@@ -111,11 +111,11 @@ class JournalInformation(Form):
         description='This field is optional if you have only selected "No policy in place" above',
     )
     crawl_permission = RadioField('Does the journal allow anyone to crawl the full-text of the journal?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.crawl_permission()
     )
     article_identifiers = SelectMultipleField('Which article identifiers does the journal use?',
-        [validators.InputRequired(), ExtraFieldRequiredIf('article_identifiers_other', reqval=Choices.article_identifiers_val("other")), ExclusiveCheckbox()],
+        [validators.DataRequired(), ExtraFieldRequiredIf('article_identifiers_other', reqval=Choices.article_identifiers_val("other")), ExclusiveCheckbox()],
         choices = Choices.article_identifiers(),
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False),
@@ -123,7 +123,7 @@ class JournalInformation(Form):
     article_identifiers_other = StringField('',
     )
     download_statistics = RadioField('Does the journal provide download statistics?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description = 'If "No" proceed to question below',
         choices = Choices.download_statistics()
     )
@@ -131,11 +131,11 @@ class JournalInformation(Form):
         [validators.Optional()],
     )
     first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)',
-        [validators.InputRequired(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
+        [validators.DataRequired(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
         description = 'Use 4 digits for the year, i.e. YYYY format'
     )
     fulltext_format = SelectMultipleField('Please indicate which formats of full text are available',
-        [validators.InputRequired(), ExtraFieldRequiredIf('fulltext_format_other', reqval=Choices.fulltext_format_val("other"))],
+        [validators.DataRequired(), ExtraFieldRequiredIf('fulltext_format_other', reqval=Choices.fulltext_format_val("other"))],
         description = 'Tick all that apply',
         choices = Choices.fulltext_format(),
         option_widget=widgets.CheckboxInput(),
@@ -144,20 +144,20 @@ class JournalInformation(Form):
     fulltext_format_other = StringField('',
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
-        [validators.InputRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
+        [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
         description='Maximum 6'
     )
     languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.language(),
         description="You can select multiple languages"
     )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
-        [validators.InputRequired(), URLOptionalScheme()],
+        [validators.DataRequired(), URLOptionalScheme()],
         description = 'The journal must have either an editor or an editorial board with at least 5 clearly identifiable members and affiliation information. We may ask for affiliation information and email addresses as part of our checks.'
     )
     review_process = SelectField('Please select the review process for papers',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.review_process(),
         default = Choices.review_process_default(),
     )
@@ -166,13 +166,13 @@ class JournalInformation(Form):
         description = 'This field is optional if you have selected "None" above.'
     )
     aims_scope_url = URLField("What is the URL for the journal's Aims & Scope",
-        [validators.InputRequired(), URLOptionalScheme()]
+        [validators.DataRequired(), URLOptionalScheme()]
     )
     instructions_authors_url = URLField("What is the URL for the journal's instructions for authors?",
-        [validators.InputRequired(), URLOptionalScheme()]
+        [validators.DataRequired(), URLOptionalScheme()]
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description = 'If "No" proceed to question below',
         choices = Choices.plagiarism_screening()
     )
@@ -180,13 +180,13 @@ class JournalInformation(Form):
         [OptionalIf('plagiarism_screening', optvals=Choices.plagiarism_screening_url_optional()), URLOptionalScheme()]
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication?',
-        [validators.InputRequired(), validators.NumberRange(min=0, max=53)]
+        [validators.DataRequired(), validators.NumberRange(min=0, max=53)]
     )
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
-        [validators.InputRequired(), URLOptionalScheme()]
+        [validators.DataRequired(), URLOptionalScheme()]
     )
     license_embedded = RadioField('Does the journal embed or display simple machine-readable CC licensing information in its articles?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.licence_embedded(),
         description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/CC_REL">http://wiki.creativecommons.org/CC_REL</a><br><br>If "No" proceed to question below.',
     )
@@ -194,7 +194,7 @@ class JournalInformation(Form):
         [OptionalIf('license_embedded', optvals=Choices.licence_embedded_url_optional()), URLOptionalScheme()]
     )
     license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC license?',
-        [validators.InputRequired(), ExtraFieldRequiredIf('license_other', reqval=Choices.licence_val("other"))],
+        [validators.DataRequired(), ExtraFieldRequiredIf('license_other', reqval=Choices.licence_val("other"))],
         choices = Choices._licence,
         description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
     )
@@ -209,12 +209,12 @@ class JournalInformation(Form):
         [validators.Optional(), URLOptionalScheme()]
     )
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?",
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         choices = Choices.open_access(),
         description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>',
     )
     deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?',
-        [validators.InputRequired(), ExtraFieldRequiredIf('deposit_policy_other', reqval=Choices.deposit_policy_other_val("other")), ExclusiveCheckbox()],
+        [validators.DataRequired(), ExtraFieldRequiredIf('deposit_policy_other', reqval=Choices.deposit_policy_other_val("other")), ExclusiveCheckbox()],
         description = 'Select all that apply.',
         choices = Choices.deposit_policy(),
         option_widget=widgets.CheckboxInput(),
@@ -223,7 +223,7 @@ class JournalInformation(Form):
     deposit_policy_other = StringField('',
     )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?',
-        [validators.InputRequired(), ExtraFieldRequiredIf('copyright_other', reqval=Choices.copyright_other_val("other"))],
+        [validators.DataRequired(), ExtraFieldRequiredIf('copyright_other', reqval=Choices.copyright_other_val("other"))],
         choices = Choices.copyright()
     )
     copyright_other = StringField('',
@@ -246,14 +246,14 @@ class Suggestion(Form):
     """ Additional bibliographic metadata required when suggesting a journal to the DOAJ """
 
     articles_last_year = IntegerField('How many research and review articles did the journal publish in the last calendar year?',
-        [validators.InputRequired(), validators.NumberRange(min=0)],
+        [validators.DataRequired(), validators.NumberRange(min=0)],
         description='A journal must publish at least 5 articles per year to stay in the DOAJ',
     )
     articles_last_year_url = URLField('Enter the URL where this information can be found',
-        [validators.InputRequired(), URLOptionalScheme()]
+        [validators.DataRequired(), URLOptionalScheme()]
     )
     metadata_provision = RadioField('Does the journal provide, or intend to provide, article level metadata to DOAJ?',
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description='For new applications, metadata must be provided within 3 months of acceptance into DOAJ',
         choices=Choices.metadata_provision()
     )
@@ -262,26 +262,26 @@ class PublicSuggester(Form):
     """ Suggester's contact details to be provided via the public application form """
 
     suggester_name = StringField('Your name',
-        [validators.InputRequired()]
+        [validators.DataRequired()]
     )
     suggester_email = StringField('Your email address',
-        [validators.InputRequired(), validators.Email(message='Invalid email address.')]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.')]
     )
     suggester_email_confirm = StringField('Confirm your email address',
-        [validators.InputRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
 
 class AdminSuggester(Form):
     """ Suggester's contact details as presented to administrators/editors in the DOAJ workflow"""
 
     suggester_name = StringField("Name",
-        [validators.InputRequired()]
+        [validators.DataRequired()]
     )
     suggester_email = StringField("Email address",
-        [validators.InputRequired(), validators.Email(message='Invalid email address.')]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.')]
     )
     suggester_email_confirm = StringField("Confirm email address",
-        [validators.InputRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
+        [validators.DataRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
 
 class Note(Form):
@@ -310,7 +310,7 @@ class JournalLegacy(Form):
 class RequiredOwner(Form):
     """ An Owner field which is required - validation will fail if it is not provided.  For use in some admin forms """
 
-    owner = StringField('Owner', [validators.InputRequired()])
+    owner = StringField('Owner', [validators.DataRequired()])
 
 class ApplicationOwner(Form):
     """ An Owner field which is optional under certain conditions.  For use in some admin forms """
@@ -344,7 +344,7 @@ class Workflow(Form):
     """ Administrator workflow field """
 
     application_status = SelectField('Application Status',  # choices are late-binding as they depend on the user
-        [validators.InputRequired()],
+        [validators.DataRequired()],
         description='Setting the status to In Progress will tell others'
                     ' that you have started your review. Setting the status'
                     ' to Ready will alert the Managing Editors that you have'
