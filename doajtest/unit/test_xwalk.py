@@ -3,6 +3,16 @@ from portality.formcontext import xwalk, forms
 from portality import models
 from werkzeug.datastructures import MultiDict
 from copy import deepcopy
+from portality import lcc
+
+######################################################################
+# Mocks
+######################################################################
+
+def mock_lookup_code(code):
+    if code == "H": return "Social Sciences"
+    if code == "HB1-3840": return "Economic theory. Demography"
+    return None
 
 ######################################################################
 # Complete, populated, form components
@@ -256,8 +266,12 @@ APPLICATION_SOURCE = {
 
 
 class TestXwalk(DoajTestCase):
-    def setUp(self): pass
-    def tearDown(self): pass
+    def setUp(self):
+        self.old_lookup_code = lcc.lookup_code
+        lcc.lookup_code = mock_lookup_code
+
+    def tearDown(self):
+        lcc.lookup_code = self.old_lookup_code
 
     def test_01_journal(self):
         #forminfo = xwalk.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
@@ -270,7 +284,19 @@ class TestXwalk(DoajTestCase):
 
         form = forms.ManEdApplicationReviewForm(formdata=MultiDict(APPLICATION_FORM))
         obj = xwalk.SuggestionFormXWalk.form2obj(form)
-        assert obj == APPLICATION_SOURCE
+
+        onotes = obj["admin"]["notes"]
+        del obj["admin"]["notes"]
+
+        cnotes = APPLICATION_SOURCE["admin"]["notes"]
+        csource = deepcopy(APPLICATION_SOURCE)
+        del csource["admin"]["notes"]
+
+        otext = [n.get("note") for n in onotes]
+        ctext = [n.get("note") for n in cnotes]
+        assert otext == ctext
+
+        assert obj == csource
 
     def test_03_application_to_journal(self):
         pass
