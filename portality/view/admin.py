@@ -11,7 +11,6 @@ from portality import lock
 from portality.util import flash_with_url
 
 from portality import journal as journal_handler
-from portality import suggestion as suggestion_handler
 from portality.view.forms import EditorGroupForm
 
 blueprint = Blueprint('admin', __name__)
@@ -134,8 +133,6 @@ def suggestion_page(suggestion_id):
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
-
-    return suggestion_handler.request_handler(request, suggestion_id, group_editable=True, editorial_available=True, status_options="admin")
 
 @blueprint.route("/admin_site_search")
 @login_required

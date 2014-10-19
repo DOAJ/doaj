@@ -103,7 +103,7 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
-        # managing editor's application form
+        # managing editor's application form (DONE)
         elif example == "admin":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":

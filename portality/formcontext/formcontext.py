@@ -622,13 +622,17 @@ class EditorApplicationReview(ApplicationAdmin):
             **kwargs)
 
     def _set_choices(self):
+        if self.source is None:
+            raise FormContextException("You cannot set choices for a non-existant source")
+
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             self.form.application_status.choices = choices.Choices.application_status()
 
-        egn = self.form.editor_group.data
+        # get the editor group from the source because it isn't in the form
+        egn = self.source.editor_group
         if egn is None:
             self.form.editor.choices = [("", "")]
         else:
