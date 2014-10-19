@@ -124,7 +124,7 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
-        # editor's application form
+        # editor's application form (DONE)
         elif example == "editor":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
@@ -145,7 +145,7 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
-        # associate editor's application form
+        # associate editor's application form (DONE)
         elif example == "associate_editor":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
