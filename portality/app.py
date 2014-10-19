@@ -166,7 +166,7 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
-        # publisher's re-application form
+        # publisher's re-application form (DONE)
         elif example == "publisher":
             ap = models.Suggestion.pull(id)
             if request.method == "GET":
