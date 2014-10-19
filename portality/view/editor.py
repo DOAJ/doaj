@@ -6,7 +6,9 @@ from portality.core import app, ssl_required, restrict_to_role
 from portality import models
 
 from portality import journal as journal_handler
-from portality import suggestion as suggestion_handler
+from portality import lock
+from portality.formcontext import formcontext
+from portality.util import flash_with_url
 
 blueprint = Blueprint('editor', __name__)
 
@@ -106,10 +108,6 @@ def suggestion_page(suggestion_id):
     if s is None:
         abort(404)
 
-    # flag which we can set to determine whether this user can access the editorial
-    # features of the journal form
-    editorial_available = False
-
     # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
 
     # is the user the currently assigned editor of the journal?
@@ -118,24 +116,36 @@ def suggestion_page(suggestion_id):
         passed = True
 
     # now check whether the user is the editor of the editor group
-    # and simultaneously determine whether they have editorial rights
-    # on this journal
+    role = "associate_editor"
     eg = models.EditorGroup.pull_by_key("name", s.editor_group)
     if eg is not None and eg.editor == current_user.id:
         passed = True
-        editorial_available = True
+        role = "editor"
 
     # if the user wasn't the editor or the owner of the editor group, unauthorised
     if not passed:
         abort(401)
 
-    # create the list of allowable editors for this journal (the editor
-    # and all the associates in this editor group)
-    # egs = models.EditorGroup.groups_by_editor(current_user.id)
-    editors = [current_user.id]
-    editors += eg.associates
-    editors = list(set(editors))
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("suggestion", suggestion_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("editor/suggestion_locked.html", suggestion=s, lock=l.lock, edit_suggestion_page=True)
 
-    return suggestion_handler.request_handler(request, suggestion_id, redirect_route="editor.suggestion_page",
-                                           template="editor/suggestion.html", locked_template="editor/suggestion_locked.html", editors=editors,
-                                           editorial_available=editorial_available, status_options="editor")
+    if request.method == "GET":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role=role, source=s)
+        return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+    elif request.method == "POST":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role=role, form_data=request.form, source=s)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Application updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(e.message)
+                return redirect(url_for("editor.suggestion_page", suggestion_id=s.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_suggestion_page=True, lock=lockinfo)

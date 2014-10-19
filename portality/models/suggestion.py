@@ -93,7 +93,14 @@ class Suggestion(Journal):
     @property
     def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
     def set_suggester(self, name, email):
-        self._set_suggestion_property("suggester", {"name" : name, "email" : email})
+        sugg = {}
+        if name is not None:
+            sugg["name"] = name
+        if email is not None:
+            sugg["email"] = email
+        if name is None and email is None:
+            return
+        self._set_suggestion_property("suggester", sugg)
 
     def save(self, **kwargs):
         self.prep()
