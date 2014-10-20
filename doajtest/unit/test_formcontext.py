@@ -394,7 +394,8 @@ class TestFormContext(DoajTestCase):
         assert fc.source is not None
 
     ###########################################################
-    # Tests on the public application form
+    # Tests on the public application form in detail
+    # (other form contexts will get their own files)
     ###########################################################
 
     def test_07_public_init(self):
