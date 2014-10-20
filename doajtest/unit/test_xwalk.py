@@ -121,10 +121,10 @@ WORKFLOW = {
     "application_status" : "pending"
 }
 
+#####################################################################
+# Form objects for use in testing
+#####################################################################
 
-#####################################################################
-# Source objects to be used for testing
-#####################################################################
 
 APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
 APPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
@@ -147,6 +147,27 @@ for n in notes:
     APPLICATION_FORM[datekey] = n.get("date")
     i += 1
 
+JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)
+JOURNAL_FORMINFO.update(deepcopy(NOTES))
+JOURNAL_FORMINFO.update(deepcopy(SUBJECT))
+JOURNAL_FORMINFO.update(deepcopy(OWNER))
+JOURNAL_FORMINFO.update(deepcopy(EDITORIAL))
+
+JOURNAL_FORM = deepcopy(JOURNAL_FORMINFO)
+JOURNAL_FORM["keywords"] = ",".join(JOURNAL_FORM["keywords"])
+notes = JOURNAL_FORM["notes"]
+del JOURNAL_FORM["notes"]
+i = 0
+for n in notes:
+    notekey = "notes-" + str(i) + "-note"
+    datekey = "notes-" + str(i) + "-date"
+    JOURNAL_FORM[notekey] = n.get("note")
+    JOURNAL_FORM[datekey] = n.get("date")
+    i += 1
+
+#####################################################################
+# Source objects to be used for testing
+#####################################################################
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -264,6 +285,110 @@ APPLICATION_SOURCE = {
     }
 }
 
+JOURNAL_SOURCE = {
+    "bibjson" : {
+        # "active" : true|false,
+        "title" : "The Title",
+        "alternative_title" : "Alternative Title",
+        "identifier": [
+            {"type" : "pissn", "id" : "1234-5678"},
+            {"type" : "eissn", "id" : "9876-5432"},
+        ],
+        "keywords" : ["word", "key"],
+        "language" : ["EN", "FR"],
+        "country" : "US",
+        "publisher" : "The Publisher",
+        "provider" : "Platform Host Aggregator",
+        "institution" : "Society Institution",
+        "link": [
+            {"type" : "homepage", "url" : "http://journal.url"},
+            {"type" : "waiver_policy", "url" : "http://waiver.policy"},
+            {"type" : "editorial_board", "url" : "http://editorial.board"},
+            {"type" : "aims_scope", "url" : "http://aims.scope"},
+            {"type" : "author_instructions", "url" : "http://author.instructions"},
+            {"type" : "oa_statement", "url" : "http://oa.statement"}
+        ],
+        "subject" : [
+            {"scheme" : "LCC", "term" : "Economic theory. Demography", "code" : "HB1-3840"},
+            {"scheme" : "LCC", "term" : "Social Sciences", "code" : "H"}
+        ],
+
+        "oa_start" : {
+            "year" : 1980,
+        },
+        "apc" : {
+            "currency" : "GBP",
+            "average_price" : 2
+        },
+        "submission_charges" : {
+            "currency" : "USD",
+            "average_price" : 4
+        },
+        "archiving_policy" : {
+            "policy" : [
+                "LOCKSS", "CLOCKSS",
+                ["A national library", "Trinity"],
+                ["Other", "A safe place"]
+            ],
+            "url" : "http://digital.archiving.policy"
+        },
+        "editorial_review" : {
+            "process" : "Open peer review",
+            "url" : "http://review.process"
+        },
+        "plagiarism_detection" : {
+            "detection": True,
+            "url" : "http://plagiarism.screening"
+        },
+        "article_statistics" : {
+            "statistics" : True,
+            "url" : "http://download.stats"
+        },
+        "deposit_policy" : ["Sherpa/Romeo", "Store it"],
+        "author_copyright" : {
+            "copyright" : "Sometimes",
+            "url" : "http://copyright"
+        },
+        "author_publishing_rights" : {
+            "publishing_rights" : "Occasionally",
+            "url" : "http://publishing.rights"
+        },
+        "allows_fulltext_indexing" : True,
+        "persistent_identifier_scheme" : ["DOI", "ARK", "PURL"],
+        "format" : ["HTML", "XML", "Wordperfect"],
+        "publication_time" : 8,
+        "license" : [
+            {
+                "title" : "CC MY",
+                "type" : "CC MY",
+                "url" : "http://licence.url",
+                "open_access": True,
+                "BY": True,
+                "NC": True,
+                "ND": False,
+                "SA": False,
+                "embedded" : True,
+                "embedded_example_url" : "http://licence.embedded"
+            }
+        ]
+    },
+    "admin" : {
+        "notes" : [
+            {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
+        ],
+        "contact" : [
+            {
+                "email" : "contact@email.com",
+                "name" : "Contact Name"
+            }
+        ],
+        "owner" : "Owner",
+        "editor_group" : "editorgroup",
+        "editor" : "associate",
+    }
+}
+
 
 class TestXwalk(DoajTestCase):
     def setUp(self):
@@ -275,7 +400,23 @@ class TestXwalk(DoajTestCase):
 
     def test_01_journal(self):
         #forminfo = xwalk.JournalFormXWalk.obj2form(models.Journal(**JOURNAL_SOURCE))
-        #assert forminfo == JOURNAL_FORM
+        #assert forminfo == JOURNAL_FORMINFO
+
+        #form = forms.ManEdApplicationReviewForm(formdata=MultiDict(JOURNAL_FORM))
+        #obj = xwalk.JournalFormXWalk.form2obj(form)
+
+        #onotes = obj["admin"]["notes"]
+        #del obj["admin"]["notes"]
+
+        #cnotes = JOURNAL_SOURCE["admin"]["notes"]
+        #csource = deepcopy(JOURNAL_SOURCE)
+        #del csource["admin"]["notes"]
+
+        #otext = [n.get("note") for n in onotes]
+        #ctext = [n.get("note") for n in cnotes]
+        #assert otext == ctext
+
+        #assert obj == csource
         pass
 
     def test_02_application(self):
