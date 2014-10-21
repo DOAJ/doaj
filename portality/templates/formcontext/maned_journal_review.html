@@ -7,12 +7,6 @@
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
-    {# FIXME: would be best if this was something more formal on the formcontext level #}
-    {% if form_context.form.application_status.data == 'accepted' %}
-    <h4 class="form-status">Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.</h4>
-    {% endif %}
-
-
     <fieldset>
 
         <div class="row-fluid">
@@ -31,16 +25,13 @@
                     <div class="span12 with-borders form-section" style="margin-left: 0;">
                         <div class="control-group">
                             <div class="controls">
-                                <button class="btn btn-success" type="submit">Save application &gt;</button>
+                                <button class="btn btn-success" type="submit">Save journal &gt;</button>
                             </div>
+                            
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("make_all_fields_optional") }}
+                            {% endautoescape %}
                         </div>
-                    </div>
-
-                    <div class="span12 with-borders form-section" style="margin-left: 0;">
-                        <h3 class="heading-aligned-with-fields">Application status</h3>
-                        {% autoescape off %}
-                        {{ form_context.render_field_group("status") }}
-                        {% endautoescape %}
                     </div>
 
                     <div class="span12 with-borders form-section" style="margin-left: 0;">
@@ -49,6 +40,16 @@
                         {{ form_context.render_field_group("account") }}
                         {% endautoescape %}
                     </div>
+
+                    {% if form_context.display_old_journal_fields %}
+                        <div class="span12 with-borders form-section" style="margin-left: 0;">
+                            <h3 class="heading-aligned-with-fields">Old journal information</h3>
+                            {% autoescape off %}
+                            {{ form_context.render_field_group("old_journal_fields") }}
+                            {% endautoescape %}
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
 
@@ -73,26 +74,24 @@
 
         </div>
 
-        {# include the base application form which contains all the biblio data #}
-        {% include 'formcontext/_base_application_form.html' %}
-
+        {# include the base journal form which contains all the biblio data #}
+        {% include 'formcontext/_base_journal_form.html' %}
 
         <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
             <div class="span6 with-borders form-section">
-                <h3 class="heading-aligned-with-fields">Details of person making this application</h3>
-                {% autoescape off %}
-                {{ form_context.render_field_group("submitter_info") }}
-                {% endautoescape %}
                 <div class="control-group">
                     <div class="controls">
                         <button class="btn btn-success" type="submit">
-                            Save application &gt;
+                            Save journal &gt;
                         </button>
                     </div>
+
+                    {% autoescape off %}
+                    {{ form_context.render_field_group("make_all_fields_optional") }}
+                    {% endautoescape %}
                 </div>
 
-            </div>
+          </div>
         </div>
 
 

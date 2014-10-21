@@ -187,12 +187,14 @@ def formcontext(context_type, example, id=None):
                 else:
                     return fc.render_template(edit_suggestion_page=True)
 
+
+    ##### Journal forms (in progress) #####
     elif context_type == 'journal':
         if example == 'admin':
             ap = models.Journal.pull(id)
             if request.method == "GET":
                 fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
-                return fc.render_template(edit_suggestion_page=True)  # TODO change param
+                return fc.render_template(edit_journal_page=True)
             elif request.method == "POST":
                 fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
                 if fc.validate():
@@ -201,12 +203,12 @@ def formcontext(context_type, example, id=None):
                         flash('Journal updated.', 'success')
                         for a in fc.alert:
                             flash_with_url(a, "success")
-                        return redirect(url_for("admin.suggestion_page", journal_id=ap.id, _anchor='done'))  # TODO change url target
+                        return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
                     except formcontext.FormContextException as e:
                         flash(e.message)
-                        return redirect(url_for("admin.suggestion_page", journal_id=ap.id, _anchor='cannot_edit'))  # TODO change URL target
+                        return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
                 else:
-                    return fc.render_template(edit_suggestion_page=True)  # TODO change param
+                    return fc.render_template(edit_journal_page=True)
         elif example == 'editor':
             pass
         elif example == 'associate_editor':
