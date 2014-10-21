@@ -301,11 +301,10 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 
-# where are static files served from - in case we need to serve a file
+# Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a
 # legacy route to that file)
 STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
-
 
 
 # ===================================
@@ -334,7 +333,6 @@ STATIC_PAGES = [
 ]
 
 
-
 # =====================================
 # News feed settings
 
@@ -346,13 +344,9 @@ FRONT_PAGE_NEWS_ITEMS = 3
 
 NEWS_PAGE_NEWS_ITEMS = 20
 
+
 # =====================================
 # Edit Lock settings
 
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
-
-# where are static files served from - in case we need to serve a file
-# from there ourselves using Flask instead of nginx (e.g. to support a
-# legacy route to that file)
-STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
