@@ -212,8 +212,6 @@ class AdminContext(FormContext):
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
         self.target.set_created(created_date)
-        if self.source.suggested_on is not None:
-            self.target.suggested_on = self.source.suggested_on
         self.target.data['id'] = self.source.data['id']
 
     @staticmethod
@@ -225,9 +223,9 @@ class AdminContext(FormContext):
 
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
-            raise FormContextException("Cannot carry data from a non-existant source")
+            raise FormContextException("Cannot carry data from a non-existent source")
         if self.target is None:
-            raise FormContextException("Cannot carry data on to a non-existant target - run the xwalk first")
+            raise FormContextException("Cannot carry data on to a non-existent target - run the xwalk first")
 
         # first off, get the notes (by reference) in the target and the notes from the source
         tnotes = self.target.notes()
@@ -276,6 +274,11 @@ class ApplicationAdmin(AdminContext):
         There should be a {missing_thing} on user {username} but there isn't.
         Created the user but not sending the email.
         """.replace("\n", ' ')
+
+    def _carry_fixed_aspects(self):
+        super(ApplicationAdmin, self)._carry_fixed_aspects()
+        if self.source.suggested_on is not None:
+            self.target.suggested_on = self.source.suggested_on
 
     @staticmethod
     def _send_editor_group_email(suggestion):
@@ -914,9 +917,9 @@ class ManEdJournalReview(AdminContext):
         self.renderer = render.ManEdJournalReviewRenderer()
 
     def set_template(self):
-        self.template = "formcontext/maned_application_review.html"  # TODO Next - finishing the template, then change name here
+        self.template = "formcontext/maned_journal_review.html"
 
-    # TODO Most of these are simple renames, the form is just a bunch of subclassing, description expansion are the same, need to check patch_target is OK for a journal, double check strange editor stuff in xwalk, not sure if we need to email editors on journal editing finalise or not (as opposed to app editing)
+
     # aand that's it, wire into app.formcontext and test
 
     def blank_form(self):
@@ -924,21 +927,21 @@ class ManEdJournalReview(AdminContext):
         self._set_choices()
 
     def data2form(self):
-        self.form = forms.ManEdApplicationReviewForm(formdata=self.form_data)
+        self.form = forms.ManEdJournalReviewForm(formdata=self.form_data)
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
     def source2form(self):
-        self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.ManEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
     def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
 
     def patch_target(self):
         if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existant source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
 
@@ -956,9 +959,9 @@ class ManEdJournalReview(AdminContext):
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
 
-        # FIXME: may want to factor this out of the suggestionformxwalk
-        email_editor = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        # FIXME: may want to factor this out of the journalformxwalk
+        # email_editor = xwalk.JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        # email_associate = xwalk.JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.save()

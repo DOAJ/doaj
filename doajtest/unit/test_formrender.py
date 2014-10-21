@@ -176,3 +176,21 @@ class TestRender(DoajTestCase):
                     assert not obj[field].get("first_error", False)
                 q += 1
         assert q == 57 # makes sure we've checked all the fields (56 questions, plus an extra 1 from the end of the loop)
+
+    def test_05_insert_fields(self):
+        r = TestRenderer()
+        r.insert_field_after(
+            field_to_insert={"inserted_in_middle": {}},
+            after_this_field='one',
+            field_group='test'
+        )
+        r.insert_field_after(
+            field_to_insert={"inserted_last": {}},
+            after_this_field='two',
+            field_group='test'
+        )
+        assert len(r.FIELD_GROUPS['test']) == 4
+        assert r.FIELD_GROUPS['test'][0].keys()[0] == 'one'
+        assert r.FIELD_GROUPS['test'][1].keys()[0] == 'inserted_in_middle'
+        assert r.FIELD_GROUPS['test'][2].keys()[0] == 'two'
+        assert r.FIELD_GROUPS['test'][3].keys()[0] == 'inserted_last'

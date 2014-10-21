@@ -63,6 +63,17 @@ class Renderer(object):
             frag += self.fh.render_field(form_context, field.short_name)
         return frag
 
+    def find_field(self, field, field_group):
+        for index, item in enumerate(self.FIELD_GROUPS[field_group]):
+            if field in item:
+                return index
+
+    def insert_field_after(self, field_to_insert, after_this_field, field_group):
+        self.FIELD_GROUPS[field_group].insert(
+            self.find_field(after_this_field, field_group) + 1,
+            field_to_insert
+        )
+
 
 class BasicJournalInformationRenderer(Renderer):
     def __init__(self):
@@ -94,8 +105,6 @@ class BasicJournalInformationRenderer(Renderer):
                 {"submission_charges" : {}},
                 {"submission_charges_amount" : {"class": "input-mini"}},
                 {"submission_charges_currency" : {"class": "input-large"}},
-                {"articles_last_year" : {"class": "input-mini"}},
-                {"articles_last_year_url" : {"class": "input-xlarge"}},
                 {"waiver_policy" : {}},
                 {"waiver_policy_url" : {"class": "input-xlarge"}},
                 {
@@ -115,7 +124,6 @@ class BasicJournalInformationRenderer(Renderer):
                         }
                     }
                 },
-                {"metadata_provision" : {}},
                 {"download_statistics" : {}},
                 {"download_statistics_url" : {"class": "input-xlarge"}},
                 {"first_fulltext_oa_year" : {"class": "input-mini"}},
@@ -219,13 +227,29 @@ class ApplicationRenderer(BasicJournalInformationRenderer):
         # allow the subclass to define the order the groups should be considered in.  This is useful for
         # numbering questions and determining first errors
         self.NUMBERING_ORDER.append("submitter_info")
-        self.ERROR_CHECK_ORDER.append("submitter_info")
+        self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)  # in this case these can be the same
 
         self.FIELD_GROUPS["submitter_info"] = [
             {"suggester_name" : {}},
             {"suggester_email" : {"class": "input-xlarge"}},
             {"suggester_email_confirm" : {"class": "input-xlarge"}},
         ]
+
+        self.insert_field_after(
+            field_to_insert={"articles_last_year" : {"class": "input-mini"}},
+            after_this_field="submission_charges_currency",
+            field_group="basic_info"
+        )
+        self.insert_field_after(
+            field_to_insert={"articles_last_year_url" : {"class": "input-xlarge"}},
+            after_this_field="articles_last_year",
+            field_group="basic_info"
+        )
+        self.insert_field_after(
+            field_to_insert={"metadata_provision" : {}},
+            after_this_field="article_identifiers",
+            field_group="basic_info"
+        )
 
 
 class PublicApplicationRenderer(ApplicationRenderer):
@@ -240,7 +264,7 @@ class PublisherReApplicationRenderer(ApplicationRenderer):
     def __init__(self):
         super(PublisherReApplicationRenderer, self).__init__()
 
-        self.NUMBERING_ORDER = ["basic_info", "editorial_process", "openness", "content_licensing", "copyright"]
+        self.NUMBERING_ORDER.remove("submitter_info")
         self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)
         del self.FIELD_GROUPS["submitter_info"]
 
@@ -277,7 +301,7 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
             }
         ]
 
-        self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+        self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]  # but do NOT include the new groups in self.NUMBERING_ORDER, don"t want them numbered
 
         self.number_questions()
 
@@ -307,6 +331,7 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
         ]
 
         self.ERROR_CHECK_ORDER = ["status", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+        # don"t want the extra groups numbered so not added to self.NUMBERING_ORDER
 
         self.number_questions()
 
@@ -337,12 +362,23 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
 
 
 class JournalRenderer(BasicJournalInformationRenderer):
-    pass  # will be used either for common code between all journal renderers
+    def __init__(self):
+        super(JournalRenderer, self).__init__()
+
+        self.FIELD_GROUPS["old_journal_fields"] = [
+            {"author_pays": {}},
+            {"author_pays_url": {"class": "input-xlarge"}},
+            {"oa_end_year": {"class": "input-mini"}},
+        ]
+
+        self.ERROR_CHECK_ORDER = ["account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
 
 
 class ManEdJournalReviewRenderer(JournalRenderer):
     def __init__(self):
         super(ManEdJournalReviewRenderer, self).__init__()
+
+        self.display_old_journal_fields = False  # an instance var flag for the template
 
         # extend the list of field groups
         self.FIELD_GROUPS["account"] = [
@@ -369,4 +405,24 @@ class ManEdJournalReviewRenderer(JournalRenderer):
             {"make_all_fields_optional": {}}
         ]
 
+        self.ERROR_CHECK_ORDER = ["make_all_fields_optional", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
         self.number_questions()
+
+    def render_field_group(self, form_context, field_group_name=None):
+        if field_group_name == "old_journal_fields":
+            display_old_journal_fields = False
+            for old_field_name in self.FIELD_GROUPS["old_journal_fields"]:
+                old_field = form_context.form.get(old_field_name)
+                if old_field:
+                    if old_field.data and old_field.data != 'None':
+                        display_old_journal_fields = True
+
+            # let the template know whether to render the box these fields should go in
+            self.display_old_journal_fields = display_old_journal_fields
+
+            if not display_old_journal_fields:
+                return ""
+            # otherwise let it fall through and render the old journal fields
+
+        return super(ManEdJournalReviewRenderer, self).render_field_group(form_context, field_group_name)

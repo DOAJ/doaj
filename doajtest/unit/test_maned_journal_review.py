@@ -1,8 +1,6 @@
 
 from doajtest.helpers import DoajTestCase
-# from flask.ext.testing import TestCase
 
-import re
 from copy import deepcopy
 
 from portality import models
@@ -37,7 +35,7 @@ def mock_lookup_code(code):
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = {
+JOURNAL_SOURCE = {
     "id" : "abcdefghijk",
     "created_date" : "2000-01-01T00:00:00Z",
     "bibjson" : {
@@ -126,20 +124,8 @@ APPLICATION_SOURCE = {
             }
         ]
     },
-    "suggestion" : {
-        "suggested_on": "2014-04-09T20:43:18Z",
-        "suggester": {
-            "name": "Suggester Name",
-            "email": "suggester@email.com"
-        },
-        "articles_last_year" : {
-            "count" : 16,
-            "url" : "http://articles.last.year"
-        },
-        "article_metadata" : True
-    },
     "admin" : {
-        "application_status" : "reapplication",
+        "journal_status" : "rejournal",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -221,18 +207,6 @@ JOURNAL_INFO = {
     "publishing_rights_url" : "http://publishing.rights"
 }
 
-SUGGESTION = {
-    "articles_last_year" : 16,
-    "articles_last_year_url" : "http://articles.last.year",
-    "metadata_provision" : "True"
-}
-
-SUGGESTER = {
-    "suggester_name" : "Suggester",
-    "suggester_email" : "suggester@email.com",
-    "suggester_email_confirm" : "suggester@email.com"
-}
-
 NOTES = {
     'notes': [
         {'date': '2014-05-21T14:02:45Z', 'note': 'First Note'},
@@ -259,40 +233,34 @@ EDITORIAL = {
     "editor" : "associate"
 }
 
-WORKFLOW = {
-    "application_status" : "pending"
-}
+JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)
+JOURNAL_FORMINFO.update(EDITORIAL)
+JOURNAL_FORMINFO.update(SUBJECT)
+JOURNAL_FORMINFO.update(NOTES)
+JOURNAL_FORMINFO.update(OWNER)
+JOURNAL_FORMINFO.update(JOURNAL_LEGACY)
 
-APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
-APPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
-APPLICATION_FORMINFO.update(EDITORIAL)
-APPLICATION_FORMINFO.update(WORKFLOW)
-APPLICATION_FORMINFO.update(SUBJECT)
-APPLICATION_FORMINFO.update(SUGGESTER)
-APPLICATION_FORMINFO.update(NOTES)
-APPLICATION_FORMINFO.update(OWNER)
+JOURNAL_FORM = deepcopy(JOURNAL_FORMINFO)
+JOURNAL_FORM["keywords"] = ",".join(JOURNAL_FORM["keywords"])
 
-APPLICATION_FORM = deepcopy(APPLICATION_FORMINFO)
-APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
-
-notes = APPLICATION_FORM["notes"]
-del APPLICATION_FORM["notes"]
+notes = JOURNAL_FORM["notes"]
+del JOURNAL_FORM["notes"]
 i = 0
 for n in notes:
     notekey = "notes-" + str(i) + "-note"
     datekey = "notes-" + str(i) + "-date"
-    APPLICATION_FORM[notekey] = n.get("note")
-    APPLICATION_FORM[datekey] = n.get("date")
+    JOURNAL_FORM[notekey] = n.get("note")
+    JOURNAL_FORM[datekey] = n.get("date")
     i += 1
 
 ######################################################
 # Main test class
 ######################################################
 
-class TestManEdAppReview(DoajTestCase):
+class TestManEdJournalReview(DoajTestCase):
 
     def setUp(self):
-        super(TestManEdAppReview, self).setUp()
+        super(TestManEdJournalReview, self).setUp()
 
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
@@ -304,7 +272,7 @@ class TestManEdAppReview(DoajTestCase):
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
-        super(TestManEdAppReview, self).tearDown()
+        super(TestManEdJournalReview, self).tearDown()
 
         models.EditorGroup.pull_by_key = self.editor_group_pull
         lcc.lcc_choices = self.old_lcc_choices
@@ -312,11 +280,11 @@ class TestManEdAppReview(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
-        """Give the editor's re-application form a full workout"""
+        """Give the Managing Editor's journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, formcontext.ManEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
@@ -325,12 +293,12 @@ class TestManEdAppReview(DoajTestCase):
         # no need to check form rendering - there are no disabled fields
 
         # now construct it from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
+        fc = formcontext.JournalFormFactory.get_form_context(
             role="admin",
-            form_data=MultiDict(APPLICATION_FORM) ,
-            source=models.Suggestion(**APPLICATION_SOURCE))
+            form_data=MultiDict(JOURNAL_FORM) ,
+            source=models.Journal(**JOURNAL_SOURCE))
 
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert isinstance(fc, formcontext.ManEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None

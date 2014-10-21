@@ -411,3 +411,14 @@ class PublisherReApplicationForm(JournalInformation, Suggestion):
         * Suggestion - additional application metadata
     """
     pass
+
+class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, JournalInformation, Notes, OptionalValidation):
+    """
+    Managing Editor's Journal Review form.  It consists of:
+        * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
+        * JournalLegacy - ability to edit info present in deprecated fields. Will only be shown by the renderer for records that have data in those fields already.
+        * JournalInformation - journal bibliographic data
+        * Subject - ability to use subject hierarchy browser
+        * Notes - repeatable notes field
+    """
+    pass

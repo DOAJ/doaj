@@ -217,7 +217,7 @@ class JournalGenericXWalk(object):
 class SuggestionFormXWalk(JournalGenericXWalk):
 
     @classmethod
-    def form2obj(cls, form, existing_suggestion=None):
+    def form2obj(cls, form):
         suggestion = models.Suggestion()
         bibjson = suggestion.bibjson()
 
@@ -574,7 +574,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 class JournalFormXWalk(JournalGenericXWalk):
 
     @classmethod
-    def form2obj(cls, form, existing_journal):
+    def form2obj(cls, form):
         journal = models.Journal()
         bibjson = journal.bibjson()
 
