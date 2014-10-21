@@ -269,6 +269,9 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
 
+# Reapplication upload directory
+REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
+
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available
 
