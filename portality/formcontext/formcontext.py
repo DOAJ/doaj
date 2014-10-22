@@ -478,7 +478,7 @@ class ManEdApplicationReview(ApplicationAdmin):
 
     def patch_target(self):
         if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existant source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
@@ -492,7 +492,7 @@ class ManEdApplicationReview(ApplicationAdmin):
         # can be carried over from the old implementation
 
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
@@ -530,7 +530,7 @@ class ManEdApplicationReview(ApplicationAdmin):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -584,7 +584,7 @@ class EditorApplicationReview(ApplicationAdmin):
 
     def patch_target(self):
         if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existant source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -595,7 +595,7 @@ class EditorApplicationReview(ApplicationAdmin):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
@@ -615,7 +615,7 @@ class EditorApplicationReview(ApplicationAdmin):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(EditorApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -624,7 +624,7 @@ class EditorApplicationReview(ApplicationAdmin):
 
     def _set_choices(self):
         if self.source is None:
-            raise FormContextException("You cannot set choices for a non-existant source")
+            raise FormContextException("You cannot set choices for a non-existent source")
 
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
@@ -684,7 +684,7 @@ class AssEdApplicationReview(ApplicationAdmin):
 
     def patch_target(self):
         if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existant source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -696,7 +696,7 @@ class AssEdApplicationReview(ApplicationAdmin):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
@@ -709,7 +709,7 @@ class AssEdApplicationReview(ApplicationAdmin):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(AssEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -744,7 +744,7 @@ class PublisherReApplication(ApplicationAdmin):
 
     def pre_validate(self):
         if self.source is None:
-            raise FormContextException("You cannot validate a form from a non-existant source")
+            raise FormContextException("You cannot validate a form from a non-existent source")
 
         bj = self.source.bibjson()
         contacts = self.source.contacts()
@@ -765,7 +765,7 @@ class PublisherReApplication(ApplicationAdmin):
 
     def patch_target(self):
         if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existant source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -780,7 +780,7 @@ class PublisherReApplication(ApplicationAdmin):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherReApplication, self).finalise()
@@ -796,7 +796,7 @@ class PublisherReApplication(ApplicationAdmin):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise FormContextException("You cannot edit a not-existant application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(PublisherReApplication, self).render_template(**kwargs)
 
