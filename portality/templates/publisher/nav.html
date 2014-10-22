@@ -5,7 +5,10 @@
       <li{% if request.path == url_for('publisher.upload_file') %} class="active"{% endif %}><a href="{{ url_for('publisher.upload_file') }}">Upload Article XML</a></li>
       <li{% if request.path == url_for('publisher.metadata') %} class="active"{% endif %}><a href="{{ url_for('publisher.metadata') }}">Enter Article Metadata</a></li>
       <li{% if request.path == url_for('publisher.help') %} class="active"{% endif %}><a href="{{ url_for('publisher.help') }}">Help</a></li>
+      <!-- Only show the reapplication tab if Publisher has active reapplications -->
+      {% if true %}
       <li{% if request.path == url_for('publisher.bulk') %} class="active"{% endif %}><a href="{{ url_for('publisher.bulk') }}">Reapply</a></li>
+      {% endif %}
     </ul>
   </div>
 </div>
