@@ -87,7 +87,6 @@ def upload_file():
     return render_template('publisher/uploadmetadata.html', previous=previous)
 
 def _file_upload(f, schema, previous):
-    
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
     record.upload(current_user.id, f.filename)
@@ -302,11 +301,60 @@ def metadata():
 def help():
     return render_template("publisher/help.html")
 
-@blueprint.route("/reapply")
+@blueprint.route("/reapply", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def bulk():
-    return render_template("publisher/bulk_reapplication.html")
+    # all responses involve getting the previous uploads
+    previous = models.BulkUpload.by_owner(current_user.id)
+
+    if request.method == "GET":
+        return render_template("publisher/bulk_reapplication.html", previous=previous)
+
+    # otherwise we are dealing with a POST - file upload
+    f = request.files.get("file")
+
+    if f.filename != "":
+        return _bulk_upload(f, previous)
+
+    flash("No file provided - select a file to upload and try again.", "error")
+    return render_template("publisher/bulk_reapplication.html", previous=previous)
+
+def _bulk_upload(f, previous):
+
+    # prep a record to go into the index, to record this upload
+    record = models.BulkUpload()
+    record.upload(current_user.id, f.filename)
+    record.set_id()
+
+    # the file path that we are going to write to
+    csv = os.path.join(app.config.get("REAPPLICATION_UPLOAD_DIR", "."), record.local_filename)
+
+    # it's critical here that no errors cause files to get left behind unrecorded
+    try:
+        # write the incoming file out to the csv file
+        f.save(csv)
+
+        # save the index entry
+        record.save()
+
+        previous = [record] + previous # add the new record to the previous records
+        flash("File successfully uploaded - it will be processed shortly", "success")
+        return render_template("publisher/bulk_reapplication.html", previous=previous)
+    except:
+        # if we can't record either of these things, we need to back right off
+        try:
+            os.remove(csv)
+        except:
+            pass
+        try:
+            record.delete()
+        except:
+            pass
+
+        flash("Failed to upload file - please contact an administrator", "error")
+        return render_template("publisher/bulk_reapplication.html", previous=previous)
+
 
 def _validate_authors(form, require=1):
     counted = 0
