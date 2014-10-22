@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 # from flask.ext.testing import TestCase
 
-from portality import models
+from portality import models, core
 from portality.formcontext import formcontext, render
 
 from werkzeug.datastructures import MultiDict
@@ -375,11 +375,11 @@ class TestFormContext(DoajTestCase):
         assert fc.form_data is None
         assert fc.source is not None
 
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", form_data=MultiDict(APPLICATION_FORM))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
         assert isinstance(fc, formcontext.EditorApplicationReview)
         assert fc.form is not None
         assert fc.form_data is not None
-        assert fc.source is None
+        assert fc.source is not None
 
         fc = formcontext.ApplicationFormFactory.get_form_context("associate_editor", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
         assert isinstance(fc, formcontext.AssEdApplicationReview)
@@ -435,6 +435,9 @@ class TestFormContext(DoajTestCase):
     def test_09_public_form_workflow(self):
         """Test that the active functions on the public application form work"""
 
+        old_enable_email = core.app.config.get('ENABLE_EMAIL')
+        core.app.config['ENABLE_EMAIL'] = False
+
         # create our form from the data
         formdata = MultiDict(APPLICATION_FORM)
         fc = formcontext.ApplicationFormFactory.get_form_context(form_data=formdata)
@@ -454,6 +457,8 @@ class TestFormContext(DoajTestCase):
         assert fc.target is not None
         assert fc.target.application_status == "pending"
         assert fc.target.suggested_on is not None
+
+        core.app.config['ENABLE_EMAIL'] = old_enable_email
 
 
     def test_10_public_form_render(self):
