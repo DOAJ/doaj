@@ -137,6 +137,53 @@ class Journal(DomainObject):
         if len(histories) == 0:
             del self.data["history"]
 
+    def make_reapplication(self):
+        from portality.models import Suggestion
+        raw_reapp = deepcopy(self.data)
+
+        # remove all the properties that won't be carried
+        if "id" in raw_reapp:
+            del raw_reapp["id"]
+        if "index" in raw_reapp:
+            del raw_reapp["index"]
+        if "created_date" in raw_reapp:
+            del raw_reapp["created_date"]
+        if "last_updated" in raw_reapp:
+            del raw_reapp["last_updated"]
+        # there should not be an old suggestion record, but just to be safe
+        if "suggestion" in raw_reapp:
+            del raw_reapp["suggestion"]
+
+        # construct the new admin object from the ground up
+        admin = raw_reapp.get("admin")
+        if admin is not None:
+            na = {}
+            na["application_status"] = "reapplication"
+            na["current_journal"] = self.id
+            if "notes" in admin:
+                na["notes"] = admin["notes"]
+            if "contact" in admin:
+                na["contact"] = admin["contact"]
+            if "owner" in admin:
+                na["owner"] = admin["owner"]
+            if "editor_group" in admin:
+                na["editor_group"] = admin["editor_group"]
+            if "editor" in admin:
+                na["editor"] = admin["editor"]
+            raw_reapp["admin"] = na
+
+        # make the new suggestion
+        reapp = Suggestion(**raw_reapp)
+        reapp.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        reapp.save()
+
+        # update this record to include the reapplication id
+        self.set_current_application(reapp.id)
+        self.save()
+
+        # finally, return the reapplication in case the caller needs it
+        return reapp
+
     def is_in_doaj(self):
         return self.data.get("admin", {}).get("in_doaj", False)
 
