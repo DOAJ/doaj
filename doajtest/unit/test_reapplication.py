@@ -1,5 +1,6 @@
 from doajtest.helpers import DoajTestCase
-from portality import models
+from portality import models, reapplication, clcsv
+import os
 
 class TestReApplication(DoajTestCase):
 
@@ -8,6 +9,9 @@ class TestReApplication(DoajTestCase):
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
+        if os.path.exists("reapp.csv") and os.path.isfile("reapp.csv"):
+            os.remove("reapp.csv")
+
 
     def test_01_make_reapplication(self):
         # first make ourselves a journal with the key ingredients
@@ -43,4 +47,21 @@ class TestReApplication(DoajTestCase):
         assert j.current_application == reapp.id
         assert reapp.created_date is not None
         assert reapp.last_updated is not None
+
+    def test_02_make_csv_vbasic(self):
+        s1 = models.Suggestion()
+        bj1 = s1.bibjson()
+        bj1.title = "The Title"
+        bj1.add_identifier("eissn", "1245-5678")
+
+        s2 = models.Suggestion()
+        bj2 = s2.bibjson()
+        bj2.title = "Second One"
+        bj2.add_identifier("pissn", "9876-5432")
+
+        reapplication.make_csv("reapp.csv", [s1, s2])
+
+        assert os.path.exists("reapp.csv")
+
+        sheet = clcsv.ClCsv("reapp.csv")
 

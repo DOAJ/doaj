@@ -72,7 +72,7 @@ class ClCsv():
             elif type(col_identifier) == str:
                 # set column by title.
                 num = self.get_colnumber(col_identifier)
-                if num and type(col_contents) == list:
+                if num >= 0 and type(col_contents) == list:
                     self.set_column(num, (col_identifier, col_contents))
                 else:
                     raise IndexError
@@ -93,6 +93,7 @@ class ClCsv():
         for i in range(0, len(self.data)):
             if self.data[i][0] == header:
                 return i
+        return -1
 
     def get_rownumber(self, first_col_val):
         """
@@ -113,11 +114,22 @@ class ClCsv():
         Write and close the file.
         """
         rows = []
-        for i in range(0, len(self.data)):
+
+        # find out how many rows we're going to need to write
+        max_rows = 0
+        for _, cont in self.data:
+            if len(cont) > max_rows:
+                max_rows = len(cont)
+        max_rows += 1 # add the header row
+
+        for i in range(0, max_rows):
             row = []
             for (col_name, col_contents) in self.data:
                 col_data = [col_name] + col_contents
-                row.append(col_data[i])
+                if len(col_data) > i:
+                    row.append(col_data[i])
+                else:
+                    row.append("")
             rows.insert(i, row)
 
         # Remove current contents of file
@@ -132,6 +144,8 @@ class ClCsv():
     def _populate_data(self, csv_rows):
         # Reset the stored data
         self.data = []
+        if len(csv_rows) == 0:
+            return
 
         # Add new data
         for i in range(0, len(csv_rows[0])):
