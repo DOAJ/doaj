@@ -19,6 +19,18 @@ class BulkReApplication(DomainObject):
     def set_owner(self, owner):
         self.data["owner"] = owner
 
+    def created_timestamp(self):
+        if "created_date" not in self.data:
+            return None
+        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
+
+    @classmethod
+    def by_owner(cls, owner, size=10):
+        q = OwnerBulkQuery(owner, size)
+        res = cls.query(q=q.query())
+        rs = [BulkReApplication(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+
 class BulkUpload(DomainObject):
     __type__ = "bulk_upload"
 
@@ -80,7 +92,6 @@ class BulkUpload(DomainObject):
         self.data["reapplied"] = reapplied
         self.data["skipped"] = skipped
         self.data["processed_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-
 
 
     @classmethod

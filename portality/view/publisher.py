@@ -271,23 +271,30 @@ def help():
 @blueprint.route("/reapply", methods=["GET", "POST"])
 @login_required
 @ssl_required
-def bulk():
+def bulk_reapply():
+    # user must have the role "publisher" TODO: this role is a placeholder (pending it being limited by role)
+    if not current_user.has_role("publisher"):
+        abort(401)
+
+    # Get the download details for reapplication CSVs TODO: Will this get the information we need? i.e. how to get to the CSVs
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+
     # all responses involve getting the previous uploads
     previous = models.BulkUpload.by_owner(current_user.id)
 
     if request.method == "GET":
-        return render_template("publisher/bulk_reapplication.html", previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
 
     # otherwise we are dealing with a POST - file upload
     f = request.files.get("file")
 
     if f.filename != "":
-        return _bulk_upload(f, previous)
+        return _bulk_upload(f, csv_downloads, previous)
 
     flash("No file provided - select a file to upload and try again.", "error")
-    return render_template("publisher/bulk_reapplication.html", previous=previous)
+    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
 
-def _bulk_upload(f, previous):
+def _bulk_upload(f, csv_downloads, previous):
 
     # prep a record to go into the index, to record this upload
     record = models.BulkUpload()
@@ -307,7 +314,7 @@ def _bulk_upload(f, previous):
 
         previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template("publisher/bulk_reapplication.html", previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
     except:
         # if we can't record either of these things, we need to back right off
         try:
@@ -320,7 +327,7 @@ def _bulk_upload(f, previous):
             pass
 
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template("publisher/bulk_reapplication.html", previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
 
 
 def _validate_authors(form, require=1):
