@@ -2,6 +2,10 @@
 
 {% block content %}
 
+{# include the title and the "unlock and close" feature #}
+{% set heading_object_type = 'Journal' %}
+{% include 'formcontext/_lockable_header.html' %}
+
 <form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
@@ -41,7 +45,7 @@
                         {% endautoescape %}
                     </div>
 
-                    {% if form_context.display_old_journal_fields %}
+                    {% if form_context.renderer.display_old_journal_fields %}
                         <div class="span12 with-borders form-section" style="margin-left: 0;">
                             <h3 class="heading-aligned-with-fields">Old journal information</h3>
                             {% autoescape off %}

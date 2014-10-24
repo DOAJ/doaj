@@ -1,6 +1,6 @@
 <div class="row-fluid" style="margin-bottom: 20px">
     <div class="span9">
-        <h1>Application: {{form_context.source.bibjson().title}}</h1>
+        <h1>{{ heading_object_type }}: {{form_context.source.bibjson().title}}</h1>
         {% if form_context.source.last_updated %}
           <h4>Last updated: {{form_context.source.last_updated}}</h4>
         {% endif %}

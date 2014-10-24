@@ -192,7 +192,7 @@ class FormContext(object):
         return self.renderer.render_field_group(self, field_group_name)
 
 
-class AdminContext(FormContext):
+class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
         # add the contents of a few fields to their descriptions since select2 autocomplete
         # would otherwise obscure the full values
@@ -267,7 +267,44 @@ class AdminContext(FormContext):
             self.target.set_notes(tnotes)
 
 
-class ApplicationAdmin(AdminContext):
+class JournalContext(PrivateContext):
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(JournalContext, self).finalise()
+
+        # Save the target
+        self.target.save()
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+
+        self.target.set_editor_group(self.source.editor_group)
+
+    def form2target(self):
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(JournalContext, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs)
+
+
+
+class ApplicationContext(PrivateContext):
     ERROR_MSG_TEMPLATE = \
         """Problem while creating account while turning suggestion into journal.
         There should be a {missing_thing} on user {username} but there isn't.
@@ -275,7 +312,7 @@ class ApplicationAdmin(AdminContext):
         """.replace("\n", ' ')
 
     def _carry_fixed_aspects(self):
-        super(ApplicationAdmin, self)._carry_fixed_aspects()
+        super(ApplicationContext, self)._carry_fixed_aspects()
         if self.source.suggested_on is not None:
             self.target.suggested_on = self.source.suggested_on
 
@@ -442,12 +479,12 @@ class JournalFormFactory(object):
         if role == "admin":
             return ManEdJournalReview(source=source, form_data=form_data)
         elif role == "editor":
-            pass
+            return EditorJournalReview(source=source, form_data=form_data)
         elif role == "associate_editor":
             pass
 
 
-class ManEdApplicationReview(ApplicationAdmin):
+class ManEdApplicationReview(ApplicationContext):
     """
     Managing Editor's Application Review form.  Should be used in a context where the form warrants full
     admin priviledges.  It will permit conversion of applications to journals, and assignment of owner account
@@ -546,7 +583,7 @@ class ManEdApplicationReview(ApplicationAdmin):
             self.form.editor.choices = [("", "")]
 
 
-class EditorApplicationReview(ApplicationAdmin):
+class EditorApplicationReview(ApplicationContext):
     """
     Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
@@ -648,7 +685,7 @@ class EditorApplicationReview(ApplicationAdmin):
 
 
 
-class AssEdApplicationReview(ApplicationAdmin):
+class AssEdApplicationReview(ApplicationContext):
     """
     Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
@@ -723,7 +760,7 @@ class AssEdApplicationReview(ApplicationAdmin):
         else:
             self.form.application_status.choices = choices.Choices.application_status()
 
-class PublisherReApplication(ApplicationAdmin):
+class PublisherReApplication(ApplicationContext):
     def make_renderer(self):
         self.renderer = render.PublisherReApplicationRenderer()
         self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
@@ -903,10 +940,9 @@ class PublicApplication(FormContext):
                             template_name="email/suggestion_received.txt",
                             suggestion=self.target,
                             )
+
 ### Journal form contexts ###
-
-
-class ManEdJournalReview(AdminContext):
+class ManEdJournalReview(JournalContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
     admin privileges.  It will permit doing every.
@@ -916,9 +952,6 @@ class ManEdJournalReview(AdminContext):
 
     def set_template(self):
         self.template = "formcontext/maned_journal_review.html"
-
-
-    # aand that's it, wire into app.formcontext and test
 
     def blank_form(self):
         self.form = forms.ManEdApplicationReviewForm()
@@ -934,50 +967,11 @@ class ManEdJournalReview(AdminContext):
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
-    def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
-
     def patch_target(self):
-        if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existent source")
-
-        self._carry_fixed_aspects()
-
+        super(ManEdJournalReview, self).patch_target()
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
-
-    def finalise(self):
-        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
-        # can be carried over from the old implementation
-
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
-
-        # if we are allowed to finalise, kick this up to the superclass
-        super(ManEdJournalReview, self).finalise()
-
-        # FIXME: may want to factor this out of the journalformxwalk
-        # email_editor = xwalk.JournalFormXWalk.is_new_editor_group(self.form, self.source)
-        # email_associate = xwalk.JournalFormXWalk.is_new_editor(self.form, self.source)
-
-        # Save the target
-        self.target.save()
-
-        # if we need to email the editor and/or the associate, handle those here
-        # if email_editor:
-        #     self._send_editor_group_email(self.target)
-        # if email_associate:
-        #     self._send_editor_email(self.target)
-
-    def render_template(self, **kwargs):
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
-
-        return super(ManEdJournalReview, self).render_template(
-            lcc_jstree=json.dumps(lcc_jstree),
-            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
-            **kwargs)
 
     def _set_choices(self):
         editor = self.form.editor.data
@@ -985,3 +979,56 @@ class ManEdJournalReview(AdminContext):
             self.form.editor.choices = [(editor, editor)]
         else:
             self.form.editor.choices = [("", "")]
+
+
+class EditorJournalReview(JournalContext):
+    """
+    Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group
+    is accessing a journal.  This prevents re-assignment of Editorial group, but permits assignment of associate
+    editor.
+    """
+    def make_renderer(self):
+        self.renderer = render.EditorJournalReviewRenderer()
+        self.renderer.set_disabled_fields(["editor_group"])
+
+    def set_template(self):
+        self.template = "formcontext/editor_journal_review.html"
+
+    def blank_form(self):
+        self.form = forms.EditorJournalReviewForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.EditorJournalReviewForm(formdata=self.form_data)
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.EditorJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def patch_target(self):
+        super(EditorJournalReview, self).patch_target()
+        self.target.set_owner(self.source.owner)
+
+    def pre_validate(self):
+        self.form.editor_group.data = self.source.editor_group
+
+    def _set_choices(self):
+        if self.source is None:
+            raise FormContextException("You cannot set choices for a non-existent source")
+
+        # get the editor group from the source because it isn't in the form
+        egn = self.source.editor_group
+        if egn is None:
+            self.form.editor.choices = [("", "")]
+        else:
+            eg = models.EditorGroup.pull_by_key("name", egn)
+            if eg is not None:
+                editors = [eg.editor]
+                editors += eg.associates
+                editors = list(set(editors))
+                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+            else:
+                self.form.editor.choices = [("", "")]
