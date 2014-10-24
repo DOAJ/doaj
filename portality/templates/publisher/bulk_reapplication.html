@@ -19,7 +19,7 @@
             <tbody>
             {% for csv_file in csv_downloads %}
                 <tr>
-                    <td>{{ csv_file.created_timestamp().strftime("%d %b %Y %H:%M:%S") }}</td>
+                    <td>{{ csv_file.created_timestamp.strftime("%d %b %Y %H:%M:%S") }}</td>
                     <td><a>csv_file.spreadsheet_name</a></td>
                 </tr>
             {% endfor %}
@@ -67,7 +67,7 @@
             {% for file in previous %}
                 <tr>
                     <td>
-                        {{ file.created_timestamp().strftime("%d %b %Y %H:%M:%S") }}
+                        {{ file.created_timestamp.strftime("%d %b %Y %H:%M:%S") }}
                     </td>
                     <td>
                         {% if file.filename.startswith("http") %}
