@@ -19,6 +19,7 @@ class BulkReApplication(DomainObject):
     def set_owner(self, owner):
         self.data["owner"] = owner
 
+    @property
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
@@ -58,6 +59,7 @@ class BulkUpload(DomainObject):
     def skipped(self):
         return self.data.get("skipped", 0)
 
+    @property
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
@@ -67,6 +69,7 @@ class BulkUpload(DomainObject):
     def processed_date(self):
         return self.data.get("processed_date")
 
+    @property
     def processed_timestamp(self):
         pd = self.processed_date
         if pd is not None:
