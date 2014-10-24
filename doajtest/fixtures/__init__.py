@@ -1,0 +1,1 @@
+from journals import JournalFixtureFactory

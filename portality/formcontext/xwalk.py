@@ -728,9 +728,10 @@ class JournalFormXWalk(JournalGenericXWalk):
             new_subjects.append(sobj)
         bibjson.set_subjects(new_subjects)
 
-        owner = form.owner.data.strip()
-        if owner:
-            journal.set_owner(owner)
+        if getattr(form, 'owner', None):
+            owner = form.owner.data.strip()
+            if owner:
+                journal.set_owner(owner)
 
         editor_group = form.editor_group.data.strip()
         if editor_group:

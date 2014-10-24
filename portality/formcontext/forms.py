@@ -420,5 +420,18 @@ class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, J
         * JournalInformation - journal bibliographic data
         * Subject - ability to use subject hierarchy browser
         * Notes - repeatable notes field
+        * RequiredOwner - adds an Owner field which is required - validation will fail if it is not provided
+        * OptionalValidation - Make the form provide an option to bypass validation
+    """
+    pass
+
+class EditorJournalReviewForm(Editorial, Subject, JournalLegacy, JournalInformation, Notes):
+    """
+    Editor's Journal Review form.  It consists of:
+        * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
+        * JournalLegacy - ability to edit info present in deprecated fields. Will only be shown by the renderer for records that have data in those fields already.
+        * JournalInformation - journal bibliographic data
+        * Subject - ability to use subject hierarchy browser
+        * Notes - repeatable notes field
     """
     pass

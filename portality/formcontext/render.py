@@ -365,6 +365,8 @@ class JournalRenderer(BasicJournalInformationRenderer):
     def __init__(self):
         super(JournalRenderer, self).__init__()
 
+        self.display_old_journal_fields = False
+
         self.FIELD_GROUPS["old_journal_fields"] = [
             {"author_pays": {}},
             {"author_pays_url": {"class": "input-xlarge"}},
@@ -372,6 +374,24 @@ class JournalRenderer(BasicJournalInformationRenderer):
         ]
 
         self.ERROR_CHECK_ORDER = ["account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
+    def render_field_group(self, form_context, field_group_name=None):
+        if field_group_name == "old_journal_fields":
+            display_old_journal_fields = False
+            for old_field_name in self.FIELD_GROUPS["old_journal_fields"]:
+                old_field = form_context.form.get(old_field_name)
+                if old_field:
+                    if old_field.data and old_field.data != 'None':
+                        display_old_journal_fields = True
+
+            # let the template know whether to render the box these fields should go in
+            self.display_old_journal_fields = display_old_journal_fields
+
+            if not display_old_journal_fields:
+                return ""
+            # otherwise let it fall through and render the old journal fields
+
+        return super(JournalRenderer, self).render_field_group(form_context, field_group_name)
 
 
 class ManEdJournalReviewRenderer(JournalRenderer):
@@ -409,20 +429,31 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.number_questions()
 
-    def render_field_group(self, form_context, field_group_name=None):
-        if field_group_name == "old_journal_fields":
-            display_old_journal_fields = False
-            for old_field_name in self.FIELD_GROUPS["old_journal_fields"]:
-                old_field = form_context.form.get(old_field_name)
-                if old_field:
-                    if old_field.data and old_field.data != 'None':
-                        display_old_journal_fields = True
 
-            # let the template know whether to render the box these fields should go in
-            self.display_old_journal_fields = display_old_journal_fields
+class EditorJournalReviewRenderer(JournalRenderer):
+    def __init__(self):
+        self.display_old_journal_fields = False  # an instance var flag for the template
 
-            if not display_old_journal_fields:
-                return ""
-            # otherwise let it fall through and render the old journal fields
+        super(EditorJournalReviewRenderer, self).__init__()
 
-        return super(ManEdJournalReviewRenderer, self).render_field_group(form_context, field_group_name)
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+        self.FIELD_GROUPS["editorial"] = [
+            {"editor_group" : {"class" : "input-large"}},
+            {"editor" : {"class" : "input-large"}}
+        ]
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.ERROR_CHECK_ORDER = ["editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+        # don"t want the extra groups numbered so not added to self.NUMBERING_ORDER
+
+        self.number_questions()

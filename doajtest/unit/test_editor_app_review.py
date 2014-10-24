@@ -13,8 +13,6 @@ from werkzeug.datastructures import MultiDict
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
-
-@classmethod
 def editor_group_pull(cls, field, value):
     eg = models.EditorGroup()
     eg.set_editor("eddie")
