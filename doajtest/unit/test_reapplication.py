@@ -1,6 +1,123 @@
 from doajtest.helpers import DoajTestCase
 from portality import models, reapplication, clcsv
 import os
+from copy import deepcopy
+
+APPLICATION_SOURCE = {
+    "bibjson" : {
+        # "active" : true|false,
+        "title" : "The Title",
+        "alternative_title" : "Alternative Title",
+        "identifier": [
+            {"type" : "pissn", "id" : "1234-5678"},
+            {"type" : "eissn", "id" : "9876-5432"},
+        ],
+        "keywords" : ["word", "key"],
+        "language" : ["EN", "FR"],
+        "country" : "US",
+        "publisher" : "The Publisher",
+        "provider" : "Platform Host Aggregator",
+        "institution" : "Society Institution",
+        "link": [
+            {"type" : "homepage", "url" : "http://journal.url"},
+            {"type" : "waiver_policy", "url" : "http://waiver.policy"},
+            {"type" : "editorial_board", "url" : "http://editorial.board"},
+            {"type" : "aims_scope", "url" : "http://aims.scope"},
+            {"type" : "author_instructions", "url" : "http://author.instructions"},
+            {"type" : "oa_statement", "url" : "http://oa.statement"}
+        ],
+        "subject" : [
+            {"scheme" : "LCC", "term" : "Economic theory. Demography", "code" : "HB1-3840"},
+            {"scheme" : "LCC", "term" : "Social Sciences", "code" : "H"}
+        ],
+
+        "oa_start" : {
+            "year" : 1980,
+        },
+        "apc" : {
+            "currency" : "GBP",
+            "average_price" : 2
+        },
+        "submission_charges" : {
+            "currency" : "USD",
+            "average_price" : 4
+        },
+        "archiving_policy" : {
+            "policy" : [
+                "LOCKSS", "CLOCKSS",
+                ["A national library", "Trinity"],
+                ["Other", "A safe place"]
+            ],
+            "url" : "http://digital.archiving.policy"
+        },
+        "editorial_review" : {
+            "process" : "Open peer review",
+            "url" : "http://review.process"
+        },
+        "plagiarism_detection" : {
+            "detection": True,
+            "url" : "http://plagiarism.screening"
+        },
+        "article_statistics" : {
+            "statistics" : True,
+            "url" : "http://download.stats"
+        },
+        "deposit_policy" : ["Sherpa/Romeo", "Store it"],
+        "author_copyright" : {
+            "copyright" : "Sometimes",
+            "url" : "http://copyright"
+        },
+        "author_publishing_rights" : {
+            "publishing_rights" : "Occasionally",
+            "url" : "http://publishing.rights"
+        },
+        "allows_fulltext_indexing" : True,
+        "persistent_identifier_scheme" : ["DOI", "ARK", "PURL"],
+        "format" : ["HTML", "XML", "Wordperfect"],
+        "publication_time" : 8,
+        "license" : [
+            {
+                "title" : "CC MY",
+                "type" : "CC MY",
+                "url" : "http://licence.url",
+                "open_access": True,
+                "BY": True,
+                "NC": True,
+                "ND": False,
+                "SA": False,
+                "embedded" : True,
+                "embedded_example_url" : "http://licence.embedded"
+            }
+        ]
+    },
+    "suggestion" : {
+        "suggester" : {
+            "name" : "Suggester",
+            "email" : "suggester@email.com"
+        },
+        "articles_last_year" : {
+            "count" : 16,
+            "url" : "http://articles.last.year"
+        },
+        "article_metadata" : True
+    },
+    "admin" : {
+        "application_status" : "pending",
+        "notes" : [
+            {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
+        ],
+        "contact" : [
+            {
+                "email" : "contact@email.com",
+                "name" : "Contact Name"
+            }
+        ],
+        "owner" : "Owner",
+        "editor_group" : "editorgroup",
+        "editor" : "associate",
+    }
+}
 
 class TestReApplication(DoajTestCase):
 
@@ -9,8 +126,8 @@ class TestReApplication(DoajTestCase):
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
-        if os.path.exists("reapp.csv") and os.path.isfile("reapp.csv"):
-            os.remove("reapp.csv")
+        if os.path.exists("basic_reapp.csv") and os.path.isfile("basic_reapp.csv"):
+            os.remove("basic_reapp.csv")
 
 
     def test_01_make_reapplication(self):
@@ -59,9 +176,34 @@ class TestReApplication(DoajTestCase):
         bj2.title = "Second One"
         bj2.add_identifier("pissn", "9876-5432")
 
-        reapplication.make_csv("reapp.csv", [s1, s2])
+        reapplication.make_csv("basic_reapp.csv", [s1, s2])
 
-        assert os.path.exists("reapp.csv")
+        assert os.path.exists("basic_reapp.csv")
 
-        sheet = clcsv.ClCsv("reapp.csv")
+    def test_03_csv_xwalk(self):
+        s1 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
+        s2 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
+        s3 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
+
+        bj1 = s1.bibjson()
+        bj1.remove_identifiers("pissn")
+        bj1.remove_identifiers("eissn")
+        bj1.add_identifier("pissn", "1234-5678")
+        bj1.title = "First Title"
+
+        bj2 = s2.bibjson()
+        bj2.remove_identifiers("pissn")
+        bj2.remove_identifiers("eissn")
+        bj2.add_identifier("pissn", "2345-6789")
+        bj2.title = "Second Title"
+
+        bj3 = s3.bibjson()
+        bj3.remove_identifiers("pissn")
+        bj3.remove_identifiers("eissn")
+        bj3.add_identifier("pissn", "3456-7890")
+        bj3.title = "Third Title"
+
+        reapplication.make_csv("full_reapp.csv", [s1, s2, s3])
+
+        assert os.path.exists("full_reapp.csv")
 
