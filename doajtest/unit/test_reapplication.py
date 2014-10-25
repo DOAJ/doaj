@@ -119,6 +119,70 @@ APPLICATION_SOURCE = {
     }
 }
 
+APPLICATION_COL = [
+    "The Title",
+    "http://journal.url",
+    "Alternative Title",
+    "1234-5678",
+    "9876-5432",
+    "The Publisher",
+    "Society Institution",
+    "Platform Host Aggregator",
+    "Contact Name",
+    "contact@email.com",
+    "contact@email.com",
+    "US",
+    "Yes",
+    2,
+    "GBP",
+    "Yes",
+    4,
+    "USD",
+    16,
+    "http://articles.last.year",
+    "Yes",
+    "http://waiver.policy",
+    "LOCKSS, CLOCKSS, A national library, Other",
+    "Trinity",
+    "A safe place",
+    "http://digital.archiving.policy",
+    "Yes",
+    "DOI, ARK, Other",
+    "PURL",
+    "Yes",
+    "Yes",
+    "http://download.stats",
+    1980,
+    "HTML, XML, Other",
+    "Wordperfect",
+    "word, key",
+    "EN, FR",
+    "http://editorial.board",
+    "Open peer review",
+    "http://review.process",
+    "http://aims.scope",
+    "http://author.instructions",
+    "Yes",
+    "http://plagiarism.screening",
+    8,
+    "http://oa.statement",
+    "Yes",
+    "http://licence.embedded",
+    "Other",
+    "CC MY",
+    "BY, NC",
+    "http://licence.url",
+    "Yes",
+    "Sherpa/Romeo, Other",
+    "Store it",
+    "Other",
+    "Sometimes",
+    "http://copyright",
+    "Other",
+    "Occasionally",
+    "http://publishing.rights"
+]
+
 class TestReApplication(DoajTestCase):
 
     def setUp(self):
@@ -128,7 +192,8 @@ class TestReApplication(DoajTestCase):
         super(TestReApplication, self).tearDown()
         if os.path.exists("basic_reapp.csv") and os.path.isfile("basic_reapp.csv"):
             os.remove("basic_reapp.csv")
-
+        if os.path.exists("full_reapp.csv") and os.path.isfile("full_reapp.csv"):
+            os.remove("full_reapp.csv")
 
     def test_01_make_reapplication(self):
         # first make ourselves a journal with the key ingredients
@@ -182,6 +247,15 @@ class TestReApplication(DoajTestCase):
 
     def test_03_csv_xwalk(self):
         s1 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
+        kvs = reapplication.Suggestion2QuestionXwalk.suggestion2question(s1)
+
+        # don't bother to check the questions, their text may vary, and it will be a pain to keep in step with
+        answers = [a for q, a in kvs]
+
+        assert answers == APPLICATION_COL
+
+    def test_04_make_csv_full(self):
+        s1 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
         s2 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
         s3 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
 
@@ -203,7 +277,30 @@ class TestReApplication(DoajTestCase):
         bj3.add_identifier("pissn", "3456-7890")
         bj3.title = "Third Title"
 
-        reapplication.make_csv("full_reapp.csv", [s1, s2, s3])
+        reapplication.make_csv("full_reapp.csv", [s3, s2, s1]) # send the suggestions in in the wrong order for display on purpose
 
         assert os.path.exists("full_reapp.csv")
 
+        # now let's check a few things about the sheet to be sure
+        sheet = clcsv.ClCsv("full_reapp.csv")
+
+        # get the three columns out of the sheet
+        issn1, vals1 = sheet.get_column(1)
+        issn2, vals2 = sheet.get_column(2)
+        issn3, vals3 = sheet.get_column(3)
+
+        # check that the column headers are in the right order
+        assert issn1 == "1234-5678"
+        assert issn2 == "2345-6789"
+        assert issn3 == "3456-7890"
+
+        # check that the column contents are the right contents
+        assert vals1[0] == "First Title"
+        assert vals2[0] == "Second Title"
+        assert vals3[0] == "Third Title"
+
+        # finally check the full question list
+        qs = reapplication.Suggestion2QuestionXwalk.question_list()
+        _, sheetqs = sheet.get_column(0)
+
+        assert sheetqs == qs

@@ -1,6 +1,7 @@
 from portality import models
 from portality.suggestion import SuggestionFormXWalk
 from portality.clcsv import ClCsv
+from copy import deepcopy
 
 def make_csv(path, reapps):
     cols = {}
@@ -123,6 +124,33 @@ class Suggestion2QuestionXwalk(object):
             return cls.SUPPLEMENTARY_QUESTIONS[num][supp]
 
     @classmethod
+    def question_list(cls):
+        # start with the base list of questions
+        ql = deepcopy(cls.QUESTIONS)
+
+        # now get the supplementary question keys in reverse order
+        sups = cls.SUPPLEMENTARY_QUESTIONS.keys()
+        sups.sort(reverse=True)
+
+        # for each of the questions which has supplementary information
+        # insert the additional questions
+        for q in sups:
+            additional = cls.SUPPLEMENTARY_QUESTIONS[q].keys()
+            if len(additional) == 1:
+                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q][additional[0]]
+                ql.insert(q, toinsert)
+            elif len(additional) == 2:
+                # other second (so we insert it first!)
+                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q]["other"]
+                ql.insert(q, toinsert)
+
+                # library first (so we insert it last!)
+                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q]["library"]
+                ql.insert(q, toinsert)
+
+        return ql
+
+    @classmethod
     def suggestion2question(cls, suggestion):
         # start by converting the object to the forminfo version
         # which is used by the application form in the first plage
@@ -186,7 +214,7 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(33), ", ".join(forminfo.get("languages", []))))
         kvs.append((cls.q(34), forminfo.get("editorial_board_url")))
         kvs.append((cls.q(35), forminfo.get("review_process")))
-        kvs.append((cls.q(36), forminfo.get("fulltext_process_url")))
+        kvs.append((cls.q(36), forminfo.get("review_process_url")))
         kvs.append((cls.q(37), forminfo.get("aims_scope_url")))
         kvs.append((cls.q(38), forminfo.get("instructions_authors_url")))
         kvs.append((cls.q(39), plagiarism_screening))
