@@ -30,7 +30,7 @@ def index():
 @login_required
 @ssl_required
 def reapplication_page(reapplication_id):
-    ap = models.Suggestion.pull(id)
+    ap = models.Suggestion.pull(reapplication_id)
 
     if ap is None:
         abort(404)
