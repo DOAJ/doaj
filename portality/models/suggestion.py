@@ -102,6 +102,10 @@ class Suggestion(Journal):
             return
         self._set_suggestion_property("suggester", sugg)
 
+    def save(self, **kwargs):
+        self.prep()
+        super(Suggestion, self).save(snapshot=False, **kwargs)
+
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
