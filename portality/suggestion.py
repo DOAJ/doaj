@@ -537,7 +537,7 @@ class SuggestionFormXWalk(object):
             forminfo['articles_last_year_url'] = articles_last_year.get('url')
 
         forminfo['waiver_policy_url'] = bibjson.get_single_url(urltype='waiver_policy')
-        forminfo['waiver_policy'] = forminfo['waiver_policy_url'] == ''
+        forminfo['waiver_policy'] = forms.reverse_interpret_special(forminfo['waiver_policy_url'] is not None and forminfo['waiver_policy_url'] != '')
 
         # checkboxes
         archiving_policies = forms.reverse_interpret_special(bibjson.archiving_policy.get('policy', []), field='digital_archiving_policy')
