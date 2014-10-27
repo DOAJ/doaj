@@ -20,7 +20,7 @@
             {% for csv_file in csv_downloads %}
                 <tr>
                     <td>{{ csv_file.created_timestamp.strftime("%d %b %Y %H:%M:%S") }}</td>
-                    <td><a>csv_file.spreadsheet_name</a></td>
+                    <td><a href="{{ url_for('publisher.bulk_download', filename=csv_file.id) + '.csv' }}">csv_file.spreadsheet_name</a></td>
                 </tr>
             {% endfor %}
             </tbody>

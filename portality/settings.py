@@ -272,6 +272,9 @@ UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "up
 # Reapplication upload directory
 REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
 
+# Reapplication download directory FIXME: A new directory should be made for csv creation, this was used for testing
+BULK_REAPP_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
+
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available
 

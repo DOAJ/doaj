@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, Response
+from flask import Blueprint, request, make_response, Response, send_from_directory
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
@@ -276,7 +276,7 @@ def bulk_reapply():
     if not current_user.has_role("publisher"):
         abort(401)
 
-    # Get the download details for reapplication CSVs TODO: Will this get the information we need? i.e. how to get to the CSVs
+    # Get the download details for reapplication CSVs
     csv_downloads = models.BulkReApplication.by_owner(current_user.id)
 
     # all responses involve getting the previous uploads
@@ -293,6 +293,12 @@ def bulk_reapply():
 
     flash("No file provided - select a file to upload and try again.", "error")
     return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+@blueprint.route('/bulk_download/<filename>')
+@login_required
+@ssl_required
+def bulk_download(filename):
+    return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
 
 def _bulk_upload(f, csv_downloads, previous):
 
