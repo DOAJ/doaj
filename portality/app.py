@@ -84,7 +84,6 @@ SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an
 @app.route("/formcontext/<context_type>/<example>", methods=["GET", "POST"])
 @app.route("/formcontext/<context_type>/<example>/<id>", methods=["GET", "POST"])
 def formcontext(context_type, example, id=None):
-    print context_type, example
     from portality.formcontext import formcontext
     fc = None
 
