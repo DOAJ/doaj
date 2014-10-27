@@ -156,7 +156,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             return None
 
     @classmethod
-    def keys(cls,mapping=False,prefix=''):
+    def es_keys(cls, mapping=False, prefix=''):
         # return a sorted list of all the keys in the index
         if not mapping:
             mapping = cls.query(endpoint='_mapping')[cls.__type__]['properties']
@@ -167,7 +167,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                     if item != 'exact' and not item.startswith('_'):
                         keys.append(prefix + item + app.config['FACET_FIELD'])
             else:
-                keys = keys + cls.keys(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
+                keys = keys + cls.es_keys(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
         keys.sort()
         return keys
         

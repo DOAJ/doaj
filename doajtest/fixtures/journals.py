@@ -1,5 +1,6 @@
 from copy import deepcopy
 
+from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER
 
 class JournalFixtureFactory(object):
     @staticmethod
@@ -7,8 +8,16 @@ class JournalFixtureFactory(object):
         return deepcopy(JOURNAL_SOURCE)
 
     @staticmethod
+    def make_journal_source_with_legacy_info():
+        return deepcopy(JOURNAL_SOURCE_WITH_LEGACY_INFO)
+
+    @staticmethod
     def make_journal_form():
         return deepcopy(JOURNAL_FORM)
+
+    @staticmethod
+    def make_journal_form_info():
+        return deepcopy(JOURNAL_FORMINFO)
 
 JOURNAL_SOURCE = {
     "id": "abcdefghijk_journal",
@@ -34,7 +43,7 @@ JOURNAL_SOURCE = {
              "url": "http://editorial.board"},
             {"type": "aims_scope", "url": "http://aims.scope"},
             {"type": "author_instructions",
-             "url": "http://author.instructions"},
+             "url": "http://author.instructions.com"},
             {"type": "oa_statement", "url": "http://oa.statement"}
         ],
         "subject": [
@@ -77,7 +86,7 @@ JOURNAL_SOURCE = {
         "deposit_policy": ["Sherpa/Romeo", "Store it"],
         "author_copyright": {
             "copyright": "Sometimes",
-            "url": "http://copyright"
+            "url": "http://copyright.com"
         },
         "author_publishing_rights": {
             "publishing_rights": "Occasionally",
@@ -103,7 +112,6 @@ JOURNAL_SOURCE = {
         ]
     },
     "admin": {
-        "journal_status": "rejournal",
         "notes": [
             {"note": "First Note", "date": "2014-05-21T14:02:45Z"},
             {"note": "Second Note", "date": "2014-05-22T00:00:00Z"}
@@ -119,6 +127,12 @@ JOURNAL_SOURCE = {
         "editor": "associate",
     }
 }
+
+JOURNAL_SOURCE_WITH_LEGACY_INFO = deepcopy(JOURNAL_SOURCE)
+JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays"] = "Y"
+JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays_url"] = "http://author.pays"
+JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["oa_end"] = {}
+JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["oa_end"]["year"] = 1991
 
 JOURNAL_INFO = {
     "title": "The Title",
@@ -182,30 +196,10 @@ JOURNAL_INFO = {
     "publishing_rights_url": "http://publishing.rights"
 }
 
-NOTES = {
-    'notes': [
-        {'date': '2014-05-21T14:02:45Z', 'note': 'First Note'},
-        {'date': '2014-05-22T00:00:00Z', 'note': 'Second Note'}
-    ]
-}
-
-SUBJECT = {
-    "subject": ['HB1-3840', 'H']
-}
-
 JOURNAL_LEGACY = {
     "author_pays": "Y",
     "author_pays_url": "http://author.pays",
     "oa_end_year": 1991
-}
-
-OWNER = {
-    "owner": "Owner"
-}
-
-EDITORIAL = {
-    "editor_group": "editorgroup",
-    "editor": "associate"
 }
 
 JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)

@@ -1,1 +1,2 @@
 from journals import JournalFixtureFactory
+from applications import ApplicationFixtureFactory
