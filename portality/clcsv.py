@@ -72,7 +72,7 @@ class ClCsv():
             elif type(col_identifier) == str:
                 # set column by title.
                 num = self.get_colnumber(col_identifier)
-                if num >= 0 and type(col_contents) == list:
+                if num is not None and type(col_contents) == list:
                     self.set_column(num, (col_identifier, col_contents))
                 else:
                     raise IndexError
@@ -93,7 +93,7 @@ class ClCsv():
         for i in range(0, len(self.data)):
             if self.data[i][0] == header:
                 return i
-        return -1
+        return None
 
     def get_rownumber(self, first_col_val):
         """
