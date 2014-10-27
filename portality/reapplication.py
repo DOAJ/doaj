@@ -3,7 +3,13 @@ from portality import models
 from portality.core import app
 import os
 from portality.formcontext.xwalk import SuggestionFormXWalk
+from portality.formcontext import formcontext
 from copy import deepcopy
+from werkzeug.datastructures import MultiDict
+
+#################################################################
+# Code for handling validation of incoming spreadsheets
+#################################################################
 
 class CsvValidationException(Exception):
     pass
@@ -43,26 +49,46 @@ def validate_csv_structure(sheet, account):
         if not issn in allowed:
             raise CsvValidationException("The ISSN " + str(issn) + " is not owned by this user account; spreadsheet is invalid")
 
-
-def validate_csv_contents(sheet, account):
+def validate_csv_contents(sheet):
     failed = []
+    succeeded = []
     for issn, questions in sheet.columns():
-        # depends on merge with the form context.  Approximately:
-        # fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=questions)
-        # if not fc.validate():
-        #   failed.append(fc.errors)
-        pass
+        # conver the questions into form data and then into a multidict, which is the form_data format required by
+        # the formcontext
+        forminfo = Suggestion2QuestionXwalk.question2form(questions)
+
+        # remove the "disabled" fields from the form info
+        Suggestion2QuestionXwalk.remove_disabled(forminfo)
+
+        # lookup the suggestion upon which this application is based
+        suggs = models.Suggestion.find_by_issn(issn)
+        if len(suggs) == 0:
+            raise CsvValidationException("Unable to locate a ReApplication with the issn " + issn + "; spreadsheet is invalid")
+        if len(suggs) > 1:
+            raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
+        s = suggs[0]
+
+        fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=s, form_data=forminfo)
+        if not fc.validate():
+            failed.append(fc.errors)
+        else:
+            succeeded.append(fc)
     if len(failed) > 0:
         raise ContentValidationException("One or more records in the CSV failed to validate", errors=failed)
+    return succeeded
 
 def generate_spreadsheet_error(sheet, exception):
     pass
+
+#################################################################
+# Workflow functions for ingesting a spreadsheet
+#################################################################
 
 def ingest_csv(path, account):
     sheet = open_csv(path)
     validate_csv_structure(sheet, account)
     try:
-        fcs = validate_csv_contents(sheet, account)
+        fcs = validate_csv_contents(sheet)
     except ContentValidationException as e:
         generate_spreadsheet_error(sheet, e)
         raise e
@@ -85,6 +111,10 @@ def ingest_from_upload(upload):
         upload.failed(e.message)
         upload.save()
         return
+
+#################################################################
+# code for creating the reapplication
+#################################################################
 
 def make_csv(path, reapps):
     cols = {}
@@ -115,6 +145,9 @@ def make_csv(path, reapps):
 
     sheet.save()
 
+#################################################################
+# Crosswalk between spreadsheet columns and Suggestions
+#################################################################
 
 class Suggestion2QuestionXwalk(object):
     # The questions (in order) that we are xwalking to
@@ -207,6 +240,31 @@ class Suggestion2QuestionXwalk(object):
             return cls.SUPPLEMENTARY_QUESTIONS[num][supp]
 
     @classmethod
+    def a(cls, answers, num, supp=None):
+        # first we need to calculate the number of supplementary questions lower than num
+        have_supps = cls.SUPPLEMENTARY_QUESTIONS.keys()                                         # start with the questions with supplementary questions
+        lower = [len(cls.SUPPLEMENTARY_QUESTIONS[x].keys()) for x in have_supps if x < num]     # filter those that are lower than num, and then count the keys in each dict
+        offset = sum(lower)                                                                     # sum the count of all the keys
+
+        # calculate the offset in the event that we're asked for a supplementary question
+        supp_offset = 0
+        if supp is not None:
+            sqs = cls.SUPPLEMENTARY_QUESTIONS[num].keys()        # list the supplementary options
+            if len(sqs) == 1:                                    # if there's only one key, we just increment by 1
+                supp_offset = 1
+            elif len(sqs) == 2:                                  # if there are two keys, we deal with the special case
+                if supp == "other":
+                    supp_offset = 2
+                elif supp == "library":
+                    supp_offset = 1
+
+
+        # the index of an answer in the array is the question - 1 (because array is indexed from 0) + the number of supplementary
+        # questions lower than num + any offset for a supplementary question on this number
+        idx = (num - 1) + offset + supp_offset
+        return answers[idx]
+
+    @classmethod
     def question_list(cls):
         # start with the base list of questions
         ql = deepcopy(cls.QUESTIONS)
@@ -232,6 +290,21 @@ class Suggestion2QuestionXwalk(object):
                 ql.insert(q, toinsert)
 
         return ql
+
+    @classmethod
+    def remove_disabled(cls, forminfo):
+        """
+        The role of this method is to remove any fields from the forminfo object that
+        are not strictly allowed by the spreadsheet.  This function could sit in a variety
+        of places, but we put it here to keep it next to the xwalk which knows about the
+        structure of the forminfo dictionary
+        :return: nothing - does operation on forminfo by reference
+        """
+        del forminfo["pissn"]
+        del forminfo["eissn"]
+        del forminfo["contact_name"]
+        del forminfo["contact_email"]
+        del forminfo["confirm_contact_email"]
 
     @classmethod
     def suggestion2question(cls, suggestion):
@@ -322,3 +395,81 @@ class Suggestion2QuestionXwalk(object):
 
         return kvs
 
+    @classmethod
+    def question2form(cls, qs):
+        forminfo = {}
+
+        processing_charges = str(cls.a(qs, 13) == "Yes")
+        submission_charges = str(cls.a(qs, 16) == "Yes")
+        waiver_policy = str(cls.a(qs, 21) == "Yes")
+        crawl_permission = str(cls.a(qs, 25) == "Yes")
+        metadata_provision = str(cls.a(qs, 27) == "Yes")
+        download_statistics = str(cls.a(qs, 28) == "Yes")
+        plagiarism_screening = str(cls.a(qs, 39) == "Yes")
+        license_embedded = str(cls.a(qs, 43) == "Yes")
+        open_access = str(cls.a(qs, 48) == "Yes")
+
+
+        forminfo["title"] = cls.a(qs, 1)
+        forminfo["url"] = cls.a(qs, 2)
+        forminfo["alternative_title"] = cls.a(qs, 3)
+        forminfo["pissn"] = cls.a(qs, 4)
+        forminfo["eissn"] = cls.a(qs, 5)
+        forminfo["publisher"] = cls.a(qs, 6)
+        forminfo["society_institution"] = cls.a(qs, 7)
+        forminfo["platform"] = cls.a(qs, 8)
+        forminfo["contact_name"] = cls.a(qs, 9)
+        forminfo["contact_email"] = cls.a(qs, 10)
+        forminfo["confirm_contact_email"] = cls.a(qs, 11)
+        forminfo["country"] = cls.a(qs, 12)
+        forminfo["processing_charges"] = processing_charges
+        forminfo["processing_charges_amount"] = cls.a(qs, 14)
+        forminfo["processing_charges_currency"] = cls.a(qs, 15)
+        forminfo["submission_charges"] = submission_charges
+        forminfo["submission_charges_amount"] = cls.a(qs, 17)
+        forminfo["submission_charges_currency"] = cls.a(qs, 18)
+        forminfo["articles_last_year"] = cls.a(qs, 19)
+        forminfo["articles_last_year_url"] = cls.a(qs, 20)
+        forminfo["waiver_policy"] = waiver_policy
+        forminfo["waiver_policy_url"] = cls.a(qs, 22)
+        forminfo["digital_archiving_policy"] = [dap.strip() for dap in cls.a(qs, 23).split(",")]
+        forminfo["digital_archiving_policy_library"] = cls.a(qs, 23, "library")
+        forminfo["digital_archiving_policy_other"] = cls.a(qs, 23, "other")
+        forminfo["digital_archiving_policy_url"] = cls.a(qs, 24)
+        forminfo["crawl_permission"] = crawl_permission
+        forminfo["article_identifiers"] = [aid.strip() for aid in cls.a(qs, 26).split(",")]
+        forminfo["article_identifiers_other"] = cls.a(qs, 26, "other")
+        forminfo["metadata_provision"] = metadata_provision
+        forminfo["download_statistics"] = download_statistics
+        forminfo["download_statistics_url"] = cls.a(qs, 29)
+        forminfo["first_fulltext_oa_year"] = cls.a(qs, 30)
+        forminfo["fulltext_format"] = [ftf.strip() for ftf in cls.a(qs, 31).split(",")]
+        forminfo["fulltext_format_other"] = cls.a(qs, 31, "other")
+        forminfo["keywords"] = [k.strip() for k in cls.a(qs, 32).split(",")]
+        forminfo["languages"] = [l.strip() for l in cls.a(qs, 33).split(",")]
+        forminfo["editorial_board_url"] = cls.a(qs, 34)
+        forminfo["review_process"] = cls.a(qs, 35)
+        forminfo["review_process_url"] = cls.a(qs, 36)
+        forminfo["aims_scope_url"] = cls.a(qs, 37)
+        forminfo["instructions_authors_url"] = cls.a(qs, 38)
+        forminfo["plagiarism_screening"] = plagiarism_screening
+        forminfo["plagiarism_screening_url"] = cls.a(qs, 40)
+        forminfo["publication_time"] = cls.a(qs, 41)
+        forminfo["oa_statement_url"] = cls.a(qs, 42)
+        forminfo["license_embedded"] = license_embedded
+        forminfo["license_embedded_url"] = cls.a(qs, 44)
+        forminfo["license"] = cls.a(qs, 45)
+        forminfo["license_other"] = cls.a(qs, 45, "other")
+        forminfo["license_checkbox"] = [l.strip() for l in cls.a(qs, 46).split(",")]
+        forminfo["license_url"] = cls.a(qs, 47)
+        forminfo["open_access"] = open_access
+        forminfo["deposit_policy"] = [dp.strip() for dp in cls.a(qs, 49).split(",")]
+        forminfo["deposit_policy_other"] = cls.a(qs, 49, "other")
+        forminfo["copyright"] = cls.a(qs, 50)
+        forminfo["copyright_other"] = cls.a(qs, 50, "other")
+        forminfo["copyright_url"] = cls.a(qs, 51)
+        forminfo["publishing_rights"] = cls.a(qs, 52)
+        forminfo["publishing_rights_other"] = cls.a(qs, 52, "other")
+        forminfo["publishing_rights_url"] = cls.a(qs, 53)
+
+        return forminfo

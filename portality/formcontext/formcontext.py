@@ -473,6 +473,8 @@ class ApplicationFormFactory(object):
             return AssEdApplicationReview(source=source, form_data=form_data)
         elif role == "publisher":
             return PublisherReApplication(source=source, form_data=form_data)
+        elif role == "csv":
+            return PublisherCsvReApplication(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -761,6 +763,81 @@ class AssEdApplicationReview(ApplicationContext):
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             self.form.application_status.choices = choices.Choices.application_status()
+
+class PublisherCsvReApplication(ApplicationContext):
+    def make_renderer(self):
+        # this stuff probably won't be used - really just a placeholder which reminds us which fields are disabled
+        self.renderer = render.PublisherReApplicationRenderer()
+        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
+
+    def set_template(self):
+        # this form does not have a UI expression, so no template required
+        self.template = None
+
+    def blank_form(self):
+        # this uses the same form as the UI for the publisher reapplication, since the requirements
+        # are identical
+        self.form = forms.PublisherReApplicationForm()
+
+    def data2form(self):
+        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+
+    def source2form(self):
+        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+
+    def pre_validate(self):
+        if self.source is None:
+            raise FormContextException("You cannot validate a form from a non-existent source")
+
+        bj = self.source.bibjson()
+        contacts = self.source.contacts()
+
+        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
+        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+
+        if len(contacts) == 0:
+            return
+
+        contact = contacts[0]
+        self.form.contact_name.data = contact.get("name")
+        self.form.contact_email.data = contact.get("email")
+        self.form.confirm_contact_email.data = contact.get("email")
+
+    def form2target(self):
+        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+
+        # we carry this over for completeness, although it will be overwritten in the finalise() method
+        self.target.set_application_status(self.source.application_status)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent application")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PublisherCsvReApplication, self).finalise()
+
+        # set the status to updated
+        self.target.set_application_status('submitted')
+
+        # Save the target
+        self.target.save()
+
+    def render_template(self, **kwargs):
+        # there is no template to render
+        return ""
+
 
 class PublisherReApplication(ApplicationContext):
     def make_renderer(self):

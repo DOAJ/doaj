@@ -2,6 +2,7 @@ from doajtest.helpers import DoajTestCase
 from portality import models, reapplication, clcsv
 import os
 from copy import deepcopy
+from portality.formcontext import xwalk
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -245,7 +246,7 @@ class TestReApplication(DoajTestCase):
 
         assert os.path.exists("basic_reapp.csv")
 
-    def test_03_csv_xwalk(self):
+    def test_03_csv_xwalk_out(self):
         s1 = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
         kvs = reapplication.Suggestion2QuestionXwalk.suggestion2question(s1)
 
@@ -263,18 +264,21 @@ class TestReApplication(DoajTestCase):
         bj1.remove_identifiers("pissn")
         bj1.remove_identifiers("eissn")
         bj1.add_identifier("pissn", "1234-5678")
+        bj1.add_identifier("eissn", "9876-5432")
         bj1.title = "First Title"
 
         bj2 = s2.bibjson()
         bj2.remove_identifiers("pissn")
         bj2.remove_identifiers("eissn")
         bj2.add_identifier("pissn", "2345-6789")
+        bj1.add_identifier("eissn", "9876-5431")
         bj2.title = "Second Title"
 
         bj3 = s3.bibjson()
         bj3.remove_identifiers("pissn")
         bj3.remove_identifiers("eissn")
         bj3.add_identifier("pissn", "3456-7890")
+        bj1.add_identifier("eissn", "9876-5430")
         bj3.title = "Third Title"
 
         reapplication.make_csv("full_reapp.csv", [s3, s2, s1]) # send the suggestions in in the wrong order for display on purpose
@@ -304,3 +308,26 @@ class TestReApplication(DoajTestCase):
         _, sheetqs = sheet.get_column(0)
 
         assert sheetqs == qs
+
+    def test_05_csv_xwalk_in(self):
+        # convert the test answers into the form info
+        forminfo_col = reapplication.Suggestion2QuestionXwalk.question2form(APPLICATION_COL)
+
+        # convert the test object into form info
+        s = models.Suggestion(**deepcopy(APPLICATION_SOURCE))
+        forminfo_obj = xwalk.SuggestionFormXWalk.obj2form(s)
+
+        # there are a bunch of fields in the object that come over to the form info that aren't in
+        # the spreadsheet, so we need to remove them before we can compare
+        del forminfo_obj["application_status"]
+        del forminfo_obj["editor"]
+        del forminfo_obj["editor_group"]
+        del forminfo_obj["notes"]
+        del forminfo_obj["subject"]
+        del forminfo_obj["suggester_email"]
+        del forminfo_obj["suggester_email_confirm"]
+        del forminfo_obj["suggester_name"]
+        del forminfo_obj["owner"]
+
+        # these two objects should be the same
+        assert forminfo_col == forminfo_obj
