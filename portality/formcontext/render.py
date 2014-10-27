@@ -2,6 +2,7 @@ from portality.formcontext.formhelper import FormHelper
 from portality.formcontext.choices import Choices
 from copy import deepcopy
 
+
 class Renderer(object):
     def __init__(self):
         self.FIELD_GROUPS = {}

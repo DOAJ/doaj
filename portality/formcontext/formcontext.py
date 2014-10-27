@@ -267,43 +267,6 @@ class PrivateContext(FormContext):
             self.target.set_notes(tnotes)
 
 
-class JournalContext(PrivateContext):
-    def finalise(self):
-        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
-        # can be carried over from the old implementation
-
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
-
-        # if we are allowed to finalise, kick this up to the superclass
-        super(JournalContext, self).finalise()
-
-        # Save the target
-        self.target.save()
-
-    def patch_target(self):
-        if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existent source")
-
-        self._carry_fixed_aspects()
-        self._merge_notes_forward()
-
-        self.target.set_editor_group(self.source.editor_group)
-
-    def form2target(self):
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
-
-    def render_template(self, **kwargs):
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
-
-        return super(JournalContext, self).render_template(
-            lcc_jstree=json.dumps(lcc_jstree),
-            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
-            **kwargs)
-
-
-
 class ApplicationContext(PrivateContext):
     ERROR_MSG_TEMPLATE = \
         """Problem while creating account while turning suggestion into journal.
@@ -942,7 +905,7 @@ class PublicApplication(FormContext):
                             )
 
 ### Journal form contexts ###
-class ManEdJournalReview(JournalContext):
+class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
     admin privileges.  It will permit doing every.
@@ -952,6 +915,15 @@ class ManEdJournalReview(JournalContext):
 
     def set_template(self):
         self.template = "formcontext/maned_journal_review.html"
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(PrivateContext, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs)
 
     def blank_form(self):
         self.form = forms.ManEdApplicationReviewForm()
@@ -967,11 +939,19 @@ class ManEdJournalReview(JournalContext):
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
+    def form2target(self):
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+
     def patch_target(self):
-        super(ManEdJournalReview, self).patch_target()
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
         # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
         if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
             self.target.set_owner(self.source.owner)
+
+        self._merge_notes_forward(allow_delete=True)
 
     def _set_choices(self):
         editor = self.form.editor.data
@@ -980,8 +960,21 @@ class ManEdJournalReview(JournalContext):
         else:
             self.form.editor.choices = [("", "")]
 
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
 
-class EditorJournalReview(JournalContext):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PrivateContext, self).finalise()
+
+        # Save the target
+        self.target.save()
+
+
+class EditorJournalReview(PrivateContext):
     """
     Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing a journal.  This prevents re-assignment of Editorial group, but permits assignment of associate
@@ -993,6 +986,15 @@ class EditorJournalReview(JournalContext):
 
     def set_template(self):
         self.template = "formcontext/editor_journal_review.html"
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(PrivateContext, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs)
 
     def blank_form(self):
         self.form = forms.EditorJournalReviewForm()
@@ -1008,9 +1010,17 @@ class EditorJournalReview(JournalContext):
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
+    def form2target(self):
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+
     def patch_target(self):
-        super(EditorJournalReview, self).patch_target()
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self._merge_notes_forward()
 
     def pre_validate(self):
         self.form.editor_group.data = self.source.editor_group
@@ -1032,3 +1042,16 @@ class EditorJournalReview(JournalContext):
                 self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
             else:
                 self.form.editor.choices = [("", "")]
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(PrivateContext, self).finalise()
+
+        # Save the target
+        self.target.save()
