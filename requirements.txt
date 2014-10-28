@@ -1,4 +1,4 @@
-# In order to install uniboard you need to run 
+# In order to install doaj you need to run
 # pip install -r requirements.txt
 # (i.e. target this file with the -r switch on pip).
 

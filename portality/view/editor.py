@@ -5,7 +5,6 @@ from flask.ext.login import current_user, login_required
 from portality.core import app, ssl_required, restrict_to_role
 from portality import models
 
-from portality import journal as journal_handler
 from portality import lock
 from portality.formcontext import formcontext
 from portality.util import flash_with_url
@@ -62,10 +61,6 @@ def journal_page(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
-
-    # flag which we can set to determine whether this user can access the editorial
-    # features of the journal form
-    editorial_available = False
 
     # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
 

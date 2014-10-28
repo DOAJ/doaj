@@ -10,7 +10,6 @@ from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url
 
-from portality import journal as journal_handler
 from portality.view.forms import EditorGroupForm
 
 blueprint = Blueprint('admin', __name__)
@@ -97,7 +96,7 @@ def journal_page(journal_id):
 @login_required
 @ssl_required
 def journal_activate(journal_id):
-    j = journal_handler.get_journal(journal_id)
+    j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
     j.bibjson().active = True
@@ -110,7 +109,7 @@ def journal_activate(journal_id):
 @login_required
 @ssl_required
 def journal_deactivate(journal_id):
-    j = journal_handler.get_journal(journal_id)
+    j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
     j.bibjson().active = False

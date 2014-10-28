@@ -80,6 +80,9 @@ SPONSORS = {
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
+"""
+This was the old formcontext testing area.  It should be removed totally, but just commenting out
+for the time being
 
 @app.route("/formcontext/<context_type>/<example>", methods=["GET", "POST"])
 @app.route("/formcontext/<context_type>/<example>/<id>", methods=["GET", "POST"])
@@ -232,6 +235,7 @@ def formcontext(context_type, example, id=None):
             pass
 
     abort(404)
+"""
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 
