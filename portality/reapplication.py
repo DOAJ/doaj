@@ -1,5 +1,5 @@
 from portality import models
-from portality.suggestion import SuggestionFormXWalk
+from portality.formcontext.xwalk import SuggestionFormXWalk
 from portality.clcsv import ClCsv
 from copy import deepcopy
 

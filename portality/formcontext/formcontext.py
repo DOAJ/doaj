@@ -214,6 +214,13 @@ class PrivateContext(FormContext):
         self.target.set_created(created_date)
         self.target.data['id'] = self.source.data['id']
 
+    @staticmethod
+    def _subjects2str(subjects):
+        subject_strings = []
+        for sub in subjects:
+            subject_strings.append('{term}'.format(term=sub.get('term')))
+        return ', '.join(subject_strings)
+
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
             raise FormContextException("Cannot carry data from a non-existent source")
@@ -256,12 +263,6 @@ class PrivateContext(FormContext):
                         found = True
                 if not found:
                     tnotes.append(sn)
-    @staticmethod
-    def _subjects2str(subjects):
-        subject_strings = []
-        for sub in subjects:
-            subject_strings.append('{term}'.format(term=sub.get('term')))
-        return ', '.join(subject_strings)
 
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
@@ -300,7 +301,8 @@ class ApplicationContext(PrivateContext):
                             url_root=url_root
                             )
 
-    def _send_editor_email(self, suggestion):
+    @staticmethod
+    def _send_editor_email(suggestion):
         editor = models.Account.pull(suggestion.editor)
         eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
 
@@ -905,6 +907,7 @@ class PublicApplication(FormContext):
                             )
 
 ### Journal form contexts ###
+
 class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
