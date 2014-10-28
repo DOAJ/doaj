@@ -30,18 +30,23 @@ def open_csv(path):
     return sheet
 
 def validate_csv_structure(sheet, account):
-    sheet_questions = sheet.get_column(0)
-    if sheet_questions is None:
-        raise CsvValidationException("CSV does not contain any questions in the first column")
+    tup = sheet.get_column(0)
+    if tup is None:
+        raise CsvValidationException("Could not retrieve any content from the CSV; spreadsheet is invalid")
 
+    _, sheet_questions = tup
     sheet_questions = [q.strip() for q in sheet_questions]
     valid_questions = Suggestion2QuestionXwalk.question_list()
     if sheet_questions != valid_questions:
         raise CsvValidationException("The list of questions in the csv has been modified; spreadsheet is invalid")
 
-    headers = sheet.headers()
+    try:
+        headers = sheet.headers()[1:] # everything except the first header (which is the question column)
+    except:
+        raise CsvValidationException("There were no journals specified in the spreadsheet; spreadsheet is invalid")
+
     dedupe = list(set(headers))
-    if len(headers) != dedupe:
+    if len(headers) != len(dedupe):
         raise CsvValidationException("There were one or more repeated ISSNs in the csv header row; spreadsheet is invalid")
 
     allowed = models.Journal.issns_by_owner(account.id)
