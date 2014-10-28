@@ -733,13 +733,15 @@ class JournalFormXWalk(JournalGenericXWalk):
             if owner:
                 journal.set_owner(owner)
 
-        editor_group = form.editor_group.data.strip()
-        if editor_group:
-            journal.set_editor_group(editor_group)
+        if getattr(form, 'editor_group', None):
+            editor_group = form.editor_group.data.strip()
+            if editor_group:
+                journal.set_editor_group(editor_group)
 
-        editor = form.editor.data.strip()
-        if editor:
-            journal.set_editor(editor)
+        if getattr(form, "editor", None):
+            editor = form.editor.data.strip()
+            if editor:
+                journal.set_editor(editor)
 
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form

@@ -59,7 +59,9 @@ def journal_page(journal_id):
         abort(401)
 
     # get the journal, so we can check our permissions against it
-    j = journal_handler.get_journal(journal_id)
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
 
     # flag which we can set to determine whether this user can access the editorial
     # features of the journal form
@@ -73,27 +75,40 @@ def journal_page(journal_id):
         passed = True
 
     # now check whether the user is the editor of the editor group
-    # and simultaneously determine whether they have editorial rights
-    # on this journal
+    role = "associate_editor"
     eg = models.EditorGroup.pull_by_key("name", j.editor_group)
     if eg is not None and eg.editor == current_user.id:
         passed = True
-        editorial_available = True
+        role = "editor"
 
     # if the user wasn't the editor or the owner of the editor group, unauthorised
     if not passed:
         abort(401)
 
-    # create the list of allowable editors for this journal (the editor
-    # and all the associates in this editor group)
-    # egs = models.EditorGroup.groups_by_editor(current_user.id)
-    editors = [current_user.id]
-    editors += eg.associates
-    editors = list(set(editors))
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("journal", journal_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("editor/journal_locked.html", journal=j, lock=l.lock, edit_journal_page=True)
 
-    return journal_handler.request_handler(request, journal_id, redirect_route="editor.journal_page",
-                                           template="editor/journal.html", editors=editors, locked_template="editor/journal_locked.html",
-                                           editorial_available=editorial_available)
+    if request.method == "GET":
+        fc = formcontext.JournalFormFactory.get_form_context(role=role, source=j)
+        return fc.render_template(edit_journal_page=True, lock=lockinfo)
+    elif request.method == "POST":
+        fc = formcontext.JournalFormFactory.get_form_context(role=role, form_data=request.form, source=j)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Journal updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(e.message)
+                return redirect(url_for("editor.journal_page", journal_id=j.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_journal_page=True, lock=lockinfo)
+
 
 @blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
 @login_required
@@ -103,14 +118,14 @@ def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
 
-    # get the journal, so we can check our permissions against it
+    # get the suggestion, so we can check our permissions against it
     s = models.Suggestion.pull(suggestion_id)
     if s is None:
         abort(404)
 
-    # user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"
+    # user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"
 
-    # is the user the currently assigned editor of the journal?
+    # is the user the currently assigned editor of the suggestion?
     passed = False
     if s.editor == current_user.id:
         passed = True

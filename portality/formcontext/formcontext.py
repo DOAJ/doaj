@@ -444,7 +444,7 @@ class JournalFormFactory(object):
         elif role == "editor":
             return EditorJournalReview(source=source, form_data=form_data)
         elif role == "associate_editor":
-            pass
+            return AssEdJournalReview(source=source, form_data=form_data)
 
 
 class ManEdApplicationReview(ApplicationContext):
@@ -551,7 +551,7 @@ class EditorApplicationReview(ApplicationContext):
     Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
     editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
-    be used to create journals from applications
+    be used to create journals from applications. Deleting notes is not allowed, but adding is.
     """
     def make_renderer(self):
         self.renderer = render.EditorApplicationReviewRenderer()
@@ -650,10 +650,10 @@ class EditorApplicationReview(ApplicationContext):
 
 class AssEdApplicationReview(ApplicationContext):
     """
-    Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
-    is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
-    editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
-    be used to create journals from applications
+    Associate Editors Application Review form. This is to be used in a context where an associate editor (fewest rights)
+    needs to access an application for review. This editor cannot change the editorial group or the assigned editor.
+    They also cannot change the owner of the application. They cannot set an application to "Accepted" so this form can't
+    be used to create a journal from an application. They cannot delete, only add notes.
     """
     def make_renderer(self):
         self.renderer = render.AssEdApplicationReviewRenderer()
@@ -1055,3 +1055,69 @@ class EditorJournalReview(PrivateContext):
 
         # Save the target
         self.target.save()
+
+
+class AssEdJournalReview(PrivateContext):
+    """
+    Associate Editors Journal Review form. This is to be used in a context where an associate editor (fewest rights)
+    needs to access a journal for review. This editor cannot change the editorial group or the assigned editor.
+    They also cannot change the owner of the journal. They cannot delete, only add notes.
+    """
+    def make_renderer(self):
+        self.renderer = render.AssEdJournalReviewRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/assed_journal_review.html"
+
+    def blank_form(self):
+        self.form = forms.AssEdJournalReviewForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.AssEdJournalReviewForm(formdata=self.form_data)
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.AssEdJournalReviewForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def form2target(self):
+        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
+
+    def patch_target(self):
+        if self.source is None:
+            raise FormContextException("You cannot patch a target from a non-existent source")
+
+        self._carry_fixed_aspects()
+        self._merge_notes_forward()
+        self.target.set_owner(self.source.owner)
+        self.target.set_editor_group(self.source.editor_group)
+        self.target.set_editor(self.source.editor)
+
+    def finalise(self):
+        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
+        # can be carried over from the old implementation
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        # if we are allowed to finalise, kick this up to the superclass
+        super(AssEdJournalReview, self).finalise()
+
+        # Save the target
+        self.target.save()
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot edit a not-existent journal")
+
+        return super(AssEdJournalReview, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs
+        )
+
+    def _set_choices(self):
+        # no application status (this is a journal) or editorial info (it's not even in the form) to set
+        pass

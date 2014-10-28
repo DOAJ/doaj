@@ -416,6 +416,10 @@ class JournalRenderer(BasicJournalInformationRenderer):
 
         self.display_old_journal_fields = False
 
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
+
         self.FIELD_GROUPS["old_journal_fields"] = [
             {"author_pays": {}},
             {"author_pays_url": {"class": "input-xlarge"}},
@@ -445,14 +449,9 @@ class ManEdJournalReviewRenderer(JournalRenderer):
     def __init__(self):
         super(ManEdJournalReviewRenderer, self).__init__()
 
-        self.display_old_journal_fields = False  # an instance var flag for the template
-
         # extend the list of field groups
         self.FIELD_GROUPS["account"] = [
             {"owner" : {"class" : "input-large"}}
-        ]
-        self.FIELD_GROUPS["subject"] = [
-            {"subject" : {}}
         ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
@@ -485,9 +484,6 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         super(EditorJournalReviewRenderer, self).__init__()
 
-        self.FIELD_GROUPS["subject"] = [
-            {"subject" : {}}
-        ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
             {"editor" : {"class" : "input-large"}}
@@ -504,6 +500,28 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         self.ERROR_CHECK_ORDER = ["editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
         # don't want the extra groups numbered so not added to self.NUMBERING_ORDER
+
+        self.number_questions()
+
+        self.check_field_groups()
+
+
+class AssEdJournalReviewRenderer(JournalRenderer):
+    def __init__(self):
+        super(AssEdJournalReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.ERROR_CHECK_ORDER = ["subject"] + self.ERROR_CHECK_ORDER + ["notes"]
 
         self.number_questions()
 
