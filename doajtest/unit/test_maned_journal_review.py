@@ -104,3 +104,37 @@ class TestManEdJournalReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert True # gives us a place to drop a break point later if we need it
+
+    def test_02_maned_review_optional_validation(self):
+        """Test optional validation in the Managing Editor's journal form"""
+
+        # we start by constructing it from source
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
+        # do not repeat tests on the form context, all that is tested above
+
+        # now construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(JOURNAL_FORM),
+            source=models.Journal(**JOURNAL_SOURCE)
+        )
+
+        # again, do not re-test the form context
+
+        # run the validation, but make it fail by omitting a required field
+        fc.form.title.data = ''
+        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
+        assert not fc.validate()
+
+        # tick the optional validation box and try again
+        fc.form.make_all_fields_optional.data = True
+        assert fc.validate(), fc.form.errors
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # right, so let's see if we managed to get a title-less journal from this
+        assert fc.target.bibjson().title is None, fc.target.bibjson().title

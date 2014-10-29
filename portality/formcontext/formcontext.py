@@ -976,6 +976,14 @@ class ManEdJournalReview(PrivateContext):
         # Save the target
         self.target.save()
 
+    def validate(self):
+        # make use of the ability to disable validation, otherwise, let it run
+        if self.form is not None:
+            if self.form.make_all_fields_optional.data:
+                return True
+
+        return super(ManEdJournalReview, self).validate()
+
 
 class EditorJournalReview(PrivateContext):
     """
