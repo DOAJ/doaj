@@ -1,15 +1,9 @@
 import json
 
-from flask import Blueprint, request, flash, abort, make_response
-from flask import render_template, redirect, url_for
+from flask import Blueprint, abort, make_response
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
-import portality.models as models
-
-from portality import journal as journal_handler
-from portality import suggestion as suggestion_handler
-from portality.view.forms import EditorGroupForm
+from portality.core import app, ssl_required
 
 from portality import lock
 

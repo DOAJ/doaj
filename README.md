@@ -103,7 +103,8 @@ It is likely that history records will only be created upon request by the admin
         "subject" : [
             {
                 "scheme" : "<scheme>", 
-                "term" : "<term>"
+                "term" : "<term>",
+                "code" : "<code>"
             }
         ],
         
@@ -126,7 +127,10 @@ It is likely that history records will only be created upon request by the admin
             "average_price" : "<average price of submission charge>"
         },
         "archiving_policy" : {
-            "policy" : ["<policy type (e.g. LOCKSS)>"]
+            "policy" : [
+                "<known policy type (e.g. LOCKSS)>",
+                ["<policy category>", "<previously unknown policy type>"]
+            ],
             "url" : "<url to policy information page>"
         },
         "editorial_review" : {
@@ -143,11 +147,11 @@ It is likely that history records will only be created upon request by the admin
         },
         "deposit_policy" : ["<policy type (e.g. Sherpa/Romeo)>"],
         "author_copyright" : {
-            "copyright" : true|false,
+            "copyright" : "<copyright status>",
             "url" : "<url for information about copyright position>"
         },
         "author_publishing_rights" : {
-            "publishing_rights" : true|false,
+            "publishing_rights" : "<publishing rights status>",
             "url" : "<url for information about publishing rights>"
         },
         "allows_fulltext_indexing" : true|false,
@@ -165,7 +169,8 @@ It is likely that history records will only be created upon request by the admin
                 "NC": true/false,
                 "ND": true/false,
                 "SA": true/false,
-                "embedded" : true|false # is the licence metadata embedded in the article pages>
+                "embedded" : true|false # is the licence metadata embedded in the article pages>,
+                "embedded_example_url" :  "<url for example of embedded licence>"
             }
         ]
     },
