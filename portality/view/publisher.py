@@ -57,6 +57,12 @@ def reapplication_page(reapplication_id):
         else:
             return fc.render_template(edit_suggestion_page=True)
 
+@blueprint.route('/progress')
+@login_required
+@ssl_required
+def updates_in_progress():
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
+
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required

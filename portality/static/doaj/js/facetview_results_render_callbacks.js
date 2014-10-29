@@ -395,3 +395,18 @@ fv_delete_editor_group = (function (resultobj) {
     };
     return that;
 })();
+
+fv_view_reapplication = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj['suggestion']) {
+            var result = '<a class="edit_suggestion_link pull-right" href="';
+            result += reapplication_edit_url;
+            result += resultobj['id'];
+            result += '" target="_blank"';
+            result += '>Edit this application</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
