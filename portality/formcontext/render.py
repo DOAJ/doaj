@@ -414,8 +414,6 @@ class JournalRenderer(BasicJournalInformationRenderer):
     def __init__(self):
         super(JournalRenderer, self).__init__()
 
-        self.display_old_journal_fields = False
-
         self.FIELD_GROUPS["subject"] = [
             {"subject" : {}}
         ]
@@ -429,14 +427,12 @@ class JournalRenderer(BasicJournalInformationRenderer):
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name == "old_journal_fields":
             display_old_journal_fields = False
-            for old_field_name in self.FIELD_GROUPS["old_journal_fields"]:
-                old_field = form_context.form.get(old_field_name)
+            for old_field_def in self.FIELD_GROUPS["old_journal_fields"]:
+                old_field_name = old_field_def.keys()[0]
+                old_field = getattr(form_context.form, old_field_name)
                 if old_field:
                     if old_field.data and old_field.data != 'None':
                         display_old_journal_fields = True
-
-            # let the template know whether to render the box these fields should go in
-            self.display_old_journal_fields = display_old_journal_fields
 
             if not display_old_journal_fields:
                 return ""

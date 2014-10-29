@@ -28,11 +28,12 @@
                         </div>
                     </div>
 
-                    {% if form_context.renderer.display_old_journal_fields %}
+                    {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}
+                    {% if old_journal_field_html %}
                         <div class="span12 with-borders form-section" style="margin-left: 0;">
                             <h3 class="heading-aligned-with-fields">Old journal information</h3>
                             {% autoescape off %}
-                            {{ form_context.render_field_group("old_journal_fields") }}
+                            {{ old_journal_field_html }}
                             {% endautoescape %}
                         </div>
                     {% endif %}
