@@ -766,9 +766,8 @@ class AssEdApplicationReview(ApplicationContext):
 
 class PublisherCsvReApplication(ApplicationContext):
     def make_renderer(self):
-        # this stuff probably won't be used - really just a placeholder which reminds us which fields are disabled
-        self.renderer = render.PublisherReApplicationRenderer()
-        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
+        # this form does not have a UI expression, so no renderer required
+        pass
 
     def set_template(self):
         # this form does not have a UI expression, so no template required

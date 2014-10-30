@@ -331,3 +331,17 @@ class TestReApplication(DoajTestCase):
 
         # these two objects should be the same
         assert forminfo_col == forminfo_obj
+
+    def test_06_csv_xwalk_in_broken(self):
+        # first try with too few questions
+        col = deepcopy(APPLICATION_COL)
+        col = col[30:] # just truncate the questions at a random point
+        with self.assertRaises(reapplication.SuggestionXwalkException):
+            forminfo = reapplication.Suggestion2QuestionXwalk.question2form(col)
+
+        # now try with too many
+        col = deepcopy(APPLICATION_COL)
+        col.append("whatever")
+        with self.assertRaises(reapplication.SuggestionXwalkException):
+            forminfo = reapplication.Suggestion2QuestionXwalk.question2form(col)
+

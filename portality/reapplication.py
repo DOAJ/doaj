@@ -55,27 +55,37 @@ def validate_csv_structure(sheet, account):
             raise CsvValidationException("The ISSN " + str(issn) + " is not owned by this user account; spreadsheet is invalid")
 
 def validate_csv_contents(sheet):
-    failed = []
-    succeeded = []
+    failed = {}     # here is where we will log the issn to formcontext mapping for contexts which fail to validate
+    succeeded = []  # here is where we will record all the successful formcontexts (they will not be mapped to issn, as this will not be important once successful)
     for issn, questions in sheet.columns():
+        # skip the question column
+        if issn == "":
+            continue
+
         # conver the questions into form data and then into a multidict, which is the form_data format required by
         # the formcontext
-        forminfo = Suggestion2QuestionXwalk.question2form(questions)
+        try:
+            forminfo = Suggestion2QuestionXwalk.question2form(questions)
+        except SuggestionXwalkException:
+            raise CsvValidationException("Too many or too few values under ISSN " + str(issn) + "; spreadsheet is invalid")
 
         # remove the "disabled" fields from the form info
         Suggestion2QuestionXwalk.remove_disabled(forminfo)
 
+        # convert to a multidict
+        form_data = MultiDict(forminfo)
+
         # lookup the suggestion upon which this application is based
         suggs = models.Suggestion.find_by_issn(issn)
-        if len(suggs) == 0:
+        if suggs is None or len(suggs) == 0:
             raise CsvValidationException("Unable to locate a ReApplication with the issn " + issn + "; spreadsheet is invalid")
         if len(suggs) > 1:
             raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
         s = suggs[0]
 
-        fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=s, form_data=forminfo)
+        fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=s, form_data=form_data)
         if not fc.validate():
-            failed.append(fc.errors)
+            failed[issn] = fc
         else:
             succeeded.append(fc)
     if len(failed) > 0:
@@ -153,6 +163,9 @@ def make_csv(path, reapps):
 #################################################################
 # Crosswalk between spreadsheet columns and Suggestions
 #################################################################
+
+class SuggestionXwalkException(Exception):
+    pass
 
 class Suggestion2QuestionXwalk(object):
     # The questions (in order) that we are xwalking to
@@ -267,6 +280,10 @@ class Suggestion2QuestionXwalk(object):
         # the index of an answer in the array is the question - 1 (because array is indexed from 0) + the number of supplementary
         # questions lower than num + any offset for a supplementary question on this number
         idx = (num - 1) + offset + supp_offset
+
+        if idx > len(answers):
+            raise SuggestionXwalkException("Crosswalk cannot complete - source column does not have enough rows")
+
         return answers[idx]
 
     @classmethod
@@ -305,11 +322,16 @@ class Suggestion2QuestionXwalk(object):
         structure of the forminfo dictionary
         :return: nothing - does operation on forminfo by reference
         """
-        del forminfo["pissn"]
-        del forminfo["eissn"]
-        del forminfo["contact_name"]
-        del forminfo["contact_email"]
-        del forminfo["confirm_contact_email"]
+        if "pissn" in forminfo:
+            del forminfo["pissn"]
+        if "eissn" in forminfo:
+            del forminfo["eissn"]
+        if "contact_name" in forminfo:
+            del forminfo["contact_name"]
+        if "contact_email" in forminfo:
+            del forminfo["contact_email"]
+        if "confirm_contact_email" in forminfo:
+            del forminfo["confirm_contact_email"]
 
     @classmethod
     def suggestion2question(cls, suggestion):
@@ -401,7 +423,13 @@ class Suggestion2QuestionXwalk(object):
         return kvs
 
     @classmethod
-    def question2form(cls, qs):
+    def question2form(cls, qs, force=False):
+        expected = len(cls.question_list())
+        if len(qs) < expected:
+            raise SuggestionXwalkException("Crosswalk cannot complete - source column does not have enough rows")
+        elif len(qs) > expected and not force:
+            raise SuggestionXwalkException("Crosswalk cannot complete - source column has more data than there are questions.  To xwalk anyway, use the 'force' argument")
+
         forminfo = {}
 
         processing_charges = str(cls.a(qs, 13) == "Yes")
