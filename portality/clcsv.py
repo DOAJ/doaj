@@ -1,4 +1,4 @@
-import csv
+import csv, codecs
 
 
 class ClCsv():
@@ -16,15 +16,15 @@ class ClCsv():
         if type(file_path) == file:
             self.file_object = file_path
             if self.file_object.closed:
-                self.file_object = open(self.file_object.name, 'r+b')
+                self.file_object = codecs.open(self.file_object.name, 'r+b')
             self.read_file()
         else:
             try:
-                self.file_object = open(file_path, 'r+b')
+                self.file_object = codecs.open(file_path, 'r+b')
                 self.read_file()
             except IOError:
                 # If the file doesn't exist, create it.
-                self.file_object = open(file_path, 'w+b')
+                self.file_object = codecs.open(file_path, 'w+b')
 
     def read_file(self):
         """
@@ -52,7 +52,7 @@ class ClCsv():
             if type(col_identifier) == int:
                 # get column by index
                 return self.data[col_identifier]
-            elif type(col_identifier) == str:
+            elif isinstance(col_identifier, basestring):
                 # get column by title
                 for col in self.data:
                     if col[0] == col_identifier:
@@ -69,7 +69,7 @@ class ClCsv():
         try:
             if type(col_identifier) == int:
                 self.data[col_identifier] = col_contents
-            elif type(col_identifier) == str:
+            elif isinstance(col_identifier, basestring):
                 # set column by title.
                 num = self.get_colnumber(col_identifier)
                 if num is not None and type(col_contents) == list:
@@ -81,7 +81,7 @@ class ClCsv():
             # The column isn't there already; append a new one
             if type(col_identifier) == int:
                 self.data.append(col_contents)
-            elif type(col_identifier) == str:
+            elif isinstance(col_identifier, basestring):
                 self.data.append((col_identifier, col_contents))
 
     def get_colnumber(self, header):
