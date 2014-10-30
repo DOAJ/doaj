@@ -1,9 +1,9 @@
 from portality.clcsv import ClCsv
-from portality import models
+from portality import models, datasets
 from portality.core import app
-import os
+import os, re
 from portality.formcontext.xwalk import SuggestionFormXWalk
-from portality.formcontext import formcontext
+from portality.formcontext import formcontext, choices
 from copy import deepcopy
 from werkzeug.datastructures import MultiDict
 
@@ -230,24 +230,24 @@ class Suggestion2QuestionXwalk(object):
             "library" : "If a national library, which one?",
             "other" : "If Other, enter it here"
         },
-        26 : {
-            "other" : "If Other, enter it here"
-        },
-        31 : {
-            "other" : "If Other, enter it here"
-        },
-        45 : {
-            "other" : "If Other, enter it here"
-        },
-        49 : {
-            "other" : "If Other, enter it here"
-        },
-        50 : {
-            "other" : "If Other, enter it here"
-        },
-        52 : {
-            "other" : "If Other, enter it here"
-        }
+        #26 : {
+        #    "other" : "If Other, enter it here"
+        #},
+        #31 : {
+        #    "other" : "If Other, enter it here"
+        #},
+        #45 : {
+        #    "other" : "If Other, enter it here"
+        #},
+        #49 : {
+        #    "other" : "If Other, enter it here"
+        #},
+        #50 : {
+        #    "other" : "If Other, enter it here"
+        #},
+        #52 : {
+        #    "other" : "If Other, enter it here"
+        #}
     }
 
     @classmethod
@@ -335,6 +335,19 @@ class Suggestion2QuestionXwalk(object):
 
     @classmethod
     def suggestion2question(cls, suggestion):
+
+        def other_list(main_field, other_field, other_value):
+            aids = forminfo.get(main_field, [])
+            if aids is None or aids == "" or aids == "None":
+                aids = []
+            aidother = forminfo.get(other_field)
+
+            if other_value in aids:
+                aids.remove(other_value)
+            if aidother is not None and aidother != "" and aidother != "None":
+                aids.append(aidother)
+            return ", ".join(aids)
+
         # start by converting the object to the forminfo version
         # which is used by the application form in the first plage
         forminfo = SuggestionFormXWalk.obj2form(suggestion)
@@ -380,19 +393,32 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(20), forminfo.get("articles_last_year_url")))
         kvs.append((cls.q(21), waiver_policy))
         kvs.append((cls.q(22), forminfo.get("waiver_policy_url")))
-        kvs.append((cls.q(23), ", ".join(forminfo.get("digital_archiving_policy", []))))
+
+        dap = deepcopy(forminfo.get("digital_archiving_policy", []))
+        lib = choices.Choices.digital_archiving_policy_val("library")
+        oth = choices.Choices.digital_archiving_policy_val("other")
+        if lib in dap: dap.remove(lib)
+        if oth in dap: dap.remove(oth)
+        kvs.append((cls.q(23), ", ".join(dap)))
         kvs.append((cls.q(23, "library"), forminfo.get("digital_archiving_policy_library")))
         kvs.append((cls.q(23, "other"), forminfo.get("digital_archiving_policy_other")))
+
         kvs.append((cls.q(24), forminfo.get("digital_archiving_policy_url")))
         kvs.append((cls.q(25), crawl_permission))
+
+        article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
         kvs.append((cls.q(26), article_identifiers))
-        kvs.append((cls.q(26, "other"), forminfo.get("article_identifiers_other")))
+        # kvs.append((cls.q(26, "other"), forminfo.get("article_identifiers_other")))
+
         kvs.append((cls.q(27), metadata_provision))
         kvs.append((cls.q(28), download_statistics))
         kvs.append((cls.q(29), forminfo.get("download_statistics_url")))
         kvs.append((cls.q(30), forminfo.get("first_fulltext_oa_year")))
-        kvs.append((cls.q(31), ", ".join(forminfo.get("fulltext_format", []))))
-        kvs.append((cls.q(31, "other"), forminfo.get("fulltext_format_other")))
+
+        fulltext_formats = other_list("fulltext_format", "fulltext_format_other", choices.Choices.fulltext_format_val("other"))
+        kvs.append((cls.q(31), fulltext_formats))
+        # kvs.append((cls.q(31, "other"), forminfo.get("fulltext_format_other")))
+
         kvs.append((cls.q(32), ", ".join(forminfo.get("keywords", []))))
         kvs.append((cls.q(33), ", ".join(forminfo.get("languages", []))))
         kvs.append((cls.q(34), forminfo.get("editorial_board_url")))
@@ -406,18 +432,35 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(42), forminfo.get("oa_statement_url")))
         kvs.append((cls.q(43), license_embedded))
         kvs.append((cls.q(44), forminfo.get("license_embedded_url")))
-        kvs.append((cls.q(45), forminfo.get("license")))
-        kvs.append((cls.q(45, "other"), forminfo.get("license_other")))
+
+        lic = forminfo.get("license")
+        if lic == choices.Choices.licence_val("other"):
+            lic = forminfo.get("license_other")
+        kvs.append((cls.q(45), lic))
+        # kvs.append((cls.q(45, "other"), forminfo.get("license_other")))
+
         kvs.append((cls.q(46), ", ".join(forminfo.get("license_checkbox", []))))
         kvs.append((cls.q(47), forminfo.get("license_url")))
         kvs.append((cls.q(48), open_access))
-        kvs.append((cls.q(49), deposit_policy))
-        kvs.append((cls.q(49, "other"), forminfo.get("deposit_policy_other")))
-        kvs.append((cls.q(50), forminfo.get("copyright")))
-        kvs.append((cls.q(50, "other"), copyright_other))
+
+        deposit_policies = other_list("deposit_policy", "deposit_policy_other", choices.Choices.deposit_policy_other_val("other"))
+        kvs.append((cls.q(49), deposit_policies))
+        # kvs.append((cls.q(49, "other"), forminfo.get("deposit_policy_other")))
+
+        cr = forminfo.get("copyright")
+        if cr == choices.Choices.copyright_other_val("other"):
+            cr = forminfo.get("copyright_other")
+        kvs.append((cls.q(50), cr))
+        # kvs.append((cls.q(50, "other"), copyright_other))
+
         kvs.append((cls.q(51), forminfo.get("copyright_url")))
-        kvs.append((cls.q(52), forminfo.get("publishing_rights")))
-        kvs.append((cls.q(52, "other"), publishing_rights_other))
+
+        pr = forminfo.get("publishing_rights")
+        if pr == choices.Choices.publishing_rights_other_val("other"):
+            pr = forminfo.get("publishing_rights_other")
+        kvs.append((cls.q(52), pr))
+        # kvs.append((cls.q(52, "other"), publishing_rights_other))
+
         kvs.append((cls.q(53), forminfo.get("publishing_rights_url")))
 
         return kvs
@@ -430,79 +473,288 @@ class Suggestion2QuestionXwalk(object):
         elif len(qs) > expected and not force:
             raise SuggestionXwalkException("Crosswalk cannot complete - source column has more data than there are questions.  To xwalk anyway, use the 'force' argument")
 
+        def normal(val):
+            if val is None:
+                return None
+            if type(val) == int:
+                return val
+            val = val.strip()
+            val = re.sub(r'\s+', ' ', val)
+            return val
+
+        def yes_no(val):
+            val = normal(val)
+            if val is None: return None
+            if val.lower() == "yes":
+                return "True"
+            elif val.lower() == "no":
+                return "False"
+            return val
+
+        def country(val):
+            val = normal(val)
+            if val is None: return None
+
+            cs = [(code, data.get("name").upper()) for code, data in datasets.countries_dict.items()]
+            codes = [c for c, _ in cs]
+            ns = {}
+            [ns.update({n : c}) for c, n in cs]
+
+            uv = val.upper()
+            if uv in codes:
+                return uv
+            if uv in ns.keys():
+                return ns[uv]
+
+            return val
+
+        def currency(val):
+            val = normal(val)
+            if val is None: return None
+
+            cs = [(data.get("currency_alphabetic_code"), data.get("currency_name").upper()) for _, data in datasets.countries_dict.items()]
+            codes = [c for c, _ in cs]
+            ns = {}
+            [ns.update({n : c}) for c, n in cs]
+
+            uv = val.upper()
+            if uv in codes:
+                return uv
+            if uv in ns.keys():
+                return ns[uv]
+
+            return val
+
+        def languages(val):
+            val = normal(val)
+            if val is None: return None
+
+            opts = [x.strip() for x in val.split(",")]
+
+            codes = [c for c, _ in datasets.language_options]
+            ns = {}
+            [ns.update({n.upper() : c}) for c, n in datasets.language_options]
+
+            norm = []
+            for o in opts:
+                uv = o.upper()
+                if uv in codes:
+                    norm.append(uv)
+                elif uv in ns.keys():
+                    norm.append(ns[uv])
+                else:
+                    norm.append(o)
+
+            return norm
+
+        def _rationalise_other(val, form_choices, other_val):
+            val = normal(val)
+            if val is None:
+                return None
+
+            opts = [aid.strip() for aid in val.split(",")]
+
+            cs = {}
+            [cs.update({c.lower() : c}) for c, _ in form_choices]
+
+            normopts = []
+            otheropts = []
+            for o in opts:
+                if o.lower() in cs:
+                    normopts.append(cs[o.lower()])
+                else:
+                    otheropts.append(o)
+
+            if len(otheropts) > 0:
+                normopts.append(other_val)
+
+            return normopts, ", ".join(otheropts)
+
+        def digital_archiving_policy(options, library, other):
+            options = normal(options)
+            library = normal(library)
+            other = normal(other)
+
+            if options is None:
+                return None
+
+            opts = [dap.strip() for dap in options.split(",")]
+
+            cs = {}
+            [cs.update({c.lower() : c}) for c, _ in choices.Choices.digital_archiving_policy()]
+            normopts = [cs[o.lower()] if o.lower() in cs else o for o in opts]
+
+            lib = choices.Choices.digital_archiving_policy_val("library")
+            oth = choices.Choices.digital_archiving_policy_val("other")
+            if library is not None and library != "":
+                if lib not in normopts:
+                    normopts.append(lib)
+            if other is not None and other != "":
+                if oth not in normopts:
+                    normopts.append(oth)
+
+            return normopts, library, other
+
+        def article_identifiers(val):
+            return _rationalise_other(val, choices.Choices.article_identifiers(), choices.Choices.article_identifiers_val("other"))
+
+        def fulltext_format(val):
+            return _rationalise_other(val, choices.Choices.fulltext_format(), choices.Choices.fulltext_format_val("other"))
+
+        def deposit_policy(val):
+            return _rationalise_other(val, choices.Choices.deposit_policy(), choices.Choices.deposit_policy_other_val("other"))
+
+        def get_license(val):
+            return _this_or_other(val, choices.Choices.licence(), choices.Choices.licence_val("other"))
+            """
+            val = normal(val)
+            if val is None:
+                return None
+
+            cs = {}
+            [cs.update({c.lower() : c}) for c, _ in choices.Choices.licence()]
+
+            if val.lower() in cs:
+                return cs[val.lower()], ""
+            else:
+                return choices.Choices.licence_val("other"), val
+            """
+
+        def copyright(val):
+            return _this_or_other(val, choices.Choices.copyright(), choices.Choices.copyright_other_val("other"))
+
+        def publishing_rights(val):
+            return _this_or_other(val, choices.Choices.publishing_rights(), choices.Choices.publishing_rights_other_val("other"))
+
+        def _this_or_other(val, form_options, other_val):
+            val = normal(val)
+            if val is None:
+                return None
+
+            cs = {}
+            [cs.update({c.lower() : c}) for c, _ in form_options]
+
+            if val.lower() in cs:
+                return cs[val.lower()], ""
+            else:
+                return other_val, val
+
+        def review_process(val):
+            val = normal(val)
+            if val is None:
+                return None
+
+            cs = {}
+            [cs.update({c.lower() : c}) for c, _ in choices.Choices.review_process()]
+            norm = cs[val.lower()] if val.lower() in cs else val
+
+            return norm
+
+        def license_aspects(val):
+            val = normal(val)
+            if val is None:
+                return None
+
+            opts = [x.strip() for x in val.split(",")]
+
+            cs = {}
+            ns = {}
+            [(cs.update({c.upper() : c}), ns.update({n.upper() : c})) for c, n in choices.Choices.licence_checkbox()]
+
+            normopts = []
+            for o in opts:
+                uv = o.upper()
+                if uv in cs:
+                    normopts.append(uv)
+                elif uv in ns.keys():
+                    normopts.append(ns[uv])
+                else:
+                    normopts.append(o)
+
+            return normopts
+
         forminfo = {}
 
-        processing_charges = str(cls.a(qs, 13) == "Yes")
-        submission_charges = str(cls.a(qs, 16) == "Yes")
-        waiver_policy = str(cls.a(qs, 21) == "Yes")
-        crawl_permission = str(cls.a(qs, 25) == "Yes")
-        metadata_provision = str(cls.a(qs, 27) == "Yes")
-        download_statistics = str(cls.a(qs, 28) == "Yes")
-        plagiarism_screening = str(cls.a(qs, 39) == "Yes")
-        license_embedded = str(cls.a(qs, 43) == "Yes")
-        open_access = str(cls.a(qs, 48) == "Yes")
+        forminfo["title"] = normal(cls.a(qs, 1))
+        forminfo["url"] = normal(cls.a(qs, 2))
+        forminfo["alternative_title"] = normal(cls.a(qs, 3))
+        forminfo["pissn"] = normal(cls.a(qs, 4))
+        forminfo["eissn"] = normal(cls.a(qs, 5))
+        forminfo["publisher"] = normal(cls.a(qs, 6))
+        forminfo["society_institution"] = normal(cls.a(qs, 7))
+        forminfo["platform"] = normal(cls.a(qs, 8))
+        forminfo["contact_name"] = normal(cls.a(qs, 9))
+        forminfo["contact_email"] = normal(cls.a(qs, 10))
+        forminfo["confirm_contact_email"] = normal(cls.a(qs, 11))
+        forminfo["country"] = country(cls.a(qs, 12))
+        forminfo["processing_charges"] = yes_no(cls.a(qs, 13))
+        forminfo["processing_charges_amount"] = normal(cls.a(qs, 14))
+        forminfo["processing_charges_currency"] = currency(cls.a(qs, 15))
+        forminfo["submission_charges"] = yes_no(cls.a(qs, 16))
+        forminfo["submission_charges_amount"] = normal(cls.a(qs, 17))
+        forminfo["submission_charges_currency"] = currency(cls.a(qs, 18))
+        forminfo["articles_last_year"] = normal(cls.a(qs, 19))
+        forminfo["articles_last_year_url"] = normal(cls.a(qs, 20))
+        forminfo["waiver_policy"] = yes_no(cls.a(qs, 21))
+        forminfo["waiver_policy_url"] = normal(cls.a(qs, 22))
 
+        dap, lib, oth = digital_archiving_policy(cls.a(qs, 23), cls.a(qs, 23, "library"), cls.a(qs, 23, "other"))
+        forminfo["digital_archiving_policy"] = dap
+        forminfo["digital_archiving_policy_library"] = lib
+        forminfo["digital_archiving_policy_other"] = oth
 
-        forminfo["title"] = cls.a(qs, 1)
-        forminfo["url"] = cls.a(qs, 2)
-        forminfo["alternative_title"] = cls.a(qs, 3)
-        forminfo["pissn"] = cls.a(qs, 4)
-        forminfo["eissn"] = cls.a(qs, 5)
-        forminfo["publisher"] = cls.a(qs, 6)
-        forminfo["society_institution"] = cls.a(qs, 7)
-        forminfo["platform"] = cls.a(qs, 8)
-        forminfo["contact_name"] = cls.a(qs, 9)
-        forminfo["contact_email"] = cls.a(qs, 10)
-        forminfo["confirm_contact_email"] = cls.a(qs, 11)
-        forminfo["country"] = cls.a(qs, 12)
-        forminfo["processing_charges"] = processing_charges
-        forminfo["processing_charges_amount"] = cls.a(qs, 14)
-        forminfo["processing_charges_currency"] = cls.a(qs, 15)
-        forminfo["submission_charges"] = submission_charges
-        forminfo["submission_charges_amount"] = cls.a(qs, 17)
-        forminfo["submission_charges_currency"] = cls.a(qs, 18)
-        forminfo["articles_last_year"] = cls.a(qs, 19)
-        forminfo["articles_last_year_url"] = cls.a(qs, 20)
-        forminfo["waiver_policy"] = waiver_policy
-        forminfo["waiver_policy_url"] = cls.a(qs, 22)
-        forminfo["digital_archiving_policy"] = [dap.strip() for dap in cls.a(qs, 23).split(",")]
-        forminfo["digital_archiving_policy_library"] = cls.a(qs, 23, "library")
-        forminfo["digital_archiving_policy_other"] = cls.a(qs, 23, "other")
-        forminfo["digital_archiving_policy_url"] = cls.a(qs, 24)
-        forminfo["crawl_permission"] = crawl_permission
-        forminfo["article_identifiers"] = [aid.strip() for aid in cls.a(qs, 26).split(",")]
-        forminfo["article_identifiers_other"] = cls.a(qs, 26, "other")
-        forminfo["metadata_provision"] = metadata_provision
-        forminfo["download_statistics"] = download_statistics
-        forminfo["download_statistics_url"] = cls.a(qs, 29)
-        forminfo["first_fulltext_oa_year"] = cls.a(qs, 30)
-        forminfo["fulltext_format"] = [ftf.strip() for ftf in cls.a(qs, 31).split(",")]
-        forminfo["fulltext_format_other"] = cls.a(qs, 31, "other")
-        forminfo["keywords"] = [k.strip() for k in cls.a(qs, 32).split(",")]
-        forminfo["languages"] = [l.strip() for l in cls.a(qs, 33).split(",")]
-        forminfo["editorial_board_url"] = cls.a(qs, 34)
-        forminfo["review_process"] = cls.a(qs, 35)
-        forminfo["review_process_url"] = cls.a(qs, 36)
-        forminfo["aims_scope_url"] = cls.a(qs, 37)
-        forminfo["instructions_authors_url"] = cls.a(qs, 38)
-        forminfo["plagiarism_screening"] = plagiarism_screening
-        forminfo["plagiarism_screening_url"] = cls.a(qs, 40)
-        forminfo["publication_time"] = cls.a(qs, 41)
-        forminfo["oa_statement_url"] = cls.a(qs, 42)
-        forminfo["license_embedded"] = license_embedded
-        forminfo["license_embedded_url"] = cls.a(qs, 44)
-        forminfo["license"] = cls.a(qs, 45)
-        forminfo["license_other"] = cls.a(qs, 45, "other")
-        forminfo["license_checkbox"] = [l.strip() for l in cls.a(qs, 46).split(",")]
-        forminfo["license_url"] = cls.a(qs, 47)
-        forminfo["open_access"] = open_access
-        forminfo["deposit_policy"] = [dp.strip() for dp in cls.a(qs, 49).split(",")]
-        forminfo["deposit_policy_other"] = cls.a(qs, 49, "other")
-        forminfo["copyright"] = cls.a(qs, 50)
-        forminfo["copyright_other"] = cls.a(qs, 50, "other")
-        forminfo["copyright_url"] = cls.a(qs, 51)
-        forminfo["publishing_rights"] = cls.a(qs, 52)
-        forminfo["publishing_rights_other"] = cls.a(qs, 52, "other")
-        forminfo["publishing_rights_url"] = cls.a(qs, 53)
+        forminfo["digital_archiving_policy_url"] = normal(cls.a(qs, 24))
+        forminfo["crawl_permission"] = yes_no(cls.a(qs, 25))
+
+        aids, aidother = article_identifiers(cls.a(qs, 26))
+        forminfo["article_identifiers"] = aids
+        forminfo["article_identifiers_other"] = aidother
+
+        forminfo["metadata_provision"] = yes_no(cls.a(qs, 27))
+        forminfo["download_statistics"] = yes_no(cls.a(qs, 28))
+        forminfo["download_statistics_url"] = normal(cls.a(qs, 29))
+        forminfo["first_fulltext_oa_year"] = normal(cls.a(qs, 30))
+
+        ftf, ftfother = fulltext_format(cls.a(qs, 31))
+        forminfo["fulltext_format"] = ftf
+        forminfo["fulltext_format_other"] = ftfother
+
+        forminfo["keywords"] = [k.strip() for k in normal(cls.a(qs, 32)).split(",")]
+        forminfo["languages"] = languages(cls.a(qs, 33))
+        forminfo["editorial_board_url"] = normal(cls.a(qs, 34))
+        forminfo["review_process"] = review_process(cls.a(qs, 35))
+        forminfo["review_process_url"] = normal(cls.a(qs, 36))
+        forminfo["aims_scope_url"] = normal(cls.a(qs, 37))
+        forminfo["instructions_authors_url"] = normal(cls.a(qs, 38))
+        forminfo["plagiarism_screening"] = yes_no(cls.a(qs, 39))
+        forminfo["plagiarism_screening_url"] = normal(cls.a(qs, 40))
+        forminfo["publication_time"] = normal(cls.a(qs, 41))
+        forminfo["oa_statement_url"] = normal(cls.a(qs, 42))
+        forminfo["license_embedded"] = yes_no(cls.a(qs, 43))
+        forminfo["license_embedded_url"] = normal(cls.a(qs, 44))
+
+        lic, licother = get_license(cls.a(qs, 45))
+        forminfo["license"] = lic
+        forminfo["license_other"] = licother
+
+        forminfo["license_checkbox"] = license_aspects(cls.a(qs, 46))
+        forminfo["license_url"] = normal(cls.a(qs, 47))
+        forminfo["open_access"] = yes_no(cls.a(qs, 48))
+
+        dp, dpother = deposit_policy(cls.a(qs, 49))
+        forminfo["deposit_policy"] = dp
+        forminfo["deposit_policy_other"] = dpother
+
+        cr, crother = copyright(cls.a(qs, 50))
+        forminfo["copyright"] = cr
+        forminfo["copyright_other"] = crother
+
+        forminfo["copyright_url"] = normal(cls.a(qs, 51))
+
+        pr, prother = publishing_rights(cls.a(qs, 52))
+        forminfo["publishing_rights"] = pr
+        forminfo["publishing_rights_other"] = prother
+
+        forminfo["publishing_rights_url"] = normal(cls.a(qs, 53))
 
         return forminfo

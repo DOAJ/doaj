@@ -2,7 +2,8 @@ from doajtest.helpers import DoajTestCase
 from portality import models, reapplication, clcsv
 import os
 from copy import deepcopy
-from portality.formcontext import xwalk
+from portality.formcontext import xwalk, forms
+from werkzeug.datastructures import MultiDict
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -24,7 +25,7 @@ APPLICATION_SOURCE = {
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
             {"type" : "editorial_board", "url" : "http://editorial.board"},
             {"type" : "aims_scope", "url" : "http://aims.scope"},
-            {"type" : "author_instructions", "url" : "http://author.instructions"},
+            {"type" : "author_instructions", "url" : "http://author.instructions.com"},
             {"type" : "oa_statement", "url" : "http://oa.statement"}
         ],
         "subject" : [
@@ -66,7 +67,7 @@ APPLICATION_SOURCE = {
         "deposit_policy" : ["Sherpa/Romeo", "Store it"],
         "author_copyright" : {
             "copyright" : "Sometimes",
-            "url" : "http://copyright"
+            "url" : "http://copyright.com"
         },
         "author_publishing_rights" : {
             "publishing_rights" : "Occasionally",
@@ -143,43 +144,43 @@ APPLICATION_COL = [
     "http://articles.last.year",
     "Yes",
     "http://waiver.policy",
-    "LOCKSS, CLOCKSS, A national library, Other",
+    "LOCKSS, CLOCKSS", #, A national library, Other",
     "Trinity",
     "A safe place",
     "http://digital.archiving.policy",
     "Yes",
-    "DOI, ARK, Other",
-    "PURL",
+    "DOI, ARK, PURL",
+    # "PURL",
     "Yes",
     "Yes",
     "http://download.stats",
     1980,
-    "HTML, XML, Other",
-    "Wordperfect",
+    "HTML, XML, Wordperfect",
+    # "Wordperfect",
     "word, key",
     "EN, FR",
     "http://editorial.board",
     "Open peer review",
     "http://review.process",
     "http://aims.scope",
-    "http://author.instructions",
+    "http://author.instructions.com",
     "Yes",
     "http://plagiarism.screening",
     8,
     "http://oa.statement",
     "Yes",
     "http://licence.embedded",
-    "Other",
+    # "Other",
     "CC MY",
     "BY, NC",
     "http://licence.url",
     "Yes",
-    "Sherpa/Romeo, Other",
-    "Store it",
-    "Other",
+    "Sherpa/Romeo, Store it",
+    # "Store it",
+    #"Other",
     "Sometimes",
-    "http://copyright",
-    "Other",
+    "http://copyright.com",
+    #"Other",
     "Occasionally",
     "http://publishing.rights"
 ]
@@ -345,3 +346,64 @@ class TestReApplication(DoajTestCase):
         with self.assertRaises(reapplication.SuggestionXwalkException):
             forminfo = reapplication.Suggestion2QuestionXwalk.question2form(col)
 
+
+    def test_07_csv_xwalk_in_advanced(self):
+        # make an application with correct but oddly and variably entered data
+        col = deepcopy(APPLICATION_COL)
+        col[0] = "    The   Title   "               # title
+        col[11] = " united   kingdom    "           # country
+        col[12] = "  YEs "                          # processing charges
+        col[14] = " gbp   "                         # processing_charges_currency
+        col[15] = "nO "                             # submission charges
+        col[17] = " pound  sterling"                # submission_charges_currency
+        col[20] = " whatever "                      # waiver_policy
+        col[22] = "  LOCKSS, A national library  "  # digital_archiving_policy
+        col[23] = "Dublin"                          # digital_archiving_policy_library
+        col[24] = "  Behind the sofa"               # digital_archiving_policy_other
+        col[27] = "DOI, ARK, PURL, Flag"            # article_identifiers and article_identifiers_other
+        col[32] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
+        col[34] = "en, FR,  Vietnamese , Wibble"    # languages
+        col[36] = "edITORial   review   "           # review_process
+        col[46] = "CC BY"                           # license and license_other
+        col[47] = "BY, Share Alike, Whatever"       # license_checkbox
+        col[50] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
+        col[51] = "Now and again"                   # copyright
+        col[53] = "almost never"                    # publishing rights
+
+        # run the xwalk and see that it produces what we expect
+        forminfo = reapplication.Suggestion2QuestionXwalk.question2form(col)
+        assert forminfo.get("title") == "The Title"
+        assert forminfo.get("country") == "GB"
+        assert forminfo.get("processing_charges") == "True"
+        assert forminfo.get("processing_charges_currency") == "GBP"
+        assert forminfo.get("submission_charges") == "False"
+        assert forminfo.get("submission_charges_currency") == "GBP"
+        assert forminfo.get("waiver_policy") == "whatever"      # we want this to come through as is - it will then fail validation later
+        assert forminfo.get("digital_archiving_policy") == ["LOCKSS", "A national library", "Other"]
+        assert forminfo.get("digital_archiving_policy_library") == "Dublin"
+        assert forminfo.get("digital_archiving_policy_other") == "Behind the sofa"
+        assert forminfo.get("article_identifiers") == ["DOI", "ARK", "Other"]
+        assert forminfo.get("article_identifiers_other") == "PURL, Flag"
+        assert forminfo.get("fulltext_format") == ["PDF", "XML", "Other"]
+        assert forminfo.get("fulltext_format_other") == "Wordperfect, TeX"
+        assert forminfo.get("languages") == ["EN", "FR", "VI", "Wibble"]
+        assert forminfo.get("review_process") == "Editorial review"
+        assert forminfo.get("license") == "CC BY"
+        assert forminfo.get("license_other") == ""
+        assert forminfo.get("license_checkbox") == ["BY", "SA", "Whatever"]
+        assert forminfo.get("deposit_policy") == ["Sherpa/Romeo", "Other"]
+        assert forminfo.get("deposit_policy_other") == "Under desk, over there"
+        assert forminfo.get("copyright") == "Other"
+        assert forminfo.get("copyright_other") == "Now and again"
+        assert forminfo.get("publishing_rights") == "Other"
+        assert forminfo.get("publishing_rights_other") == "almost never"
+
+        # run the data into the form and validate it, to check we get the validation errors we expect
+        form = forms.PublisherReApplicationForm(data=forminfo)
+        form.validate()
+
+        error_fields = form.errors.keys()
+        assert len(error_fields) == 3
+        assert "waiver_policy" in error_fields
+        assert "languages" in error_fields
+        assert "license_checkbox" in error_fields
