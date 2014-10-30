@@ -11,6 +11,8 @@ from doajtest.fixtures import JournalFixtureFactory
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 
+JOURNAL_SOURCE_WITH_LEGACY_INFO = JournalFixtureFactory.make_journal_source_with_legacy_info()
+
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
@@ -104,3 +106,76 @@ class TestManEdJournalReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert True # gives us a place to drop a break point later if we need it
+
+    def test_02_maned_review_optional_validation(self):
+        """Test optional validation in the Managing Editor's journal form"""
+
+        # construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(JOURNAL_FORM),
+            source=models.Journal(**JOURNAL_SOURCE)
+        )
+
+        # do not re-test the form context
+
+        # run the validation, but make it fail by omitting a required field
+        fc.form.title.data = ''
+        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
+        assert not fc.validate()
+
+        # tick the optional validation box and try again
+        fc.form.make_all_fields_optional.data = True
+        assert fc.validate(), fc.form.errors
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # right, so let's see if we managed to get a title-less journal from this
+        assert fc.target.bibjson().title is None, fc.target.bibjson().title
+
+    def test_03_maned_review_legacy_info(self):
+        """Test legacy journal info display and saving in the Managing Editor's journal form"""
+
+        # we start by constructing it from source
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=models.Journal(**JOURNAL_SOURCE))
+        # do not repeat tests on the form context, all that is tested above
+
+        # construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(JOURNAL_FORM),
+            source=models.Journal(**JOURNAL_SOURCE_WITH_LEGACY_INFO)
+        )
+
+        # do not re-test the form context
+
+        # check that we can render the form
+        # FIXME: we can't easily render the template - need to look into Flask-Testing for this
+        # html = fc.render_template(edit_journal=True)
+        html = fc.render_field_group("old_journal_fields")
+        assert html is not None
+        assert html != ""
+
+        # check the fields which we expect appear
+        expected_fields = ["author_pays", "author_pays_url", "oa_end_year"]
+        for ef in expected_fields:
+            assert 'name="{0}"'.format(ef) in html, "expected field {0} not found in HTML".format(ef)
+
+        # run the validation
+        fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
+        assert fc.validate(), fc.form.errors
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # did we get the old info walked across?
+        assert fc.target.bibjson().author_pays == JOURNAL_FORM['author_pays']
+        assert fc.target.bibjson().author_pays_url == JOURNAL_FORM['author_pays_url']
+        assert fc.target.bibjson().oa_end.get('year') == JOURNAL_FORM['oa_end_year']

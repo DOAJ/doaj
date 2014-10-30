@@ -33,8 +33,9 @@ def mock_lookup_code(code):
 
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
-del JOURNAL_FORM["editor_group"]
 del JOURNAL_FORM["owner"]
+del JOURNAL_FORM["editor_group"]
+del JOURNAL_FORM["editor"]
 
 ######################################################
 # Main test class
@@ -67,12 +68,12 @@ class TestEditorJournalReview(DoajTestCase):
     # Tests on the publisher's re-journal form
     ###########################################################
 
-    def test_01_editor_review_success(self):
-        """Give the editor's journal form a full workout"""
+    def test_01_assoc_editor_review_success(self):
+        """Give the associate editor's journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, formcontext.AssEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
@@ -81,34 +82,25 @@ class TestEditorJournalReview(DoajTestCase):
         # check that we can render the form
         # FIXME: we can't easily render the template - need to look into Flask-Testing for this
         # html = fc.render_template(edit_journal=True)
-        html = fc.render_field_group("editorial") # we know all these disabled fields are in the editorial section
-        assert html is not None
-        assert html != ""
+        html = fc.render_field_group("editorial")  # these fields should not appear at all
+        assert html == ""
 
-        # check that the fields that should be disabled are disabled
-        # "editor_group"
-        rx_template = '(<input [^>]*?disabled[^>]+?name="{field}"[^>]*?>)'
-        eg_rx = rx_template.replace("{field}", "editor_group")
-
-        assert re.search(eg_rx, html)
+        html = fc.render_field_group("owner")  # these fields should not appear at all
+        assert html == ""
 
         # now construct it from form data (with a known source)
         fc = formcontext.JournalFormFactory.get_form_context(
-            role="editor",
-            form_data=MultiDict(JOURNAL_FORM) ,
+            role="associate_editor",
+            form_data=MultiDict(JOURNAL_FORM),
             source=models.Journal(**JOURNAL_SOURCE)
         )
 
-        assert isinstance(fc, formcontext.EditorJournalReview)
+        assert isinstance(fc, formcontext.AssEdJournalReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
 
         # test each of the workflow components individually ...
-
-        # pre-validate and ensure that the disabled fields get re-set
-        fc.pre_validate()
-        assert fc.form.editor_group.data == "editorgroup"
 
         # run the validation itself
         fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)

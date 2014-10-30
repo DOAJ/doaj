@@ -10,7 +10,6 @@ from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url
 
-from portality import journal as journal_handler
 from portality.view.forms import EditorGroupForm
 
 blueprint = Blueprint('admin', __name__)
@@ -62,13 +61,42 @@ def article_endpoint(article_id):
 @login_required
 @ssl_required
 def journal_page(journal_id):
-    return journal_handler.request_handler(request, journal_id, activate_deactivate=True, group_editable=True, editorial_available=True)
+    if not current_user.has_role("edit_journal"):
+        abort(401)
+    ap = models.Journal.pull(journal_id)
+    if ap is None:
+        abort(404)
+
+    # attempt to get a lock on the object
+    try:
+        lockinfo = lock.lock("journal", journal_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("admin/journal_locked.html", journal=ap, lock=l.lock, edit_journal_page=True)
+
+    if request.method == "GET":
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
+        return fc.render_template(edit_journal_page=True, lock=lockinfo)
+    elif request.method == "POST":
+        fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Journal updated.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(e.message)
+                return redirect(url_for("admin.journal_page", journal_id=ap.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_journal_page=True, lock=lockinfo)
+
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def journal_activate(journal_id):
-    j = journal_handler.get_journal(journal_id)
+    j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
     j.bibjson().active = True
@@ -81,7 +109,7 @@ def journal_activate(journal_id):
 @login_required
 @ssl_required
 def journal_deactivate(journal_id):
-    j = journal_handler.get_journal(journal_id)
+    j = models.Journal.pull(journal_id)
     if j is None:
         abort(404)
     j.bibjson().active = False

@@ -195,6 +195,40 @@ class BasicJournalInformationRenderer(Renderer):
             ]
         }
 
+    def check_field_groups(self):
+        '''
+        Check whether field groups which are being referenced in various renderer lists actually exist.
+
+        Should only be called in self.__init__ by non-abstract classes,
+        i.e. the bottom of the inheritance tree, the ones that would
+        actually get used to render forms.
+
+        Otherwise the check becomes meaningless (and always fails) as it will check whether
+        all groups are defined in a class that isn't supposed to have all
+        the definitions - being abstract, it may only have a few common ones.
+        '''
+        for group in self.NUMBERING_ORDER:
+            try:
+                self.FIELD_GROUPS[group]
+            except KeyError as e:
+                raise KeyError(
+                    'Can\'t number a group which does not exist. '
+                    'Field group "{0}" is not defined in self.FIELD_GROUPS '
+                    'but is present in self.NUMBERING_ORDER. '
+                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
+                )
+
+        for group in self.ERROR_CHECK_ORDER:
+            try:
+                self.FIELD_GROUPS[group]
+            except KeyError as e:
+                raise KeyError(
+                    'Can\'t check a group which does not exist for errors. '
+                    'Field group "{0}" is not defined in self.FIELD_GROUPS '
+                    'but is present in self.ERROR_CHECK_ORDER. '
+                    'This is in renderer {1}.'.format(e.message, self.__class__.__name__)
+                )
+
     def number_questions(self):
         q = 1
         for g in self.NUMBERING_ORDER:
@@ -211,12 +245,16 @@ class BasicJournalInformationRenderer(Renderer):
         found = False
         for g in self.ERROR_CHECK_ORDER:
             cfg = self.FIELD_GROUPS.get(g)
-            for obj in cfg:
-                field = obj.keys()[0]
-                if field in self.error_fields:
-                    obj[field]["first_error"] = True
-                    found = True
-                    break
+            # If a group is specified as part of the error checks but is
+            # not defined in self.FIELD_GROUPS then do not try to check
+            # it for errors - there are no fields to check.
+            if cfg:
+                for obj in cfg:
+                    field = obj.keys()[0]
+                    if field in self.error_fields:
+                        obj[field]["first_error"] = True
+                        found = True
+                        break
             if found:
                 break
 
@@ -260,6 +298,8 @@ class PublicApplicationRenderer(ApplicationRenderer):
         # to mess with the group order and field groups first)
         self.number_questions()
 
+        self.check_field_groups()
+
 class PublisherReApplicationRenderer(ApplicationRenderer):
     def __init__(self):
         super(PublisherReApplicationRenderer, self).__init__()
@@ -271,6 +311,8 @@ class PublisherReApplicationRenderer(ApplicationRenderer):
         # explicitly call number questions, as it is not called by default (because other implementations may want
         # to mess with the group order and field groups first
         self.number_questions()
+
+        self.check_field_groups()
 
 class ManEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -305,6 +347,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         self.number_questions()
 
+        self.check_field_groups()
+
 class EditorApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
         super(EditorApplicationReviewRenderer, self).__init__()
@@ -335,6 +379,8 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
 
         self.number_questions()
 
+        self.check_field_groups()
+
 class AssEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
         super(AssEdApplicationReviewRenderer, self).__init__()
@@ -360,12 +406,16 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
 
         self.number_questions()
 
+        self.check_field_groups()
+
 
 class JournalRenderer(BasicJournalInformationRenderer):
     def __init__(self):
         super(JournalRenderer, self).__init__()
 
-        self.display_old_journal_fields = False
+        self.FIELD_GROUPS["subject"] = [
+            {"subject" : {}}
+        ]
 
         self.FIELD_GROUPS["old_journal_fields"] = [
             {"author_pays": {}},
@@ -373,19 +423,15 @@ class JournalRenderer(BasicJournalInformationRenderer):
             {"oa_end_year": {"class": "input-mini"}},
         ]
 
-        self.ERROR_CHECK_ORDER = ["account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
-
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name == "old_journal_fields":
             display_old_journal_fields = False
-            for old_field_name in self.FIELD_GROUPS["old_journal_fields"]:
-                old_field = form_context.form.get(old_field_name)
+            for old_field_def in self.FIELD_GROUPS["old_journal_fields"]:
+                old_field_name = old_field_def.keys()[0]
+                old_field = getattr(form_context.form, old_field_name)
                 if old_field:
                     if old_field.data and old_field.data != 'None':
                         display_old_journal_fields = True
-
-            # let the template know whether to render the box these fields should go in
-            self.display_old_journal_fields = display_old_journal_fields
 
             if not display_old_journal_fields:
                 return ""
@@ -398,15 +444,11 @@ class ManEdJournalReviewRenderer(JournalRenderer):
     def __init__(self):
         super(ManEdJournalReviewRenderer, self).__init__()
 
-        self.display_old_journal_fields = False  # an instance var flag for the template
-
         # extend the list of field groups
         self.FIELD_GROUPS["account"] = [
             {"owner" : {"class" : "input-large"}}
         ]
-        self.FIELD_GROUPS["subject"] = [
-            {"subject" : {}}
-        ]
+
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
             {"editor" : {"class" : "input-large"}}
@@ -429,6 +471,8 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.number_questions()
 
+        self.check_field_groups()
+
 
 class EditorJournalReviewRenderer(JournalRenderer):
     def __init__(self):
@@ -436,9 +480,6 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         super(EditorJournalReviewRenderer, self).__init__()
 
-        self.FIELD_GROUPS["subject"] = [
-            {"subject" : {}}
-        ]
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
             {"editor" : {"class" : "input-large"}}
@@ -454,6 +495,32 @@ class EditorJournalReviewRenderer(JournalRenderer):
         ]
 
         self.ERROR_CHECK_ORDER = ["editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
-        # don"t want the extra groups numbered so not added to self.NUMBERING_ORDER
+
+        # don't want the extra groups numbered so not added to self.NUMBERING_ORDER
 
         self.number_questions()
+
+        self.check_field_groups()
+
+
+class AssEdJournalReviewRenderer(JournalRenderer):
+    def __init__(self):
+        super(AssEdJournalReviewRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.ERROR_CHECK_ORDER = ["subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
+        self.number_questions()
+
+        self.check_field_groups()
+

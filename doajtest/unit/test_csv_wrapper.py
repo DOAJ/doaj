@@ -1,18 +1,19 @@
 __author__ = 'steve'
 
-from unittest import TestCase
+from doajtest.helpers import DoajTestCase
 from portality.clcsv import ClCsv
 import csv
 import os
 
-class TestCsvWrapper(TestCase):
+class TestCsvWrapper(DoajTestCase):
 
     # Set this file prefix to the resources dir relative to where tests are run from.
-    PRFX = 'doajtest/unit/resources/'
+    BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
+    PRFX = os.path.join(BASE_FILE_PATH, "resources")
 
     def setUp(self):
         # Create a CSV file to read, and objects to write
-        self.gold_csv = open(self.PRFX + 'rescsv_gold_standard', 'wb')
+        self.gold_csv = open(os.path.join(self.PRFX, 'rescsv_gold_standard'), 'wb')
 
         writer = csv.writer(self.gold_csv)
         writer.writerow(['', 'issn1', 'issn2', 'issn3', 'issn4'])
@@ -37,7 +38,7 @@ class TestCsvWrapper(TestCase):
         except OSError:
             pass
 
-    def a_test_read_01(self):
+    def test_01_read_01(self):
         # Check that reading the gold standard file gives the right object
         clcsv = ClCsv(self.gold_csv.name)
         assert clcsv.get_column(1) == ('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
@@ -45,19 +46,19 @@ class TestCsvWrapper(TestCase):
         assert clcsv.get_column(0) == ('', ['q1', 'q2', 'q3', 'q4'])
         assert clcsv.get_column('issn4') == ('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4'])
 
-    def a_test_read_02(self):
+    def test_02_read_02(self):
         # Create an open file object first and pass it in (a different form of CSV creation)
         f = open(self.gold_csv.name, 'rb')
         clcsv = ClCsv(f)
         assert clcsv.get_column(3) == ('issn3', ['i3a1', 'i3a2', 'i3a3', 'i3a4'])
 
-    def a_test_read_03(self):
+    def test_03_read_03(self):
         # When the file object is closed
         assert self.gold_csv.closed
         clcsv = ClCsv(self.gold_csv)
         assert clcsv.get_column(3) == ('issn3', ['i3a1', 'i3a2', 'i3a3', 'i3a4'])
 
-    def b_test_write_01(self):
+    def test_04_write_01(self):
         # write an object to a file, and check against pre-bult one
         wr_csv = ClCsv(self.PRFX + 'test_write_csv')
         wr_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
@@ -71,7 +72,7 @@ class TestCsvWrapper(TestCase):
         gold_lines = open(self.gold_csv.name, 'rb').readlines()
         assert gold_lines == wr_lines
 
-    def b_test_write_02(self):
+    def test_05_write_02(self):
         # Check we can overwrite an existing column.
         ow_csv = ClCsv(self.PRFX + 'test_overwrite_csv')
         ow_csv.set_column('', ['q1', 'q2', 'q3', 'q4'])
@@ -91,7 +92,7 @@ class TestCsvWrapper(TestCase):
         gold_lines = open(self.gold_csv.name, 'rb').readlines()
         assert gold_lines == ow_lines
 
-    def c_test_gets(self):
+    def test_06_gets(self):
         # test the functions which get
         rd_csv = ClCsv(self.gold_csv.name)
 
