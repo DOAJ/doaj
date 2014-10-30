@@ -175,7 +175,8 @@ QUERY_ROUTE = {
     "admin_query" : {"role" : "admin", "default_filter": False},
     "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
     "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
-    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True}
+    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
+    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : True}
 }
 
 # ========================

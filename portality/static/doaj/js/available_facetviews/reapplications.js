@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
   $('.facetview.reapplications').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/reapplication_query/suggestion/_search?',
+    search_url: es_scheme + '//' + es_domain + '/publisher_reapp_query/suggestion/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
