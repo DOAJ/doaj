@@ -82,7 +82,6 @@ class TestXwalk(DoajTestCase):
         del csource['id']
         del csource['created_date']
         #diff_dicts(csource, obj, 'csource', 'modelobj')
-
         assert obj == csource
 
     def test_03_application_to_journal(self):

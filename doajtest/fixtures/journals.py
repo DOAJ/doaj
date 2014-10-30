@@ -196,7 +196,6 @@ JOURNAL_INFO = {
     "publishing_rights_url": "http://publishing.rights"
 }
 
-
 JOURNAL_LEGACY = {
     "author_pays": "Y",
     "author_pays_url": "http://author.pays",

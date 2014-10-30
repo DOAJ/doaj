@@ -553,11 +553,7 @@ class EditorApplicationReview(ApplicationContext):
     Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
     is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
     editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
-<<<<<<< HEAD
-    be used to create journals from applications
-=======
     be used to create journals from applications. Deleting notes is not allowed, but adding is.
->>>>>>> develop
     """
     def make_renderer(self):
         self.renderer = render.EditorApplicationReviewRenderer()
@@ -656,17 +652,10 @@ class EditorApplicationReview(ApplicationContext):
 
 class AssEdApplicationReview(ApplicationContext):
     """
-<<<<<<< HEAD
-    Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
-    is accessing an application.  This prevents re-assignment of Editorial group, but permits assignment of associate
-    editor.  It also permits change in application state, except to "accepted"; therefore this form context cannot
-    be used to create journals from applications
-=======
     Associate Editors Application Review form. This is to be used in a context where an associate editor (fewest rights)
     needs to access an application for review. This editor cannot change the editorial group or the assigned editor.
     They also cannot change the owner of the application. They cannot set an application to "Accepted" so this form can't
     be used to create a journal from an application. They cannot delete, only add notes.
->>>>>>> develop
     """
     def make_renderer(self):
         self.renderer = render.AssEdApplicationReviewRenderer()
