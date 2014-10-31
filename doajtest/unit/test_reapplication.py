@@ -1,7 +1,12 @@
 from doajtest.helpers import DoajTestCase
 from portality import models, reapplication, clcsv
+from doajtest.fixtures import ApplicationFixtureFactory
 import os
 from copy import deepcopy
+
+REAPP1_SOURCE = ApplicationFixtureFactory.make_reapp_source()
+REAPP2_UNICODE_SOURCE = ApplicationFixtureFactory.make_reapp_unicode_source()
+
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -192,8 +197,13 @@ class TestReApplication(DoajTestCase):
         super(TestReApplication, self).tearDown()
         if os.path.exists("basic_reapp.csv") and os.path.isfile("basic_reapp.csv"):
             os.remove("basic_reapp.csv")
+        if os.path.exists("full_app.csv") and os.path.isfile("full_app.csv"):
+            os.remove("full_app.csv")
         if os.path.exists("full_reapp.csv") and os.path.isfile("full_reapp.csv"):
             os.remove("full_reapp.csv")
+        if os.path.exists("full_reapp_unicode.csv") and os.path.isfile("full_reapp_unicode.csv"):
+            os.remove("full_reapp_unicode.csv")
+
 
     def test_01_make_reapplication(self):
         # first make ourselves a journal with the key ingredients
@@ -277,12 +287,12 @@ class TestReApplication(DoajTestCase):
         bj3.add_identifier("pissn", "3456-7890")
         bj3.title = "Third Title"
 
-        reapplication.make_csv("full_reapp.csv", [s3, s2, s1]) # send the suggestions in in the wrong order for display on purpose
+        reapplication.make_csv("full_app.csv", [s3, s2, s1]) # send the suggestions in in the wrong order for display on purpose
 
-        assert os.path.exists("full_reapp.csv")
+        assert os.path.exists("full_app.csv")
 
         # now let's check a few things about the sheet to be sure
-        sheet = clcsv.ClCsv("full_reapp.csv")
+        sheet = clcsv.ClCsv("full_app.csv")
 
         # get the three columns out of the sheet
         issn1, vals1 = sheet.get_column(1)
@@ -298,6 +308,56 @@ class TestReApplication(DoajTestCase):
         assert vals1[0] == "First Title"
         assert vals2[0] == "Second Title"
         assert vals3[0] == "Third Title"
+
+        # finally check the full question list
+        qs = reapplication.Suggestion2QuestionXwalk.question_list()
+        _, sheetqs = sheet.get_column(0)
+
+        assert sheetqs == qs
+
+    def test_05_make_csv_reapp(self):
+        s1 = models.Suggestion(**deepcopy(REAPP1_SOURCE))
+
+        reapplication.make_csv("full_reapp.csv", [s1])
+
+        assert os.path.exists("full_reapp.csv")
+
+        # now let's check a few things about the sheet to be sure
+        sheet = clcsv.ClCsv("full_reapp.csv")
+
+        # get the three columns out of the sheet
+        issn1, vals1 = sheet.get_column(1)
+
+        # check that the column headers are in the right order
+        assert issn1 == "1234-5678"
+
+        # check that the column contents are the right contents
+        assert vals1[0] == "The Title"
+
+        # finally check the full question list
+        qs = reapplication.Suggestion2QuestionXwalk.question_list()
+        _, sheetqs = sheet.get_column(0)
+
+        assert sheetqs == qs
+
+    def test_06_make_csv_reapp_unicode(self):
+        s1 = models.Suggestion(**deepcopy(REAPP2_UNICODE_SOURCE))
+
+        reapplication.make_csv("full_reapp_unicode.csv", [s1])
+
+        assert os.path.exists("full_reapp_unicode.csv")
+
+        # now let's check a few things about the sheet to be sure
+        sheet = clcsv.ClCsv("full_reapp_unicode.csv")
+
+        # get the three columns out of the sheet
+        issn1, vals1 = sheet.get_column(1)
+
+        # check that the column headers are in the right order
+        assert issn1 == "1234-5678"
+
+        # check that the column contents are the right contents
+        assert vals1[0] == "The Title"
 
         # finally check the full question list
         qs = reapplication.Suggestion2QuestionXwalk.question_list()
