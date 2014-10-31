@@ -109,11 +109,16 @@ class Suggestion(Journal):
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
+    _owner_term = {"terms" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
 
-    def __init__(self, email, statuses):
+    def __init__(self, email=None, statuses=None, owner=None):
         self.email = email
-        self.statuses = statuses
+        self.owner = owner
+        if statuses:
+            self.statuses = statuses
+        else:
+            self.statuses = []
 
     def query(self):
         q = deepcopy(self._base_query)
@@ -121,6 +126,10 @@ class SuggestionQuery(object):
             et = deepcopy(self._email_term)
             et["term"]["suggestion.suggester.email.exact"] = self.email
             q["query"]["bool"]["must"].append(et)
+        if self.owner:
+            ot = deepcopy(self._owner_term)
+            ot["term"]["admin.owner.exact"] = self.owner
+            q["query"]["bool"]["must"].append(ot)
         if self.statuses and len(self.statuses) > 0:
             st = deepcopy(self._status_terms)
             st["terms"]["admin.application_status.exact"] = self.statuses

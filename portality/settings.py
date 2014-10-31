@@ -192,6 +192,9 @@ MEDIA_FOLDER = "media"
 # will be added under the templates/pagemanager route
 CONTENT_FOLDER = "content"
 
+#Publisher CSV storage
+BULK_REAPP_PATH = os.path.join(BASE_FILE_PATH, "reapp_csvs") + "/"
+
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
 

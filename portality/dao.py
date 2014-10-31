@@ -172,7 +172,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return keys
         
     @staticmethod
-    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, **kwargs):
+    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
         '''
         Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
@@ -235,11 +235,19 @@ class DomainObject(UserDict.IterableUserDict, object):
                 if not isinstance(should_terms[s],list): should_terms[s] = [should_terms[s]]
                 query["query"]["bool"]["must"].append({"terms" : {s : should_terms[s]}})
 
+        sort_specified = False
         for k,v in kwargs.items():
             if k == '_from':
                 query['from'] = v
+            elif k == 'sort':
+                sort_specified = True
+                query['sort'] = v
             else:
                 query[k] = v
+
+        if not sort_specified and consistent_order:
+            query['sort'] = [{"id" : {"order" : "asc"}}]
+
         # print json.dumps(query)
         return query
 
@@ -395,7 +403,22 @@ class DomainObject(UserDict.IterableUserDict, object):
             # terms will now go to the front of the result list
             result.append({"id": term['term'], "text": term['term']})
         return result
-        
+
+    @classmethod
+    def q2obj(cls, **kwargs):
+        res = cls.query(**kwargs)
+        if 'hits' not in res:
+            return []
+        if res['hits']['total'] <= 0:
+            return []
+
+        hits = res['hits']['hits']
+        results = [cls(**h.get('_source', {})) for h in hits]
+        return results
+
+    @classmethod
+    def all(cls, size=10000000, **kwargs):
+        return cls.q2obj(size=size, **kwargs)
 
 ########################################################################
 ## Some useful ES queries
