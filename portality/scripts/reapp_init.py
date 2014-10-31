@@ -26,7 +26,7 @@ def make_bulk_reapp_csv():
     failed_bulk_reapps = []
     for a in acc:
         q = models.SuggestionQuery(owner=a.id).query()
-        suggestions = models.Suggestion.q2obj(q=q)
+        suggestions = models.Suggestion.q2obj(q=q, size=30000)
         if len(suggestions) >= 11:
             filename = a.id + ".csv"
             filepath = os.path.join(app.config.get("BULK_REAPP_PATH"), filename)
