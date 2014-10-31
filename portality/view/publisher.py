@@ -331,7 +331,10 @@ def bulk_reapply():
 @login_required
 @ssl_required
 def bulk_download(filename):
-    return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+    try:
+        return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+    except:
+        abort(404)
 
 def _bulk_upload(f, csv_downloads, previous):
 
