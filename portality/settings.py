@@ -192,8 +192,7 @@ MEDIA_FOLDER = "media"
 # will be added under the templates/pagemanager route
 CONTENT_FOLDER = "content"
 
-#Publisher CSV storage
-BULK_REAPP_PATH = os.path.join(BASE_FILE_PATH, "reapp_csvs") + "/"
+
 
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
@@ -303,6 +302,9 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
+
+#Publisher CSV storage
+BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a

@@ -109,7 +109,7 @@ class Suggestion(Journal):
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
-    _owner_term = {"terms" : {"admin.owner.exact" : "<owner>"}}
+    _owner_term = {"term" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
 
     def __init__(self, email=None, statuses=None, owner=None):
