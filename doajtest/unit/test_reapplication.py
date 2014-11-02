@@ -172,7 +172,7 @@ APPLICATION_COL = [
     "http://licence.embedded",
     # "Other",
     "CC MY",
-    "BY, NC",
+    "Attribution, No Commercial Usage",
     "http://licence.url",
     "Yes",
     "Sherpa/Romeo, Store it",
@@ -407,10 +407,10 @@ class TestReApplication(DoajTestCase):
         col[15] = "nO "                             # submission charges
         col[17] = " pound  sterling"                # submission_charges_currency
         col[20] = " whatever "                      # waiver_policy
-        col[22] = "  LOCKSS, A national library  "  # digital_archiving_policy
+        col[22] = "  LOCKSS, A national library, Store it  "  # digital_archiving_policy
         col[23] = "Dublin"                          # digital_archiving_policy_library
         col[24] = "  Behind the sofa"               # digital_archiving_policy_other
-        col[27] = "DOI, ARK, PURL, Flag"            # article_identifiers and article_identifiers_other
+        col[27] = "DOI, ARK, PURL, Flag, Other"     # article_identifiers and article_identifiers_other (with unnecessary "Other" entry)
         col[32] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
         col[33] = "a, long, list, of, keywords, more, than, six"    # keywords
         col[34] = "en, FR,  Vietnamese , Wibble"    # languages
@@ -433,7 +433,7 @@ class TestReApplication(DoajTestCase):
         assert forminfo.get("waiver_policy") == "whatever"      # we want this to come through as is - it will then fail validation later
         assert forminfo.get("digital_archiving_policy") == ["LOCKSS", "A national library", "Other"]
         assert forminfo.get("digital_archiving_policy_library") == "Dublin"
-        assert forminfo.get("digital_archiving_policy_other") == "Behind the sofa"
+        assert forminfo.get("digital_archiving_policy_other") == "Store it, Behind the sofa"
         assert forminfo.get("article_identifiers") == ["DOI", "ARK", "Other"]
         assert forminfo.get("article_identifiers_other") == "PURL, Flag"
         assert forminfo.get("fulltext_format") == ["PDF", "XML", "Other"]
@@ -455,6 +455,7 @@ class TestReApplication(DoajTestCase):
         form = forms.PublisherReApplicationForm(data=forminfo)
         form.validate()
 
+        print form.errors
         error_fields = form.errors.keys()
         assert len(error_fields) == 4
         assert "waiver_policy" in error_fields

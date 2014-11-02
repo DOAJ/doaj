@@ -6,6 +6,7 @@ from portality.formcontext.xwalk import SuggestionFormXWalk
 from portality.formcontext import formcontext, choices
 from copy import deepcopy
 from werkzeug.datastructures import MultiDict
+from collections import OrderedDict
 
 #################################################################
 # Code for handling validation of incoming spreadsheets
@@ -352,27 +353,20 @@ class Suggestion2QuestionXwalk(object):
                 aids.append(aidother)
             return ", ".join(aids)
 
+        def yes_no(val):
+            return "Yes" if val else "No"
+
+        def license_checkbox(val):
+            opts = {}
+            [opts.update({k : v}) for k,v  in choices.Choices.licence_checkbox()]
+            nv = [opts.get(v) for v in val]
+            return ", ".join(nv)
+
         # start by converting the object to the forminfo version
         # which is used by the application form in the first plage
         forminfo = SuggestionFormXWalk.obj2form(suggestion)
 
         kvs = []
-
-        # do the conversion for some which have to have human readable values
-        waiver_policy = "Yes" if forminfo.get("waiver_policy") else "No"
-        submission_charges = "Yes" if forminfo.get("submission_charges") else "No"
-        processing_charges = "Yes" if forminfo.get("processing_charges") else "No"
-        crawl_permission = "Yes" if forminfo.get("crawl_permission") is not None else "No"
-        article_identifiers = ", ".join(forminfo.get("article_identifiers", [])) if ", ".join(forminfo.get("article_identifiers", [])) not in [None, "None"] else ""
-        metadata_provision = "Yes" if forminfo.get("metadata_provision") is not None else "No"
-        download_statistics = "Yes" if forminfo.get("download_statistics") is not None else "No"
-        plagiarism_screening = "Yes" if forminfo.get("plagiarism_screening") is not None else "No"
-        license_embedded = "Yes" if forminfo.get("license_embedded") is not None else "No"
-        open_access = "Yes" if forminfo.get("open_access") is not None else "No"
-        deposit_policy = ", ".join(forminfo.get("deposit_policy", [])) if ", ".join(forminfo.get("deposit_policy", [])) not in [None, "None"] else ""
-        copyright_other = forminfo.get("copyright_other") if forminfo.get("copyright_other") not in [None, "None"] else ""
-        publishing_rights_other = forminfo.get("publishing_rights_other") if forminfo.get("publishing_rights_other") not in [None, "None"] else ""
-
 
         # create key/value pairs for the questions in order
         kvs.append((cls.q(1), forminfo.get("title")))
@@ -387,15 +381,15 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(10), forminfo.get("contact_email")))
         kvs.append((cls.q(11), forminfo.get("confirm_contact_email")))
         kvs.append((cls.q(12), forminfo.get("country")))
-        kvs.append((cls.q(13), processing_charges))
+        kvs.append((cls.q(13), yes_no(forminfo.get("processing_charges"))))
         kvs.append((cls.q(14), forminfo.get("processing_charges_amount")))
         kvs.append((cls.q(15), forminfo.get("processing_charges_currency")))
-        kvs.append((cls.q(16), submission_charges))
+        kvs.append((cls.q(16), yes_no(forminfo.get("submission_charges"))))
         kvs.append((cls.q(17), forminfo.get("submission_charges_amount")))
         kvs.append((cls.q(18), forminfo.get("submission_charges_currency")))
         kvs.append((cls.q(19), forminfo.get("articles_last_year")))
         kvs.append((cls.q(20), forminfo.get("articles_last_year_url")))
-        kvs.append((cls.q(21), waiver_policy))
+        kvs.append((cls.q(21), yes_no(forminfo.get("waiver_policy"))))
         kvs.append((cls.q(22), forminfo.get("waiver_policy_url")))
 
         dap = deepcopy(forminfo.get("digital_archiving_policy", []))
@@ -408,14 +402,14 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(23, "other"), forminfo.get("digital_archiving_policy_other")))
 
         kvs.append((cls.q(24), forminfo.get("digital_archiving_policy_url")))
-        kvs.append((cls.q(25), crawl_permission))
+        kvs.append((cls.q(25), yes_no(forminfo.get("crawl_permission"))))
 
         article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
         kvs.append((cls.q(26), article_identifiers))
         # kvs.append((cls.q(26, "other"), forminfo.get("article_identifiers_other")))
 
-        kvs.append((cls.q(27), metadata_provision))
-        kvs.append((cls.q(28), download_statistics))
+        kvs.append((cls.q(27), yes_no(forminfo.get("metadata_provision"))))
+        kvs.append((cls.q(28), yes_no(forminfo.get("download_statistics"))))
         kvs.append((cls.q(29), forminfo.get("download_statistics_url")))
         kvs.append((cls.q(30), forminfo.get("first_fulltext_oa_year")))
 
@@ -430,11 +424,11 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(36), forminfo.get("review_process_url")))
         kvs.append((cls.q(37), forminfo.get("aims_scope_url")))
         kvs.append((cls.q(38), forminfo.get("instructions_authors_url")))
-        kvs.append((cls.q(39), plagiarism_screening))
+        kvs.append((cls.q(39), yes_no(forminfo.get("plagiarism_screening"))))
         kvs.append((cls.q(40), forminfo.get("plagiarism_screening_url")))
         kvs.append((cls.q(41), forminfo.get("publication_time")))
         kvs.append((cls.q(42), forminfo.get("oa_statement_url")))
-        kvs.append((cls.q(43), license_embedded))
+        kvs.append((cls.q(43), yes_no(forminfo.get("license_embedded"))))
         kvs.append((cls.q(44), forminfo.get("license_embedded_url")))
 
         lic = forminfo.get("license")
@@ -443,9 +437,9 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(45), lic))
         # kvs.append((cls.q(45, "other"), forminfo.get("license_other")))
 
-        kvs.append((cls.q(46), ", ".join(forminfo.get("license_checkbox", []))))
+        kvs.append((cls.q(46), license_checkbox(forminfo.get("license_checkbox", []))))
         kvs.append((cls.q(47), forminfo.get("license_url")))
-        kvs.append((cls.q(48), open_access))
+        kvs.append((cls.q(48), yes_no(forminfo.get("open_access"))))
 
         deposit_policies = other_list("deposit_policy", "deposit_policy_other", choices.Choices.deposit_policy_other_val("other"))
         kvs.append((cls.q(49), deposit_policies))
@@ -549,7 +543,7 @@ class Suggestion2QuestionXwalk(object):
                 else:
                     norm.append(o)
 
-            return norm
+            return list(OrderedDict.fromkeys(norm)) # deduplicate while preserving order
 
         def _rationalise_other(val, form_choices, other_val):
             val = normal(val)
@@ -564,15 +558,16 @@ class Suggestion2QuestionXwalk(object):
             normopts = []
             otheropts = []
             for o in opts:
-                if o.lower() in cs:
-                    normopts.append(cs[o.lower()])
-                else:
+                ol = o.lower()
+                if ol in cs and ol != other_val.lower():
+                    normopts.append(cs[ol])
+                elif ol != other_val.lower():
                     otheropts.append(o)
 
             if len(otheropts) > 0:
                 normopts.append(other_val)
 
-            return normopts, ", ".join(otheropts)
+            return list(OrderedDict.fromkeys(normopts)), ", ".join(list(OrderedDict.fromkeys(otheropts)))
 
         def digital_archiving_policy(options, library, other):
             options = normal(options)
@@ -586,18 +581,34 @@ class Suggestion2QuestionXwalk(object):
 
             cs = {}
             [cs.update({c.lower() : c}) for c, _ in choices.Choices.digital_archiving_policy()]
-            normopts = [cs[o.lower()] if o.lower() in cs else o for o in opts]
 
             lib = choices.Choices.digital_archiving_policy_val("library")
             oth = choices.Choices.digital_archiving_policy_val("other")
+            extras = [lib.lower(), oth.lower()]
+
+            normopts = []
+            otheropts = []
+            for o in opts:
+                ol = o.lower()
+                if ol in cs and not ol in extras:
+                    if cs[ol] not in normopts:
+                        normopts.append(cs[ol])
+                elif not ol in extras:
+                    if o not in otheropts:
+                        otheropts.append(o)
+
+            if other is not None and other != "":
+                otheropts.append(other)
+
+            # add "A national library" and "Other" (in that order) if necessary
             if library is not None and library != "":
                 if lib not in normopts:
                     normopts.append(lib)
-            if other is not None and other != "":
+            if len(otheropts) > 0:
                 if oth not in normopts:
                     normopts.append(oth)
 
-            return normopts, library, other
+            return normopts, library, ", ".join(otheropts)
 
         def article_identifiers(val):
             return _rationalise_other(val, choices.Choices.article_identifiers(), choices.Choices.article_identifiers_val("other"))
@@ -610,19 +621,6 @@ class Suggestion2QuestionXwalk(object):
 
         def get_license(val):
             return _this_or_other(val, choices.Choices.licence(), choices.Choices.licence_val("other"))
-            """
-            val = normal(val)
-            if val is None:
-                return None
-
-            cs = {}
-            [cs.update({c.lower() : c}) for c, _ in choices.Choices.licence()]
-
-            if val.lower() in cs:
-                return cs[val.lower()], ""
-            else:
-                return choices.Choices.licence_val("other"), val
-            """
 
         def copyright(val):
             return _this_or_other(val, choices.Choices.copyright(), choices.Choices.copyright_other_val("other"))
@@ -675,7 +673,7 @@ class Suggestion2QuestionXwalk(object):
                 else:
                     normopts.append(o)
 
-            return normopts
+            return list(OrderedDict.fromkeys(normopts))
 
         forminfo = {}
 
