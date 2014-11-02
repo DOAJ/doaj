@@ -412,6 +412,7 @@ class TestReApplication(DoajTestCase):
         col[24] = "  Behind the sofa"               # digital_archiving_policy_other
         col[27] = "DOI, ARK, PURL, Flag"            # article_identifiers and article_identifiers_other
         col[32] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
+        col[33] = "a, long, list, of, keywords, more, than, six"    # keywords
         col[34] = "en, FR,  Vietnamese , Wibble"    # languages
         col[36] = "edITORial   review   "           # review_process
         col[46] = "CC BY"                           # license and license_other
@@ -419,6 +420,7 @@ class TestReApplication(DoajTestCase):
         col[50] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
         col[51] = "Now and again"                   # copyright
         col[53] = "almost never"                    # publishing rights
+
 
         # run the xwalk and see that it produces what we expect
         forminfo = reapplication.Suggestion2QuestionXwalk.question2form(col)
@@ -447,16 +449,18 @@ class TestReApplication(DoajTestCase):
         assert forminfo.get("copyright_other") == "Now and again"
         assert forminfo.get("publishing_rights") == "Other"
         assert forminfo.get("publishing_rights_other") == "almost never"
+        assert forminfo.get("keywords") == ["a", "long", "list", "of", "keywords", "more", "than", "six"]
 
         # run the data into the form and validate it, to check we get the validation errors we expect
         form = forms.PublisherReApplicationForm(data=forminfo)
         form.validate()
 
         error_fields = form.errors.keys()
-        assert len(error_fields) == 3
+        assert len(error_fields) == 4
         assert "waiver_policy" in error_fields
         assert "languages" in error_fields
         assert "license_checkbox" in error_fields
+        assert "keywords" in error_fields
 
     def test_08_ingest_csv_success(self):
         account = models.Account(**{"id" : "Owner"})
