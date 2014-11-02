@@ -393,6 +393,12 @@ class TestFormContext(DoajTestCase):
         assert fc.form_data is not None
         assert fc.source is not None
 
+        fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
+        assert isinstance(fc, formcontext.PublisherCsvReApplication)
+        assert fc.form is not None
+        assert fc.form_data is not None
+        assert fc.source is not None
+
     ###########################################################
     # Tests on the public application form in detail
     # (other form contexts will get their own files)

@@ -104,6 +104,10 @@ def ingest_csv(path, account):
     validate_csv_structure(sheet, account)
     try:
         fcs = validate_csv_contents(sheet)
+
+        # if an exception is not thrown, we are clear to begin the process of import
+        for fc in fcs:
+            fc.finalise()
     except ContentValidationException as e:
         generate_spreadsheet_error(sheet, e)
         raise e

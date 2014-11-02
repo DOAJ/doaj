@@ -1,9 +1,9 @@
 from doajtest.helpers import DoajTestCase
 from portality import models, reapplication, clcsv
-import os
+import os, time, uuid
 from copy import deepcopy
 from portality.formcontext import xwalk, forms
-from werkzeug.datastructures import MultiDict
+from portality.clcsv import ClCsv
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -185,10 +185,27 @@ APPLICATION_COL = [
     "http://publishing.rights"
 ]
 
+@classmethod
+def mock_issns_by_owner(cls, *args, **kwargs):
+    return ["1234-5678", "2345-6789", "3456-7890"]
+
+@classmethod
+def mock_find_by_issn(cls, *args, **kwargs):
+    source = deepcopy(APPLICATION_SOURCE)
+    source.update({"id" : uuid.uuid4().hex})
+    return [models.Suggestion(**source)]
+
 class TestReApplication(DoajTestCase):
 
     def setUp(self):
         super(TestReApplication, self).setUp()
+        self._make_valid_csv()
+
+        self.old_issns_by_owner = models.Journal.issns_by_owner
+        models.Journal.issns_by_owner = mock_issns_by_owner
+
+        self.old_find_by_issn = models.Suggestion.find_by_issn
+        models.Suggestion.find_by_issn = mock_find_by_issn
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
@@ -196,6 +213,39 @@ class TestReApplication(DoajTestCase):
             os.remove("basic_reapp.csv")
         if os.path.exists("full_reapp.csv") and os.path.isfile("full_reapp.csv"):
             os.remove("full_reapp.csv")
+        if os.path.exists("valid.csv"):
+            os.remove("valid.csv")
+
+        models.Journal.issns_by_owner = self.old_issns_by_owner
+        models.Suggestion.find_by_issn = self.old_find_by_issn
+
+    def _make_valid_csv(self):
+        sheet = ClCsv("valid.csv")
+
+        # first column is the questions
+        qs = reapplication.Suggestion2QuestionXwalk.question_list()
+        sheet.set_column("", qs)
+
+        # add 3 columns of results for testing purposes
+        c1 = deepcopy(APPLICATION_COL)
+        c1[0] = "First Title"
+        c1[3] = "1234-5678"
+        c1[4] = "9876-5432"
+        sheet.set_column(c1[3], c1)
+
+        c2 = deepcopy(APPLICATION_COL)
+        c2[0] = "Second Title"
+        c2[3] = "2345-6789"
+        c2[4] = "8765-4321"
+        sheet.set_column(c2[3], c2)
+
+        c3 = deepcopy(APPLICATION_COL)
+        c3[0] = "Third Title"
+        c3[3] = "3456-7890"
+        c3[4] = "7654-3210"
+        sheet.set_column(c3[3], c3)
+
+        sheet.save()
 
     def test_01_make_reapplication(self):
         # first make ourselves a journal with the key ingredients
@@ -407,3 +457,22 @@ class TestReApplication(DoajTestCase):
         assert "waiver_policy" in error_fields
         assert "languages" in error_fields
         assert "license_checkbox" in error_fields
+
+    def test_08_ingest_csv_success(self):
+        account = models.Account(**{"id" : "Owner"})
+        try:
+            reapplication.ingest_csv("valid.csv", account)
+        except reapplication.ContentValidationException:
+            assert False
+        except reapplication.CsvValidationException:
+            assert False
+
+        # give the index a chance to catch up
+        time.sleep(2)
+
+        # now test that all the reapplications got made
+        reapps = models.Suggestion.get_by_owner("Owner")
+        assert len(reapps) == 3
+        for reapp in reapps:
+            assert reapp.application_status == "submitted"
+            assert reapp.bibjson().title in ["First Title", "Second Title", "Third Title"]
