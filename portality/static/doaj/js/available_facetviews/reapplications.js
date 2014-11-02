@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
-  $('.facetview.associate_suggestions').each(function() {
+  $('.facetview.reapplications').each(function() {
   $(this).facetview({
-    search_url: es_scheme + '//' + es_domain + '/associate_query/suggestion/_search?',
+    search_url: es_scheme + '//' + es_domain + '/publisher_reapp_query/suggestion/_search?',
     search_index: 'elasticsearch',
     sharesave_link: false,
     searchbox_shade: 'none',
@@ -11,20 +11,19 @@ jQuery(document).ready(function($) {
     pre_search_callback: customise_facetview_presearch,
     post_search_callback: customise_facetview_results,
     post_init_callback: customise_facetview_init,
-    freetext_submit_delay:"500",
+    freetext_submit_delay:"1000",
     results_render_callbacks: {
         'bibjson.author_pays': fv_author_pays,
         'created_date': fv_created_date,
-        'bibjson.abstract': fv_abstract,
+        'last_updated': fv_last_updated,
         'journal_license' : fv_journal_license,
         "title_field" : fv_title_field,
         "doi_link" : fv_doi_link,
         "links" : fv_links,
         "issns" : fv_issns,
-        "edit_suggestion" : fv_edit_suggestion,
         "country_name": fv_country_name,
-        'last_updated': fv_last_updated,
-        'suggested_on': fv_suggested_on
+        'suggested_on': fv_suggested_on,
+        "view_reapplication" : fv_view_reapplication
     },
     hide_inactive_facets: true,
     facets: [
@@ -34,7 +33,6 @@ jQuery(document).ready(function($) {
         {'field': 'index.language.exact', 'display': 'Journal Language'},
         {'field': 'index.country.exact', 'display': 'Journal Country'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
-        {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Provider'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
@@ -42,19 +40,19 @@ jQuery(document).ready(function($) {
         {'field': 'bibjson.oa_end.exact', 'display': 'Stopped publishing OA content (year)'},
     ],
     search_sortby: [
-        {'display':'Date applied','field':'suggestion.suggested_on.exact'},
+        {'display':'Date added to DOAJ','field':'created_date'},
         {'display':'Last updated','field':'last_updated'},
-        {'display':'Title','field':'bibjson.title.exact'},
+        {'display':'Title','field':'index.title.exact'},
     ],
     searchbox_fieldselect: [
         {'display':'Title','field':'index.title'},
-        {'display':'Keywords','field':'bibjson.keywords'},
-        {'display':'Subject','field':'index.classification'},
+        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
+        {'display':'Subject','field':'index.subject'},
+        {'display':'Classification','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
         {'display':'Journal Country','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
-        {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
         {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
     paging: {
@@ -196,7 +194,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "field" : "edit_suggestion"
+                "field" : "view_reapplication"
             }
         ],
     ],
