@@ -79,9 +79,9 @@ def emails_rejected():
     rejected = models.Suggestion.q2obj(q=q, size=30000)
     for r in rejected:
         contact = []
-        contact.append(r["admin"]["contact"][0]["name"])
-        contact.append(r["admin"]["contact"][0]["email"])
-        contact.append(r["index"]["title"][0])
+        contact.append(r.get_latest_contact_name())
+        contact.append(r.get_latest_contact_email())
+        contact.append(r.bibjson().title)
         email_list.append(contact)
 
     with open('emails_rejected.csv', 'wb') as csvfile:
