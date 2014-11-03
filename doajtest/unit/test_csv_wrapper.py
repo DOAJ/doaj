@@ -20,8 +20,8 @@ class TestCsvWrapper(DoajTestCase):
 
         writer = csv.writer(self.gold_csv)
         writer.writerow(['', 'issn1', 'issn2', 'issn3', 'issn4'])
-        writer.writerow(['q1', 'i1a1', 'i2a1', 'i3a1', 'i4a1'])
-        writer.writerow(['q2', 'i1a2', 'i2a2', 'i3a2', 'i4a2'])
+        writer.writerow(['q1', 'i1a1', 'i2a1', 'i3a1', 19])
+        writer.writerow(['q2', 'i1a2', 'i2a2', 'i3a2', None])
         writer.writerow(['q3', 'i1a3', 'i2a3', 'i3a3', 'i4a3'])
         writer.writerow(['q4', 'i1a4', 'i2a4', 'i3a4', 'i4a4'])
         self.gold_csv.close()
@@ -53,7 +53,7 @@ class TestCsvWrapper(DoajTestCase):
         assert clcsv.get_column(1) == ('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         assert clcsv.get_column('issn1') == ('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         assert clcsv.get_column(0) == ('', ['q1', 'q2', 'q3', 'q4'])
-        assert clcsv.get_column('issn4') == ('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4'])
+        assert clcsv.get_column('issn4') == ('issn4', ['19', '', 'i4a3', 'i4a4'])
 
     def test_02_read_02(self):
         # Create an open file object first and pass it in (a different form of CSV creation)
@@ -81,7 +81,7 @@ class TestCsvWrapper(DoajTestCase):
         wr_csv.set_column('issn1', ['i1a1', 'i1a2', 'i1a3', 'i1a4'])
         wr_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
         wr_csv.set_column('issn3', ['i3a1', 'i3a2', 'i3a3', 'i3a4'])
-        wr_csv.set_column('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4'])
+        wr_csv.set_column('issn4', [19, None, 'i4a3', 'i4a4'])
         wr_csv.save()
 
         wr_lines = open(wr_csv.file_object.name, 'rb').readlines()
@@ -100,7 +100,7 @@ class TestCsvWrapper(DoajTestCase):
 
         ow_csv = ClCsv(ow_csv.file_object.name)
         ow_csv.set_column('issn2', ['i2a1', 'i2a2', 'i2a3', 'i2a4'])
-        ow_csv.set_column(4, ('issn4', ['i4a1', 'i4a2', 'i4a3', 'i4a4']))
+        ow_csv.set_column(4, ('issn4', [19, None, 'i4a3', 'i4a4']))
         ow_csv.save()
 
         # The changes above should make the file the same as our gold standard
