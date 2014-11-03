@@ -3,6 +3,7 @@ from datetime import datetime as dt
 from portality import reapplication
 from portality.core import app
 import os
+import csv
 
 
 def delete_existing_reapp():
@@ -30,10 +31,16 @@ def create_reapplications():
 def make_bulk_reapp_csv():
     acc = models.Account.all()
     failed_bulk_reapps = []
+    email_list_10_plus = []
+    email_list_less_10 = []
     for a in acc:
         q = models.SuggestionQuery(owner=a.id).query()
         suggestions = models.Suggestion.q2obj(q=q, size=30000)
+        contact = []
         if len(suggestions) >= 11:
+            contact.append(a.id)
+            contact.append(a.email)
+            email_list_10_plus.append(contact)
             filename = a.id + ".csv"
             filepath = os.path.join(app.config.get("BULK_REAPP_PATH"), filename)
 
@@ -49,18 +56,44 @@ def make_bulk_reapp_csv():
             bulk_reapp.set_spreadsheet_name = filename
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
+        else:
+            contact.append(a.id)
+            contact.append(a.email)
+            email_list_less_10.append(contact)
+
+    with open('email_list_10_plus.csv', 'wb') as csvfile:
+        wr_writer = csv.writer(csvfile)
+        wr_writer.writerows(email_list_10_plus)
+
+    with open('email_list_less_10.csv', 'wb') as csvfile:
+        wr_writer = csv.writer(csvfile)
+        wr_writer.writerows(email_list_less_10)
 
     if failed_bulk_reapps:
         print "Failed bulk reapplications"
         print failed_bulk_reapps
+
+def emails_rejected():
+    email_list = []
+    q = models.SuggestionQuery(statuses=['rejected']).query()
+    rejected = models.Suggestion.q2obj(q=q, size=30000)
+    for r in rejected:
+        contact = []
+        contact.append(r["admin"]["contact"][0]["name"])
+        contact.append(r["admin"]["contact"][0]["email"])
+        contact.append(r["index"]["title"][0])
+        email_list.append(contact)
+
+    with open('emails_rejected.csv', 'wb') as csvfile:
+        wr_writer = csv.writer(csvfile)
+        wr_writer.writerows(email_list)
 
 
 def main():
     delete_existing_reapp()
     create_reapplications()
     make_bulk_reapp_csv()
-
-
+    emails_rejected()
 
 if __name__ == "__main__":
     main()
