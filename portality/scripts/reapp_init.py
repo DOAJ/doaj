@@ -3,6 +3,7 @@ from datetime import datetime as dt
 from portality import reapplication
 from portality.core import app
 import os
+import codecs
 from portality.clcsv import UnicodeWriter
 
 
@@ -61,11 +62,11 @@ def make_bulk_reapp_csv():
             contact.append(a.email)
             email_list_less_10.append(contact)
 
-    with open('email_list_10_plus.csv', 'wb') as csvfile:
+    with codecs.open('email_list_10_plus.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
         wr_writer.writerows(email_list_10_plus)
 
-    with open('email_list_less_10.csv', 'wb') as csvfile:
+    with codecs.open('email_list_less_10.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
         wr_writer.writerows(email_list_less_10)
 
@@ -84,7 +85,7 @@ def emails_rejected():
         contact.append(r.bibjson().title)
         email_list.append(contact)
 
-    with open('emails_rejected.csv', 'wb') as csvfile:
+    with codecs.open('emails_rejected.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
         wr_writer.writerows(email_list)
 
