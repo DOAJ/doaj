@@ -4,6 +4,12 @@ from portality import reapplication
 from portality.core import app
 import os
 
+
+def delete_existing_reapp():
+    q = models.SuggestionQuery(statuses=['reapplication']).query()
+    models.Suggestion.delete_by_query(query=q)
+
+
 def create_reapplications():
     all_journals = models.Journal.all_in_doaj()
     start_date = "2014-03-19T00:00:00Z"
@@ -35,7 +41,7 @@ def make_bulk_reapp_csv():
                 try:
                     os.remove(filepath)
                 except IOError as e:
-                    failed_bulk_reapps.append({a.id : e.message})
+                    failed_bulk_reapps.append({a.id: e.message})
 
             reapplication.make_csv(filepath, suggestions)
 
@@ -44,14 +50,17 @@ def make_bulk_reapp_csv():
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
 
-
     if failed_bulk_reapps:
         print "Failed bulk reapplications"
         print failed_bulk_reapps
 
+
 def main():
+    delete_existing_reapp()
     create_reapplications()
     make_bulk_reapp_csv()
+
+
 
 if __name__ == "__main__":
     main()
