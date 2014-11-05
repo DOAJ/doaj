@@ -380,3 +380,26 @@ def _validate_authors(form, require=1):
             counted += 1
     return counted >= require
 
+@blueprint.app_template_filter()
+def reapp_info_to_show(user_id):
+    # Only show the relevant reapplication information for a user:
+    # 1) sticky note if set in config and if user has reapplications, 3) bulk upload tab if 10+ reapplications
+
+    show = []
+
+    # Find if the user has reapplications to show
+    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=1000)
+    res = models.Suggestion.query(q=has_reapps_q.query())
+    count = res.get("hits", {}).get("total", 0)
+
+    # Display notice about the reapplication if required
+    if app.config.get("REAPPLICATION_ACTIVE", False) and count:
+        show.append('note')
+
+    # Show the bulk tab if the user has bulk reapplications
+    has_bulk = models.BulkReApplication.by_owner(user_id)
+    if has_bulk:
+        show.append('bulk')
+
+    return show
+

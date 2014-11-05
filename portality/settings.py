@@ -261,6 +261,12 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
+# =================================
+# Settings for reapplication process
+
+# Whether reactivation is ongoing; when False, reapplication pages will be hidden.
+REAPPLICATION_ACTIVE = True
+
 
 # =================================
 # File Upload and crosswalk settings
