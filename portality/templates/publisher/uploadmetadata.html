@@ -71,7 +71,7 @@
                 </thead>
             {% for file in previous %}
                 <tr>
-                    <td>{{ file.created_timestamp().strftime("%d %b %Y %H:%M:%S") }}</td>
+                    <td>{{ file.created_timestamp.strftime("%d %b %Y %H:%M:%S") }}</td>
                     <td>
                         {% if file.filename.startswith("http") %}
                             <a href="{{file.filename}}">{{file.filename}}</a>

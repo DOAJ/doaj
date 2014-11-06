@@ -16,6 +16,7 @@ media/*
 portality/default_templates/pagemanager/content/*
 upload/*
 reapp_csvs/*.csv
+upload_reapplication/*
 cache/csv/*.csv
 cache/sitemap/*.xml
 portality/migrate/p1p2/*.csv

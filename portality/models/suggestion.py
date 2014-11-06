@@ -135,3 +135,26 @@ class SuggestionQuery(object):
             st["terms"]["admin.application_status.exact"] = self.statuses
             q["query"]["bool"]["must"].append(st)
         return q
+
+class OwnerStatusQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        },
+        "sort" : [
+            {"created_date" : "desc"}
+        ],
+        "size" : 10
+    }
+    def __init__(self, owner, statuses, size=10):
+        self._query = deepcopy(self.base_query)
+        owner_term = {"term" : {"owner" : owner}}
+        self._query["query"]["bool"]["must"].append(owner_term)
+        status_term = {"terms" : {"admin.application_status.exact" : statuses}}
+        self._query["query"]["bool"]["must"].append(status_term)
+        self._query["size"] = size
+
+    def query(self):
+        return self._query
