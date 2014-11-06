@@ -1,6 +1,6 @@
 import uuid, json
 
-from flask import Blueprint, request, url_for, flash, redirect, make_response
+from flask import Blueprint, request, url_for, flash, redirect, make_response, session
 from flask import render_template, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
@@ -212,6 +212,8 @@ def reset(reset_token):
 @blueprint.route('/logout')
 @ssl_required
 def logout():
+    if 'pub_show_settings' in session:
+        del session['pub_show_settings']
     logout_user()
     flash('You are now logged out', 'success')
     return redirect('/')

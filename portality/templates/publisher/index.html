@@ -2,9 +2,6 @@
 
 {% block publisher_content %}
 
-<!-- This variable controls whether we show the reapplication notice -->
-{% set show_settings = current_user.id|reapp_info_to_show %}
-
 {% if 'note' in show_settings %}
     <div class="alert alert-warning">
         <!-- Text in this div will be part of the alert notice to publishers-->

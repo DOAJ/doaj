@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, Response, send_from_directory
+from flask import Blueprint, request, make_response, Response, send_from_directory, session
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
@@ -20,16 +20,51 @@ blueprint = Blueprint('publisher', __name__)
 def restrict():
     return restrict_to_role('publisher')
 
+@blueprint.before_request
+def reapp_info_to_show():
+    # Only show the relevant reapplication information for a user:
+    # 1) sticky note if set in config and if user has reapplications, 3) bulk upload tab if 10+ reapplications
+
+    # See if we've run the query before
+    show_settings = session.get('pub_show_settings', [])
+    if show_settings == []:
+
+        # Find if the user has reapplications to show (no need to actually retrieve any records)
+        has_reapps_q = models.OwnerStatusQuery(owner=current_user.id, statuses=["reapplication", "submitted"], size=0)
+        #import json
+        #print json.dumps(has_reapps_q.query())
+        res = models.Suggestion.query(q=has_reapps_q.query())
+        count = res.get("hits", {}).get("total", 0)
+
+        # Display notice about the reapplication if required
+        if app.config.get("REAPPLICATION_ACTIVE", False) and count > 0:
+            show_settings.append('note')
+
+        # Show the bulk tab if the user has bulk reapplications
+        has_bulk = models.BulkReApplication.by_owner(current_user.id)
+        if has_bulk:
+            show_settings.append('bulk')
+
+        # If still empty, put something in there so we don't check again.
+        if show_settings == []:
+            show_settings.append('neither')
+
+        # Save to a session cookie to prevent repeated queries
+        session['pub_show_settings'] = show_settings
+
+
 @blueprint.route("/")
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
+    show_settings = session.get('pub_show_settings', [])
+    return render_template("publisher/index.html", search_page=True, facetviews=["publisher"], show_settings=show_settings)
 
 @blueprint.route("/reapply/<reapplication_id>")
 @login_required
 @ssl_required
 def reapplication_page(reapplication_id):
+    show_settings = session.get('pub_show_settings', [])
     ap = models.Suggestion.pull(reapplication_id)
 
     if ap is None:
@@ -37,7 +72,7 @@ def reapplication_page(reapplication_id):
     if current_user.id != ap.owner:
         abort(404)
     if not ap.application_status in ["reapplication", "submitted"]:
-        return render_template("publisher/application_already_submitted.html", suggestion=ap)
+        return render_template("publisher/application_already_submitted.html", suggestion=ap, show_settings=show_settings)
 
     if request.method == "GET":
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=ap)
@@ -61,18 +96,20 @@ def reapplication_page(reapplication_id):
 @login_required
 @ssl_required
 def updates_in_progress():
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
+    show_settings = session.get('pub_show_settings', [])
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"], show_settings=show_settings)
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def upload_file():
+    show_settings = session.get('pub_show_settings', [])
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
     
     if request.method == "GET":
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
     
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
@@ -90,9 +127,10 @@ def upload_file():
         return _url_upload(url, schema, previous)
     
     flash("No file or URL provided", "error")
-    return render_template('publisher/uploadmetadata.html', previous=previous)
+    return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
 
 def _file_upload(f, schema, previous):
+    show_settings = session.get('pub_show_settings', [])
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
     record.upload(current_user.id, f.filename)
@@ -120,7 +158,7 @@ def _file_upload(f, schema, previous):
             pass
         
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
         
     # now we have the record in the index and on disk, we can attempt to
     # validate it
@@ -141,21 +179,21 @@ def _file_upload(f, schema, previous):
         record.save()
         previous = [record] + previous
         flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
     
     if actual_schema:
         record.validated(actual_schema)
         record.save()
         previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
     else:
         record.failed("File could not be validated against a known schema")
         record.save()
         os.remove(xml)
         previous = [record] + previous
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
 
 
 def _url_upload(url, schema, previous):
@@ -206,20 +244,22 @@ def _url_upload(url, schema, previous):
 
 
     def __ok(record, previous):
+        show_settings = session.get('pub_show_settings', [])
         record.exists()
         record.save()
         previous = [record] + previous
         flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
 
 
     def __fail(record, previous, error):
+        show_settings = session.get('pub_show_settings', [])
         message = 'The URL could not be accessed; ' + error
         record.failed(message)
         record.save()
         previous = [record] + previous
         flash(message, "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous, show_settings=show_settings)
 
 
     # prep a record to go into the index, to record this upload.  The filename is the url
@@ -247,10 +287,11 @@ def _url_upload(url, schema, previous):
 @login_required
 @ssl_required
 def metadata():
+    show_settings = session.get('pub_show_settings', [])
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
         form = ArticleForm()
-        return render_template('publisher/metadata.html', form=form)
+        return render_template('publisher/metadata.html', form=form, show_settings=show_settings)
     
     # if this is a post request, a form button has been hit and we need to do
     # a bunch of work
@@ -268,7 +309,7 @@ def metadata():
         # if the user wants more authors, add an extra entry
         if more_authors:
             form.authors.append_entry()
-            return render_template('publisher/metadata.html', form=form)
+            return render_template('publisher/metadata.html', form=form, show_settings=show_settings)
         
         # if the user wants to remove an author, do the various back-flips required
         if remove_author is not None:
@@ -281,7 +322,7 @@ def metadata():
                     keep.append(entry)
             while len(keep) > 0:
                 form.authors.append_entry(keep.pop().data)
-            return render_template('publisher/metadata.html', form=form)
+            return render_template('publisher/metadata.html', form=form, show_settings=show_settings)
         
         # if we get to here, then this is the full submission, and we need to
         # validate and return
@@ -290,7 +331,7 @@ def metadata():
             # if the form validates, then we have to do our own bit of validation,
             # which is to check that there is at least one author supplied
             if not enough_authors:
-                return render_template('publisher/metadata.html', form=form, author_error=True)
+                return render_template('publisher/metadata.html', form=form, author_error=True, show_settings=show_settings)
             else:
                 xwalk = article.FormXWalk()
                 art = xwalk.crosswalk_form(form)
@@ -299,21 +340,23 @@ def metadata():
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)
         else:
-            return render_template('publisher/metadata.html', form=form, author_error=not enough_authors)
+            return render_template('publisher/metadata.html', form=form, author_error=not enough_authors, show_settings=show_settings)
 
 @blueprint.route("/help")
 @login_required
 @ssl_required
 def help():
-    return render_template("publisher/help.html")
+    show_settings = session.get('pub_show_settings', [])
+    return render_template("publisher/help.html", show_settings=show_settings)
 
 @blueprint.route("/reapply", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def bulk_reapply():
-    # user must have the role "publisher" TODO: this role is a placeholder (pending it being limited by role)
-    if not current_user.has_role("publisher"):
-        abort(401)
+    show_settings = session.get('pub_show_settings', [])
+    # User must have bulk reapplications to access this tab
+    if not 'bulk' in show_settings:
+        abort(404)
 
     # Get the download details for reapplication CSVs
     csv_downloads = models.BulkReApplication.by_owner(current_user.id)
@@ -322,7 +365,7 @@ def bulk_reapply():
     previous = models.BulkUpload.by_owner(current_user.id)
 
     if request.method == "GET":
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous, show_settings=show_settings)
 
     # otherwise we are dealing with a POST - file upload
     f = request.files.get("file")
@@ -331,7 +374,7 @@ def bulk_reapply():
         return _bulk_upload(f, csv_downloads, previous)
 
     flash("No file provided - select a file to upload and try again.", "error")
-    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous, show_settings=show_settings)
 
 @blueprint.route('/bulk_download/<filename>')
 @login_required
@@ -343,7 +386,7 @@ def bulk_download(filename):
         abort(404)
 
 def _bulk_upload(f, csv_downloads, previous):
-
+    show_settings = session.get('pub_show_settings', [])
     # prep a record to go into the index, to record this upload
     record = models.BulkUpload()
     record.upload(current_user.id, f.filename)
@@ -362,7 +405,7 @@ def _bulk_upload(f, csv_downloads, previous):
 
         previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous, show_settings=show_settings)
     except:
         # if we can't record either of these things, we need to back right off
         try:
@@ -375,7 +418,7 @@ def _bulk_upload(f, csv_downloads, previous):
             pass
 
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous, show_settings=show_settings)
 
 
 def _validate_authors(form, require=1):
@@ -385,29 +428,3 @@ def _validate_authors(form, require=1):
         if name is not None and name != "":
             counted += 1
     return counted >= require
-
-@blueprint.app_template_filter()
-def reapp_info_to_show(user_id):
-    # Only show the relevant reapplication information for a user:
-    # 1) sticky note if set in config and if user has reapplications, 3) bulk upload tab if 10+ reapplications
-
-    show = []
-
-    # Find if the user has reapplications to show (no need to actually retrieve any records)
-    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=0)
-    #import json
-    #print json.dumps(has_reapps_q.query())
-    res = models.Suggestion.query(q=has_reapps_q.query())
-    count = res.get("hits", {}).get("total", 0)
-
-    # Display notice about the reapplication if required
-    if app.config.get("REAPPLICATION_ACTIVE", False) and count > 0:
-        show.append('note')
-
-    # Show the bulk tab if the user has bulk reapplications
-    has_bulk = models.BulkReApplication.by_owner(user_id)
-    if has_bulk:
-        show.append('bulk')
-
-    return show
-
