@@ -83,7 +83,13 @@ class BulkUpload(DomainObject):
         self.data["skipped"] = skipped
         self.data["processed_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-
+    @classmethod
+    def list_incoming(cls):
+        q = StatusBulkQuery("incoming")
+        # FIXME: does not use scroll search, so actually should only be used for read-only
+        # operations.  In reality, probably the number of incoming will be far less than the
+        # page size, so no one will notice
+        return cls.iterate(q=q.query())
 
     @classmethod
     def by_owner(cls, owner, size=10):
@@ -91,6 +97,21 @@ class BulkUpload(DomainObject):
         res = cls.query(q=q.query())
         rs = [BulkUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
+
+class StatusBulkQuery(object):
+    def __init__(self, status):
+        self.status = status
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" :[
+                        {"term" : {"status.exact" : self.status}}
+                    ]
+                }
+            }
+        }
 
 class OwnerBulkQuery(object):
     base_query = {

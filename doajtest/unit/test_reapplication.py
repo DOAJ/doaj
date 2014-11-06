@@ -481,3 +481,12 @@ class TestReApplication(DoajTestCase):
         for reapp in reapps:
             assert reapp.application_status == "submitted"
             assert reapp.bibjson().title in ["First Title", "Second Title", "Third Title"]
+
+    def test_09_ingest_upload_success(self):
+        upload = models.BulkUpload()
+        upload.status = "incoming"
+        upload.local_filename = "valid"
+        upload.filename = "mybulkreapp.csv"
+        upload.owner = "Owner"
+
+        reapplication.ingest_from_upload(upload)

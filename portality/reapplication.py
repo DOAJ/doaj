@@ -114,7 +114,7 @@ def ingest_csv(path, account):
         raise e
 
 def ingest_from_upload(upload):
-    upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR")
+    upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR") # FIXME: check what this will actually be called
     path = os.path.join(upload_dir, upload.local_filename)
     account = models.Account.pull(upload.owner)
     if account is None:
