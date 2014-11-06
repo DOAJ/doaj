@@ -41,8 +41,8 @@ def reapp_info_to_show():
             show_settings.append('note')
 
         # Show the bulk tab if the user has bulk reapplications
-        has_bulk = models.BulkReApplication.by_owner(current_user.id)
-        if has_bulk:
+        has_bulk = models.BulkReApplication.count_by_owner(current_user.id)
+        if has_bulk > 0:
             show_settings.append('bulk')
 
         # If still empty, put something in there so we don't check again.

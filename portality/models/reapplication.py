@@ -32,6 +32,13 @@ class BulkReApplication(DomainObject):
         rs = [BulkReApplication(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
 
+    @classmethod
+    def count_by_owner(cls, owner):
+        q = OwnerBulkQuery(owner, 0)
+        res = cls.query(q=q.query())
+        count = res.get("hits", {}).get("total", 0)
+        return count
+
 class BulkUpload(DomainObject):
     __type__ = "bulk_upload"
 
