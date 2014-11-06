@@ -387,13 +387,15 @@ def reapp_info_to_show(user_id):
 
     show = []
 
-    # Find if the user has reapplications to show
-    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=1000)
+    # Find if the user has reapplications to show (no need to actually retrieve any records)
+    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=0)
+    #import json
+    #print json.dumps(has_reapps_q.query())
     res = models.Suggestion.query(q=has_reapps_q.query())
     count = res.get("hits", {}).get("total", 0)
 
     # Display notice about the reapplication if required
-    if app.config.get("REAPPLICATION_ACTIVE", False) and count:
+    if app.config.get("REAPPLICATION_ACTIVE", False) and count > 0:
         show.append('note')
 
     # Show the bulk tab if the user has bulk reapplications
