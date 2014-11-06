@@ -4,6 +4,7 @@ import os, time, uuid
 from copy import deepcopy
 from portality.formcontext import xwalk, forms
 from portality.clcsv import ClCsv
+from portality.core import app
 
 APPLICATION_SOURCE = {
     "bibjson" : {
@@ -195,17 +196,31 @@ def mock_find_by_issn(cls, *args, **kwargs):
     source.update({"id" : uuid.uuid4().hex})
     return [models.Suggestion(**source)]
 
+@classmethod
+def mock_account_pull(cls, username, *arsg, **kwargs):
+    if username == "none":
+        return None
+    return models.Account(**{"id" : username})
+
 class TestReApplication(DoajTestCase):
 
     def setUp(self):
         super(TestReApplication, self).setUp()
         self._make_valid_csv()
+        self._wrong_questions()
+        self._invalid_content()
 
         self.old_issns_by_owner = models.Journal.issns_by_owner
         models.Journal.issns_by_owner = mock_issns_by_owner
 
         self.old_find_by_issn = models.Suggestion.find_by_issn
         models.Suggestion.find_by_issn = mock_find_by_issn
+
+        self.old_account_pull = models.Account.pull
+        models.Account.pull = mock_account_pull
+
+        self.old_reapp_upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR")
+        app.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
@@ -215,9 +230,16 @@ class TestReApplication(DoajTestCase):
             os.remove("full_reapp.csv")
         if os.path.exists("valid.csv"):
             os.remove("valid.csv")
+        if os.path.exists("wrong_questions.csv"):
+            os.remove("wrong_questions.csv")
+        if os.path.exists("invalid.csv"):
+            os.remove("invalid.csv")
 
         models.Journal.issns_by_owner = self.old_issns_by_owner
         models.Suggestion.find_by_issn = self.old_find_by_issn
+        models.Account.pull = self.old_account_pull
+
+        app.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
 
     def _make_valid_csv(self):
         sheet = ClCsv("valid.csv")
@@ -237,6 +259,46 @@ class TestReApplication(DoajTestCase):
         c2[0] = "Second Title"
         c2[3] = "2345-6789"
         c2[4] = "8765-4321"
+        sheet.set_column(c2[3], c2)
+
+        c3 = deepcopy(APPLICATION_COL)
+        c3[0] = "Third Title"
+        c3[3] = "3456-7890"
+        c3[4] = "7654-3210"
+        sheet.set_column(c3[3], c3)
+
+        sheet.save()
+
+    def _wrong_questions(self):
+        sheet = ClCsv("wrong_questions.csv")
+        sheet.set_column("", ["Q" + str(i) for i in range(56)])
+        c1 = deepcopy(APPLICATION_COL)
+        c1[0] = "First Title"
+        c1[3] = "1234-5678"
+        c1[4] = "9876-5432"
+        sheet.set_column(c1[3], c1)
+        sheet.save()
+
+    def _invalid_content(self):
+        sheet = ClCsv("invalid.csv")
+
+        # first column is the questions
+        qs = reapplication.Suggestion2QuestionXwalk.question_list()
+        sheet.set_column("", qs)
+
+        # add 3 columns of results for testing purposes
+        c1 = deepcopy(APPLICATION_COL)
+        c1[0] = "First Title"
+        c1[1] = "This isn't a URL (but it should be)"
+        c1[3] = "1234-5678"
+        c1[4] = "9876-5432"
+        sheet.set_column(c1[3], c1)
+
+        c2 = deepcopy(APPLICATION_COL)
+        c2[0] = "Second Title"
+        c2[3] = "2345-6789"
+        c2[4] = "8765-4321"
+        c2[11] = "" # This field is required (country)
         sheet.set_column(c2[3], c2)
 
         c3 = deepcopy(APPLICATION_COL)
@@ -484,9 +546,33 @@ class TestReApplication(DoajTestCase):
 
     def test_09_ingest_upload_success(self):
         upload = models.BulkUpload()
-        upload.status = "incoming"
-        upload.local_filename = "valid"
-        upload.filename = "mybulkreapp.csv"
-        upload.owner = "Owner"
+        upload.upload("Owner", "mybulkreapp.csv")
+        upload.set_id("valid")
 
         reapplication.ingest_from_upload(upload)
+
+    def test_10_ingest_upload_broke(self):
+        # no account
+        upload = models.BulkUpload()
+        upload.upload("none", "mybulkreapp.csv")
+        upload.set_id("valid")
+        with self.assertRaises(reapplication.CsvIngestException):
+            reapplication.ingest_from_upload(upload)
+
+        # structural problem
+        upload = models.BulkUpload()
+        upload.upload("Owner", "mybulkreapp.csv")
+        upload.set_id("wrong_questions")
+        reapplication.ingest_from_upload(upload)
+        assert upload.status == "failed"
+        assert upload.error is not None
+
+        # content problem
+        upload = models.BulkUpload()
+        upload.upload("Owner", "mybulkreapp.csv")
+        upload.set_id("invalid")
+        reapplication.ingest_from_upload(upload)
+        assert upload.status == "failed"
+        assert upload.error is not None
+
+
