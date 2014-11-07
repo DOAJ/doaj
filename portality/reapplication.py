@@ -94,7 +94,11 @@ def validate_csv_contents(sheet):
     return succeeded
 
 def generate_spreadsheet_error(sheet, exception):
-    pass
+    rows = []
+    for issn, fc in exception.errors.iteritems():
+        for field, messages in fc.errors.iteritems():
+            # rows.append((issn, q, r, c, msg))
+            pass
 
 #################################################################
 # Workflow functions for ingesting a spreadsheet
@@ -173,150 +177,110 @@ class SuggestionXwalkException(Exception):
     pass
 
 class Suggestion2QuestionXwalk(object):
-    # The questions (in order) that we are xwalking to
-    QUESTIONS = [
-        "1) Journal Title",
-        "2) URL",
-        "3) Alternative Title",
-        "4) Journal ISSN (print version)",
-        "5) Journal ISSN (online version)",
-        "6) Publisher",
-        "7) Society or Institution",
-        "8) Platform, Host or Aggregator",
-        "9) Name of contact for this journal",
-        "10) Contact's email address",
-        "11) Confirm contact's email address",
-        "12) In which country is the publisher of the journal based?",
-        "13) Does the journal have article processing charges (APCs)?",
-        "14) Amount",
-        "15) Currency",
-        "16) Does the journal have article submission charges?",
-        "17) Amount",
-        "18) Currency",
-        "19) How many research and review articles did the journal publish in the last calendar year?",
-        "20) Enter the URL where this information can be found",
-        "21) Does the journal have a waiver policy (for developing country authors etc)?",
-        "22) Enter the URL where this information can be found",
-        "23) What digital archiving policy does the journal use?",
-        "24) Enter the URL where this information can be found",
-        "25) Does the journal allow anyone to crawl the full-text of the journal?",
-        "26) Which article identifiers does the journal use?",
-        "27) Does the journal provide, or intend to provide, article level metadata to DOAJ?",
-        "28) Does the journal provide download statistics?",
-        "29) Enter the URL where this information can be found",
-        "30) What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)",
-        "31) Please indicate which formats of full text are available",
-        "32) Add keyword(s) that best describe the journal (comma delimited)",
-        "33) Select the language(s) that the Full Text of the articles is published in",
-        "34) What is the URL for the Editorial Board page?",
-        "35) Please select the review process for papers",
-        "36) Enter the URL where this information can be found",
-        "37) What is the URL for the journal's Aims & Scope",
-        "38) What is the URL for the journal's instructions for authors?",
-        "39) Does the journal have a policy of screening for plagiarism?",
-        "40) Enter the URL where this information can be found",
-        "41) What is the average number of weeks between submission and publication?",
-        "42) What is the URL for the journal's Open Access statement?",
-        "43) Does the journal embed or display simple machine-readable CC licensing information in its articles?",
-        "44) Please provide a URL to an example page with embedded licensing information",
-        "45) Does the journal allow reuse and remixing of its content, in accordance with a CC license?",
-        "46) Which of the following does the content require? (Tick all that apply.)",
-        "47) Enter the URL on your site where your license terms are stated",
-        "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?",
-        "49) With which deposit policy directory does the journal have a registered deposit policy?",
-        "50) Does the journal allow the author(s) to hold the copyright without restrictions?",
-        "51) Enter the URL where this information can be found",
-        "52) Will the journal allow the author(s) to retain publishing rights without restrictions?",
-        "53) Enter the URL where this information can be found"
+
+    QTUP = [
+        ("title",                               "1) Journal Title"),
+        ("url",                                 "2) URL"),
+        ("alternative_title",                   "3) Alternative Title"),
+        ("pissn",                               "4) Journal ISSN (print version) MAY NOT BE EDITED"),
+        ("eissn",                               "5) Journal ISSN (online version) MAY NOT BE EDITED"),
+        ("publisher",                           "6) Publisher"),
+        ("society_institution",                 "7) Society or Institution"),
+        ("platform",                            "8) Platform, Host or Aggregator"),
+        ("contact_name",                        "9) Name of contact for this journal MAY NOT BE EDITED"),
+        ("contact_email",                       "10) Contact's email address MAY NOT BE EDITED"),
+        ("confirm_contact_email",               "11) Confirm contact's email address MAY NOT BE EDITED"),
+        ("country",                             "12) In which country is the publisher of the journal based?"),
+        ("processing_charges",                  "13) Does the journal have article processing charges (APCs)?"),
+        ("processing_charges_amount",           "14) Amount"),
+        ("processing_charges_currency",         "15) Currency"),
+        ("submission_charges",                  "16) Does the journal have article submission charges?"),
+        ("submission_charges_amount",           "17) Amount"),
+        ("submission_charges_currency",         "18) Currency"),
+        ("articles_last_year",                  "19) How many research and review articles did the journal publish in the last calendar year?"),
+        ("articles_last_year_url",              "20) Enter the URL where this information can be found"),
+        ("waiver_policy",                       "21) Does the journal have a waiver policy (for developing country authors etc)?"),
+        ("waiver_policy_url",                   "22) Enter the URL where this information can be found"),
+        ("digital_archiving_policy",            "23) What digital archiving policy or program(s) does the journal belong to?"),
+        ("digital_archiving_policy_library",    "23a) If a national library, which one?"),
+        ("digital_archiving_policy_other",      "23b) If Other, enter it here"),
+        ("digital_archiving_policy_url",        "24) Enter the URL where this information can be found"),
+        ("crawl_permission",                    "25) Does the journal allow anyone to crawl the full-text of the journal?"),
+        ("article_identifiers",                 "26) Which permanent article identifiers does the journal use?"),
+        ("metadata_provision",                  "27) Does the journal provide, or intend to provide, article level metadata to DOAJ?"),
+        ("download_statistics",                 "28) Does the journal provide download statistics?"),
+        ("download_statistics_url",             "29) Enter the URL where this information can be found"),
+        ("first_fulltext_oa_year",              "30) What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles?"),
+        ("fulltext_format",                     "31) Please indicate which formats of full text are available"),
+        ("keywords",                            "32) Add up to 6 keyword(s) that best describe the journal (comma delimited)"),
+        ("languages",                           "33) Select the language(s) that the Full Text of the articles is published in"),
+        ("editorial_board_url",                 "34) What is the URL for the Editorial Board page?"),
+        ("review_process",                      "35) Please select the review process for papers"),
+        ("review_process_url",                  "36) Enter the URL where this information can be found"),
+        ("aims_scope_url",                      "37) What is the URL for the journal's Aims & Scope"),
+        ("instructions_authors_url",            "38) What is the URL for the journal's instructions for authors?"),
+        ("plagiarism_screening",                "39) Does the journal have a policy of screening for plagiarism?"),
+        ("plagiarism_screening_url",            "40) Enter the URL where this information can be found"),
+        ("publication_time",                    "41) What is the average number of weeks between submission and publication?"),
+        ("oa_statement_url",                    "42) What is the URL for the journal's Open Access statement?"),
+        ("license_embedded",                    "43) Does the journal embed or display simple machine-readable CC licensing information in its articles?"),
+        ("license_embedded_url",                "44) Please provide a URL to an example page with embedded licensing information"),
+        ("license",                             "45) Enter which type of CC license the journal uses. If it is not a CC license, enter the license's name. Or enter None."),
+        ("license_checkbox",                    "46) If the journal has a license which is not a CC license, which of the following does the content require?"),
+        ("license_url",                         "47) Enter the URL on your site where your license terms are stated"),
+        ("open_access",                         "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?"),
+        ("deposit_policy",                      "49) With which deposit policy directory does the journal have a registered deposit policy?"),
+        ("copyright",                           "50) Does the journal allow the author(s) to hold the copyright without restrictions?"),
+        ("copyright_url",                       "51) Enter the URL where this information can be found"),
+        ("publishing_rights",                   "52) Will the journal allow the author(s) to retain publishing rights without restrictions?"),
+        ("publishing_rights_url",               "53) Enter the URL where this information can be found")
     ]
 
-    SUPPLEMENTARY_QUESTIONS = {
-        23 : {
-            "library" : "If a national library, which one?",
-            "other" : "If Other, enter it here"
-        },
-        #26 : {
-        #    "other" : "If Other, enter it here"
-        #},
-        #31 : {
-        #    "other" : "If Other, enter it here"
-        #},
-        #45 : {
-        #    "other" : "If Other, enter it here"
-        #},
-        #49 : {
-        #    "other" : "If Other, enter it here"
-        #},
-        #50 : {
-        #    "other" : "If Other, enter it here"
-        #},
-        #52 : {
-        #    "other" : "If Other, enter it here"
-        #}
+    DEGEN = {
+        "article_identifiers_other" : "article_identifiers",
+        "fulltext_format_other" : "fulltext_format",
+        "license_other" : "license",
+        "deposit_policy_other" : "deposit_policy",
+        "copyright_other" : "copyright",
+        "publishing_rights_other" : "publishing_rights"
     }
 
     @classmethod
-    def q(cls, num, supp=None):
-        if supp is None:
-            return cls.QUESTIONS[num - 1]
+    def q(cls, ident):
+        if type(ident) == int:
+            offset = 0
+            if ident > 23:  # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
+                offset = 2
+            return cls.QTUP[ident - 1 + offset][1]
         else:
-            return cls.SUPPLEMENTARY_QUESTIONS[num][supp]
+            if ident in cls.DEGEN:
+                ident = cls.DEGEN[ident]
+            for k, q in cls.QTUP:
+                if k == ident:
+                    return q
+        return None
 
     @classmethod
-    def a(cls, answers, num, supp=None):
-        # first we need to calculate the number of supplementary questions lower than num
-        have_supps = cls.SUPPLEMENTARY_QUESTIONS.keys()                                         # start with the questions with supplementary questions
-        lower = [len(cls.SUPPLEMENTARY_QUESTIONS[x].keys()) for x in have_supps if x < num]     # filter those that are lower than num, and then count the keys in each dict
-        offset = sum(lower)                                                                     # sum the count of all the keys
+    def a(cls, answers, ident):
+        offset = 0
+        if type(ident) != int:
+            idx = 1             # FIXME: this will break if the ident is not in the question list
+            for k, q in cls.QTUP:
+                if k == ident:
+                    break
+                idx += 1
+            if idx > 23 and idx < 26:
+                offset = idx - 23
+                idx = 23        # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
+            ident = idx
 
-        # calculate the offset in the event that we're asked for a supplementary question
-        supp_offset = 0
-        if supp is not None:
-            sqs = cls.SUPPLEMENTARY_QUESTIONS[num].keys()        # list the supplementary options
-            if len(sqs) == 1:                                    # if there's only one key, we just increment by 1
-                supp_offset = 1
-            elif len(sqs) == 2:                                  # if there are two keys, we deal with the special case
-                if supp == "other":
-                    supp_offset = 2
-                elif supp == "library":
-                    supp_offset = 1
-
-
-        # the index of an answer in the array is the question - 1 (because array is indexed from 0) + the number of supplementary
-        # questions lower than num + any offset for a supplementary question on this number
-        idx = (num - 1) + offset + supp_offset
-
-        if idx > len(answers):
-            raise SuggestionXwalkException("Crosswalk cannot complete - source column does not have enough rows")
-
-        return answers[idx]
+        if ident > 23:
+            offset = 2  # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
+        return answers[ident - 1 + offset]
 
     @classmethod
     def question_list(cls):
-        # start with the base list of questions
-        ql = deepcopy(cls.QUESTIONS)
-
-        # now get the supplementary question keys in reverse order
-        sups = cls.SUPPLEMENTARY_QUESTIONS.keys()
-        sups.sort(reverse=True)
-
-        # for each of the questions which has supplementary information
-        # insert the additional questions
-        for q in sups:
-            additional = cls.SUPPLEMENTARY_QUESTIONS[q].keys()
-            if len(additional) == 1:
-                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q][additional[0]]
-                ql.insert(q, toinsert)
-            elif len(additional) == 2:
-                # other second (so we insert it first!)
-                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q]["other"]
-                ql.insert(q, toinsert)
-
-                # library first (so we insert it last!)
-                toinsert = cls.SUPPLEMENTARY_QUESTIONS[q]["library"]
-                ql.insert(q, toinsert)
-
-        return ql
+        return [q for _, q in cls.QTUP]
 
     @classmethod
     def remove_disabled(cls, forminfo):
@@ -398,15 +362,14 @@ class Suggestion2QuestionXwalk(object):
         if lib in dap: dap.remove(lib)
         if oth in dap: dap.remove(oth)
         kvs.append((cls.q(23), ", ".join(dap)))
-        kvs.append((cls.q(23, "library"), forminfo.get("digital_archiving_policy_library")))
-        kvs.append((cls.q(23, "other"), forminfo.get("digital_archiving_policy_other")))
+        kvs.append((cls.q("digital_archiving_policy_library"), forminfo.get("digital_archiving_policy_library")))
+        kvs.append((cls.q("digital_archiving_policy_other"), forminfo.get("digital_archiving_policy_other")))
 
         kvs.append((cls.q(24), forminfo.get("digital_archiving_policy_url")))
         kvs.append((cls.q(25), yes_no(forminfo.get("crawl_permission"))))
 
         article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
         kvs.append((cls.q(26), article_identifiers))
-        # kvs.append((cls.q(26, "other"), forminfo.get("article_identifiers_other")))
 
         kvs.append((cls.q(27), yes_no(forminfo.get("metadata_provision"))))
         kvs.append((cls.q(28), yes_no(forminfo.get("download_statistics"))))
@@ -415,7 +378,6 @@ class Suggestion2QuestionXwalk(object):
 
         fulltext_formats = other_list("fulltext_format", "fulltext_format_other", choices.Choices.fulltext_format_val("other"))
         kvs.append((cls.q(31), fulltext_formats))
-        # kvs.append((cls.q(31, "other"), forminfo.get("fulltext_format_other")))
 
         kvs.append((cls.q(32), ", ".join(forminfo.get("keywords", []))))
         kvs.append((cls.q(33), ", ".join(forminfo.get("languages", []))))
@@ -435,7 +397,6 @@ class Suggestion2QuestionXwalk(object):
         if lic == choices.Choices.licence_val("other"):
             lic = forminfo.get("license_other")
         kvs.append((cls.q(45), lic))
-        # kvs.append((cls.q(45, "other"), forminfo.get("license_other")))
 
         kvs.append((cls.q(46), license_checkbox(forminfo.get("license_checkbox", []))))
         kvs.append((cls.q(47), forminfo.get("license_url")))
@@ -443,13 +404,11 @@ class Suggestion2QuestionXwalk(object):
 
         deposit_policies = other_list("deposit_policy", "deposit_policy_other", choices.Choices.deposit_policy_other_val("other"))
         kvs.append((cls.q(49), deposit_policies))
-        # kvs.append((cls.q(49, "other"), forminfo.get("deposit_policy_other")))
 
         cr = forminfo.get("copyright")
         if cr == choices.Choices.copyright_other_val("other"):
             cr = forminfo.get("copyright_other")
         kvs.append((cls.q(50), cr))
-        # kvs.append((cls.q(50, "other"), copyright_other))
 
         kvs.append((cls.q(51), forminfo.get("copyright_url")))
 
@@ -457,7 +416,6 @@ class Suggestion2QuestionXwalk(object):
         if pr == choices.Choices.publishing_rights_other_val("other"):
             pr = forminfo.get("publishing_rights_other")
         kvs.append((cls.q(52), pr))
-        # kvs.append((cls.q(52, "other"), publishing_rights_other))
 
         kvs.append((cls.q(53), forminfo.get("publishing_rights_url")))
 
@@ -700,7 +658,7 @@ class Suggestion2QuestionXwalk(object):
         forminfo["waiver_policy"] = yes_no(cls.a(qs, 21))
         forminfo["waiver_policy_url"] = normal(cls.a(qs, 22))
 
-        dap, lib, oth = digital_archiving_policy(cls.a(qs, 23), cls.a(qs, 23, "library"), cls.a(qs, 23, "other"))
+        dap, lib, oth = digital_archiving_policy(cls.a(qs, 23), cls.a(qs, "digital_archiving_policy_library"), cls.a(qs, "digital_archiving_policy_other"))
         forminfo["digital_archiving_policy"] = dap
         forminfo["digital_archiving_policy_library"] = lib
         forminfo["digital_archiving_policy_other"] = oth
