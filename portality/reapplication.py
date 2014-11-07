@@ -1,7 +1,7 @@
 from portality.clcsv import ClCsv
 from portality import models, datasets
 from portality.core import app
-import os, re
+import os, re, string
 from portality.formcontext.xwalk import SuggestionFormXWalk
 from portality.formcontext import formcontext, choices
 from copy import deepcopy
@@ -94,17 +94,37 @@ def validate_csv_contents(sheet):
     return succeeded
 
 def generate_spreadsheet_error(sheet, exception):
-    rows = []
+    def int2base(x, base):
+        digs = string.uppercase
+        if x == 0: return digs[0]
+        digits = []
+        while x:
+            digits.append(digs[x % base])
+            x /= base
+        digits.reverse()
+        return ''.join(digits)
+
+    rows = {}
     for issn, fc in exception.errors.iteritems():
+        rows[issn] = {}
         for field, messages in fc.errors.iteritems():
-            # rows.append((issn, q, r, c, msg))
-            pass
+            q = Suggestion2QuestionXwalk.q(field)
+            msg = "; ".join(messages)
+            c = sheet.get_colnumber(issn)
+            c = int2base(c, 26)     # should work, as csv columns are zero indexed
+            r = Suggestion2QuestionXwalk.q2idx(field) + 2   # add 2 for the offset from the header + the 0 indexed array
+            rows[issn][r] = (issn, q, r, c, msg)
+
+    return rows
+
+
+
 
 #################################################################
 # Workflow functions for ingesting a spreadsheet
 #################################################################
 
-def ingest_csv(path, account):
+def ingest_csv(path, account, error_callback=None):
     sheet = open_csv(path)
     validate_csv_structure(sheet, account)
     try:
@@ -114,7 +134,9 @@ def ingest_csv(path, account):
         for fc in fcs:
             fc.finalise()
     except ContentValidationException as e:
-        generate_spreadsheet_error(sheet, e)
+        report = generate_spreadsheet_error(sheet, e)
+        if error_callback is not None:
+            error_callback(report)
         raise e
 
 def ingest_from_upload(upload):
@@ -261,7 +283,28 @@ class Suggestion2QuestionXwalk(object):
         return None
 
     @classmethod
+    def q2idx(cls, ident):
+        offset = 0
+        if type(ident) != int:
+            idx = 1             # FIXME: this will break if the ident is not in the question list
+            for k, q in cls.QTUP:
+                if k == ident:
+                    break
+                idx += 1
+            if idx > 23 and idx < 26:
+                offset = idx - 23
+                idx = 23        # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
+            ident = idx
+
+        if ident > 23:
+            offset = 2  # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
+        return ident + offset - 1
+
+    @classmethod
     def a(cls, answers, ident):
+        row = cls.q2idx(ident)
+        return answers[row]
+        """
         offset = 0
         if type(ident) != int:
             idx = 1             # FIXME: this will break if the ident is not in the question list
@@ -277,6 +320,7 @@ class Suggestion2QuestionXwalk(object):
         if ident > 23:
             offset = 2  # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
         return answers[ident - 1 + offset]
+        """
 
     @classmethod
     def question_list(cls):

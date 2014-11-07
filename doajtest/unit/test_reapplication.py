@@ -575,4 +575,12 @@ class TestReApplication(DoajTestCase):
         assert upload.status == "failed"
         assert upload.error is not None
 
+    def test_11_generate_error_report(self):
+        account = models.Account(**{"id" : "Owner"})
+
+        def callback(report):
+            assert report is not None
+
+        with self.assertRaises(reapplication.ContentValidationException):
+            reapplication.ingest_csv("invalid.csv", account, callback)
 
