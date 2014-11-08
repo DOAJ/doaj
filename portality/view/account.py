@@ -212,8 +212,6 @@ def reset(reset_token):
 @blueprint.route('/logout')
 @ssl_required
 def logout():
-    if 'pub_show_settings' in session:
-        del session['pub_show_settings']
     logout_user()
     flash('You are now logged out', 'success')
     return redirect('/')
