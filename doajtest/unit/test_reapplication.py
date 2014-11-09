@@ -580,6 +580,8 @@ class TestReApplication(DoajTestCase):
 
         def callback(report):
             assert report is not None
+            assert "1234-5678" in report
+            assert "C13" in report
 
         with self.assertRaises(reapplication.ContentValidationException):
             reapplication.ingest_csv("invalid.csv", account, callback)

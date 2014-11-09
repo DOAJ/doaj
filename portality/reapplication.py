@@ -104,20 +104,34 @@ def generate_spreadsheet_error(sheet, exception):
         digits.reverse()
         return ''.join(digits)
 
-    rows = {}
+    # first read all the errors out into a data structure that we can order
+    # and extract all the relevant information for each line
+    report = {}
     for issn, fc in exception.errors.iteritems():
-        rows[issn] = {}
+        report[issn] = {}
         for field, messages in fc.errors.iteritems():
             q = Suggestion2QuestionXwalk.q(field)
             msg = "; ".join(messages)
             c = sheet.get_colnumber(issn)
             c = int2base(c, 26)     # should work, as csv columns are zero indexed
             r = Suggestion2QuestionXwalk.q2idx(field) + 2   # add 2 for the offset from the header + the 0 indexed array
-            rows[issn][r] = (issn, q, r, c, msg)
+            report[issn][r] = (issn, q, r, c, msg)
 
-    return rows
+    # register where we will store the actual strings of the rows in the error report
+    rows = []
 
+    # iterate through issns in the order that they should appear in the spreadsheet
+    issns = report.keys()
+    issns.sort()
+    for issn in issns:
+        # iterate through the rows in the order that they appear in the spreadsheet
+        qs = report.get(issn, {}).keys()
+        qs.sort()
+        for r in qs:
+            _, q, _, c, msg = report.get(issn, {}).get(r, (None, None, None, None, None))
+            rows.append(str(issn) + " | " + str(q) + " | cell " + str(c) + str(r) + " - " + str(msg))
 
+    return "\n".join(rows)
 
 
 #################################################################
