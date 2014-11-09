@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, Response
+from flask import Blueprint, request, send_from_directory
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
@@ -72,7 +72,7 @@ def upload_file():
     previous = models.FileUpload.by_owner(current_user.id)
     
     if request.method == "GET":
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     
     # otherwise we are dealing with a POST - file upload or supply of url
     f = request.files.get("file")
@@ -90,10 +90,9 @@ def upload_file():
         return _url_upload(url, schema, previous)
     
     flash("No file or URL provided", "error")
-    return render_template('publisher/uploadfile.html', previous=previous)
+    return render_template('publisher/uploadmetadata.html', previous=previous)
 
 def _file_upload(f, schema, previous):
-    
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
     record.upload(current_user.id, f.filename)
@@ -121,7 +120,7 @@ def _file_upload(f, schema, previous):
             pass
         
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
         
     # now we have the record in the index and on disk, we can attempt to
     # validate it
@@ -142,21 +141,21 @@ def _file_upload(f, schema, previous):
         record.save()
         previous = [record] + previous
         flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     
     if actual_schema:
         record.validated(actual_schema)
         record.save()
         previous = [record] + previous # add the new record to the previous records
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
     else:
         record.failed("File could not be validated against a known schema")
         record.save()
         os.remove(xml)
         previous = [record] + previous
         flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
 def _url_upload(url, schema, previous):
@@ -211,7 +210,7 @@ def _url_upload(url, schema, previous):
         record.save()
         previous = [record] + previous
         flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
     def __fail(record, previous, error):
@@ -220,7 +219,7 @@ def _url_upload(url, schema, previous):
         record.save()
         previous = [record] + previous
         flash(message, "error")
-        return render_template('publisher/uploadfile.html', previous=previous)
+        return render_template('publisher/uploadmetadata.html', previous=previous)
 
 
     # prep a record to go into the index, to record this upload.  The filename is the url
@@ -308,6 +307,76 @@ def metadata():
 def help():
     return render_template("publisher/help.html")
 
+@blueprint.route("/reapply", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def bulk_reapply():
+    # User must have bulk reapplications to access this tab
+    if not pub_filter_bulk(current_user.id):
+        abort(404)
+
+    # Get the download details for reapplication CSVs
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+
+    # all responses involve getting the previous uploads
+    previous = models.BulkUpload.by_owner(current_user.id)
+
+    if request.method == "GET":
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+    # otherwise we are dealing with a POST - file upload
+    f = request.files.get("file")
+
+    if f.filename != "":
+        return _bulk_upload(f, csv_downloads, previous)
+
+    flash("No file provided - select a file to upload and try again.", "error")
+    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+@blueprint.route('/bulk_download/<filename>')
+@login_required
+@ssl_required
+def bulk_download(filename):
+    try:
+        return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+    except:
+        abort(404)
+
+def _bulk_upload(f, csv_downloads, previous):
+    # prep a record to go into the index, to record this upload
+    record = models.BulkUpload()
+    record.upload(current_user.id, f.filename)
+    record.set_id()
+
+    # the file path that we are going to write to
+    csv = os.path.join(app.config.get("REAPPLICATION_UPLOAD_DIR", "."), record.local_filename)
+
+    # it's critical here that no errors cause files to get left behind unrecorded
+    try:
+        # write the incoming file out to the csv file
+        f.save(csv)
+
+        # save the index entry
+        record.save()
+
+        previous = [record] + previous # add the new record to the previous records
+        flash("File successfully uploaded - it will be processed shortly", "success")
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+    except:
+        # if we can't record either of these things, we need to back right off
+        try:
+            os.remove(csv)
+        except:
+            pass
+        try:
+            record.delete()
+        except:
+            pass
+
+        flash("Failed to upload file - please contact an administrator", "error")
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+
 def _validate_authors(form, require=1):
     counted = 0
     for entry in form.authors.entries:
@@ -316,3 +385,17 @@ def _validate_authors(form, require=1):
             counted += 1
     return counted >= require
 
+@blueprint.app_template_filter()
+def pub_filter_note(user_id):
+    # Only show sticky note if set in config and if user has reapplications
+    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=0)
+    res = models.Suggestion.query(q=has_reapps_q.query())
+    count = res.get("hits", {}).get("total", 0)
+
+    return app.config.get("REAPPLICATION_ACTIVE", False) and count > 0
+
+@blueprint.app_template_filter()
+def pub_filter_bulk(user_id):
+    # only show bulk upload tab if 10+ reapplications
+    has_bulk = models.BulkReApplication.count_by_owner(user_id)
+    return has_bulk > 0
