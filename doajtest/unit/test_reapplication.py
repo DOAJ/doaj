@@ -200,7 +200,7 @@ def mock_find_by_issn(cls, *args, **kwargs):
 def mock_account_pull(cls, username, *arsg, **kwargs):
     if username == "none":
         return None
-    return models.Account(**{"id" : username})
+    return models.Account(**{"id" : username, "email" : "richard@cottagelabs.com"})
 
 class TestReApplication(DoajTestCase):
 
@@ -578,6 +578,7 @@ class TestReApplication(DoajTestCase):
     def test_11_generate_error_report(self):
         account = models.Account(**{"id" : "Owner"})
 
+        # provide our own callback to check the report generation
         def callback(report):
             assert report is not None
             assert "1234-5678" in report
@@ -585,4 +586,11 @@ class TestReApplication(DoajTestCase):
 
         with self.assertRaises(reapplication.ContentValidationException):
             reapplication.ingest_csv("invalid.csv", account, callback)
+
+        # this will use the default callback, which will try to send me an email
+        upload = models.BulkUpload()
+        upload.upload("Owner", "mybulkreapp.csv")
+        upload.set_id("invalid")
+        upload.save()
+        reapplication.ingest_from_upload(upload)
 

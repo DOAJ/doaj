@@ -1,5 +1,5 @@
-from flask import render_template
-from flask_mail import Mail, Message
+from flask import render_template, request
+from flask_mail import Mail, Message, Attachment
 from portality.core import app
 
 # Flask-Mail version of email service from util.py
@@ -14,16 +14,22 @@ def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=N
     if bcc and not isinstance(bcc, list):
         bcc = [bcc]
 
-    if app.config.get('CC_ALL_EMAILS_TO'):
+    if app.config.get('CC_ALL_EMAILS_TO', None) is not None:
         bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
 
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
-    # TODO: This could also find and render a HTML template if present
+    # TODO: This could also find and render an HTML template if present
+    appcontext = True
     if msg_body:
         plaintext_body = msg_body
     else:
-        plaintext_body = render_template(template_name, **template_params)
+        try:
+            plaintext_body = render_template(template_name, **template_params)
+        except:
+            appcontext = False
+            with app.test_request_context():
+                plaintext_body = render_template(template_name, **template_params)
 
     # create a message
     msg = Message(subject=subject,
@@ -40,5 +46,25 @@ def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=N
                   extra_headers=None
     )
 
-    mail = Mail(app)
-    mail.send(msg)
+    if appcontext:
+        mail = Mail(app)
+        mail.send(msg)
+    else:
+        with app.test_request_context():
+            mail = Mail(app)
+            mail.send(msg)
+
+
+def make_attachment(filename, content_type, data, disposition=None, headers=None):
+    """
+    Provide a function which can make attachments, insulating the caller from the flask-mail
+    underlying implementation.
+
+    :param filename:
+    :param content_type:
+    :param data:
+    :param disposition:
+    :param headers:
+    :return:
+    """
+    return Attachment(filename, content_type, data, disposition, headers)

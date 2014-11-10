@@ -1,12 +1,13 @@
 from portality.clcsv import ClCsv
-from portality import models, datasets
+from portality import models, datasets, app_email
 from portality.core import app
-import os, re, string
+import os, re, string, uuid
 from portality.formcontext.xwalk import SuggestionFormXWalk
 from portality.formcontext import formcontext, choices
 from copy import deepcopy
 from werkzeug.datastructures import MultiDict
 from collections import OrderedDict
+from datetime import datetime
 
 #################################################################
 # Code for handling validation of incoming spreadsheets
@@ -161,7 +162,7 @@ def ingest_from_upload(upload):
         raise CsvIngestException("Unable to ingest CVS for non-existant account")
 
     try:
-        ingest_csv(path, account)
+        ingest_csv(path, account, email_error_closure(upload, account))
     except CsvValidationException as e:
         # this is where the structure of the csv itself is broken
         upload.failed(e.message)
@@ -171,6 +172,37 @@ def ingest_from_upload(upload):
         upload.failed(e.message)
         upload.save()
         return
+    except:
+        upload.failed("An error was raised during processing - please contact an administrator")
+        upload.save()
+        return
+
+def email_error_closure(upload, account):
+
+    def email_error(report):
+        to = [account.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - problems with your bulk reapplication"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                now = datetime.now().strftime("%Y%m%d")
+                att = app_email.make_attachment("reapplication_errors_" + now + ".txt", "text/plain", report)
+                when = datetime.strptime(upload.created_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %b %Y")
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/bulk_reapp_error.txt",
+                                    files=[att],
+                                    when=when,
+                                    account=account
+                )
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+    return email_error
 
 #################################################################
 # code for creating the reapplication
@@ -318,23 +350,6 @@ class Suggestion2QuestionXwalk(object):
     def a(cls, answers, ident):
         row = cls.q2idx(ident)
         return answers[row]
-        """
-        offset = 0
-        if type(ident) != int:
-            idx = 1             # FIXME: this will break if the ident is not in the question list
-            for k, q in cls.QTUP:
-                if k == ident:
-                    break
-                idx += 1
-            if idx > 23 and idx < 26:
-                offset = idx - 23
-                idx = 23        # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
-            ident = idx
-
-        if ident > 23:
-            offset = 2  # FIXME: explicit knowledge of question structure.  If structure changes, this needs to be fixed
-        return answers[ident - 1 + offset]
-        """
 
     @classmethod
     def question_list(cls):
