@@ -116,13 +116,17 @@ class Suggestion(Journal):
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
+    _owner_term = {"term" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
     _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
 
     def __init__(self, email=None, statuses=None, owner=None):
         self.email = email
-        self.statuses = statuses
         self.owner = owner
+        if statuses:
+            self.statuses = statuses
+        else:
+            self.statuses = []
 
     def query(self):
         q = deepcopy(self._base_query)
@@ -134,8 +138,33 @@ class SuggestionQuery(object):
             st = deepcopy(self._status_terms)
             st["terms"]["admin.application_status.exact"] = self.statuses
             q["query"]["bool"]["must"].append(st)
+
         if self.owner is not None:
             ot = deepcopy(self._owner_term)
             ot["term"]["admin.owner.exact"] = self.owner
             q["query"]["bool"]["must"].append(ot)
         return q
+
+class OwnerStatusQuery(object):
+    base_query = {
+        "query" : {
+            "bool" : {
+                "must" : []
+            }
+        },
+        "sort" : [
+            {"created_date" : "desc"}
+        ],
+        "size" : 10
+    }
+    def __init__(self, owner, statuses, size=10):
+        self._query = deepcopy(self.base_query)
+        owner_term = {"term" : {"owner" : owner}}
+        self._query["query"]["bool"]["must"].append(owner_term)
+        status_term = {"terms" : {"admin.application_status.exact" : statuses}}
+        self._query["query"]["bool"]["must"].append(status_term)
+        self._query["size"] = size
+
+    def query(self):
+        return self._query
+

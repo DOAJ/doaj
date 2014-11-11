@@ -205,6 +205,21 @@ class Journal(DomainObject):
     def contacts(self):
         return self.data.get("admin", {}).get("contact", [])
 
+    def get_latest_contact_name(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("name", "")
+
+    def get_latest_contact_email(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("email", "")
+
+
     def add_contact(self, name, email):
         if "admin" not in self.data:
             self.data["admin"] = {}
