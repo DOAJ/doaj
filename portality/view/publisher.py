@@ -30,6 +30,9 @@ def index():
 @login_required
 @ssl_required
 def reapplication_page(reapplication_id):
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
     ap = models.Suggestion.pull(reapplication_id)
 
     if ap is None:
@@ -61,6 +64,8 @@ def reapplication_page(reapplication_id):
 @login_required
 @ssl_required
 def updates_in_progress():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
     return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
