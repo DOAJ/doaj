@@ -652,3 +652,16 @@ class TestReApplication(DoajTestCase):
         _, sheetqs = sheet.get_column(0)
 
         assert sheetqs == qs
+
+    def test_07_make_journal_from_reapp(self):
+        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        s.set_current_journal("1234567")
+        j = s.make_journal()
+
+        assert j.id == "1234567"
+        assert "suggestion" not in j.data
+        assert j.last_reapplication is not None
+        assert j.data.get("bibjson", {}).get("active")
+        assert j.current_application is None
+        assert j.data.get("admin", {}).get("current_journal") is None
+

@@ -5,18 +5,6 @@ from portality.util import flash_with_url, listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices
 
-def suggestion2journal(suggestion):
-    journal_data = deepcopy(suggestion.data)
-    del journal_data['suggestion']
-    del journal_data['index']
-    del journal_data['admin']['application_status']
-    del journal_data['id']
-    del journal_data['created_date']
-    del journal_data['last_updated']
-    journal_data['bibjson']['active'] = True
-    new_j = models.Journal(**journal_data)
-    return new_j
-
 def interpret_list(current_values, allowed_values, substitutions):
     current_values = deepcopy(current_values)
     interpreted_fields = {}
