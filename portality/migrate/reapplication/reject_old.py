@@ -33,7 +33,7 @@ for s in tasks.scroll(conn, 'suggestion'):
         cre_date = datetime.strptime(cre_date_str, "%Y-%m-%dT%H:%M:%SZ")
 
         if cre_date < THRESHOLD_DATE:
-            if suggestion_model.application_status == 'rejected':
+            if suggestion_model.application_status in ['rejected', "accepted"]:
                 unchanged_sug += 1
                 un_sug.append(suggestion_model.id)
             else:
