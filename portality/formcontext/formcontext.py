@@ -814,7 +814,6 @@ class PublisherCsvReApplication(ApplicationContext):
 class PublisherReApplication(ApplicationContext):
     def make_renderer(self):
         self.renderer = render.PublisherReApplicationRenderer()
-        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
 
     def set_template(self):
         self.template = "formcontext/publisher_reapplication.html"
@@ -825,10 +824,12 @@ class PublisherReApplication(ApplicationContext):
     def data2form(self):
         self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._disable_fields()
 
     def source2form(self):
         self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._disable_fields()
 
     def pre_validate(self):
         if self.source is None:
@@ -841,12 +842,18 @@ class PublisherReApplication(ApplicationContext):
         self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
 
         if len(contacts) == 0:
+            # this will cause a validation failure
             return
 
+        # we copy across the contacts if they are necessary.  The contact details are conditionally
+        # disabled, so they /may/ be set
         contact = contacts[0]
-        self.form.contact_name.data = contact.get("name")
-        self.form.contact_email.data = contact.get("email")
-        self.form.confirm_contact_email.data = contact.get("email")
+        if "contact_name" in self.renderer.disabled_fields:
+            self.form.contact_name.data = contact.get("name")
+        if "contact_email" in self.renderer.disabled_fields:
+            self.form.contact_email.data = contact.get("email")
+        if "confirm_contact_email" in self.renderer.disabled_fields:
+            self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -888,6 +895,23 @@ class PublisherReApplication(ApplicationContext):
 
         return super(PublisherReApplication, self).render_template(**kwargs)
 
+    def _disable_fields(self):
+        if self.source is None:
+            raise FormContextException("You cannot disable fields on a not-existent application")
+
+        disable = ["pissn", "eissn"] # these are always disabled
+
+        # contact fields are only disabled if they already have content in source
+        contacts = self.source.contacts()
+        if len(contacts) > 0:
+            c = contacts[0]
+            if c.get("name"):
+                disable.append("contact_name")
+            if c.get("email"):
+                disable += ["contact_email", "confirm_contact_email"]
+
+        self.renderer.set_disabled_fields(disable)
+
     def _send_received_email(self):
         acc = models.Account.pull(self.target.owner)
         if acc is None:
@@ -906,11 +930,10 @@ class PublisherReApplication(ApplicationContext):
                                     fro=fro,
                                     subject=subject,
                                     template_name="email/reapplication_received.txt",
-                                    journal_name=journal_name.encode('utf-8', 'replace')
+                                    journal_name=journal_name.encode('utf-8', 'replace'),
+                                    username=self.target.owner
                 )
-                self.add_alert('Sent email to ' + acc.email + ' to tell them about their reapplication being received.')
-            else:
-                self.add_alert('Did not send email to ' + acc.email + ' to tell them about their reapplication being received, as publisher emails are disabled.')
+                self.add_alert('Sent a confirmation email to ' + acc.email + ' as a record of this update')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
