@@ -14,7 +14,7 @@
     {% endif %}
 
     {# FIXME: would be best if this was something more formal on the formcontext level #}
-    {% if form_context.form.application_status.data == 'accepted' %}
+    {% if form_context.source.application_status == 'accepted' %}
     <h4 class="form-status">Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.</h4>
     {% endif %}
 
