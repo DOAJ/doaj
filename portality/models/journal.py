@@ -15,11 +15,12 @@ class Journal(DomainObject):
                     "CC License", "Content in DOAJ"]
 
     @classmethod
-    def find_by_issn(self, issn):
+    def find_by_issn(cls, issn):
         q = JournalQuery()
         q.find_by_issn(issn)
-        result = self.query(q=q.query)
-        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        result = cls.query(q=q.query)
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
     @classmethod

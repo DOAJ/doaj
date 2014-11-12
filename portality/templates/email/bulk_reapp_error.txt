@@ -1,0 +1,12 @@
+Dear {{account.id}},
+
+There was a problem processing your bulk reapplication uploaded on {{when}}.
+
+Please see the attached file for details of the errors.  The file shows you the ISSN and Question where an issue
+was found, the cell coordinates of the input which caused the error, and details of what the error is.
+
+None of the re-applications in your upload have been processed yet.  If you could fix the errors in the CSV and
+ re-upload it to us, we will process them as soon as possible.
+
+Regards,
+The DOAJ Team

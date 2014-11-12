@@ -43,6 +43,23 @@ class ClCsv():
         self._populate_data(rows)
         return rows
 
+    def headers(self):
+        """
+        Return the headers of all of the columns in the csv in the order that they appear
+        :return: just the headers
+        """
+        return [h for h, _ in self.data]
+
+    def columns(self):
+        """
+        Iterate over the columns in the csv in the order that they appear
+        :return: a generator which yields columns
+        """
+        headers = self.headers()
+        for h in headers:
+            col = self.get_column(h)
+            yield col
+
     def get_column(self, col_identifier):
         """
         Get a column from the CSV file.
@@ -115,7 +132,6 @@ class ClCsv():
         Write and close the file.
         """
         rows = []
-
         # find out how many rows we're going to need to write
         max_rows = 0
         for _, cont in self.data:

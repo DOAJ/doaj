@@ -445,3 +445,4 @@ class AssEdJournalReviewForm(JournalInformation, Subject, JournalLegacy, Notes):
         * Notes - repeatable notes field
     """
     pass
+

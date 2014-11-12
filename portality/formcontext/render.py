@@ -2,7 +2,6 @@ from portality.formcontext.formhelper import FormHelper
 from portality.formcontext.choices import Choices
 from copy import deepcopy
 
-
 class Renderer(object):
     def __init__(self):
         self.FIELD_GROUPS = {}
@@ -449,6 +448,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
         self.FIELD_GROUPS["account"] = [
             {"owner" : {"class" : "input-large"}}
         ]
+
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
             {"editor" : {"class" : "input-large"}}
@@ -495,6 +495,7 @@ class EditorJournalReviewRenderer(JournalRenderer):
         ]
 
         self.ERROR_CHECK_ORDER = ["editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+
         # don't want the extra groups numbered so not added to self.NUMBERING_ORDER
 
         self.number_questions()
@@ -522,3 +523,4 @@ class AssEdJournalReviewRenderer(JournalRenderer):
         self.number_questions()
 
         self.check_field_groups()
+

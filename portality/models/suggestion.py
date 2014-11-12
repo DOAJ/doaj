@@ -4,6 +4,13 @@ from copy import deepcopy
 class Suggestion(Journal):
     __type__ = "suggestion"
 
+    @classmethod
+    def get_by_owner(cls, owner):
+        q = SuggestionQuery(owner=owner)
+        result = cls.query(q=q.query())
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
     ###############################################################
     # Overrides on Journal methods
     ###############################################################
@@ -111,6 +118,7 @@ class SuggestionQuery(object):
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
     _owner_term = {"term" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
+    _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
 
     def __init__(self, email=None, statuses=None, owner=None):
         self.email = email
@@ -126,14 +134,15 @@ class SuggestionQuery(object):
             et = deepcopy(self._email_term)
             et["term"]["suggestion.suggester.email.exact"] = self.email
             q["query"]["bool"]["must"].append(et)
-        if self.owner:
-            ot = deepcopy(self._owner_term)
-            ot["term"]["admin.owner.exact"] = self.owner
-            q["query"]["bool"]["must"].append(ot)
         if self.statuses and len(self.statuses) > 0:
             st = deepcopy(self._status_terms)
             st["terms"]["admin.application_status.exact"] = self.statuses
             q["query"]["bool"]["must"].append(st)
+
+        if self.owner is not None:
+            ot = deepcopy(self._owner_term)
+            ot["term"]["admin.owner.exact"] = self.owner
+            q["query"]["bool"]["must"].append(ot)
         return q
 
 class OwnerStatusQuery(object):
@@ -158,3 +167,4 @@ class OwnerStatusQuery(object):
 
     def query(self):
         return self._query
+
