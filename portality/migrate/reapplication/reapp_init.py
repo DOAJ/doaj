@@ -8,13 +8,14 @@ from portality.clcsv import UnicodeWriter
 
 
 def delete_existing_reapp():
-    q = models.SuggestionQuery(statuses=['reapplication']).query()
+    """Note that this cannot be run in isolation, because it leaves behind unresolved current_application fields in journals"""
+    q = models.SuggestionQuery(statuses=['reapplication', 'submitted']).query()
     models.Suggestion.delete_by_query(query=q)
 
 
 def create_reapplications():
     all_journals = models.Journal.all_in_doaj()
-    start_date = "2014-03-19T00:00:00Z"
+    start_date = app.config.get("TICK_THRESHOLD", "2014-03-19T00:00:00Z")
     date_format = "%Y-%m-%dT%H:%M:%SZ"
 
     for_reapplication = []
@@ -57,16 +58,16 @@ def make_bulk_reapp_csv():
             bulk_reapp.set_spreadsheet_name = filename
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
-        else:
+        elif len(suggestions) > 0:  # only add to the email list if they actually have suggestions at all
             contact.append(a.id)
             contact.append(a.email)
             email_list_less_10.append(contact)
 
-    with codecs.open('email_list_10_plus.csv', 'wb', encoding='utf-8') as csvfile:
+    with codecs.open('email_list_11_plus.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
         wr_writer.writerows(email_list_10_plus)
 
-    with codecs.open('email_list_less_10.csv', 'wb', encoding='utf-8') as csvfile:
+    with codecs.open('email_list_less_11.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
         wr_writer.writerows(email_list_less_10)
 
@@ -74,6 +75,8 @@ def make_bulk_reapp_csv():
         print "Failed bulk reapplications"
         print failed_bulk_reapps
 
+# FIXME: this is going to do /all/ rejected applications, not just the ones that were
+# rejected by the reject script
 def emails_rejected():
     email_list = []
     q = models.SuggestionQuery(statuses=['rejected']).query()
