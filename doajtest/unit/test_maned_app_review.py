@@ -2,12 +2,13 @@
 from doajtest.helpers import DoajTestCase
 # from flask.ext.testing import TestCase
 
-import re
+import re, time
 from copy import deepcopy
 
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
+from portality.core import app
 
 from werkzeug.datastructures import MultiDict
 
@@ -358,3 +359,37 @@ class TestManEdAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert True # gives us a place to drop a break point later if we need it
+
+    """
+    FIXME: this test won't run because we need the flask application context, but you can enable
+    it and step through with a debugger if you want.  That confirms that the test is working, at least,
+    up until the flask context kills it.
+
+    def test_02_reapplication(self):
+        # set up an application which is a reapp on an existing journal
+        s = models.Suggestion(**APPLICATION_SOURCE)
+        s.set_current_journal("1234567")
+        s.set_application_status("submitted")
+
+        # set up the form which "accepts" this reapplication
+        fd = deepcopy(APPLICATION_FORM)
+        fd["application_status"] = "accepted"
+        fd = MultiDict(fd)
+
+        # create and finalise the form context
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=fd, source=s)
+        with app.test_request_context():
+            fc.finalise()
+
+        # let the index catch up
+        time.sleep(2)
+
+        j = models.Journal.pull("1234567")
+        assert j is not None
+        assert j.last_reapplication is not None
+
+        h = models.JournalHistory.get_history_for("1234567")
+        assert h is not None
+        assert len(h) == 1
+    """
+
