@@ -352,6 +352,8 @@ class TestReApplication(DoajTestCase):
         assert j.current_application == reapp.id
         assert reapp.created_date is not None
         assert reapp.last_updated is not None
+        assert reapp.suggester.get("name") == "Contact"
+        assert reapp.suggester.get("email") == "contact@email.com"
 
     def test_02_make_csv_vbasic(self):
         s1 = models.Suggestion()
