@@ -26,7 +26,7 @@ def restrict():
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
 
-@blueprint.route("/reapply/<reapplication_id>")
+@blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def reapplication_page(reapplication_id):
@@ -53,10 +53,10 @@ def reapplication_page(reapplication_id):
                 flash('Your Re-Application has been saved.  You may still edit it until a DOAJ administrator picks it up for review.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='done'))
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
                 flash(e.message)
-                return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True)
 

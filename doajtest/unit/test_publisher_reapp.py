@@ -36,7 +36,7 @@ REAPPLICATION_SOURCE = {
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
             {"type" : "editorial_board", "url" : "http://editorial.board"},
             {"type" : "aims_scope", "url" : "http://aims.scope"},
-            {"type" : "author_instructions", "url" : "http://author.instructions"},
+            {"type" : "author_instructions", "url" : "http://author.instructions.com"},
             {"type" : "oa_statement", "url" : "http://oa.statement"}
         ],
         "subject" : [
@@ -78,7 +78,7 @@ REAPPLICATION_SOURCE = {
         "deposit_policy" : ["Sherpa/Romeo", "Store it"],
         "author_copyright" : {
             "copyright" : "Sometimes",
-            "url" : "http://copyright"
+            "url" : "http://copyright.com"
         },
         "author_publishing_rights" : {
             "publishing_rights" : "Occasionally",
@@ -342,3 +342,52 @@ class TestPublisherReApplication(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert fc.target.application_status == "submitted"
+
+    def test_02_conditional_disabled(self):
+        s = models.Suggestion(**deepcopy(REAPPLICATION_SOURCE))
+
+        # source only, all fields disabled
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s)
+        assert "pissn" in fc.renderer.disabled_fields
+        assert "eissn" in fc.renderer.disabled_fields
+        assert "contact_name" in fc.renderer.disabled_fields
+        assert "contact_email" in fc.renderer.disabled_fields
+        assert "confirm_contact_email" in fc.renderer.disabled_fields
+        # should validate
+        assert fc.validate()
+
+        # source only, no contact details, so those fields not disabled
+        del s.data["admin"]["contact"]
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s)
+        assert "pissn" in fc.renderer.disabled_fields
+        assert "eissn" in fc.renderer.disabled_fields
+        assert "contact_name" not in fc.renderer.disabled_fields
+        assert "contact_email" not in fc.renderer.disabled_fields
+        assert "confirm_contact_email" not in fc.renderer.disabled_fields
+        # should fail to validate
+        assert not fc.validate()
+
+        # source + form data, everything complete from source, so all fields disabled
+        s = models.Suggestion(**deepcopy(REAPPLICATION_SOURCE))
+        fd = MultiDict(deepcopy(REAPPLICATION_FORM))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s, form_data=fd)
+        assert "pissn" in fc.renderer.disabled_fields
+        assert "eissn" in fc.renderer.disabled_fields
+        assert "contact_name" in fc.renderer.disabled_fields
+        assert "contact_email" in fc.renderer.disabled_fields
+        assert "confirm_contact_email" in fc.renderer.disabled_fields
+        # should validate
+        assert fc.validate()
+
+        # source + form data, both source and form missing some values, but disabled fields only draw from source
+        del s.data["admin"]["contact"]
+        rf = deepcopy(REAPPLICATION_FORM)
+        rf["contact_name"] = "Contact Name"
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s, form_data=fd)
+        assert "pissn" in fc.renderer.disabled_fields
+        assert "eissn" in fc.renderer.disabled_fields
+        assert "contact_name" not in fc.renderer.disabled_fields
+        assert "contact_email" not in fc.renderer.disabled_fields
+        assert "confirm_contact_email" not in fc.renderer.disabled_fields
+        # should fail to validate
+        assert not fc.validate()
