@@ -223,7 +223,8 @@ class PrivateContext(FormContext):
         try:
             if self.source.current_journal:
                 self.target.set_current_journal(self.source.current_journal)
-        except:
+        except AttributeError:
+            # this means that the source doesn't know about current_journals, which is fine
             pass
 
     @staticmethod
