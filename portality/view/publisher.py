@@ -316,6 +316,9 @@ def help():
 @login_required
 @ssl_required
 def bulk_reapply():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
     # User must have bulk reapplications to access this tab
     if not pub_filter_bulk(current_user.id):
         abort(404)
@@ -342,9 +345,22 @@ def bulk_reapply():
 @login_required
 @ssl_required
 def bulk_download(filename):
-    try:
-        return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
-    except:
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+    allowed = False
+    for c in csv_downloads:
+        if c.spreadsheet_name == filename:
+            allowed = True
+            break
+
+    if allowed:
+        try:
+            return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+        except:
+            abort(404)
+    else:
         abort(404)
 
 def _bulk_upload(f, csv_downloads, previous):
