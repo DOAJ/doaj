@@ -64,6 +64,10 @@ class Suggestion(Journal):
             self.data["admin"] = {}
         self.data["admin"]["current_journal"] = journal_id
 
+    def remove_current_journal(self):
+        if "admin" in self.data and "current_journal" in self.data["admin"]:
+            del self.data["admin"]["current_journal"]
+
     @classmethod
     def delete_selected(cls, email=None, statuses=None):
         q = SuggestionQuery(email=email, statuses=statuses)

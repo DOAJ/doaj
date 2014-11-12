@@ -223,7 +223,7 @@ class PrivateContext(FormContext):
         try:
             if self.source.current_journal:
                 self.target.set_current_journal(self.source.current_journal)
-        except:
+        except AttributeError:
             pass
 
     @staticmethod
@@ -335,7 +335,7 @@ class ApplicationContext(PrivateContext):
     def _create_account_on_suggestion_approval(self, suggestion, journal):
         o = models.Account.pull(suggestion.owner)
         if o:
-            self.add_alert('Account {username} already exists, so simply associating the new journal with it.'.format(username=o.id))
+            self.add_alert('Account {username} already exists, so simply associating the journal with it.'.format(username=o.id))
             o.add_journal(journal.id)
             if not o.has_role('publisher'):
                 o.add_role('publisher')
@@ -530,7 +530,12 @@ class ManEdApplicationReview(ApplicationContext):
 
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("admin.journal_page", journal_id=j.id)
-            self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
+            if self.source.current_journal is not None:
+                self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
+                self.source.remove_current_journal()
+                self.source.save()
+            else:
+                self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # create the user account for the owner and send the notification email
             owner = self._create_account_on_suggestion_approval(self.target, j)
@@ -867,6 +872,7 @@ class PublisherReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
