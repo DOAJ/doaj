@@ -9,8 +9,13 @@ from portality.clcsv import UnicodeWriter
 
 def delete_existing_reapp():
     """Note that this cannot be run in isolation, because it leaves behind unresolved current_application fields in journals"""
+
+    # delete all the suggestions
     q = models.SuggestionQuery(statuses=['reapplication', 'submitted']).query()
     models.Suggestion.delete_by_query(query=q)
+
+    # remove all of the current reapplication records
+    models.BulkReApplication.delete_all()
 
 
 def create_reapplications():
@@ -55,7 +60,7 @@ def make_bulk_reapp_csv():
             reapplication.make_csv(filepath, suggestions)
 
             bulk_reapp = models.BulkReApplication()
-            bulk_reapp.set_spreadsheet_name = filename
+            bulk_reapp.set_spreadsheet_name(filename)
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
         elif len(suggestions) > 0:  # only add to the email list if they actually have suggestions at all
