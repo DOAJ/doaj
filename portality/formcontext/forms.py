@@ -438,7 +438,7 @@ class EditorJournalReviewForm(Editorial, Subject, JournalLegacy, JournalInformat
 
 class AssEdJournalReviewForm(JournalInformation, Subject, JournalLegacy, Notes):
     """
-    Editor's Application Review form.  It consists of:
+    Associate Editor's Journal Review form.  It consists of:
         * JournalInformation - journal bibliographic data
         * Subject - ability to use subject hierarchy browser
         * JournalLegacy - ability to edit info present in deprecated fields. Will only be shown by the renderer for records that have data in those fields already.
@@ -446,3 +446,12 @@ class AssEdJournalReviewForm(JournalInformation, Subject, JournalLegacy, Notes):
     """
     pass
 
+class ReadOnlyJournalForm(JournalInformation, Subject, JournalLegacy, Notes):
+    """
+    Read-only journal form.  It consists of:
+        * JournalInformation - journal bibliographic data
+        * Subject - ability to use subject hierarchy browser
+        * JournalLegacy - ability to edit info present in deprecated fields. Will only be shown by the renderer for records that have data in those fields already.
+        * Notes - repeatable notes field
+    """
+    pass

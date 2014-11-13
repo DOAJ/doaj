@@ -1,10 +1,10 @@
 from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
-from flask.ext.login import current_user
+from flask.ext.login import current_user, login_required
 
 from portality import dao
 from portality import models
-from portality.core import app
+from portality.core import app, ssl_required
 from portality import blog
 from portality.datasets import countries_dict
 from portality import lock
@@ -73,6 +73,29 @@ def suggestion():
             return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
         else:
             return fc.render_template(edit_suggestion_page=True)
+
+@blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
+@login_required
+@ssl_required
+def journal_readonly(journal_id):
+    if (
+        not current_user.has_role("admin")
+        or not current_user.has_role("editor")
+        or not current_user.has_role("associate_editor")
+    ):
+        abort(401)
+
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    try:
+        lockinfo = lock.lock("journal", journal_id, current_user.id)
+    except lock.Locked as l:
+        return render_template("editor/journal_locked.html", journal=j, lock=l.lock, edit_journal_page=True)
+
+    fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
+    return fc.render_template(edit_journal_page=True, lock=lockinfo)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():
