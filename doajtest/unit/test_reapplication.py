@@ -339,6 +339,8 @@ class TestReApplication(DoajTestCase):
         rbj = reapp.bibjson()
 
         # now check that the reapplication has the properties we'd expect
+        assert reapp.contacts()[0].get("name") == "Contact"
+        assert reapp.contacts()[0].get("email") == "contact@email.com"
         assert rbj.title == "Journal Title"
         assert reapp.id != j.id
         assert reapp.suggested_on is not None

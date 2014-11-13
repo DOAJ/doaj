@@ -743,6 +743,10 @@ class AssEdApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status()
 
 class PublisherCsvReApplication(ApplicationContext):
+    def __init__(self, form_data=None, source=None):
+        super(PublisherCsvReApplication, self).__init__(form_data=form_data, source=source)
+        self.carry = []
+
     def make_renderer(self):
         # this form does not have a UI expression, so no renderer required
         pass
@@ -758,9 +762,11 @@ class PublisherCsvReApplication(ApplicationContext):
 
     def data2form(self):
         self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self._carry_fields()
 
     def source2form(self):
         self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._carry_fields()
 
     def pre_validate(self):
         if self.source is None:
@@ -773,12 +779,18 @@ class PublisherCsvReApplication(ApplicationContext):
         self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
 
         if len(contacts) == 0:
+            # this will cause a validation failure if the form does not provide them
             return
 
+        # we copy across the contacts if they are necessary.  The fields are registered in self.carry
+        # if they are already present in the source data
         contact = contacts[0]
-        self.form.contact_name.data = contact.get("name")
-        self.form.contact_email.data = contact.get("email")
-        self.form.confirm_contact_email.data = contact.get("email")
+        if "contact_name" in self.carry:
+            self.form.contact_name.data = contact.get("name")
+        if "contact_email" in self.carry:
+            self.form.contact_email.data = contact.get("email")
+        if "confirm_contact_email" in self.carry:
+            self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -792,6 +804,8 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
+
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -814,6 +828,22 @@ class PublisherCsvReApplication(ApplicationContext):
     def render_template(self, **kwargs):
         # there is no template to render
         return ""
+
+    def _carry_fields(self):
+        if self.source is None:
+            raise FormContextException("You cannot carry fields on a not-existent application")
+
+        carry = ["contact_name", "contact_email", "confirm_contact_email"]
+        contacts = self.source.contacts()
+        if len(contacts) > 0:
+            c = contacts[0]
+            if c.get("name") is None or c.get("name") == "":
+                carry.remove("contact_name")
+            if c.get("email") is None or c.get("email") == "":
+                carry.remove("contact_email")
+                carry.remove("confirm_contact_email")
+
+        self.carry = carry
 
 
 class PublisherReApplication(ApplicationContext):
@@ -847,7 +877,7 @@ class PublisherReApplication(ApplicationContext):
         self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
 
         if len(contacts) == 0:
-            # this will cause a validation failure
+            # this will cause a validation failure if the form does not provide them
             return
 
         # we copy across the contacts if they are necessary.  The contact details are conditionally
