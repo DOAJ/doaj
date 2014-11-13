@@ -1,23 +1,6 @@
 {% extends "publisher/publisher_base.html" %}
 
 {% block publisher_content %}
-
-{% if current_user.id|pub_filter_note %}
-    <div class="alert alert-info">
-        <!-- Text in this div will be part of the alert notice to publishers-->
-        <strong>Reapplication Notice</strong> - Some text explaining the reapplication process.
-
-        {% if current_user.id|pub_filter_bulk %}
-            <!-- Text in here appears when the publisher can use the bulk upload tab -->
-            <hr>
-            Since you have a large number of reapplications to complete, we recommend providing information via the
-            <a href="{{ url_for('publisher.bulk_reapply') }}">Reapply</a> tab above which permits bulk changes.
-        {% endif %}
-
-    </div>
-{% endif %}
-
 <div class="facetview publisher"></div>
-
 {% endblock %}
 
