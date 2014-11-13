@@ -15,6 +15,12 @@ APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 APPLICATION_FORMINFO = ApplicationFixtureFactory.make_application_form_info()
 APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
 
+OLD_STYLE_APP = ApplicationFixtureFactory.make_application_source()
+del OLD_STYLE_APP["bibjson"]["persistent_identifier_scheme"]
+del OLD_STYLE_APP["bibjson"]["deposit_policy"]
+del OLD_STYLE_APP["bibjson"]["author_copyright"]
+del OLD_STYLE_APP["bibjson"]["author_publishing_rights"]
+
 ######################################################################
 # Mocks
 ######################################################################
@@ -84,5 +90,6 @@ class TestXwalk(DoajTestCase):
         #diff_dicts(csource, obj, 'csource', 'modelobj')
         assert obj == csource
 
-    def test_03_application_to_journal(self):
-        pass
+    def test_03_old_style_to_new_style(self):
+        forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**OLD_STYLE_APP))
+        # assert forminfo.get("article_identifiers") != "None"
