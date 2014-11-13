@@ -214,6 +214,19 @@ class PrivateContext(FormContext):
         self.target.set_created(created_date)
         self.target.data['id'] = self.source.data['id']
 
+        if self.source.current_application:
+            self.target.set_current_application(self.source.current_application)
+
+        if self.source.last_reapplication:
+            self.target.set_last_reapplication(self.source.last_reapplication)
+
+        try:
+            if self.source.current_journal:
+                self.target.set_current_journal(self.source.current_journal)
+        except AttributeError:
+            # this means that the source doesn't know about current_journals, which is fine
+            pass
+
     @staticmethod
     def _subjects2str(subjects):
         subject_strings = []
@@ -512,7 +525,7 @@ class ManEdApplicationReview(ApplicationContext):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == 'accepted':
             # this suggestion is just getting accepted
-            j = xwalk.suggestion2journal(self.target)
+            j = self.target.make_journal()
             j.set_in_doaj(True)
             j.save()
 

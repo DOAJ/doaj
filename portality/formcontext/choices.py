@@ -85,6 +85,8 @@ class Choices(object):
 
     _application_status_base = [
         ('', ' '),
+        ('reapplication', 'Re-Application In Progress'),
+        ('submitted', 'Re-Application Submitted'),
         ('pending', 'Pending'),
         ('in progress', 'In progress'),
         ('rejected', 'Rejected'),
