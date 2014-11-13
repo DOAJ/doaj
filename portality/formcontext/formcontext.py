@@ -460,6 +460,8 @@ class JournalFormFactory(object):
             return EditorJournalReview(source=source, form_data=form_data)
         elif role == "associate_editor":
             return AssEdJournalReview(source=source, form_data=form_data)
+        elif role == "readonly":
+            return ReadOnlyJournal(source=source, form_data=form_data)
 
 
 class ManEdApplicationReview(ApplicationContext):
@@ -1222,3 +1224,51 @@ class AssEdJournalReview(PrivateContext):
         # no application status (this is a journal) or editorial info (it's not even in the form) to set
         pass
 
+
+class ReadOnlyJournal(PrivateContext):
+    """
+    Read Only Journal form. Nothing can be changed. Useful for reviewing a journal and an application
+    (or reapplication) side by side in 2 browser windows or tabs.
+    """
+    def make_renderer(self):
+        self.renderer = render.ReadOnlyJournalRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/readonly_journal.html"
+
+    def blank_form(self):
+        self.form = forms.ReadOnlyJournalForm()
+        self._set_choices()
+
+    def data2form(self):
+        self.form = forms.ReadOnlyJournalForm(formdata=self.form_data)
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def source2form(self):
+        self.form = forms.ReadOnlyJournalForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+    def form2target(self):
+        pass  # you can't edit objects using this form
+
+    def patch_target(self):
+        pass  # you can't edit objects using this form
+
+    def finalise(self):
+        raise FormContextException("You cannot edit journals using the read-only form")
+
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot view a not-existent journal")
+
+        return super(ReadOnlyJournal, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs
+        )
+
+    def _set_choices(self):
+        # no application status (this is a journal) or editorial info (it's not even in the form) to set
+        pass

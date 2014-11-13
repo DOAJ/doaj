@@ -524,3 +524,24 @@ class AssEdJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+
+class ReadOnlyJournalRenderer(JournalRenderer):
+    def __init__(self):
+        super(ReadOnlyJournalRenderer, self).__init__()
+
+        # extend the list of field groups
+        self.FIELD_GROUPS["notes"] = [
+            {
+                "notes" : {
+                    "render_subfields_horizontal" : True,
+                    "subfield_display-note" : "8",
+                    "subfield_display-date" : "3"
+                }
+            }
+        ]
+
+        self.ERROR_CHECK_ORDER = []
+
+        self.number_questions()
+
+        self.check_field_groups()
