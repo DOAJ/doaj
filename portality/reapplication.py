@@ -118,6 +118,8 @@ def generate_spreadsheet_error(sheet, exception):
             r = Suggestion2QuestionXwalk.q2idx(field) + 2   # add 2 for the offset from the header + the 0 indexed array
             report[issn][r] = (issn, q, r, c, msg)
 
+    """
+    NOTE: this makes a long string suitable for writing as a text file
     # register where we will store the actual strings of the rows in the error report
     rows = []
 
@@ -133,6 +135,27 @@ def generate_spreadsheet_error(sheet, exception):
             rows.append(str(issn) + " | " + str(q) + " | cell " + str(c) + str(r) + " - " + str(msg))
 
     return "\n".join(rows)
+    """
+
+    import cStringIO
+    from portality import clcsv
+    stream = cStringIO.StringIO()
+    writer = clcsv.UnicodeWriter(stream)
+    writer.writerow(["ISSN", "Question", "Cell", "Error message"])
+    writer.writerow([])
+
+    issns = report.keys()
+    issns.sort()
+    for issn in issns:
+        # iterate through the rows in the order that they appear in the spreadsheet
+        qs = report.get(issn, {}).keys()
+        qs.sort()
+        for r in qs:
+            _, q, _, c, msg = report.get(issn, {}).get(r, (None, None, None, None, None))
+            writer.writerow([str(issn), str(q), str(c) + str(r), str(msg)])
+        writer.writerow([])
+
+    return stream.getvalue()
 
 
 #################################################################
@@ -187,7 +210,7 @@ def email_error_closure(upload, account):
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 now = datetime.now().strftime("%Y%m%d")
-                att = app_email.make_attachment("reapplication_errors_" + now + ".txt", "text/plain", report)
+                att = app_email.make_attachment("reapplication_errors_" + now + ".csv", "text/plain", report) # NOTE: file extension is now csv
                 when = datetime.strptime(upload.created_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %b %Y")
                 app_email.send_mail(to=to,
                                     fro=fro,
