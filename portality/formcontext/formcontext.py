@@ -744,8 +744,8 @@ class AssEdApplicationReview(ApplicationContext):
 
 class PublisherCsvReApplication(ApplicationContext):
     def __init__(self, form_data=None, source=None):
+        self.carry = ["contact_name", "contact_email", "confirm_contact_email"]
         super(PublisherCsvReApplication, self).__init__(form_data=form_data, source=source)
-        self.carry = []
 
     def make_renderer(self):
         # this form does not have a UI expression, so no renderer required
@@ -832,18 +832,14 @@ class PublisherCsvReApplication(ApplicationContext):
     def _carry_fields(self):
         if self.source is None:
             raise FormContextException("You cannot carry fields on a not-existent application")
-
-        carry = ["contact_name", "contact_email", "confirm_contact_email"]
         contacts = self.source.contacts()
         if len(contacts) > 0:
             c = contacts[0]
             if c.get("name") is None or c.get("name") == "":
-                carry.remove("contact_name")
+                self.carry.remove("contact_name")
             if c.get("email") is None or c.get("email") == "":
-                carry.remove("contact_email")
-                carry.remove("confirm_contact_email")
-
-        self.carry = carry
+                self.carry.remove("contact_email")
+                self.carry.remove("confirm_contact_email")
 
 
 class PublisherReApplication(ApplicationContext):

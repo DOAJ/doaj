@@ -200,6 +200,12 @@ def dont_find_by_issn(cls, *args, **kwargs):
 def find_many_by_issn(cls, *args, **kwargs):
     return [models.Suggestion(**APPLICATION_SOURCE), models.Suggestion(**APPLICATION_SOURCE)]
 
+@classmethod
+def find_conditional_by_issn(cls, *args, **kwargs):
+    source = deepcopy(APPLICATION_SOURCE)
+    del source["admin"]["contact"][0]["email"]
+    return [models.Suggestion(**source)]
+
 class TestReAppCsv(DoajTestCase):
 
     def setUp(self):
@@ -431,3 +437,8 @@ class TestReAppCsv(DoajTestCase):
                 assert e.errors["2345-6789"].form.errors.keys() == ["country"]
                 raise e
 
+    def test_04_conditional_fields(self):
+        sheet = reapplication.open_csv("valid.csv")
+        models.Suggestion.find_by_issn = find_conditional_by_issn
+        fcs = reapplication.validate_csv_contents(sheet)
+        assert len(fcs) == 3
