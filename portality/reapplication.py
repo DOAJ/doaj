@@ -72,7 +72,7 @@ def validate_csv_contents(sheet):
             raise CsvValidationException("Too many or too few values under ISSN " + str(issn) + "; spreadsheet is invalid")
 
         # remove the "disabled" fields from the form info
-        Suggestion2QuestionXwalk.remove_disabled(forminfo)
+        # Suggestion2QuestionXwalk.remove_disabled(forminfo)
 
         # convert to a multidict
         form_data = MultiDict(forminfo)
