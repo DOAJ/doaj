@@ -973,7 +973,7 @@ class PublisherReApplication(ApplicationContext):
                                     fro=fro,
                                     subject=subject,
                                     template_name="email/reapplication_received.txt",
-                                    journal_name=journal_name.encode('utf-8', 'replace'),
+                                    journal_name=journal_name,
                                     username=self.target.owner
                 )
                 self.add_alert('Sent a confirmation email to ' + acc.email + ' as a record of this update')
