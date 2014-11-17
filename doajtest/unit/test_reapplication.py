@@ -329,6 +329,7 @@ class TestReApplication(DoajTestCase):
         j.set_owner("theowner")                         # journal owner account
         j.set_editor_group("editorgroup")               # editorial group
         j.set_editor("associate")                       # assigned associate editor
+        bj.add_language("ES")
 
         # save it so that it acquires an id, created_date, last_updated and an index record
         j.save()
@@ -392,6 +393,7 @@ class TestReApplication(DoajTestCase):
         bj1.add_identifier("pissn", "1234-5678")
         bj1.add_identifier("eissn", "9876-5432")
         bj1.title = "First Title"
+        bj1.add_language("ES")
 
         bj2 = s2.bibjson()
         bj2.remove_identifiers("pissn")
@@ -657,7 +659,7 @@ class TestReApplication(DoajTestCase):
 
         assert sheetqs == qs
 
-    def test_07_make_journal_from_reapp(self):
+    def test_14_make_journal_from_reapp(self):
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         s.set_current_journal("1234567")
         j = s.make_journal()

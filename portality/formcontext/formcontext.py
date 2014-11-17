@@ -776,8 +776,13 @@ class PublisherCsvReApplication(ApplicationContext):
         bj = self.source.bibjson()
         contacts = self.source.contacts()
 
-        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
-        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+        pissn = bj.get_one_identifier(bj.P_ISSN)
+        if pissn == "": pissn = None
+        self.form.pissn.data = pissn
+
+        eissn = bj.get_one_identifier(bj.E_ISSN)
+        if eissn == "": eissn = None
+        self.form.eissn.data = eissn
 
         if len(contacts) == 0:
             # this will cause a validation failure if the form does not provide them
@@ -870,8 +875,13 @@ class PublisherReApplication(ApplicationContext):
         bj = self.source.bibjson()
         contacts = self.source.contacts()
 
-        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
-        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+        pissn = bj.get_one_identifier(bj.P_ISSN)
+        if pissn == "": pissn = None
+        self.form.pissn.data = pissn
+
+        eissn = bj.get_one_identifier(bj.E_ISSN)
+        if eissn == "": eissn = None
+        self.form.eissn.data = eissn
 
         if len(contacts) == 0:
             # this will cause a validation failure if the form does not provide them

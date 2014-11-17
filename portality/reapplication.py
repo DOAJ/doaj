@@ -708,7 +708,7 @@ class Suggestion2QuestionXwalk(object):
 
         def license_aspects(val):
             val = normal(val)
-            if val is None:
+            if val is None or val == "":
                 return None
 
             opts = [x.strip() for x in val.split(",")]
