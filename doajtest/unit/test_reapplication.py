@@ -110,7 +110,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "pending",
+        "application_status" : "reapplication",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -543,7 +543,9 @@ class TestReApplication(DoajTestCase):
     def test_08_ingest_csv_success(self):
         account = models.Account(**{"id" : "Owner"})
         try:
-            reapplication.ingest_csv("valid.csv", account)
+            result = reapplication.ingest_csv("valid.csv", account)
+            assert result["reapplied"] == 3
+            assert result["skipped"] == 0
         except reapplication.ContentValidationException:
             assert False
         except reapplication.CsvValidationException:

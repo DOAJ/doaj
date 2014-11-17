@@ -59,6 +59,8 @@ def validate_csv_structure(sheet, account):
 def validate_csv_contents(sheet):
     failed = {}     # here is where we will log the issn to formcontext mapping for contexts which fail to validate
     succeeded = []  # here is where we will record all the successful formcontexts (they will not be mapped to issn, as this will not be important once successful)
+    skip = []       # here is where we will record the ISSNs of all the columns that will not be imported
+
     for issn, questions in sheet.columns():
         # skip the question column
         if issn == "":
@@ -71,9 +73,6 @@ def validate_csv_contents(sheet):
         except SuggestionXwalkException:
             raise CsvValidationException("Too many or too few values under ISSN " + str(issn) + "; spreadsheet is invalid")
 
-        # remove the "disabled" fields from the form info
-        # Suggestion2QuestionXwalk.remove_disabled(forminfo)
-
         # convert to a multidict
         form_data = MultiDict(forminfo)
 
@@ -85,14 +84,21 @@ def validate_csv_contents(sheet):
             raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
         s = suggs[0]
 
+        # determine if the existing record's status allows us to import
+        if s.application_status not in ["reapplication", "submitted"]:
+            skip.append(issn)
+            continue
+
         fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=s, form_data=form_data)
         if not fc.validate():
             failed[issn] = fc
         else:
             succeeded.append(fc)
+
     if len(failed) > 0:
         raise ContentValidationException("One or more records in the CSV failed to validate", errors=failed)
-    return succeeded
+
+    return succeeded, skip
 
 def generate_spreadsheet_error(sheet, exception):
     def int2base(x, base):
@@ -166,11 +172,14 @@ def ingest_csv(path, account, error_callback=None):
     sheet = open_csv(path)
     validate_csv_structure(sheet, account)
     try:
-        fcs = validate_csv_contents(sheet)
+        fcs, skip = validate_csv_contents(sheet)
 
         # if an exception is not thrown, we are clear to begin the process of import
         for fc in fcs:
             fc.finalise()
+
+        return {"reapplied" : len(fcs), "skipped" : len(skip)}
+
     except ContentValidationException as e:
         report = generate_spreadsheet_error(sheet, e)
         if error_callback is not None:
@@ -185,7 +194,9 @@ def ingest_from_upload(upload):
         raise CsvIngestException("Unable to ingest CVS for non-existant account")
 
     try:
-        ingest_csv(path, account, email_error_closure(upload, account))
+        report = ingest_csv(path, account, email_error_closure(upload, account))
+        upload.processed(report.get("reapplied"), report.get("skipped"))
+        upload.save()
     except CsvValidationException as e:
         # this is where the structure of the csv itself is broken
         upload.failed(e.message)

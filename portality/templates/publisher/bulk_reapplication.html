@@ -79,31 +79,17 @@
                     <td>
                         {% if file.status == "incoming" %}
                             <span style="color: #000066">in submission</span>
-                        {% elif file.status == "validated" %}
-                            <span style="color: #000066">pending</span>
-                        {% elif file.status == "exists" %}
-                            <span style="color: #000066">pending</span>
                         {% elif file.status == "failed" %}
                             <span style="color: #660000">processing failed</span>
                         {% elif file.status == "processed" %}
                             <span style="color: #006600">successfully processed</span>
-                        {% elif file.status == "partial" %}
-                            <span style="color: #ff3300">partial success</span>
                         {% endif %}
                     </td>
                     <td>
                         {% if file.error %}
                             {{file.error}}
-                        {% else %}
-                            {% if file.status == "partial" or file.status == "processed" %}
-                                {{ file.imported }} articles imported
-                                {% if file.imported > 0 %}
-                                    ({{file.new}} new, {{file.updates}} updated)
-                                {% endif %}
-                                {% if file.failed_imports > 0 %}
-                                    ; {{ file.failed_imports }} articles failed
-                                {% endif %}
-                            {% endif %}
+                        {% elif file.status == "processed" %}
+                            {{ file.reapplied }} reapplications processed, {{ file.skipped }} skipped
                         {% endif %}
                     </td>
                 </tr>

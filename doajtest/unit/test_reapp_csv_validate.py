@@ -103,7 +103,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "pending",
+        "application_status" : "reapplication",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -401,8 +401,9 @@ class TestReAppCsv(DoajTestCase):
     def test_03_contents(self):
         # first try a valid csv
         sheet = reapplication.open_csv("valid.csv")
-        fcs = reapplication.validate_csv_contents(sheet)
+        fcs, skip = reapplication.validate_csv_contents(sheet)
         assert len(fcs) == 3
+        assert len(skip) == 0
 
         # check that we can't validate something with an issn we don't recognise
         sheet = reapplication.open_csv("valid.csv")
@@ -440,5 +441,6 @@ class TestReAppCsv(DoajTestCase):
     def test_04_conditional_fields(self):
         sheet = reapplication.open_csv("valid.csv")
         models.Suggestion.find_by_issn = find_conditional_by_issn
-        fcs = reapplication.validate_csv_contents(sheet)
+        fcs, skip = reapplication.validate_csv_contents(sheet)
         assert len(fcs) == 3
+        assert len(skip) == 0
