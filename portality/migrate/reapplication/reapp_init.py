@@ -80,29 +80,10 @@ def make_bulk_reapp_csv():
         print "Failed bulk reapplications"
         print failed_bulk_reapps
 
-# FIXME: this is going to do /all/ rejected applications, not just the ones that were
-# rejected by the reject script
-def emails_rejected():
-    email_list = []
-    q = models.SuggestionQuery(statuses=['rejected']).query()
-    rejected = models.Suggestion.q2obj(q=q, size=30000)
-    for r in rejected:
-        contact = []
-        contact.append(r.get_latest_contact_name())
-        contact.append(r.get_latest_contact_email())
-        contact.append(r.bibjson().title)
-        email_list.append(contact)
-
-    with codecs.open('emails_rejected.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
-        wr_writer.writerows(email_list)
-
-
 def main():
     delete_existing_reapp()
     create_reapplications()
     make_bulk_reapp_csv()
-    emails_rejected()
 
 if __name__ == "__main__":
     main()
