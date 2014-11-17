@@ -525,7 +525,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['copyright'], forminfo['copyright_other'] = \
             reverse_interpret_other(
-                reverse_interpret_special(bibjson.author_copyright.get('copyright')),
+                reverse_interpret_special(bibjson.author_copyright.get('copyright', '')),
                 Choices.ternary_list()
             )
         forminfo['copyright_url'] = bibjson.author_copyright.get('url')
