@@ -78,11 +78,26 @@ def validate_csv_contents(sheet):
 
         # lookup the suggestion upon which this application is based
         suggs = models.Suggestion.find_by_issn(issn)
+
         if suggs is None or len(suggs) == 0:
             raise CsvValidationException("Unable to locate a ReApplication with the issn " + issn + "; spreadsheet is invalid")
+
+        s = None
         if len(suggs) > 1:
-            raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
-        s = suggs[0]
+            # we have multiple records with the same issn.  We need to see if we can identify the one that is the
+            # reapplication.  Other instances could be old rejected records, or ones submitted by the public
+            # in parallel to the reapplication, or even reapplications that have already been accepted
+            reapps = []
+            for sugg in suggs:
+                if sugg.current_journal is not None and sugg.current_journal != "":
+                    reapps.append(sugg)
+            if len(reapps) == 1:
+                s = reapps[0]
+            else:
+                # it could be the reapplication has already been accepted, in which case there's not a lot we can do
+                raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
+        else:
+            s = suggs[0]
 
         # determine if the existing record's status allows us to import
         if s.application_status not in ["reapplication", "submitted"]:
