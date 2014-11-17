@@ -601,7 +601,7 @@ class Suggestion2QuestionXwalk(object):
 
         def _rationalise_other(val, form_choices, other_val):
             val = normal(val)
-            if val is None:
+            if val is None or val == "":
                 return None
 
             opts = [aid.strip() for aid in val.split(",")]
@@ -628,10 +628,9 @@ class Suggestion2QuestionXwalk(object):
             library = normal(library)
             other = normal(other)
 
-            if options is None:
-                return None
-
-            opts = [dap.strip() for dap in options.split(",")]
+            opts = []
+            if options is not None and options != "":
+                opts = [dap.strip() for dap in options.split(",")]
 
             cs = {}
             [cs.update({c.lower() : c}) for c, _ in choices.Choices.digital_archiving_policy()]
@@ -755,16 +754,20 @@ class Suggestion2QuestionXwalk(object):
         forminfo["waiver_policy_url"] = normal(cls.a(qs, 22))
 
         dap, lib, oth = digital_archiving_policy(cls.a(qs, 23), cls.a(qs, "digital_archiving_policy_library"), cls.a(qs, "digital_archiving_policy_other"))
-        forminfo["digital_archiving_policy"] = dap
-        forminfo["digital_archiving_policy_library"] = lib
-        forminfo["digital_archiving_policy_other"] = oth
+        if dap is not None and len(dap) > 0:
+            forminfo["digital_archiving_policy"] = dap
+            if lib is not None and lib != "":
+                forminfo["digital_archiving_policy_library"] = lib
+            if oth is not None and oth != "":
+                forminfo["digital_archiving_policy_other"] = oth
 
         forminfo["digital_archiving_policy_url"] = normal(cls.a(qs, 24))
         forminfo["crawl_permission"] = yes_no(cls.a(qs, 25))
 
         aids, aidother = article_identifiers(cls.a(qs, 26))
-        forminfo["article_identifiers"] = aids
-        forminfo["article_identifiers_other"] = aidother
+        if aids is not None and len(aids) > 0:
+            forminfo["article_identifiers"] = aids
+            forminfo["article_identifiers_other"] = aidother
 
         forminfo["metadata_provision"] = yes_no(cls.a(qs, 27))
         forminfo["download_statistics"] = yes_no(cls.a(qs, 28))
@@ -772,8 +775,9 @@ class Suggestion2QuestionXwalk(object):
         forminfo["first_fulltext_oa_year"] = normal(cls.a(qs, 30))
 
         ftf, ftfother = fulltext_format(cls.a(qs, 31))
-        forminfo["fulltext_format"] = ftf
-        forminfo["fulltext_format_other"] = ftfother
+        if ftf is not None and len(ftf) > 0:
+            forminfo["fulltext_format"] = ftf
+            forminfo["fulltext_format_other"] = ftfother
 
         forminfo["keywords"] = [k.strip() for k in normal(cls.a(qs, 32)).split(",")]
         forminfo["languages"] = languages(cls.a(qs, 33))
@@ -793,13 +797,17 @@ class Suggestion2QuestionXwalk(object):
         forminfo["license"] = lic
         forminfo["license_other"] = licother
 
-        forminfo["license_checkbox"] = license_aspects(cls.a(qs, 46))
+        la = license_aspects(cls.a(qs, 46))
+        if la is not None and len(la) > 0:
+            forminfo["license_checkbox"] = license_aspects(cls.a(qs, 46))
+
         forminfo["license_url"] = normal(cls.a(qs, 47))
         forminfo["open_access"] = yes_no(cls.a(qs, 48))
 
         dp, dpother = deposit_policy(cls.a(qs, 49))
-        forminfo["deposit_policy"] = dp
-        forminfo["deposit_policy_other"] = dpother
+        if dp is not None and len(dp) > 0:
+            forminfo["deposit_policy"] = dp
+            forminfo["deposit_policy_other"] = dpother
 
         cr, crother = copyright(cls.a(qs, 50))
         forminfo["copyright"] = cr
