@@ -318,6 +318,8 @@ class Journal(DomainObject):
         return self.data.get("admin", {}).get("ticked", False)
 
     def set_ticked(self, ticked):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
         self.data["admin"]["ticked"] = ticked
 
     @property
