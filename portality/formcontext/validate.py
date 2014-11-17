@@ -1,10 +1,39 @@
 from flask.ext.login import current_user
 from wtforms import validators
 import re
+from wtforms.compat import string_types
 
 from portality.formcontext.choices import Choices
 
-class OptionalIf(validators.Optional):
+class DataOptional(object):
+    """
+    Allows empty input and stops the validation chain from continuing.
+
+    If input is empty, also removes prior errors (such as processing errors)
+    from the field.
+
+    This is a near-clone of the WTForms standard Optional class, except that
+    it checks the .data parameter not the .raw_data parameter, which allows us
+    to check coerced fields correctly.
+
+    :param strip_whitespace:
+        If True (the default) also stop the validation chain on input which
+        consists of only whitespace.
+    """
+    field_flags = ('optional', )
+
+    def __init__(self, strip_whitespace=True):
+        if strip_whitespace:
+            self.string_check = lambda s: s.strip()
+        else:
+            self.string_check = lambda s: s
+
+    def __call__(self, form, field):
+        if not field.data or isinstance(field.data, string_types) and not self.string_check(field.data):
+            field.errors[:] = []
+            raise validators.StopValidation()
+
+class OptionalIf(DataOptional):
     # A validator which makes a field optional if # another field is set
     # and has a truthy value.
 
