@@ -1,6 +1,5 @@
+from nose.tools import assert_raises
 from doajtest.helpers import DoajTestCase
-
-import re
 
 from portality import models
 from portality.formcontext import formcontext
@@ -13,14 +12,6 @@ from doajtest.fixtures import JournalFixtureFactory
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
-@classmethod
-def editor_group_pull(cls, field, value):
-    eg = models.EditorGroup()
-    eg.set_editor("eddie")
-    eg.set_associates(["associate", "assan"])
-    eg.set_name("Test Editor Group")
-    return eg
-
 mock_lcc_choices = [
     (u'H', u'Social Sciences'),
     (u'HB1-3840', u'--Economic theory. Demography')
@@ -41,13 +32,10 @@ del JOURNAL_FORM["editor"]
 # Main test class
 ######################################################
 
-class TestAssociateEditorJournalReview(DoajTestCase):
+class TestReadOnlyJournal(DoajTestCase):
 
     def setUp(self):
-        super(TestAssociateEditorJournalReview, self).setUp()
-
-        self.editor_group_pull = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = editor_group_pull
+        super(TestReadOnlyJournal, self).setUp()
 
         self.old_lcc_choices = lcc.lcc_choices
         lcc.lcc_choices = mock_lcc_choices
@@ -56,9 +44,8 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
-        super(TestAssociateEditorJournalReview, self).tearDown()
+        super(TestReadOnlyJournal, self).tearDown()
 
-        models.EditorGroup.pull_by_key = self.editor_group_pull
         lcc.lcc_choices = self.old_lcc_choices
 
         lcc.lookup_code = self.old_lookup_code
@@ -68,12 +55,12 @@ class TestAssociateEditorJournalReview(DoajTestCase):
     # Tests on the publisher's re-journal form
     ###########################################################
 
-    def test_01_assoc_editor_review_success(self):
-        """Give the associate editor's journal form a full workout"""
+    def test_01_readonly_journal_success(self):
+        """Give the read-only journal form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.JournalFormFactory.get_form_context(role="associate_editor", source=models.Journal(**JOURNAL_SOURCE))
-        assert isinstance(fc, formcontext.AssEdJournalReview)
+        fc = formcontext.JournalFormFactory.get_form_context(role="readonly", source=models.Journal(**JOURNAL_SOURCE))
+        assert isinstance(fc, formcontext.ReadOnlyJournal)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
@@ -89,36 +76,37 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert html == ""
 
         # now construct it from form data (with a known source)
+        journal_obj = models.Journal(**JOURNAL_SOURCE)
+        journal_bibjson_obj = journal_obj.bibjson()
         fc = formcontext.JournalFormFactory.get_form_context(
-            role="associate_editor",
+            role="readonly",
             form_data=MultiDict(JOURNAL_FORM),
-            source=models.Journal(**JOURNAL_SOURCE)
+            source=journal_obj
         )
 
-        assert isinstance(fc, formcontext.AssEdJournalReview)
+        assert isinstance(fc, formcontext.ReadOnlyJournal)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
 
+        # see that form has the correct info from an object (after all, that's the only point of having the form)
+        assert fc.form.title.data == journal_bibjson_obj.title
+        assert fc.form.pissn.data == journal_bibjson_obj.get_one_identifier(idtype=journal_bibjson_obj.P_ISSN)
+        assert fc.form.eissn.data == journal_bibjson_obj.get_one_identifier(idtype=journal_bibjson_obj.E_ISSN)
+
         # test each of the workflow components individually ...
 
-        # run the validation itself
+        # run the validation
         fc.form.subject.choices = mock_lcc_choices # set the choices allowed for the subject manually (part of the test)
         assert fc.validate(), fc.form.errors
 
         # run the crosswalk (no need to look in detail, xwalks are tested elsewhere)
         fc.form2target()
-        assert fc.target is not None
+        assert fc.target is None  # can't edit data using this form
 
         # patch the target with data from the source
         fc.patch_target()
-        assert fc.target.created_date == "2000-01-01T00:00:00Z"
-        assert fc.target.id == "abcdefghijk_journal"
-        assert len(fc.target.notes()) == 2
-        assert fc.target.owner == "Owner"
-        assert fc.target.editor_group == "editorgroup"
-        assert fc.target.editor == "associate"
+        assert fc.target is None  # can't edit data using this form
 
-        # now do finalise (which will also re-run all of the steps above)
-        fc.finalise()
-        assert True # gives us a place to drop a break point later if we need it
+        # shouldn't be able to finalise, can't edit data using this form
+        assert_raises(formcontext.FormContextException, fc.finalise)
