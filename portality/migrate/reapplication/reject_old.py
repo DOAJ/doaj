@@ -3,6 +3,7 @@ from portality import models
 from datetime import datetime
 from portality.core import app
 import codecs
+import csv
 from portality.clcsv import UnicodeWriter
 
 '''Reject all applications with created_date prior to 19 March 2014, add note to explain.'''
@@ -99,7 +100,7 @@ if len(write_batch) > 0:
 
 
 with codecs.open('emails_rejected.csv', 'wb', encoding='utf-8') as csvfile:
-    wr_writer = UnicodeWriter(csvfile)
+    wr_writer = UnicodeWriter(csvfile, quoting=csv.QUOTE_ALL)
     wr_writer.writerows(email_list)
 
 print "{0} suggestions were updated, {1} were left unchanged, and {2} failed.".format(edited_sug, unchanged_sug, failed_sug)

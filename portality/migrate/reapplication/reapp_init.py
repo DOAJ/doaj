@@ -4,6 +4,7 @@ from portality import reapplication
 from portality.core import app
 import os
 import codecs
+import csv
 from portality.clcsv import UnicodeWriter
 
 
@@ -101,11 +102,11 @@ def make_bulk_reapp_csv():
 
 
     with codecs.open('email_list_11_plus.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
+        wr_writer = UnicodeWriter(csvfile, quoting=csv.QUOTE_ALL)
         wr_writer.writerows(email_list_10_plus)
 
     with codecs.open('email_list_less_11.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
+        wr_writer = UnicodeWriter(csvfile, quoting=csv.QUOTE_ALL)
         wr_writer.writerows(email_list_less_10)
 
     if failed_bulk_reapps:
