@@ -25,7 +25,7 @@ un_sug = []
 
 
 email_list = []
-separator_list = [",", "or", "/"]
+separator_list = [",", " or ", "/"]
 
 # Get the new application threshold from the settings
 THRESHOLD_DATE = threshold = datetime.strptime(app.config.get("TICK_THRESHOLD", "2014-03-19T00:00:00Z"), "%Y-%m-%dT%H:%M:%SZ")
