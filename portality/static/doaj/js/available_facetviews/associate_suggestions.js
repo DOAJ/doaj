@@ -24,7 +24,8 @@ jQuery(document).ready(function($) {
         "edit_suggestion" : fv_edit_suggestion,
         "country_name": fv_country_name,
         'last_updated': fv_last_updated,
-        'suggested_on': fv_suggested_on
+        'suggested_on': fv_suggested_on,
+        'readonly_journal': fv_readonly_journal
     },
     hide_inactive_facets: true,
     facets: [
@@ -197,6 +198,9 @@ jQuery(document).ready(function($) {
         [
             {
                 "field" : "edit_suggestion"
+            },
+            {
+                "field" : "readonly_journal"
             }
         ],
     ],
