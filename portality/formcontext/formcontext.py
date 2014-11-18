@@ -407,7 +407,7 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_suggestion_approved_email(self, journal_name, email):
+    def _send_suggestion_approved_email(self, journal_name, email, reapplication=False):
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
@@ -418,11 +418,16 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                template = "email/suggestion_accepted.txt"
+                if reapplication:
+                    template = "email/reapplication_accepted.txt"
+                jn = journal_name #.encode('utf-8', 'replace')
+
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/suggestion_accepted.txt",
-                                    journal_name=journal_name.encode('utf-8', 'replace'),
+                                    template_name=template,
+                                    journal_name=jn,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -533,14 +538,14 @@ class ManEdApplicationReview(ApplicationContext):
             jurl = url_for("admin.journal_page", journal_id=j.id)
             if self.source.current_journal is not None:
                 self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
-                self.source.remove_current_journal()
-                self.source.save()
+                #self.source.remove_current_journal()
+                #self.source.save()
             else:
                 self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # create the user account for the owner and send the notification email
             owner = self._create_account_on_suggestion_approval(self.target, j)
-            self._send_suggestion_approved_email(j.bibjson().title, owner.email)
+            self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
 
         # if we need to email the editor and/or the associate, handle those here
         if email_editor:
