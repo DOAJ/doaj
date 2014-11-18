@@ -107,7 +107,7 @@ It is likely that history records will only be created upon request by the admin
                 "code" : "<code>"
             }
         ],
-        
+
         "oa_start" : {
             "year" : "<year>", 
             "volume" : "<volume>", # Deprecated - may be removed
@@ -200,6 +200,7 @@ It is likely that history records will only be created upon request by the admin
     },
     "admin" : {
         "in_doaj" : true|false,
+        "ticked" : true|false,
         "application_status" : "state of journal application",
         "bulk_upload" : "<id of bulk_upload from which this journal/application came>",
         "notes" : [
@@ -220,7 +221,6 @@ It is likely that history records will only be created upon request by the admin
         "current_application" : "<id of re-application created from this journal record (mutually exclusive with the below)>",
         "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
-    "ticked" : true|false,
     "index" : {
         "issn" : [<list of all print and electronic issns for all time>],
         "title" : [<list of all titles the journal has been known by>],

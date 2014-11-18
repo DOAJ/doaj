@@ -322,10 +322,12 @@ class Journal(DomainObject):
         return issns
 
     def is_ticked(self):
-        return self.data.get("ticked", False)
+        return self.data.get("admin", {}).get("ticked", False)
 
     def set_ticked(self, ticked):
-        self.data["ticked"] = ticked
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["ticked"] = ticked
 
     @property
     def last_reapplication(self):
