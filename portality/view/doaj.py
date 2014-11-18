@@ -202,6 +202,10 @@ def features():
 def oainfo():
     return render_template("doaj/oainfo.html")
 
+@blueprint.route("/bestpractice")
+def bestpractice():
+    return render_template("doaj/bestpractice.html")
+
 @blueprint.route("/members")
 def members():
     return render_template("doaj/members.html")
