@@ -40,14 +40,30 @@ def make_bulk_reapp_csv():
     failed_bulk_reapps = []
     email_list_10_plus = []
     email_list_less_10 = []
+    separator_list = [",", "or", "/"]
     for a in acc:
         q = models.SuggestionQuery(owner=a.id).query()
         suggestions = models.Suggestion.q2obj(q=q, size=30000)
         contact = []
+        emails = a.email
+
+        for sep in separator_list:
+            if isinstance(emails, basestring):
+                if sep in emails:
+                    emails = emails.split(sep)
+
         if len(suggestions) >= 11:
-            contact.append(a.id)
-            contact.append(a.email)
-            email_list_10_plus.append(contact)
+            if isinstance(emails, basestring):
+                contact.append(a.id)
+                contact.append(emails)
+                email_list_10_plus.append(contact)
+            else:
+                for e in emails:
+                    e = e.strip()
+                    contact.append(a.id)
+                    contact.append(e)
+                    email_list_10_plus.append(contact)
+
             filename = a.id + ".csv"
             filepath = os.path.join(app.config.get("BULK_REAPP_PATH"), filename)
 
@@ -63,10 +79,24 @@ def make_bulk_reapp_csv():
             bulk_reapp.set_spreadsheet_name(filename)
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
+
         elif len(suggestions) > 0:  # only add to the email list if they actually have suggestions at all
-            contact.append(a.id)
-            contact.append(a.email)
-            email_list_less_10.append(contact)
+            for sep in separator_list:
+                if isinstance(emails, basestring):
+                    if sep in emails:
+                        emails = emails.split(sep)
+
+            if isinstance(emails, basestring):
+                contact.append(a.id)
+                contact.append(emails)
+                email_list_less_10.append(contact)
+            else:
+                for e in emails:
+                    e = e.strip()
+                    contact.append(a.id)
+                    contact.append(e)
+                    email_list_less_10.append(contact)
+
 
     with codecs.open('email_list_11_plus.csv', 'wb', encoding='utf-8') as csvfile:
         wr_writer = UnicodeWriter(csvfile)
