@@ -251,13 +251,8 @@ fv_edit_suggestion = (function (resultobj) {
 
 fv_readonly_journal = (function (resultobj) {
     var that = function(resultobj) {
-        console.log('called');
-        console.log(resultobj);
-        console.log(resultobj.current_journal);
-        console.log("\n");
         if (resultobj.admin && resultobj.admin.current_journal) {
-            console.log('building');
-            var result = '<a class="readonly_journal_link pull-left" href="';
+            var result = '<a class="readonly_journal_link pull-right" href="';
             result += readonly_journal_url;
             result += resultobj.admin.current_journal;
             result += '" target="_blank"';

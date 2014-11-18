@@ -211,10 +211,10 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "field" : "readonly_journal"
+                "field" : "edit_suggestion"
             },
             {
-                "field" : "edit_suggestion"
+                "field" : "readonly_journal"
             }
         ],
     ],
