@@ -110,7 +110,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "pending",
+        "application_status" : "reapplication",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -329,6 +329,7 @@ class TestReApplication(DoajTestCase):
         j.set_owner("theowner")                         # journal owner account
         j.set_editor_group("editorgroup")               # editorial group
         j.set_editor("associate")                       # assigned associate editor
+        bj.add_language("ES")
 
         # save it so that it acquires an id, created_date, last_updated and an index record
         j.save()
@@ -339,6 +340,8 @@ class TestReApplication(DoajTestCase):
         rbj = reapp.bibjson()
 
         # now check that the reapplication has the properties we'd expect
+        assert reapp.contacts()[0].get("name") == "Contact"
+        assert reapp.contacts()[0].get("email") == "contact@email.com"
         assert rbj.title == "Journal Title"
         assert reapp.id != j.id
         assert reapp.suggested_on is not None
@@ -352,6 +355,8 @@ class TestReApplication(DoajTestCase):
         assert j.current_application == reapp.id
         assert reapp.created_date is not None
         assert reapp.last_updated is not None
+        assert reapp.suggester.get("name") == "Contact"
+        assert reapp.suggester.get("email") == "contact@email.com"
 
     def test_02_make_csv_vbasic(self):
         s1 = models.Suggestion()
@@ -388,6 +393,7 @@ class TestReApplication(DoajTestCase):
         bj1.add_identifier("pissn", "1234-5678")
         bj1.add_identifier("eissn", "9876-5432")
         bj1.title = "First Title"
+        bj1.add_language("ES")
 
         bj2 = s2.bibjson()
         bj2.remove_identifiers("pissn")
@@ -537,7 +543,9 @@ class TestReApplication(DoajTestCase):
     def test_08_ingest_csv_success(self):
         account = models.Account(**{"id" : "Owner"})
         try:
-            reapplication.ingest_csv("valid.csv", account)
+            result = reapplication.ingest_csv("valid.csv", account)
+            assert result["reapplied"] == 3
+            assert result["skipped"] == 0
         except reapplication.ContentValidationException:
             assert False
         except reapplication.CsvValidationException:
@@ -653,7 +661,7 @@ class TestReApplication(DoajTestCase):
 
         assert sheetqs == qs
 
-    def test_07_make_journal_from_reapp(self):
+    def test_14_make_journal_from_reapp(self):
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         s.set_current_journal("1234567")
         j = s.make_journal()

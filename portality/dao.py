@@ -244,6 +244,8 @@ class DomainObject(UserDict.IterableUserDict, object):
                 query['sort'] = v
             else:
                 query[k] = v
+        if "sort" in query:
+            sort_specified = True
 
         if not sort_specified and consistent_order:
             query['sort'] = [{"id" : {"order" : "asc"}}]

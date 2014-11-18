@@ -336,7 +336,7 @@ class ApplicationContext(PrivateContext):
     def _create_account_on_suggestion_approval(self, suggestion, journal):
         o = models.Account.pull(suggestion.owner)
         if o:
-            self.add_alert('Account {username} already exists, so simply associating the new journal with it.'.format(username=o.id))
+            self.add_alert('Account {username} already exists, so simply associating the journal with it.'.format(username=o.id))
             o.add_journal(journal.id)
             if not o.has_role('publisher'):
                 o.add_role('publisher')
@@ -407,7 +407,7 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_suggestion_approved_email(self, journal_name, email):
+    def _send_suggestion_approved_email(self, journal_name, email, reapplication=False):
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
@@ -418,11 +418,16 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                template = "email/suggestion_accepted.txt"
+                if reapplication:
+                    template = "email/reapplication_accepted.txt"
+                jn = journal_name #.encode('utf-8', 'replace')
+
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/suggestion_accepted.txt",
-                                    journal_name=journal_name.encode('utf-8', 'replace'),
+                                    template_name=template,
+                                    journal_name=jn,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -531,11 +536,16 @@ class ManEdApplicationReview(ApplicationContext):
 
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("admin.journal_page", journal_id=j.id)
-            self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
+            if self.source.current_journal is not None:
+                self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
+                #self.source.remove_current_journal()
+                #self.source.save()
+            else:
+                self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # create the user account for the owner and send the notification email
             owner = self._create_account_on_suggestion_approval(self.target, j)
-            self._send_suggestion_approved_email(j.bibjson().title, owner.email)
+            self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
 
         # if we need to email the editor and/or the associate, handle those here
         if email_editor:
@@ -739,6 +749,10 @@ class AssEdApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status()
 
 class PublisherCsvReApplication(ApplicationContext):
+    def __init__(self, form_data=None, source=None):
+        self.carry = ["contact_name", "contact_email", "confirm_contact_email"]
+        super(PublisherCsvReApplication, self).__init__(form_data=form_data, source=source)
+
     def make_renderer(self):
         # this form does not have a UI expression, so no renderer required
         pass
@@ -754,9 +768,11 @@ class PublisherCsvReApplication(ApplicationContext):
 
     def data2form(self):
         self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self._carry_fields()
 
     def source2form(self):
         self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self._carry_fields()
 
     def pre_validate(self):
         if self.source is None:
@@ -765,16 +781,27 @@ class PublisherCsvReApplication(ApplicationContext):
         bj = self.source.bibjson()
         contacts = self.source.contacts()
 
-        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
-        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+        pissn = bj.get_one_identifier(bj.P_ISSN)
+        if pissn == "": pissn = None
+        self.form.pissn.data = pissn
+
+        eissn = bj.get_one_identifier(bj.E_ISSN)
+        if eissn == "": eissn = None
+        self.form.eissn.data = eissn
 
         if len(contacts) == 0:
+            # this will cause a validation failure if the form does not provide them
             return
 
+        # we copy across the contacts if they are necessary.  The fields are registered in self.carry
+        # if they are already present in the source data
         contact = contacts[0]
-        self.form.contact_name.data = contact.get("name")
-        self.form.contact_email.data = contact.get("email")
-        self.form.confirm_contact_email.data = contact.get("email")
+        if "contact_name" in self.carry:
+            self.form.contact_name.data = contact.get("name")
+        if "contact_email" in self.carry:
+            self.form.contact_email.data = contact.get("email")
+        if "confirm_contact_email" in self.carry:
+            self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -788,6 +815,8 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
+
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -811,11 +840,22 @@ class PublisherCsvReApplication(ApplicationContext):
         # there is no template to render
         return ""
 
+    def _carry_fields(self):
+        if self.source is None:
+            raise FormContextException("You cannot carry fields on a not-existent application")
+        contacts = self.source.contacts()
+        if len(contacts) > 0:
+            c = contacts[0]
+            if c.get("name") is None or c.get("name") == "":
+                self.carry.remove("contact_name")
+            if c.get("email") is None or c.get("email") == "":
+                self.carry.remove("contact_email")
+                self.carry.remove("confirm_contact_email")
+
 
 class PublisherReApplication(ApplicationContext):
     def make_renderer(self):
         self.renderer = render.PublisherReApplicationRenderer()
-        self.renderer.set_disabled_fields(["pissn", "eissn", "contact_name", "contact_email", "confirm_contact_email"])
 
     def set_template(self):
         self.template = "formcontext/publisher_reapplication.html"
@@ -826,10 +866,12 @@ class PublisherReApplication(ApplicationContext):
     def data2form(self):
         self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._disable_fields()
 
     def source2form(self):
         self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self._disable_fields()
 
     def pre_validate(self):
         if self.source is None:
@@ -838,16 +880,27 @@ class PublisherReApplication(ApplicationContext):
         bj = self.source.bibjson()
         contacts = self.source.contacts()
 
-        self.form.pissn.data = bj.get_one_identifier(bj.P_ISSN)
-        self.form.eissn.data = bj.get_one_identifier(bj.E_ISSN)
+        pissn = bj.get_one_identifier(bj.P_ISSN)
+        if pissn == "": pissn = None
+        self.form.pissn.data = pissn
+
+        eissn = bj.get_one_identifier(bj.E_ISSN)
+        if eissn == "": eissn = None
+        self.form.eissn.data = eissn
 
         if len(contacts) == 0:
+            # this will cause a validation failure if the form does not provide them
             return
 
+        # we copy across the contacts if they are necessary.  The contact details are conditionally
+        # disabled, so they /may/ be set
         contact = contacts[0]
-        self.form.contact_name.data = contact.get("name")
-        self.form.contact_email.data = contact.get("email")
-        self.form.confirm_contact_email.data = contact.get("email")
+        if "contact_name" in self.renderer.disabled_fields:
+            self.form.contact_name.data = contact.get("name")
+        if "contact_email" in self.renderer.disabled_fields:
+            self.form.contact_email.data = contact.get("email")
+        if "confirm_contact_email" in self.renderer.disabled_fields:
+            self.form.confirm_contact_email.data = contact.get("email")
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -861,6 +914,7 @@ class PublisherReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
@@ -889,6 +943,23 @@ class PublisherReApplication(ApplicationContext):
 
         return super(PublisherReApplication, self).render_template(**kwargs)
 
+    def _disable_fields(self):
+        if self.source is None:
+            raise FormContextException("You cannot disable fields on a not-existent application")
+
+        disable = ["pissn", "eissn"] # these are always disabled
+
+        # contact fields are only disabled if they already have content in source
+        contacts = self.source.contacts()
+        if len(contacts) > 0:
+            c = contacts[0]
+            if c.get("name"):
+                disable.append("contact_name")
+            if c.get("email"):
+                disable += ["contact_email", "confirm_contact_email"]
+
+        self.renderer.set_disabled_fields(disable)
+
     def _send_received_email(self):
         acc = models.Account.pull(self.target.owner)
         if acc is None:
@@ -907,11 +978,10 @@ class PublisherReApplication(ApplicationContext):
                                     fro=fro,
                                     subject=subject,
                                     template_name="email/reapplication_received.txt",
-                                    journal_name=journal_name.encode('utf-8', 'replace')
+                                    journal_name=journal_name,
+                                    username=self.target.owner
                 )
-                self.add_alert('Sent email to ' + acc.email + ' to tell them about their reapplication being received.')
-            else:
-                self.add_alert('Did not send email to ' + acc.email + ' to tell them about their reapplication being received, as publisher emails are disabled.')
+                self.add_alert('Sent a confirmation email to ' + acc.email + ' as a record of this update')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')

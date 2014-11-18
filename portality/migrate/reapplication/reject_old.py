@@ -1,6 +1,7 @@
 from esprit import tasks, raw
-from portality import models, settings
+from portality import models
 from datetime import datetime
+from portality.core import app
 
 '''Reject all applications with created_date prior to 19 March 2014, add note to explain.'''
 
@@ -21,7 +22,7 @@ fa_sug = []
 un_sug = []
 
 # Get the new application threshold from the settings
-THRESHOLD_DATE = threshold = datetime.strptime(settings.TICK_THRESHOLD, "%Y-%m-%dT%H:%M:%SZ")
+THRESHOLD_DATE = threshold = datetime.strptime(app.config.get("TICK_THRESHOLD", "2014-03-19T00:00:00Z"), "%Y-%m-%dT%H:%M:%SZ")
 
 # Scroll through all suggestions
 for s in tasks.scroll(conn, 'suggestion'):
@@ -33,10 +34,12 @@ for s in tasks.scroll(conn, 'suggestion'):
         cre_date = datetime.strptime(cre_date_str, "%Y-%m-%dT%H:%M:%SZ")
 
         if cre_date < THRESHOLD_DATE:
-            if suggestion_model.application_status == 'rejected':
+            if suggestion_model.application_status in ['rejected', "accepted"]:
                 unchanged_sug += 1
                 un_sug.append(suggestion_model.id)
             else:
+                # FIXME: recommend that this is where we bind the "rejected application email" csv list
+
                 # If it's older than the threshold, reject it and set a note.
                 suggestion_model.set_application_status('rejected')
                 suggestion_model.add_note(APPLICATION_NOTE, datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"))

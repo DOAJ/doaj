@@ -59,6 +59,8 @@ def validate_csv_structure(sheet, account):
 def validate_csv_contents(sheet):
     failed = {}     # here is where we will log the issn to formcontext mapping for contexts which fail to validate
     succeeded = []  # here is where we will record all the successful formcontexts (they will not be mapped to issn, as this will not be important once successful)
+    skip = []       # here is where we will record the ISSNs of all the columns that will not be imported
+
     for issn, questions in sheet.columns():
         # skip the question column
         if issn == "":
@@ -71,28 +73,47 @@ def validate_csv_contents(sheet):
         except SuggestionXwalkException:
             raise CsvValidationException("Too many or too few values under ISSN " + str(issn) + "; spreadsheet is invalid")
 
-        # remove the "disabled" fields from the form info
-        Suggestion2QuestionXwalk.remove_disabled(forminfo)
-
         # convert to a multidict
         form_data = MultiDict(forminfo)
 
         # lookup the suggestion upon which this application is based
         suggs = models.Suggestion.find_by_issn(issn)
+
         if suggs is None or len(suggs) == 0:
             raise CsvValidationException("Unable to locate a ReApplication with the issn " + issn + "; spreadsheet is invalid")
+
+        s = None
         if len(suggs) > 1:
-            raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
-        s = suggs[0]
+            # we have multiple records with the same issn.  We need to see if we can identify the one that is the
+            # reapplication.  Other instances could be old rejected records, or ones submitted by the public
+            # in parallel to the reapplication, or even reapplications that have already been accepted
+            reapps = []
+            for sugg in suggs:
+                if sugg.current_journal is not None and sugg.current_journal != "":
+                    reapps.append(sugg)
+            if len(reapps) == 1:
+                s = reapps[0]
+            else:
+                # it could be the reapplication has already been accepted, in which case there's not a lot we can do
+                raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
+        else:
+            s = suggs[0]
+
+        # determine if the existing record's status allows us to import
+        if s.application_status not in ["reapplication", "submitted"]:
+            skip.append(issn)
+            continue
 
         fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=s, form_data=form_data)
         if not fc.validate():
             failed[issn] = fc
         else:
             succeeded.append(fc)
+
     if len(failed) > 0:
         raise ContentValidationException("One or more records in the CSV failed to validate", errors=failed)
-    return succeeded
+
+    return succeeded, skip
 
 def generate_spreadsheet_error(sheet, exception):
     def int2base(x, base):
@@ -118,6 +139,8 @@ def generate_spreadsheet_error(sheet, exception):
             r = Suggestion2QuestionXwalk.q2idx(field) + 2   # add 2 for the offset from the header + the 0 indexed array
             report[issn][r] = (issn, q, r, c, msg)
 
+    """
+    NOTE: this makes a long string suitable for writing as a text file
     # register where we will store the actual strings of the rows in the error report
     rows = []
 
@@ -133,6 +156,27 @@ def generate_spreadsheet_error(sheet, exception):
             rows.append(str(issn) + " | " + str(q) + " | cell " + str(c) + str(r) + " - " + str(msg))
 
     return "\n".join(rows)
+    """
+
+    import cStringIO
+    from portality import clcsv
+    stream = cStringIO.StringIO()
+    writer = clcsv.UnicodeWriter(stream)
+    writer.writerow(["ISSN", "Question", "Cell", "Error message"])
+    writer.writerow([])
+
+    issns = report.keys()
+    issns.sort()
+    for issn in issns:
+        # iterate through the rows in the order that they appear in the spreadsheet
+        qs = report.get(issn, {}).keys()
+        qs.sort()
+        for r in qs:
+            _, q, _, c, msg = report.get(issn, {}).get(r, (None, None, None, None, None))
+            writer.writerow([str(issn), str(q), str(c) + str(r), str(msg)])
+        writer.writerow([])
+
+    return stream.getvalue()
 
 
 #################################################################
@@ -143,11 +187,14 @@ def ingest_csv(path, account, error_callback=None):
     sheet = open_csv(path)
     validate_csv_structure(sheet, account)
     try:
-        fcs = validate_csv_contents(sheet)
+        fcs, skip = validate_csv_contents(sheet)
 
         # if an exception is not thrown, we are clear to begin the process of import
         for fc in fcs:
             fc.finalise()
+
+        return {"reapplied" : len(fcs), "skipped" : len(skip)}
+
     except ContentValidationException as e:
         report = generate_spreadsheet_error(sheet, e)
         if error_callback is not None:
@@ -162,7 +209,9 @@ def ingest_from_upload(upload):
         raise CsvIngestException("Unable to ingest CVS for non-existant account")
 
     try:
-        ingest_csv(path, account, email_error_closure(upload, account))
+        report = ingest_csv(path, account, email_error_closure(upload, account))
+        upload.processed(report.get("reapplied"), report.get("skipped"))
+        upload.save()
     except CsvValidationException as e:
         # this is where the structure of the csv itself is broken
         upload.failed(e.message)
@@ -187,7 +236,7 @@ def email_error_closure(upload, account):
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 now = datetime.now().strftime("%Y%m%d")
-                att = app_email.make_attachment("reapplication_errors_" + now + ".txt", "text/plain", report)
+                att = app_email.make_attachment("reapplication_errors_" + now + ".csv", "text/plain", report) # NOTE: file extension is now csv
                 when = datetime.strptime(upload.created_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %b %Y")
                 app_email.send_mail(to=to,
                                     fro=fro,
@@ -247,61 +296,61 @@ class SuggestionXwalkException(Exception):
 class Suggestion2QuestionXwalk(object):
 
     QTUP = [
-        ("title",                               "1) Journal Title"),
-        ("url",                                 "2) URL"),
+        ("title",                               "1) Journal Title *"),
+        ("url",                                 "2) URL *"),
         ("alternative_title",                   "3) Alternative Title"),
         ("pissn",                               "4) Journal ISSN (print version) MAY NOT BE EDITED"),
         ("eissn",                               "5) Journal ISSN (online version) MAY NOT BE EDITED"),
-        ("publisher",                           "6) Publisher"),
+        ("publisher",                           "6) Publisher *"),
         ("society_institution",                 "7) Society or Institution"),
         ("platform",                            "8) Platform, Host or Aggregator"),
         ("contact_name",                        "9) Name of contact for this journal MAY NOT BE EDITED"),
         ("contact_email",                       "10) Contact's email address MAY NOT BE EDITED"),
         ("confirm_contact_email",               "11) Confirm contact's email address MAY NOT BE EDITED"),
-        ("country",                             "12) In which country is the publisher of the journal based?"),
-        ("processing_charges",                  "13) Does the journal have article processing charges (APCs)?"),
-        ("processing_charges_amount",           "14) Amount"),
-        ("processing_charges_currency",         "15) Currency"),
-        ("submission_charges",                  "16) Does the journal have article submission charges?"),
-        ("submission_charges_amount",           "17) Amount"),
-        ("submission_charges_currency",         "18) Currency"),
-        ("articles_last_year",                  "19) How many research and review articles did the journal publish in the last calendar year?"),
-        ("articles_last_year_url",              "20) Enter the URL where this information can be found"),
-        ("waiver_policy",                       "21) Does the journal have a waiver policy (for developing country authors etc)?"),
-        ("waiver_policy_url",                   "22) Enter the URL where this information can be found"),
-        ("digital_archiving_policy",            "23) What digital archiving policy or program(s) does the journal belong to?"),
+        ("country",                             "12) In which country is the publisher of the journal based? *"),
+        ("processing_charges",                  "13) Does the journal have article processing charges (APCs)? *"),
+        ("processing_charges_amount",           "14) Amount **"),
+        ("processing_charges_currency",         "15) Currency **"),
+        ("submission_charges",                  "16) Does the journal have article submission charges? *"),
+        ("submission_charges_amount",           "17) Amount **"),
+        ("submission_charges_currency",         "18) Currency **"),
+        ("articles_last_year",                  "19) How many research and review articles did the journal publish in the last calendar year? *"),
+        ("articles_last_year_url",              "20) Enter the URL where this information can be found *"),
+        ("waiver_policy",                       "21) Does the journal have a waiver policy (for developing country authors etc)? *"),
+        ("waiver_policy_url",                   "22) Enter the URL where this information can be found **"),
+        ("digital_archiving_policy",            "23) What digital archiving policy or program(s) does the journal belong to? *"),
         ("digital_archiving_policy_library",    "23a) If a national library, which one?"),
         ("digital_archiving_policy_other",      "23b) If Other, enter it here"),
-        ("digital_archiving_policy_url",        "24) Enter the URL where this information can be found"),
-        ("crawl_permission",                    "25) Does the journal allow anyone to crawl the full-text of the journal?"),
-        ("article_identifiers",                 "26) Which permanent article identifiers does the journal use?"),
-        ("metadata_provision",                  "27) Does the journal provide, or intend to provide, article level metadata to DOAJ?"),
-        ("download_statistics",                 "28) Does the journal provide download statistics?"),
+        ("digital_archiving_policy_url",        "24) Enter the URL where this information can be found *"),
+        ("crawl_permission",                    "25) Does the journal allow anyone to crawl the full-text of the journal? *"),
+        ("article_identifiers",                 "26) Which permanent article identifiers does the journal use? *"),
+        ("metadata_provision",                  "27) Does the journal provide, or intend to provide, article level metadata to DOAJ? *"),
+        ("download_statistics",                 "28) Does the journal provide download statistics? *"),
         ("download_statistics_url",             "29) Enter the URL where this information can be found"),
-        ("first_fulltext_oa_year",              "30) What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles?"),
-        ("fulltext_format",                     "31) Please indicate which formats of full text are available"),
-        ("keywords",                            "32) Add up to 6 keyword(s) that best describe the journal (comma delimited)"),
-        ("languages",                           "33) Select the language(s) that the Full Text of the articles is published in"),
-        ("editorial_board_url",                 "34) What is the URL for the Editorial Board page?"),
-        ("review_process",                      "35) Please select the review process for papers"),
-        ("review_process_url",                  "36) Enter the URL where this information can be found"),
-        ("aims_scope_url",                      "37) What is the URL for the journal's Aims & Scope"),
-        ("instructions_authors_url",            "38) What is the URL for the journal's instructions for authors?"),
-        ("plagiarism_screening",                "39) Does the journal have a policy of screening for plagiarism?"),
-        ("plagiarism_screening_url",            "40) Enter the URL where this information can be found"),
-        ("publication_time",                    "41) What is the average number of weeks between submission and publication?"),
-        ("oa_statement_url",                    "42) What is the URL for the journal's Open Access statement?"),
-        ("license_embedded",                    "43) Does the journal embed or display simple machine-readable CC licensing information in its articles?"),
-        ("license_embedded_url",                "44) Please provide a URL to an example page with embedded licensing information"),
-        ("license",                             "45) Enter which type of CC license the journal uses. If it is not a CC license, enter the license's name. Or enter None."),
-        ("license_checkbox",                    "46) If the journal has a license which is not a CC license, which of the following does the content require?"),
+        ("first_fulltext_oa_year",              "30) What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? *"),
+        ("fulltext_format",                     "31) Please indicate which formats of full text are available *"),
+        ("keywords",                            "32) Add up to 6 keyword(s) that best describe the journal (comma delimited) *"),
+        ("languages",                           "33) Select the language(s) that the Full Text of the articles is published in *"),
+        ("editorial_board_url",                 "34) What is the URL for the Editorial Board page? *"),
+        ("review_process",                      "35) Please select the review process for papers *"),
+        ("review_process_url",                  "36) Enter the URL where this information can be found *"),
+        ("aims_scope_url",                      "37) What is the URL for the journal's Aims & Scope *"),
+        ("instructions_authors_url",            "38) What is the URL for the journal's instructions for authors? *"),
+        ("plagiarism_screening",                "39) Does the journal have a policy of screening for plagiarism? *"),
+        ("plagiarism_screening_url",            "40) Enter the URL where this information can be found **"),
+        ("publication_time",                    "41) What is the average number of weeks between submission and publication? *"),
+        ("oa_statement_url",                    "42) What is the URL for the journal's Open Access statement? *"),
+        ("license_embedded",                    "43) Does the journal embed or display simple machine-readable CC licensing information in its articles? *"),
+        ("license_embedded_url",                "44) Please provide a URL to an example page with embedded licensing information **"),
+        ("license",                             "45) Enter which type of CC license the journal uses. If it is not a CC license, enter the license's name. Or enter None. *"),
+        ("license_checkbox",                    "46) If the journal has a license which is not a CC license, which of the following does the content require: Attribution, No Commercial Usage, No Derivatives, Share Alike?"),
         ("license_url",                         "47) Enter the URL on your site where your license terms are stated"),
-        ("open_access",                         "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?"),
-        ("deposit_policy",                      "49) With which deposit policy directory does the journal have a registered deposit policy?"),
-        ("copyright",                           "50) Does the journal allow the author(s) to hold the copyright without restrictions?"),
-        ("copyright_url",                       "51) Enter the URL where this information can be found"),
-        ("publishing_rights",                   "52) Will the journal allow the author(s) to retain publishing rights without restrictions?"),
-        ("publishing_rights_url",               "53) Enter the URL where this information can be found")
+        ("open_access",                         "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles? *"),
+        ("deposit_policy",                      "49) With which deposit policy directory does the journal have a registered deposit policy? *"),
+        ("copyright",                           "50) Does the journal allow the author(s) to hold the copyright without restrictions? *"),
+        ("copyright_url",                       "51) Enter the URL where this information can be found *"),
+        ("publishing_rights",                   "52) Will the journal allow the author(s) to retain publishing rights without restrictions? *"),
+        ("publishing_rights_url",               "53) Enter the URL where this information can be found *")
     ]
 
     DEGEN = {
@@ -578,7 +627,7 @@ class Suggestion2QuestionXwalk(object):
 
         def _rationalise_other(val, form_choices, other_val):
             val = normal(val)
-            if val is None:
+            if val is None or val == "":
                 return None
 
             opts = [aid.strip() for aid in val.split(",")]
@@ -605,10 +654,9 @@ class Suggestion2QuestionXwalk(object):
             library = normal(library)
             other = normal(other)
 
-            if options is None:
-                return None
-
-            opts = [dap.strip() for dap in options.split(",")]
+            opts = []
+            if options is not None and options != "":
+                opts = [dap.strip() for dap in options.split(",")]
 
             cs = {}
             [cs.update({c.lower() : c}) for c, _ in choices.Choices.digital_archiving_policy()]
@@ -685,7 +733,7 @@ class Suggestion2QuestionXwalk(object):
 
         def license_aspects(val):
             val = normal(val)
-            if val is None:
+            if val is None or val == "":
                 return None
 
             opts = [x.strip() for x in val.split(",")]
@@ -732,16 +780,20 @@ class Suggestion2QuestionXwalk(object):
         forminfo["waiver_policy_url"] = normal(cls.a(qs, 22))
 
         dap, lib, oth = digital_archiving_policy(cls.a(qs, 23), cls.a(qs, "digital_archiving_policy_library"), cls.a(qs, "digital_archiving_policy_other"))
-        forminfo["digital_archiving_policy"] = dap
-        forminfo["digital_archiving_policy_library"] = lib
-        forminfo["digital_archiving_policy_other"] = oth
+        if dap is not None and len(dap) > 0:
+            forminfo["digital_archiving_policy"] = dap
+            if lib is not None and lib != "":
+                forminfo["digital_archiving_policy_library"] = lib
+            if oth is not None and oth != "":
+                forminfo["digital_archiving_policy_other"] = oth
 
         forminfo["digital_archiving_policy_url"] = normal(cls.a(qs, 24))
         forminfo["crawl_permission"] = yes_no(cls.a(qs, 25))
 
         aids, aidother = article_identifiers(cls.a(qs, 26))
-        forminfo["article_identifiers"] = aids
-        forminfo["article_identifiers_other"] = aidother
+        if aids is not None and len(aids) > 0:
+            forminfo["article_identifiers"] = aids
+            forminfo["article_identifiers_other"] = aidother
 
         forminfo["metadata_provision"] = yes_no(cls.a(qs, 27))
         forminfo["download_statistics"] = yes_no(cls.a(qs, 28))
@@ -749,8 +801,9 @@ class Suggestion2QuestionXwalk(object):
         forminfo["first_fulltext_oa_year"] = normal(cls.a(qs, 30))
 
         ftf, ftfother = fulltext_format(cls.a(qs, 31))
-        forminfo["fulltext_format"] = ftf
-        forminfo["fulltext_format_other"] = ftfother
+        if ftf is not None and len(ftf) > 0:
+            forminfo["fulltext_format"] = ftf
+            forminfo["fulltext_format_other"] = ftfother
 
         forminfo["keywords"] = [k.strip() for k in normal(cls.a(qs, 32)).split(",")]
         forminfo["languages"] = languages(cls.a(qs, 33))
@@ -770,13 +823,17 @@ class Suggestion2QuestionXwalk(object):
         forminfo["license"] = lic
         forminfo["license_other"] = licother
 
-        forminfo["license_checkbox"] = license_aspects(cls.a(qs, 46))
+        la = license_aspects(cls.a(qs, 46))
+        if la is not None and len(la) > 0:
+            forminfo["license_checkbox"] = license_aspects(cls.a(qs, 46))
+
         forminfo["license_url"] = normal(cls.a(qs, 47))
         forminfo["open_access"] = yes_no(cls.a(qs, 48))
 
         dp, dpother = deposit_policy(cls.a(qs, 49))
-        forminfo["deposit_policy"] = dp
-        forminfo["deposit_policy_other"] = dpother
+        if dp is not None and len(dp) > 0:
+            forminfo["deposit_policy"] = dp
+            forminfo["deposit_policy_other"] = dpother
 
         cr, crother = copyright(cls.a(qs, 50))
         forminfo["copyright"] = cr

@@ -176,6 +176,13 @@ class Journal(DomainObject):
         # make the new suggestion
         reapp = Suggestion(**raw_reapp)
         reapp.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # there is no suggester, so we copy the journal contact details into the
+        # suggester fields
+        contacts = reapp.contacts()
+        if len(contacts) > 0:
+            reapp.set_suggester(contacts[0].get("name"), contacts[0].get("email"))
+
         reapp.save()
 
         # update this record to include the reapplication id

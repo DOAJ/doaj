@@ -14,13 +14,17 @@ rej_query = {
                 }
             }
 
-out_file = open('rejected_applications', 'w')
+out_file = open('rejected_applications.json', 'w')
 
 # Dump all rejected suggestions to file
 tasks.dump(conn, 'suggestion', q=rej_query.copy(), out=out_file)
 out_file.close()
 
 # Scroll through all rejected selections, delete all
+
+# Note: alternative is just to issue delete by query
+# models.Suggestion.delete_by_query(rej_query)
+
 n_deleted = 0
 for s in tasks.scroll(conn, 'suggestion', q=rej_query):
 

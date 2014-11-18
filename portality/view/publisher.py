@@ -26,10 +26,13 @@ def restrict():
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
 
-@blueprint.route("/reapply/<reapplication_id>")
+@blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def reapplication_page(reapplication_id):
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
     ap = models.Suggestion.pull(reapplication_id)
 
     if ap is None:
@@ -50,10 +53,10 @@ def reapplication_page(reapplication_id):
                 flash('Your Re-Application has been saved.  You may still edit it until a DOAJ administrator picks it up for review.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
-                return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='done'))
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
                 flash(e.message)
-                return redirect(url_for("publisher.reapplication_page", suggestion_id=ap.id, _anchor='cannot_edit'))
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True)
 
@@ -61,6 +64,8 @@ def reapplication_page(reapplication_id):
 @login_required
 @ssl_required
 def updates_in_progress():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
     return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
@@ -311,6 +316,9 @@ def help():
 @login_required
 @ssl_required
 def bulk_reapply():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
     # User must have bulk reapplications to access this tab
     if not pub_filter_bulk(current_user.id):
         abort(404)
@@ -337,9 +345,22 @@ def bulk_reapply():
 @login_required
 @ssl_required
 def bulk_download(filename):
-    try:
-        return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
-    except:
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+    allowed = False
+    for c in csv_downloads:
+        if c.spreadsheet_name == filename:
+            allowed = True
+            break
+
+    if allowed:
+        try:
+            return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+        except:
+            abort(404)
+    else:
         abort(404)
 
 def _bulk_upload(f, csv_downloads, previous):
