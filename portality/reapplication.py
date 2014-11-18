@@ -343,7 +343,7 @@ class Suggestion2QuestionXwalk(object):
         ("license_embedded",                    "43) Does the journal embed or display simple machine-readable CC licensing information in its articles? *"),
         ("license_embedded_url",                "44) Please provide a URL to an example page with embedded licensing information **"),
         ("license",                             "45) Enter which type of CC license the journal uses. If it is not a CC license, enter the license's name. Or enter None. *"),
-        ("license_checkbox",                    "46) If the journal has a license which is not a CC license, which of the following does the content require?"),
+        ("license_checkbox",                    "46) If the journal has a license which is not a CC license, which of the following does the content require: Attribution, No Commercial Usage, No Derivatives, Share Alike?"),
         ("license_url",                         "47) Enter the URL on your site where your license terms are stated"),
         ("open_access",                         "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles? *"),
         ("deposit_policy",                      "49) With which deposit policy directory does the journal have a registered deposit policy? *"),
