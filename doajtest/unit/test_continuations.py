@@ -1,13 +1,13 @@
-from unittest import TestCase
+from doajtest.helpers import DoajTestCase
 from portality import models
 
-class TestSnapshot(TestCase):
+class TestContinuations(DoajTestCase):
 
     def setUp(self):
-        pass
+        super(TestContinuations, self).setUp()
 
     def tearDown(self):
-        pass
+        super(TestContinuations, self).tearDown()
 
     def test_01_make_history(self):
         # make a journal that is a continuation

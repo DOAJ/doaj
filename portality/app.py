@@ -74,6 +74,8 @@ SPONSORS = {
         'springer': {'name': 'Springer Science+Business Media', 'logo': 'springer.gif', 'url': 'http://www.springer.com/'},
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.gif', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.jpg', 'url': 'http://www.karger.com/OpenAccess'},
+        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.gif', 'url': 'http://cottagelabs.com'},
+        'wiley': {'name': 'Wiley', 'logo': 'wiley.gif', 'url': 'http://wiley.com'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
@@ -163,4 +165,14 @@ def page_not_found(e):
         
 
 if __name__ == "__main__":
+    pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == '-d':
+            pycharm_debug = True
+
+    if pycharm_debug:
+        app.config['DEBUG'] = False
+        import pydevd
+        pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
+
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'])

@@ -15,6 +15,7 @@ SECRET_KEY = "default-key"
 ADMIN_NAME = "DOAJ"
 ADMIN_EMAIL = "sysadmin@cottagelabs.com"
 ADMINS = ["emanuil@cottagelabs.com", "mark@cottagelabs.com"]
+ERROR_LOGGING_EMAIL = 'doaj.internal@gmail.com'
 SUPPRESS_ERROR_EMAILS = False
 SYSTEM_EMAIL_FROM = 'feedback@doaj.org'
 CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the future
@@ -34,7 +35,13 @@ VALID_ENVIRONMENTS = ['dev', 'test', 'staging', 'production']
 # elasticsearch settings
 ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
+ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
+
+# PyCharm debug settings
+DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
+DEBUG_PYCHARM_SERVER = 'localhost'
+DEBUG_PYCHARM_PORT = 6000
 
 # can anonymous users get raw JSON records via the query endpoint?
 PUBLIC_ACCESSIBLE_JSON = True 
@@ -68,6 +75,9 @@ PASSWORD_CREATE_TIMEOUT = PASSWORD_RESET_TIMEOUT * 14
 # the earliest date accepted on the publisher's 'enter article metadata' form.
 # code will default to 15 years before current year if commented out.
 METADATA_START_YEAR = 1960
+
+# tick (on toc) and doaj seal settings
+TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 
 # ========================
 # authorisation settings
@@ -134,7 +144,9 @@ MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
 MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
 MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
 MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
-
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
+MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
+MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS

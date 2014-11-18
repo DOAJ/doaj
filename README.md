@@ -196,6 +196,7 @@ It is likely that history records will only be created upon request by the admin
     "admin" : {
         "in_doaj" : true|false,
         "application_status" : "state of journal application",
+        "bulk_upload" : "<id of bulk_upload from which this journal/application came>",
         "notes" : [
             {
                 "note" : "<note>", 
@@ -210,8 +211,11 @@ It is likely that history records will only be created upon request by the admin
         ],
         "owner" : "<account id of owner>",
         "editor_group" : "<name of editor group which controls this object>",
-        "editor" : "<username of associate editor assigned to this object>"
+        "editor" : "<username of associate editor assigned to this object>",
+        "current_application" : "<id of re-application created from this journal record (mutually exclusive with the below)>",
+        "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
+    "ticked" : true|false,
     "index" : {
         "issn" : [<list of all print and electronic issns for all time>],
         "title" : [<list of all titles the journal has been known by>],
@@ -230,7 +234,8 @@ It is likely that history records will only be created upon request by the admin
         "oa_statement_url" : "<OA statment url>"
     },
     "created_date" : "<date created>",
-    "last_updated" : "<date record last modified>"
+    "last_updated" : "<date record last modified>",
+    "last_reapplication": "<date this journal was updated via a re-application>"
 }
 ```
 
@@ -416,6 +421,35 @@ The Journal ToC data model stores a cache of the Table of Contents on a per-volu
     "associates" : ["<associate who is part of this group>"],
     "created_date" : "<timestamp for when this group was created>",
     "last_updated" : "<timestamp for when this group was last modified>"
+}
+```
+
+## Bulk Re-Application Data Model
+
+```python
+{
+    "id" : "<opaque id for this bulk reapplication>",
+    "owner" : "<user account which owns this reapplication>",
+    "spreadsheet_name" : "<name by which the spreadsheet is known (both locally and for download)>",
+    "created_date" : "<timestamp for when this spreadsheet was created>",
+    "last_updated" : "<timestamp for when this spreadsheet was last modified>"
+}
+```
+
+## Bulk Upload Data Model
+
+```python
+{
+    "id" : "<opaque id for this bulk upload>",
+    "status": "incoming|failed|processed",
+    "owner": "<user id of owner>",
+    "filename": "<filename of upload>",
+    "error" : "<any error associated with the upload>"
+    "reapplied" : <number of reapplications processed from this upload>,
+    "skipped" : <number of reapplications skipped in this upload>,
+    "last_updated": "<last date modified>",
+    "created_date": "<date of initial upload>",
+    "processed_date": "<date the upload was processed>"
 }
 ```
 

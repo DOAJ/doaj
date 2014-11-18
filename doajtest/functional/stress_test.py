@@ -7,6 +7,10 @@ import threading
 import time
 import inspect
 
+# FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
+from doajtest.bootstrap import prepare_for_test
+prepare_for_test()
+
 MAX_REQUESTS_DEFAULT = 10000
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
