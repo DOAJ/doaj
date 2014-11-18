@@ -40,7 +40,7 @@ def make_bulk_reapp_csv():
     failed_bulk_reapps = []
     email_list_10_plus = []
     email_list_less_10 = []
-    separator_list = [",", "or", "/"]
+    separator_list = [",", " or ", "/"]
     for a in acc:
         q = models.SuggestionQuery(owner=a.id).query()
         suggestions = models.Suggestion.q2obj(q=q, size=30000)
@@ -63,6 +63,7 @@ def make_bulk_reapp_csv():
                     contact.append(a.id)
                     contact.append(e)
                     email_list_10_plus.append(contact)
+                    contact = []
 
             filename = a.id + ".csv"
             filepath = os.path.join(app.config.get("BULK_REAPP_PATH"), filename)
@@ -96,6 +97,7 @@ def make_bulk_reapp_csv():
                     contact.append(a.id)
                     contact.append(e)
                     email_list_less_10.append(contact)
+                    contact = []
 
 
     with codecs.open('email_list_11_plus.csv', 'wb', encoding='utf-8') as csvfile:
