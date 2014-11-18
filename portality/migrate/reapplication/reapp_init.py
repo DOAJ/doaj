@@ -4,6 +4,7 @@ from portality import reapplication
 from portality.core import app
 import os
 import codecs
+import csv
 from portality.clcsv import UnicodeWriter
 
 
@@ -40,14 +41,31 @@ def make_bulk_reapp_csv():
     failed_bulk_reapps = []
     email_list_10_plus = []
     email_list_less_10 = []
+    separator_list = [",", " or ", "/"]
     for a in acc:
         q = models.SuggestionQuery(owner=a.id).query()
         suggestions = models.Suggestion.q2obj(q=q, size=30000)
         contact = []
+        emails = a.email
+
+        for sep in separator_list:
+            if isinstance(emails, basestring):
+                if sep in emails:
+                    emails = emails.split(sep)
+
         if len(suggestions) >= 11:
-            contact.append(a.id)
-            contact.append(a.email)
-            email_list_10_plus.append(contact)
+            if isinstance(emails, basestring):
+                contact.append(a.id)
+                contact.append(emails)
+                email_list_10_plus.append(contact)
+            else:
+                for e in emails:
+                    e = e.strip()
+                    contact.append(a.id)
+                    contact.append(e)
+                    email_list_10_plus.append(contact)
+                    contact = []
+
             filename = a.id + ".csv"
             filepath = os.path.join(app.config.get("BULK_REAPP_PATH"), filename)
 
@@ -63,46 +81,42 @@ def make_bulk_reapp_csv():
             bulk_reapp.set_spreadsheet_name(filename)
             bulk_reapp.set_owner(a.id)
             bulk_reapp.save()
+
         elif len(suggestions) > 0:  # only add to the email list if they actually have suggestions at all
-            contact.append(a.id)
-            contact.append(a.email)
-            email_list_less_10.append(contact)
+            for sep in separator_list:
+                if isinstance(emails, basestring):
+                    if sep in emails:
+                        emails = emails.split(sep)
+
+            if isinstance(emails, basestring):
+                contact.append(a.id)
+                contact.append(emails)
+                email_list_less_10.append(contact)
+            else:
+                for e in emails:
+                    e = e.strip()
+                    contact.append(a.id)
+                    contact.append(e)
+                    email_list_less_10.append(contact)
+                    contact = []
+
 
     with codecs.open('email_list_11_plus.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
+        wr_writer = UnicodeWriter(csvfile, quoting=csv.QUOTE_ALL)
         wr_writer.writerows(email_list_10_plus)
 
     with codecs.open('email_list_less_11.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
+        wr_writer = UnicodeWriter(csvfile, quoting=csv.QUOTE_ALL)
         wr_writer.writerows(email_list_less_10)
 
     if failed_bulk_reapps:
         print "Failed bulk reapplications"
         print failed_bulk_reapps
 
-# FIXME: this is going to do /all/ rejected applications, not just the ones that were
-# rejected by the reject script
-def emails_rejected():
-    email_list = []
-    q = models.SuggestionQuery(statuses=['rejected']).query()
-    rejected = models.Suggestion.q2obj(q=q, size=30000)
-    for r in rejected:
-        contact = []
-        contact.append(r.get_latest_contact_name())
-        contact.append(r.get_latest_contact_email())
-        contact.append(r.bibjson().title)
-        email_list.append(contact)
-
-    with codecs.open('emails_rejected.csv', 'wb', encoding='utf-8') as csvfile:
-        wr_writer = UnicodeWriter(csvfile)
-        wr_writer.writerows(email_list)
-
-
 def main():
     delete_existing_reapp()
     create_reapplications()
     make_bulk_reapp_csv()
-    emails_rejected()
 
 if __name__ == "__main__":
     main()
