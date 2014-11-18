@@ -89,13 +89,8 @@ def journal_readonly(journal_id):
     if j is None:
         abort(404)
 
-    try:
-        lockinfo = lock.lock("journal", journal_id, current_user.id)
-    except lock.Locked as l:
-        return render_template("editor/journal_locked.html", journal=j, lock=l.lock, edit_journal_page=True)
-
     fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
-    return fc.render_template(edit_journal_page=True, lock=lockinfo)
+    return fc.render_template(edit_journal_page=True)
 
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():

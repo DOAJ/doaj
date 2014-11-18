@@ -249,6 +249,27 @@ fv_edit_suggestion = (function (resultobj) {
     return that;
 })();
 
+fv_readonly_journal = (function (resultobj) {
+    var that = function(resultobj) {
+        console.log('called');
+        console.log(resultobj);
+        console.log(resultobj.current_journal);
+        console.log("\n");
+        if (resultobj.admin && resultobj.admin.current_journal) {
+            console.log('building');
+            var result = '<a class="readonly_journal_link pull-left" href="';
+            result += readonly_journal_url;
+            result += resultobj.admin.current_journal;
+            result += '" target="_blank"';
+            result += '>View associated journal</a>';
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
+
 fv_delete_article = (function (resultobj) {
     var that = function(resultobj) {
         if (!resultobj.suggestion && resultobj.bibjson.journal) {
