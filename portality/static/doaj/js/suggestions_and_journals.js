@@ -308,7 +308,7 @@ function highlight_target() {
 function setup_add_buttons() {
     var customisations = {
         // by container element id - container of the add more button and the fields being added
-        'notes-outer-container': {'value': 'Add a note', 'id': 'add_note_btn'}
+        'notes-outer-container': {'value': 'Add new note', 'id': 'add_note_btn'}
     };
 
     $('.addable-field-container').each(function() {
