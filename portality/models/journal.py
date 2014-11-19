@@ -465,12 +465,21 @@ class Journal(DomainObject):
     def calculate_tick(self):
         created_date = self.data.get("created_date", None)
 
-        if not created_date:
-            return
-
-        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
+
+        if not created_date:
+            # we haven't even saved the record yet.  All we need to do is check that the tick
+            # threshold is in the past (which I suppose theoretically it could not be), then
+            # set it
+            if datetime.now() > threshold:
+                self.set_ticked(True)
+            else:
+                self.set_ticked(False)
+            return
+
+        # otherwise, this is an existing record, and we just need to update it
+        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
 
         if created > threshold and self.is_in_doaj():
             self.set_ticked(True)
