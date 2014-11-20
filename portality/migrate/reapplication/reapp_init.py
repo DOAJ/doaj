@@ -43,7 +43,7 @@ def make_bulk_reapp_csv():
     email_list_less_10 = []
     separator_list = [",", " or ", "/"]
     for a in acc:
-        q = models.SuggestionQuery(owner=a.id).query()
+        q = models.SuggestionQuery(statuses=['reapplication'], owner=a.id).query()
         suggestions = models.Suggestion.q2obj(q=q, size=30000)
         contact = []
         emails = a.email
