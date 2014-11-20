@@ -422,6 +422,10 @@ class DomainObject(UserDict.IterableUserDict, object):
     def all(cls, size=10000000, **kwargs):
         return cls.q2obj(size=size, **kwargs)
 
+    @classmethod
+    def count(cls):
+        return requests.get(cls.target() + '_count').json()['count']
+
 ########################################################################
 ## Some useful ES queries
 ########################################################################
