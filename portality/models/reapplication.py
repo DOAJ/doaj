@@ -87,14 +87,20 @@ class BulkUpload(DomainObject):
     def error(self):
         return self.data.get("error")
 
+    @property
+    def error_details(self):
+        return self.data.get("error_details")
+
     def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
         self.data["owner"] = owner
         self.data["status"] = status
 
-    def failed(self, message):
+    def failed(self, message, traceback=''):
         self.data["status"] = "failed"
         self.data["error"] = message
+        if traceback:
+            self.data["error_details"] = traceback
         self.data["processed_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def processed(self, reapplied, skipped):

@@ -9,6 +9,8 @@ from werkzeug.datastructures import MultiDict
 from collections import OrderedDict
 from datetime import datetime
 
+import traceback
+
 #################################################################
 # Code for handling validation of incoming spreadsheets
 #################################################################
@@ -214,15 +216,15 @@ def ingest_from_upload(upload):
         upload.save()
     except CsvValidationException as e:
         # this is where the structure of the csv itself is broken
-        upload.failed(e.message)
+        upload.failed(e.message, traceback.format_exc())
         upload.save()
         return
     except ContentValidationException as e:
-        upload.failed(e.message)
+        upload.failed(e.message, traceback.format_exc())
         upload.save()
         return
     except:
-        upload.failed("An error was raised during processing - please contact an administrator")
+        upload.failed("An error was raised during processing - please contact an administrator", traceback.format_exc())
         upload.save()
         return
 
