@@ -55,19 +55,20 @@ for s in tasks.scroll(conn, 'suggestion'):
                         if sep in emails:
                             emails = emails.split(sep)
 
-                if isinstance(emails, basestring):
-                    contact.append(suggestion_model.get_latest_contact_name())
-                    contact.append(emails)
-                    contact.append(suggestion_model.bibjson().title)
-                    email_list.append(contact)
-                else:
-                    for e in emails:
-                        e = e.strip()
+                if emails:
+                    if isinstance(emails, basestring):
                         contact.append(suggestion_model.get_latest_contact_name())
-                        contact.append(e)
+                        contact.append(emails)
                         contact.append(suggestion_model.bibjson().title)
                         email_list.append(contact)
-                        contact = []
+                    else:
+                        for e in emails:
+                            e = e.strip()
+                            contact.append(suggestion_model.get_latest_contact_name())
+                            contact.append(e)
+                            contact.append(suggestion_model.bibjson().title)
+                            email_list.append(contact)
+                            contact = []
 
 
                 suggestion_model.set_application_status('rejected')
