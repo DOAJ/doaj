@@ -308,8 +308,8 @@ class ApplicationContext(PrivateContext):
                             fro=fro,
                             subject=subject,
                             template_name="email/suggestion_assigned_group.txt",
-                            editor=editor.id.encode('utf-8', 'replace'),
-                            journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
+                            editor=editor.id, #.encode('utf-8', 'replace'),
+                            journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
                             url_root=url_root
                             )
 
@@ -327,9 +327,9 @@ class ApplicationContext(PrivateContext):
                             fro=fro,
                             subject=subject,
                             template_name="email/suggestion_assigned_editor.txt",
-                            editor=editor.id.encode('utf-8', 'replace'),
-                            journal_name=suggestion.bibjson().title.encode('utf-8', 'replace'),
-                            group_name=eg.name.encode("utf-8", "replace"),
+                            editor=editor.id, #.encode('utf-8', 'replace'),
+                            journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
+                            group_name=eg.name, #.encode("utf-8", "replace"),
                             url_root=url_root
                             )
 
@@ -968,7 +968,7 @@ class PublisherReApplication(ApplicationContext):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        journal_name = self.target.bibjson().title.encode('utf-8', 'replace')
+        journal_name = self.target.bibjson().title, #.encode('utf-8', 'replace')
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -1062,7 +1062,9 @@ class PublicApplication(FormContext):
                             fro=fro,
                             subject=subject,
                             template_name="email/suggestion_received.txt",
-                            suggestion=self.target,
+                            # suggestion=self.target,
+                            title=self.target.bibjson().title,
+                            url=self.target.bibjson().get_single_url(urltype="homepage")
                             )
 
 ### Journal form contexts ###
