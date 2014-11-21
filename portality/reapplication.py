@@ -630,7 +630,7 @@ class Suggestion2QuestionXwalk(object):
         def _rationalise_other(val, form_choices, other_val):
             val = normal(val)
             if val is None or val == "":
-                return None
+                return None, None
 
             opts = [aid.strip() for aid in val.split(",")]
 
@@ -712,7 +712,7 @@ class Suggestion2QuestionXwalk(object):
         def _this_or_other(val, form_options, other_val):
             val = normal(val)
             if val is None:
-                return None
+                return None, None
 
             cs = {}
             [cs.update({c.lower() : c}) for c, _ in form_options]
@@ -822,8 +822,10 @@ class Suggestion2QuestionXwalk(object):
         forminfo["license_embedded_url"] = normal(cls.a(qs, 44))
 
         lic, licother = get_license(cls.a(qs, 45))
-        forminfo["license"] = lic
-        forminfo["license_other"] = licother
+        if lic is not None:
+            forminfo["license"] = lic
+            if licother is not None:
+                forminfo["license_other"] = licother
 
         la = license_aspects(cls.a(qs, 46))
         if la is not None and len(la) > 0:
