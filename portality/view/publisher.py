@@ -50,7 +50,7 @@ def reapplication_page(reapplication_id):
         if fc.validate():
             try:
                 fc.finalise()
-                flash('Your Re-Application has been saved.  You may still edit it until a DOAJ administrator picks it up for review.', 'success')
+                flash('Your Re-Application has been saved.  You may still edit it until a DOAJ editor picks it up for review.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
                 return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))

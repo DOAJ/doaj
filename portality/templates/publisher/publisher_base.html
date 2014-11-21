@@ -8,7 +8,7 @@
         {% if current_user.id|pub_filter_note %}
             <div class="alert alert-info">
             <!-- Text in this div will be part of the alert notice to publishers-->
-            <strong>You have re-applications to complete.</strong> All journals in DOAJ must now reapply to remain indexed.
+            <strong>You have re-applications to complete.</strong> As of March 2014, DOAJ has new criteria for inclusion and all journals wishing to remain in DOAJ must now reapply.
             Go to the <a href="{{ url_for('publisher.updates_in_progress') }}">Updates in Progress</a> tab where the re-application can be found for each journal.
 
             {% if current_user.id|pub_filter_bulk %}
