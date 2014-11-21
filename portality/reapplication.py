@@ -65,7 +65,9 @@ def validate_csv_contents(sheet):
 
     for issn, questions in sheet.columns():
         # skip the question column
-        if issn == "":
+        if issn is not None:
+            issn = issn.strip()
+        if issn is None or issn == "":
             continue
 
         # conver the questions into form data and then into a multidict, which is the form_data format required by
