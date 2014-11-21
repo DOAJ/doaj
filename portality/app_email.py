@@ -3,7 +3,9 @@ from flask_mail import Mail, Message, Attachment
 from portality.core import app
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=None, **template_params):
+def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
+    bcc = [] if bcc is None else bcc
+    files = [] if files is None else files
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
@@ -17,6 +19,11 @@ def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=N
     if app.config.get('CC_ALL_EMAILS_TO', None) is not None:
         bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
 
+    # ensure everything is unicode
+    unicode_params = {}
+    for k, v in template_params.iteritems():
+        unicode_params[k] = to_unicode(v)
+
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
     # TODO: This could also find and render an HTML template if present
@@ -25,11 +32,11 @@ def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=N
         plaintext_body = msg_body
     else:
         try:
-            plaintext_body = render_template(template_name, **template_params)
+            plaintext_body = render_template(template_name, **unicode_params)
         except:
             appcontext = False
             with app.test_request_context():
-                plaintext_body = render_template(template_name, **template_params)
+                plaintext_body = render_template(template_name, **unicode_params)
 
     # create a message
     msg = Message(subject=subject,
@@ -54,6 +61,16 @@ def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=N
             mail = Mail(app)
             mail.send(msg)
 
+def to_unicode(val):
+    if isinstance(val, unicode):
+        return val
+    elif isinstance(val, basestring):
+        try:
+            return val.decode("utf8", "replace")
+        except UnicodeDecodeError:
+            raise ValueError("Could not decode string")
+    else:
+        return val
 
 def make_attachment(filename, content_type, data, disposition=None, headers=None):
     """
