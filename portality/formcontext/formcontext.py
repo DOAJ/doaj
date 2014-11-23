@@ -817,8 +817,15 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
-        self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
 
+        # If the source object has the suggester set, it must have been edited via the UI
+        # - do not override that information.
+        if self.source.suggester.get("name") or self.source.suggester.get("email"):
+            self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
+        else:
+        # but if the source object has no suggester set, then this reapplication is being
+        # created via CSV upload now, for the first time, so copy over the contact info
+            self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
