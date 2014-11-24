@@ -706,10 +706,10 @@ class Suggestion2QuestionXwalk(object):
             return _this_or_other(val, choices.Choices.licence(), choices.Choices.licence_val("other"))
 
         def copyright(val):
-            return _this_or_other(val, choices.Choices.copyright(), choices.Choices.copyright_other_val("other"))
+            return _this_or_other(yes_no(val), choices.Choices.copyright(), choices.Choices.copyright_other_val("other"))
 
         def publishing_rights(val):
-            return _this_or_other(val, choices.Choices.publishing_rights(), choices.Choices.publishing_rights_other_val("other"))
+            return _this_or_other(yes_no(val), choices.Choices.publishing_rights(), choices.Choices.publishing_rights_other_val("other"))
 
         def _this_or_other(val, form_options, other_val):
             val = normal(val)
