@@ -46,6 +46,8 @@ def query(path='Pages'):
     owner_filter = False # don't apply the owner filter unless expressly requested
     default_filter = True # always apply the default filter unless asked otherwise
     editor_filter = False # don't apply the editor group filter unless expressly requested
+    reapp_filter = False # don't apply the reapplication status filter unless expressly requested
+    associate_filter = False # don't limit to associates unless expressly requested
     role = None
     qr = app.config.get("QUERY_ROUTE", {})
     frag = request.path
@@ -56,6 +58,7 @@ def query(path='Pages'):
             owner_filter = qr[qroute].get("owner_filter")
             editor_filter = qr[qroute].get("editor_filter", False)
             associate_filter = qr[qroute].get("associate_filter", False)
+            reapp_filter = qr[qroute].get("reapp_filter", False)
             break
     
     # if there is a role, then check that the user is not anonymous and
@@ -143,6 +146,9 @@ def query(path='Pages'):
         if editor_filter:
             shoulds.update(_editor_filter())
 
+        if reapp_filter:
+            shoulds.update(_reapp_filter())
+
         if associate_filter:
             terms.update(_associate_filter())
 
@@ -164,6 +170,9 @@ def _editor_filter():
     for g in groups:
         gnames.append(g.name)
     return {"admin.editor_group.exact" : gnames}
+
+def _reapp_filter():
+    return {"admin.application_status" : ["reapplication", "submitted"]}
 
 def _owner_filter():
     return {"admin.owner.exact" : current_user.id}

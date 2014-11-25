@@ -21,3 +21,10 @@ portality/migrate/p1p2/*.csv
 portality/migrate/p1p2/*.csv.bak
 
 deploy/newrelic.ini
+
+# re-application debris
+reapp_csvs/*.csv
+upload_reapplication/*
+email_list_11_plus.csv
+email_list_less_11.csv
+emails_rejected.csv

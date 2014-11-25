@@ -156,7 +156,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             return None
 
     @classmethod
-    def keys(cls,mapping=False,prefix=''):
+    def es_keys(cls, mapping=False, prefix=''):
         # return a sorted list of all the keys in the index
         if not mapping:
             mapping = cls.query(endpoint='_mapping')[cls.__type__]['properties']
@@ -167,12 +167,12 @@ class DomainObject(UserDict.IterableUserDict, object):
                     if item != 'exact' and not item.startswith('_'):
                         keys.append(prefix + item + app.config['FACET_FIELD'])
             else:
-                keys = keys + cls.keys(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
+                keys = keys + cls.es_keys(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
         keys.sort()
         return keys
         
     @staticmethod
-    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, **kwargs):
+    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
         '''
         Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
@@ -235,11 +235,21 @@ class DomainObject(UserDict.IterableUserDict, object):
                 if not isinstance(should_terms[s],list): should_terms[s] = [should_terms[s]]
                 query["query"]["bool"]["must"].append({"terms" : {s : should_terms[s]}})
 
+        sort_specified = False
         for k,v in kwargs.items():
             if k == '_from':
                 query['from'] = v
+            elif k == 'sort':
+                sort_specified = True
+                query['sort'] = v
             else:
                 query[k] = v
+        if "sort" in query:
+            sort_specified = True
+
+        if not sort_specified and consistent_order:
+            query['sort'] = [{"id" : {"order" : "asc"}}]
+
         # print json.dumps(query)
         return query
 
@@ -395,7 +405,26 @@ class DomainObject(UserDict.IterableUserDict, object):
             # terms will now go to the front of the result list
             result.append({"id": term['term'], "text": term['term']})
         return result
-        
+
+    @classmethod
+    def q2obj(cls, **kwargs):
+        res = cls.query(**kwargs)
+        if 'hits' not in res:
+            return []
+        if res['hits']['total'] <= 0:
+            return []
+
+        hits = res['hits']['hits']
+        results = [cls(**h.get('_source', {})) for h in hits]
+        return results
+
+    @classmethod
+    def all(cls, size=10000000, **kwargs):
+        return cls.q2obj(size=size, **kwargs)
+
+    @classmethod
+    def count(cls):
+        return requests.get(cls.target() + '_count').json()['count']
 
 ########################################################################
 ## Some useful ES queries

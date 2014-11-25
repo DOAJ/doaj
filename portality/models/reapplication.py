@@ -19,6 +19,26 @@ class BulkReApplication(DomainObject):
     def set_owner(self, owner):
         self.data["owner"] = owner
 
+    @property
+    def created_timestamp(self):
+        if "created_date" not in self.data:
+            return None
+        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
+
+    @classmethod
+    def by_owner(cls, owner, size=10):
+        q = OwnerBulkQuery(owner, size)
+        res = cls.query(q=q.query())
+        rs = [BulkReApplication(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
+        return rs
+
+    @classmethod
+    def count_by_owner(cls, owner):
+        q = OwnerBulkQuery(owner, 0)
+        res = cls.query(q=q.query())
+        count = res.get("hits", {}).get("total", 0)
+        return count
+
 class BulkUpload(DomainObject):
     __type__ = "bulk_upload"
 
@@ -67,14 +87,20 @@ class BulkUpload(DomainObject):
     def error(self):
         return self.data.get("error")
 
+    @property
+    def error_details(self):
+        return self.data.get("error_details")
+
     def upload(self, owner, filename, status="incoming"):
         self.data["filename"] = filename
         self.data["owner"] = owner
         self.data["status"] = status
 
-    def failed(self, message):
+    def failed(self, message, traceback=''):
         self.data["status"] = "failed"
         self.data["error"] = message
+        if traceback:
+            self.data["error_details"] = traceback
         self.data["processed_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def processed(self, reapplied, skipped):
@@ -83,7 +109,13 @@ class BulkUpload(DomainObject):
         self.data["skipped"] = skipped
         self.data["processed_date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-
+    @classmethod
+    def list_incoming(cls):
+        q = StatusBulkQuery("incoming")
+        # FIXME: does not use scroll search, so actually should only be used for read-only
+        # operations.  In reality, probably the number of incoming will be far less than the
+        # page size, so no one will notice
+        return cls.iterate(q=q.query())
 
     @classmethod
     def by_owner(cls, owner, size=10):
@@ -91,6 +123,21 @@ class BulkUpload(DomainObject):
         res = cls.query(q=q.query())
         rs = [BulkUpload(**r.get("_source")) for r in res.get("hits", {}).get("hits", [])]
         return rs
+
+class StatusBulkQuery(object):
+    def __init__(self, status):
+        self.status = status
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" :[
+                        {"term" : {"status.exact" : self.status}}
+                    ]
+                }
+            }
+        }
 
 class OwnerBulkQuery(object):
     base_query = {

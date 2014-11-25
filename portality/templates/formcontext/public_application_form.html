@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Journal Application Form</h2>
+
+<p>If you know a journal that should be included in DOAJ, please ask its publisher to complete this form.</p>
+
+<p>We provide some <a href="{{ url_for('doaj.faq', _anchor='procedure') }}">guidance on the information we are looking for</a> but
+that list is by no means exhaustive. Applicants are simply encouraged to complete the form clearly and honestly. If you
+do not know the answer to a question, you can request help by contacting us.</p>
+
+<p>Currently, it is not possible to save your progress or for us to send you a confirmation email. We have
+<a href="{{ url_for('doaj.faq', _anchor='application') }}">created a spreadsheet version of the form</a> and some other
+tips to help you. Guides to completing the form are available in <a href="{{ url_for('doaj.translated') }}">other
+languages</a>.</p>
+
+
+<form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
+    {% if form_context.errors %}
+        <h4 class="red form-status">There is a problem with the submitted form.</h4>
+    {% endif %}
+
+    <fieldset>
+
+        {# include the base application form which contains all the biblio data #}
+        {% include 'formcontext/_base_application_form.html' %}
+
+        <div class="row-fluid">
+            <div class="span3">&nbsp;</div>
+            <div class="span6 with-borders form-section">
+                <h3 class="heading-aligned-with-fields">Your details</h3>
+                {% autoescape off %}
+                {{ form_context.render_field_group("submitter_info") }}
+                {% endautoescape %}
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button class="btn btn-success" type="submit">
+                            Submit &gt;
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </fieldset>
+</form>
+
+{% endblock %}

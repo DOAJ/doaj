@@ -24,7 +24,7 @@ You can check that your articles have been successfully added to your journal by
 - Our statistics show more than 900 000 page views a month to DOAJ from all over the world.
 - Many web crawlers collect content from DOAJ to be a part of their search engines.
 - DOAJ is OAI compliant and once an article is in DOAJ, it is automatically harvestable.
-- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visbility
+- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visibility
 - Many aggregators and database providers regularly harvest DOAJ content in order to include it to their commercial databases.
 - DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.
 

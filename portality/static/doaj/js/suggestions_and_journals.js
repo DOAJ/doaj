@@ -144,8 +144,12 @@ jQuery(document).ready(function($) {
     }
 
     setup_subject_tree();
-    setup_remove_buttons();
-    setup_add_buttons();
+    if (typeof(notes_editable) !== 'undefined' && notes_editable === false) {  // set by template
+        $('#add_note_btn').hide()
+    } else {
+        setup_remove_buttons();
+        setup_add_buttons();
+    }
 
     $("#editor_group").change(function(event) {
         event.preventDefault()
@@ -304,7 +308,7 @@ function highlight_target() {
 function setup_add_buttons() {
     var customisations = {
         // by container element id - container of the add more button and the fields being added
-        'notes-outer-container': {'value': 'Add a note', 'id': 'add_note_btn'}
+        'notes-outer-container': {'value': 'Add new note', 'id': 'add_note_btn'}
     };
 
     $('.addable-field-container').each(function() {

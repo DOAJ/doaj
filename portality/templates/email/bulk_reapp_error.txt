@@ -1,0 +1,9 @@
+Dear {{account.id}},
+
+There was a problem processing your reapplications uploaded on {{when}}.
+Please see the attached file for details of the errors. The file shows you the ISSN and Question where an issue was found, the coordinates of the cell that caused the error, and details of what the error is.
+
+None of the re-applications in your upload will be processed until you have fixed the errors. Please fix the errors in the CSV file and re-upload it to us.
+
+Regards,
+The DOAJ Team
