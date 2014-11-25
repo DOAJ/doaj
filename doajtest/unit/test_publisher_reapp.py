@@ -338,6 +338,8 @@ class TestPublisherReApplication(DoajTestCase):
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
         assert fc.target.application_status == "reapplication" # because it hasn't been finalised yet
+        assert fc.target.suggester['name'] == fc.form.contact_name.data
+        assert fc.target.suggester['email'] == fc.form.contact_email.data
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
