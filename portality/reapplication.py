@@ -308,9 +308,9 @@ class Suggestion2QuestionXwalk(object):
         ("publisher",                           "6) Publisher *"),
         ("society_institution",                 "7) Society or Institution"),
         ("platform",                            "8) Platform, Host or Aggregator"),
-        ("contact_name",                        "9) Name of contact for this journal (May not be edited if already filled in)"),
-        ("contact_email",                       "10) Contact's email address (May not be edited if already filled in)"),
-        ("confirm_contact_email",               "11) Confirm contact's email address (May not be edited if already filled in)"),
+        ("contact_name",                        "9) Name of contact for this journal EDIT ONLY IF BLANK *"),
+        ("contact_email",                       "10) Contact's email address EDIT ONLY IF BLANK *"),
+        ("confirm_contact_email",               "11) Confirm contact's email address EDIT ONLY IF BLANK *"),
         ("country",                             "12) In which country is the publisher of the journal based? *"),
         ("processing_charges",                  "13) Does the journal have article processing charges (APCs)? *"),
         ("processing_charges_amount",           "14) Amount **"),
@@ -325,7 +325,7 @@ class Suggestion2QuestionXwalk(object):
         ("digital_archiving_policy",            "23) What digital archiving policy or program(s) does the journal belong to? *"),
         ("digital_archiving_policy_library",    "23a) If a national library, which one?"),
         ("digital_archiving_policy_other",      "23b) If Other, enter it here"),
-        ("digital_archiving_policy_url",        "24) Enter the URL where this information can be found *"),
+        ("digital_archiving_policy_url",        "24) Enter the URL where this information can be found **"),
         ("crawl_permission",                    "25) Does the journal allow anyone to crawl the full-text of the journal? *"),
         ("article_identifiers",                 "26) Which permanent article identifiers does the journal use? *"),
         ("metadata_provision",                  "27) Does the journal provide, or intend to provide, article level metadata to DOAJ? *"),
@@ -352,9 +352,9 @@ class Suggestion2QuestionXwalk(object):
         ("open_access",                         "48) Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles? *"),
         ("deposit_policy",                      "49) With which deposit policy directory does the journal have a registered deposit policy? *"),
         ("copyright",                           "50) Does the journal allow the author(s) to hold the copyright without restrictions? *"),
-        ("copyright_url",                       "51) Enter the URL where this information can be found *"),
+        ("copyright_url",                       "51) Enter the URL where this information can be found **"),
         ("publishing_rights",                   "52) Will the journal allow the author(s) to retain publishing rights without restrictions? *"),
-        ("publishing_rights_url",               "53) Enter the URL where this information can be found *")
+        ("publishing_rights_url",               "53) Enter the URL where this information can be found **")
     ]
 
     DEGEN = {
