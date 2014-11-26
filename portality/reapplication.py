@@ -84,7 +84,7 @@ def validate_csv_contents(sheet):
         suggs = models.Suggestion.find_by_issn(issn)
 
         if suggs is None or len(suggs) == 0:
-            raise CsvValidationException("Unable to locate a ReApplication with the issn " + issn + "; spreadsheet is invalid")
+            raise CsvValidationException("Unable to locate a reapplication with the issn " + issn + "; spreadsheet is invalid")
 
         s = None
         if len(suggs) > 1:
@@ -99,7 +99,7 @@ def validate_csv_contents(sheet):
                 s = reapps[0]
             else:
                 # it could be the reapplication has already been accepted, in which case there's not a lot we can do
-                raise CsvValidationException("Unable to locate a unique ReApplication with the issn " + issn + "; please contact an administrator")
+                raise CsvValidationException("Unable to locate a unique reapplication with the issn " + issn + "; please contact an administrator")
         else:
             s = suggs[0]
 

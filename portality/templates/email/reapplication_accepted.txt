@@ -1,6 +1,6 @@
 Dear publisher,
 
-The re-application for {{ journal_name }} has now been accepted back into DOAJ.
+The reapplication for {{ journal_name }} has now been accepted back into DOAJ.
 You may access the journal in your Publisher Area: {{ url_root }}/publisher/ .
 You will need your username and password.
 If you do not already have a DOAJ account, you will receive more information in a separate email. (If you do not have your username or the instructions to set your password then please contact us: {{ url_root }}/contact .)

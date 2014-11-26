@@ -313,7 +313,7 @@ class TestManEdAppReview(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
-        """Give the editor's re-application form a full workout"""
+        """Give the editor's reapplication form a full workout"""
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
