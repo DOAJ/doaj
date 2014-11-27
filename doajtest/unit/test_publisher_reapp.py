@@ -265,7 +265,7 @@ class TestPublisherReApplication(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the publisher's re-application form
+    # Tests on the publisher's reapplication form
     ###########################################################
 
     def test_01_publisher_reapplication_success(self):

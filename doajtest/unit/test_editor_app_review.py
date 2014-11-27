@@ -313,11 +313,11 @@ class TestEditorAppReview(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the publisher's re-application form
+    # Tests on the publisher's reapplication form
     ###########################################################
 
     def test_01_editor_review_success(self):
-        """Give the editor's re-application form a full workout"""
+        """Give the editor's reapplication form a full workout"""
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE))

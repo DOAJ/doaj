@@ -406,7 +406,7 @@ class AssEdApplicationReviewForm(Workflow, JournalInformation, Suggestion, Subje
 
 class PublisherReApplicationForm(JournalInformation, Suggestion):
     """
-    Publisher's ReApplication form.  It consists of:
+    Publisher's reapplication form.  It consists of:
         * JournalInformation - journal bibliographic data
         * Suggestion - additional application metadata
     """

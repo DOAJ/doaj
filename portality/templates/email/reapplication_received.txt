@@ -2,9 +2,9 @@ Dear {{username}},
 
 {{journal_name}}
 
-Thank you for completing your re-application to DOAJ which has been safely received!
+Thank you for completing your reapplication to DOAJ which has been safely received!
 
-Please save this email as a record of when you submitted your re-application. We are unable to reply to emails requesting a status update for re-applications that are less than 3 months old.
+Please save this email as a record of when you submitted your reapplication. We are unable to reply to emails requesting a status update for reapplications that are less than 3 months old.
 
 Yours faithfully,
 

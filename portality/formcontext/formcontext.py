@@ -951,7 +951,7 @@ class PublisherReApplication(ApplicationContext):
         # Save the target
         self.target.save()
 
-        # email the publisher to tell them we received their re-application
+        # email the publisher to tell them we received their reapplication
         self._send_received_email()
 
     def render_template(self, **kwargs):
@@ -987,7 +987,7 @@ class PublisherReApplication(ApplicationContext):
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - re-application received"
+        subject = app.config.get("SERVICE_NAME","") + " - reapplication received"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
