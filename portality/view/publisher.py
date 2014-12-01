@@ -11,6 +11,7 @@ from portality.util import flash_with_url
 
 import os, requests, ftplib
 from urlparse import urlparse
+from time import sleep
 
 
 blueprint = Blueprint('publisher', __name__)
@@ -336,7 +337,7 @@ def bulk_reapply():
     f = request.files.get("file")
 
     if f.filename != "":
-        return _bulk_upload(f, csv_downloads, previous)
+        return _bulk_upload(f)
 
     flash("No file provided - select a file to upload and try again.", "error")
     return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
@@ -363,7 +364,7 @@ def bulk_download(filename):
     else:
         abort(404)
 
-def _bulk_upload(f, csv_downloads, previous):
+def _bulk_upload(f):
     # prep a record to go into the index, to record this upload
     record = models.BulkUpload()
     record.upload(current_user.id, f.filename)
@@ -380,9 +381,9 @@ def _bulk_upload(f, csv_downloads, previous):
         # save the index entry
         record.save()
 
-        previous = [record] + previous # add the new record to the previous records
+        sleep(2)  # let ES catch up so people can see their file is "in submission" on redirect/refresh
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return redirect(url_for('publisher.bulk_reapply'))
     except:
         # if we can't record either of these things, we need to back right off
         try:
@@ -395,7 +396,7 @@ def _bulk_upload(f, csv_downloads, previous):
             pass
 
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return redirect(url_for('publisher.bulk_reapply'))
 
 
 def _validate_authors(form, require=1):
