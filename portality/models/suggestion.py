@@ -192,7 +192,7 @@ class OwnerStatusQuery(object):
     }
     def __init__(self, owner, statuses, size=10):
         self._query = deepcopy(self.base_query)
-        owner_term = {"term" : {"owner" : owner}}
+        owner_term = {"match" : {"owner" : owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
         status_term = {"terms" : {"admin.application_status.exact" : statuses}}
         self._query["query"]["bool"]["must"].append(status_term)
