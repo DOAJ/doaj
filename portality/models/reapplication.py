@@ -153,7 +153,7 @@ class OwnerBulkQuery(object):
     }
     def __init__(self, owner, size=10):
         self._query = deepcopy(self.base_query)
-        owner_term = {"term" : {"owner" : owner}}
+        owner_term = {"match" : {"owner" : owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
         self._query["size"] = size
 
