@@ -197,7 +197,13 @@ APPLICATION_COL = [
 
 @classmethod
 def mock_issns_by_owner(cls, *args, **kwargs):
-    return ["1234-5678", "2345-6789", "3456-7890"]
+    issns = ["1234-5678", "2345-6789", "3456-7890", "4567-8901"]
+    for c_num in range(5, 80):
+        c_num = str(c_num)
+        issn = "6529-540" if len(c_num) == 1 else "6529-54"
+        issn += c_num
+        issns.append(issn)
+    return issns
 
 @classmethod
 def mock_find_by_issn(cls, *args, **kwargs):
@@ -319,6 +325,22 @@ class TestReApplication(DoajTestCase):
         c3[3] = "3456-7890"
         c3[4] = "7654-3210"
         sheet.set_column(c3[3], c3)
+
+        c4 = deepcopy(APPLICATION_COL)
+        c4[0] = "Fourth Title"
+        c4[3] = "4567-8901"
+        c4[4] = "6543-2109"
+        c4[54] = "invalid url"
+        sheet.set_column(c4[3], c4)
+
+        for c_num in range(5, 80):  # columns 1-4 are defined already, and we need, say, 26 * 3 columns for test 16 (so we can comfortably pick one from the middle and have it be > 27th column), so roughly 78, so why not 79?
+            c_num = str(c_num)
+            col = deepcopy(APPLICATION_COL)
+            col[0] = c_num + " Title"
+            col[3] = "6529-540" if len(c_num) == 1 else "6529-54"
+            col[3] += c_num
+            col[54] = "invalid url"
+            sheet.set_column(col[3], col)
 
         sheet.save()
 
@@ -681,3 +703,48 @@ class TestReApplication(DoajTestCase):
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
 
+    def test_15_error_report_cell_refs_rows(self):
+        sheet = reapplication.open_csv("invalid.csv")
+
+        with self.assertRaises(reapplication.ContentValidationException):
+            try:
+                fcs, skip = reapplication.validate_csv_contents(sheet)
+            except reapplication.ContentValidationException as e:
+                report = reapplication.generate_spreadsheet_error_object(sheet, e)
+
+                assert report["4567-8901"].has_key(56), report["4567-8901"]
+                assert report["4567-8901"][56] == (
+                            "4567-8901",
+                            "53) Enter the URL where this information can be found **",
+                            56,
+                            "E",
+                            "Invalid URL."
+                       ), report["4567-8901"][56]
+                raise e
+
+    def test_16_error_report_cell_refs_columns(self):
+        sheet = reapplication.open_csv("invalid.csv")
+
+        with self.assertRaises(reapplication.ContentValidationException):
+            try:
+                fcs, skip = reapplication.validate_csv_contents(sheet)
+            except reapplication.ContentValidationException as e:
+                report = reapplication.generate_spreadsheet_error_object(sheet, e)
+
+                assert report["6529-5440"].has_key(56), report["6529-5440"]
+                assert report["6529-5440"][56] == (
+                            "6529-5440",
+                            "53) Enter the URL where this information can be found **",
+                            56,
+                            "AO",  # the 41st column should be AO. AA is the 27th, AO is 14 after that (O is the 15th letter in the alphabet)
+                            "Invalid URL."
+                       ), report["6529-5440"][56]
+                raise e
+
+    def test_17_num2col(self):
+        assert reapplication.num2col(0) == 'A', reapplication.num2col(0)
+        assert reapplication.num2col(1) == 'B', reapplication.num2col(1)
+        assert reapplication.num2col(26) == 'AA', reapplication.num2col(26)
+        assert reapplication.num2col(40) == 'AO', reapplication.num2col(40)
+        assert reapplication.num2col(18277) == 'ZZZ', reapplication.num2col(18277)
+        assert reapplication.num2col(18278) == 'AAAA', reapplication.num2col(18278)
