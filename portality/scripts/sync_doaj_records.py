@@ -36,8 +36,12 @@ def sync_type(es_type, source_server, destination_server, testing):
     s = json.loads(source_data)
     d = json.loads(dest_data)
 
-    s_total = s['hits']['total']
-    s = s['hits']['hits']
+    try:
+        s_total = s['hits']['total']
+        s = s['hits']['hits']
+    except KeyError:
+        print 'Skipping', es_type, 'does not have created_date in its mapping. Probably 0 documents, so no mapping beyond the dynamic template has been created, so no point in syncing this type anyway.'
+        return
 
     d_total = d['hits']['total']
     d = d['hits']['hits']
@@ -68,13 +72,14 @@ def sync_type(es_type, source_server, destination_server, testing):
             if r.status_code not in [200, 201]:
                 print 'ES error for record', diff['_id'], 'HTTP status code:', r.status_code
 
-    print 'PUT', len(s), 'newest records into ES.'
+    #print 'PUT', len(s), 'newest records into ES.'
 
 
 def main(argv=None):
     if not argv:
         argv = sys.argv
 
+    # TODO use argparse and remove this terrible mess
     source_server = argv[1]
     destination_server = argv[2]
 
@@ -84,6 +89,9 @@ def main(argv=None):
             testing = True
 
     forever = False
+    if len(argv) > 3:
+        if argv[3] == 'forever':
+            forever = True
     if len(argv) > 4:
         if argv[4] == 'forever':
             forever = True
