@@ -182,7 +182,7 @@ def _url_upload(url, schema, previous):
         get.close()
         if get.status_code == requests.codes.ok:
             return __ok(previous, record)
-        return __fail(record, previous, error='error while checking submitted file reference: ' + get.status_code)
+        return __fail(record, previous, error='error while checking submitted file reference: {0}'.format(get.status_code))
 
 
     def __ftp_upload(record, previous, parsed_url):
@@ -245,8 +245,8 @@ def _url_upload(url, schema, previous):
         else:
             return __fail(record, previous, error='unsupported URL scheme "{0}". Only HTTP and FTP are supported.'.format(parsed_url.scheme))
 
-    except:
-        return __fail(record, previous, error="please check it before submitting again")
+    except Exception as e:
+        return __fail(record, previous, error="please check it before submitting again; " + e.message)
     
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
