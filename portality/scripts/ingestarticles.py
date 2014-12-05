@@ -138,6 +138,9 @@ do_sleep = False
 for remote in to_download:
     do_sleep = True
     path = os.path.join(upload_dir, remote.local_filename)
+    remote_filename = remote.filename
+    if isinstance(remote_filename, unicode):
+        remote_filename = remote_filename.encode('utf-8', errors='ignore')
     print "downloading", remote.filename
     # first, determine if ftp or http
     parsed_url = urlparse(remote.filename)
