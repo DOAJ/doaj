@@ -82,8 +82,7 @@ class Account(DomainObject, UserMixin):
             return
         if "journal" not in self.data:
             self.data["journal"] = []
-        if jid not in self.data["journal"]:
-            self.data["journal"].append(jid)
+        self.data["journal"].append(jid)
 
     def remove_journal(self, jid):
         if "journal" not in self.data:

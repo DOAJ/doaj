@@ -24,8 +24,7 @@ jQuery(document).ready(function($) {
         "edit_suggestion" : fv_edit_suggestion,
         "country_name": fv_country_name,
         'last_updated': fv_last_updated,
-        'suggested_on': fv_suggested_on,
-        'readonly_journal': fv_readonly_journal
+        'suggested_on': fv_suggested_on
     },
     hide_inactive_facets: true,
     facets: [
@@ -55,6 +54,7 @@ jQuery(document).ready(function($) {
         {'display':'Journal Country','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
+
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
         {'display':'Journal: Provider','field':'bibjson.provider'},
     ],
@@ -198,9 +198,6 @@ jQuery(document).ready(function($) {
         [
             {
                 "field" : "edit_suggestion"
-            },
-            {
-                "field" : "readonly_journal"
             }
         ],
     ],

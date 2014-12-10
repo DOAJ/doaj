@@ -1,11 +1,9 @@
-from flask import render_template, request
-from flask_mail import Mail, Message, Attachment
+from flask import render_template
+from flask_mail import Mail, Message
 from portality.core import app
 
 # Flask-Mail version of email service from util.py
-def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
-    bcc = [] if bcc is None else bcc
-    files = [] if files is None else files
+def send_mail(to, fro, subject, template_name=None, bcc=[], files=[], msg_body=None, **template_params):
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
@@ -16,27 +14,16 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     if bcc and not isinstance(bcc, list):
         bcc = [bcc]
 
-    if app.config.get('CC_ALL_EMAILS_TO', None) is not None:
+    if app.config.get('CC_ALL_EMAILS_TO'):
         bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
-
-    # ensure everything is unicode
-    unicode_params = {}
-    for k, v in template_params.iteritems():
-        unicode_params[k] = to_unicode(v)
 
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
-    # TODO: This could also find and render an HTML template if present
-    appcontext = True
+    # TODO: This could also find and render a HTML template if present
     if msg_body:
         plaintext_body = msg_body
     else:
-        try:
-            plaintext_body = render_template(template_name, **unicode_params)
-        except:
-            appcontext = False
-            with app.test_request_context():
-                plaintext_body = render_template(template_name, **unicode_params)
+        plaintext_body = render_template(template_name, **template_params)
 
     # create a message
     msg = Message(subject=subject,
@@ -53,35 +40,5 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
                   extra_headers=None
     )
 
-    if appcontext:
-        mail = Mail(app)
-        mail.send(msg)
-    else:
-        with app.test_request_context():
-            mail = Mail(app)
-            mail.send(msg)
-
-def to_unicode(val):
-    if isinstance(val, unicode):
-        return val
-    elif isinstance(val, basestring):
-        try:
-            return val.decode("utf8", "replace")
-        except UnicodeDecodeError:
-            raise ValueError("Could not decode string")
-    else:
-        return val
-
-def make_attachment(filename, content_type, data, disposition=None, headers=None):
-    """
-    Provide a function which can make attachments, insulating the caller from the flask-mail
-    underlying implementation.
-
-    :param filename:
-    :param content_type:
-    :param data:
-    :param disposition:
-    :param headers:
-    :return:
-    """
-    return Attachment(filename, content_type, data, disposition, headers)
+    mail = Mail(app)
+    mail.send(msg)

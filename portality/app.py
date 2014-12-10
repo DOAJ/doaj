@@ -7,13 +7,12 @@ new ones as required too.
 '''
 import os
 
-from flask import request, abort, render_template, redirect, send_file, url_for, flash
+from flask import request, abort, render_template, redirect, send_file, url_for
 from flask.ext.login import login_user, current_user
 
 import portality.models as models
 from portality.core import app, login_manager
 from portality import settings
-from portality.util import flash_with_url
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
@@ -35,7 +34,6 @@ app.register_blueprint(query, url_prefix="/admin_query")
 app.register_blueprint(query, url_prefix="/publisher_query")
 app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
-app.register_blueprint(query, url_prefix="/publisher_reapp_query")
 app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(forms, url_prefix='/forms')
 app.register_blueprint(editor, url_prefix='/editor')
@@ -84,6 +82,7 @@ SPONSORS = {
         'sage': {'name': 'SAGE Publications', 'logo': 'sage.gif', 'url': 'http://www.sagepublications.com/'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
+
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 

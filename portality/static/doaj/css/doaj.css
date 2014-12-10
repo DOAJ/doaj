@@ -19,10 +19,6 @@ select {
 }
 
 /* Classes */
-.pull-left {
-    float: left !important;
-}
-
 .pull-right {
     float: right !important;
 }
@@ -41,10 +37,6 @@ select {
 
 .blue {
     color: #7073FF;
-}
-
-a.readonly_journal_link {
-    margin-right: 10px;
 }
 
 .input-tiny {

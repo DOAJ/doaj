@@ -53,22 +53,4 @@ class TestSnapshot(DoajTestCase):
         print len(hist)
         assert len(hist) == 1
         assert hist[0].data.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
-
-    def test_03_snapshot_journal(self):
-        # make ourselves an example journal
-        j = models.Journal()
-        b = j.bibjson()
-        b.title = "Example journal"
-        b.add_url("http://examplejournal.telfor.rs")
-
-        # the snapshot is part of the save method
-        j.save()
-
-        # let the index catch up, then we can check this worked
-        time.sleep(5)
-
-        hist = models.JournalHistory.get_history_for(j.id)
-        assert len(hist) == 1
-        assert hist[0].data.get("bibjson", {}).get("title") == "Example journal"
-
         

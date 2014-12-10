@@ -4,42 +4,6 @@ from copy import deepcopy
 class Suggestion(Journal):
     __type__ = "suggestion"
 
-    @classmethod
-    def get_by_owner(cls, owner):
-        q = SuggestionQuery(owner=owner)
-        result = cls.query(q=q.query())
-        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
-        return records
-
-    def make_journal(self):
-        # first make a raw copy of the content into a journal
-        journal_data = deepcopy(self.data)
-        if "suggestion" in journal_data:
-            del journal_data['suggestion']
-        if "index" in journal_data:
-            del journal_data['index']
-        if "admin" in journal_data and "application_status" in journal_data["admin"]:
-            del journal_data['admin']['application_status']
-        if "id" in journal_data:
-            del journal_data['id']
-        if "created_date" in journal_data:
-            del journal_data['created_date']
-        if "last_updated" in journal_data:
-            del journal_data['last_updated']
-        if "bibjson" not in journal_data:
-            journal_data["bibjson"] = {}
-        journal_data['bibjson']['active'] = True
-
-        new_j = Journal(**journal_data)
-
-        # now deal with the fact that this could be a replacement of an existing journal
-        if self.current_journal is not None:
-            new_j.set_id(self.current_journal)
-            new_j.set_last_reapplication()
-            del new_j.data["admin"]["current_journal"]
-
-        return new_j
-
     ###############################################################
     # Overrides on Journal methods
     ###############################################################
@@ -63,10 +27,6 @@ class Suggestion(Journal):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["current_journal"] = journal_id
-
-    def remove_current_journal(self):
-        if "admin" in self.data and "current_journal" in self.data["admin"]:
-            del self.data["admin"]["current_journal"]
 
     @classmethod
     def delete_selected(cls, email=None, statuses=None):
@@ -133,33 +93,16 @@ class Suggestion(Journal):
     @property
     def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
     def set_suggester(self, name, email):
-        sugg = {}
-        if name is not None:
-            sugg["name"] = name
-        if email is not None:
-            sugg["email"] = email
-        if name is None and email is None:
-            return
-        self._set_suggestion_property("suggester", sugg)
-
-    def save(self, **kwargs):
-        self.prep()
-        super(Suggestion, self).save(snapshot=False, **kwargs)
+        self._set_suggestion_property("suggester", {"name" : name, "email" : email})
 
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
-    _owner_term = {"term" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
-    _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
 
-    def __init__(self, email=None, statuses=None, owner=None):
+    def __init__(self, email, statuses):
         self.email = email
-        self.owner = owner
-        if statuses:
-            self.statuses = statuses
-        else:
-            self.statuses = []
+        self.statuses = statuses
 
     def query(self):
         q = deepcopy(self._base_query)
@@ -171,33 +114,4 @@ class SuggestionQuery(object):
             st = deepcopy(self._status_terms)
             st["terms"]["admin.application_status.exact"] = self.statuses
             q["query"]["bool"]["must"].append(st)
-
-        if self.owner is not None:
-            ot = deepcopy(self._owner_term)
-            ot["term"]["admin.owner.exact"] = self.owner
-            q["query"]["bool"]["must"].append(ot)
         return q
-
-class OwnerStatusQuery(object):
-    base_query = {
-        "query" : {
-            "bool" : {
-                "must" : []
-            }
-        },
-        "sort" : [
-            {"created_date" : "desc"}
-        ],
-        "size" : 10
-    }
-    def __init__(self, owner, statuses, size=10):
-        self._query = deepcopy(self.base_query)
-        owner_term = {"term" : {"owner" : owner}}
-        self._query["query"]["bool"]["must"].append(owner_term)
-        status_term = {"terms" : {"admin.application_status.exact" : statuses}}
-        self._query["query"]["bool"]["must"].append(status_term)
-        self._query["size"] = size
-
-    def query(self):
-        return self._query
-

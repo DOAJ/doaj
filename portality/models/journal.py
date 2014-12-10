@@ -15,12 +15,11 @@ class Journal(DomainObject):
                     "CC License", "Content in DOAJ"]
 
     @classmethod
-    def find_by_issn(cls, issn):
+    def find_by_issn(self, issn):
         q = JournalQuery()
         q.find_by_issn(issn)
-        result = cls.query(q=q.query)
-        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
-        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        result = self.query(q=q.query)
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
     @classmethod
@@ -59,23 +58,6 @@ class Journal(DomainObject):
         bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
         self.data["bibjson"] = bibjson
 
-    def snapshot(self):
-        from portality.models import JournalHistory
-
-        snap = deepcopy(self.data)
-        if "id" in snap:
-            snap["about"] = snap["id"]
-            del snap["id"]
-        if "index" in snap:
-            del snap["index"]
-        if "last_updated" in snap:
-            del snap["last_updated"]
-        if "created_date" in snap:
-            del snap["created_date"]
-
-        hist = JournalHistory(**snap)
-        hist.save()
-
     def history(self):
         histories = self.data.get("history", [])
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
@@ -91,10 +73,9 @@ class Journal(DomainObject):
             pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
             if issn in eissns or issn in pissns:
                 return jbj
-
         return None
 
-    def make_continuation(self, replaces=None, isreplacedby=None):
+    def snapshot(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
         self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
 
@@ -138,60 +119,6 @@ class Journal(DomainObject):
         if len(histories) == 0:
             del self.data["history"]
 
-    def make_reapplication(self):
-        from portality.models import Suggestion
-        raw_reapp = deepcopy(self.data)
-
-        # remove all the properties that won't be carried
-        if "id" in raw_reapp:
-            del raw_reapp["id"]
-        if "index" in raw_reapp:
-            del raw_reapp["index"]
-        if "created_date" in raw_reapp:
-            del raw_reapp["created_date"]
-        if "last_updated" in raw_reapp:
-            del raw_reapp["last_updated"]
-        # there should not be an old suggestion record, but just to be safe
-        if "suggestion" in raw_reapp:
-            del raw_reapp["suggestion"]
-
-        # construct the new admin object from the ground up
-        admin = raw_reapp.get("admin")
-        if admin is not None:
-            na = {}
-            na["application_status"] = "reapplication"
-            na["current_journal"] = self.id
-            if "notes" in admin:
-                na["notes"] = admin["notes"]
-            if "contact" in admin:
-                na["contact"] = admin["contact"]
-            if "owner" in admin:
-                na["owner"] = admin["owner"]
-            if "editor_group" in admin:
-                na["editor_group"] = admin["editor_group"]
-            if "editor" in admin:
-                na["editor"] = admin["editor"]
-            raw_reapp["admin"] = na
-
-        # make the new suggestion
-        reapp = Suggestion(**raw_reapp)
-        reapp.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        # there is no suggester, so we copy the journal contact details into the
-        # suggester fields
-        contacts = reapp.contacts()
-        if len(contacts) > 0:
-            reapp.set_suggester(contacts[0].get("name"), contacts[0].get("email"))
-
-        reapp.save()
-
-        # update this record to include the reapplication id
-        self.set_current_application(reapp.id)
-        self.save()
-
-        # finally, return the reapplication in case the caller needs it
-        return reapp
-
     def is_in_doaj(self):
         return self.data.get("admin", {}).get("in_doaj", False)
 
@@ -211,21 +138,6 @@ class Journal(DomainObject):
 
     def contacts(self):
         return self.data.get("admin", {}).get("contact", [])
-
-    def get_latest_contact_name(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("name", "")
-
-    def get_latest_contact_email(self):
-        try:
-            contact = self.contacts()[-1]
-        except IndexError as e:
-            return ""
-        return contact.get("email", "")
-
 
     def add_contact(self, name, email):
         if "admin" not in self.data:
@@ -322,12 +234,10 @@ class Journal(DomainObject):
         return issns
 
     def is_ticked(self):
-        return self.data.get("admin", {}).get("ticked", False)
+        return self.data.get("ticked", False)
 
     def set_ticked(self, ticked):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["ticked"] = ticked
+        self.data["ticked"] = ticked
 
     @property
     def last_reapplication(self):
@@ -501,11 +411,9 @@ class Journal(DomainObject):
         self.calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self, snapshot=True, **kwargs):
+    def save(self, **kwargs):
         self.prep()
         super(Journal, self).save(**kwargs)
-        if snapshot:
-            self.snapshot()
 
     def csv(self, multival_sep=','):
         """

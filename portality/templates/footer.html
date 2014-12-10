@@ -4,7 +4,7 @@
         <div class="row-fluid">
             <div class="span12 centre-text-container" id="footer-sponsors">
                 {% for s in sponsors.values() %}
-                    <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}" alt="{{ s['name'] }}">
+                    <a href="{{ s['url'] }}" target="_blank">
                         <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo'])  }}" />
                     </a> 
                 {% endfor %}

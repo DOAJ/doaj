@@ -166,7 +166,7 @@ fv_title_field = (function (resultobj) {
             } else {
                 field += "&nbsp" + resultobj.bibjson.title;
             }
-            if (resultobj.admin.ticked) {
+            if (resultobj.ticked && resultobj['ticked']) {  //  relies on short circuit
                 field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
             }
             return field + "</span>"
@@ -248,22 +248,6 @@ fv_edit_suggestion = (function (resultobj) {
     };
     return that;
 })();
-
-fv_readonly_journal = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj.admin && resultobj.admin.current_journal) {
-            var result = '<a class="readonly_journal_link pull-right" href="';
-            result += readonly_journal_url;
-            result += resultobj.admin.current_journal;
-            result += '" target="_blank"';
-            result += '>View associated journal</a>';
-            return result;
-        }
-        return false;
-    };
-    return that;
-})();
-
 
 fv_delete_article = (function (resultobj) {
     var that = function(resultobj) {
@@ -408,21 +392,6 @@ fv_delete_editor_group = (function (resultobj) {
         result += '" target="_blank"';
         result += '>Delete this group</a>';
         return result;
-    };
-    return that;
-})();
-
-fv_view_reapplication = (function (resultobj) {
-    var that = function(resultobj) {
-        if (resultobj['suggestion']) {
-            var result = '<a class="edit_suggestion_link pull-right" href="';
-            result += reapplication_edit_url;
-            result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this application</a>';
-            return result;
-        }
-        return false;
     };
     return that;
 })();

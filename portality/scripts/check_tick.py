@@ -1,6 +1,5 @@
 from portality import models
 from datetime import datetime
-""" All this does is scroll through all Journals and run prep(), which includes a check for the tick. """
 
 start = datetime.now()
 

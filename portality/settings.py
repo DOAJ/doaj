@@ -175,8 +175,7 @@ QUERY_ROUTE = {
     "admin_query" : {"role" : "admin", "default_filter": False},
     "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
     "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
-    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
-    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : True}
+    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True}
 }
 
 # ========================
@@ -192,8 +191,6 @@ MEDIA_FOLDER = "media"
 # folder name for storing page content
 # will be added under the templates/pagemanager route
 CONTENT_FOLDER = "content"
-
-
 
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
@@ -264,12 +261,6 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
-# =================================
-# Settings for reapplication process
-
-# Whether reactivation is ongoing; when False, reapplication pages will be hidden.
-REAPPLICATION_ACTIVE = True
-
 
 # =================================
 # File Upload and crosswalk settings
@@ -277,9 +268,6 @@ REAPPLICATION_ACTIVE = True
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
-
-# Reapplication upload directory
-REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
 
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available
@@ -312,9 +300,6 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
-
-#Publisher CSV storage
-BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a

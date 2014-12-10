@@ -1,11 +1,10 @@
-# In order to install doaj you need to run
+# In order to install uniboard you need to run 
 # pip install -r requirements.txt
 # (i.e. target this file with the -r switch on pip).
 
 # first get esprit, specifically the version we know will work (+ it's
 # not on PyPI)
 -e git+https://github.com/CottageLabs/esprit.git@f65e471ecdcd30ad970094a2e4d6789ea62424ae#egg=esprit
--e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
 
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

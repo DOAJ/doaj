@@ -1,9 +1,13 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory
 
 class TestClient(DoajTestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""
@@ -89,11 +93,3 @@ class TestClient(DoajTestCase):
         assert br.skipped == 5
         assert br.processed_date is not None
         assert br.processed_timestamp is not None
-
-    def test_06_make_journal(self):
-        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        j = s.make_journal()
-
-        assert j.id != s.id
-        assert "suggestion" not in j.data
-        assert j.data.get("bibjson", {}).get("active")

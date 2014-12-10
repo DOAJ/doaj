@@ -212,9 +212,6 @@ jQuery(document).ready(function($) {
         [
             {
                 "field" : "edit_suggestion"
-            },
-            {
-                "field" : "readonly_journal"
             }
         ],
     ],

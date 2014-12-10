@@ -87,13 +87,12 @@
     {% if not (field.type == 'CSRFTokenField' and not field.value) %}
         {% if field.type not in ['SubmitField', 'HiddenField', 'CSRFTokenField'] %}
 
-            {% if q_num %}<a class="animated" name="{{q_num}}"></a>{% endif %}
+        {% if q_num %}<a class="animated" name="{{q_num}}"></a>{% endif %}
 
             <label class="control-label" for="{{field.short_name}}">
               {% if q_num %} <a class="animated orange" href="#{{field.short_name}}-container" title="Link to this question" tabindex="-1">{{ q_num }})</a> {% endif %}
               {{field.label.text}}{% if field.flags.required %}&nbsp;<span class="red">*</span>{% endif %}{% if not field.flags.required and field.flags.display_required_star %}&nbsp;<span class="red">*</span>{% endif %}
             </label>
-
         {% endif %}
         
         {% set extra_class = '' %}

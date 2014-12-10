@@ -37,12 +37,6 @@ class FileUpload(DomainObject):
     def new(self):
         return self.data.get("new", 0)
 
-    @property
-    def created_timestamp(self):
-        if "created_date" not in self.data:
-            return None
-        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
-
     def set_schema(self, s):
         self.data["schema"] = s
 
@@ -77,6 +71,11 @@ class FileUpload(DomainObject):
 
     def downloaded(self):
         self.data["status"] = "downloaded"
+
+    def created_timestamp(self):
+        if "created_date" not in self.data:
+            return None
+        return datetime.strptime(self.data["created_date"], "%Y-%m-%dT%H:%M:%SZ")
 
     @classmethod
     def list_valid(self):

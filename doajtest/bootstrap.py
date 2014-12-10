@@ -1,9 +1,6 @@
 import time
 from portality import core, dao
 
-import logging
-logging.getLogger("requests").setLevel(logging.WARNING)
-
 def prepare_for_test():
     core.app.config['ELASTIC_SEARCH_DB'] = core.app.config['ELASTIC_SEARCH_TEST_DB']
 
