@@ -222,6 +222,7 @@ def ingest_from_upload(upload):
         report = ingest_csv(path, account, content_error_closure(upload, account), file_error_closure(upload, account))
         upload.processed(report.get("reapplied"), report.get("skipped"))
         upload.save()
+        email_csv_complete(account)
     except CsvValidationException as e:
         # this is where the structure of the csv itself is broken
         upload.failed(e.message, traceback.format_exc())
@@ -235,6 +236,7 @@ def ingest_from_upload(upload):
         upload.failed("An error was raised during processing - please contact an administrator", traceback.format_exc())
         upload.save()
         return
+
 
 def file_error_closure(upload, account):
 
@@ -258,6 +260,26 @@ def file_error_closure(upload, account):
             raise e
 
     return email_error
+
+
+def email_csv_complete(account):
+    to = [account.email]
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME","") + " - bulk reapplication processed"
+
+    try:
+        if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/bulk_reapp_complete.txt",
+                                account=account
+            )
+    except Exception as e:
+        magic = str(uuid.uuid1())
+        app.logger.error(magic + "\n" + repr(e))
+        raise e
+
 
 def content_error_closure(upload, account):
 
