@@ -187,9 +187,15 @@ def generate_spreadsheet_error(sheet, exception):
 # Workflow functions for ingesting a spreadsheet
 #################################################################
 
-def ingest_csv(path, account, error_callback=None):
-    sheet = open_csv(path)
-    validate_csv_structure(sheet, account)
+def ingest_csv(path, account, content_error_callback=None, file_error_callback=None):
+    try:
+        sheet = open_csv(path)
+        validate_csv_structure(sheet, account)
+    except CsvValidationException as e:
+        if file_error_callback is not None:
+            file_error_callback()
+        raise e
+
     try:
         fcs, skip = validate_csv_contents(sheet)
 
@@ -201,8 +207,8 @@ def ingest_csv(path, account, error_callback=None):
 
     except ContentValidationException as e:
         report = generate_spreadsheet_error(sheet, e)
-        if error_callback is not None:
-            error_callback(report)
+        if content_error_callback is not None:
+            content_error_callback(report)
         raise e
 
 def ingest_from_upload(upload):
@@ -213,7 +219,7 @@ def ingest_from_upload(upload):
         raise CsvIngestException("Unable to ingest CVS for non-existant account")
 
     try:
-        report = ingest_csv(path, account, email_error_closure(upload, account))
+        report = ingest_csv(path, account, content_error_closure(upload, account), file_error_closure(upload, account))
         upload.processed(report.get("reapplied"), report.get("skipped"))
         upload.save()
     except CsvValidationException as e:
@@ -230,7 +236,30 @@ def ingest_from_upload(upload):
         upload.save()
         return
 
-def email_error_closure(upload, account):
+def file_error_closure(upload, account):
+
+    def email_error():
+        to = [account.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - problems with your bulk reapplication"
+        when = datetime.strptime(upload.created_date, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %b %Y")
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/bulk_reapp_file_error.txt",
+                                    when=when,
+                                    account=account
+                )
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+    return email_error
+
+def content_error_closure(upload, account):
 
     def email_error(report):
         to = [account.email]
