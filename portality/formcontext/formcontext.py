@@ -998,7 +998,7 @@ class PublisherReApplication(ApplicationContext):
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
-                self.add_alert('Sent a confirmation email to ' + acc.email + ' as a record of this update')
+                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')

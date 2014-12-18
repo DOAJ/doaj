@@ -51,9 +51,10 @@ def reapplication_page(reapplication_id):
         if fc.validate():
             try:
                 fc.finalise()
-                flash('Your reapplication has been saved.  You may still edit it until a DOAJ editor picks it up for review.', 'success')
+                flash('Your reapplication has been submitted but it is editable until the DOAJ editorial team picks it up for review.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
+                flash("Close this tab to return to your Publisher's Area.", 'success')
                 return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
                 flash(e.message)
