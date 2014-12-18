@@ -983,7 +983,7 @@ class PublisherReApplication(ApplicationContext):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        journal_name = self.target.bibjson().title, #.encode('utf-8', 'replace')
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
