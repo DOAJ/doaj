@@ -394,6 +394,7 @@ class TestReApplication(DoajTestCase):
         bj1.add_identifier("eissn", "9876-5432")
         bj1.title = "First Title"
         bj1.add_language("ES")
+        bj1.add_language("Spanish") # which is not allowed, you know!  (should be "Spanish; Castillian")
 
         bj2 = s2.bibjson()
         bj2.remove_identifiers("pissn")
@@ -436,6 +437,9 @@ class TestReApplication(DoajTestCase):
         _, sheetqs = sheet.get_column(0)
 
         assert sheetqs == qs
+
+        # check that the disallowed language got stripped
+        assert "Spanish" not in vals1[34]
 
     def test_05_csv_xwalk_in(self):
         # convert the test answers into the form info

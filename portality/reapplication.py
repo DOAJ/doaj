@@ -452,6 +452,15 @@ class Suggestion2QuestionXwalk(object):
             nv = [opts.get(v) for v in val]
             return ", ".join(nv)
 
+        def languages(vals):
+            keep = []
+            codes = [c.lower() for c, _ in datasets.language_options]
+            names = [n.lower() for _, n in datasets.language_options]
+            for v in vals:
+                if v.lower() in codes or v.lower() in names:
+                    keep.append(v)
+            return ", ".join(keep)
+
         # start by converting the object to the forminfo version
         # which is used by the application form in the first plage
         forminfo = SuggestionFormXWalk.obj2form(suggestion)
@@ -506,7 +515,7 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q(31), fulltext_formats))
 
         kvs.append((cls.q(32), ", ".join(forminfo.get("keywords", []))))
-        kvs.append((cls.q(33), ", ".join(forminfo.get("languages", []))))
+        kvs.append((cls.q(33), languages(forminfo.get("languages", []))))
         kvs.append((cls.q(34), forminfo.get("editorial_board_url")))
         kvs.append((cls.q(35), forminfo.get("review_process")))
         kvs.append((cls.q(36), forminfo.get("review_process_url")))
