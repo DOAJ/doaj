@@ -314,7 +314,7 @@ class Suggestion2QuestionXwalk(object):
         ("country",                             "12) In which country is the publisher of the journal based? REFER TO CODE LIST IN HELP DOC *"),
         ("processing_charges",                  "13) Does the journal have article processing charges (APCs)? *"),
         ("processing_charges_amount",           "14) Amount **"),
-        ("processing_charges_currency",         "15) Currency REFER TO CODE LIST IN HELP DOC ** "),
+        ("processing_charges_currency",         "15) Currency REFER TO CODE LIST IN HELP DOC **"),
         ("submission_charges",                  "16) Does the journal have article submission charges? *"),
         ("submission_charges_amount",           "17) Amount **"),
         ("submission_charges_currency",         "18) Currency REFER TO CODE LIST IN HELP DOC **"),
