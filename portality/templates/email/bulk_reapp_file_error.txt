@@ -10,7 +10,7 @@ Your CSV upload for your reapplications has failed. This can happen for the foll
 4) You have tried to upload a file that is not a .csv file. We can only accept the .csv format.
 5) You have tried to upload a file that is not in the Unicode UTF8 format.
 
-Log back into your Publisher Area and check the 'Status of uploaded reapplications' section.
+Log back into your DOAJ Publisher Area and check the 'Status of uploaded reapplications' section.
 
 For more help on fixing this type of error, go to https://docs.google.com/a/doaj.org/document/d/1nh5fCgDdM6rP6ubwbvCOsUtzn-JJhUnDSF-E7sFnJpE/edit#heading=h.zigz1svodoa3
 
