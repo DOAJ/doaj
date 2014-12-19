@@ -537,7 +537,7 @@ class ManEdApplicationReview(ApplicationContext):
             j.save()
 
             # record the url the journal is available at in the admin are and alert the user
-            jurl = url_for("admin.journal_page", journal_id=j.id)
+            jurl = url_for("doaj.toc", identifier=j.id)
             if self.source.current_journal is not None:
                 self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
                 #self.source.remove_current_journal()
