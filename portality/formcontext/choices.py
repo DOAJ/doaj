@@ -154,6 +154,10 @@ class Choices(object):
         return cls.binary()
 
     @classmethod
+    def processing_charges_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
     def processing_charges_amount_optional(cls):
         return [cls.FALSE]
 
@@ -165,6 +169,10 @@ class Choices(object):
     @classmethod
     def submission_charges(cls):
         return cls.binary()
+
+    @classmethod
+    def submission_charges_url_optional(cls):
+        return [cls.FALSE]
 
     @classmethod
     def submission_charges_amount_optional(cls):
