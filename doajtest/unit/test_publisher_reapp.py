@@ -48,10 +48,12 @@ REAPPLICATION_SOURCE = {
             "year" : 1980,
         },
         "apc" : {
+            "url" : "http://apc.com",
             "currency" : "GBP",
             "average_price" : 2
         },
         "submission_charges" : {
+            "url" : "http://submission.com",
             "currency" : "USD",
             "average_price" : 4
         },
