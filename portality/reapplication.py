@@ -525,7 +525,7 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("processing_charges_amount"), forminfo.get("processing_charges_amount")))
         kvs.append((cls.q("processing_charges_currency"), forminfo.get("processing_charges_currency")))
         kvs.append((cls.q("submission_charges"), yes_no(forminfo.get("submission_charges"))))
-        kvs.append((cls.q("submission_charges_url"), forminfo.get("processing_charges_url")))
+        kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
         kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
         kvs.append((cls.q("submission_charges_currency"), forminfo.get("submission_charges_currency")))
         kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year")))

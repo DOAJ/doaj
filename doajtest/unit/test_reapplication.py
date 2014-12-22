@@ -43,10 +43,12 @@ APPLICATION_SOURCE = {
             "year" : 1980,
         },
         "apc" : {
+            "url" : "http://apc.com",
             "currency" : "GBP",
             "average_price" : 2
         },
         "submission_charges" : {
+            "url" : "http://submission.com",
             "currency" : "USD",
             "average_price" : 4
         },
@@ -486,23 +488,23 @@ class TestReApplication(DoajTestCase):
         col[0] = "    The   Title   "               # title
         col[11] = " united   kingdom    "           # country
         col[12] = "  YEs "                          # processing charges
-        col[14] = " gbp   "                         # processing_charges_currency
-        col[15] = "nO "                             # submission charges
-        col[17] = " pound  sterling"                # submission_charges_currency
-        col[20] = " whatever "                      # waiver_policy
-        col[22] = "  LOCKSS, A national library, Store it  "  # digital_archiving_policy
-        col[23] = "Dublin"                          # digital_archiving_policy_library
-        col[24] = "  Behind the sofa"               # digital_archiving_policy_other
-        col[27] = "DOI, ARK, PURL, Flag, Other"     # article_identifiers and article_identifiers_other (with unnecessary "Other" entry)
-        col[32] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
-        col[33] = "a, long, list, of, keywords, more, than, six"    # keywords
-        col[34] = "en, FR,  Vietnamese , Wibble"    # languages
-        col[36] = "edITORial   review   "           # review_process
-        col[46] = "CC BY"                           # license and license_other
-        col[47] = "BY, Share Alike, Whatever"       # license_checkbox
-        col[50] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
-        col[51] = "Now and again"                   # copyright
-        col[53] = "almost never"                    # publishing rights
+        col[15] = " gbp   "                         # processing_charges_currency
+        col[16] = "nO "                             # submission charges
+        col[19] = " pound  sterling"                # submission_charges_currency
+        col[22] = " whatever "                      # waiver_policy
+        col[24] = "  LOCKSS, A national library, Store it  "  # digital_archiving_policy
+        col[25] = "Dublin"                          # digital_archiving_policy_library
+        col[26] = "  Behind the sofa"               # digital_archiving_policy_other
+        col[29] = "DOI, ARK, PURL, Flag, Other"     # article_identifiers and article_identifiers_other (with unnecessary "Other" entry)
+        col[34] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
+        col[35] = "a, long, list, of, keywords, more, than, six"    # keywords
+        col[36] = "en, FR,  Vietnamese , Wibble"    # languages
+        col[38] = "edITORial   review   "           # review_process
+        col[48] = "CC BY"                           # license and license_other
+        col[49] = "BY, Share Alike, Whatever"       # license_checkbox
+        col[52] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
+        col[53] = "Now and again"                   # copyright
+        col[55] = "almost never"                    # publishing rights
 
 
         # run the xwalk and see that it produces what we expect
