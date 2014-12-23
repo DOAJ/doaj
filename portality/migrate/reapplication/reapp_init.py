@@ -183,6 +183,9 @@ def main():
         print "Generating Reapplication for journal", args.journal
         # FIXME: remove previous reapplication
         create_reapplication(args.journal)
+    else:
+        parser.print_help()
+
 
 if __name__ == "__main__":
     main()
