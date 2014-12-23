@@ -119,10 +119,12 @@ It is likely that history records will only be created upon request by the admin
             "number" : "<issue number>" # Deprecated - may be removed
         },
         "apc" : {
+            "url" : "<apc info url>",
             "currency" : "<currency code>",
             "average_price" : "<average price of APC>"
         },
         "submission_charges" : {
+            "url" : "<submission charges info url>",
             "currency" : "<currency code>",
             "average_price" : "<average price of submission charge>"
         },

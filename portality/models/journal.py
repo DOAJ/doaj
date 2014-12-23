@@ -732,11 +732,10 @@ class JournalBibJSON(GenericBibJSON):
     def oa_end(self):
         return self.bibjson.get("oa_end", {})
 
-
-
-    def set_apc(self, currency, average_price):
+    def set_apc(self, currency, average_price, url):
         if "apc" not in self.bibjson:
             self.bibjson["apc"] = {}
+        self.bibjson["apc"]["url"] = url
         self.bibjson["apc"]["currency"] = currency
         self.bibjson["apc"]["average_price"] = average_price
 
@@ -744,9 +743,10 @@ class JournalBibJSON(GenericBibJSON):
     def apc(self):
         return self.bibjson.get("apc", {})
 
-    def set_submission_charges(self, currency, average_price):
+    def set_submission_charges(self, currency, average_price, url):
         if "submission_charges" not in self.bibjson:
             self.bibjson["submission_charges"] = {}
+        self.bibjson["submission_charges"]["url"] = url
         self.bibjson["submission_charges"]["currency"] = currency
         self.bibjson["submission_charges"]["average_price"] = average_price
 

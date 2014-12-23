@@ -230,10 +230,10 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data, form.processing_charges_url.data)
 
         if interpret_special(form.submission_charges.data):
-            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data)
+            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data, form.submission_charges_url.data)
 
         suggestion.set_articles_last_year(form.articles_last_year.data, form.articles_last_year_url.data)
 
@@ -409,6 +409,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         apc = bibjson.apc
         if apc:
             forminfo['processing_charges'] = reverse_interpret_special(True)
+            forminfo['processing_charges_url'] = apc.get("url")
             forminfo['processing_charges_currency'] = apc.get('currency')
             forminfo['processing_charges_amount'] = apc.get('average_price')
         else:
@@ -417,6 +418,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         submission_charges = bibjson.submission_charges
         if submission_charges:
             forminfo['submission_charges'] = reverse_interpret_special(True)
+            forminfo['submission_charges_url'] = submission_charges.get("url")
             forminfo['submission_charges_currency'] = submission_charges.get('currency')
             forminfo['submission_charges_amount'] = submission_charges.get('average_price')
         else:
@@ -596,10 +598,10 @@ class JournalFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data, form.processing_charges_url.data)
 
         if interpret_special(form.submission_charges.data):
-            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data)
+            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data, form.submission_charges_url.data)
 
         if interpret_special(form.waiver_policy.data):
             bibjson.add_url(form.waiver_policy_url.data, 'waiver_policy')
@@ -767,6 +769,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         apc = bibjson.apc
         if apc:
             forminfo['processing_charges'] = reverse_interpret_special(True)
+            forminfo['processing_charges_url'] = apc.get("url")
             forminfo['processing_charges_currency'] = apc.get('currency')
             forminfo['processing_charges_amount'] = apc.get('average_price')
         else:
@@ -775,6 +778,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         submission_charges = bibjson.submission_charges
         if submission_charges:
             forminfo['submission_charges'] = reverse_interpret_special(True)
+            forminfo['submission_charges_url'] = submission_charges.get("url")
             forminfo['submission_charges_currency'] = submission_charges.get('currency')
             forminfo['submission_charges_amount'] = submission_charges.get('average_price')
         else:
