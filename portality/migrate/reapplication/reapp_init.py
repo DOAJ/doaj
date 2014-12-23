@@ -18,6 +18,54 @@ def delete_existing_reapp():
     # remove all of the current reapplication records
     models.BulkReApplication.delete_all()
 
+def create_reapplication(journal):
+    if not isinstance(journal, models.Journal):
+        journal = models.Journal.pull(journal)
+    if not isinstance(journal, models.Journal):
+        print "Unable to resolve Journal from identifier"
+
+    # determine if this is a re-application viable record
+    start_date = app.config.get("TICK_THRESHOLD", "2014-03-19T00:00:00Z")
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
+    d1 = dt.strptime(journal.created_date, date_format)
+    d2 = dt.strptime(start_date, date_format)
+
+    if d1 < d2 and journal.is_in_doaj():
+        journal.make_reapplication()
+    else:
+        print "Journal was non-viable for reapplication"
+        if d1 >= d2:
+            print "Was created more recently than the cut-off date"
+        if not journal.is_in_doaj():
+            print "Record is not in the public DOAJ dataset"
+
+def create_reapplications_for_account(acc):
+    if not isinstance(acc, models.Account):
+        acc = models.Account.pull(acc)
+
+    # FIXME: this is pretty inefficient, but it will do for the moment
+    all_journals = models.Journal.all_in_doaj()
+    start_date = app.config.get("TICK_THRESHOLD", "2014-03-19T00:00:00Z")
+    date_format = "%Y-%m-%dT%H:%M:%SZ"
+
+    for_reapplication = []
+
+    for j in all_journals:
+        if j.owner != acc.id:
+            continue
+
+        d1 = dt.strptime(j.created_date, date_format)
+        d2 = dt.strptime(start_date, date_format)
+        if d1 < d2:
+            for_reapplication.append(j)
+        else:
+            print "Journal " + j.id + "was non-viable for reapplication - it was created more recently than the cut-off"
+
+    for r in for_reapplication:
+        r.make_reapplication()
+
+    # FIXME: also make the csv if relevant
+
 
 def create_reapplications():
     all_journals = models.Journal.all_in_doaj()
@@ -114,9 +162,27 @@ def make_bulk_reapp_csv():
         print failed_bulk_reapps
 
 def main():
-    delete_existing_reapp()
-    create_reapplications()
-    make_bulk_reapp_csv()
+    import argparse
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-d", "--doaj", action="store_true", help="do all of the reapplications")
+    parser.add_argument("-a", "--acc", help="do reapplications for a specific account")
+    parser.add_argument("-j", "--journal", help="do reapplications for a specific journal")
+
+    args = parser.parse_args()
+
+    if args.doaj:
+        print "Generating Reapplication for entire DOAJ site"
+        delete_existing_reapp()
+        create_reapplications()
+        make_bulk_reapp_csv()
+    elif args.acc:
+        print "Generating Reapplication for account", args.acc
+        create_reapplications_for_account(args.acc)
+    elif args.journal:
+        print "Generating Reapplication for journal", args.journal
+        # FIXME: remove previous reapplication
+        create_reapplication(args.journal)
 
 if __name__ == "__main__":
     main()

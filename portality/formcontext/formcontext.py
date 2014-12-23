@@ -227,6 +227,10 @@ class PrivateContext(FormContext):
             # this means that the source doesn't know about current_journals, which is fine
             pass
 
+        # if the source is a journal, we need to carry the in_doaj flag
+        if isinstance(self.source, models.Journal):
+            self.target.set_in_doaj(self.source.is_in_doaj())
+
     @staticmethod
     def _subjects2str(subjects):
         subject_strings = []
