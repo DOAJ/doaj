@@ -302,6 +302,10 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["current_application"] = application_id
 
+    def remove_current_application(self):
+        if "admin" in self.data and "current_application" in self.data["admin"]:
+            del self.data["admin"]["current_application"]
+
     def known_issns(self):
         """ all issns this journal has ever been known by """
         issns = []
