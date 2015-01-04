@@ -142,8 +142,19 @@ class Suggestion(Journal):
             return
         self._set_suggestion_property("suggester", sugg)
 
-    def save(self, **kwargs):
+    def _sync_owner_to_journal(self):
+        if self.current_journal is None:
+            return
+        from portality.models import Journal
+        cj = Journal.pull(self.current_journal)
+        if cj is not None and cj.owner != self.owner:
+            cj.set_owner(self.owner)
+            cj.save(sync_owner=False)
+
+    def save(self, sync_owner=True, **kwargs):
         self.prep()
+        if sync_owner:
+            self._sync_owner_to_journal()
         super(Suggestion, self).save(snapshot=False, **kwargs)
 
 class SuggestionQuery(object):

@@ -501,8 +501,19 @@ class Journal(DomainObject):
         self.calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self, snapshot=True, **kwargs):
+    def _sync_owner_to_application(self):
+        if self.current_application is None:
+            return
+        from portality.models import Suggestion
+        ca = Suggestion.pull(self.current_application)
+        if ca is not None and ca.owner != self.owner:
+            ca.set_owner(self.owner)
+            ca.save(sync_owner=False)
+
+    def save(self, snapshot=True, sync_owner=True, **kwargs):
         self.prep()
+        if sync_owner:
+            self._sync_owner_to_application()
         super(Journal, self).save(**kwargs)
         if snapshot:
             self.snapshot()
