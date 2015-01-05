@@ -119,17 +119,19 @@ def validate_csv_contents(sheet):
 
     return succeeded, skip
 
-def generate_spreadsheet_error(sheet, exception):
-    def int2base(x, base):
-        digs = string.uppercase
-        if x == 0: return digs[0]
-        digits = []
-        while x:
-            digits.append(digs[x % base])
-            x /= base
-        digits.reverse()
-        return ''.join(digits)
 
+def num2col(col):
+    """Covert 0-relative column number to excel-style column label."""
+    # translated from PHP from http://stackoverflow.com/a/3302991/1154882
+    quot, rem = divmod(col, 26)  # col-1
+    letter = chr(rem + ord('A'))
+    if quot > 0:
+        return num2col(quot - 1) + letter
+    else:
+        return letter
+
+
+def generate_spreadsheet_error_object(sheet, exception):
     # first read all the errors out into a data structure that we can order
     # and extract all the relevant information for each line
     report = {}
@@ -139,12 +141,17 @@ def generate_spreadsheet_error(sheet, exception):
             q = Suggestion2QuestionXwalk.q(field)
             msg = "; ".join(messages)
             c = sheet.get_colnumber(issn)
-            c = int2base(c, 26)     # should work, as csv columns are zero indexed
+            c = num2col(c)
             r = Suggestion2QuestionXwalk.q2idx(field) + 2   # add 2 for the offset from the header + the 0 indexed array
             report[issn][r] = (issn, q, r, c, msg)
+    return report
+
+
+def generate_spreadsheet_error(sheet, exception):
+    report = generate_spreadsheet_error_object(sheet, exception)
 
     """
-    NOTE: this makes a long string suitable for writing as a text file
+    NOTE: the code below makes a long string suitable for writing as a text file
     # register where we will store the actual strings of the rows in the error report
     rows = []
 
