@@ -64,7 +64,7 @@ class JournalInformation(Form):
         choices = Choices.processing_charges()
     )
     processing_charges_url = URLField('Enter the URL where this information can be found',
-        [OptionalIf('processing_charges', optvals=Choices.processing_charges_url_optional()), URLOptionalScheme()],
+        [validators.DataRequired(), URLOptionalScheme()],
         description='This field is optional if you have selected "No" above'
     )
     processing_charges_amount = IntegerField('Amount',
@@ -81,7 +81,7 @@ class JournalInformation(Form):
         choices = Choices.submission_charges()
     )
     submission_charges_url = URLField('Enter the URL where this information can be found',
-        [OptionalIf('submission_charges', optvals=Choices.submission_charges_url_optional()), URLOptionalScheme()],
+        [validators.DataRequired(), URLOptionalScheme()],
         description='This field is optional if you have selected "No" above'
     )
     submission_charges_amount = IntegerField('Amount',
