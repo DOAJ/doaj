@@ -60,12 +60,12 @@ class JournalInformation(Form):
     )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question below',
+        # description = 'If "No" proceed to question below',
         choices = Choices.processing_charges()
     )
     processing_charges_url = URLField('Enter the URL where this information can be found',
         [validators.DataRequired(), URLOptionalScheme()],
-        description='This field is optional if you have selected "No" above'
+        # description='This field is optional if you have selected "No" above'
     )
     processing_charges_amount = IntegerField('Amount',
         [OptionalIf('processing_charges', optvals=Choices.processing_charges_amount_optional())],
@@ -77,12 +77,12 @@ class JournalInformation(Form):
 
     submission_charges = RadioField('Does the journal have article submission charges?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question below',
+        # description = 'If "No" proceed to question below',
         choices = Choices.submission_charges()
     )
     submission_charges_url = URLField('Enter the URL where this information can be found',
         [validators.DataRequired(), URLOptionalScheme()],
-        description='This field is optional if you have selected "No" above'
+        # description='This field is optional if you have selected "No" above'
     )
     submission_charges_amount = IntegerField('Amount',
         [OptionalIf('submission_charges', optvals=Choices.submission_charges_amount_optional())],
