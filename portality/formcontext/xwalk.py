@@ -230,10 +230,16 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data, form.processing_charges_url.data)
+            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+
+        if form.processing_charges_url.data:
+            bibjson.apc_url = form.processing_charges_url.data
 
         if interpret_special(form.submission_charges.data):
-            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data, form.submission_charges_url.data)
+            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data)
+
+        if form.submission_charges_url.data:
+            bibjson.submission_charges_url = form.submission_charges_url.data
 
         suggestion.set_articles_last_year(form.articles_last_year.data, form.articles_last_year_url.data)
 
@@ -409,20 +415,22 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         apc = bibjson.apc
         if apc:
             forminfo['processing_charges'] = reverse_interpret_special(True)
-            forminfo['processing_charges_url'] = apc.get("url")
             forminfo['processing_charges_currency'] = apc.get('currency')
             forminfo['processing_charges_amount'] = apc.get('average_price')
         else:
             forminfo['processing_charges'] = reverse_interpret_special(False)
 
+        forminfo['processing_charges_url'] = bibjson.apc_url
+
         submission_charges = bibjson.submission_charges
         if submission_charges:
             forminfo['submission_charges'] = reverse_interpret_special(True)
-            forminfo['submission_charges_url'] = submission_charges.get("url")
             forminfo['submission_charges_currency'] = submission_charges.get('currency')
             forminfo['submission_charges_amount'] = submission_charges.get('average_price')
         else:
             forminfo['submission_charges'] = reverse_interpret_special(False)
+
+        forminfo['submission_charges_url'] = bibjson.submission_charges_url
 
         articles_last_year = obj.articles_last_year
         if articles_last_year:
@@ -598,10 +606,16 @@ class JournalFormXWalk(JournalGenericXWalk):
             bibjson.country = form.country.data
 
         if interpret_special(form.processing_charges.data):
-            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data, form.processing_charges_url.data)
+            bibjson.set_apc(form.processing_charges_currency.data, form.processing_charges_amount.data)
+
+        if form.processing_charges_url.data:
+            bibjson.apc_url = form.processing_charges_url.data
 
         if interpret_special(form.submission_charges.data):
-            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data, form.submission_charges_url.data)
+            bibjson.set_submission_charges(form.submission_charges_currency.data, form.submission_charges_amount.data)
+
+        if form.submission_charges_url.data:
+            bibjson.submission_charges_url = form.submission_charges_url.data
 
         if interpret_special(form.waiver_policy.data):
             bibjson.add_url(form.waiver_policy_url.data, 'waiver_policy')
@@ -769,20 +783,22 @@ class JournalFormXWalk(JournalGenericXWalk):
         apc = bibjson.apc
         if apc:
             forminfo['processing_charges'] = reverse_interpret_special(True)
-            forminfo['processing_charges_url'] = apc.get("url")
             forminfo['processing_charges_currency'] = apc.get('currency')
             forminfo['processing_charges_amount'] = apc.get('average_price')
         else:
             forminfo['processing_charges'] = reverse_interpret_special(False)
 
+        forminfo['processing_charges_url'] = bibjson.apc_url
+
         submission_charges = bibjson.submission_charges
         if submission_charges:
             forminfo['submission_charges'] = reverse_interpret_special(True)
-            forminfo['submission_charges_url'] = submission_charges.get("url")
             forminfo['submission_charges_currency'] = submission_charges.get('currency')
             forminfo['submission_charges_amount'] = submission_charges.get('average_price')
         else:
             forminfo['submission_charges'] = reverse_interpret_special(False)
+
+        forminfo['submission_charges_url'] = bibjson.submission_charges_url
 
         forminfo['waiver_policy_url'] = bibjson.get_single_url(urltype='waiver_policy')
         forminfo['waiver_policy'] = reverse_interpret_special(forminfo['waiver_policy_url'] is not None and forminfo['waiver_policy_url'] != '')
