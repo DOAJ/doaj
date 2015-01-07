@@ -9,27 +9,21 @@ conn = raw.make_connection(None, 'localhost', 9200, 'doaj')
 archv_query = {
             "query" : {
                 "term" : {
-                    "admin.application_status.exact" : "rejected"
+                    "admin.in_doaj" : "false"
                     }
                 }
             }
 
-out_file = open('journals_not_reapplied.json', 'w')
+json_writer = tasks.JSONListWriter('journals_not_reapplied.json')
 
-# Dump all rejected suggestions to file
-tasks.dump(conn, 'suggestion', q=archv_query.copy(), out=out_file)
-out_file.close()
+# Dump all journals not in DOAJ to file
+tasks.dump(conn, 'journal', q=archv_query.copy(), out=json_writer)
+json_writer.close()
 
-# Scroll through all rejected selections, delete all
+# Ask how many journals will be deleted.
+n_deleted = raw.search(conn, 'journal', archv_query).json()['hits']['total']
 
-# Note: alternative is just to issue delete by query
-# models.Suggestion.delete_by_query(rej_query)
+# Delete all rejected suggestions.
+#raw.delete_by_query(conn, 'suggestion', archv_query)
 
-n_deleted = 0
-for s in tasks.scroll(conn, 'suggestion', q=rej_query):
-
-    suggestion_model = models.Suggestion(_source=s)
-    suggestion_model.delete()
-    n_deleted += 1
-
-print "\n{0} suggestions archived to file and deleted.".format(n_deleted)
+print "\n{0} journals archived to file 'journals_not_reapplied.json' and deleted from index.".format(n_deleted)
