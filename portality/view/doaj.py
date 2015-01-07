@@ -1,6 +1,7 @@
 from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user, login_required
+import urllib
 
 from portality import dao
 from portality import models
@@ -59,7 +60,7 @@ def search_post():
         terms['_type'].append('article')
 
     qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
-    return redirect(url_for('.search') + '?source=' + json.dumps(qobj))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
+    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(qobj)))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
