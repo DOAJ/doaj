@@ -96,9 +96,21 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     b = base64.urlsafe_b64encode(j)
     return b
 
+class ResumptionTokenException(Exception):
+    pass
+
 def decode_resumption_token(resumption_token):
-    j = base64.urlsafe_b64decode(str(resumption_token))
-    d = json.loads(j)
+    # attempt to parse the resumption token out of base64 encoding and as a json object
+    try:
+        j = base64.urlsafe_b64decode(str(resumption_token))
+    except TypeError:
+        raise ResumptionTokenException()
+    try:
+        d = json.loads(j)
+    except ValueError:
+        raise ResumptionTokenException()
+
+    # if we succeed read out the parameters
     params = {}
     if "m" in d: params["metadata_prefix"] = d.get("m")
     if "f" in d: params["from_date"] = d.get("f")
@@ -310,7 +322,10 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
     return CannotDisseminateFormat(base_url)
 
 def _resume_list_identifiers(dao, base_url, resumption_token=None):
-    params = decode_resumption_token(resumption_token)
+    try:
+        params = decode_resumption_token(resumption_token)
+    except ResumptionTokenException:
+        return BadResumptionToken(base_url)
     return _parameterised_list_identifiers(dao, base_url, **params)
 
 def list_metadata_formats(dao, base_url, identifier=None):
@@ -413,7 +428,10 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
     return CannotDisseminateFormat(base_url)
     
 def _resume_list_records(dao, base_url, resumption_token=None):
-    params = decode_resumption_token(resumption_token)
+    try:
+        params = decode_resumption_token(resumption_token)
+    except ResumptionTokenException:
+        return BadResumptionToken(base_url)
     return _parameterised_list_records(dao, base_url, **params)
 
 def list_sets(dao, base_url, resumption_token=None):
