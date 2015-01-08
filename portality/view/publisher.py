@@ -426,19 +426,16 @@ def pub_filter_bulk(user_id):
     has_bulk = models.BulkReApplication.count_by_owner(user_id)
     return has_bulk > 0
 
-@blueprint.app_context_processor #FIXME: this function is available to all templates - the definition perhaps should be put somewhere else
-def utility_processor():
-    def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
-        """
-        Format a local time datetime object to UTC
-        :param stamp: a datetime object
-        :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
-        :return: the string formatted datetime
-        """
-        local = tzlocal.get_localzone()
-        ld = local.localize(stamp)
-        tt = ld.utctimetuple()
-        utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
-        return utcdt.strftime(string_format)
-    return dict(utc_timestamp=utc_timestamp)
-
+@blueprint.app_template_filter('utc_timestamp')
+def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
+    """
+    Format a local time datetime object to UTC
+    :param stamp: a datetime object
+    :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
+    :return: the string formatted datetime
+    """
+    local = tzlocal.get_localzone()
+    ld = local.localize(stamp)
+    tt = ld.utctimetuple()
+    utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
+    return utcdt.strftime(string_format)
