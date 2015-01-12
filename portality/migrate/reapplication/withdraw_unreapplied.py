@@ -8,7 +8,7 @@ start = datetime.now()
 withdrawn = []
 
 # Iterate through all journals in the DOAJ
-all_journals = models.Journal.all_in_doaj(page_size=10000)
+all_journals = models.Journal.all_in_doaj(page_size=20000)
 for journal_model in all_journals:
     linked_reapp = journal_model.current_application
     last_reapp_date = journal_model.last_reapplication
