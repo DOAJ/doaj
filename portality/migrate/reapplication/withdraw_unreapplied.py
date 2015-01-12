@@ -8,7 +8,7 @@ start = datetime.now()
 withdrawn = []
 
 # Iterate through all journals in the DOAJ
-all_journals = models.Journal.all_in_doaj()
+all_journals = models.Journal.all_in_doaj(page_size=10000)
 for journal_model in all_journals:
     linked_reapp = journal_model.current_application
     last_reapp_date = journal_model.last_reapplication
@@ -18,10 +18,11 @@ for journal_model in all_journals:
         # withdraw the journal and its articles from doaj
         journal_model.set_in_doaj(False)
         journal_model.propagate_in_doaj_status_to_articles()
+        journal_model.save()
 
         withdrawn.append(journal_model.id)
 
 end = datetime.now()
 
-print "\n{0} journals removed from DOAJ. Their articles were also removed.".format(len(withdrawn))
+print "\n{0} journals with incomplete reapplications removed from DOAJ. Their articles were also removed.".format(len(withdrawn))
 print start, "-", end
