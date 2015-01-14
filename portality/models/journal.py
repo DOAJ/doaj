@@ -80,6 +80,9 @@ class Journal(DomainObject):
         histories = self.data.get("history", [])
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
 
+    def get_history_raw(self):
+        return self.data.get("history")
+
     def get_history_for(self, issn):
         histories = self.data.get("history", [])
         for h in histories:
@@ -116,6 +119,9 @@ class Journal(DomainObject):
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
+
+    def set_history(self, history):
+        self.data["history"] = history
 
     def remove_history(self, issn):
         histories = self.data.get("history")
@@ -467,28 +473,39 @@ class Journal(DomainObject):
             self.set_in_doaj(False)
 
     def calculate_tick(self):
-        created_date = self.data.get("created_date", None)
+        created_date = self.created_date
+        last_reapplied = self.last_reapplication
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
 
-        if not created_date:
+        if created_date is None:    # don't worry about the last_reapplied date - you can't reapply unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.now() > threshold:
+            if datetime.now() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)
             return
 
         # otherwise, this is an existing record, and we just need to update it
-        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
 
-        if created > threshold and self.is_in_doaj():
+        # convert the strings to datetime objects
+        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        reappd = None
+        if last_reapplied is not None:
+            reappd = datetime.strptime(last_reapplied, "%Y-%m-%dT%H:%M:%SZ")
+
+        if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)
-        else:
-            self.set_ticked(False)
+            return
+
+        if reappd is not None and reappd >= threshold and self.is_in_doaj():
+            self.set_ticked(True)
+            return
+
+        self.set_ticked(False)
 
     def all_articles(self):
         from portality.models import Article
