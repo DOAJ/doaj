@@ -29,6 +29,19 @@ class TestTick(DoajTestCase):
         self.sugg.set_in_doaj(True)
         self.sugg.save()
 
+        # reapplication tests
+        self.j_old_cd_old_reapp = models.Journal(created_date="2012-06-28T11:26:42Z", last_reapplication="2012-07-28T11:26:42Z")
+        self.j_old_cd_old_reapp.set_in_doaj(True)
+        self.j_old_cd_old_reapp.save()
+
+        self.j_old_cd_new_reapp = models.Journal(created_date="2012-06-28T11:26:42Z", last_reapplication="2015-01-01T11:26:42Z")
+        self.j_old_cd_new_reapp.set_in_doaj(True)
+        self.j_old_cd_new_reapp.save()
+
+        self.j_old_cd_new_reapp_out = models.Journal(created_date="2012-06-28T11:26:42Z", last_reapplication="2015-01-01T11:26:42Z")
+        self.j_old_cd_new_reapp_out.set_in_doaj(False)
+        self.j_old_cd_new_reapp_out.save()
+
         # Refresh the type to force changes in the index, then wait for it to be done
         models.Journal.refresh()
         models.Suggestion.refresh()
@@ -46,3 +59,6 @@ class TestTick(DoajTestCase):
         assert not self.j_too_old.is_ticked()
         assert not self.j_too_old_not_in.is_ticked()
         assert not self.sugg.is_ticked()
+        assert not self.j_old_cd_old_reapp.is_ticked()
+        assert self.j_old_cd_new_reapp.is_ticked()
+        assert not self.j_old_cd_new_reapp_out.is_ticked()
