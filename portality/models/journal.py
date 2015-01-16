@@ -78,6 +78,8 @@ class Journal(DomainObject):
 
     def history(self):
         histories = self.data.get("history", [])
+        if histories is None:
+            histories = []
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
 
     def get_history_raw(self):

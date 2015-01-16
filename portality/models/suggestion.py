@@ -44,7 +44,9 @@ class Suggestion(Journal):
             new_j.set_last_reapplication()
 
             # carry any continuations
-            new_j.set_history(cj.get_history_raw())
+            hist = cj.get_history_raw()
+            if hist is not None and len(hist) > 0:
+                new_j.set_history(cj.get_history_raw())
 
             # remove the reference to the current_journal
             del new_j.data["admin"]["current_journal"]
