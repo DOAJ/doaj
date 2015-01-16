@@ -1,249 +1,505 @@
 {% extends "base.html" %}
-
 {% block content %}
 
-<h3>Become a Publisher Member</h3> 
+<p>
+<a href="#pubmem">1) How to become a Publisher Member</a><br>
+<a href="#practice">2) Best practice guidelines for Open Access publishers</a><br>
+<a href="#applying">3) Applying for your journal to be in DOAJ</a><br>
+<a href="#upload">4) Uploading metadata to DOAJ</a><br>
+<a href="#failed">5) Failed XML uploads</a><br>
+<a href="#correct">6) How do I correct an error in article metadata?</a><br>
+<a href="#faqs">7) FAQS for publishers</a>
+</p>
+<br><br>
+
+
+<h3><a name="pubmem"></a>1) How to become a Publisher Member</h3>
 <p>
 <b>Support DOAJ and make a financial contribution</b>
 <br>
-DOAJ relies entirely on donations from the community. We urge you to become a 
-<a href="{{ url_for('doaj.support') }}">Publisher Member</a>, showing your support for DOAJ and for open access.
-Members may carry the DOAJ logo on their site.
+DOAJ relies entirely on voluntary donations from the community. We urge you to become a
+<a href="{{ url_for('doaj.support') }}">Publisher Member</a>, showing your support for DOAJ and for open access in general.
+Publisher members may carry the DOAJ logo on their site to show their support.
+Becoming a Publisher Member does not guarantee that your journals will be included in the DOAJ. 
 <br><br>
 
-<h3>Uploading metadata to DOAJ</h3>
-<p>There are now three ways to get your metadata in to DOAJ. You must <a href="/account/login">log in to your 
-account</a> before uploading metadata. The Publishers' Area now includes a 'Your Journals' tab which has a list of 
-all your journals currently included in DOAJ <b>and</b> that are associated with your account. You may only upload 
-metadata to those journals. If you upload metadata which is incorrect (for example contains an ISSN that is not in 
-the journal list) the upload will be rejected. (Note that you should ensure that your journal record is up-to-date 
-in DOAJ before you upload metadata to us. If you need to update a journal record, please 
-<a href="{{ url_for('doaj.contact') }}">contact us</a>.)</p>
+<!-- SECTION BEST PRACTICE -->
 
-<p>The ways to get your metadata into DOAJ are:</p>
-
+<h3><a name="practice"></a>2) Best practice guidelines for Open Access publishers</h3>
+<p><b>One URL for each journal, one PDF for each article</b></p>
+<p>When a journal gets indexed it will have its own record in the directory.</p>
+<p>To make our service comprehensible and user-friendly, the link from the directory must go to the URL for the
+specific journal and not to a collection of journals.</p>
+<p>Please note that all necessary information (by 'necessary information', we are referring to the journal's aims
+and scope, the clear presence of the editorial board, the author guidelines, the description of the quality control
+system and the Open Access statement) about the specific journal should be available at its own URL to make it
+easier for users to interpret the information correctly.</p>
+<p>We strongly recommend that your content is available article by article, one PDF for each article, and not
+one PDF per issue. This has multiple advantages, such as direct linking to articles, promotes findability, easier
+to navigate, read and download. When article metadata is uploaded to DOAJ, it should have a unique URL.</p>
+<p>We strongly recommend that your content is preserved in a digital preservation or archiving service, sometimes
+referred to as Long Term Preservation and Archiving (LTPA).
+<a href="http://en.wikipedia.org/wiki/List_of_digital_preservation_initiatives">You can find a list some of these services
+here.</a></p>
+<p>Please also read <!-- the <a href="">Online Guide to Open Access Journals Publishing</a>
+and --> <a href="http://oaspa.org/membership/code-of-conduct/">OASPA's Code of Conduct</a> for more information.</p>
+<br><br>
+<p><b>Knowledge organization, commercials and ads</b></p>
+<p>Please pay attention to the fact that having a clear structure when organizing your material makes it easier for
+users to navigate between articles.</p>
+<p>Preferably articles will be gathered in volumes, marked with the year the articles were published, making it easier
+for scholars to cite them (and readers to find them).</p>
+<p>If publishing different types of articles (for example original articles, review articles, case studies, essays or
+book reviews) please note that it is advantageous to display articles of the same type together in each volume and to
+mark each article with the specific article type.</p>
+<p>If you find it necessary to have commercials or banner advertising on your journal's web site(s), make sure that
+the ad is not in any way offensive and doesn't include information that could decrease the credibility of your
+journal.</p>
+<p>Blinking and/or moving objects will distract a reader and make your web site difficult to "read". This is
+discouraged.</p>
+<p>Keep in mind that, in the long run, articles that are not clearly organised and/or too many
+commercials/ads/blinking or moving objects will decrease the usage of your web site.</p>
+<br><br>
+<p><b>Impact Factors</b></p>
+<p>DOAJ does not condone the use of impact factors; does not recognise partial impact factors, and advocates any
+official, alternative measure of use, such as article level metrics. There is only one official, universally
+recognised impact factor that is generated by Thomson Reuters; it is a proprietary measure run by a profit making
+organisation. It runs against the ethics and principles of open access.</p>
+<p>Unfortunately, there are many fake impact factor services now purporting to offer impact factors for new journals.
+These fake impact factors come at a price and an impact factor on any journal homepage should be researched
+carefully. DO NOT submit papers to a journal based on its impact factor alone.</p>
+<br><br>
+<p><b>Transparent editorial boards</b></p>
+<p>We believe that it increases the trustworthiness and credibility of a journal if the reader is able to find/contact the editor or members of the editorial board. For this reason we encourage you to be as transparent as possible when presenting your Editorial Board. Information of public interest is:
 <ul>
-<li><b>Manually enter the metadata article by article.</b> You are able to manually add your article metadata by 
-filling in the form under the 'Enter Article Metadata' tab. Metadata uploaded this way will be checked for error and 
-then published to the site every hour.</li>
+<li>The affiliation of the editorial board members;</li>
+<li>The contact addresses of the editorial board members;</li>
+<li>If possible, we recommend you to add a link to the web site where the specific editorial board member is presented by his or her employing institution.</li>
+</ul>
+</p>
+<br><br>
+<p><b>Quality control and author guidelines</b></p>
+<p>To assure readers and potential authors that articles go through a quality control system before publication, we strongly recommend that you describe the process clearly on the web site.</p>
+<p>Since Open Access is still a relatively young way of publishing research papers and scholarly materials, we believe that it is important to show that open access journals have the same, rigorous quality control systems as printed and subscription based journals.</p>
+<p>Having detailed and comprehensive guidelines for authors is a good way of helping potential contributors and saves you time since it can prevent a lot of unnecessary paperwork and manuscript resubmissions.</p>
+<p>We recommend all journals have author guidelines (Instructions for authors) and that the following are included:
+<ul>
+<li>A detailed style guide;</li>
+<li>A description of the quality control processes;</li>
+<li>If the journal charges authors or authors' institutions any handling fees, publication fees or similar, the amount should be clearly stated;</li>
+<li>Information about copyright (please note the importance of informing authors about whether the journal will be the copyright holder after publication of an article or if the copyright remains with the author(s). We strongly believe that authors should be informed about your copyright/licensing conditions before they submit their work);</li>
+<li>Description of how to submit an article;</li>
+<li>A contact email address.</li>
+</ul>
+</p>
+<br><br>
+<p><b>Statement about Open Access and copyright</b></p>
+<p>Since DOAJ is a collection of Open Access journals and articles, we strongly recommend that you not only mention but thoroughly describe the journal's Open Access policy on the web site. It should be clearly linked to from the home page.</p>
+<p>Clearly stating exactly which rights readers have when they use the material is a way of showing that you are sharing your published material to support a greater global exchange of knowledge. It is also a way of protecting your material from illegal use (for example if you are stating that you prohibit reproduction or commercial use of your articles).</p>
+<p>Here is an example of an Open Access statement, fitting our criteria, that could be published on your website:</p>
+<blockquote>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles in this journal without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</blockquote>
+<p>Please take care to identify any possible contradictions between your Open Access policy and your copyright policy.</p>
+<br><br>
+<p><b>Licensing your material with a CC-license</b></p>
+<p>An additional way of showing in which form a journal is Open Access is through licensing it with a Creative Commons license. (Read more about <a href="http://creativecommons.org/about/licenses">the different forms of licenses</a>.)</p>
+<p>Such licensing is very beneficial for authors since it shows, for example, if there are any limits in creating derivative works.</p>
+<p>If licensing old material, please make sure that your journal has the copyright permission of the published material. If you do not, you have to ask the original copyright holder for permission before licensing the articles. (More information can be found at the <a href="http://wiki.creativecommons.org/Before_Licensing">Creative Commons web site</a>.)</p>
+<br><br>
+<p><b>Questions</b></p>
+<p>If you have any questions on the content above or need advice on how to improve your web site to make it fit our selection criteria, please do not hesitate to <a href="/contact">contact us</a>.
 
-<li><b>Upload article XML.</b> You are able to upload XML files to us in TWO ways. You can either upload the file 
-manually by selecting it from your computer OR you can enter the URL where the DOAJ site should go to look for the 
+
+<!-- SECTION APPLYING -->
+
+<h3><a name="applying"></a>3) Applying for your journal to be in DOAJ</h3>
+<p>For a journal to be included in DOAJ, it must go through the new application process. Due to the nature of the
+information that we require to process an application, only publishers or journal owners may apply for their journal
+to be included. If you would like to see a journal listed that is not yet included in the DOAJ, contact the
+publisher and ask them to fill in the application form.</p>
+<p>The new form requires a lot of information and completing it will take time. It will require you to collect all
+the necessary information before you start making your application. At this time, you are unable to save the form and
+come back to it later. We are working on a solution to facilitate that.</p>
+<p>The new application form has been extended to enable the DOAJ team to make a comprehensive assessment of the
+journal's quality and dedication to Open Access. Each journal application is carefully assessed by a member of the
+DOAJ Team. Each of the 42 answers provided may be verified manually and this important process takes time. We
+therefore ask you not to chase journal applications as answering these emails takes time and stops us processing
+applications.</p>
+<p>Any email sent about an application that is less than 3 months old will not be answered.</p>
+<br><br>
+
+
+<!-- SECTION UPLOADING XML -->
+
+<h3><a name="upload"></a>4) Uploading metadata to DOAJ</h3>
+<p>There are now three ways to get your metadata in to DOAJ. You must <a href="/account/login">log in to your
+account</a> before uploading metadata. The Publishers' Area now includes a 'Your Journals' tab which has a list of
+all your journals currently included in DOAJ <b>and</b> that are associated with your account. You may only upload
+metadata to those journals. If you upload metadata which is incorrect (for example contains an ISSN that is not in
+the journal list) the upload will be rejected. (Note that you should ensure that your journal record is up-to-date
+in DOAJ before you upload metadata to us. If you need to update a journal record, please
+<a href="{{ url_for('doaj.contact') }}">contact us</a>.)</p>
+<p>The ways to get your metadata into DOAJ are:</p>
+<ul>
+<li><b>Manually enter the metadata article by article.</b> You are able to manually add your article metadata by
+filling in the form under the 'Enter Article Metadata' tab. Metadata uploaded this way will be checked for error and
+then published to the site every hour.</li>
+<li><b>Upload article XML.</b> You are able to upload XML files to us in TWO ways. You can either upload the file
+manually by selecting it from your computer OR you can enter the URL where the DOAJ site should go to look for the
 file.
 <br><br>
-All uploaded files will be checked immediately for errors. Once they have parsed successfully, they will be 
+All uploaded files will be checked immediately for errors. Once they have parsed successfully, they will be
 published to the site by an automated script that runs every hour.</li>
 </ul>
-
 <p>For help with creating DOAJ XML and details on XML tags, read the
 <a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a>
 on our Features pages.</p>
 <br><br>
 
-<h3>Failed XML uploads</h3>
-<p>Below are some common reasons for failed xml uploads:</p>
+<!-- SECTION FAILED UPLOADS -->
 
+<h3><a name="failed"></a>5) Failed XML uploads</h3>
+<p>Below are some common reasons for failed xml uploads:</p>
 <ul>
 <li><b>You are trying to upload XML to the wrong account.</b> You can only upload XML for the journals that appear in
-the list under 'Your Journals' in the publisher area. If you have more than one account and you would like to merge 
+the list under 'Your Journals' in the publisher area. If you have more than one account and you would like to merge
 them, please contact us and we will inform you of the process for merging accounts.</li>
-<li><b>You are trying to upload a file that is not XML.</b> We can only accept XML. Do not try to upload PDFs to us as 
+<li><b>You are trying to upload a file that is not XML.</b> We can only accept XML. Do not try to upload PDFs to us as
 these will be rejected.</li>
-
-<li><b>The ISSN information in the metadata that you are trying to upload does not match what is in the journal record on 
-DOAJ.</b> For an upload to be successful, the ISSN(s) provided in the metadata must match precisely the ISSN(s) that we 
-hold on record. A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version. 
-Sometimes the DOAJ record only holds one ISSN on file and needs to be updated, or the ISSNs of the journal have changed. 
+<li><b>The ISSN information in the metadata that you are trying to upload does not match what is in the journal record on
+DOAJ.</b> For an upload to be successful, the ISSN(s) provided in the metadata must match precisely the ISSN(s) that we
+hold on record. A journal may have two ISSNs: an ISSN for the print version and an ISSN for the electronic version.
+Sometimes the DOAJ record only holds one ISSN on file and needs to be updated, or the ISSNs of the journal have changed.
 Similarly, if the DOAJ record has two ISSNs listed but only one is presented in the XML, a fail will occur. If you
 need to have the ISSNs of your DOAJ record updated, please <a href="/contact">contact us</a> and we will check that the
 ISSNs are registered at www.issn.org and will then update the record accordingly.</li>
- 
-<li><b>The XML is missing a required tag.</b> Sometimes a publisher will try to upload XML to DOAJ that is missing a 
-specific tag, such as [publicationDate]. You can see exactly 
-<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">which tags are required here</a>. If you are having 
-difficulty with your XML file, there are plenty of resources online where you can check the validity of your XML file. 
+<li><b>The XML is missing a required tag.</b> Sometimes a publisher will try to upload XML to DOAJ that is missing a
+specific tag, such as [publicationDate]. You can see exactly
+<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">which tags are required here</a>. If you are having
+difficulty with your XML file, there are plenty of resources online where you can check the validity of your XML file.
 We are unable to provide specific XML advice. If you are trying to upload a file that was automatically generated by the
 OJS DOAJ plugin, then you should first contact OJS for help.</li>
- 
-
 <li><b>The XML is not formatted to the correct .xsd file.</b> The xsd file for DOAJ is here:
-https://doaj.org/static/doaj/doajArticles.xsd. All XML files uploaded to DOAJ must reference this xsd file and validate 
+https://doaj.org/static/doaj/doajArticles.xsd. All XML files uploaded to DOAJ must reference this xsd file and validate
 against it.</li>
- 
-<li><b>The XML file contains characters not recognised in the XML language.</b> Sometimes, special characters, especially 
-those in scientific articles are submitted in the wrong format. XML does not support many special characters but those 
-that it does can be 
-<a href="http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML">found 
+<li><b>The XML file contains characters not recognised in the XML language.</b> Sometimes, special characters, especially
+those in scientific articles are submitted in the wrong format. XML does not support many special characters but those
+that it does can be
+<a href="http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references#Predefined_entities_in_XML">found
 on Wikipedia</a>.</li>
 </ul>
-
 <p>If you have any questions, please <a href="/contact">contact us</a>.</p>
-
 <br><br>
 
-<h3>How do I correct an error in article metadata?</h3>
+<!-- SECTION CORRECTING METADATA -->
 
+<h3><a name="correct"></a>6) How do I correct an error in article metadata?</h3>
 <p>If you need to correct an error, you must upload the metadata again. To make sure that your new upload overwrites
-the old one, at least one piece of key metadata in the new file must match the same piece of metadata in the old file. 
+the old one, at least one piece of key metadata in the new file must match the same piece of metadata in the old file.
 The 2 specific pieces of key metadata that we look for are, in priority order:</p>
-
 <ol>
-  <li><b>DOI</b> - if you assign DOIs to your articles then we will match on the DOI.</li>
-  <li><b>Full Text URL</b> - this is the URL that you give us for the full text of the article.</li>
+<li><b>DOI</b> - if you assign DOIs to your articles then we will match on the DOI.</li>
+<li><b>Full Text URL</b> - this is the URL that you give us for the full text of the article.</li>
 </ol>
-
 <p>If there is no DOI, the script will look for the Full Text URL.</p>
-
 <p><b>Some examples</b></p>
 <p>Use case 1: a publisher wants to correct some article metadata because an author is missing. The publisher must
-reupload the file. The article's DOI in the XML is the same as on the site so the site automatically overwrites the 
+reupload the file. The article's DOI in the XML is the same as on the site so the site automatically overwrites the
 older version.<br>
-  Use case 2: a publisher wants to correct the URL for their full text articles because their site has moved. 
-  The publisher does not use DOIs. The publisher must upload a new version. No automatic overwriting
-  will happen because no matching can occur so the publisher must contact us so we can remove the older version.</p>
-
+Use case 2: a publisher wants to correct the URL for their full text articles because their site has moved.
+The publisher does not use DOIs. The publisher must upload a new version. No automatic overwriting
+will happen because no matching can occur so the publisher must contact us so we can remove the older version.</p>
 <br><br>
 
-<h3>Applying for your journal to be in DOAJ</h3>
 
-<p>For a journal to be included in DOAJ, it must go through the new application process. Due to the nature of the 
-information that we require to process an application, only publishers or journal owners may apply for their journal
-to be included. If you would like to see a journal listed that is not yet included in the DOAJ, contact the 
-publisher and ask them to fill in the application form.</p>
+<!-- SECTION FAQS FOR PUBLISHERS -->
 
-<p>The new form requires a lot of information and completing it will take time. It will require you to collect all
-the necessary information before you start making your application. At this time, you are unable to save the form and 
-  come back to it later. We are working on a solution to facilitate that.</p>
-
-<p>The new application form has been extended to enable the DOAJ team to make a comprehensive assessment of the 
-journal's quality and dedication to Open Access. Each journal application is carefully assessed by a member of the
-DOAJ Team. Each of the 42 answers provided may be verified manually and this important process takes time. We 
-therefore ask you not to chase journal applications as answering these emails takes time and stops us processing
-applications.</p>
- 
-<p>Any email sent about an application that is less than 3 months old will not be answered.</p>
-
-<br><br>
-
-<h3>Good practice guidelines for Open Access publishers</h3> 
-
-<p><b>One URL for each journal, one PDF for each article</b></p>
-<p>When a journal gets indexed it will have its own record in the directory.</p>
-
-<p>To make our service comprehensible and user-friendly, the link from the directory must go to the URL for the 
-specific journal and not to a collection of journals.</p>
-
-<p>Please note that all necessary information (by 'necessary information', we are referring to the journal's aims 
-and scope, the clear presence of the editorial board, the author guidelines, the description of the quality control 
-system and the Open Access statement) about the specific journal should be available at its own URL to make it 
-easier for users to interpret the information correctly.</p>
-
-<p>We strongly recommend that your content is available article by article, one PDF for each article, and not 
-one PDF per issue. This has multiple advantages, such as direct linking to articles, promotes findability, easier 
-to navigate, read and download. When article metadata is uploaded to DOAJ, it should have a unique URL.</p>
-
-<p>We strongly recommend that your content is preserved in a digital preservation or archiving service, sometimes 
-referred to as Long Term Preservation and Archiving (LTPA).
-<a href="http://en.wikipedia.org/wiki/List_of_digital_preservation_initiatives">You can find a list some of these services 
-here.</a></p>
-
-<p>Please also read <!--  the <a href="">Online Guide to Open Access Journals Publishing</a> 
-and --> <a href="http://oaspa.org/membership/code-of-conduct/">OASPA's Code of Conduct</a> for more information.</p>
-
-
-<br><br>
-<p><b>Knowledge organization, commercials and ads</b></p>
-
-<p>Please pay attention to the fact that having a clear structure when organizing your material makes it easier for 
-users to navigate between articles.</p>
-
-<p>Preferably articles will be gathered in volumes, marked with the year the articles were published, making it easier 
-for scholars to cite them (and readers to find them).</p>
-
-<p>If publishing different types of articles (for example original articles, review articles, case studies, essays or 
-book reviews) please note that it is advantageous to display articles of the same type together in each volume and to 
-mark each article with the specific article type.</p>
-
-<p>If you find it necessary to have commercials or banner advertising on your journal's web site(s), make sure that 
-the ad is not in any way offensive and doesn't include information that could decrease the credibility of your 
-journal.</p>
-
-<p>Blinking and/or moving objects will distract a reader and make your web site difficult to "read". This is 
-discouraged.</p>
-
-<p>Keep in mind that, in the long run, articles that are not clearly organised and/or too many 
-commercials/ads/blinking or moving objects will decrease the usage of your web site.</p>
-
-<br><br>
-<p><b>Impact Factors</b></p>
-
-<p>DOAJ does not condone the use of impact factors; does not recognise partial impact factors, and advocates any 
-official, alternative measure of use, such as article level metrics. There is only one official, universally 
-recognised impact factor that is generated by Thomson Reuters; it is a proprietary measure run by a profit making 
-organisation. It runs against the ethics and principles of open access.</p>
-
-<p>Unfortunately, there are many fake impact factor services now purporting to offer impact factors for new journals. 
-These fake impact factors come at a price and an impact factor on any journal homepage should be researched 
-carefully. DO NOT submit papers to a journal based on its impact factor alone.</p>
-
-<br><br>
-<p><b>Transparent editorial boards</b></p>
-
-<p>We believe that it increases the trustworthiness and credibility of a journal if the reader is able to find/contact the editor or members of the editorial board. For this reason we encourage you to be as transparent as possible when presenting your Editorial Board. Information of public interest is:
-
+<h3><a name="faqs"></a>7) FAQs for publishers</h3>
+<p>
 <ul>
-  <li>The affiliation of the editorial board members;</li>
-  <li>The contact addresses of the editorial board members;</li>
-  <li>If possible, we recommend you to add a link to the web site where the specific editorial board member is presented by his or her employing institution.</li>
+<li><a href="#sponsor">How can I support/donate to DOAJ?</a></li>
+<li><a href="#definition">How do we define 'Open Access Journal', 'Quality Control', 'Research Journal' and 'Periodical'?</a></li>
+<li><a href="#standards">What are the basic standards that a journal must meet for an application to be considered?</a></li>
+<li><a href="#procedure">What is the procedure for a journal being accepted into DOAJ?</a></li>
+<li><a href="#oai">What is the Open Archives Initiative, OAI, OAI-PMH?</a></li>
+<li><a href="#indexed">Do you have a logo I can use to show that my journal is indexed in DOAJ?</a></li>
+<li><a href="#cantfind">Why can't I find my journal in DOAJ?</a></li>
+<li><a href="#application">Why can't I save my progress when filling out the application form?</a></li>
+<li><a href="#login">How do I log into my account?</a></li>
+<li><a href="#publisher">How do I upload article metadata to DOAJ?</a></li>
+<li><a href="#update">I have uploaded article metadata to DOAJ but it has not appeared on the site. Has something
+gone wrong?</a></li>
+<li><a href="#getlicense">How do I get a Creative Commons license on to my content?</a></li>
+<li><a href="#license">How do I know which CC license to choose?</a></li>
+<li><a href="#embed">How do I know if my license information is embedded in the metadata?</a></li>
+<li><a href="#casereport">Do case reports count as original articles?</a></li>
+<li><a href="#humanities">Do you accept journals that carry out editorial review only?</a> 
+<li><a href="#deposit">We have no deposit restrictions on articles published in our journal. Why does the
+Application Form ask for information about deposit policies?</a></li>
 </ul>
 </p>
 
+<h3><b><a name="sponsor"></a>How can I support/donate to DOAJ?</b></h3>
+<p>We would be delighted if you donate to DOAJ. We rely entirely on contributions. Please read our
+<a href="/supportDoaj">Support DOAJ</a> page for further information.</p>
+<a href="#top">Back to top</a>
+<p></p>
 <br><br>
-<p><b>Quality control and author guidelines</b></p>
 
-<p>To assure readers and potential authors that articles go through a quality control system before publication, we strongly recommend that you describe the process clearly on the web site.</p>
-
-<p>Since Open Access is still a relatively young way of publishing research papers and scholarly materials, we believe that it is important to show that open access journals have the same, rigorous quality control systems as printed and subscription based journals.</p>
-
-<p>Having detailed and comprehensive guidelines for authors is a good way of helping potential contributors and saves you time since it can prevent a lot of unnecessary paperwork and manuscript resubmissions.</p>
-
-<p>We recommend all journals have author guidelines (Instructions for authors) and that the following are included:
-
-<ul>
-  <li>A detailed style guide;</li>
-  <li>A description of the quality control processes;</li>
-  <li>If the journal charges authors or authors' institutions any handling fees, publication fees or similar, the amount should be clearly stated;</li>
-  <li>Information about copyright (please note the importance of informing authors about whether the journal will be the copyright holder after publication of an article or if the copyright remains with the author(s). We strongly believe that authors should be informed about your copyright/licensing conditions before they submit their work);</li>
-  <li>Description of how to submit an article;</li>
-  <li>A contact email address.</li>
-</ul>
+<h3><b><a name="definition"></a>How do we define 'Open Access Journal', 'Quality Control', 'Research Journal' and 'Periodical'?</b></h3>
+<p><b>Open Access Journal:</b><br>
+We define open access journals as journals that use a funding model that does not charge readers or their institutions for access. From the BOAI definition<sup>[1]</sup> of 'open access' we take the right of users to <b>"read, download, copy, distribute, print, search, or link to the full texts of these articles"</b> as mandatory for a journal to be included in the directory.<br>
+[1] <a href="http://www.budapestopenaccessinitiative.org/read">http://www.budapestopenaccessinitiative.org/read</a>
 </p>
 
+<p><b>Quality Control:</b><br>
+<p>The journal must exercise peer-review or editorial review (particularly in the Humanities), led by an editor, or an editor and an editorial board.</p>
+<p><b>Research Journal:</b><br>
+<p>Journals that report primary results of research or overviews of research results to a scholarly community.</p>
+<p><b>Periodical:</b><br>
+<p>A serial appearing or intended to appear indefinitely at regular intervals, generally more frequently than annually,
+each issue of which is numbered or dated consecutively and normally contains separate articles, stories, or other
+writings.</p>
+<a href="#top">Back to top</a>
+<p></p>
 <br><br>
-<p><b>Statement about Open Access and copyright</b></p>
+<h3><b><a name="standards"></a>What are the basic standards that a journal must meet for an application to be considered?</b></h3>
+<p><i>DOAJ adheres to <a href="/bestpractice">the Principles of Transparency and Best Practice in Scholarly Publishing</a>, a joint statement published by COPE, DOAJ, OASPA and WAME. We advise that all applicants read through this statement before applying.</i></p>
 
-<p>Since DOAJ is a collection of Open Access journals and articles, we strongly recommend that you not only mention but thoroughly describe the journal's Open Access policy on the web site. It should be clearly linked to from the home page.</p>
-
-<p>Clearly stating exactly which rights readers have when they use the material is a way of showing that you are sharing your published material to support a greater global exchange of knowledge. It is also a way of protecting your material from illegal use (for example if you are stating that you prohibit reproduction or commercial use of your articles).</p>
-
-<p>Here is an example of an Open Access statement, fitting our criteria, that could be published on your website:</p>
-
-<blockquote>This is an open access journal which means that all content is freely available without charge to the user or his/her institution. Users are allowed to read, download, copy, distribute, print, search, or link to the full texts of the articles in this journal without asking prior permission from the publisher or the author. This is in accordance with the BOAI definition of open access.</blockquote>
-
-<p>Please take care to identify any possible contradictions between your Open Access policy and your copyright policy.</p>
-
+<p>To facilitate a faster response time, applications are initially triaged to ensure they meet some basic criteria. These are:</p>
+<p><b>Coverage:</b><br>
+<ul>
+<li>Subject: all scientific and scholarly subjects are covered. We use the
+<a href="http://www.loc.gov/catdir/cpso/lcco/">Library of Congress Classification Outline</a>.</li>
+<li>Types of resource: scientific and scholarly periodicals that publish research or review papers in full text.</li>
+<li>Acceptable sources: academic, government, commercial, non-profit and private sources are all acceptable.</li>
+<li>Level: the primary target group should be researchers.</li>
+<li>Content: a substantive part of the journal should consist of research papers. All content should be available in full text. See our <a href="#casereport">policy for case report journals</a>.</li>
+<li>All languages are accepted.</li>
+</ul>
+<p><b>Access:</b><br>
+<ul>
+<li>The full text of ALL content must be available for free and be Open Access without delay (i.e. no embargo period).</li>
+<li>Registration: User registration online is acceptable on the condition that the journal has a proper Privacy Policy
+in place and abides by Data Protection rules. That is to say: user data will never be distributed without the
+explicit permission of the user; upon request, a user's email address is removed from mailing lists; all data held about
+the user will be made available to the user upon request.</li>
+</ul>
+<p><b>Quality:</b> The journal must exercise quality control on submitted papers using a peer-review system. The journal—and the
+manuscript review process specifically—must have either an editor, or an editor and an editorial board, in place. See our <a href="#humanities">policy for Humanities journals</a>.</p>
+<p><b>Periodical:</b> The journal must have at least one ISSN (International Standard Serial Number) registered at
+<a href="http://www.issn.org">issn.org</a>. In general, if a journal exists in print and online, then it should have both an
+ISSN for the print version and an ISSN for the electronic version.</p>
+<a href="#top">Back to top</a>
+<p></p>
 <br><br>
-<p><b>Licensing your material with a CC-license</b></p>
 
-<p>An additional way of showing in which form a journal is Open Access is through licensing it with a Creative Commons license. (Read more about <a href="http://creativecommons.org/about/licenses">the different forms of licenses</a>.)</p>
-
-<p>Such licensing is very beneficial for authors since it shows, for example, if there are any limits in creating derivative works.</p>
-
-<p>If licensing old material, please make sure that your journal has the copyright permission of the published material. If you do not, you have to ask the original copyright holder for permission before licensing the articles. (More information can be found at the <a href="http://wiki.creativecommons.org/Before_Licensing">Creative Commons web site</a>.)</p>
-
+<h3><b><a name="procedure"></a>What is the procedure for a journal being accepted into DOAJ?</b></h3>
+<p><b>Application</b></p>
+<p>We must receive an application for every journal wishing to be considered for inclusion. Due to the level of detail required, we recommend that the application is made by the journal's editor or publisher. Once submitted, the application passes through <a href="#standards">a triage process</a> and is assigned to a DOAJ Associate Editor. There are over 40 pieces of
+information in every application that we will check and verify. As you complete the application form, remember to ensure that
+the journal's web site states clearly and accurately the information DOAJ is asking for in the application form. The things that we will check include but are not limited to:
+<ul>
+<li>That the journal's ISSN(s) number(s) is registered at issn.org and matches the application;</li>
+<li>That the title in the application matches what is registered at issn.org and what is stated on the journal's web site;</li>
+<li>That the country of the publisher in the application matches the country registered at issn.org; this may not always be the country to which the journal is registered.</li>
+<li>That the journal has an editor or an editor and an editorial board with identifiable members; we will contact you for members' contact details as part of our review process. These will not be made publicly available.</li>
+<li>That the full text of articles is free, without embargo, upon publication;</li>
+<li>That the journal's Open Access policy is clearly stated <b>on the journal's web site</b> and is easily findable;</li>
+<li>That the journal executes some form of editorial review or peer review, that this is clearly stated on the web site and that it matches the answer given in the application form;</li>
+<li>That the journal is Open Access according to <a href="http://www.budapestopenaccessinitiative.org/read">the BOAI definition</a>. By this we mean that the journal's articles have
+"free availability on the public internet, permitting any users to read, download, copy, distribute, print, search,
+or link to the full texts of these articles, crawl them for indexing, pass them as data to software, or use them for
+any other lawful purpose, without financial, legal, or technical barriers other than those inseparable from gaining
+access to the internet itself."</li>
+<li>That any fees for publishing in the journal are clearly displayed in a place that is easy to find;
+if there are no charges to authors this should also be highlighted.</li>
+<li>That if the journal has any other kind of author charges, they are clearly stated and easily findable on the web
+site;</li>
+<li>That the language of the full text articles match the language stated in the application.</li>
+</ul>
+</p>
+<p>If the information provided in the
+application is unclear or does not match what is on the site, or we think that it is incorrect, the member of our team handling your application will contact you for clarification.</p>
+<p><b>Status updates</b><br>
+<p>We are unable to provide status updates for any application that is less than THREE months old.</p>
+<p><b>Acceptance into DOAJ</b><br>
+<p>Upon acceptance into DOAJ, the journal is classified by the DOAJ team according to the Library of Congress
+Classification (LCC) system. An automatic confirmation email is sent to the person listed in Question 9; it contains
+details on how to log into your Publisher account. You will need these details to upload article metadata. The journal is then visible in DOAJ immediately.</p>
+<p><b>Rejection of an Application</b></br>
+<p>If your application is rejected, a member of the DOAJ team will let you know, along with the reason for the rejection. A rejected journal may reapply for inclusion once it has demonstrated clearly that it has made the improvements suggested by the DOAJ.</p>
+<p><b>Uploading or creating metadata in DOAJ</b><br>
+<p>We <b><i>strongly</i></b> recommend that ALL journals provide us with <a href="/publisher/uploadfile">article
+metadata in XML format</a> or create the data manually using <a href="/publisher/metadata">our metadata entry form</a>.
+A script looking for new articles to publish to the site runs every 30 minutes. DOAJ is <a href="#oai">OAI-PMH</a> compliant and once the article is available in DOAJ it becomes automatically OAI harvestable.</p>
+<a href="#top">Back to top</a>
+<p></p>
 <br><br>
-<p><b>Questions</b></p>
 
-<p>If you have any questions on the content above or need advice on how to improve your web site to make it fit our selection criteria, please do not hesitate to <a href="/contact">contact us</a>.
+<h3><b><a name="oai"></a>What is Open Archives Initiative, OAI, OAI-PMH?</b></h3>
+<p><a href="http://www.openarchives.org/">OAI, Open Archives Initiative</a>, supplies a common framework to web
+communities that allows them to gain access to content in a standard manner by means of metadata harvesting.
+<a href="/features">Read the details of our OAI feature.</a></p>
+<p></p>
+<br><br>
+
+<!--
+<h3><b><a name="seal">What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)</a></b></h3>
+<p>A Seal to Set Standards for Open Access Journals.</p>
+<p>DOAJ has introduced a certification scheme for Open Access journals, the 'DOAJ Seal'.</p>
+<p>To receive the Seal, the journal must comply with all of the criteria in the last section of the Application form:
+<ul>
+<li>The journal uses DOIs as permanent identifiers;</li>
+<li>Provide DOAJ with article metadata;</li>
+<li>A long term digital preservation or archiving program;</li>
+<li>Embedded machine-readable CC licensing information in articles;</li>
+<li>Allows generous reuse and mixing of content, in accordance with a CC BY license;</li>
+<li>Has a deposit policy registered wíth a deposit policy registry, like Sherpa/Romeo.</li>
+</ul>
+<a href="#top">Back to top</a>
+<h3><b><a name="sealedJournals">Which journals have the DOAJ Seal for Open Access Journals right now?</b></h3>
+<p>Use <a href="/XXXXXXX">this link</a> to see a list of all journals having the Seal.</p>
+<a href="#top">Back to top</a>
+-->
+
+<h3><b><a name="indexed"></a>Do you have a logo I can use to show that my journal is indexed in DOAJ?</b></h3>
+<p>We do have an 'Indexed in DOAJ' logo, in both .eps and .png formats. Please use the <a href="/contact">Contact us</a> form to
+request it and a member of our team will check that your journal qualifies.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="cantfind"></a>Why can't I find a journal in DOAJ?</b></h3>
+<p>It maybe that the journal has not applied to be in the DOAJ, in which case, please use our
+<a href="{{ url_for('doaj.suggestion') }}">Application form</a>. It may be that the journal's application is pending or that it has been rejected. If your application has been rejected, the contact listed in Question 9 of the Application form will have received an email from a member of the DOAJ Team.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="application"></a>Why can't I save my progress when filling out the application form?</b></h3>
+<p>It isn't possible to save your Application just yet; it's a feature that we will add in the
+future. In the meantime, you could try these two tips to help you keep a record of your application(s):</p>
+<ul>
+<li>Before you start, print out a version of the form to use as a draft. The form prints best in Google Chrome.</li>
+<li>The application form requires a lot of information to be entered into one place. Before you start filling it in,
+we recommend that you collect upfront all the information you will require. We have created
+<a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdDJIOHpVcXBleFRZOTRIRW5naVY3Smc&usp=sharing">a
+spreadsheet version of the form for you to download and complete offline</a>. For your convenience there are columns for more than one journal but you MUST complete ONE online application per journal.</li>
+<li>If you haven't used the spreadsheet to collect your application's information, you can record your answers by taking screenshots of the completed form BEFORE you hit the Submit button.</li>
+</ul>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="login"></a>How do I log into my account?</b></h3>
+<p>Once your journal has been accepted in to DOAJ then you can <a href="http://doaj.org/account/login">log in to your
+account</a>. If the journal has been added to a publisher account that already has journals in DOAJ then the login
+credentials will be the same: the new journal will have been added to the existing account.</p>
+<p>If a new account has been created, an automated email is sent to the contact in Question 9 of the application upon acceptance. The email
+contains your username and instructions on how to choose a password. The link is valid for 14 days only. Once you have
+logged in to your account, you will see your journal(s) listed in the 'Your Journals' tab.</p>
+<p>If you have problems logging in, or you cannot see your journal listed, or you would like to merge two publisher
+accounts, then please <a href="/contact">Contact us</a>.
+</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="publisher"></a>How do I upload article metadata to DOAJ?</b></h3>
+<p>Once a journal has been accepted in to DOAJ, article metadata may be uploaded as XML or created manually. If the
+journal belongs to an existing DOAJ account, then the publisher must <a href="http://doaj.org/account/login">log in to
+their account</a> and then add metadata via the <a href="http://doaj.org/publisher/">Publisher Area</a>. For more
+information go to the <a href="/publishers">For publishers</a> page and read the 'Uploading Metadata' section there.
+</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="update"></a>I have uploaded article metadata to DOAJ but it has not appeared on the site. Has something gone wrong?</b></h3>
+<p>If you did not receive any error messages when you uploaded the metadata then it is likely that everything has worked OK. Remember that it may take up to 60 minutes for your articles to appear on the site and up to 12 hours for the tables of contents to show your latest uploads. You can check that the articles have uploaded correctly by doing a search on the full article title in inverted commas " ". If, after 12 hours, you see that the article is on the site but has not attached itself to the Table of Contents then one of two things has gone wrong:</p>
+<ul>
+<li>The volume and issue values provided are incorrect. Check that each article in the issue has the correct value for both Volume and Issue.</li>
+<li>You have not provided a Volume value in your metadata. Tables of contents require a volume value to build the issues correctly. If the volume value is left empty, the articles will not appear on the Table of contents.</li>
+<li>The article that you uploaded has been
+overwritten by another one. <b>The URL for every article provided must be unique.</b> When a publishers wishes to update an existing article's metadata, we use the full text URL to
+match the two versions of the same article . If you have provided the same URL for every article then only the last
+article uploaded will appear on the site.</p>
+
+<p>Remember: articles are added to a journal's Tables of Contents over night so you will not see them there immediately.</p>
+
+<p>If, after 24 hours, you still cannot find your article on the site, please <a href="/contact">Contact us</a>.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="getlicense"></a>How do I get a Creative Commons license on to my content?</b></h3>
+<p>(You may have an equivalent license in your country that is not a CC license. This is perfectly valid for DOAJ.)</p>
+<ul>
+<li>Choose the most appropriate CC license from the Creative Commons web site—refer to the paragraph below.</li>
+<li>We recommend that you apply the CC BY license which is the most user friendly allowing for, among other things,
+long-term preservation and text- and data-mining.</li>
+<li>If you have different licenses for different articles within the same journal, only the most restrictive can be displayed on the
+journal in DOAJ.</li>
+</ul>
+<p>How to choose the CC BY license:</p>
+<p>Go to the Creative Commons (CC) web site <a href="http://creativecommons.org/licenses/">
+(http://creativecommons.org/licenses/)</a> and copy the CC BY icon - you can also consult this:
+<a href="http://wiki.creativecommons.org/Before_Licensing">http://wiki.creativecommons.org/Before_Licensing .</a>
+</p>
+<p>Put the CC BY icon on the homepage of your journal(s) and on EVERY article.
+<a href="http://wiki.creativecommons.org/Marking_your_work_with_a_CC_license">Read how</a>. Best Practice recommends that the
+license metadata is machine readable that is to say: embedded in the HTML, XML or in the PDF metadata.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="license"></a>How do I know which CC license to choose?</b></h3>
+<p>You can find information on the different types of licenses at the Creative Commons web site:
+<a href="http://creativecommons.org/licenses/">http://creativecommons.org/licenses/</a> and there is even a page
+to help you choose the correct license for your content: <a href="http://creativecommons.org/choose/">
+http://creativecommons.org/choose/</a>.</p>
+<p>Both pages are available in 24 different languages.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="embed"></a>How do I know if my license information is embedded in the metadata?</b></h3>
+<p>When applying for a journal to be included in DOAJ, one of the questions asks whether or not you have
+machine-readable licensing information embedded in your article metadata. There are
+<a href="http://wiki.creativecommons.org/Ccrel">guidelines on the Creative Commons</a> web site that tell you more about
+this. The information must be embedded in the HTML, the XML or the PDFs. The emphasis for DOAJ is not HOW the
+license is embedded but that there IS a <b>machine-readable</b> version of it. Here are a couple of examples:
+<ol>
+<li><a href="http://www.globalhealthaction.net/index.php/gha/article/view/23456">Displayed in the HTML on an article
+abstract page</a></li>
+<li><a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0097648">
+Displayed at the bottom of the full text</a></li>
+</ol>
+</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="casereport"></a>Do case reports count as original articles?</b></h3>
+<p>When applying for a journal to be included in DOAJ, you should include case reports in your article count if they
+include the retrospective analysis of more than 3 clinical cases. When more than three cases are involved, the
+article constitutes "research." A journal that publishes only case reports</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="humanities"></a>Do you accept journals that carry out editorial review only (instead of peer review)?</b></h3> 
+<p>DOAJ recognises that some journals may not publish in a field where peer review is the established form of quality assurance. Instead a system of editorial review—either done by the editor(s) or the editors and members of the editorial board only—is in place. This is particularly relevant to the Humanities. 'Editorial review' will only be accepted as an answer to <a href="/application/new#review_process-container">Question 35 of the Application Form</a> if the journal publishes in some such field.</p>
+<a href="#top">Back to top</a>
+<p></p>
+<br><br>
+
+<h3><b><a name="deposit"></a>We have no deposit restrictions on articles published in our journal. Why does the
+Application Form ask for information about deposit policies?</b></h3>
+<p>Funders, libraries and authors can all access deposit policy directories to get an overview of publishing
+channels that are compliant with, for instance, funder policies. This is one of our areas where we are encouraging
+Best Practice. A good example of a deposit policy directory is
+<a href="http://www.sherpa.ac.uk/romeo/">www.sherpa.ac.uk/romeo/</a>.</p>
+<a href="#top">Back to top</a>
 
 {% endblock %}
