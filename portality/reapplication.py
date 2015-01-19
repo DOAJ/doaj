@@ -496,9 +496,6 @@ class Suggestion2QuestionXwalk(object):
                 aids.append(aidother)
             return ", ".join(aids)
 
-        def yes_no(val):
-            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else "No"
-
         def yes_or_blank(val):
             return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
 
