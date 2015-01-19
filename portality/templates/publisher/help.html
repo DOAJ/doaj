@@ -5,29 +5,31 @@
 <h2>Help</h2>
 <p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
-<h3 style="color: red">Reapplications</h3>
-<p>If you have <b>10 or fewer</b> journals in DOAJ, you will need to log into your Publisher's Area and process your 
-reapplications online. We have created two documents that you must read before you start:
-	<ol>
-		<li>Here are some important notes on how to: fill in your reapplications online; submit them once you are finished; and come back to them if you need to make changes.</li>
-		<li>We created a 
-		<a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdG9qajZCaGlLV2wtVmQwa2ZZYUxfVlE&usp=sharing">
-		version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
-	</ol>	
-</p>
+{% if app.config.get("REAPPLICATION_ACTIVE", False) %}
+    <h3 style="color: red">Reapplications</h3>
+    <p>If you have <b>10 or fewer</b> journals in DOAJ, you will need to log into your Publisher's Area and process your
+    reapplications online. We have created two documents that you must read before you start:
+        <ol>
+            <li>Here are some important notes on how to: fill in your reapplications online; submit them once you are finished; and come back to them if you need to make changes.</li>
+            <li>We created a
+            <a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdG9qajZCaGlLV2wtVmQwa2ZZYUxfVlE&usp=sharing">
+            version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
+        </ol>
+    </p>
 
-<p>If you have <b>more than 10 journals</b>, you will need to log into your Publishers Area and download a CSV file 
-that we have created for you. We have created two documents that you must read before you start:
-	<ol>
-		<li>Here are some important 
-		<a href="https://docs.google.com/document/d/1nh5fCgDdM6rP6ubwbvCOsUtzn-JJhUnDSF-E7sFnJpE/edit?usp=sharing">notes 
-		on how to: download your CSV; convert it into another format for easier completion; fill it in; reupload it to our 
-		servers</a>.</li>
-		<li>We created a 
-		<a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdG9qajZCaGlLV2wtVmQwa2ZZYUxfVlE&usp=sharing">
-		version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
-	</ol>
-</p>
+    <p>If you have <b>more than 10 journals</b>, you will need to log into your Publishers Area and download a CSV file
+    that we have created for you. We have created two documents that you must read before you start:
+        <ol>
+            <li>Here are some important
+            <a href="https://docs.google.com/document/d/1nh5fCgDdM6rP6ubwbvCOsUtzn-JJhUnDSF-E7sFnJpE/edit?usp=sharing">notes
+            on how to: download your CSV; convert it into another format for easier completion; fill it in; reupload it to our
+            servers</a>.</li>
+            <li>We created a
+            <a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdG9qajZCaGlLV2wtVmQwa2ZZYUxfVlE&usp=sharing">
+            version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
+        </ol>
+    </p>
+{% endif %}
 
 <h3>Application Form</h3>
 <p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in other 
