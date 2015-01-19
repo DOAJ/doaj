@@ -482,6 +482,12 @@ class Suggestion2QuestionXwalk(object):
             aids = forminfo.get(main_field, [])
             if aids is None or aids == "" or aids == "None":
                 aids = []
+
+            # if the xwalk has returned a single-list element like ["None"]
+            # we want to strip that "None" for the purpose of the CSV
+            if choices.Choices.NONE in aids:
+                aids.remove(choices.Choices.NONE)
+
             aidother = forminfo.get(other_field)
 
             if other_value in aids:
@@ -491,7 +497,10 @@ class Suggestion2QuestionXwalk(object):
             return ", ".join(aids)
 
         def yes_no(val):
-            return "Yes" if val else "No"
+            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else "No"
+
+        def yes_or_blank(val):
+            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
 
         def license_checkbox(val):
             opts = {}
@@ -527,17 +536,17 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
         kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
         kvs.append((cls.q("country"), forminfo.get("country")))
-        kvs.append((cls.q("processing_charges"), yes_no(forminfo.get("processing_charges"))))
+        kvs.append((cls.q("processing_charges"), yes_or_blank(forminfo.get("processing_charges"))))
         kvs.append((cls.q("processing_charges_url"), forminfo.get("processing_charges_url")))
         kvs.append((cls.q("processing_charges_amount"), forminfo.get("processing_charges_amount")))
         kvs.append((cls.q("processing_charges_currency"), forminfo.get("processing_charges_currency")))
-        kvs.append((cls.q("submission_charges"), yes_no(forminfo.get("submission_charges"))))
+        kvs.append((cls.q("submission_charges"), yes_or_blank(forminfo.get("submission_charges"))))
         kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
         kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
         kvs.append((cls.q("submission_charges_currency"), forminfo.get("submission_charges_currency")))
         kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year")))
         kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url")))
-        kvs.append((cls.q("waiver_policy"), yes_no(forminfo.get("waiver_policy"))))
+        kvs.append((cls.q("waiver_policy"), yes_or_blank(forminfo.get("waiver_policy"))))
         kvs.append((cls.q("waiver_policy_url"), forminfo.get("waiver_policy_url")))
 
         dap = deepcopy(forminfo.get("digital_archiving_policy", []))
@@ -545,6 +554,8 @@ class Suggestion2QuestionXwalk(object):
         oth = choices.Choices.digital_archiving_policy_val("other")
         if lib in dap: dap.remove(lib)
         if oth in dap: dap.remove(oth)
+        if choices.Choices.digital_archiving_policy_val('none') in dap:
+            dap.remove(choices.Choices.digital_archiving_policy_val('none'))
         kvs.append((cls.q("digital_archiving_policy"), ", ".join(dap)))
         kvs.append((cls.q("digital_archiving_policy_library"), forminfo.get("digital_archiving_policy_library")))
         kvs.append((cls.q("digital_archiving_policy_other"), forminfo.get("digital_archiving_policy_other")))
@@ -566,7 +577,7 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("keywords"), ", ".join(forminfo.get("keywords", []))))
         kvs.append((cls.q("languages"), languages(forminfo.get("languages", []))))
         kvs.append((cls.q("editorial_board_url"), forminfo.get("editorial_board_url")))
-        kvs.append((cls.q("review_process"), forminfo.get("review_process")))
+        kvs.append((cls.q("review_process"), forminfo.get("review_process", '')))
         kvs.append((cls.q("review_process_url"), forminfo.get("review_process_url")))
         kvs.append((cls.q("aims_scope_url"), forminfo.get("aims_scope_url")))
         kvs.append((cls.q("instructions_authors_url"), forminfo.get("instructions_authors_url")))
