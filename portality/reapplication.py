@@ -496,9 +496,6 @@ class Suggestion2QuestionXwalk(object):
                 aids.append(aidother)
             return ", ".join(aids)
 
-        def yes_no(val):
-            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else "No"
-
         def yes_or_blank(val):
             return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
 
@@ -561,13 +558,13 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("digital_archiving_policy_other"), forminfo.get("digital_archiving_policy_other")))
 
         kvs.append((cls.q("digital_archiving_policy_url"), forminfo.get("digital_archiving_policy_url")))
-        kvs.append((cls.q("crawl_permission"), yes_no(forminfo.get("crawl_permission"))))
+        kvs.append((cls.q("crawl_permission"), yes_or_blank(forminfo.get("crawl_permission"))))
 
         article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
         kvs.append((cls.q("article_identifiers"), article_identifiers))
 
-        kvs.append((cls.q("metadata_provision"), yes_no(forminfo.get("metadata_provision"))))
-        kvs.append((cls.q("download_statistics"), yes_no(forminfo.get("download_statistics"))))
+        kvs.append((cls.q("metadata_provision"), yes_or_blank(forminfo.get("metadata_provision"))))
+        kvs.append((cls.q("download_statistics"), yes_or_blank(forminfo.get("download_statistics"))))
         kvs.append((cls.q("download_statistics_url"), forminfo.get("download_statistics_url")))
         kvs.append((cls.q("first_fulltext_oa_year"), forminfo.get("first_fulltext_oa_year")))
 
@@ -581,11 +578,11 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("review_process_url"), forminfo.get("review_process_url")))
         kvs.append((cls.q("aims_scope_url"), forminfo.get("aims_scope_url")))
         kvs.append((cls.q("instructions_authors_url"), forminfo.get("instructions_authors_url")))
-        kvs.append((cls.q("plagiarism_screening"), yes_no(forminfo.get("plagiarism_screening"))))
+        kvs.append((cls.q("plagiarism_screening"), yes_or_blank(forminfo.get("plagiarism_screening"))))
         kvs.append((cls.q("plagiarism_screening_url"), forminfo.get("plagiarism_screening_url")))
         kvs.append((cls.q("publication_time"), forminfo.get("publication_time")))
         kvs.append((cls.q("oa_statement_url"), forminfo.get("oa_statement_url")))
-        kvs.append((cls.q("license_embedded"), yes_no(forminfo.get("license_embedded"))))
+        kvs.append((cls.q("license_embedded"), yes_or_blank(forminfo.get("license_embedded"))))
         kvs.append((cls.q("license_embedded_url"), forminfo.get("license_embedded_url")))
 
         lic = forminfo.get("license")
@@ -595,7 +592,7 @@ class Suggestion2QuestionXwalk(object):
 
         kvs.append((cls.q("license_checkbox"), license_checkbox(forminfo.get("license_checkbox", []))))
         kvs.append((cls.q("license_url"), forminfo.get("license_url")))
-        kvs.append((cls.q("open_access"), yes_no(forminfo.get("open_access"))))
+        kvs.append((cls.q("open_access"), yes_or_blank(forminfo.get("open_access"))))
 
         deposit_policies = other_list("deposit_policy", "deposit_policy_other", choices.Choices.deposit_policy_other_val("other"))
         kvs.append((cls.q("deposit_policy"), deposit_policies))
