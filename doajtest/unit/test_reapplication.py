@@ -42,10 +42,12 @@ APPLICATION_SOURCE = {
         "oa_start" : {
             "year" : 1980,
         },
+        "apc_url" : "http://apc.com",
         "apc" : {
             "currency" : "GBP",
             "average_price" : 2
         },
+        "submission_charges_url" : "http://submission.com",
         "submission_charges" : {
             "currency" : "USD",
             "average_price" : 4
@@ -141,9 +143,11 @@ APPLICATION_COL = [
     "contact@email.com",
     "US",
     "Yes",
+    "http://apc.com",
     2,
     "GBP",
     "Yes",
+    "http://submission.com",
     4,
     "USD",
     16,
@@ -193,7 +197,13 @@ APPLICATION_COL = [
 
 @classmethod
 def mock_issns_by_owner(cls, *args, **kwargs):
-    return ["1234-5678", "2345-6789", "3456-7890"]
+    issns = ["1234-5678", "2345-6789", "3456-7890", "4567-8901"]
+    for c_num in range(5, 80):
+        c_num = str(c_num)
+        issn = "6529-540" if len(c_num) == 1 else "6529-54"
+        issn += c_num
+        issns.append(issn)
+    return issns
 
 @classmethod
 def mock_find_by_issn(cls, *args, **kwargs):
@@ -316,6 +326,22 @@ class TestReApplication(DoajTestCase):
         c3[4] = "7654-3210"
         sheet.set_column(c3[3], c3)
 
+        c4 = deepcopy(APPLICATION_COL)
+        c4[0] = "Fourth Title"
+        c4[3] = "4567-8901"
+        c4[4] = "6543-2109"
+        c4[54] = "invalid url"
+        sheet.set_column(c4[3], c4)
+
+        for c_num in range(5, 80):  # columns 1-4 are defined already, and we need, say, 26 * 3 columns for test 16 (so we can comfortably pick one from the middle and have it be > 27th column), so roughly 78, so why not 79?
+            c_num = str(c_num)
+            col = deepcopy(APPLICATION_COL)
+            col[0] = c_num + " Title"
+            col[3] = "6529-540" if len(c_num) == 1 else "6529-54"
+            col[3] += c_num
+            col[54] = "invalid url"
+            sheet.set_column(col[3], col)
+
         sheet.save()
 
     def test_01_make_reapplication(self):
@@ -394,6 +420,7 @@ class TestReApplication(DoajTestCase):
         bj1.add_identifier("eissn", "9876-5432")
         bj1.title = "First Title"
         bj1.add_language("ES")
+        bj1.add_language("Spanish") # which is not allowed, you know!  (should be "Spanish; Castillian")
 
         bj2 = s2.bibjson()
         bj2.remove_identifiers("pissn")
@@ -436,6 +463,9 @@ class TestReApplication(DoajTestCase):
         _, sheetqs = sheet.get_column(0)
 
         assert sheetqs == qs
+
+        # check that the disallowed language got stripped
+        assert "Spanish" not in vals1[34]
 
     def test_05_csv_xwalk_in(self):
         # convert the test answers into the form info
@@ -480,23 +510,23 @@ class TestReApplication(DoajTestCase):
         col[0] = "    The   Title   "               # title
         col[11] = " united   kingdom    "           # country
         col[12] = "  YEs "                          # processing charges
-        col[14] = " gbp   "                         # processing_charges_currency
-        col[15] = "nO "                             # submission charges
-        col[17] = " pound  sterling"                # submission_charges_currency
-        col[20] = " whatever "                      # waiver_policy
-        col[22] = "  LOCKSS, A national library, Store it  "  # digital_archiving_policy
-        col[23] = "Dublin"                          # digital_archiving_policy_library
-        col[24] = "  Behind the sofa"               # digital_archiving_policy_other
-        col[27] = "DOI, ARK, PURL, Flag, Other"     # article_identifiers and article_identifiers_other (with unnecessary "Other" entry)
-        col[32] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
-        col[33] = "a, long, list, of, keywords, more, than, six"    # keywords
-        col[34] = "en, FR,  Vietnamese , Wibble"    # languages
-        col[36] = "edITORial   review   "           # review_process
-        col[46] = "CC BY"                           # license and license_other
-        col[47] = "BY, Share Alike, Whatever"       # license_checkbox
-        col[50] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
-        col[51] = "Now and again"                   # copyright
-        col[53] = "almost never"                    # publishing rights
+        col[15] = " gbp   "                         # processing_charges_currency
+        col[16] = "nO "                             # submission charges
+        col[19] = " pound  sterling"                # submission_charges_currency
+        col[22] = " whatever "                      # waiver_policy
+        col[24] = "  LOCKSS, A national library, Store it  "  # digital_archiving_policy
+        col[25] = "Dublin"                          # digital_archiving_policy_library
+        col[26] = "  Behind the sofa"               # digital_archiving_policy_other
+        col[29] = "DOI, ARK, PURL, Flag, Other"     # article_identifiers and article_identifiers_other (with unnecessary "Other" entry)
+        col[34] = "PDF, XML, Wordperfect, TeX"      # fulltext_format and fulltext_format_other
+        col[35] = "a, long, list, of, keywords, more, than, six"    # keywords
+        col[36] = "en, FR,  Vietnamese , Wibble"    # languages
+        col[38] = "edITORial   review   "           # review_process
+        col[48] = "CC BY"                           # license and license_other
+        col[49] = "BY, Share Alike, Whatever"       # license_checkbox
+        col[52] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
+        col[53] = "Now and again"                   # copyright
+        col[55] = "almost never"                    # publishing rights
 
 
         # run the xwalk and see that it produces what we expect
@@ -662,9 +692,19 @@ class TestReApplication(DoajTestCase):
         assert sheetqs == qs
 
     def test_14_make_journal_from_reapp(self):
+        # with history
+        j = models.Journal()
+        j.set_id("1234567")
+        j.set_created("2001-01-01T00:00:00Z")
+        j.add_history({"title" : "old title"})
+        j.save()
+
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         s.set_current_journal("1234567")
+
+        time.sleep(1)
         j = s.make_journal()
+        j.save()
 
         assert j.id == "1234567"
         assert "suggestion" not in j.data
@@ -672,4 +712,73 @@ class TestReApplication(DoajTestCase):
         assert j.data.get("bibjson", {}).get("active")
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
+        assert j.created_date == "2001-01-01T00:00:00Z"
+        assert j.get_history_raw()[0].get("bibjson", {}).get("title") == "old title"
 
+        # without history
+        j = models.Journal()
+        j.set_id("1234567")
+        j.set_created("2001-01-01T00:00:00Z")
+        j.save()
+
+        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        s.set_current_journal("1234567")
+
+        time.sleep(1)
+        j = s.make_journal()
+        j.save()
+
+        assert j.id == "1234567"
+        assert "suggestion" not in j.data
+        assert j.last_reapplication is not None
+        assert j.data.get("bibjson", {}).get("active")
+        assert j.current_application is None
+        assert j.data.get("admin", {}).get("current_journal") is None
+        assert j.created_date == "2001-01-01T00:00:00Z"
+        assert len(j.history()) == 0
+
+    def test_15_error_report_cell_refs_rows(self):
+        sheet = reapplication.open_csv("invalid.csv")
+
+        with self.assertRaises(reapplication.ContentValidationException):
+            try:
+                fcs, skip = reapplication.validate_csv_contents(sheet)
+            except reapplication.ContentValidationException as e:
+                report = reapplication.generate_spreadsheet_error_object(sheet, e)
+
+                assert report["4567-8901"].has_key(56), report["4567-8901"]
+                assert report["4567-8901"][56] == (
+                            "4567-8901",
+                            "53) Enter the URL where this information can be found **",
+                            56,
+                            "E",
+                            "Invalid URL."
+                       ), report["4567-8901"][56]
+                raise e
+
+    def test_16_error_report_cell_refs_columns(self):
+        sheet = reapplication.open_csv("invalid.csv")
+
+        with self.assertRaises(reapplication.ContentValidationException):
+            try:
+                fcs, skip = reapplication.validate_csv_contents(sheet)
+            except reapplication.ContentValidationException as e:
+                report = reapplication.generate_spreadsheet_error_object(sheet, e)
+
+                assert report["6529-5440"].has_key(56), report["6529-5440"]
+                assert report["6529-5440"][56] == (
+                            "6529-5440",
+                            "53) Enter the URL where this information can be found **",
+                            56,
+                            "AO",  # the 41st column should be AO. AA is the 27th, AO is 14 after that (O is the 15th letter in the alphabet)
+                            "Invalid URL."
+                       ), report["6529-5440"][56]
+                raise e
+
+    def test_17_num2col(self):
+        assert reapplication.num2col(0) == 'A', reapplication.num2col(0)
+        assert reapplication.num2col(1) == 'B', reapplication.num2col(1)
+        assert reapplication.num2col(26) == 'AA', reapplication.num2col(26)
+        assert reapplication.num2col(40) == 'AO', reapplication.num2col(40)
+        assert reapplication.num2col(18277) == 'ZZZ', reapplication.num2col(18277)
+        assert reapplication.num2col(18278) == 'AAAA', reapplication.num2col(18278)

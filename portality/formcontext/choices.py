@@ -85,8 +85,8 @@ class Choices(object):
 
     _application_status_base = [
         ('', ' '),
-        ('reapplication', 'Re-Application In Progress'),
-        ('submitted', 'Re-Application Submitted'),
+        ('reapplication', 'Reapplication In Progress'),
+        ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
         ('in progress', 'In progress'),
         ('rejected', 'Rejected'),
@@ -154,6 +154,10 @@ class Choices(object):
         return cls.binary()
 
     @classmethod
+    def processing_charges_url_optional(cls):
+        return [cls.FALSE]
+
+    @classmethod
     def processing_charges_amount_optional(cls):
         return [cls.FALSE]
 
@@ -165,6 +169,10 @@ class Choices(object):
     @classmethod
     def submission_charges(cls):
         return cls.binary()
+
+    @classmethod
+    def submission_charges_url_optional(cls):
+        return [cls.FALSE]
 
     @classmethod
     def submission_charges_amount_optional(cls):

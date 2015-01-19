@@ -270,6 +270,9 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # Whether reactivation is ongoing; when False, reapplication pages will be hidden.
 REAPPLICATION_ACTIVE = True
 
+# The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
+CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
+
 
 # =================================
 # File Upload and crosswalk settings
@@ -313,7 +316,7 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 
-#Publisher CSV storage
+# Publisher CSV storage
 BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
 # Where static files are served from - in case we need to serve a file

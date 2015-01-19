@@ -227,6 +227,10 @@ class PrivateContext(FormContext):
             # this means that the source doesn't know about current_journals, which is fine
             pass
 
+        # if the source is a journal, we need to carry the in_doaj flag
+        if isinstance(self.source, models.Journal):
+            self.target.set_in_doaj(self.source.is_in_doaj())
+
     @staticmethod
     def _subjects2str(subjects):
         subject_strings = []
@@ -537,7 +541,7 @@ class ManEdApplicationReview(ApplicationContext):
             j.save()
 
             # record the url the journal is available at in the admin are and alert the user
-            jurl = url_for("admin.journal_page", journal_id=j.id)
+            jurl = url_for("doaj.toc", identifier=j.id)
             if self.source.current_journal is not None:
                 self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
                 #self.source.remove_current_journal()
@@ -951,7 +955,7 @@ class PublisherReApplication(ApplicationContext):
         # Save the target
         self.target.save()
 
-        # email the publisher to tell them we received their re-application
+        # email the publisher to tell them we received their reapplication
         self._send_received_email()
 
     def render_template(self, **kwargs):
@@ -983,11 +987,11 @@ class PublisherReApplication(ApplicationContext):
             self.add_alert("Unable to locate account for specified owner")
             return
 
-        journal_name = self.target.bibjson().title, #.encode('utf-8', 'replace')
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - re-application received"
+        subject = app.config.get("SERVICE_NAME","") + " - reapplication received"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
@@ -998,7 +1002,7 @@ class PublisherReApplication(ApplicationContext):
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
-                self.add_alert('Sent a confirmation email to ' + acc.email + ' as a record of this update')
+                self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')

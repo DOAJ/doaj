@@ -55,10 +55,12 @@ JOURNAL_SOURCE = {
         "oa_start": {
             "year": 1980,
         },
+        "apc_url" : "http://apc.com",
         "apc": {
             "currency": "GBP",
             "average_price": 2
         },
+        "submission_charges_url" : "http://submission.com",
         "submission_charges": {
             "currency": "USD",
             "average_price": 4
@@ -148,9 +150,11 @@ JOURNAL_INFO = {
     "confirm_contact_email": "contact@email.com",
     "country": "US",
     "processing_charges": "True",
+    "processing_charges_url" : "http://apc.com",
     "processing_charges_amount": 2,
     "processing_charges_currency": "GBP",
     "submission_charges": "True",
+    "submission_charges_url" : "http://submission.com",
     "submission_charges_amount": 4,
     "submission_charges_currency": "USD",
     "waiver_policy": "True",

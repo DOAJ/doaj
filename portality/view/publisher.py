@@ -11,6 +11,7 @@ from portality.util import flash_with_url
 
 import os, requests, ftplib
 from urlparse import urlparse
+from time import sleep
 
 
 blueprint = Blueprint('publisher', __name__)
@@ -50,9 +51,10 @@ def reapplication_page(reapplication_id):
         if fc.validate():
             try:
                 fc.finalise()
-                flash('Your Re-Application has been saved.  You may still edit it until a DOAJ editor picks it up for review.', 'success')
+                flash('Your reapplication has been submitted but it is editable until the DOAJ editorial team picks it up for review.', 'success')
                 for a in fc.alert:
                     flash_with_url(a, "success")
+                flash("Close this tab to return to your Publisher's Area.", 'success')
                 return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
             except formcontext.FormContextException as e:
                 flash(e.message)
@@ -336,7 +338,7 @@ def bulk_reapply():
     f = request.files.get("file")
 
     if f.filename != "":
-        return _bulk_upload(f, csv_downloads, previous)
+        return _bulk_upload(f)
 
     flash("No file provided - select a file to upload and try again.", "error")
     return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
@@ -363,7 +365,7 @@ def bulk_download(filename):
     else:
         abort(404)
 
-def _bulk_upload(f, csv_downloads, previous):
+def _bulk_upload(f):
     # prep a record to go into the index, to record this upload
     record = models.BulkUpload()
     record.upload(current_user.id, f.filename)
@@ -380,9 +382,9 @@ def _bulk_upload(f, csv_downloads, previous):
         # save the index entry
         record.save()
 
-        previous = [record] + previous # add the new record to the previous records
+        sleep(2)  # let ES catch up so people can see their file is "in submission" on redirect/refresh
         flash("File successfully uploaded - it will be processed shortly", "success")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return redirect(url_for('publisher.bulk_reapply'))
     except:
         # if we can't record either of these things, we need to back right off
         try:
@@ -395,7 +397,7 @@ def _bulk_upload(f, csv_downloads, previous):
             pass
 
         flash("Failed to upload file - please contact an administrator", "error")
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+        return redirect(url_for('publisher.bulk_reapply'))
 
 
 def _validate_authors(form, require=1):

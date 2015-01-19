@@ -10,6 +10,10 @@ import os
 from flask import request, abort, render_template, redirect, send_file, url_for, flash
 from flask.ext.login import login_user, current_user
 
+from datetime import datetime
+import tzlocal
+import pytz
+
 import portality.models as models
 from portality.core import app, login_manager
 from portality import settings
@@ -148,6 +152,20 @@ def set_current_context():
         "app" : app
         }
     # return dict(current_user=current_user, app=app)
+
+@app.template_filter('utc_timestamp')
+def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
+    """
+    Format a local time datetime object to UTC
+    :param stamp: a datetime object
+    :param string_format: defaults to "%Y-%m-%dT%H:%M:%SZ", which complies with ISO 8601
+    :return: the string formatted datetime
+    """
+    local = tzlocal.get_localzone()
+    ld = local.localize(stamp)
+    tt = ld.utctimetuple()
+    utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
+    return utcdt.strftime(string_format)
 
 @app.before_request
 def standard_authentication():

@@ -175,9 +175,11 @@ JOURNAL_INFO = {
     "confirm_contact_email" : "contact@email.com",
     "country" : "US",
     "processing_charges" : "True",
+    "processing_charges_url" : "http://apc.com",
     "processing_charges_amount" : 2,
     "processing_charges_currency" : "GBP",
     "submission_charges" : "True",
+    "submission_charges_url" : "http://submission.com",
     "submission_charges_amount" : 4,
     "submission_charges_currency" : "USD",
     "waiver_policy" : "True",
@@ -313,7 +315,7 @@ class TestManEdAppReview(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
-        """Give the editor's re-application form a full workout"""
+        """Give the editor's reapplication form a full workout"""
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
