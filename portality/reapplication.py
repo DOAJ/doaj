@@ -497,10 +497,10 @@ class Suggestion2QuestionXwalk(object):
             return ", ".join(aids)
 
         def yes_no(val):
-            return "Yes" if val in [True, "True", "Yes"] else "No"
+            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else "No"
 
         def yes_or_blank(val):
-            return "Yes" if val in [True, "True", "Yes"] else ''
+            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
 
         def license_checkbox(val):
             opts = {}
