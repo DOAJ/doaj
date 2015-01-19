@@ -145,9 +145,11 @@ JOURNAL_INFO = {
     "confirm_contact_email" : "contact@email.com",
     "country" : "US",
     "processing_charges" : "True",
+    "processing_charges_url" : "http://apc.com",
     "processing_charges_amount" : 2,
     "processing_charges_currency" : "GBP",
     "submission_charges" : "True",
+    "submission_charges_url" : "http://submission.com",
     "submission_charges_amount" : 4,
     "submission_charges_currency" : "USD",
     "waiver_policy" : "True",
@@ -259,7 +261,7 @@ class TestPublisherReApplication(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the publisher's re-application form
+    # Tests on the publisher's reapplication form
     ###########################################################
 
     def test_01_publisher_csv_reapplication_success(self):

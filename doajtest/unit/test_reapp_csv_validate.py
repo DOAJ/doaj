@@ -134,9 +134,11 @@ APPLICATION_COL = [
     "contact@email.com",
     "US",
     "Yes",
+    "http://apc.com",
     2,
     "GBP",
     "Yes",
+    "http://submission.com",
     4,
     "USD",
     16,
@@ -412,7 +414,7 @@ class TestReAppCsv(DoajTestCase):
             try:
                 fcs = reapplication.validate_csv_contents(sheet)
             except reapplication.CsvValidationException as e:
-                assert e.message == "Unable to locate a ReApplication with the issn 1234-5678; spreadsheet is invalid"
+                assert e.message == "Unable to locate a reapplication with the issn 1234-5678; spreadsheet is invalid"
                 raise e
 
         sheet = reapplication.open_csv("valid.csv")
@@ -421,7 +423,7 @@ class TestReAppCsv(DoajTestCase):
             try:
                 fcs = reapplication.validate_csv_contents(sheet)
             except reapplication.CsvValidationException as e:
-                assert e.message == "Unable to locate a unique ReApplication with the issn 1234-5678; please contact an administrator"
+                assert e.message == "Unable to locate a unique reapplication with the issn 1234-5678; please contact an administrator"
                 raise e
 
         sheet = reapplication.open_csv("invalid.csv")

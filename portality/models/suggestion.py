@@ -34,8 +34,21 @@ class Suggestion(Journal):
 
         # now deal with the fact that this could be a replacement of an existing journal
         if self.current_journal is not None:
+            cj = Journal.pull(self.current_journal)
+
+            # carry the id and the created date
             new_j.set_id(self.current_journal)
+            new_j.set_created(cj.created_date)
+
+            # set a reapplication date
             new_j.set_last_reapplication()
+
+            # carry any continuations
+            hist = cj.get_history_raw()
+            if hist is not None and len(hist) > 0:
+                new_j.set_history(cj.get_history_raw())
+
+            # remove the reference to the current_journal
             del new_j.data["admin"]["current_journal"]
 
         return new_j
@@ -142,8 +155,19 @@ class Suggestion(Journal):
             return
         self._set_suggestion_property("suggester", sugg)
 
-    def save(self, **kwargs):
+    def _sync_owner_to_journal(self):
+        if self.current_journal is None:
+            return
+        from portality.models import Journal
+        cj = Journal.pull(self.current_journal)
+        if cj is not None and cj.owner != self.owner:
+            cj.set_owner(self.owner)
+            cj.save(sync_owner=False)
+
+    def save(self, sync_owner=True, **kwargs):
         self.prep()
+        if sync_owner:
+            self._sync_owner_to_journal()
         super(Suggestion, self).save(snapshot=False, **kwargs)
 
 class SuggestionQuery(object):
@@ -192,7 +216,7 @@ class OwnerStatusQuery(object):
     }
     def __init__(self, owner, statuses, size=10):
         self._query = deepcopy(self.base_query)
-        owner_term = {"term" : {"owner" : owner}}
+        owner_term = {"match" : {"owner" : owner}}
         self._query["query"]["bool"]["must"].append(owner_term)
         status_term = {"terms" : {"admin.application_status.exact" : statuses}}
         self._query["query"]["bool"]["must"].append(status_term)
