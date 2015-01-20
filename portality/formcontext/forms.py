@@ -391,7 +391,7 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
         * Workflow - ability to change application status
         * ApplicationOwner - able to set the owner, and for the owner assignment to be optional except under certain circumstances
-        * ManEdJournalInfoOverride - journal bibliographic data, with custom validation for managing editors
+        * JournalInfoOptionalPaymentURLs - journal bibliographic data, with custom validation for managing editors
         * Suggestion - additional application metadata
         * Subject - ability to use subject hierarchy browser
         * AdminSuggester - suggester's contact details, from an administrator's perspective
