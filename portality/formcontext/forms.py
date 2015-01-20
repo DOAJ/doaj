@@ -249,6 +249,18 @@ class JournalInformation(Form):
         [OptionalIf('publishing_rights', optvals=Choices.publishing_rights_url_optional()), URLOptionalScheme()]
     )
 
+class JournalInfoOptionalPaymentURLs(JournalInformation):
+    """Overrides fields in the JournalInfo form that are not required for ManEds """
+
+    processing_charges_url = URLField('Enter the URL where this information can be found',
+        [validators.Optional()],
+        description='This field is optional for editors and managing editors only'
+    )
+
+    submission_charges_url = URLField('Enter the URL where this information can be found',
+        [validators.Optional()],
+        description='This field is optional for editors and managing editors only'
+    )
 
 class Suggestion(Form):
     """ Additional bibliographic metadata required when suggesting a journal to the DOAJ """
@@ -373,13 +385,13 @@ class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
     pass
 
 
-class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
+class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
     """
     Managing Editor's Application Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
         * Workflow - ability to change application status
         * ApplicationOwner - able to set the owner, and for the owner assignment to be optional except under certain circumstances
-        * JournalInformation - journal bibliographic data
+        * JournalInfoOptionalPaymentURLs - journal bibliographic data, with custom validation for managing editors
         * Suggestion - additional application metadata
         * Subject - ability to use subject hierarchy browser
         * AdminSuggester - suggester's contact details, from an administrator's perspective
@@ -387,7 +399,7 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
     """
     pass
 
-class EditorApplicationReviewForm(Editorial, Workflow, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
+class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
         * Editorial - ability to add associate editors (but not change editorial group)
