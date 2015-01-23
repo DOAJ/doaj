@@ -254,12 +254,10 @@ class JournalInfoOptionalPaymentURLs(JournalInformation):
 
     processing_charges_url = URLField('Enter the URL where this information can be found',
         [validators.Optional()],
-        description='This field is optional for editors and managing editors only'
     )
 
     submission_charges_url = URLField('Enter the URL where this information can be found',
         [validators.Optional()],
-        description='This field is optional for editors and managing editors only'
     )
 
 class Suggestion(Form):
