@@ -30,7 +30,7 @@ class JournalInformation(Form):
     )
     eissn = StringField('Journal ISSN (online version)',
         [OptionalIf('pissn'), validators.Regexp(regex=ISSN_REGEX, message=ISSN_ERROR)],
-        description='Write the EISSN with the hyphen "-" e.g. 1234-4321.',
+        description='Cannot be the same as the P-ISSN. Write the EISSN with the hyphen "-" e.g. 1234-4321.',
     )
     publisher = StringField('Publisher',
         [validators.DataRequired()]
@@ -130,9 +130,9 @@ class JournalInformation(Form):
     )
     article_identifiers_other = StringField('',
     )
-    download_statistics = RadioField('Does the journal provide download statistics?',
+    download_statistics = RadioField('Does the journal provide article download statistics?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question below',
+        description = 'If "No" proceed to question 32',
         choices = Choices.download_statistics()
     )
     download_statistics_url = StringField('Enter the URL where this information can be found',
@@ -153,7 +153,7 @@ class JournalInformation(Form):
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
         [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
-        description='Maximum 6'
+        description='Maximum 6. Keywords must be in English.'
     )
     languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
         [validators.DataRequired()],
@@ -181,7 +181,7 @@ class JournalInformation(Form):
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question below',
+        description = 'If "No" proceed to question 43',
         choices = Choices.plagiarism_screening()
     )
     plagiarism_screening_url = URLField("Enter the URL where this information can be found",
@@ -196,7 +196,7 @@ class JournalInformation(Form):
     license_embedded = RadioField('Does the journal embed or display simple machine-readable CC licensing information in its articles?',
         [validators.DataRequired()],
         choices = Choices.licence_embedded(),
-        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/CC_REL">http://wiki.creativecommons.org/CC_REL</a><br><br>If "No" proceed to question below.',
+        description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/CC_REL">http://wiki.creativecommons.org/CC_REL</a><br><br>If "No" proceed to question 47.',
     )
     license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=Choices.licence_embedded_url_optional()), URLOptionalScheme()]
