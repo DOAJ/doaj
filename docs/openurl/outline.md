@@ -37,8 +37,49 @@ Here, everything up to the ```&rft.genre``` tag is fixed - the OpenURL version u
 
 ### Model for incoming OpenURL requests
 
+OpenURL queries will be handled by building an object which can hold the incoming information, plus methods required to crosswalk to an ElasticSearch query. The data model is defined from the schema above and covers all valid keys in the chosen ```journal``` schema. The fields in the model all correspond to the schema key, which makes accessing them in the object for a known request more convenient. Although not all fields can be directly mapped to the DOAJ's models for journals or articles and may be ignored, these are included in our class for the sake of completeness w.r.t. the schema.
+
+```python
+# Attributes in OpenURL requests object
+{
+    aulast : "First author's family name, may be more than one word",
+    aufirst : "First author's given name or names or initials",
+    auinit : "First author's first and middle initials",
+    auinit1 : "First author's first initial",
+    auinitm : "First author's middle initial",
+    ausuffix : "First author's name suffix. e.g. 'Jr.', 'III'",
+    au : "full name of a single author",
+    aucorp : "Organisation or corporation that is the author or creator of the document",
+    atitle : "Article title",
+    jtitle : "Journal title", # 0.1 used 'title' so will be mapped to this in parse (see schema)
+    stitle : "Abbreviated or short journal title",
+    date : "Date of publication",
+    chron : "Non-normalised enumeration / chronology, e.g. '1st quarter'",
+    ssn : "Season (chronology). spring|summer|fall|autumn|winter",
+    quarter : "Quarter (chronology). 1|2|3|4",
+    volume : "Volume designation. e.g. '124', or 'VI'",
+    part : "Subdivision of a volume or highest level division of the journal. e.g. 'B', 'Supplement'",
+    issue : "Journal issue",
+    spage : "Starting page",
+    epage : "Ending page",
+    pages : "Page range e.g. '53-58', 'C4-9'",
+    artnum : "Article number",
+    issn : "Journal ISSN",
+    eissn : "ISSN for electronic version of the journal",
+    isbn : "Journal ISBN",
+    coden : "CODEN",
+    sici : "Serial Item and Contribution Identifier (SICI)",
+    genre : "journal|issue|article|proceeding|conference|preprint|unknown"
+}
+
+```
+Each of these attributes in the model is read-only; only needing getters, since they are populated when the object is created from the parsed OpenURL. So to get the issn of the parsed incoming OpenURL request, one would use ```parsed_req.issn```.
+
+To parse the query and build the object, the OpenURL is split into its keys (delimited by ```&```), with the values passed into the object attributes, with some minor validation if required.
 
 ### Mapping to ElasticSearch query
+
+
 
 ## appendix
 ### useful resources
