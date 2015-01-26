@@ -9,8 +9,6 @@ OpenURL is a specification used to build links to resources. The OpenURL general
 
 OpenURL 1.0 requires the specification of a schema, specifies the format for keys used in the request. These can be found [here][oclc_reg].
 
-*Unless otherwise specified, examples in this document are using the 1.0 standard.*
-
 #### Prior use in DOAJ
 Some examples of incoming requests were captured by the DOAJ, demonstrating the 0.1 syntax:
 
