@@ -77,7 +77,7 @@ To parse the query and build the object, the OpenURL is split into its keys (del
 
 ### Mapping to ElasticSearch query
 
-
+*coming soon*
 
 ## appendix
 ### useful resources
