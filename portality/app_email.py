@@ -1,6 +1,8 @@
-from flask import render_template, request
+from flask import render_template, request, flash
 from flask_mail import Mail, Message, Attachment
 from portality.core import app
+
+import uuid
 
 # Flask-Mail version of email service from util.py
 def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
@@ -15,6 +17,18 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     assert type(files) == list
     if bcc and not isinstance(bcc, list):
         bcc = [bcc]
+
+    to_is_invalid = True
+    for t in to:
+        if t:
+            to_is_invalid = False
+        # a list of None, None, None or even just a [None] is no good!
+
+    if to_is_invalid:
+        magic = str(uuid.uuid1())
+        app.logger.error('Bad To list while trying to send email with subject \"{0}\". Magic num for log grep {1}'.format(subject, magic))
+        flash("Invalid email address - no email specified at all. Trying to send email with subject \"{0}\". Magic number to help identify error: {1}".format(subject, magic), 'error')
+        return
 
     if app.config.get('CC_ALL_EMAILS_TO', None) is not None:
         bcc.append(app.config.get('CC_ALL_EMAILS_TO'))
