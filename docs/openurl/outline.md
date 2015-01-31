@@ -77,14 +77,47 @@ To parse the query and build the object, the OpenURL is split into its keys (del
 
 ### Mapping to ElasticSearch query
 
-*coming soon*
+```python
+# How attributes map to the ES models. Denoted (Journal, Article, TOC)
+{
+aulast : (, Article.author.name),
+aufirst : (, Article.author.name),
+auinit : (, Article.author.name),
+auinit1 : (, Article.author.name),
+auinitm : (, Article.author.name),
+ausuffix : (, Article.author.name),
+au : (, Article.author.name),
+aucorp : (, Article.author.affiliation),
+atitle : (, Article.bibjson.title),
+jtitle : (Journal.bibjson.title, Article.bibjson.journal.title),
+stitle : (Journal.bibjson.alternative_title),
+date : (, Article.index.date),
+chron : (), # No mapping for this
+ssn : (), # No mapping for this
+quarter : (), # No mapping for this
+volume : (,,TOC.volume),
+part : (), # No mapping for this
+issue : (,,TOC.issues.number),
+spage : (,Article.bibjson.start_page,TOC.issues.articles.bibjson.start_page),
+epage : (,Article.bibjson.end_page,),
+pages : (,star,),
+artnum : "Article number",
+issn : "Journal ISSN",
+eissn : "ISSN for electronic version of the journal",
+isbn : "Journal ISBN",
+coden : "CODEN",
+sici : "Serial Item and Contribution Identifier (SICI)",
+genre : "journal|issue|article|proceeding|conference|preprint|unknown"
+}
+
+```
 
 ## appendix
 ### useful resources
 1. [OpenURL 1.0 Specification][niso_standard]
 2. [OpenURL Repository][oclc_reg]
 3. [Journal Schema][reg_journal]
-
+4. The so-called [Idiot's guide to OpenURL][idiots]
 
 ### DOAJ Journal/Application Data Model
 
@@ -339,11 +372,60 @@ To parse the query and build the object, the OpenURL is split into its keys (del
     "last_modified" : "<date record last modified>"
 }
 ```
+### Journal Table of Contents Model
+
+```python
+{
+    "id" : "<opaque identifier for this volume>",
+    "about" : "<the journal's opaque identifier>",
+    "issn" : ["<list of issns for this journal>"],
+    "volume" : "<the volume number represented here>",
+    "issues" : [
+        {
+            "number" : "<issue number>",
+            "year" : "<year of publication>",
+            "month" : "<month of publication>",
+            "articles" : [
+                {
+                    "id" : "<the article's opaque id>",
+                    "bibjson" : {
+                        "title" : "<title of the article>",
+                        "identifier": [
+                            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"}
+                        ],
+                        "start_page" : "<start page>",
+                        "end_page" : "<end page>",
+                        "link" : [
+                            {
+                                "url" : "<fulltext url>",
+                                "type" : "fulltext",
+                                "content-type" : "<content type of resource>"
+                            }
+                        ],
+                        "abstract" : "<the abstract>",
+                        "author" : [
+                            {
+                                "name" : "<author name>",
+                                "email" : "<author email>",
+                                "affiliation" : "<author affiliation>"
+                            },
+                        ],
+                        "keywords" : [<list of free text keywords>],
+                    }
+                }
+            ]
+        }
+    ]
+    "created_date" : "<date created>",
+    "last_updated" : "<date record last modified>"
+}
+```
 
 [niso_standard]: http://www.niso.org/apps/group_public/download.php/6640/The%20OpenURL%20Framework%20for%20Context-Sensitive%20Services.pdf "ANSI/NISO Z39.88-2004"
 [oclc_reg]: http://alcme.oclc.org/openurl/ "Registry for the OpenURL Framework"
 [reg_journal]: http://alcme.oclc.org/openurl/servlet/OAIHandler/extension?verb=GetMetadata&metadataPrefix=mtx&identifier=info:ofi/fmt:kev:mtx:journal "Matrix defining the KEV Format to represent a journal publication"
 [exlibris]: http://www.exlibrisgroup.com/category/sfxopenurl "ExLibris SFX Link Resolver"
+[idiots]: http://nj.oclc.org/1cate/ig.html "OCLC Idiot's guide to Implementing OpenURL 1.0 for Journal Articles"
 
 
 <!--
