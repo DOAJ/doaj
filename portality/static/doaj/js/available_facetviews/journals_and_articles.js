@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
         {'field': '_type', 'display': 'Journals vs. Articles'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
-        {'field': 'index.country.exact', 'display': 'Country of Publication'},
+        {'field': 'index.country.exact', 'display': 'Country of publisher'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
         {'display':'ISSN', 'field':'index.issn.exact'},
         {'display':'DOI', 'field' : 'bibjson.identifier.id'},
         // {'display':'Identifier (ISSN, DOI)','field':'bibjson.identifier'},
-        {'display':'Country of Publication','field':'index.country'},
+        {'display':'Country of publisher','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
 
@@ -213,7 +213,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Country of publication</strong>: ",
+                "pre": "<strong>Country of publisher</strong>: ",
                 "field": "country_name"
             }
         ],
