@@ -31,7 +31,6 @@ jQuery(document).ready(function($) {
         {'field': 'index.language.exact', 'display': 'Journal Language'},
         {'field': 'index.country.exact', 'display': 'Country of Publication'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
         {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
         {'field': 'index.license.exact', 'display': 'Journal License'},
         // Articles
@@ -61,7 +60,6 @@ jQuery(document).ready(function($) {
         {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
         {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
-        {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
     ],
     paging: {
       from: 0,
@@ -103,34 +101,8 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Platform, Host, Aggregator</strong>: ",
-                "field": "bibjson.provider",
-            }
-        ],
-        [
-            {
                 "pre": "<strong>Publication charges?</strong>: ",
                 "field": "bibjson.author_pays",
-            }
-        ],
-        /*
-        [
-            {
-                "pre": "<strong>More information on publishing charges</strong>: ",
-                "field": "bibjson.author_pays_url",
-            }
-        ],
-        */
-        [
-            {
-                "pre": "<strong>Started publishing Open Access content in</strong>: ",
-                "field": "bibjson.oa_start.year",
-            }
-        ],
-        [
-            {
-                "pre": "<strong>Stopped publishing Open Access content in</strong>: ",
-                "field": "bibjson.oa_end.year",
             }
         ],
         [
@@ -204,12 +176,6 @@ jQuery(document).ready(function($) {
             {
                 "pre": "<strong>Keywords</strong>: ",
                 "field": "bibjson.keywords",
-            }
-        ],
-        [
-            {
-                "pre": "<strong>Date added to DOAJ</strong>: ",
-                "field": "created_date",
             }
         ],
         [
