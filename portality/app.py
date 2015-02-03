@@ -27,6 +27,7 @@ from portality.view.stream import blueprint as stream
 from portality.view.forms import blueprint as forms
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
+from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
@@ -46,6 +47,7 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 
 app.register_blueprint(oaipmh)
+app.register_blueprint(openurl)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
