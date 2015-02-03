@@ -91,7 +91,7 @@ SPONSORS = {
         'exlibris': {'name': 'ExLibris', 'logo': 'exlibris.gif', 'url': 'http://www.exlibrisgroup.com/'},
         'nature': {'name': 'Nature Publishing Group', 'logo': 'nature.gif', 'url': 'http://www.nature.com/npg_/index_npg.html'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
-
+        'qscience': {'name': 'QScience', 'logo': 'qscience.gif', 'url': 'http://www.qscience.com/'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
