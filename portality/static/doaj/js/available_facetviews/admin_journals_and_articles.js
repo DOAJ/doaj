@@ -317,7 +317,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Country of publication</strong>: ",
+                "pre": "<strong>Country of publisher</strong>: ",
                 "field": "country_name"
             }
         ],
