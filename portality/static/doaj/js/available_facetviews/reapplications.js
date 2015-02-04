@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
                 {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
                 {'field': 'index.classification.exact', 'display': 'Subject'},
                 {'field': 'index.language.exact', 'display': 'Journal Language'},
-                {'field': 'index.country.exact', 'display': 'Journal Country'},
+                {'field': 'index.country.exact', 'display': 'Country of publisher'},
                 {'field': 'index.subject.exact', 'display': 'Subject'},
                 {'field': 'bibjson.provider.exact', 'display': 'Provider'},
                 {'field': 'bibjson.author_pays.exact', 'display': 'Publication charges?'},
@@ -89,7 +89,7 @@ jQuery(document).ready(function ($) {
                 {'display': 'Subject', 'field': 'index.subject'},
                 {'display': 'Classification', 'field': 'index.classification'},
                 {'display': 'ISSN', 'field': 'index.issn.exact'},
-                {'display': 'Journal Country', 'field': 'index.country'},
+                {'display': 'Country of publisher', 'field': 'index.country'},
                 {'display': 'Journal Language', 'field': 'index.language'},
                 {'display': 'Publisher', 'field': 'index.publisher'},
                 {'display': 'Journal: Provider', 'field': 'bibjson.provider'},
@@ -210,7 +210,7 @@ jQuery(document).ready(function ($) {
                 ],
                 [
                     {
-                        "pre": "<strong>Journal Country</strong>: ",
+                        "pre": "<strong>Country of publisher</strong>: ",
                         "field": "country_name",
                     }
                 ],

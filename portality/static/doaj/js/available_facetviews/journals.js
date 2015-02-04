@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
         {'field': 'index.classification.exact', 'display': 'Classification'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
-        {'field': 'index.country.exact', 'display': 'Journal Country'},
+        {'field': 'index.country.exact', 'display': 'Country of publisher'},
         {'field': 'index.title.exact', 'display': 'Journal Title'},
     ],
     search_sortby: [
@@ -56,7 +56,7 @@ jQuery(document).ready(function($) {
         {'display':'Subject','field':'index.subject'},
         {'display':'Classification','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
-        {'display':'Journal Country','field':'index.country'},
+        {'display':'Country of publisher','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
         {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},

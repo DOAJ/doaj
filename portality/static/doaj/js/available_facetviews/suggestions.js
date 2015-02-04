@@ -35,7 +35,7 @@ jQuery(document).ready(function($) {
         {'field': 'admin.editor.exact', 'display': 'Editor'},
         {'field': 'index.classification.exact', 'display': 'Subject'},
         {'field': 'index.language.exact', 'display': 'Journal Language'},
-        {'field': 'index.country.exact', 'display': 'Journal Country'},
+        {'field': 'index.country.exact', 'display': 'Country of publisher'},
         {'field': 'index.subject.exact', 'display': 'Subject'},
         {'field': 'index.publisher.exact', 'display': 'Publisher'},
         {'field': 'bibjson.provider.exact', 'display': 'Platform, Host, Aggregator'},
@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
         {'display':'Keywords','field':'bibjson.keywords'},
         {'display':'Subject','field':'index.classification'},
         {'display':'ISSN', 'field':'index.issn.exact'},
-        {'display':'Journal Country','field':'index.country'},
+        {'display':'Country of publisher','field':'index.country'},
         {'display':'Journal Language','field':'index.language'},
         {'display':'Publisher','field':'index.publisher'},
 
@@ -183,7 +183,7 @@ jQuery(document).ready(function($) {
         ],
         [
             {
-                "pre": "<strong>Journal Country</strong>: ",
+                "pre": "<strong>Country of publisher</strong>: ",
                 "field": "country_name",
             }
         ],
