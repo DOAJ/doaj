@@ -106,17 +106,33 @@
                     <strong>Year Open Access Ceased</strong>: {{journal.bibjson().oa_end.get("year")}}<br>
                 {% endif %}
 
+                <strong>Author Processing Charges (APCs)</strong>:
                 {% if journal.bibjson().apc %}
                     {% if journal.bibjson().apc.get("currency") or journal.bibjson().apc.get("average_price") %}
-                    <strong>APC</strong>: {{journal.bibjson().apc.get("currency", "currency unknown")}} {{journal.bibjson().apc.get("average_price", "price unknown")}}<br>
+                        Yes.
+                            {{journal.bibjson().apc.get("average_price", "price unknown")}}{{journal.bibjson().apc.get("currency", " currency unknown")}}
                     {% endif %}
+                {% else %}
+                    No.
                 {% endif %}
+                {% if journal.bibjson().apc_url %}
+                    <a href="{{ journal.bibjson().apc_url }}">{{ journal.bibjson().apc_url }}</a>
+                {% endif %}
+                <br>
 
+                <strong>Submission Charges</strong>:
                 {% if journal.bibjson().submission_charges %}
                     {% if journal.bibjson().submission_charges.get("currency") or journal.bibjson().submission_charges.get("average_price") %}
-                    <strong>Submission Charges</strong>: {{journal.bibjson().submission_charges.get("currency", "currency unknown")}} {{journal.bibjson().submission_charges.get("average_price", "price unknown")}}<br>
+                        Yes.
+                            {{journal.bibjson().submission_charges.get("average_price", "price unknown")}}{{journal.bibjson().submission_charges.get("currency", " currency unknown")}}
                     {% endif %}
+                {% else %}
+                    No.
                 {% endif %}
+                {% if journal.bibjson().submission_charges_url %}
+                    <a href="{{ journal.bibjson().submission_charges_url }}">{{ journal.bibjson().submission_charges_url }}</a>
+                {% endif %}
+                <br>
 
                 {% if journal.bibjson().archiving_policy %}
                     {% if journal.bibjson().archiving_policy.get("policy") or journal.bibjson().archiving_policy.get("url") %}
