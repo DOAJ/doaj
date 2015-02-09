@@ -256,6 +256,10 @@ footer > .box + .box {
     font-weight: bold;
     color: white;
     background-color: #F68B1F;
+    background-image: -o-linear-gradient(#f6b574, #f68e26); /* For Opera 11.1 to 12.0 */ 
+    background-image: linear-gradient(top, #f6b574, #f68e26); /* Standard syntax */
+    background-image: linear-gradient(to bottom, #f6b574, #f68e26); /* IE ? */
+    background-image: -ms-linear-gradient(top, #f6b574, #f68e26); /* IE 11 */
     background-image: -moz-linear-gradient(center top , #f6b574, #f68e26);
     background-image: -webkit-linear-gradient(top, #f6b574, #f68e26);
     border-color: #F68B1F #F68B1F #F68411;
