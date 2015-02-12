@@ -63,7 +63,7 @@ def main(argv=sys.argv):
     args = parser.parse_args()
 
     if args.querystring:
-        print source2json(args.querystring)
+        print json.dumps(source2json(args.querystring), indent=3)
         sys.exit(0)
 
     if args.test:
