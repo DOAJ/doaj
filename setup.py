@@ -18,6 +18,7 @@ setup(
         "nose",
         "feedparser",
         "tzlocal",
+        "pytz",
         "futures==2.1.6",
         "esprit==0.0.2",
         "nose",

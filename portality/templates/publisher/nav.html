@@ -1,4 +1,5 @@
 <div class="row-fluid">
+<<<<<<< HEAD
   <div class="span12">
     <ul class="nav nav-tabs">
       <li{% if request.path == url_for('publisher.index') %} class="active"{% endif %}><a href="{{ url_for('publisher.index') }}">Your Journals</a></li>
@@ -7,4 +8,22 @@
       <li{% if request.path == url_for('publisher.help') %} class="active"{% endif %}><a href="{{ url_for('publisher.help') }}">Help</a></li>
     </ul>
   </div>
+=======
+    <div class="span12">
+        <ul class="nav nav-tabs">
+            <li{% if request.path == url_for('publisher.index') %} class="active"{% endif %}><a href="{{ url_for('publisher.index') }}">Your Journals</a></li>
+            <!-- only show the reapplication tab(s) if the reapplication is in progress -->
+            {% if config.get("REAPPLICATION_ACTIVE", False) %}
+                <li{% if request.path == url_for('publisher.updates_in_progress') %} class="active"{% endif %}><a href="{{ url_for('publisher.updates_in_progress') }}">Reapplications</a></li>
+                <!-- Only show the bulk reapplication tab if Publisher has active bulk reapplications -->
+                {% if current_user.id|pub_filter_bulk %}
+                <li{% if request.path == url_for('publisher.bulk_reapply') %} class="active"{% endif %}><a href="{{ url_for('publisher.bulk_reapply') }}">CSV</a></li>
+                {% endif %}
+            {% endif %}
+            <li{% if request.path == url_for('publisher.upload_file') %} class="active"{% endif %}><a href="{{ url_for('publisher.upload_file') }}">Upload Article XML</a></li>
+            <li{% if request.path == url_for('publisher.metadata') %} class="active"{% endif %}><a href="{{ url_for('publisher.metadata') }}">Enter Article Metadata</a></li>
+            <li{% if request.path == url_for('publisher.help') %} class="active"{% endif %}><a href="{{ url_for('publisher.help') }}">Help</a></li>
+        </ul>
+    </div>
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 </div>

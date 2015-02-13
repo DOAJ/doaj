@@ -1,6 +1,11 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
+<<<<<<< HEAD
+=======
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
+import time
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 
 class TestClient(DoajTestCase):
     def setUp(self):
@@ -93,3 +98,65 @@ class TestClient(DoajTestCase):
         assert br.skipped == 5
         assert br.processed_date is not None
         assert br.processed_timestamp is not None
+<<<<<<< HEAD
+=======
+
+    def test_06_make_journal(self):
+        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        j = s.make_journal()
+
+        assert j.id != s.id
+        assert "suggestion" not in j.data
+        assert j.data.get("bibjson", {}).get("active")
+
+    def test_07_sync_owners(self):
+        # suggestion with no current_journal
+        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        s.save()
+
+        models.Suggestion.refresh()
+        s = models.Suggestion.pull(s.id)
+        assert s is not None
+
+        # journal with no current_application
+        j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        j.save()
+
+        models.Journal.refresh()
+        j = models.Journal.pull(j.id)
+        assert j is not None
+
+        # suggestion with erroneous current_journal
+        s.set_current_journal("asdklfjsadjhflasdfoasf")
+        s.save()
+
+        models.Suggestion.refresh()
+        s = models.Suggestion.pull(s.id)
+        assert s is not None
+
+        # journal with erroneous current_application
+        j.set_current_application("kjwfuiwqhu220952gw")
+        j.save()
+
+        models.Journal.refresh()
+        j = models.Journal.pull(j.id)
+        assert j is not None
+
+        # suggestion with journal
+        s.set_owner("my_new_owner")
+        s.set_current_journal(j.id)
+        s.save()
+
+        models.Journal.refresh()
+        j = models.Journal.pull(j.id)
+        assert j.owner == "my_new_owner"
+
+        # journal with suggestion
+        j.set_owner("another_new_owner")
+        j.set_current_application(s.id)
+        j.save()
+
+        models.Suggestion.refresh()
+        s = models.Suggestion.pull(s.id)
+        assert s.owner == "another_new_owner"
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3

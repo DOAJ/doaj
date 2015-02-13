@@ -117,10 +117,12 @@ It is likely that history records will only be created upon request by the admin
             "volume" : "<volume>", # Deprecated - may be removed
             "number" : "<issue number>" # Deprecated - may be removed
         },
+        "apc_url" : "<apc info url>",
         "apc" : {
             "currency" : "<currency code>",
             "average_price" : "<average price of APC>"
         },
+        "submission_charges_url" : "<submission charges info url>",
         "submission_charges" : {
             "currency" : "<currency code>",
             "average_price" : "<average price of submission charge>"
@@ -212,7 +214,7 @@ It is likely that history records will only be created upon request by the admin
         "owner" : "<account id of owner>",
         "editor_group" : "<name of editor group which controls this object>",
         "editor" : "<username of associate editor assigned to this object>",
-        "current_application" : "<id of re-application created from this journal record (mutually exclusive with the below)>",
+        "current_application" : "<id of reapplication created from this journal record (mutually exclusive with the below)>",
         "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
     "ticked" : true|false,
@@ -235,7 +237,7 @@ It is likely that history records will only be created upon request by the admin
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>",
-    "last_reapplication": "<date this journal was updated via a re-application>"
+    "last_reapplication": "<date this journal was updated via a reapplication>"
 }
 ```
 
@@ -424,7 +426,7 @@ The Journal ToC data model stores a cache of the Table of Contents on a per-volu
 }
 ```
 
-## Bulk Re-Application Data Model
+## Bulk Reapplication Data Model
 
 ```python
 {

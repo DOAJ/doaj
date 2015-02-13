@@ -71,8 +71,38 @@ def oaipmh(specified=None):
     return resp
 
 #####################################################################
-## Utility methods
+## Utility methods/objects
 #####################################################################
+
+class DateFormat(object):
+    @classmethod
+    def granularity(self):
+        return "YYYY-MM-DDThh:mm:ssZ"
+
+    @classmethod
+    def default_earliest(cls):
+        return "1970-01-01T00:00:00Z"
+
+    @classmethod
+    def now(cls):
+        return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @classmethod
+    def format(cls, date):
+        return date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @classmethod
+    def legitimate_granularity(cls, datestr):
+        formats = ["%Y-%m-%d", "%Y-%m-%dT%H:%M:%SZ"]
+        success = False
+        for f in formats:
+            try:
+                datetime.strptime(datestr, f)
+                success = True
+                break
+            except:
+                pass
+        return success
 
 def make_set_spec(setspec):
     return base64.urlsafe_b64encode(setspec).replace("=", "~")
@@ -96,9 +126,21 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     b = base64.urlsafe_b64encode(j)
     return b
 
+class ResumptionTokenException(Exception):
+    pass
+
 def decode_resumption_token(resumption_token):
-    j = base64.urlsafe_b64decode(str(resumption_token))
-    d = json.loads(j)
+    # attempt to parse the resumption token out of base64 encoding and as a json object
+    try:
+        j = base64.urlsafe_b64decode(str(resumption_token))
+    except TypeError:
+        raise ResumptionTokenException()
+    try:
+        d = json.loads(j)
+    except ValueError:
+        raise ResumptionTokenException()
+
+    # if we succeed read out the parameters
     params = {}
     if "m" in d: params["metadata_prefix"] = d.get("m")
     if "f" in d: params["from_date"] = d.get("f")
@@ -115,7 +157,8 @@ def extract_internal_id(oai_identifier):
     return oai_identifier.split(":")[-1]
 
 def get_response_date():
-    return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    # return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    return DateFormat.now()
 
 def normalise_date(date):
     # FIXME: do we need a more powerful date normalisation routine?
@@ -257,13 +300,23 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
         return CannotDisseminateFormat(base_url)
     
     # check that the dates are formatted correctly
-    try:
-        if from_date is not None:
-            datetime.strptime(from_date, "%Y-%m-%d")
-        if until_date is not None:
-            datetime.strptime(until_date, "%Y-%m-%d")
-    except:
+    fl = True
+    ul = True
+    if from_date is not None:
+        fl = DateFormat.legitimate_granularity(from_date)
+    if until_date is not None:
+        ul = DateFormat.legitimate_granularity(until_date)
+
+    if not fl or not ul:
         return BadArgument(base_url)
+
+    #try:
+        #if from_date is not None:
+        #    datetime.strptime(from_date, "%Y-%m-%d")
+        #if until_date is not None:
+        #    datetime.strptime(until_date, "%Y-%m-%d")
+    #except:
+    #    return BadArgument(base_url)
     
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
@@ -310,7 +363,10 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
     return CannotDisseminateFormat(base_url)
 
 def _resume_list_identifiers(dao, base_url, resumption_token=None):
-    params = decode_resumption_token(resumption_token)
+    try:
+        params = decode_resumption_token(resumption_token)
+    except ResumptionTokenException:
+        return BadResumptionToken(base_url)
     return _parameterised_list_identifiers(dao, base_url, **params)
 
 def list_metadata_formats(dao, base_url, identifier=None):
@@ -357,15 +413,26 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
     formats = app.config.get("OAIPMH_METADATA_FORMATS")
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
-    
+
     # check that the dates are formatted correctly
-    try:
-        if from_date is not None:
-            datetime.strptime(from_date, "%Y-%m-%d")
-        if until_date is not None:
-            datetime.strptime(until_date, "%Y-%m-%d")
-    except:
+    fl = True
+    ul = True
+    if from_date is not None:
+        fl = DateFormat.legitimate_granularity(from_date)
+    if until_date is not None:
+        ul = DateFormat.legitimate_granularity(until_date)
+
+    if not fl or not ul:
         return BadArgument(base_url)
+
+    # check that the dates are formatted correctly
+    #try:
+    #    if from_date is not None:
+    #        datetime.strptime(from_date, "%Y-%m-%d")
+    #    if until_date is not None:
+    #        datetime.strptime(until_date, "%Y-%m-%d")
+    #except:
+    #    return BadArgument(base_url)
     
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
@@ -413,7 +480,10 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
     return CannotDisseminateFormat(base_url)
     
 def _resume_list_records(dao, base_url, resumption_token=None):
-    params = decode_resumption_token(resumption_token)
+    try:
+        params = decode_resumption_token(resumption_token)
+    except ResumptionTokenException:
+        return BadResumptionToken(base_url)
     return _parameterised_list_records(dao, base_url, **params)
 
 def list_sets(dao, base_url, resumption_token=None):
@@ -528,13 +598,15 @@ class Identify(OAI_PMH):
         if self.earliest_datestamp is not None:
             earliest.text = self.earliest_datestamp
         else:
-            earliest.text = "1970-01-01T00:00:00Z" # beginning of the unix epoch
+            # earliest.text = "1970-01-01T00:00:00Z" # beginning of the unix epoch
+            DateFormat.default_earliest()
         
         deletes = etree.SubElement(identify, self.PMH + "deletedRecord")
         deletes.text = "transient" # keep the door open
         
         granularity = etree.SubElement(identify, self.PMH + "granularity")
-        granularity.text = "YYYY-MM-DD"
+        # granularity.text = "YYYY-MM-DD"
+        granularity.text = DateFormat.granularity()
         
         return identify
 
@@ -584,7 +656,8 @@ class ListIdentifiers(OAI_PMH):
             expiry = self.resumption.get("expiry", -1)
             expire_date = None
             if expiry >= 0:
-                expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         
@@ -676,7 +749,8 @@ class ListRecords(OAI_PMH):
             expiry = self.resumption.get("expiry", -1)
             expire_date = None
             if expiry >= 0:
-                expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                # expire_date = (datetime.now() + timedelta(0, expiry)).strftime("%Y-%m-%dT%H:%M:%SZ")
+                expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
         

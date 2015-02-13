@@ -9,6 +9,7 @@ from portality.view.forms import ArticleForm
 
 import os, requests, ftplib
 from urlparse import urlparse
+from time import sleep
 
 
 blueprint = Blueprint('publisher', __name__)
@@ -24,6 +25,52 @@ def restrict():
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
 
+<<<<<<< HEAD
+=======
+@blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def reapplication_page(reapplication_id):
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
+    ap = models.Suggestion.pull(reapplication_id)
+
+    if ap is None:
+        abort(404)
+    if current_user.id != ap.owner:
+        abort(404)
+    if not ap.application_status in ["reapplication", "submitted"]:
+        return render_template("publisher/application_already_submitted.html", suggestion=ap)
+
+    if request.method == "GET":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=ap)
+        return fc.render_template(edit_suggestion_page=True)
+    elif request.method == "POST":
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=ap)
+        if fc.validate():
+            try:
+                fc.finalise()
+                flash('Your reapplication has been submitted but it is editable until the DOAJ editorial team picks it up for review.', 'success')
+                for a in fc.alert:
+                    flash_with_url(a, "success")
+                flash("Close this tab to return to your Publisher's Area.", 'success')
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                flash(e.message)
+                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_suggestion_page=True)
+
+@blueprint.route('/progress')
+@login_required
+@ssl_required
+def updates_in_progress():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
+
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
@@ -269,6 +316,95 @@ def metadata():
 def help():
     return render_template("publisher/help.html")
 
+<<<<<<< HEAD
+=======
+@blueprint.route("/reapply", methods=["GET", "POST"])
+@login_required
+@ssl_required
+def bulk_reapply():
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
+    # User must have bulk reapplications to access this tab
+    if not pub_filter_bulk(current_user.id):
+        abort(404)
+
+    # Get the download details for reapplication CSVs
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+
+    # all responses involve getting the previous uploads
+    previous = models.BulkUpload.by_owner(current_user.id)
+
+    if request.method == "GET":
+        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+    # otherwise we are dealing with a POST - file upload
+    f = request.files.get("file")
+
+    if f.filename != "":
+        return _bulk_upload(f)
+
+    flash("No file provided - select a file to upload and try again.", "error")
+    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
+
+@blueprint.route('/bulk_download/<filename>')
+@login_required
+@ssl_required
+def bulk_download(filename):
+    if not app.config.get("REAPPLICATION_ACTIVE", False):
+        abort(404)
+
+    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
+    allowed = False
+    for c in csv_downloads:
+        if c.spreadsheet_name == filename:
+            allowed = True
+            break
+
+    if allowed:
+        try:
+            return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
+        except:
+            abort(404)
+    else:
+        abort(404)
+
+def _bulk_upload(f):
+    # prep a record to go into the index, to record this upload
+    record = models.BulkUpload()
+    record.upload(current_user.id, f.filename)
+    record.set_id()
+
+    # the file path that we are going to write to
+    csv = os.path.join(app.config.get("REAPPLICATION_UPLOAD_DIR", "."), record.local_filename)
+
+    # it's critical here that no errors cause files to get left behind unrecorded
+    try:
+        # write the incoming file out to the csv file
+        f.save(csv)
+
+        # save the index entry
+        record.save()
+
+        sleep(2)  # let ES catch up so people can see their file is "in submission" on redirect/refresh
+        flash("File successfully uploaded - it will be processed shortly", "success")
+        return redirect(url_for('publisher.bulk_reapply'))
+    except:
+        # if we can't record either of these things, we need to back right off
+        try:
+            os.remove(csv)
+        except:
+            pass
+        try:
+            record.delete()
+        except:
+            pass
+
+        flash("Failed to upload file - please contact an administrator", "error")
+        return redirect(url_for('publisher.bulk_reapply'))
+
+
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 def _validate_authors(form, require=1):
     counted = 0
     for entry in form.authors.entries:

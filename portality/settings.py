@@ -261,6 +261,18 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
+<<<<<<< HEAD
+=======
+# =================================
+# Settings for reapplication process
+
+# Whether reactivation is ongoing; when False, reapplication pages will be hidden.
+REAPPLICATION_ACTIVE = True
+
+# The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
+CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
+
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 
 # =================================
 # File Upload and crosswalk settings
@@ -301,6 +313,12 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 
+<<<<<<< HEAD
+=======
+# Publisher CSV storage
+BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
+
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a
 # legacy route to that file)

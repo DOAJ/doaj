@@ -60,7 +60,12 @@ class Journal(DomainObject):
 
     def history(self):
         histories = self.data.get("history", [])
+        if histories is None:
+            histories = []
         return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
+
+    def get_history_raw(self):
+        return self.data.get("history")
 
     def get_history_for(self, issn):
         histories = self.data.get("history", [])
@@ -97,6 +102,9 @@ class Journal(DomainObject):
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
+
+    def set_history(self, history):
+        self.data["history"] = history
 
     def remove_history(self, issn):
         histories = self.data.get("history")
@@ -213,6 +221,10 @@ class Journal(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["current_application"] = application_id
+
+    def remove_current_application(self):
+        if "admin" in self.data and "current_application" in self.data["admin"]:
+            del self.data["admin"]["current_application"]
 
     def known_issns(self):
         """ all issns this journal has ever been known by """
@@ -373,28 +385,39 @@ class Journal(DomainObject):
             self.set_in_doaj(False)
 
     def calculate_tick(self):
-        created_date = self.data.get("created_date", None)
+        created_date = self.created_date
+        last_reapplied = self.last_reapplication
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
 
-        if not created_date:
+        if created_date is None:    # don't worry about the last_reapplied date - you can't reapply unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.now() > threshold:
+            if datetime.now() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)
             return
 
         # otherwise, this is an existing record, and we just need to update it
-        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
 
-        if created > threshold and self.is_in_doaj():
+        # convert the strings to datetime objects
+        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        reappd = None
+        if last_reapplied is not None:
+            reappd = datetime.strptime(last_reapplied, "%Y-%m-%dT%H:%M:%SZ")
+
+        if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)
-        else:
-            self.set_ticked(False)
+            return
+
+        if reappd is not None and reappd >= threshold and self.is_in_doaj():
+            self.set_ticked(True)
+            return
+
+        self.set_ticked(False)
 
     def all_articles(self):
         from portality.models import Article
@@ -411,8 +434,23 @@ class Journal(DomainObject):
         self.calculate_tick()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
+<<<<<<< HEAD
     def save(self, **kwargs):
+=======
+    def _sync_owner_to_application(self):
+        if self.current_application is None:
+            return
+        from portality.models import Suggestion
+        ca = Suggestion.pull(self.current_application)
+        if ca is not None and ca.owner != self.owner:
+            ca.set_owner(self.owner)
+            ca.save(sync_owner=False)
+
+    def save(self, snapshot=True, sync_owner=True, **kwargs):
+>>>>>>> 492f20c04c3ee1252f159219d7e1dc75e4daa1a3
         self.prep()
+        if sync_owner:
+            self._sync_owner_to_application()
         super(Journal, self).save(**kwargs)
 
     def csv(self, multival_sep=','):
@@ -640,13 +678,19 @@ class JournalBibJSON(GenericBibJSON):
     def oa_end(self):
         return self.bibjson.get("oa_end", {})
 
-
-
     def set_apc(self, currency, average_price):
         if "apc" not in self.bibjson:
             self.bibjson["apc"] = {}
         self.bibjson["apc"]["currency"] = currency
         self.bibjson["apc"]["average_price"] = average_price
+
+    @property
+    def apc_url(self):
+        return self.bibjson.get("apc_url")
+
+    @apc_url.setter
+    def apc_url(self, val):
+        self.bibjson["apc_url"] = val
 
     @property
     def apc(self):
@@ -657,6 +701,14 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["submission_charges"] = {}
         self.bibjson["submission_charges"]["currency"] = currency
         self.bibjson["submission_charges"]["average_price"] = average_price
+
+    @property
+    def submission_charges_url(self):
+        return self.bibjson.get("submission_charges_url")
+
+    @submission_charges_url.setter
+    def submission_charges_url(self, val):
+        self.bibjson["submission_charges_url"] = val
 
     @property
     def submission_charges(self):
