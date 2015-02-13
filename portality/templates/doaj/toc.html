@@ -106,7 +106,7 @@
                     <strong>Year Open Access Ceased</strong>: {{journal.bibjson().oa_end.get("year")}}<br>
                 {% endif %}
 
-                <strong>Author Processing Charges (APCs)</strong>:
+                <strong>Article Processing Charges (APCs)</strong>:
                 {% if journal.bibjson().apc %}
                     {% if journal.bibjson().apc.get("currency") or journal.bibjson().apc.get("average_price") %}
                         Yes.
