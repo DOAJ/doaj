@@ -410,7 +410,7 @@ class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymen
     """
     pass
 
-class AssEdApplicationReviewForm(Workflow, JournalInformation, Suggestion, Subject, AdminSuggester, Notes):
+class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
         * Workflow - ability to change application status
