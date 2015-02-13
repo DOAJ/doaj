@@ -148,8 +148,9 @@
                     {% if journal.bibjson().editorial_review.get("process") or journal.bibjson().editorial_review.get("url") %}
                     <strong>Editorial Review Process</strong>: {{journal.bibjson().editorial_review.get("process", "unknown process")}}
                         {% if journal.bibjson().editorial_review.get("url") %}
-                        (<a href="{{journal.bibjson().editorial_review.get('url')}}">{{journal.bibjson().editorial_review.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().editorial_review.get('url')}}">{{journal.bibjson().editorial_review.get("url")}}</a>)
                         {% endif %}
+                    <br>
                     {% endif %}
                 {% endif %}
 
@@ -157,8 +158,9 @@
                     {% if journal.bibjson().plagiarism_detection.get("detection") or journal.bibjson().plagiarism_detection.get("url") %}
                     <strong>Has Plagiarism Detection</strong>: {{journal.bibjson().plagiarism_detection.get("detection", "uncertain")}}
                         {% if journal.bibjson().plagiarism_detection.get("url") %}
-                        (<a href="{{journal.bibjson().plagiarism_detection.get('url')}}">{{journal.bibjson().plagiarism_detection.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().plagiarism_detection.get('url')}}">{{journal.bibjson().plagiarism_detection.get("url")}}</a>)
                         {% endif %}
+                    <br>
                     {% endif %}
                 {% endif %}
 
@@ -166,8 +168,9 @@
                     {% if journal.bibjson().article_statistics.get("statistics") or journal.bibjson().article_statistics.get("url") %}
                     <strong>Has Article Statistics</strong>: {{journal.bibjson().article_statistics.get("statistics", "uncertain")}}
                         {% if journal.bibjson().article_statistics.get("url") %}
-                        (<a href="{{journal.bibjson().article_statistics.get('url')}}">{{journal.bibjson().article_statistics.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().article_statistics.get('url')}}">{{journal.bibjson().article_statistics.get("url")}}</a>)
                         {% endif %}
+                    <br>
                     {% endif %}
                 {% endif %}
 
@@ -179,8 +182,9 @@
                     {% if journal.bibjson().author_copyright.get("copyright") or journal.bibjson().author_copyright.get("url") %}
                     <strong>Does Author Retain Copyright</strong>: {{journal.bibjson().author_copyright.get("copyright", "uncertain")}}
                         {% if journal.bibjson().author_copyright.get("url") %}
-                        (<a href="{{journal.bibjson().author_copyright.get('url')}}">{{journal.bibjson().author_copyright.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().author_copyright.get('url')}}">{{journal.bibjson().author_copyright.get("url")}}</a>)
                         {% endif %}
+                    <br>
                     {% endif %}
                 {% endif %}
 
@@ -188,9 +192,10 @@
                     {% if journal.bibjson().author_publishing_rights.get("publishing_rights") or journal.bibjson().author_publishing_rights.get("url") %}
                     <strong>Does Author Retain Publishing Rights</strong>: {{journal.bibjson().author_publishing_rights.get("publishing_rights", "uncertain")}}
                         {% if journal.bibjson().author_publishing_rights.get("url") %}
-                        (<a href="{{journal.bibjson().author_publishing_rights.get('url')}}">{{journal.bibjson().author_publishing_rights.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().author_publishing_rights.get('url')}}">{{journal.bibjson().author_publishing_rights.get("url")}}</a>)
                         {% endif %}
                     {% endif %}
+                    <br>
                 {% endif %}
 
                 {% if journal.bibjson().persistent_identifier_scheme|length > 0 %}
