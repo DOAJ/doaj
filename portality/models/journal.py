@@ -819,6 +819,10 @@ class JournalBibJSON(GenericBibJSON):
     def archiving_policy(self):
         return self.bibjson.get("archiving_policy", {})
 
+    @property
+    def flattened_archiving_policies(self):
+        return [ap if not isinstance(ap, list) else ": ".join(ap) for ap in self.archiving_policy.get("policy", [])]
+
     def set_editorial_review(self, process, review_url):
         if "editorial_review" not in self.bibjson:
             self.bibjson["editorial_review"] = {}

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
+
 <div class="row-fluid">
     <div class="span9">
         <h1>{{journal.bibjson().title}}</h1>
@@ -48,29 +48,29 @@
             {% if journal.bibjson().publisher %}
                 <p><strong>Publisher</strong>:&nbsp;{{journal.bibjson().publisher}}</p>
             {% endif %}
-            
+
             {% if journal.bibjson().institution %}
                 <p><strong>Society/Institution</strong>:&nbsp;{{journal.bibjson().institution}}</p>
             {% endif %}
-            
+
             {% if journal.bibjson().provider %}
                 <p><strong>Host/Platform</strong>:&nbsp;{{journal.bibjson().provider}}</p>
             {% endif %}
         </div>
     </div>
-    
+
     <div class="span4">
         <div class="box with-borders" style="height: 120px">
             {% if journal.bibjson().country %}
                 <p><strong>Country</strong>:&nbsp;{{ countries.get(journal.bibjson().country, {}).get("name", journal.bibjson().country)}}</p>
             {% endif %}
-            
+
             {% if journal.bibjson().language %}
                 <p><strong>Language(s)</strong>:&nbsp;{{journal.bibjson().language|join(", ")}}</p>
             {% endif %}
         </div>
     </div>
-    
+
 </div>
 
 {% set URL_TYPES = {
@@ -136,10 +136,11 @@
 
                 {% if journal.bibjson().archiving_policy %}
                     {% if journal.bibjson().archiving_policy.get("policy") or journal.bibjson().archiving_policy.get("url") %}
-                    <strong>Archiving Policies</strong>: {{journal.bibjson().archiving_policy.get("policy", [])|join(", ")}}
+                    <strong>Archiving Policies</strong>: {{journal.bibjson().flattened_archiving_policies|join(", ")}}
                         {% if journal.bibjson().archiving_policy.get("url") %}
-                        (<a href="{{journal.bibjson().archiving_policy.get('url')}}">{{journal.bibjson().archiving_policy.get("url")}}</a>)<br>
+                        (<a href="{{journal.bibjson().archiving_policy.get('url')}}">{{journal.bibjson().archiving_policy.get("url")}}</a>)
                         {% endif %}
+                    <br>
                     {% endif %}
                 {% endif %}
 
@@ -214,7 +215,7 @@
                     {{ s.get("term") }}
                     {% if loop.last %}<br>{% endif %}
                 {% endfor %}
-    
+
             </div>
         </div>
     </div>
@@ -242,12 +243,12 @@
 
 {% set MONTHS = {
     "1" : "Jan", "2" : "Feb", "3" : "Mar", "4" : "Apr", "5" : "May", "6" : "Jun", "7" : "Jul", "8" : "Aug", "9" : "Sept", "10" : "Oct", "11" : "Nov", "12" : "Dec",
-    "01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept", 
+    "01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept",
 }
 %}
 
 {% for issue in table.issues %}
-    
+
 <div class="row-fluid" style="border-bottom: 1px solid #cccccc; margin-bottom: 40px">
     <div class="span12">
         <h4 style="margin-bottom: 10px">
@@ -256,9 +257,9 @@
                 ({% if issue.month %}{{MONTHS.get(issue.month, issue.month)}}{% endif %}{% if issue.year %}{% if issue.month %}&nbsp;{% endif %}{{issue.year}}{% endif %})
             {% endif %}
         </h4>
-        
+
         {% for article in issue.articles %}
-        
+
         <div class="row-fluid">
             <div class="span12" style="padding-left: 20px; padding-bottom: 5px">
                 <strong>{{article.bibjson().title}}</strong><br>
@@ -275,12 +276,12 @@
                 {% endif %}
             </div>
         </div>
-        
+
         {% endfor %}
-        
+
     </div>
 </div>
-    
+
 {% endfor %}
 
 {% else %}
@@ -288,7 +289,7 @@
     <p style="margin-top: 40px">No Table of Contents available for this journal</p>
 
 {% endif %} {# if volumes| length > 0 #}
-   
+
 {% endblock %}
 
 {% block extra_js_bottom %}
@@ -306,7 +307,7 @@ $(document).ready(function() {
             $("#journal_details_toggle").html("(more detail)")
         }
     })
-    
+
     $(".abstract_box").hide()
     $(".abstract_toggle").click(function(event) {
         event.preventDefault();
