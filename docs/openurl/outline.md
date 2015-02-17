@@ -38,7 +38,12 @@ Here, everything up to the ```&rft.genre``` tag is fixed - the OpenURL version u
 OpenURL queries will be handled by building an object which can hold the incoming information, plus methods required to crosswalk to an ElasticSearch query. The data model is defined from the schema above and covers all valid keys in the chosen ```journal``` schema. The fields in the model all correspond to the schema key, which makes accessing them in the object for a known request more convenient. Although not all fields can be directly mapped to the DOAJ's models for journals or articles and may be ignored, these are included in our class for the sake of completeness w.r.t. the schema.
 
 ```python
-# Attributes in OpenURL requests object
+# Attribute based on ContextObject
+{
+    info:doi : "Digital Object Identifier"
+}
+
+# Attributes in OpenURL requests object from Journal schema
 {
     aulast : "First author's family name, may be more than one word",
     aufirst : "First author's given name or names or initials",
@@ -78,7 +83,11 @@ To parse the query and build the object, the OpenURL is split into its keys (del
 ### Mapping to ElasticSearch query
 
 ```python
-# How attributes map to the ES models. Denoted (Journal, Article, TOC)
+# How attributes map to the ES models. Denoted (Journal, Article)
+{
+    info:doi : (, Article.bibjson.identifier) # type: doi
+}
+
 {
 aulast : (, Article.author.name),
 aufirst : (, Article.author.name),
@@ -95,19 +104,19 @@ date : (, Article.index.date),
 chron : (), # No mapping for this
 ssn : (), # No mapping for this
 quarter : (), # No mapping for this
-volume : (,,TOC.volume),
+volume : (,Article.bibjson.journal.volume),
 part : (), # No mapping for this
-issue : (,,TOC.issues.number),
-spage : (,Article.bibjson.start_page,TOC.issues.articles.bibjson.start_page),
-epage : (,Article.bibjson.end_page,),
-pages : (,star,),
-artnum : "Article number",
-issn : "Journal ISSN",
-eissn : "ISSN for electronic version of the journal",
-isbn : "Journal ISBN",
-coden : "CODEN",
-sici : "Serial Item and Contribution Identifier (SICI)",
-genre : "journal|issue|article|proceeding|conference|preprint|unknown"
+issue : (,Article.bibjson.journal.number),
+spage : (,Article.bibjson.start_page),
+epage : (,Article.bibjson.end_page),
+pages : # use fields above,
+artnum : () # No mapping for this,
+issn : (Journal.bibjson.identifier, Article.bibjson.identifier) # type: pissn,
+eissn : (Journal.bibjson.identifier, Article.bibjson.identifier) # type: eissn,
+isbn : (Journal.bibjson.identifier, Article.bibjson.identifier),
+coden : () # No mapping for this,
+sici : () # No mapping for this,
+genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal or article supported
 }
 
 ```
@@ -370,54 +379,6 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown"
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"
-}
-```
-### Journal Table of Contents Model
-
-```python
-{
-    "id" : "<opaque identifier for this volume>",
-    "about" : "<the journal's opaque identifier>",
-    "issn" : ["<list of issns for this journal>"],
-    "volume" : "<the volume number represented here>",
-    "issues" : [
-        {
-            "number" : "<issue number>",
-            "year" : "<year of publication>",
-            "month" : "<month of publication>",
-            "articles" : [
-                {
-                    "id" : "<the article's opaque id>",
-                    "bibjson" : {
-                        "title" : "<title of the article>",
-                        "identifier": [
-                            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"}
-                        ],
-                        "start_page" : "<start page>",
-                        "end_page" : "<end page>",
-                        "link" : [
-                            {
-                                "url" : "<fulltext url>",
-                                "type" : "fulltext",
-                                "content-type" : "<content type of resource>"
-                            }
-                        ],
-                        "abstract" : "<the abstract>",
-                        "author" : [
-                            {
-                                "name" : "<author name>",
-                                "email" : "<author email>",
-                                "affiliation" : "<author affiliation>"
-                            },
-                        ],
-                        "keywords" : [<list of free text keywords>],
-                    }
-                }
-            ]
-        }
-    ]
-    "created_date" : "<date created>",
-    "last_updated" : "<date record last modified>"
 }
 ```
 
