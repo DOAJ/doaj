@@ -1,9 +1,8 @@
-import json, base64, urllib
+import json, base64, urllib, sys, re
 from lxml import etree
 from datetime import datetime, timedelta
-from flask import Blueprint, request, abort, make_response
+from flask import Blueprint, request, make_response
 from portality.core import app
-from portality.dao import DomainObject
 from portality.models import OAIPMHJournal, OAIPMHArticle
 
 blueprint = Blueprint('oaipmh', __name__)
@@ -216,6 +215,27 @@ def list_identifiers_params(req):
         "metadata_prefix" : metadata_prefix
     }
 
+###########################################################
+# XML Character encoding hacks
+###########################################################
+
+
+_illegal_unichrs = [(0x00, 0x08), (0x0B, 0x0C), (0x0E, 0x1F),
+                    (0x7F, 0x84), (0x86, 0x9F),
+                    (0xFDD0, 0xFDDF), (0xFFFE, 0xFFFF)]
+if sys.maxunicode >= 0x10000:  # not narrow build
+    _illegal_unichrs.extend([(0x1FFFE, 0x1FFFF), (0x2FFFE, 0x2FFFF),
+                             (0x3FFFE, 0x3FFFF), (0x4FFFE, 0x4FFFF),
+                             (0x5FFFE, 0x5FFFF), (0x6FFFE, 0x6FFFF),
+                             (0x7FFFE, 0x7FFFF), (0x8FFFE, 0x8FFFF),
+                             (0x9FFFE, 0x9FFFF), (0xAFFFE, 0xAFFFF),
+                             (0xBFFFE, 0xBFFFF), (0xCFFFE, 0xCFFFF),
+                             (0xDFFFE, 0xDFFFF), (0xEFFFE, 0xEFFFF),
+                             (0xFFFFE, 0xFFFFF), (0x10FFFE, 0x10FFFF)])
+_illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
+                   for (low, high) in _illegal_unichrs]
+_illegal_xml_chars_RE = re.compile(u'[%s]' % u''.join(_illegal_ranges))
+
 def valid_XML_char_ordinal(i):
     return ( # conditions ordered by presumed frequency
         0x20 <= i <= 0xD7FF
@@ -224,11 +244,21 @@ def valid_XML_char_ordinal(i):
         or 0x10000 <= i <= 0x10FFFF
         )
 
+def clean_unreadable(input_string):
+    try:
+        return _illegal_xml_chars_RE.sub("", input_string)
+    except TypeError as e:
+        print app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
+        return None
+
 def xml_clean(input_string):
     cleaned_string = ''.join(c for c in input_string if valid_XML_char_ordinal(ord(c)))
     return cleaned_string
 
 def set_text(element, input_string):
+    if input_string is None:
+        return
+    input_string = clean_unreadable(input_string)
     try:
         element.text = input_string
     except ValueError:
