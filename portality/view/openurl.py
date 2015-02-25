@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from portality.models import OpenURLRequest
 
 blueprint = Blueprint('openurl', __name__)
 
