@@ -20,6 +20,9 @@ class OpenURLRequest(object):
             for key, value in kwargs.iteritems():
                 setattr(self, key, value)
 
+    def __str__(self):
+        return "OpenURLRequest{" + ", ".join(["%s: %s" % (x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS if getattr(self, x)]) + "}"
+
     @property
     def doi(self):
         """Digital Object Identifier"""
