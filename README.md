@@ -33,8 +33,8 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     cd src
     git clone https://github.com/DOAJ/doaj.git  # SSH URL: git@github.com:DOAJ/doaj.git
     cd doaj
-    git submodule init
-    git submodule update
+    git submodule update --init --recursive
+    git submodule update --recursive
     sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev # install LXML dependencies on Linux. Windows users: grab a precompiled LXML from http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml (go for version 3.x) - make sure the virtual environment can see it!
     pip install -r requirements.txt  # install all the app's dependencies
     python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
