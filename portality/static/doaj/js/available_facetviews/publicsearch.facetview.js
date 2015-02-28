@@ -1,89 +1,12 @@
 jQuery(document).ready(function($) {
 
-    //function publicSearchResult() {
-        // display the result
-    //}
 
-    /*
-    Function which translates the month - we'll use this in the display of results
-
-    var months_english = {
-        '1': 'January',
-        '2': 'February',
-        '3': 'March',
-        '4': 'April',
-        '5': 'May',
-        '6': 'June',
-        '7': 'July',
-        '8': 'August',
-        '9': 'September',
-        '10': 'October',
-        '11': 'November',
-        '12': 'December'
-    };
-
-    function expand_month() {
-        this.innerHTML = months_english[this.innerHTML.replace(/^0+/,"")];
-    }
-     */
-
-    function doajSearching(options) {
-        return '<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar">Loading, please wait...</div></div>'
-    }
-
-    function noBottomFacetOpen(options, context, facet) {
-        var el = context.find("#facetview_filter_" + safeId(facet.field));
-        var open = facet["open"];
-        if (open) {
-            el.find(".facetview_filtershow").find("i").removeClass("icon-plus");
-            el.find(".facetview_filtershow").find("i").addClass("icon-minus");
-            el.find(".facetview_filteroptions").show();
-            el.find(".facetview_filtervalue").show();
-            el.addClass("no-bottom");
-        } else {
-            el.find(".facetview_filtershow").find("i").removeClass("icon-minus");
-            el.find(".facetview_filtershow").find("i").addClass("icon-plus");
-            el.find(".facetview_filteroptions").hide();
-            el.find(".facetview_filtervalue").hide();
-            el.removeClass("no-bottom");
-        }
-    }
-
-    function postRender(options, context) {
-        // toggle the abstracts
-        $('.abstract_text', context).hide();
-        $(".abstract_action", context).unbind("click").click(function(event) {
-            event.preventDefault();
-            var el = $(this);
-            var text = el.html();
-            var newText = text == "(expand)" ? "(collapse)" : "(expand)";
-            el.html(newText);
-            $('.abstract_text[rel="' + el.attr("rel") + '"]').fadeToggle(300);
-            return true;
-        })
-    }
-
-    var authorPaysMapping = {
-        "N" : "No Charges",
-        "Y" : "Has Charges",
-        "CON" : "Conditional charges",
-        "NY" : "No info available"
-    };
-    function authorPaysMap(value) {
-        if (authorPaysMapping.hasOwnProperty(value)) {
-            return authorPaysMapping[value];
-        }
-        return value;
-    }
 
     $('.facetview.journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
 
         render_results_metadata: pageSlider,
-        render_searching_notification : doajSearching,
-        behaviour_toggle_facet_open : noBottomFacetOpen,
-
-        post_render_callback: postRender,
+        post_render_callback: doajPostRender,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
