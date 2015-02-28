@@ -41,10 +41,7 @@ def news():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html',
-               search_page=True,
-               facetviews=['journals_and_articles']
-           )
+    return render_template('doaj/search.html', search_page=True, facetviews=['publicsearch.facetview'])
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():

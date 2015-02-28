@@ -27,12 +27,16 @@ hr {
 }
 
 .facetview_searchfield {
-    width: auto;
+    width: auto !important;
 }
 
 .facetview_freetext:focus {
     border-color: rgba(246, 139, 31, 0.8);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
+}
+
+.facetview_metadata>div {
+    border-color: #F68B1F !important;
 }
 
 #facetview .table-striped tbody tr:nth-child(2n+1) td, #facetview .table-striped tbody tr:nth-child(2n+1) th {
@@ -101,10 +105,20 @@ hr {
 
 .facetview_search_options_container select, .facetview_search_options_container input {
     border-color: #F68B1F;
+    background: #ffffff !important;
+}
+
+.facetview_orderby {
+    width: auto !important;
 }
 
 .facetview_decrement, .facetview_increment {
-    color: #F68B1F;
+    color: #F68B1F !important;
+}
+
+.facetview_decrement:hover, .facetview_increment:hover {
+    text-decoration: none;
+    color: #ff7040 !important;
 }
 
 #facetview_learnmore {
