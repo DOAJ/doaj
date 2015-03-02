@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
             {'field': 'index.license.exact', 'display': 'Journal License'},
             // Articles
             {'field': 'bibjson.year.exact', 'display': 'Year of publication (Articles)'},
-            {'field': 'bibjson.journal.title.exact', 'display': 'Journal title (Articles)'},
+            {'field': 'bibjson.journal.title.exact', 'display': 'Journal title (Articles)'}
         ],
 
         search_sortby: [
@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
             {'display':'Article: Year','field':'bibjson.year'},
             {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
-            {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'},
+            {'display':'Journal: Alternative Title','field':'bibjson.alternative_title'}
         ],
 
         page_size : 10,
@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
                 "pre":' <span class="date-month">',
                 "field": "bibjson.month",
                 "post": "</span>"
-            },
+            }
         ],
         [
             {
@@ -236,7 +236,7 @@ jQuery(document).ready(function($) {
             {
                 "field": "addthis-social-share-button"
             }
-        ],
+        ]
     ]
 
 
