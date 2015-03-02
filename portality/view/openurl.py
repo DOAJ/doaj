@@ -1,3 +1,5 @@
+import re
+from urllib import unquote
 from flask import Blueprint, request
 from portality.models import OpenURLRequest
 
@@ -9,11 +11,10 @@ def openurl():
     # Drop the first part of the url to get the raw query
     url_query = request.url.split(request.base_url).pop()
 
-    # Parse the query to get an object representing it
+    # Validate the query syntax version and build an object representing it
     query_object = parse_query(url_query)
-    print query_object
 
-    return url_query
+    return str(query_object)
 
 def parse_query(url_query_string):
     """
@@ -21,13 +22,16 @@ def parse_query(url_query_string):
     :param url_query_string: The query part of an incoming OpenURL request
     :return: an object representing the query
     """
+    # Check if this is new or old syntax, translate if necessary
+    match_1_0 = re.compile("url_ver=Z39.88-2004")
+    if not match_1_0.search(url_query_string):
+        old_to_new(url_query_string)
 
-    # Split the parameter string into its constituents; pop the first item (which should just be schema specifications)
-    list_of_params = url_query_string.split("&rft.") or []
-    openurl_preamble = list_of_params.pop(0) or ""              #FIXME: if preamble is omitted in request, this may remove useful info
+    # Wee function to strip of the referrant namespace prefix from paramaterss
+    rem_ns = lambda x: re.sub('rft.', '', x)
 
-    # Pack the list of parameters into a dictionary
-    dict_params = {key: value for [key, value] in map(lambda x: x.split('='), list_of_params)}
+    # Pack the list of parameters into a dictionary, while un-escaping the string.
+    dict_params = {rem_ns(key): value for (key, value) in request.values.iteritems()}
 
     # Create an object to represent this OpenURL request.
     try:
@@ -44,5 +48,7 @@ def old_to_new(url_query_string):
     :param url_query_string: An incoming OpenURL request
     :return: An OpenURL 1.0 query string
     """
+    print "old_to_new"
+    return url_query_string
 
 

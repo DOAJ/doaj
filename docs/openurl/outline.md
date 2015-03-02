@@ -2,15 +2,15 @@
 <br><br>
 # OpenURL for the DOAJ
 
-This work will extend the DOAJ application to accept incoming OpenURL requests and provide their target, via an ElasticSearch query. This will require a new endpoint to accept the requests, a parser to construct the queries, plus a way to show the results.
+This work will extend the DOAJ application to accept incoming OpenURL requests and provide their target, via an ElasticSearch query. This will require a new endpoint to accept the requests, a parser to construct the queries, plus a method of showing the results.
 
 ### OpenURL 1.0 and OpenURL 0.1
-OpenURL is a specification used to build links to resources. The OpenURL generalised Version 1.0 specification can be found [here][niso_standard] (pdf). It was based upon a previous version used specifically for scholarly articles, now referred to as 0.1. This earlier version is still in use by some services and institutions, so this system will understand both, while recommending the newer syntax in documentation and by returning [HTTP code 301](http://en.wikipedia.org/wiki/HTTP_301) when the old syntax is used to indicate a permanent redirect.
+OpenURL is a specification used to build links to resources. The OpenURL generalised Version 1.0 specification can be found [here][niso_standard] (pdf). It was based upon a previous version used specifically for scholarly works, now referred to as [0.1][.1_proposal] (pdf). This earlier version is still in use by some services and institutions, so this system will understand both, while recommending the newer syntax in documentation and by returning [HTTP code 301](http://en.wikipedia.org/wiki/HTTP_301) when the old syntax is used to indicate a permanent redirect.
 
-OpenURL 1.0 requires the specification of a schema, specifies the format for keys used in the request. These can be found [here][oclc_reg].
+OpenURL 1.0 requires the specification of a schema, specifies the format for keys used in the request. These can be found in the [NISO registry for OpenURL][oclc_reg].
 
 #### Prior use in DOAJ
-Some examples of incoming requests were captured by the DOAJ, demonstrating the 0.1 syntax:
+Some examples of incoming requests were captured by the DOAJ; the three shown here demonstrate the 0.1 syntax:
 
 ```
 /doaj?func=openurl&genre=article&issn=13334395&date=2006&volume=5&issue=2&spage=165
@@ -124,9 +124,10 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
 ## appendix
 ### useful resources
 1. [OpenURL 1.0 Specification][niso_standard]
-2. [OpenURL Repository][oclc_reg]
-3. [Journal Schema][reg_journal]
-4. The so-called [Idiot's guide to OpenURL][idiots]
+1. [OpenURL 0.1 Document][.1_proposal]
+1. [OpenURL Repository][oclc_reg]
+1. [Journal Schema][reg_journal]
+1. The so-called [Idiot's guide to OpenURL][idiots]
 
 ### DOAJ Journal/Application Data Model
 
@@ -638,6 +639,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
 ```
 
 [niso_standard]: http://www.niso.org/apps/group_public/download.php/6640/The%20OpenURL%20Framework%20for%20Context-Sensitive%20Services.pdf "ANSI/NISO Z39.88-2004"
+[.1_proposal]: http://alcme.oclc.org/openurl/docs/pdf/openurl-01.pdf
 [oclc_reg]: http://alcme.oclc.org/openurl/ "Registry for the OpenURL Framework"
 [reg_journal]: http://alcme.oclc.org/openurl/servlet/OAIHandler/extension?verb=GetMetadata&metadataPrefix=mtx&identifier=info:ofi/fmt:kev:mtx:journal "Matrix defining the KEV Format to represent a journal publication"
 [exlibris]: http://www.exlibrisgroup.com/category/sfxopenurl "ExLibris SFX Link Resolver"
