@@ -34,7 +34,7 @@ def journals():
         abort(401)
     return render_template('admin/journals.html',
                search_page=True,
-               facetviews=['journals'],
+               facetviews=['adminjournals.facetview'],
                admin_page=True
            )
 
