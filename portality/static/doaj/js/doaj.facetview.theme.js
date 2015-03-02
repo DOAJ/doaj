@@ -169,6 +169,13 @@ function associateApplicationNotFound() {
         "</tr>";
 }
 
+function publisherJournalNotFound() {
+    return "<tr class='facetview_not_found'>" +
+        "<td><p>You do not have any journals in the DOAJ that meet your search criteria</p>" +
+        "<p>If you have not set any search criteria, this means you do not currently have any journals in the DOAJ.</p>" +
+        "</tr>";
+}
+
 //////////////////////////////////////////////////////
 // value functions for facet displays
 /////////////////////////////////////////////////////

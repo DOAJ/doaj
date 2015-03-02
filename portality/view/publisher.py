@@ -25,7 +25,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
+    return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
 @blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
