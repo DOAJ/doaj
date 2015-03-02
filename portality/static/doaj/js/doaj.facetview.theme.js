@@ -176,6 +176,13 @@ function publisherJournalNotFound() {
         "</tr>";
 }
 
+function publisherReapplicationNotFound() {
+    return "<tr class='facetview_not_found'>" +
+        "<td><p>You do not have any active reapplications that meet your search criteria</p>" +
+        "<p>If you have not set any search criteria, you do not have any further reapplications to complete at this stage.</p>" +
+        "</tr>";
+}
+
 //////////////////////////////////////////////////////
 // value functions for facet displays
 /////////////////////////////////////////////////////
@@ -189,6 +196,16 @@ var authorPaysMapping = {
 function authorPaysMap(value) {
     if (authorPaysMapping.hasOwnProperty(value)) {
         return authorPaysMapping[value];
+    }
+    return value;
+}
+
+var publisherStatusMapping = {
+    "reapplication" : {"text" : "pending" }
+};
+function publisherStatusMap(value) {
+    if (statusMapping.hasOwnProperty(value)) {
+        return statusMapping[value];
     }
     return value;
 }

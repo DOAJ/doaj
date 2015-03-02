@@ -68,7 +68,7 @@ def reapplication_page(reapplication_id):
 def updates_in_progress():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         abort(404)
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.reapplications.facetview"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
