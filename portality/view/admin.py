@@ -34,7 +34,7 @@ def journals():
         abort(401)
     return render_template('admin/journals.html',
                search_page=True,
-               facetviews=['adminjournals.facetview'],
+               facetviews=['admin.journals.facetview'],
                admin_page=True
            )
 
@@ -124,7 +124,7 @@ def journal_deactivate(journal_id):
 def suggestions():
     return render_template('admin/suggestions.html',
                search_page=True,
-               facetviews=["adminapplications.facetview"],
+               facetviews=["admin.applications.facetview"],
                admin_page=True
            )
 
@@ -166,13 +166,13 @@ def suggestion_page(suggestion_id):
 @login_required
 @ssl_required
 def admin_site_search():
-    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['adminjournalarticle.facetview'])
+    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'])
 
 @blueprint.route("/editor_groups")
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admineditorgroups.facetview'])
+    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
