@@ -4,6 +4,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/editor_query/journal/_search?',
 
         render_results_metadata: pageSlider,
+        render_not_found: editorGroupJournalNotFound,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,

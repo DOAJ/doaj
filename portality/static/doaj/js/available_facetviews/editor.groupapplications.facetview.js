@@ -4,6 +4,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/editor_query/suggestion/_search?',
 
         render_results_metadata: pageSlider,
+        render_not_found: editorGroupApplicationNotFound,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,

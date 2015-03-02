@@ -51,6 +51,12 @@ function setFacetOpenness(options, context, facet) {
     }
 }
 
+function renderNotFound() {
+    return "<tr class='facetview_not_found'>" +
+        "<td>No results found that match your search criteria.  Try removing some of the filters you have set, or modifying the text in the search box.</td>" +
+        "</tr>";
+}
+
 /////////////////////////////////////////////////////////////////
 // functions for use as plugins to be passed to facetview instances
 ////////////////////////////////////////////////////////////////
@@ -134,6 +140,24 @@ function doajEGPostRender(options, context) {
         }
     });
 }
+
+function editorGroupJournalNotFound() {
+    return "<tr class='facetview_not_found'>" +
+        "<td><p>There are no journals for your editor group(s) that meet the search criteria</p>" +
+        "<p>If you have not set any search criteria, this means there are no journals currently allocated to your group</p>" +
+        "</tr>";
+}
+
+function editorGroupApplicationNotFound() {
+    return "<tr class='facetview_not_found'>" +
+        "<td><p>There are no applications for your editor group(s) that meet the search criteria</p>" +
+        "<p>If you have not set any search criteria, this means there are no applications currently allocated to your group</p>" +
+        "</tr>";
+}
+
+//////////////////////////////////////////////////////
+// value functions for facet displays
+/////////////////////////////////////////////////////
 
 var authorPaysMapping = {
     "N" : "No Charges",
