@@ -166,7 +166,7 @@ def suggestion_page(suggestion_id):
 @login_required
 @ssl_required
 def admin_site_search():
-    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin_journals_and_articles'])
+    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['adminjournalarticle.facetview'])
 
 @blueprint.route("/editor_groups")
 @login_required
