@@ -29,7 +29,7 @@ def index():
 @login_required
 @ssl_required
 def group_journals():
-    return render_template("editor/group_journals.html", search_page=True, facetviews=["group_journals"])
+    return render_template("editor/group_journals.html", search_page=True, facetviews=["editor.groupjournals.facetview"])
 
 @blueprint.route('/group_applications')
 @login_required
