@@ -70,37 +70,70 @@ function doajPostRender(options, context) {
 }
 
 function doajJAPostRender(options, context) {
-        // first run the default post render
-        doajPostRender(options, context);
+    // first run the default post render
+    doajPostRender(options, context);
 
-        // now add the handlers for the article delete
-        $(".delete_article_link").unbind("click");
-        $(".delete_article_link").click(function(event) {
-            event.preventDefault();
+    // now add the handlers for the article delete
+    $(".delete_article_link").unbind("click");
+    $(".delete_article_link").click(function(event) {
+        event.preventDefault();
 
-            function success_callback(data) {
-                alert("The article was successfully deleted");
-                $(".facetview_freetext").trigger("keyup"); // cause a search
-            }
+        function success_callback(data) {
+            alert("The article was successfully deleted");
+            $(".facetview_freetext").trigger("keyup"); // cause a search
+        }
 
-            function error_callback() {
-                alert("There was an error deleting the article")
-            }
+        function error_callback() {
+            alert("There was an error deleting the article")
+        }
 
-            var c = confirm("Are you really really sure?  You can't undo this operation!");
-            if (c) {
-                var href = $(this).attr("href");
-                var obj = {"delete" : "true"};
-                $.ajax({
-                    type: "POST",
-                    url: href,
-                    data: obj,
-                    success : success_callback,
-                    error: error_callback
-                })
-            }
-        });
-    }
+        var c = confirm("Are you really really sure?  You can't undo this operation!");
+        if (c) {
+            var href = $(this).attr("href");
+            var obj = {"delete" : "true"};
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: obj,
+                success : success_callback,
+                error: error_callback
+            })
+        }
+    });
+}
+
+function doajEGPostRender(options, context) {
+    // first run the default post render
+    doajPostRender(options, context);
+
+    // now add the handlers for the article delete
+    $(".delete_editor_group_link").unbind("click")
+    $(".delete_editor_group_link").click(function(event) {
+        event.preventDefault();
+
+        function success_callback(data) {
+            alert("The group was successfully deleted")
+            $(".facetview_freetext").trigger("keyup") // cause a search
+        }
+
+        function error_callback() {
+            alert("There was an error deleting the group")
+        }
+
+        var c = confirm("Are you really really sure?  You can't undo this operation!")
+        if (c) {
+            var href = $(this).attr("href")
+            var obj = {"delete" : "true"}
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: obj,
+                success : success_callback,
+                error: error_callback
+            })
+        }
+    });
+}
 
 var authorPaysMapping = {
     "N" : "No Charges",

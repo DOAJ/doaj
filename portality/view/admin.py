@@ -172,7 +172,7 @@ def admin_site_search():
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['editor_group'])
+    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admineditorgroups.facetview'])
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
