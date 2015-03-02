@@ -124,7 +124,7 @@ def journal_deactivate(journal_id):
 def suggestions():
     return render_template('admin/suggestions.html',
                search_page=True,
-               facetviews=['suggestions'],
+               facetviews=["adminapplications.facetview"],
                admin_page=True
            )
 
