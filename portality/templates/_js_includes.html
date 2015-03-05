@@ -18,7 +18,14 @@
 
 {% if search_page %}
 <!-- get facetview -->
-<script type="text/javascript" src="/static/portality/vendor/facetview/jquery.facetview.js"></script>
+<!-- <script type="text/javascript" src="/static/portality/vendor/facetview/jquery.facetview.js"></script> -->
+
+<!-- fv2 and the doaj theme - replaces the above -->
+<script type="text/javascript" src="/static/portality/vendor/facetview2/es.js"></script>
+<script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js"></script>
+<script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js"></script>
+<script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js"></script>
+
 {% endif %}
 
 {# AddThis (as it is configured right now) uses the anchor part of
@@ -60,7 +67,6 @@ displayed. #}
 
 <!-- get the app's js -->
 <script type="text/javascript" src="/static/doaj/js/doaj.js"></script>
-<script type="text/javascript" src="/static/doaj/js/customise_facetview.js"></script>
 <script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js"></script>
 
 {# any admin area javascript includes #}

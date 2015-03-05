@@ -41,26 +41,23 @@ def news():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html',
-               search_page=True,
-               facetviews=['journals_and_articles']
-           )
+    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
     if request.form.get('origin') != 'ui':
         abort(501)  # not implemented
 
-    terms = {'_type': []}
-    if request.form.get('include_journals') and request.form.get('include_articles'):
-        terms = {}  # the default anyway
-    elif request.form.get('include_journals'):
-        terms['_type'].append('journal')
-    elif request.form.get('include_articles'):
-        terms['_type'].append('article')
+    filters = None
+    if not (request.form.get('include_journals') and request.form.get('include_articles')):
+        filters = []
+        if request.form.get('include_journals'):
+            filters.append(dao.Facetview2.make_term_filter("_type", "journal"))
+        elif request.form.get('include_articles'):
+            filters.append(dao.Facetview2.make_term_filter("_type", "article"))
 
-    qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
-    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(qobj)))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
+    query = dao.Facetview2.make_query(request.form.get("q"), filters=filters)
+    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():

@@ -29,25 +29,25 @@ def index():
 @login_required
 @ssl_required
 def group_journals():
-    return render_template("editor/group_journals.html", search_page=True, facetviews=["group_journals"])
+    return render_template("editor/group_journals.html", search_page=True, facetviews=["editor.groupjournals.facetview"])
 
 @blueprint.route('/group_applications')
 @login_required
 @ssl_required
 def group_suggestions():
-    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["group_suggestions"])
+    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["editor.groupapplications.facetview"])
 
 @blueprint.route('/your_journals')
 @login_required
 @ssl_required
 def associate_journals():
-    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate_journals"])
+    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate.journals.facetview"])
 
 @blueprint.route('/your_applications')
 @login_required
 @ssl_required
 def associate_suggestions():
-    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate_suggestions"])
+    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate.applications.facetview"])
 
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required

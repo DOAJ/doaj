@@ -435,3 +435,34 @@ all_query = {
         "match_all" : { }
     }
 }
+
+
+#########################################################################
+# A query handler that knows how to speak facetview2
+#########################################################################
+
+class Facetview2(object):
+
+    """
+    {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"article"}}]}},"query":{"query_string":{"query":"richard","default_operator":"OR"}}}},"from":0,"size":10}
+    {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}
+    """
+
+    @classmethod
+    def make_term_filter(self, term, value):
+        return {"term" : {term : value}}
+
+    @classmethod
+    def make_query(self, query_string=None, filters=None):
+        query_part = {"match_all" : {}}
+        if query_string is not None:
+            query_part = {"query_string" : {"query" : query_string, "default_operator" : "OR"}}
+
+        query = {"query" : query_part}
+        if filters is not None:
+            if not isinstance(filters, list):
+                filters = [filters]
+            bool_part = {"bool" : {"must" : filters}}
+            query = {"query" : {"filtered" : {"query" : query_part, "filter" : bool_part}}}
+
+        return query
