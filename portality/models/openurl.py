@@ -1,7 +1,31 @@
+from portality.models import Journal, Article
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',
                        'epage', 'pages', 'artnum', 'issn', 'eissn', 'isbn', 'coden', 'sici', 'genre']
+
+# The genres from the OpenURL schema we support
+SUPPORTED_GENRES = ['journal', 'article']
+
+# Mapping from OpenURL schema to both supported models (Journal, Article)
+OPENURL_TO_ES = {
+    'au' : (None, 'author.name.exact'),
+    'aucorp' : (None, 'author.affiliation.exact'),
+    'atitle' : (None, 'bibjson.title.exact'),
+    'jtitle' : ('bibjson.title.exact', 'bibjson.journal.title.exact'),
+    'stitle' : ('bibjson.alternative_title.exact', None),
+    'date' : (None, 'index.date'),
+    'volume' : (None, 'bibjson.journal.volume'),
+    'issue' : (None, 'bibjson.journal.number'),
+    'spage' : (None, 'bibjson.start_page'),
+    'epage' : (None, 'bibjson.end_page'),
+    'issn' : ('index.issn.exact', 'index.issn.exact'), # bibjson.identifier.id.exact
+    'eissn' : ('index.issn.exact', 'index.issn.exact'),
+    'isbn' : ('index.issn.exact', 'index.issn.exact'),
+}
+
+TERMS_SEARCH = { "query" : {"bool" : { "should" : [] } } }
+TERM = { "term" : {} }
 
 class OpenURLRequest(object):
     """
@@ -22,6 +46,30 @@ class OpenURLRequest(object):
 
     def __str__(self):
         return "OpenURLRequest{" + ", ".join(["%s : %s" % (x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS if getattr(self, x)]) + "}"
+
+    def query_es(self):
+        # Copy to the template, which will be populated with terms
+        populated_query = TERMS_SEARCH.copy()
+
+        # Get all of the attributes with values set.
+        set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
+
+        # Set i to use either our mapping for journals or articles
+        i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
+
+        # Add the attributes to the query
+        for (k, v) in set_attributes:
+            es_term = OPENURL_TO_ES[k][i]
+            term = { "term" : { es_term : v} }
+            populated_query["query"]["bool"]["should"].append(term)
+        print "Query from OpenURL: " + str(populated_query)
+
+        # Return the results of the query
+        if i == 0:
+            return Journal.query(q=populated_query)
+        elif i == 1:
+            return Article.query(q=populated_query)
+
 
     @property
     def doi(self):

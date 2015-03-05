@@ -1,6 +1,5 @@
 import re
-from urllib import unquote
-from flask import Blueprint, request
+from flask import Blueprint, request, redirect, url_for
 from portality.models import OpenURLRequest
 
 blueprint = Blueprint('openurl', __name__)
@@ -10,11 +9,15 @@ def openurl():
 
     # Drop the first part of the url to get the raw query
     url_query = request.url.split(request.base_url).pop()
+    print request.url
 
     # Validate the query syntax version and build an object representing it
     query_object = parse_query(url_query)
 
-    return str(query_object)
+    # Issue query and redirect to results page
+    results = query_object.query_es()
+    results_url = get_result_page(results)
+    return redirect(results_url)
 
 def parse_query(url_query_string):
     """
@@ -51,4 +54,10 @@ def old_to_new(url_query_string):
     print "old_to_new"
     return url_query_string
 
-
+def get_result_page(results):
+    if results['hits']['total'] > 0:
+        if results['hits']['hits'][0]['_type'] == 'journal':
+            return url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
+    else:
+        # No results found for query
+        pass
