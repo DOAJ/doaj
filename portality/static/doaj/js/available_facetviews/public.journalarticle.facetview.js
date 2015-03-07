@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
         from : 0,
 
         // replace all of the below with this eventually
-        //render_result_record: publicSearchResult,
+        render_result_record: publicSearchResult,
 
         // these need to be dealt with by the render function
         results_render_callbacks: {
