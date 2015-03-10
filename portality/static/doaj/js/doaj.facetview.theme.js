@@ -99,7 +99,7 @@ function renderPublicJournal(options, resultobj) {
                 var urls = licenceMap[ltitle];
                 result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
             } else {
-                result += "<strong>License: " + ltitle + "</strong>"
+                result += "<strong>License: " + ltitle + "</strong><br>"
             }
         }
     }
@@ -279,7 +279,7 @@ function renderPublicArticle(options, resultobj) {
                 var urls = licenceMap[ltitle];
                 result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
             } else {
-                result += "<strong>License: " + ltitle + "</strong>"
+                result += "<strong>License: " + ltitle + "</strong><br>"
             }
         }
     }
