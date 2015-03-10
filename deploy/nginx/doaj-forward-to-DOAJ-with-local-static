@@ -1,0 +1,55 @@
+server {
+    listen          80;
+    server_name     doaj.org www.doaj.org;
+
+
+    access_log /var/log/nginx/doaj-forward-to-DOAJ-with-local-static.access.log;
+    error_log /var/log/nginx/doaj-forward-to-DOAJ-with-local-static.error.log;
+
+    proxy_read_timeout 600s;
+
+    location / {
+        proxy_pass http://178.62.116.49;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	# proxy_buffering off;
+    }
+
+    location  /static/ {
+        alias /opt/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+    }
+}
+
+server {
+    listen          443;
+    server_name     doaj.org www.doaj.org;
+
+
+    access_log /var/log/nginx/doaj-forward-to-DOAJ-with-local-static.access.log;
+    error_log /var/log/nginx/doaj-forward-to-DOAJ-with-local-static.error.log;
+
+    ssl on;
+    ssl_certificate /etc/nginx/CERTS/cottagelabs.com.chained.crt;
+    ssl_certificate_key /etc/nginx/CERTS/cottagelabs.key;
+
+    proxy_read_timeout 600s;
+
+    location / {
+        proxy_pass https://178.62.116.49;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	# proxy_buffering off;
+    }
+
+    location  /static/ {
+        alias /opt/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+    }
+}
