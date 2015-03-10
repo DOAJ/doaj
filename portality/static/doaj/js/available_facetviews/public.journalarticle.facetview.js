@@ -35,9 +35,11 @@ jQuery(document).ready(function($) {
             display: "Fulltext language"
         },
 
+        // journal facets
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
-            display : "Peer review"
+            display : "Peer review",
+            disabled: true
         },
         year_added : {
             type: "date_histogram",
@@ -48,7 +50,21 @@ jQuery(document).ready(function($) {
                 return (new Date(parseInt(val))).getFullYear();
             },
             size: false,
-            sort: "desc"
+            sort: "desc",
+            disabled: true
+        },
+
+        // article facets
+        journal_title : {
+            field : "bibjson.journal.title.exact",
+            display: "Journal",
+            disabled: true
+        },
+        year_published : {
+            field : "bibjson.year.exact",
+            display: "Year of publication",
+            order: "reverse_term",
+            disabled: true
         }
     };
 
@@ -59,10 +75,65 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
     natural.push(all_facets.language);
-
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
+    natural.push(all_facets.journal_title);
+    natural.push(all_facets.year_published);
 
+    function dynamicFacets(options, context) {
+        function disableFacet(options, field, disable) {
+            for (var i = 0; i < options.facets.length; i++) {
+                var facet = options.facets[i];
+                if (facet.field === field) {
+                    facet.disabled = disable;
+                    return;
+                }
+            }
+        }
+
+
+        if ("_type" in options.active_filters) {
+            // add the type specific facets to the query, and remove any
+            // type specific facets from the other type, along with any filters
+            // it may have set
+            var ts = options.active_filters["_type"];
+            if (ts.length > 0) {
+                var t = ts[0];  // "journal" or "article"
+                if (t === "journal") {
+                    // disable the article facets
+                    disableFacet(options, "bibjson.journal.title.exact", true);
+                    disableFacet(options, "bibjson.year.exact", true);
+
+                    // enable the journal facets
+                    disableFacet(options, "bibjson.editorial_review.process.exact", false);
+                    disableFacet(options, "created_date", false);
+
+                    // FIXME: do we need to do something about filters here too?
+                } else if (t === "article") {
+                    // disable the journal facets
+                    disableFacet(options, "bibjson.editorial_review.process.exact", true);
+                    disableFacet(options, "created_date", true);
+
+                    // enable the article facets
+                    disableFacet(options, "bibjson.journal.title.exact", false);
+                    disableFacet(options, "bibjson.year.exact", false);
+
+                    // FIXME: do we need to do something about filters here too?
+                }
+            }
+
+        } else {
+            // ensure the type specific facets are not in the query
+
+            // disable the article facets
+            disableFacet(options, "bibjson.journal.title.exact", true);
+            disableFacet(options, "bibjson.year.exact", true);
+
+            // disable the journal facets
+            disableFacet(options, "bibjson.editorial_review.process.exact", true);
+            disableFacet(options, "created_date", true);
+        }
+    }
 
     var original = [
         {'field': '_type', 'display': 'Journals vs. Articles'},
@@ -85,6 +156,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
 
         render_results_metadata: pageSlider,
+        pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
         sharesave_link: false,
