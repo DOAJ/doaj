@@ -135,22 +135,29 @@ jQuery(document).ready(function($) {
         }
     }
 
-    var original = [
-        {'field': '_type', 'display': 'Journals vs. Articles'},
-        {'field': 'index.classification.exact', 'display': 'Subject'},
-        {'field': 'index.language.exact', 'display': 'Journal Language'},
-        {'field': 'index.country.exact', 'display': 'Country of publisher'},
-        {'field': 'index.publisher.exact', 'display': 'Publisher'},
-        {
-            'field': 'bibjson.author_pays.exact',
-            'display': 'Publication charges?',
-            value_function: authorPaysMap
-        },
-        {'field': 'index.license.exact', 'display': 'Journal License'},
-        // Articles
-        {'field': 'bibjson.year.exact', 'display': 'Year of publication (Articles)'},
-        {'field': 'bibjson.journal.title.exact', 'display': 'Journal title (Articles)'}
-    ];
+    function bitlyShortener(query, callback) {
+
+        function callbackWrapper(data) {
+            callback(data.url);
+        }
+
+        function errorHandler() {
+            alert("Sorry, we're unable to generate short urls at this time");
+            callback();
+        }
+
+        var postdata = JSON.stringify(query);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "jsonp",
+            url: "/service/shorten",
+            data : postdata,
+            success: callbackWrapper,
+            error: errorHandler
+        });
+    }
 
     $('.facetview.journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
@@ -159,7 +166,8 @@ jQuery(document).ready(function($) {
         pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
-        sharesave_link: false,
+        sharesave_link: true,
+        url_shortener : bitlyShortener,
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
