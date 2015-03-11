@@ -12,9 +12,6 @@ ln -sf /home/cloo/repl/apps/nginx/sites-available/doaj-apps /home/cloo/repl/apps
 ln -sf /home/cloo/repl/apps/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-gate
 
-# make sure SSL config is available
-ln -sf /home/cloo/repl/gateway/nginx/includes /etc/nginx/includes
-
 # replicate across app servers
 /home/cloo/repl/replicate.sh
 /home/cloo/repl/command.sh apps /home/cloo/repl/apps/doaj/src/doaj/deploy/test_doaj_deploy-apps.sh
