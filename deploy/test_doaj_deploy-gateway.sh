@@ -10,6 +10,7 @@ ln -sf /home/cloo/repl/apps/nginx/sites-available/doaj-apps /home/cloo/repl/apps
 
 # prep sym links for gateway
 ln -sf /home/cloo/repl/apps/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
+ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-gate
 
 # replicate across app servers
 /home/cloo/repl/replicate.sh
