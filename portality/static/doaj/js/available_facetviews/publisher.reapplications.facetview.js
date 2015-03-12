@@ -3,8 +3,9 @@ jQuery(document).ready(function ($) {
     $('.facetview.reapplications').facetview({
         search_url: es_scheme + '//' + es_domain + '/publisher_reapp_query/suggestion/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         render_not_found: publisherReapplicationNotFound,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -136,8 +137,8 @@ jQuery(document).ready(function ($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [

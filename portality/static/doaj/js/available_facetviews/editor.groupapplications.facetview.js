@@ -3,8 +3,9 @@ jQuery(document).ready(function($) {
     $('.facetview.group_suggestions').facetview({
         search_url: es_scheme + '//' + es_domain + '/editor_query/suggestion/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         render_not_found: editorGroupApplicationNotFound,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -149,8 +150,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [

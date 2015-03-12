@@ -3,8 +3,9 @@ jQuery(document).ready(function($) {
     $('.facetview.publisher').facetview({
         search_url: es_scheme + '//' + es_domain + '/publisher_query/journal/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         render_not_found: publisherJournalNotFound,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -116,8 +117,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subject</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Keywords</strong>: ",
+                    "field": "bibjson.keywords"
                 }
             ],
             [

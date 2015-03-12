@@ -3,7 +3,8 @@ jQuery(document).ready(function($) {
     $('.facetview.suggestions').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -52,9 +53,6 @@ jQuery(document).ready(function($) {
 
         page_size : 10,
         from : 0,
-
-        // replace all of the below with this eventually
-        //render_result_record: adminApplicationSearchResult,
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
@@ -146,8 +144,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [

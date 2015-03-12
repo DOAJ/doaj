@@ -368,3 +368,14 @@ NEWS_PAGE_NEWS_ITEMS = 20
 
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
+
+
+# =====================================
+# Search query shortening settings
+
+# bit,ly api shortening service
+BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v3/shorten"
+
+# bitly oauth token
+# ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
+BITLY_OAUTH_TOKEN = ""

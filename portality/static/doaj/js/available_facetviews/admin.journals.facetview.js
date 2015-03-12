@@ -3,7 +3,8 @@ jQuery(document).ready(function($) {
     $('.facetview.journals').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/journal/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -51,9 +52,6 @@ jQuery(document).ready(function($) {
 
         page_size : 10,
         from : 0,
-
-        // replace all of the below with this eventually
-        //render_result_record: adminJournalsSearchResult,
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
@@ -158,8 +156,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subject</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Keywords</strong>: ",
+                    "field": "bibjson.keywords"
                 }
             ],
             [
