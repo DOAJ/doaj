@@ -5,7 +5,7 @@ server {
     server_name     www.doaj.org;
 
     access_log /var/log/nginx/doaj.access.log;
-    error_log /var/log/nginx/doaj.error.log debug;
+    error_log /var/log/nginx/doaj.error.log;
 
     include includes/cl-multi-ssl.conf;
 
@@ -18,7 +18,7 @@ server {
     server_name     doaj.org doaj.cottagelabs.com;
 
     access_log /var/log/nginx/doaj.access.log;
-    error_log /var/log/nginx/doaj.error.log debug;
+    error_log /var/log/nginx/doaj.error.log;
 
     return 301 https://$host$request_uri;
 }
@@ -29,7 +29,7 @@ server {
     server_name     doaj.org doaj.cottagelabs.com;
 
     access_log /var/log/nginx/doaj.access.log;
-    error_log /var/log/nginx/doaj.error.log debug;
+    error_log /var/log/nginx/doaj.error.log;
 
     include includes/cl-multi-ssl.conf;
 
