@@ -165,6 +165,16 @@ def toc(identifier=None, volume=None):
     
     return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume, countries=countries_dict)
 
+@blueprint.route("/article/<identifier>")
+def article_page(identifier=None):
+    # identifier must be the article id
+    article = models.Article.pull(identifier)
+
+    if article is None:
+        abort(404)
+
+    return render_template('doaj/article.html', article=article, countries=countries_dict)
+
 def _sort_volumes(volumes):
     numeric = []
     non_numeric = []
