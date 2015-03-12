@@ -4,8 +4,8 @@ server {
     listen          443 ssl;
     server_name     www.doaj.org;
 
-    access_log /var/log/nginx/doaj.log;
-    error_log /var/log/nginx/doaj.log;
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log debug;
 
     include includes/cl-multi-ssl.conf;
 
@@ -17,8 +17,8 @@ server {
     listen          80;
     server_name     doaj.org doaj.cottagelabs.com;
 
-    access_log /var/log/nginx/doaj.log;
-    error_log /var/log/nginx/doaj.log;
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log debug;
 
     return 301 https://$server_name$request_uri;
 }
@@ -28,8 +28,8 @@ server {
     listen          443 ssl;
     server_name     doaj.org doaj.cottagelabs.com;
 
-    access_log /var/log/nginx/doaj.log;
-    error_log /var/log/nginx/doaj.log;
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log debug;
 
     include includes/cl-multi-ssl.conf;
 
