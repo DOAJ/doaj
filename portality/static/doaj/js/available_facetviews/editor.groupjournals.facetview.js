@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $('.facetview.group_journals').facetview({
         search_url: es_scheme + '//' + es_domain + '/editor_query/journal/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         render_not_found: editorGroupJournalNotFound,
         post_render_callback: doajScrollTop,
 

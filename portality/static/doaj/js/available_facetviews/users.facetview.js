@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $('.facetview.users').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/account/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         post_render_callback: doajScrollTop,
 
         sharesave_link: false,

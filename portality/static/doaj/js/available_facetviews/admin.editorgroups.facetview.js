@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
     $('.facetview.editor_group').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/editor,group/_search?',
 
-        render_results_metadata: pageSlider,
+        render_results_metadata: doajPager,
         post_render_callback: doajEGPostRender,
 
         sharesave_link: false,

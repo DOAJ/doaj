@@ -67,6 +67,50 @@ function renderNotFound() {
 // functions for use as plugins to be passed to facetview instances
 ////////////////////////////////////////////////////////////////
 
+function doajPager(options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_decrement - anchor to move the page back
+     * class: facetview_increment - anchor to move the page forward
+     * class: facetview_inactive_link - for links which should not have any effect (helpful for styling bootstrap lists without adding click features)
+     *
+     * should (not must) respect the config
+     *
+     * options.from - record number results start from (may be a string)
+     * options.page_size - number of results per page
+     * options.data.found - the total number of records in the search result set
+     */
+
+    // ensure our starting points are integers, then we can do maths on them
+    var from = parseInt(options.from);
+    var size = parseInt(options.page_size);
+
+    // calculate the human readable values we want
+    var to = from + size;
+    from = from + 1; // zero indexed
+    if (options.data.found < to) { to = options.data.found }
+    var total = options.data.found;
+    total = total.toLocaleString();
+
+    var backlink = '<a alt="previous" title="previous" class="facetview_decrement pull-left" style="color:#333"><span class="icon icon-arrow-left"></span></a>';
+    if (from < size) {
+        backlink = '<a class="facetview_decrement facetview_inactive_link" style="color:#333">&nbsp;</a>'
+    }
+
+    var nextlink = '<a alt="next" title="next" class="facetview_increment pull-right" style="color:#333"><span class="icon icon-arrow-right"></span></a>';
+    if (options.data.found <= to) {
+        nextlink = '<a class="facetview_increment facetview_inactive_link" style="color:#333">&nbsp;</a>'
+    }
+
+    var meta = '<div class="row-fluid" style="font-size: 18px"><div class="span3">&nbsp;</div>';
+    meta += '<div class="span1">' + backlink + '</div>';
+    meta += '<div class="span4 text-center"><p style="font-weight: bold; text-align: center">' + from + ' &ndash; ' + to + ' of ' + total + '</p></div>';
+    meta += '<div class="span1">' + nextlink + '</div>';
+
+    return meta
+}
+
 function doajScrollTop(options, context) {
     $(".facetview_increment").click(function(event) {
         event.preventDefault();
