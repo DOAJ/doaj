@@ -6,3 +6,4 @@ cd $DIR/..
 pip install -r requirements.txt
 sudo supervisorctl reread doaj-test
 sudo supervisorctl update doaj-test
+kill -HUP $(sudo supervisorctl pid doaj-test)
