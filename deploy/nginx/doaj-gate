@@ -24,14 +24,36 @@ server {
 }
 
 # actually serve the app on doaj.org via SSL
+# there's 2 server sections since doaj.cottagelabs.com is covered by a
+# different SSL cert, see further down
 server {
     listen          443 ssl;
-    server_name     doaj.org doaj.cottagelabs.com;
+    server_name     doaj.org;
 
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
 
     include includes/cl-multi-ssl.conf;
+
+    proxy_read_timeout 600s;
+
+    location / {
+        proxy_pass http://apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+
+server {
+    listen          443 ssl;
+    server_name     doaj.cottagelabs.com;
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    include includes/cl-wildcard-ssl.conf;
 
     proxy_read_timeout 600s;
 
