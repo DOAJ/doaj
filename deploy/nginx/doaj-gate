@@ -20,7 +20,7 @@ server {
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log debug;
 
-    return 301 https://$server_name$request_uri;
+    return 301 https://$host$request_uri;
 }
 
 # actually serve the app on doaj.org via SSL
