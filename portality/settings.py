@@ -25,7 +25,7 @@ MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = ""
+SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = "0.0.0.0"
 DEBUG = False
 PORT = 5004
