@@ -67,7 +67,25 @@ function renderNotFound() {
 // functions for use as plugins to be passed to facetview instances
 ////////////////////////////////////////////////////////////////
 
+function doajScrollTop(options, context) {
+    $(".facetview_increment").click(function(event) {
+        event.preventDefault();
+        $('html, body').animate({
+            scrollTop: $("body").offset().top
+        }, 1000);
+    });
+
+    $(".facetview_decrement").click(function(event) {
+        event.preventDefault();
+        $('html, body').animate({
+            scrollTop: $("body").offset().top
+        }, 1000);
+    });
+}
+
 function doajPostRender(options, context) {
+    doajScrollTop(options, context);
+
     // toggle the abstracts
     $('.abstract_text', context).hide();
     $(".abstract_action", context).unbind("click").click(function(event) {
@@ -78,7 +96,7 @@ function doajPostRender(options, context) {
         el.html(newText);
         $('.abstract_text[rel="' + el.attr("rel") + '"]').slideToggle(300);
         return true;
-    })
+    });
 }
 
 function doajJAPostRender(options, context) {
