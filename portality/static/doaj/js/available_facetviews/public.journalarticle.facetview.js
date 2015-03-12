@@ -159,6 +159,303 @@ jQuery(document).ready(function($) {
         });
     }
 
+    function publicSearchResult(options, resultobj) {
+        if (resultobj.bibjson && resultobj.bibjson.journal) {
+            // it is an article
+            return renderPublicArticle(options, resultobj);
+        } else {
+            // it is a journal
+            return renderPublicJournal(options, resultobj);
+        }
+    }
+
+    function renderPublicJournal(options, resultobj) {
+        // start off the string to be rendered
+        var result = options.resultwrap_start;
+        result += "<div class='row-fluid'>";
+
+        // add the journal icon
+        result += "<div class='span1'>";
+        result += "<i style='font-size: 24px' class='icon icon-book'></i>";
+        result += "</div>";
+
+        // start the main box that all the details go in
+        result += "<div class='span9'>";
+
+        // set the title
+        if (resultobj.bibjson.title) {
+            result += "<span class='title'><a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+        }
+
+        // set the alternative title
+        if (resultobj.bibjson.alternative_title) {
+            result += "<span class='alternative_title' style='color: #aaaaaa'>" + resultobj.bibjson.alternative_title + "</span><br>";
+        }
+
+        // set the issn
+        if (resultobj.bibjson && resultobj.bibjson.identifier) {
+            var ids = resultobj.bibjson.identifier;
+            var issns = [];
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].type === "pissn" || ids[i].type === "eissn") {
+                    issns.push(ids[i].id)
+                }
+            }
+            if (issns.length > 0) {
+                result += "ISSN: " + issns.join(", ") + "<br>"
+            }
+        }
+
+        // set the homepage url
+        if (resultobj.bibjson && resultobj.bibjson.link) {
+            var ls = resultobj.bibjson.link;
+            for (var i = 0; i < ls.length; i++) {
+                var t = ls[i].type;
+                if (t == 'homepage') {
+                    result += "<a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
+                }
+            }
+        }
+
+        // add the subjects
+        if (resultobj.index && resultobj.index.classification && resultobj.index.classification.length > 0) {
+            result += "<strong>Subjects:</strong><br>";
+            result += resultobj.index.classification.join(", ");
+        }
+
+        // close the main details box
+        result += "</div>";
+
+        // start the journal properties side-bar
+        result += "<div class='span2'>";
+
+        // set the tick if it is relevant
+        if (resultobj.admin && resultobj.admin.ticked) {
+            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​<br>";
+        }
+
+        // licence
+        if (resultobj.bibjson.license) {
+            var ltitle = undefined;
+            var lics = resultobj.bibjson.license;
+            if (lics.length > 0) {
+                ltitle = lics[0].title
+            }
+            if (ltitle) {
+                if (licenceMap[ltitle]) {
+                    var urls = licenceMap[ltitle];
+                    result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
+                } else {
+                    result += "<strong>License: " + ltitle + "</strong><br>"
+                }
+            }
+        }
+
+        // peer review type
+        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
+            var proc = resultobj.bibjson.editorial_review.process;
+            if (proc === "None") {
+                proc = "No peer review"
+            }
+            result += "<strong>" + proc + "</strong><br>"
+        }
+
+        // APC
+        if (resultobj.bibjson.apc) {
+            if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {
+                result += "<strong>APC: ";
+                if (resultobj.bibjson.apc.average_price) {
+                    result += resultobj.bibjson.apc.average_price;
+                } else {
+                    result += "price unknown ";
+                }
+                if (resultobj.bibjson.apc.currency) {
+                    result += resultobj.bibjson.apc.currency
+                } else {
+                    result += " currency unknown";
+                }
+                result += "</strong>";
+            } else {
+                result += "<strong>No APC</strong>";
+            }
+        }
+
+        // close the journal properties side-bar
+        result += "</div>";
+
+        // close off the result with the ending strings, and then return
+        result += "</div>";
+        result += options.resultwrap_end;
+        return result;
+    }
+
+    function renderPublicArticle(options, resultobj) {
+
+        function makeCitation(record) {
+            // get all the relevant citation properties
+            var ctitle = record.bibjson.journal ? record.bibjson.journal.title : undefined;
+            var cvol = record.bibjson.journal ? record.bibjson.journal.volume : undefined;
+            var ciss = record.bibjson.journal ? record.bibjson.journal.number: undefined;
+            var cstart = record.bibjson.start_page;
+            var cend = record.bibjson.end_page;
+            var cyear = record.bibjson.year;
+
+            // we're also going to need the issn
+            var issns = [];
+            if (resultobj.bibjson && resultobj.bibjson.identifier) {
+                var ids = resultobj.bibjson.identifier;
+                for (var i = 0; i < ids.length; i++) {
+                    if (ids[i].type === "pissn" || ids[i].type === "eissn") {
+                        issns.push(ids[i].id)
+                    }
+                }
+            }
+
+            var citation = "";
+            if (ctitle) {
+                if (issns.length > 0) {
+                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle + "</a>";
+                } else {
+                    citation += ctitle;
+                }
+            }
+
+            if (cvol) {
+                if (citation !== "") { citation += ", " }
+                citation += "Vol " + cvol;
+            }
+
+            if (ciss) {
+                if (citation !== "") { citation += ", " }
+                citation += "Iss " + ciss;
+            }
+
+            if (cstart || cend) {
+                if (citation !== "") { citation += ", " }
+                if ((cstart && !cend) || (!cstart && cend)) {
+                    citation += "p ";
+                } else {
+                    citation += "Pp ";
+                }
+                if (cstart) {
+                    citation += cstart;
+                }
+                if (cend) {
+                    if (cstart) {
+                        citation += "-"
+                    }
+                    citation += cend;
+                }
+            }
+
+            if (cyear) {
+                if (citation !== "") { citation += " " }
+                citation += "(" + cyear + ")";
+            }
+
+            return citation;
+        }
+
+        // start off the string to be rendered
+        var result = options.resultwrap_start;
+        result += "<div class='row-fluid'>";
+
+        // add the journal icon
+        result += "<div class='span1'>";
+        result += "<i style='font-size: 24px' class='icon icon-file'></i>";
+        result += "</div>";
+
+        // start the main box that all the details go in
+        result += "<div class='span9'>";
+
+        // set the title
+        if (resultobj.bibjson.title) {
+            result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+        }
+
+        // set the doi
+        if (resultobj.bibjson && resultobj.bibjson.identifier) {
+            var ids = resultobj.bibjson.identifier;
+            for (var i = 0; i < ids.length; i++) {
+                if (ids[i].type === "doi") {
+                    var doi = ids[i].id;
+                    var tendot = doi.indexOf("10.");
+                    var url = "http://dx.doi.org/" + doi.substring(tendot);
+                    result += "DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a><br>";
+                }
+            }
+        }
+
+        // set the citation
+        var cite = makeCitation(resultobj);
+        if (cite) {
+            result += cite + "<br>";
+        }
+
+        // set the fulltext
+        if (resultobj.bibjson && resultobj.bibjson.link) {
+            var ls = resultobj.bibjson.link;
+            for (var i = 0; i < ls.length; i++) {
+                var t = ls[i].type;
+                if (t == 'fulltext') {
+                    result += "Fulltext: <a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
+                }
+            }
+        }
+
+        // close the main details box
+        result += "</div>";
+
+        // start the journal properties side-bar
+        result += "<div class='span2'>";
+
+        // set the tick if it is relevant
+        if (resultobj.admin && resultobj.admin.ticked) {
+            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​<br>";
+        }
+
+        // licence
+        if (resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
+            var ltitle = undefined;
+            var lics = resultobj.bibjson.journal.license;
+            if (lics.length > 0) {
+                ltitle = lics[0].title
+            }
+            if (ltitle) {
+                if (licenceMap[ltitle]) {
+                    var urls = licenceMap[ltitle];
+                    result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
+                } else {
+                    result += "<strong>License: " + ltitle + "</strong><br>"
+                }
+            }
+        }
+
+        // close the article properties side-bar
+        result += "</div>";
+
+        // close off the main result
+        result += "</div>";
+
+        // create the abstract section if desired
+        if (resultobj.bibjson.abstract) {
+            // start the abstract section
+            result += "<div class='row-fluid'><div class='span1'>&nbsp;</div><div class='span11'>";
+
+            result += "<strong>Abstract</strong>&nbsp;&nbsp;";
+            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
+            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+
+            // close off the abstract section
+            result += "</div></div>";
+        }
+
+        // close off the result and return
+        result += options.resultwrap_end;
+        return result;
+    }
+
+
     $('.facetview.journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
 

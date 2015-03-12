@@ -148,8 +148,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subject</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Keywords</strong>: ",
+                    "field": "bibjson.keywords"
                 }
             ],
             [

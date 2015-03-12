@@ -112,8 +112,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "bibjson.subject.term"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [

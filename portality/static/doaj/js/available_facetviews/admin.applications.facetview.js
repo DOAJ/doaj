@@ -53,9 +53,6 @@ jQuery(document).ready(function($) {
         page_size : 10,
         from : 0,
 
-        // replace all of the below with this eventually
-        //render_result_record: adminApplicationSearchResult,
-
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
             'created_date': fv_created_date,
@@ -146,8 +143,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [

@@ -149,8 +149,8 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre": "<strong>Subjects</strong>: ",
-                    "field": "index.subject"
+                    "pre": "<strong>Classification</strong>: ",
+                    "field": "index.classification"
                 }
             ],
             [
