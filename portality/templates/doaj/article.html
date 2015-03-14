@@ -2,16 +2,12 @@
 
 {% block content %}
 
-<script type="text/javascript">
-
-</script>
-
 <div class="row-fluid">
     <div class="span9">
         <h1>{{article.bibjson().title}}</h1>
         <p>
         {% if article.bibjson().get_identifiers(idtype='doi') %}
-            <em>DOI: </em>{{ article.bibjson().get_identifiers(idtype='doi')[0] | doi_url | safe}}
+            <em>DOI: </em>{{ article.bibjson().get_identifiers(idtype='doi')[0] | doi_url | safe}}&nbsp;&nbsp;
         {% endif %}
         {% for identifier in article.bibjson().get_identifiers(idtype='pissn') %}
             <em>ISSN: {{identifier}}</em>&nbsp;&nbsp;
