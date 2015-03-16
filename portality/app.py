@@ -168,6 +168,16 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
     return utcdt.strftime(string_format)
 
+@app.template_filter('doi_url')
+def doi_url(doi):
+    """
+    Create a link from a DOI.
+    :param doi: the string DOI
+    :return: the HTML link
+    """
+    tendot = doi[doi.find('10.'):]
+    return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
+
 @app.before_request
 def standard_authentication():
     """Check remote_user on a per-request basis."""

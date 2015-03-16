@@ -6,6 +6,9 @@
     <div class="span9">
         <h1>{{article.bibjson().title}}</h1>
         <p>
+        {% if article.bibjson().get_identifiers(idtype='doi') %}
+            <em>DOI: </em>{{ article.bibjson().get_identifiers(idtype='doi')[0] | doi_url | safe}}&nbsp;&nbsp;
+        {% endif %}
         {% for identifier in article.bibjson().get_identifiers(idtype='pissn') %}
             <em>ISSN: {{identifier}}</em>&nbsp;&nbsp;
         {% endfor %}
@@ -41,7 +44,6 @@
             {% if article.bibjson().publisher %}
                 <p><strong>Publisher</strong>:&nbsp;{{article.bibjson().publisher}}</p>
             {% endif %}
-
             {% if article.bibjson().institution %}
                 <p><strong>Society/Institution</strong>:&nbsp;{{article.bibjson().institution}}</p>
             {% endif %}
@@ -61,16 +63,21 @@
     <div class="span4">
         <div class="box with-borders" style="height: 120px">
             {% if article.bibjson().journal_title %}
+                {% if article.bibjson().get_identifiers(idtype='pissn') or article.bibjson().get_identifiers(idtype='eissn') %}
+                    <p><strong>Journal</strong>:&nbsp;
+                    <a href={{ "/toc/" + article.bibjson().get_identifiers(idtype='pissn')[0] or article.bibjson().get_identifiers(idtype='eissn')[0]}}>{{ article.bibjson().journal_title }}</a></p>
+                {% else %}
                     <p><strong>Journal</strong>:&nbsp;{{article.bibjson().journal_title}}</p>
+                {% endif %}
             {% endif %}
             {% if article.bibjson().volume %}
-                    <strong>Volume</strong>:&nbsp;{{article.bibjson().volume}}<br>
+                <strong>Volume</strong>:&nbsp;{{article.bibjson().volume}}<br>
             {% endif %}
             {% if article.bibjson().number %}
-                    <strong>Issue</strong>:&nbsp;{{article.bibjson().number}}<br>
+                <strong>Issue</strong>:&nbsp;{{article.bibjson().number}}<br>
             {% endif %}
             {% if article.bibjson().start_page %}
-                    <strong>Pages:</strong>:&nbsp;{{article.bibjson().start_page}} {% if article.bibjson().end_page %}- {{article.bibjson().end_page}}{% endif %}<br>
+                <strong>Pages:</strong>:&nbsp;{{article.bibjson().start_page}} {% if article.bibjson().end_page %}- {{article.bibjson().end_page}}{% endif %}<br>
             {% endif %}
         </div>
     </div>
@@ -85,7 +92,7 @@
                     <p><strong>Full Text: </strong><a href="{{url}}">{{url}}</a></p>
                 {% endfor %}
                 {% if article.bibjson().abstract %}
-                    <a href="#" class="abstract_toggle" data-article="{{article.id}}">(abstract)</a>
+                    <strong>Abstract</strong><a href="{{url}}">{{url}}</a><br>
                     <p class="abstract_box" id="article_{{article.id}}">{{article.bibjson().abstract}}</p>
                 {% endif %}
             </div>
@@ -94,51 +101,3 @@
 </div>
 
 {% endblock %}
-
-{% block extra_js_bottom %}
-
-<script type="text/javascript">
-
-$(document).ready(function() {
-    $(".abstract_box").hide()
-    $(".abstract_toggle").click(function(event) {
-        event.preventDefault();
-        var article_id = $(this).attr("data-article")
-        $("#article_" + article_id).toggle()
-    })
-});
-
-</script>
-
-{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
