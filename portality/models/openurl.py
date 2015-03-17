@@ -1,4 +1,6 @@
+import re
 from portality.models import Journal, Article
+from copy import deepcopy
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',
@@ -49,7 +51,7 @@ class OpenURLRequest(object):
 
     def query_es(self):
         # Copy to the template, which will be populated with terms
-        populated_query = TERMS_SEARCH.copy()
+        populated_query = deepcopy(TERMS_SEARCH)
 
         # Get all of the attributes with values set.
         set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
@@ -60,7 +62,10 @@ class OpenURLRequest(object):
         # Add the attributes to the query
         for (k, v) in set_attributes:
             es_term = OPENURL_TO_ES[k][i]
-            term = { "term" : { es_term : v} }
+            if es_term == None:
+                continue
+            else:
+                term = { "term" : { es_term : v} }
             populated_query["query"]["bool"]["should"].append(term)
         print "Query from OpenURL: " + str(populated_query)
 
@@ -70,6 +75,18 @@ class OpenURLRequest(object):
         elif i == 1:
             return Article.query(q=populated_query)
 
+    def validate_issn(self, issn_str):
+        """
+        If the ISSN is missing a dash, add it so it matches that in the index.
+        :param issn_str: The ISSN, or if None, this will skip.
+        :return: The ISSN with the dash added
+        """
+        if issn_str:
+            match_dash = re.compile('[-]')
+            if not match_dash.search(issn_str):
+                issn_str = issn_str[:4] + '-' + issn_str[4:]
+
+        return issn_str
 
     @property
     def doi(self):
@@ -285,7 +302,7 @@ class OpenURLRequest(object):
 
     @issn.setter
     def issn(self, val):
-        self._issn = val
+        self._issn = self.validate_issn(val)
 
     @property
     def eissn(self):
@@ -294,7 +311,7 @@ class OpenURLRequest(object):
 
     @eissn.setter
     def eissn(self, val):
-        self._eissn = val
+        self._eissn = self.validate_issn(val)
 
     @property
     def isbn(self):

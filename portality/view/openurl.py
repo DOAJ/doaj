@@ -1,6 +1,7 @@
 import re
 from flask import Blueprint, request, redirect, url_for
 from portality.models import OpenURLRequest
+from collections import OrderedDict
 
 blueprint = Blueprint('openurl', __name__)
 
@@ -9,13 +10,17 @@ def openurl():
 
     # Drop the first part of the url to get the raw query
     url_query = request.url.split(request.base_url).pop()
-    print request.url
+    print "OpenURL request: " + request.url
 
     # Validate the query syntax version and build an object representing it
-    query_object = parse_query(url_query)
+    parsed_object = parse_query(url_query)
+
+    # If it's not parsed to an OpenURLRequest, it's a redirect URL to try again.
+    if type(parsed_object) != OpenURLRequest:
+        return redirect(parsed_object, 301)
 
     # Issue query and redirect to results page
-    results = query_object.query_es()
+    results = parsed_object.query_es()
     results_url = get_result_page(results)
     return redirect(results_url)
 
@@ -28,7 +33,7 @@ def parse_query(url_query_string):
     # Check if this is new or old syntax, translate if necessary
     match_1_0 = re.compile("url_ver=Z39.88-2004")
     if not match_1_0.search(url_query_string):
-        old_to_new(url_query_string)
+        return old_to_new()
 
     # Wee function to strip of the referrant namespace prefix from paramaterss
     rem_ns = lambda x: re.sub('rft.', '', x)
@@ -40,19 +45,33 @@ def parse_query(url_query_string):
     try:
         query_object = OpenURLRequest(**dict_params)
     except:
+        raise
         query_object = None
         print "Failed to create OpenURLRequest object"
 
     return query_object
 
-def old_to_new(url_query_string):
+def old_to_new():
     """
     Translate the OpenURL 0.1 syntax to 1.0, to provide a redirect.
     :param url_query_string: An incoming OpenURL request
     :return: An OpenURL 1.0 query string
     """
-    print "old_to_new"
-    return url_query_string
+
+    # The meta parameters in the preamble.
+    params = {'url_ver': 'Z39.88-2004', 'url_ctx_fmt': 'info:ofi/fmt:kev:mtx:ctx','rft_val_fmt': 'info:ofi/fmt:kev:mtx:journal'}
+
+    # In OpenURL 0.1, jtitle is just title. This function substitutes them.
+    sub_title = lambda x: re.sub('^title', 'jtitle', x)
+
+    # Add referrent tags to each parameter, and change title tag using above function
+    rewritten_params = {"rft." + sub_title(key): value for (key, value) in request.values.iteritems()}
+
+    # Add the rewritten parameters to the meta params
+    params.update(rewritten_params)
+
+    redirect_url = url_for('.openurl', **params)
+    return redirect_url
 
 def get_result_page(results):
     if results['hits']['total'] > 0:
