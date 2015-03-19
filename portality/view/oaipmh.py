@@ -99,7 +99,7 @@ class DateFormat(object):
                 datetime.strptime(datestr, f)
                 success = True
                 break
-            except:
+            except Exception:
                 pass
         return success
 
