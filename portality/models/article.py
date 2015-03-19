@@ -398,7 +398,14 @@ class ArticleBibJSON(GenericBibJSON):
         if self.year is not None:
             # fix 2 digit years
             if len(self.year) == 2:
-                if int(self.year) <=13:
+                try:
+                    intyear = int(self.year)
+                except ValueError:
+                    # if it's 2 chars long and the 2 chars don't make an integer,
+                    # forget it
+                    return date
+
+                if intyear <= 13:
                     self.year = "20" + self.year
                 else:
                     self.year = "19" + self.year
