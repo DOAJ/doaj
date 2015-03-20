@@ -141,7 +141,9 @@ for remote in to_download:
     remote_filename = remote.filename
     if isinstance(remote_filename, unicode):
         remote_filename = remote_filename.encode('utf-8', errors='ignore')
-    print "downloading", remote.filename
+    # do not print the remote filename, can cause unicode errors,
+    # and we've got the name in the "upload" type record in ES anyway!
+    print 'processing upload record {0}'.format(remote.id)
     # first, determine if ftp or http
     parsed_url = urlparse(remote.filename)
     if parsed_url.scheme == 'ftp':
