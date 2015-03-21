@@ -919,10 +919,9 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
+        url = app.config['BASE_URL'] + "/article/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
         
@@ -931,11 +930,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if date != "":
             monthyear = etree.SubElement(oai_dc, self.DC + "date")
             set_text(monthyear, date)
-        
-        if len(bibjson.get_urls()) > 0:
-            for url in bibjson.get_urls():
-                urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                set_text(urlel, url.get("url"))
+
+        for url in bibjson.get_urls():
+            urlel = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(urlel, url.get("url"))
+
+        for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
+            journallink = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
         
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
@@ -1065,10 +1067,8 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        #query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        #url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
         url = app.config["BASE_URL"] + "/toc/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
