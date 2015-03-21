@@ -914,7 +914,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
-        
+
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
@@ -961,14 +961,25 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
+            code = subs.get("code")
             term = subs.get("term")
+
+            if scheme.lower() == 'lcc':
+                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
+                termtext = term
+                codetext = code
+            else:
+                attrib = {}
+                termtext = scheme + ':' + term if term else None
+                codetext = scheme + ':' + code if code else None
+
+            if termtext:
+                subel = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
+                set_text(subel, termtext)
             
-            subel = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subel, scheme + ":" + term)
-            
-            if "code" in subs:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                set_text(sel2, scheme + ":" + subs.get("code"))
+            if codetext:
+                sel2 = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
+                set_text(sel2, codetext)
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
