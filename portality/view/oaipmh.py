@@ -881,28 +881,31 @@ class NoSetHierarchy(OAIPMHError):
 ## Crosswalks
 #####################################################################
 
-class OAI_DC_Crosswalk(object):
+class OAI_Crosswalk(object):
     PMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/"
     PMH = "{%s}" % PMH_NAMESPACE
-    
+
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
-    
+
+    def crosswalk(self, record):
+        raise NotImplementedError()
+
+    def header(self, record):
+        raise NotImplementedError()
+
+
+class OAI_DC(OAI_Crosswalk):
     OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/"
     OAIDC = "{%s}" % OAIDC_NAMESPACE
     
     DC_NAMESPACE = "http://purl.org/dc/elements/1.1/"
     DC = "{%s}" % DC_NAMESPACE
     
-    NSMAP = {None : PMH_NAMESPACE, "xsi" : XSI_NAMESPACE, "oai_dc" : OAIDC_NAMESPACE, "dc" : DC_NAMESPACE}
-    
-    def crosswalk(self, record):
-        raise NotImplementedError()
-    
-    def header(self, record):
-        raise NotImplementedError()
+    NSMAP = {None: OAI_Crosswalk.PMH_NAMESPACE, "xsi": OAI_Crosswalk.XSI_NAMESPACE, "oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE}
 
-class OAI_DC_Article(OAI_DC_Crosswalk):
+
+class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
         
@@ -1061,7 +1064,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
 
         return citation if citation != "" else None
 
-class OAI_DC_Journal(OAI_DC_Crosswalk):
+class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
         
@@ -1152,10 +1155,22 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         
         return head
 
+
+class OAI_DOAJ_Article(OAI_Crosswalk):
+    def crosswalk(self, record):
+        pass
+
+    def header(self, record):
+        pass
+
+
 CROSSWALKS = {
     "oai_dc" : {
         "article" : OAI_DC_Article,
         "journal" : OAI_DC_Journal
+    },
+    'oai_doaj_article': {
+        "article": OAI_DOAJ_Article
     }
 }
 

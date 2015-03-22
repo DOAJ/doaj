@@ -250,9 +250,14 @@ FEED_LOGO = "http://www.doaj.org/static/doaj/images/favicon.ico"
 
 OAIPMH_METADATA_FORMATS = [
     {
-        "metadataPrefix" : "oai_dc",
-        "schema" : "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
-        "metadataNamespace" : "http://www.openarchives.org/OAI/2.0/oai_dc/"
+        "metadataPrefix": "oai_dc",
+        "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+        "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
+    },
+    {
+        "metadataPrefix": "oai_doaj_article",
+        "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
+        "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0"
     }
 ]
 
