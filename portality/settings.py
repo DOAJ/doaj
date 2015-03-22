@@ -255,7 +255,7 @@ OAIPMH_METADATA_FORMATS = [
         "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
     },
     {
-        "metadataPrefix": "oai_doaj_article",
+        "metadataPrefix": "oai_doaj",
         "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
         "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0/"
     }

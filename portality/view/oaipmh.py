@@ -1161,8 +1161,12 @@ class OAI_DC_Journal(OAI_DC):
 
 
 class OAI_DOAJ_Article(OAI_Crosswalk):
-    OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
-    OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
+    # OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
+    # OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
+    OAI_DOAJ = OAI_Crosswalk.PMH
+
+    # NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
+    # NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
 
     def crosswalk(self, record):
         bibjson = record.bibjson()
@@ -1186,11 +1190,13 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
             set_text(journtitel, bibjson.journal_title)
 
         # all the external identifiers (ISSNs, etc)
-        issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
-        set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
+        if bibjson.get_one_identifier(bibjson.P_ISSN):
+            issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
+            set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
 
-        eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
-        set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
+        if bibjson.get_one_identifier(bibjson.E_ISSN):
+            eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
+            set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
 
         # work out the date of publication
         date = bibjson.get_publication_date()
@@ -1204,7 +1210,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
             
         if bibjson.number:
             issue = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issue")
-            set_text(issue, bibjson.issue)
+            set_text(issue, bibjson.number)
             
         if bibjson.start_page:
             start_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "startPage")
@@ -1245,22 +1251,20 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
                     new_affid = len(affiliations)  # use the length of the list as the id for each new item
                     affiliations.append((new_affid, author['affiliation']))
                     author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
-                    set_text(author_affiliation_elem, new_affid)
+                    set_text(author_affiliation_elem, str(new_affid))
 
         if affiliations:
             affiliations_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "affiliationsList")
             for affid, affiliation in affiliations:
-                affiliation_elem = etree.SubElement(affiliations_elem, self.OAI_DOAJ + "affiliationName")
+                attrib = {"affiliationId": str(affid)}
+                affiliation_elem = etree.SubElement(affiliations_elem, self.OAI_DOAJ + "affiliationName", **attrib)
                 set_text(affiliation_elem, affiliation)
-                # now that we have the affiliationName, the ID is a child of the name
-                affid_elem = etree.SubElement(affiliation_elem, self.OAI_DOAJ + "affiliationId")
-                set_text(affid_elem, affid)
 
         if bibjson.abstract:
             abstract = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "abstract")
             set_text(abstract, bibjson.abstract)
 
-        ftobj = bibjson.get_single_url('fulltext')
+        ftobj = bibjson.get_single_url('fulltext', unpack_urlobj=False)
         if ftobj:
             attrib = {}
             if "content_type" in ftobj:
@@ -1276,6 +1280,8 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
             for keyword in bibjson.keywords:
                 kel = etree.SubElement(keywords_elem, self.OAI_DOAJ + 'keyword')
                 set_text(kel, keyword)
+
+        return metadata
 
     def header(self, record):
         bibjson = record.bibjson()
@@ -1302,7 +1308,7 @@ CROSSWALKS = {
         "article" : OAI_DC_Article,
         "journal" : OAI_DC_Journal
     },
-    'oai_doaj_article': {
+    'oai_doaj': {
         "article": OAI_DOAJ_Article
     }
 }
