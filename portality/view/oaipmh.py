@@ -1,9 +1,10 @@
-import json, base64, urllib, sys, re
+import json, base64, sys, re
 from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
+from copy import deepcopy
 
 blueprint = Blueprint('oaipmh', __name__)
 
@@ -888,6 +889,8 @@ class OAI_Crosswalk(object):
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
 
+    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE}
+
     def crosswalk(self, record):
         raise NotImplementedError()
 
@@ -902,7 +905,8 @@ class OAI_DC(OAI_Crosswalk):
     DC_NAMESPACE = "http://purl.org/dc/elements/1.1/"
     DC = "{%s}" % DC_NAMESPACE
     
-    NSMAP = {None: OAI_Crosswalk.PMH_NAMESPACE, "xsi": OAI_Crosswalk.XSI_NAMESPACE, "oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE}
+    NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
+    NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
 
 class OAI_DC_Article(OAI_DC):
@@ -1157,11 +1161,140 @@ class OAI_DC_Journal(OAI_DC):
 
 
 class OAI_DOAJ_Article(OAI_Crosswalk):
+    OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
+    OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
+
     def crosswalk(self, record):
-        pass
+        bibjson = record.bibjson()
+
+        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
+        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle")
+        oai_doaj_article.set(self.XSI + "schemaLocation",
+            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0 https://doaj.org/static/doaj/doajArticles.xsd")
+
+        jlangs = bibjson.journal_language
+        if jlangs:
+            langel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "language")
+            set_text(langel, jlangs[0])
+
+        if bibjson.publisher:
+            publel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisher")
+            set_text(publel, bibjson.publisher)
+
+        if bibjson.journal_title:
+            journtitel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "journalTitle")
+            set_text(journtitel, bibjson.journal_title)
+
+        # all the external identifiers (ISSNs, etc)
+        issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
+        set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
+
+        eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
+        set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
+
+        # work out the date of publication
+        date = bibjson.get_publication_date()
+        if date != "":
+            monthyear = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publicationDate")
+            set_text(monthyear, date)
+
+        if bibjson.volume:
+            volume = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "volume")
+            set_text(volume, bibjson.volume)
+            
+        if bibjson.number:
+            issue = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issue")
+            set_text(issue, bibjson.issue)
+            
+        if bibjson.start_page:
+            start_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "startPage")
+            set_text(start_page, bibjson.start_page)
+            
+        if bibjson.end_page:
+            end_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "endPage")
+            set_text(end_page, bibjson.end_page)
+
+        if bibjson.get_one_identifier(bibjson.DOI):
+            doi = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "doi")
+            set_text(doi, bibjson.get_one_identifier(bibjson.DOI))
+
+        if record.publisher_record_id():
+            pubrecid = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisherRecordId")
+            set_text(pubrecid, record.publisher_record_id())
+
+        # document type
+        # as of Mar 2015 this was not being ingested when people upload XML
+        # conforming to the doajArticle schema, so it's not being output either
+
+        if bibjson.title is not None:
+            title = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "title")
+            set_text(title, bibjson.title)
+
+        affiliations = []
+        if bibjson.author:
+            authors_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "authors")
+            for author in bibjson.author:  # bibjson.author is a list, despite the name
+                author_elem = etree.SubElement(authors_elem, self.OAI_DOAJ + "author")
+                if author.get('name'):
+                    name_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "name")
+                    set_text(name_elem, author.get('name'))
+                if author.get('email'):
+                    email_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "email")
+                    set_text(email_elem, author.get('email'))
+                if author.get('affiliation'):
+                    new_affid = len(affiliations)  # use the length of the list as the id for each new item
+                    affiliations.append((new_affid, author['affiliation']))
+                    author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
+                    set_text(author_affiliation_elem, new_affid)
+
+        if affiliations:
+            affiliations_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "affiliationsList")
+            for affid, affiliation in affiliations:
+                affiliation_elem = etree.SubElement(affiliations_elem, self.OAI_DOAJ + "affiliationName")
+                set_text(affiliation_elem, affiliation)
+                # now that we have the affiliationName, the ID is a child of the name
+                affid_elem = etree.SubElement(affiliation_elem, self.OAI_DOAJ + "affiliationId")
+                set_text(affid_elem, affid)
+
+        if bibjson.abstract:
+            abstract = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "abstract")
+            set_text(abstract, bibjson.abstract)
+
+        ftobj = bibjson.get_single_url('fulltext')
+        if ftobj:
+            attrib = {}
+            if "content_type" in ftobj:
+                attrib['format'] = ftobj['content_type']
+
+            fulltext_url_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "fullTextUrl", **attrib)
+
+            if "url" in ftobj:
+                set_text(fulltext_url_elem, ftobj['url'])
+
+        if bibjson.keywords:
+            keywords_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + 'keywords')
+            for keyword in bibjson.keywords:
+                kel = etree.SubElement(keywords_elem, self.OAI_DOAJ + 'keyword')
+                set_text(kel, keyword)
 
     def header(self, record):
-        pass
+        bibjson = record.bibjson()
+        head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
+
+        identifier = etree.SubElement(head, self.PMH + "identifier")
+        set_text(identifier, make_oai_identifier(record.id, "article"))
+
+        datestamp = etree.SubElement(head, self.PMH + "datestamp")
+        set_text(datestamp, normalise_date(record.last_updated))
+
+        for subs in bibjson.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+
+            subel = etree.SubElement(head, self.PMH + "setSpec")
+            set_text(subel, make_set_spec(scheme + ":" + term))
+
+        return head
 
 
 CROSSWALKS = {
@@ -1173,13 +1306,3 @@ CROSSWALKS = {
         "article": OAI_DOAJ_Article
     }
 }
-
-
-
-
-
-
-
-
-
-
