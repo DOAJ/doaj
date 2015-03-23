@@ -1161,12 +1161,11 @@ class OAI_DC_Journal(OAI_DC):
 
 
 class OAI_DOAJ_Article(OAI_Crosswalk):
-    # OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
-    # OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
-    OAI_DOAJ = OAI_Crosswalk.PMH
+    OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
+    OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
 
-    # NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
-    # NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
+    NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
+    NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
 
     def crosswalk(self, record):
         bibjson = record.bibjson()
@@ -1174,7 +1173,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
         oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle")
         oai_doaj_article.set(self.XSI + "schemaLocation",
-            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0 https://doaj.org/static/doaj/doajArticles.xsd")
+            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
 
         jlangs = bibjson.journal_language
         if jlangs:
