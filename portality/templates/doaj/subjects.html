@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<h1>Browse Subjects</h1>
+
+<p>All Journals and Articles in the DOAJ are categorised with the Library of Congress Subject Classifications.  Use the
+subject browser below to find subjects you are interested in.</p>
+
+<div class="row-fluid">
+    <div class="span8">
+        <div id="subject_tree_container">
+            <div class="control-group" id="subject_tree_search-container">
+                <label class="control-label" for="subject_tree_search">Search through the subjects</label>
+                <div class="controls">
+                    <input class="input-large" id="subject_tree_search" type="text" placeholder="start typing...">
+                </div>
+            </div>
+            <div id="subject_tree"></div>
+        </div>
+    </div>
+    <div class="span4">
+        <div id="selection-container" class="with-borders" style="width: 200px; padding: 10px">
+            <div id="selection-header" style="display:none; margin-bottom: 20px">You have selected the subject</div>
+            <div id="selected-subject">Select a subject from the tree.</div>
+        </div>
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+
+    function lookupSubject(subject) {
+
+        var query = {
+            "query" : {
+                "filtered" : {
+                    "query" : {
+                        "match_all" : {}
+                    },
+                    "filter" : {
+                        "bool" : {
+                            "must" : [
+                                {"term" : {"index.classification.exact" : subject}}
+                            ]
+                        }
+                    }
+                }
+            }
+        };
+
+        function subjectFound(rawdata, result) {
+            var count = rawdata.hits.total;
+            var url = "/search?source=" + encodeURIComponent(JSON.stringify(query));
+
+            var frag = "<div style='font-weight: bold; font-size: 150%; margin-bottom: 20px'>" + subject + "</div>";
+            frag += '<div style="margin-bottom: 10px"><span style="font-size: 130%; font-weight: bold; margin-bottom: 10px">' + count + "</span> records for this subject</div>";
+            frag += '<a class="btn btn-info" href="' + url + '">View Journals/Articles</a>';
+            $("#selected-subject").html(frag);
+            $("#selection-header").show();
+        }
+
+        var count_query = $.extend({}, query);
+        count_query["size"] = 0;
+
+        doElasticSearchQuery({
+            success: subjectFound,
+            queryobj: query,
+            search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
+            datatype: "jsonp"
+        });
+    }
+
+    function setup_subject_tree() {
+
+        $('#subject_tree').jstree({
+            'plugins': ["sort", "search"],
+            'core': {
+                'data': lcc_jstree
+            },
+            "checkbox": {
+                "three_state": false
+            },
+            "search": {
+                "fuzzy": false,
+                "show_only_matches": true
+            }
+        });
+
+        $('#subject_tree')
+                .on('ready.jstree', function (e, data) {
+                    var subjects = $('#subject').val() || [];
+                    for (var i = 0; i < subjects.length; i++) {
+                        $('#subject_tree').jstree('select_node', subjects[i]);
+                    }
+                });
+
+        $('#subject_tree')
+                .on('changed.jstree', function (e, data) {
+                    var subjects = $('#subject').val(data.selected);
+                });
+
+        $("#subject_tree").on("select_node.jstree", function(e, data) {
+            lookupSubject(data.node.text);
+        });
+
+        var to = false;
+        $('#subject_tree_search').keyup(function () {
+            if (to) {
+                clearTimeout(to);
+            }
+            to = setTimeout(function () {
+                var v = $('#subject_tree_search').val();
+                $('#subject_tree').jstree(true).search(v);
+            }, 750);
+        });
+
+
+    }
+
+    setup_subject_tree();
+
+    $(document).scroll(function(){
+        $('#selection-container').css('position','');
+        var top = $('#selection-container').offset().top;
+        $('#selection-container').css('position','absolute');
+        $('#selection-container').css('top',Math.max(top,$(document).scrollTop()) + 10);
+    });
+
+});
+</script>
+{% endblock extra_js_bottom %}

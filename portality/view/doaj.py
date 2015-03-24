@@ -10,6 +10,7 @@ from portality import blog
 from portality.datasets import countries_dict
 from portality import lock
 from portality.formcontext import formcontext
+from portality.lcc import lcc_jstree
 
 import json
 import os
@@ -58,6 +59,10 @@ def search_post():
 
     query = dao.Facetview2.make_query(request.form.get("q"), filters=filters)
     return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
+
+@blueprint.route("/subjects")
+def subjects():
+    return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
 def suggestion():
