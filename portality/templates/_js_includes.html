@@ -16,15 +16,18 @@
 <!-- get select2 -->
 <script type="text/javascript" src="/static/portality/vendor/select2-release-3.2/select2.min.js"></script>
 
-{% if search_page %}
+{% if search_page or subject_page %}
 <!-- get facetview -->
 <!-- <script type="text/javascript" src="/static/portality/vendor/facetview/jquery.facetview.js"></script> -->
 
 <!-- fv2 and the doaj theme - replaces the above -->
 <script type="text/javascript" src="/static/portality/vendor/facetview2/es.js"></script>
+
+    {% if not subject_page %}
 <script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js"></script>
 <script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js"></script>
 <script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js"></script>
+    {% endif %}
 
 {% endif %}
 
@@ -57,12 +60,14 @@ displayed. #}
 <script type="text/javascript">var current_scheme = window.location.protocol;</script>
 <script type="text/javascript">var readonly_journal_url = "{{ url_for('doaj.journal_readonly', journal_id="") }}";</script>
 
-{% if search_page %}
+{% if search_page or subject_page %}
   <script type="text/javascript">var es_domain = current_domain;</script>
   <script type="text/javascript">var es_scheme = current_scheme;</script>
+  {% if facetviews %}
   {% for facetview in facetviews %}
     <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js"></script>
   {% endfor %}
+  {% endif %}
 {% endif %}
 
 <!-- get the app's js -->
@@ -74,9 +79,13 @@ displayed. #}
 
 {% endif %} 
 
-{% if edit_suggestion_page or edit_journal_page %}
+{% if edit_suggestion_page or edit_journal_page or subject_page %}
 
 <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
 <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.jstree/3.0.0-beta10/jstree.min.js"></script>
+
+    {% if not subject_page %}
 <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js"></script>
+    {% endif %}
+
 {% endif %}
