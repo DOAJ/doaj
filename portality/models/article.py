@@ -437,8 +437,12 @@ class ArticleBibJSON(GenericBibJSON):
 class ArticleQuery(object):
     base_query = {
         "query" : {
-            "bool" : {
-                "must" : []
+            "filtered": {
+                "filter": {
+                    "bool" : {
+                        "must" : []
+                    }
+                }
             }
         }
     }
@@ -456,19 +460,23 @@ class ArticleQuery(object):
         if self.issns is not None:
             iq = deepcopy(self._issn_terms)
             iq["terms"]["index.issn.exact"] = self.issns
-            q["query"]["bool"]["must"].append(iq)
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
 
         if self.volume is not None:
             vq = deepcopy(self._volume_term)
             vq["term"]["bibjson.journal.volume.exact"] = self.volume
-            q["query"]["bool"]["must"].append(vq)
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
 
 class ArticleVolumesQuery(object):
     base_query = {
         "query" : {
-            "terms" : {"index.issn.exact" : ["<list of issns here>"]}
+            "filtered": {
+                "filter": {
+                    "terms" : {"index.issn.exact" : ["<list of issns here>"]}
+                }
+            }
         },
         "size" : 0,
         "facets" : {
@@ -486,7 +494,7 @@ class ArticleVolumesQuery(object):
 
     def query(self):
         q = deepcopy(self.base_query)
-        q["query"]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
 
