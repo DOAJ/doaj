@@ -5,4 +5,4 @@ from portality.models import OAIPMHJournal, OAIPMHArticle
 from doajtest.bootstrap import prepare_for_test
 prepare_for_test()
 
-oaipmh.list_records(OAIPMHJournal(), "http://localhost:5004/oai")
+oaipmh.list_records(OAIPMHJournal(), "http://localhost:5004/oai", None)

@@ -248,18 +248,24 @@ FEED_LOGO = "http://www.doaj.org/static/doaj/images/favicon.ico"
 # ============================
 # OAI-PMH SETTINGS
 
-OAIPMH_METADATA_FORMATS = [
-    {
-        "metadataPrefix": "oai_dc",
-        "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
-        "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
-    },
-    {
-        "metadataPrefix": "oai_doaj",
-        "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
-        "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0/"
-    }
-]
+OAI_DC_METADATA_FORMAT = {
+    "metadataPrefix": "oai_dc",
+    "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+    "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
+}
+
+OAI_DOAJ_METADATA_FORMAT = {
+    "metadataPrefix": "oai_doaj",
+    "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
+    "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0/"
+}
+
+OAIPMH_METADATA_FORMATS = {
+    # "specific endpoint": [list, of, formats, supported]
+
+    None: [OAI_DC_METADATA_FORMAT],  # no specific endpoint, the request is to the root /oai path
+    "article": [OAI_DC_METADATA_FORMAT, OAI_DOAJ_METADATA_FORMAT]
+}
 
 OAIPMH_IDENTIFIER_NAMESPACE = "doaj.org"
 
