@@ -460,6 +460,8 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
 
         render_results_metadata: doajPager,
+        render_result_record: publicSearchResult,
+
         pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
@@ -498,9 +500,6 @@ jQuery(document).ready(function($) {
         ],
 
         page_size : 10,
-        from : 0,
-
-        // replace all of the below with this eventually
-        render_result_record: publicSearchResult
+        from : 0
     });
 });
