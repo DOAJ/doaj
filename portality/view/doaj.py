@@ -2,6 +2,7 @@ from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
+from copy import deepcopy
 
 from portality import dao
 from portality import models
@@ -156,7 +157,8 @@ def toc(identifier=None, volume=None):
     if journal is None:
         abort(404)
     
-    all_volumes = models.JournalVolumeToC.list_volumes(jid)
+    issns = journal.known_issns()
+    all_volumes = models.Article.list_volumes(issns)
     all_volumes = _sort_volumes(all_volumes)
     
     if volume is None and len(all_volumes) > 0:
@@ -164,7 +166,7 @@ def toc(identifier=None, volume=None):
     
     table = None
     if volume is not None:
-        table = models.JournalVolumeToC.get_toc(jid, volume)
+        table = _generate_table(journal, issns, volume)
         if table is None:
             abort(404)
     
@@ -204,6 +206,66 @@ def _sort_volumes(volumes):
     # convert the integers back to their string representation
     return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
 
+
+def _minimise_article(full_article):
+    # we want to keep the id and the bibjson
+    id = full_article.id
+    bibjson = deepcopy(full_article.bibjson())
+    
+    # remove the issns from the bibjson
+    bibjson.remove_identifiers(idtype=bibjson.P_ISSN)
+    bibjson.remove_identifiers(idtype=bibjson.E_ISSN)
+    
+    # remove all the journal metadata
+    bibjson.remove_journal_metadata()
+    
+    # remove all the subject classifications
+    bibjson.remove_subjects()
+    
+    # remove the year and the month (they are held elsewhere in this case)
+    del bibjson.month
+    del bibjson.year
+    
+    # create a minimised version of the article
+    minimised = models.Article()
+    minimised.set_id(id)
+    minimised.set_bibjson(bibjson)
+    
+    return minimised
+
+def _generate_table(journal, issns, volume):
+    articles = models.Article.get_by_volume(issns, volume)
+
+    table = models.JournalVolumeToC()
+    table.set_about(journal.id)
+    table.set_issn(issns)
+    table.set_volume(volume)
+
+    for article in articles:
+        bj = article.bibjson()
+
+        # get the issue number, or "unknown" if there isn't one
+        num = bj.number
+        if num is None:
+            num = "unknown"
+
+        # there may already be an issue for this number.  If not
+        # make a new one and add it
+        iss = table.get_issue(num)
+        if iss is None:
+            iss = models.JournalIssueToC()
+            iss.number = num
+            if bj.year is not None:
+                iss.year = bj.year
+            if bj.month is not None:
+                iss.month = bj.month
+            table.add_issue(iss)
+
+        # iss is now bound to the toc, so we can update it without
+        # adding it to the table again
+        iss.add_article(_minimise_article(article))
+    
+    return table
 
 ###############################################################
 ## The various static endpoints
