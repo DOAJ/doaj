@@ -910,12 +910,14 @@ class OAI_DC(OAI_Crosswalk):
     NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
     def _generate_subjects(self, subjects, parent_element):
+        if subjects is None:
+            subjects = []
         for subs in subjects:
             scheme = subs.get("scheme")
             code = subs.get("code")
             term = subs.get("term")
 
-            if scheme.lower() == 'lcc':
+            if scheme and scheme.lower() == 'lcc':
                 attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
                 termtext = term
                 codetext = code
