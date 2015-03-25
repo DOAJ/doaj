@@ -93,12 +93,12 @@ function doajPager(options) {
     var total = options.data.found;
     total = total.toLocaleString();
 
-    var backlink = '<a alt="previous" title="previous" class="facetview_decrement pull-left" style="color:#333"><span class="icon icon-arrow-left"></span></a>';
+    var backlink = '<a alt="previous" title="previous" class="facetview_decrement pull-left" style="color:#333; cursor: pointer; font-size: 24px"><span class="icon icon-arrow-left"></span></a>';
     if (from < size) {
         backlink = '<a class="facetview_decrement facetview_inactive_link" style="color:#333">&nbsp;</a>'
     }
 
-    var nextlink = '<a alt="next" title="next" class="facetview_increment pull-right" style="color:#333"><span class="icon icon-arrow-right"></span></a>';
+    var nextlink = '<a alt="next" title="next" class="facetview_increment pull-right" style="color:#333; cursor: pointer; font-size: 24px"><span class="icon icon-arrow-right"></span></a>';
     if (options.data.found <= to) {
         nextlink = '<a class="facetview_increment facetview_inactive_link" style="color:#333">&nbsp;</a>'
     }
