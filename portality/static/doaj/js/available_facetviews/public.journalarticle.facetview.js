@@ -218,9 +218,9 @@ jQuery(document).ready(function($) {
         }
 
         // add the subjects
-        if (resultobj.index && resultobj.index.classification && resultobj.index.classification.length > 0) {
-            result += "<strong>Subjects:</strong><br>";
-            result += resultobj.index.classification.join(", ");
+        if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
+            result += "<strong>Subjects:</strong>&nbsp;";
+            result += resultobj.index.classification_paths.join(" | ");
         }
 
         // close the main details box

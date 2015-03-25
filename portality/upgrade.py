@@ -3,7 +3,8 @@ from portality.core import app
 from portality import models
 
 MODELS = {
-    "journal" : models.Journal
+    "journal" : models.Journal,
+    "article" : models.Article
 }
 
 class UpgradeTask(object):

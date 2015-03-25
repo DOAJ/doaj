@@ -3,6 +3,10 @@
         {
             "type" : "journal",
             "keepalive" : "1m"
+        },
+        {
+            "type" : "article",
+            "keepalive" : "1m"
         }
     ]
 }
