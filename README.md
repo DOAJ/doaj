@@ -238,7 +238,8 @@ It is likely that history records will only be created upon request by the admin
         "editorial_board_url" : "<editorial board url>",
         "aims_scope_url" : "<aims and scope url>",
         "author_instructions_url" : "<author instructions url>",
-        "oa_statement_url" : "<OA statment url>"
+        "oa_statement_url" : "<OA statment url>",
+        "has_apc" : "Yes|No"
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>",

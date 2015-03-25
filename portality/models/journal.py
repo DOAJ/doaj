@@ -373,6 +373,7 @@ class Journal(DomainObject):
         license = []
         publisher = []
         urls = {}
+        has_apc = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -443,6 +444,9 @@ class Journal(DomainObject):
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
 
+        # work out of the journal has an apc
+        has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -467,6 +471,8 @@ class Journal(DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(urls.keys()) > 0:
             self.data["index"].update(urls)
+        if has_apc:
+            self.data["index"]["has_apc"] = has_apc
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
