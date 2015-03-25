@@ -909,6 +909,29 @@ class OAI_DC(OAI_Crosswalk):
     NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
     NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
+    def _generate_subjects(self, subjects, parent_element):
+        for subs in subjects:
+            scheme = subs.get("scheme")
+            code = subs.get("code")
+            term = subs.get("term")
+
+            if scheme.lower() == 'lcc':
+                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
+                termtext = term
+                codetext = code
+            else:
+                attrib = {}
+                termtext = scheme + ':' + term if term else None
+                codetext = scheme + ':' + code if code else None
+
+            if termtext:
+                subel = etree.SubElement(parent_element, self.DC + "subject", **attrib)
+                set_text(subel, termtext)
+
+            if codetext:
+                sel2 = etree.SubElement(parent_element, self.DC + "subject", **attrib)
+                set_text(sel2, codetext)
+
 
 class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
@@ -967,27 +990,7 @@ class OAI_DC_Article(OAI_DC):
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "article")
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            code = subs.get("code")
-            term = subs.get("term")
-
-            if scheme.lower() == 'lcc':
-                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
-                termtext = term
-                codetext = code
-            else:
-                attrib = {}
-                termtext = scheme + ':' + term if term else None
-                codetext = scheme + ':' + code if code else None
-
-            if termtext:
-                subel = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
-                set_text(subel, termtext)
-            
-            if codetext:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
-                set_text(sel2, codetext)
+        self._generate_subjects(oai_dc, bibjson.subjects())
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
@@ -1127,17 +1130,8 @@ class OAI_DC_Journal(OAI_DC):
         
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "journal")
-        
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subel, scheme + ":" + term)
-            
-            if "code" in subs:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                set_text(sel2, scheme + ":" + subs.get("code"))
+
+        self._generate_subjects(oai_dc, bibjson.subjects())
             
         return metadata
     
