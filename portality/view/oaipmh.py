@@ -99,7 +99,7 @@ class DateFormat(object):
                 datetime.strptime(datestr, f)
                 success = True
                 break
-            except:
+            except Exception:
                 pass
         return success
 
@@ -914,15 +914,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
-        
+
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
+        url = app.config['BASE_URL'] + "/article/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
         
@@ -931,11 +930,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if date != "":
             monthyear = etree.SubElement(oai_dc, self.DC + "date")
             set_text(monthyear, date)
-        
-        if len(bibjson.get_urls()) > 0:
-            for url in bibjson.get_urls():
-                urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                set_text(urlel, url.get("url"))
+
+        for url in bibjson.get_urls():
+            urlel = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(urlel, url.get("url"))
+
+        for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
+            journallink = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
         
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
@@ -959,14 +961,25 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         
         for subs in bibjson.subjects():
             scheme = subs.get("scheme")
+            code = subs.get("code")
             term = subs.get("term")
+
+            if scheme.lower() == 'lcc':
+                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
+                termtext = term
+                codetext = code
+            else:
+                attrib = {}
+                termtext = scheme + ':' + term if term else None
+                codetext = scheme + ':' + code if code else None
+
+            if termtext:
+                subel = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
+                set_text(subel, termtext)
             
-            subel = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subel, scheme + ":" + term)
-            
-            if "code" in subs:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                set_text(sel2, scheme + ":" + subs.get("code"))
+            if codetext:
+                sel2 = etree.SubElement(oai_dc, self.DC + "subject", **attrib)
+                set_text(sel2, codetext)
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
@@ -1065,10 +1078,8 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        #query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        #url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
         url = app.config["BASE_URL"] + "/toc/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
