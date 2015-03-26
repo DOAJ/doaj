@@ -89,14 +89,14 @@ jQuery(document).ready(function($) {
     var natural = [];
     natural.push(all_facets.journal_article);
     natural.push(all_facets.subject);
+    natural.push(all_facets.journal_title);
+    natural.push(all_facets.apc);
     natural.push(all_facets.licence);
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
     natural.push(all_facets.language);
-    natural.push(all_facets.apc);
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
-    natural.push(all_facets.journal_title);
     natural.push(all_facets.year_published_histogram);
 
     function dynamicFacets(options, context) {
