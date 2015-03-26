@@ -60,6 +60,20 @@ jQuery(document).ready(function($) {
             display: "Journal",
             disabled: true
         },
+        year_published_histogram : {
+            type: "date_histogram",
+            field: "index.date",
+            interval: "year",
+            display: "Year of publication",
+            value_function : function(val) {
+                return (new Date(parseInt(val))).getFullYear();
+            },
+            size: false,
+            short_display: 15,
+            sort: "desc",
+            disabled: true
+        },
+
         year_published : {
             field : "bibjson.year.exact",
             display: "Year of publication",
@@ -78,7 +92,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
     natural.push(all_facets.journal_title);
-    natural.push(all_facets.year_published);
+    natural.push(all_facets.year_published_histogram);
 
     function dynamicFacets(options, context) {
         function disableFacet(options, field, disable) {
@@ -102,7 +116,7 @@ jQuery(document).ready(function($) {
                 if (t === "journal") {
                     // disable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", true);
-                    disableFacet(options, "bibjson.year.exact", true);
+                    disableFacet(options, "index.date", true);
 
                     // enable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", false);
@@ -116,7 +130,7 @@ jQuery(document).ready(function($) {
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
-                    disableFacet(options, "bibjson.year.exact", false);
+                    disableFacet(options, "index.date", false);
 
                     // FIXME: do we need to do something about filters here too?
                 }
@@ -127,7 +141,7 @@ jQuery(document).ready(function($) {
 
             // disable the article facets
             disableFacet(options, "bibjson.journal.title.exact", true);
-            disableFacet(options, "bibjson.year.exact", true);
+            disableFacet(options, "index.date", true);
 
             // disable the journal facets
             disableFacet(options, "bibjson.editorial_review.process.exact", true);
