@@ -408,9 +408,11 @@ class Journal(DomainObject):
             if hbib.title is not None:
                 titles.append(hbib.title)
 
-        # copy the languages
+        # copy the languages and convert them to their english forms
+        from portality import datasets  # delayed import, as it loads some stuff from file
         if cbib.language is not None:
             langs = cbib.language
+        langs = [datasets.name_for_lang(l) for l in langs]
 
         # copy the country
         if cbib.country is not None:

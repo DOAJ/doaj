@@ -9,8 +9,8 @@ jQuery(document).ready(function($) {
             controls: false,
             open: true,
             value_function : function(val) {
-                if (val === "journal") {return "Journal"}
-                else if (val === "article") { return "Article" }
+                if (val === "journal") {return "Journals"}
+                else if (val === "article") { return "Articles" }
                 return val
             }
         },
@@ -32,10 +32,14 @@ jQuery(document).ready(function($) {
         },
         language : {
             field : "index.language.exact",
-            display: "Fulltext language"
+            display: "Full Text language"
         },
 
         // journal facets
+        apc : {
+            field : "index.has_apc.exact",
+            display: "APC?"
+        },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
             display : "Peer review",
@@ -89,6 +93,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
     natural.push(all_facets.language);
+    natural.push(all_facets.apc);
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
     natural.push(all_facets.journal_title);
@@ -121,12 +126,14 @@ jQuery(document).ready(function($) {
                     // enable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", false);
                     disableFacet(options, "created_date", false);
+                    disableFacet(options, "index.has_apc.exact", false);
 
                     // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
                     // disable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", true);
                     disableFacet(options, "created_date", true);
+                    disableFacet(options, "index.has_apc.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -146,6 +153,7 @@ jQuery(document).ready(function($) {
             // disable the journal facets
             disableFacet(options, "bibjson.editorial_review.process.exact", true);
             disableFacet(options, "created_date", true);
+            disableFacet(options, "index.has_apc.exact", true);
         }
     }
 

@@ -572,3 +572,18 @@ license_dict = OrderedDict(sorted(licenses.items(), key=lambda x: x[1]['type']))
 main_license_options = []
 for lic_type, lic_info in license_dict.iteritems():
     main_license_options.append((lic_type, lic_info['form_label']))
+
+def language_for(rep):
+    r = rep.lower().strip()
+    for l in languages_iso639_2:
+        for variant in l:
+            if variant.lower() == r:
+                return l
+    return None
+
+def name_for_lang(rep):
+    lang = language_for(rep)
+    if lang is not None:
+        return lang[3]
+    else:
+        return rep

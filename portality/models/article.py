@@ -208,8 +208,10 @@ class Article(DomainObject):
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
         # copy the languages
+        from portality import datasets  # delayed import, as it loads some stuff from file
         if cbib.journal_language is not None:
             langs = cbib.journal_language
+        langs = [datasets.name_for_lang(l) for l in langs]
 
         # copy the country
         if jindex.get('country'):
