@@ -188,13 +188,15 @@ jQuery(document).ready(function($) {
         var result = options.resultwrap_start;
         result += "<div class='row-fluid'>";
 
+        // start the main box that all the details go in
+        result += "<div class='span10'>";
+
         // add the journal icon
-        result += "<div class='span1'>";
+        result += "<div class='pull-left' style='padding-right: 10px'>";
         result += "<i style='font-size: 24px' class='icon icon-book'></i>";
         result += "</div>";
 
-        // start the main box that all the details go in
-        result += "<div class='span9'>";
+        result += "<div class='pull-left'>";
 
         // set the title
         if (resultobj.bibjson.title) {
@@ -216,7 +218,7 @@ jQuery(document).ready(function($) {
                 }
             }
             if (issns.length > 0) {
-                result += "ISSN: " + issns.join(", ") + "<br>"
+                result += "ISSN(s): " + issns.join(", ") + "<br>"
             }
         }
 
@@ -233,19 +235,19 @@ jQuery(document).ready(function($) {
 
         // add the subjects
         if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
-            result += "<strong>Subjects:</strong>&nbsp;";
+            result += "<strong>Subject:</strong>&nbsp;";
             result += resultobj.index.classification_paths.join(" | ");
         }
 
         // close the main details box
-        result += "</div>";
+        result += "</div></div>";
 
         // start the journal properties side-bar
         result += "<div class='span2'>";
 
         // set the tick if it is relevant
         if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​<br>";
+            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
         }
 
         // licence
