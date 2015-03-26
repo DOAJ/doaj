@@ -35,10 +35,22 @@ class Article(DomainObject):
         return [t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])]
 
     @classmethod
+    def list_volume_issues(cls, issns, volume):
+        q = ArticleVolumesIssuesQuery(issns, volume)
+        result = cls.query(q=q.query())
+        return [t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])]
+
+    @classmethod
     def get_by_volume(cls, issns, volume):
         q = ArticleQuery(issns=issns, volume=volume)
         articles = cls.iterate(q.query(), page_size=1000)
         return articles
+
+    @classmethod
+    def get_by_volume_issue(cls, issns, volume, issue):
+        q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
+        articles = cls.query(q=q.query())
+        return [i['fields'] for i in articles.get('hits',{}).get('hits',[])]
 
     @classmethod
     def find_by_issns(cls, issns):
@@ -469,6 +481,68 @@ class ArticleQuery(object):
 
         return q
 
+class ArticleIssueQuery(object):
+    base_query = {
+        "query" : {
+            "filtered": {
+                "filter": {
+                    "bool" : {
+                        "must" : []
+                    }
+                }
+            }
+        },
+        "sort": "bibjson.start_page",
+        "size": 100000,
+        "fields": [
+            "id",
+            "bibjson.journal.volume",
+            "bibjson.journal.number",
+            "bibjson.title",
+            "bibjson.author.name",
+            "bibjson.link.url",
+            "bibjson.start_page",
+            "bibjson.end_page",
+            "bibjson.abstract",
+            "bibjson.month",
+            "bibjson.year"
+        ]
+    }
+
+    _issn_terms = { "terms" : {"index.issn.exact" : ["<list of issns here>"]} }
+    _volume_term = { "term" : {"bibjson.journal.volume.exact" : "<volume here>"} }
+    _issue_term = { "term" : {"bibjson.journal.number.exact" : "<issue here>"} }
+    _noissue_term = { "missing" : {"field": "bibjson.journal.number.exact"} }
+
+    def __init__(self, issns=None, volume=None, issue=None):
+        self.issns = issns
+        self.volume = volume
+        self.issue = issue
+
+    def query(self):
+        q = deepcopy(self.base_query)
+
+        if self.issns is not None:
+            iq = deepcopy(self._issn_terms)
+            iq["terms"]["index.issn.exact"] = self.issns
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(iq)
+
+        if self.volume is not None:
+            vq = deepcopy(self._volume_term)
+            vq["term"]["bibjson.journal.volume.exact"] = self.volume
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
+
+        if self.issue is not None:
+            if self.issue == "unknown":
+                isq = deepcopy(self._noissue_term)
+            else:
+                isq = deepcopy(self._issue_term)
+                isq["term"]["bibjson.journal.number.exact"] = self.issue
+            q["query"]["filtered"]["filter"]["bool"]["must"].append(isq)
+
+        return q
+
+    
 class ArticleVolumesQuery(object):
     base_query = {
         "query" : {
@@ -483,6 +557,7 @@ class ArticleVolumesQuery(object):
             "vols" : {
                 "terms" : {
                     "field" : "bibjson.journal.volume.exact",
+                    "order": "reverse_term",
                     "size" : 1000
                 }
             }
@@ -497,6 +572,41 @@ class ArticleVolumesQuery(object):
         q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
+class ArticleVolumesIssuesQuery(object):
+    base_query = {
+        "query" : {
+            "filtered": {
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {"terms" : {"index.issn.exact" : ["<list of issns here>"]}},
+                            {"term" : {"bibjson.journal.volume.exact" : "<volume here>"}}
+                        ]
+                    }
+                }
+            }
+        },
+        "size" : 0,
+        "facets" : {
+            "issues" : {
+                "terms" : {
+                    "field" : "bibjson.journal.number.exact",
+                    "order": "reverse_term",
+                    "size" : 1000
+                }
+            }
+        }
+    }
+
+    def __init__(self, issns=None, volume=None):
+        self.issns = issns
+        self.volume = volume
+
+    def query(self):
+        q = deepcopy(self.base_query)
+        q["query"]["filtered"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
+        q["query"]["filtered"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
+        return q
 
 class DuplicateArticleQuery(object):
     base_query = {
