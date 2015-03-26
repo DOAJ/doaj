@@ -61,7 +61,7 @@ jQuery(document).ready(function($) {
         // article facets
         journal_title : {
             field : "bibjson.journal.title.exact",
-            display: "Journal",
+            display: "Journal title",
             disabled: true
         },
         year_published_histogram : {

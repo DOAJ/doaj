@@ -116,14 +116,14 @@ function doajScrollTop(options, context) {
         event.preventDefault();
         $('html, body').animate({
             scrollTop: $("body").offset().top
-        }, 1000);
+        }, 1);
     });
 
     $(".facetview_decrement").click(function(event) {
         event.preventDefault();
         $('html, body').animate({
             scrollTop: $("body").offset().top
-        }, 1000);
+        }, 1);
     });
 }
 
