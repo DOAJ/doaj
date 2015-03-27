@@ -1,5 +1,5 @@
 from unittest import TestCase
-from portality import core, dao, lcc
+from portality import core, dao, lcc, models
 from doajtest.bootstrap import prepare_for_test
 import time
 import dictdiffer
@@ -10,7 +10,11 @@ class DoajTestCase(TestCase):
     def setUp(self):
         core.initialise_index(core.app)
         lcc.loadLCC()
-        time.sleep(1)
+        for i in range(20):     # technically we just want to keep trying, but if it takes more than 20 goes, something has to give
+            time.sleep(0.5)
+            l = models.LCC.pull("lcc")
+            if l is not None:
+                break
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
