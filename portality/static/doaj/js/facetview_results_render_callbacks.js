@@ -71,7 +71,7 @@ fv_abstract = (function (resultobj) {
         if (resultobj['bibjson']['abstract']) {
             var result = '<a class="abstract_action" href="" rel="';
             result += resultobj['id'];
-            result += '">(expand)</a> <span class="abstract_text" rel="';
+            result += '">(show/hide)</a> <span class="abstract_text" rel="';
             result += resultobj['id'];
             result += '">' + '<br>';
             result += resultobj['bibjson']['abstract'];

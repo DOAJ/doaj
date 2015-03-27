@@ -135,9 +135,9 @@ function doajPostRender(options, context) {
     $(".abstract_action", context).unbind("click").click(function(event) {
         event.preventDefault();
         var el = $(this);
-        var text = el.html();
-        var newText = text == "(expand)" ? "(collapse)" : "(expand)";
-        el.html(newText);
+        //var text = el.html();
+        //var newText = text == "(expand)" ? "(collapse)" : "(expand)";
+        //el.html(newText);
         $('.abstract_text[rel="' + el.attr("rel") + '"]').slideToggle(300);
         return true;
     });

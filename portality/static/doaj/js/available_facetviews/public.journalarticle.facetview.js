@@ -197,14 +197,16 @@ jQuery(document).ready(function($) {
         result += "<div class='row-fluid'>";
 
         // start the main box that all the details go in
-        result += "<div class='span10'>";
+        result += "<div class='span12'>";
 
         // add the journal icon
-        result += "<div class='pull-left' style='padding-right: 10px'>";
+        result += "<div class='pull-left' style='width: 4%'>";
         result += "<i style='font-size: 24px' class='icon icon-book'></i>";
         result += "</div>";
 
-        result += "<div class='pull-left'>";
+        result += "<div class='pull-left' style='width: 93%'>";
+
+        result += "<div class='row-fluid'><div class='span10'>";
 
         // set the title
         if (resultobj.bibjson.title) {
@@ -248,7 +250,7 @@ jQuery(document).ready(function($) {
         }
 
         // close the main details box
-        result += "</div></div>";
+        result += "</div>";
 
         // start the journal properties side-bar
         result += "<div class='span2'>";
@@ -308,7 +310,7 @@ jQuery(document).ready(function($) {
         result += "</div>";
 
         // close off the result with the ending strings, and then return
-        result += "</div>";
+        result += "</div></div>";
         result += options.resultwrap_end;
         return result;
     }
@@ -384,17 +386,38 @@ jQuery(document).ready(function($) {
         var result = options.resultwrap_start;
         result += "<div class='row-fluid'>";
 
-        // add the journal icon
-        result += "<div class='span1'>";
+        // start the main box that all the details go in
+        result += "<div class='span12'>";
+
+        // add the article icon
+        result += "<div class='pull-left' style='width: 4%'>";
         result += "<i style='font-size: 24px' class='icon icon-file'></i>";
         result += "</div>";
 
-        // start the main box that all the details go in
-        result += "<div class='span9'>";
+        result += "<div class='pull-left' style='width: 90%'>";
 
         // set the title
         if (resultobj.bibjson.title) {
             result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+        }
+
+        // set the authors
+        if (resultobj.bibjson && resultobj.bibjson.author && resultobj.bibjson.author.length > 0) {
+            var anames = [];
+            var authors = resultobj.bibjson.author;
+            for (var i = 0; i < authors.length; i++) {
+                var author = authors[i];
+                if (author.name) {
+                    anames.push(author.name);
+                }
+            }
+            result += "<em>" + anames.join(", ") + "</em><br>";
+        }
+
+        // set the citation
+        var cite = makeCitation(resultobj);
+        if (cite) {
+            result += cite + "<br>";
         }
 
         // set the doi
@@ -409,28 +432,36 @@ jQuery(document).ready(function($) {
                 }
             }
         }
-
-        // set the citation
-        var cite = makeCitation(resultobj);
-        if (cite) {
-            result += cite + "<br>";
-        }
-
+        
         // set the fulltext
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
                 if (t == 'fulltext') {
-                    result += "Fulltext: <a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
+                    result += "[<a href='" +  ls[i].url + "'>Fulltext</a>]<br>";
                 }
             }
         }
 
+        // create the abstract section if desired
+        if (resultobj.bibjson.abstract) {
+            // start the abstract section
+            //result += "<div class='row-fluid'><div class='span12'>";
+
+            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
+            // result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
+            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+
+            // close off the abstract section
+            //result += "</div></div>";
+        }
+
         // close the main details box
-        result += "</div>";
+        result += "</div></div>";
 
         // start the journal properties side-bar
+        /* only the licence is over here right now, and it is not needed
         result += "<div class='span2'>";
 
         // set the tick if it is relevant
@@ -457,22 +488,12 @@ jQuery(document).ready(function($) {
 
         // close the article properties side-bar
         result += "</div>";
+        */
 
         // close off the main result
         result += "</div>";
 
-        // create the abstract section if desired
-        if (resultobj.bibjson.abstract) {
-            // start the abstract section
-            result += "<div class='row-fluid'><div class='span1'>&nbsp;</div><div class='span11'>";
 
-            result += "<strong>Abstract</strong>&nbsp;&nbsp;";
-            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
-            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
-
-            // close off the abstract section
-            result += "</div></div>";
-        }
 
         // close off the result and return
         result += options.resultwrap_end;
