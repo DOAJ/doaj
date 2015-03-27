@@ -231,63 +231,29 @@
 <div class="row-fluid" style="margin-top: 50px"><div class="span12"><h3>Volumes</h3></div></div>
 
 <div class="row-fluid">
-  <div class="span12">
-    <ul class="nav nav-tabs">
+  <div class="span12" style="margin-bottom:10px;padding-bottom:5px;">
     {% for v in volumes %}
-        <li{% if current_volume == v %} class="active"{% endif %}><a href="{{url_for('doaj.toc', identifier=journal.id, volume=v)}}">{{v}}</a></li>
+        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=journal.id, volume=v)}}">{{v}}</a>
     {% endfor %}
-    </ul>
   </div>
 </div>
 
+<div class="row-fluid"><div class="span12"><h3>Issues in volume <span id="volumeid">{{current_volume}}</span></h3></div></div>
+
 <div class="row-fluid">
-    <div class="span12">
-        <h3>Volume {{current_volume}}</h3>
-    </div>
+  <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
+    {% for i in issues %}
+        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=journal.id, volume=current_volume)}}/{{i}}">{{i}}</a>
+    {% endfor %}
+  </div>
 </div>
 
-{% set MONTHS = {
-    "1" : "Jan", "2" : "Feb", "3" : "Mar", "4" : "Apr", "5" : "May", "6" : "Jun", "7" : "Jul", "8" : "Aug", "9" : "Sept", "10" : "Oct", "11" : "Nov", "12" : "Dec",
-    "01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept",
-}
-%}
-
-{% for issue in table.issues %}
 
 <div class="row-fluid" style="border-bottom: 1px solid #cccccc; margin-bottom: 40px">
-    <div class="span12">
-        <h4 style="margin-bottom: 10px">
-            Issue {{issue.number}}
-            {% if issue.month or issue.year %}
-                ({% if issue.month %}{{MONTHS.get(issue.month, issue.month)}}{% endif %}{% if issue.year %}{% if issue.month %}&nbsp;{% endif %}{{issue.year}}{% endif %})
-            {% endif %}
-        </h4>
-
-        {% for article in issue.articles %}
-
-        <div class="row-fluid">
-            <div class="span12" style="padding-left: 20px; padding-bottom: 5px">
-                <strong>{{article.bibjson().title}}</strong><br>
-                {% for author in article.bibjson().author %}<em>{% if not loop.first %}, {% endif %}{{author.name}}{% if author.affiliation %} ({{author.affiliation}}){% endif %}</em>{% endfor %}<br>
-                {% for url in article.bibjson().get_urls("fulltext") %}
-                    fulltext: <a href="{{url}}">{{url}}</a><br>
-                {% endfor %}
-                {% if article.bibjson().start_page %}
-                    pages: {{article.bibjson().start_page}} {% if article.bibjson().end_page %}- {{article.bibjson().end_page}}{% endif %}<br>
-                {% endif %}
-                {% if article.bibjson().abstract %}
-                    <a href="#" class="abstract_toggle" data-article="{{article.id}}">(abstract)</a>
-                    <p class="abstract_box" id="article_{{article.id}}">{{article.bibjson().abstract}}</p>
-                {% endif %}
-            </div>
-        </div>
-
-        {% endfor %}
-
+    <div class="span12" id="articlelist">
+        
     </div>
 </div>
-
-{% endfor %}
 
 {% else %}
 
@@ -313,12 +279,118 @@ $(document).ready(function() {
         }
     })
 
-    $(".abstract_box").hide()
-    $(".abstract_toggle").click(function(event) {
+    var abstract_toggle = function(event) {
         event.preventDefault();
-        var article_id = $(this).attr("data-article")
-        $("#article_" + article_id).toggle()
-    })
+        var article_id = $(this).attr("data-article");
+        $("#article_" + article_id).toggle();
+    }
+    
+    var tidymonth = function(mth) {
+        var mths = {
+            "1" : "Jan", "2" : "Feb", "3" : "Mar", "4" : "Apr", "5" : "May", "6" : "Jun", "7" : "Jul", "8" : "Aug", "9" : "Sept", "10" : "Oct", "11" : "Nov", "12" : "Dec","01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept",
+        }
+        return mths[mth];
+    }
+    var updatearticles = function(data) {
+        var content= '';
+        var issuelist = data.issues;
+        if (issuelist !== undefined ) {
+            var isscontent = '';
+            for ( var i in issuelist ) {
+                isscontent += '<a class="bjsr issue btn" id="issue_' + issuelist[i] + '" href="/toc/{{journal.id}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
+            }
+            $('#issuelist').html(isscontent);
+            $('.bjsr.issue').first().addClass('btn-info');
+            $('.bjsr.issue').bind('click',bjsr);
+        }
+        var als = [];
+        var sa = {};
+        keys = [];
+        var nsa = [];
+        // sort the article list by start_page if present
+        for ( var c in data.articles ) {
+            if ( "bibjson.start_page" in data.articles[c] ) {
+                if ( data.articles[c]["bibjson.start_page"].length > 0 ) {
+                    sa[data.articles[c]["bibjson.start_page"]] = data.articles[c];
+                    keys.push(data.articles[c]["bibjson.start_page"]);
+                } else {
+                    nsa.push(data.articles[c]);
+                }
+            } else {
+                nsa.push(data.articles[c]);
+            }
+        }
+        function sortNumber(a,b) { return a - b; }
+        keys.sort(sortNumber);
+        for ( var i = 0; i < keys.length; i++ ) {
+            k = keys[i];
+            als.push(sa[k]);
+        }
+        var articlelist = als.concat(nsa)
+        // put the articles on the page
+        for (var a in articlelist) {
+            var artcl = articlelist[a];
+            if ( a == 0 ) {
+                if ( "bibjson.month" in artcl || "bibjson.year" in artcl ) {
+                    content += '<h4 style="margin-bottom: 10px">(';
+                    if ( "bibjson.month" in artcl ) {
+                        content += tidymonth(artcl["bibjson.month"][0]);
+                    }
+                    if ( "bibjson.year" in artcl ) {
+                        if ( "bibjson.month" in artcl ) { content += ' '; }
+                        content += artcl["bibjson.year"][0];
+                    }
+                    content += ')</h4>';
+                }
+            }
+            content += '<div class="row-fluid">';
+            content += '<div class="span12" style="padding-left: 20px; padding-bottom: 5px">';
+            content += '<strong>' + artcl["bibjson.title"][0] + '</strong><br>';
+            for ( var ar in artcl["bibjson.author.name"] ) {
+                if ( ar != 0 ) { content += ', '; }
+                content += '<em>' + artcl["bibjson.author.name"][ar] + '</em>';
+            }
+            content += '<br>';
+            for ( var ln in artcl["bibjson.link.url"] ) {
+                if ( ln != 0 ) { content += ', '; }
+                content += '<a href="' + artcl["bibjson.link.url"][ln] + '">' + artcl["bibjson.link.url"][ln] + '</a><br>';
+            }
+            if ( "bibjson.start_page" in artcl ) {
+                content += 'pages: ' + artcl["bibjson.start_page"][0];
+                if ( "bibjson.start_page" in artcl ) { content += '- ' + artcl["bibjson.start_page"][0]; }
+                content += '<br>'
+            }
+            if ( "bibjson.abstract" in artcl ) {
+                content += '<a href="#" class="abstract_toggle" data-article="' + artcl["id"][0] + '">(abstract)</a>';
+                content += '<div class="abstract_box" id="article_' + artcl["id"][0] + '" style="display:none;">' + artcl["bibjson.abstract"][0] + '</div>';
+            }
+            content += '</div>';
+            content += '</div>';
+        }
+        $('#articlelist').html(content);
+        $(".abstract_toggle").bind('click',abstract_toggle);
+    }
+    var bjsr = function(event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        var jurl = url + '?bjsr=yes';
+        if ( $(this).hasClass('volume') ) { jurl += '&bjsri=yes'; }
+        $.getJSON(jurl, updatearticles);
+        var vol = url.split('/')[3];
+        var iss = url.split('/')[4];
+        $('.bjsr').removeClass('btn-info');
+        $('#vol_' + vol).addClass('btn-info');
+        $('#volumeid').html(vol);
+        if ( iss !== undefined ) {
+            $('#issue_' + iss).addClass('btn-info');
+        }
+        if ('pushState' in window.history) {
+            window.history.pushState("", "search", url);
+        }
+    }
+    $('.bjsr').bind('click',bjsr);
+
+    updatearticles({"articles": {{articles|tojson|safe}}});
 
 });
 </script>

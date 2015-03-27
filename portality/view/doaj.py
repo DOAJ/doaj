@@ -140,7 +140,12 @@ def list_journals():
 
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
-def toc(identifier=None, volume=None):
+@blueprint.route("/toc/<identifier>/<volume>/<issue>")
+def toc(identifier=None, volume=None, issue=None):
+    # check for a browser js request for more volume/issue data
+    bjsr = request.args.get('bjsr',False)
+    bjsri = request.args.get('bjsri',False)
+    
     # identifier may be the journal id or an issn
     journal = None
     jid = identifier # track the journal id - this may be an issn, in which case this will get overwritten
@@ -158,19 +163,30 @@ def toc(identifier=None, volume=None):
         abort(404)
     
     issns = journal.known_issns()
-    all_volumes = models.Article.list_volumes(issns)
-    all_volumes = _sort_volumes(all_volumes)
     
-    if volume is None and len(all_volumes) > 0:
-        volume = all_volumes[0]
-    
-    table = None
-    if volume is not None:
-        table = _generate_table(journal, issns, volume)
-        if table is None:
+    if volume is None or not bjsr:
+        all_volumes = models.Article.list_volumes(issns)
+        if volume is None and not bjsr and len(all_volumes) > 0: volume = all_volumes[0]
+
+    if (issue is None or (not bjsr and not bjsri)) and volume is not None:
+        all_issues = models.Article.list_volume_issues(issns, volume)
+        if len(all_issues) == 0: all_issues = ["unknown"]
+        if issue is None: issue = all_issues[0]
+
+    articles = None
+    if volume is not None and issue is not None:
+        articles = models.Article.get_by_volume_issue(issns, volume, issue) 
+        if (articles is None or len(articles) == 0):
             abort(404)
-    
-    return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume, countries=countries_dict)
+
+    if bjsr:
+        res = {"articles": articles}
+        if bjsri: res["issues"] = all_issues
+        resp = make_response( json.dumps(res) )
+        resp.mimetype = "application/json"
+        return resp
+    else:
+        return render_template('doaj/toc.html', journal=journal, articles=articles, volumes=all_volumes, current_volume=volume, issues=all_issues, current_issue=issue, countries=countries_dict)
 
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
@@ -182,90 +198,6 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, countries=countries_dict)
 
-def _sort_volumes(volumes):
-    numeric = []
-    non_numeric = []
-    nmap = {}
-    for v in volumes:
-        try:
-            # try to convert n to an int
-            vint = int(v)
-
-            # remember the original string (it may have leading 0s)
-            try:
-                nmap[vint].append(v)
-            except KeyError:
-                nmap[vint] = [v]
-                numeric.append(vint)
-        except:
-            non_numeric.append(v)
-
-    numeric.sort(reverse=True)
-    non_numeric.sort(reverse=True)
-
-    # convert the integers back to their string representation
-    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
-
-
-def _minimise_article(full_article):
-    # we want to keep the id and the bibjson
-    id = full_article.id
-    bibjson = deepcopy(full_article.bibjson())
-    
-    # remove the issns from the bibjson
-    bibjson.remove_identifiers(idtype=bibjson.P_ISSN)
-    bibjson.remove_identifiers(idtype=bibjson.E_ISSN)
-    
-    # remove all the journal metadata
-    bibjson.remove_journal_metadata()
-    
-    # remove all the subject classifications
-    bibjson.remove_subjects()
-    
-    # remove the year and the month (they are held elsewhere in this case)
-    del bibjson.month
-    del bibjson.year
-    
-    # create a minimised version of the article
-    minimised = models.Article()
-    minimised.set_id(id)
-    minimised.set_bibjson(bibjson)
-    
-    return minimised
-
-def _generate_table(journal, issns, volume):
-    articles = models.Article.get_by_volume(issns, volume)
-
-    table = models.JournalVolumeToC()
-    table.set_about(journal.id)
-    table.set_issn(issns)
-    table.set_volume(volume)
-
-    for article in articles:
-        bj = article.bibjson()
-
-        # get the issue number, or "unknown" if there isn't one
-        num = bj.number
-        if num is None:
-            num = "unknown"
-
-        # there may already be an issue for this number.  If not
-        # make a new one and add it
-        iss = table.get_issue(num)
-        if iss is None:
-            iss = models.JournalIssueToC()
-            iss.number = num
-            if bj.year is not None:
-                iss.year = bj.year
-            if bj.month is not None:
-                iss.month = bj.month
-            table.add_issue(iss)
-
-        # iss is now bound to the toc, so we can update it without
-        # adding it to the table again
-        iss.add_article(_minimise_article(article))
-    
-    return table
 
 ###############################################################
 ## The various static endpoints
