@@ -56,6 +56,10 @@ class OpenURLRequest(object):
         # Get all of the attributes with values set.
         set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
 
+        # If we don't have a genre, guess journal FIXME: can we guess journal?
+        if not self.genre:
+            self.genre = SUPPORTED_GENRES[0]    # TODO: we may want to handle 404 instead
+
         # Set i to use either our mapping for journals or articles
         i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
 

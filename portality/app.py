@@ -113,6 +113,8 @@ def legacy():
         return redirect(url_for('atom.feed')), 301
     elif func == "browse" or func == 'byPublicationFee  ':
         return redirect(url_for('doaj.search')), 301
+    elif func == "openurl":
+        return redirect(url_for('openurl.openurl', **request.values.to_dict(flat=True)), 301)
     abort(404)
 
 @app.route("/doaj2csv")

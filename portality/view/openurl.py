@@ -1,7 +1,7 @@
 import re
 from flask import Blueprint, request, redirect, url_for
 from portality.models import OpenURLRequest
-from collections import OrderedDict
+from urllib import unquote
 
 blueprint = Blueprint('openurl', __name__)
 
@@ -10,7 +10,6 @@ def openurl():
 
     # Drop the first part of the url to get the raw query
     url_query = request.url.split(request.base_url).pop()
-    print "OpenURL request: " + request.url
 
     # Validate the query syntax version and build an object representing it
     parsed_object = parse_query(url_query)
@@ -33,7 +32,10 @@ def parse_query(url_query_string):
     # Check if this is new or old syntax, translate if necessary
     match_1_0 = re.compile("url_ver=Z39.88-2004")
     if not match_1_0.search(url_query_string):
+        print "Legacy OpenURL 0.1 request: " + unquote(request.url)
         return old_to_new()
+
+    print "OpenURL 1.0 request: " + unquote(request.url)
 
     # Wee function to strip of the referrant namespace prefix from paramaterss
     rem_ns = lambda x: re.sub('rft.', '', x)
