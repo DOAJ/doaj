@@ -44,7 +44,8 @@ jQuery(document).ready(function($) {
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
             display : "Peer review",
-            disabled: true
+            disabled: true,
+            ignore_empty_string: true
         },
         year_added : {
             type: "date_histogram",
