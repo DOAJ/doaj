@@ -432,7 +432,7 @@ jQuery(document).ready(function($) {
                 }
             }
         }
-        
+
         // set the fulltext
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
