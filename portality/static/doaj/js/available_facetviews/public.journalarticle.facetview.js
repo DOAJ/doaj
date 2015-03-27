@@ -28,7 +28,8 @@ jQuery(document).ready(function($) {
         },
         country_publisher : {
             field: "index.country.exact",
-            display: "Country of publisher"
+            display: "Country of publisher",
+            disabled: true
         },
         language : {
             field : "index.language.exact",
@@ -127,6 +128,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "bibjson.editorial_review.process.exact", false);
                     disableFacet(options, "created_date", false);
                     disableFacet(options, "index.has_apc.exact", false);
+                    disableFacet(options, "index.country.exact", false);
 
                     // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
@@ -134,6 +136,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "bibjson.editorial_review.process.exact", true);
                     disableFacet(options, "created_date", true);
                     disableFacet(options, "index.has_apc.exact", true);
+                    disableFacet(options, "index.country.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -154,6 +157,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "bibjson.editorial_review.process.exact", true);
             disableFacet(options, "created_date", true);
             disableFacet(options, "index.has_apc.exact", true);
+            disableFacet(options, "index.country.exact", true);
         }
     }
 
