@@ -47,7 +47,6 @@ def parse_query(url_query_string):
     try:
         query_object = OpenURLRequest(**dict_params)
     except:
-        raise
         query_object = None
         print "Failed to create OpenURLRequest object"
 
@@ -79,6 +78,8 @@ def get_result_page(results):
     if results['hits']['total'] > 0:
         if results['hits']['hits'][0]['_type'] == 'journal':
             return url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
+        elif results['hits']['hits'][0]['_type'] == 'article':
+            return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
     else:
         # No results found for query
         pass
