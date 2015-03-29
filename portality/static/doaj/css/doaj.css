@@ -74,6 +74,10 @@ a.readonly_journal_link {
     padding: 0.5em;
 }
 
+.box.slim p {
+    line-height: 1;
+}
+
 .big.box {
     padding: 1em;
     font-size: 250%;
