@@ -163,6 +163,8 @@ def toc(identifier=None, volume=None, issue=None):
         abort(404)
     
     issns = journal.known_issns()
+    all_issues = None
+    all_volumes = None
     
     if volume is None or not bjsr:
         all_volumes = models.Article.list_volumes(issns)
