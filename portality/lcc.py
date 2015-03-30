@@ -129,6 +129,9 @@ def lcc2flat_code_index(thelcc):
 
 
 lcc = LCC.pull('lcc')
+if not lcc:
+    loadLCC()
+lcc = LCC.pull('lcc')
 lcc_choices = []
 lcc_jstree = []
 lcc_index_by_code = {}
