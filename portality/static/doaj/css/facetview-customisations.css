@@ -43,6 +43,13 @@ hr {
     background-color: #ffeece;
 }
 
+#facetview tbody.table-striped-inverted tr:nth-child(even) td, #facetview tbody.table-striped tr:nth-child(even) th {
+    background-color: #ffeece;
+}
+#facetview tbody.table-striped-inverted tr:nth-child(odd) td, #facetview tbody.table-striped tr:nth-child(odd) th {
+    background-color: #ffffff;
+}
+
 #facetview .table tbody tr:hover td, #facetview .table tbody tr:hover th {
     background-color: #ffe2ab;
 }

@@ -193,6 +193,7 @@ class Article(DomainObject):
         country = None
         license = []
         publisher = []
+        classification_paths = []
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -219,8 +220,10 @@ class Article(DomainObject):
                 schema_codes.append(scheme + ":" + subs.get("code"))
 
         # copy the languages
+        from portality import datasets  # delayed import, as it loads some stuff from file
         if cbib.journal_language is not None:
             langs = cbib.journal_language
+        langs = [datasets.name_for_lang(l) for l in langs]
 
         # copy the country
         if jindex.get('country'):
@@ -250,6 +253,17 @@ class Article(DomainObject):
         # work out what the date of publication is
         date = cbib.get_publication_date()
 
+        # calculate the classification paths
+        from portality.lcc import lcc # inline import since this hits the database
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            if scheme == "LCC":
+                classification_paths.append(lcc.pathify(term))
+
+        # normalise the classification paths, so we only store the longest ones
+        classification_paths = lcc.longest(classification_paths)
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -272,6 +286,8 @@ class Article(DomainObject):
             self.data["index"]["country"] = country
         if schema_codes > 0:
             self.data["index"]["schema_code"] = schema_codes
+        if len(classification_paths) > 0:
+            self.data["index"]["classification_paths"] = classification_paths
 
     def prep(self):
         self._generate_index()

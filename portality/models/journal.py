@@ -373,6 +373,8 @@ class Journal(DomainObject):
         license = []
         publisher = []
         urls = {}
+        has_apc = None
+        classification_paths = []
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -406,9 +408,11 @@ class Journal(DomainObject):
             if hbib.title is not None:
                 titles.append(hbib.title)
 
-        # copy the languages
+        # copy the languages and convert them to their english forms
+        from portality import datasets  # delayed import, as it loads some stuff from file
         if cbib.language is not None:
             langs = cbib.language
+        langs = [datasets.name_for_lang(l) for l in langs]
 
         # copy the country
         if cbib.country is not None:
@@ -443,6 +447,20 @@ class Journal(DomainObject):
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
 
+        # work out of the journal has an apc
+        has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
+
+        # calculate the classification paths
+        from portality.lcc import lcc # inline import since this hits the database
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            if scheme == "LCC":
+                classification_paths.append(lcc.pathify(term))
+
+        # normalise the classification paths, so we only store the longest ones
+        classification_paths = lcc.longest(classification_paths)
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -467,6 +485,10 @@ class Journal(DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(urls.keys()) > 0:
             self.data["index"].update(urls)
+        if has_apc:
+            self.data["index"]["has_apc"] = has_apc
+        if len(classification_paths) > 0:
+            self.data["index"]["classification_paths"] = classification_paths
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ

@@ -9,8 +9,8 @@ jQuery(document).ready(function($) {
             controls: false,
             open: true,
             value_function : function(val) {
-                if (val === "journal") {return "Journal"}
-                else if (val === "article") { return "Article" }
+                if (val === "journal") {return "Journals"}
+                else if (val === "article") { return "Articles" }
                 return val
             }
         },
@@ -28,18 +28,24 @@ jQuery(document).ready(function($) {
         },
         country_publisher : {
             field: "index.country.exact",
-            display: "Country of publisher"
+            display: "Country of publisher",
+            disabled: true
         },
         language : {
             field : "index.language.exact",
-            display: "Fulltext language"
+            display: "Full Text language"
         },
 
         // journal facets
+        apc : {
+            field : "index.has_apc.exact",
+            display: "APC?"
+        },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
             display : "Peer review",
-            disabled: true
+            disabled: true,
+            ignore_empty_string: true
         },
         year_added : {
             type: "date_histogram",
@@ -57,9 +63,23 @@ jQuery(document).ready(function($) {
         // article facets
         journal_title : {
             field : "bibjson.journal.title.exact",
-            display: "Journal",
+            display: "Journal title",
             disabled: true
         },
+        year_published_histogram : {
+            type: "date_histogram",
+            field: "index.date",
+            interval: "year",
+            display: "Year of publication",
+            value_function : function(val) {
+                return (new Date(parseInt(val))).getFullYear();
+            },
+            size: false,
+            short_display: 15,
+            sort: "desc",
+            disabled: true
+        },
+
         year_published : {
             field : "bibjson.year.exact",
             display: "Year of publication",
@@ -71,14 +91,15 @@ jQuery(document).ready(function($) {
     var natural = [];
     natural.push(all_facets.journal_article);
     natural.push(all_facets.subject);
+    natural.push(all_facets.journal_title);
+    natural.push(all_facets.apc);
     natural.push(all_facets.licence);
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
     natural.push(all_facets.language);
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
-    natural.push(all_facets.journal_title);
-    natural.push(all_facets.year_published);
+    natural.push(all_facets.year_published_histogram);
 
     function dynamicFacets(options, context) {
         function disableFacet(options, field, disable) {
@@ -102,21 +123,25 @@ jQuery(document).ready(function($) {
                 if (t === "journal") {
                     // disable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", true);
-                    disableFacet(options, "bibjson.year.exact", true);
+                    disableFacet(options, "index.date", true);
 
                     // enable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", false);
                     disableFacet(options, "created_date", false);
+                    disableFacet(options, "index.has_apc.exact", false);
+                    disableFacet(options, "index.country.exact", false);
 
                     // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
                     // disable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", true);
                     disableFacet(options, "created_date", true);
+                    disableFacet(options, "index.has_apc.exact", true);
+                    disableFacet(options, "index.country.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
-                    disableFacet(options, "bibjson.year.exact", false);
+                    disableFacet(options, "index.date", false);
 
                     // FIXME: do we need to do something about filters here too?
                 }
@@ -127,11 +152,13 @@ jQuery(document).ready(function($) {
 
             // disable the article facets
             disableFacet(options, "bibjson.journal.title.exact", true);
-            disableFacet(options, "bibjson.year.exact", true);
+            disableFacet(options, "index.date", true);
 
             // disable the journal facets
             disableFacet(options, "bibjson.editorial_review.process.exact", true);
             disableFacet(options, "created_date", true);
+            disableFacet(options, "index.has_apc.exact", true);
+            disableFacet(options, "index.country.exact", true);
         }
     }
 
@@ -174,13 +201,17 @@ jQuery(document).ready(function($) {
         var result = options.resultwrap_start;
         result += "<div class='row-fluid'>";
 
+        // start the main box that all the details go in
+        result += "<div class='span12'>";
+
         // add the journal icon
-        result += "<div class='span1'>";
+        result += "<div class='pull-left' style='width: 4%'>";
         result += "<i style='font-size: 24px' class='icon icon-book'></i>";
         result += "</div>";
 
-        // start the main box that all the details go in
-        result += "<div class='span9'>";
+        result += "<div class='pull-left' style='width: 93%'>";
+
+        result += "<div class='row-fluid'><div class='span10'>";
 
         // set the title
         if (resultobj.bibjson.title) {
@@ -202,7 +233,7 @@ jQuery(document).ready(function($) {
                 }
             }
             if (issns.length > 0) {
-                result += "ISSN: " + issns.join(", ") + "<br>"
+                result += "ISSN(s): " + issns.join(", ") + "<br>"
             }
         }
 
@@ -218,9 +249,9 @@ jQuery(document).ready(function($) {
         }
 
         // add the subjects
-        if (resultobj.index && resultobj.index.classification && resultobj.index.classification.length > 0) {
-            result += "<strong>Subjects:</strong><br>";
-            result += resultobj.index.classification.join(", ");
+        if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
+            result += "<strong>Subject:</strong>&nbsp;";
+            result += resultobj.index.classification_paths.join(" | ");
         }
 
         // close the main details box
@@ -231,7 +262,7 @@ jQuery(document).ready(function($) {
 
         // set the tick if it is relevant
         if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​<br>";
+            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
         }
 
         // licence
@@ -284,7 +315,7 @@ jQuery(document).ready(function($) {
         result += "</div>";
 
         // close off the result with the ending strings, and then return
-        result += "</div>";
+        result += "</div></div>";
         result += options.resultwrap_end;
         return result;
     }
@@ -360,17 +391,38 @@ jQuery(document).ready(function($) {
         var result = options.resultwrap_start;
         result += "<div class='row-fluid'>";
 
-        // add the journal icon
-        result += "<div class='span1'>";
+        // start the main box that all the details go in
+        result += "<div class='span12'>";
+
+        // add the article icon
+        result += "<div class='pull-left' style='width: 4%'>";
         result += "<i style='font-size: 24px' class='icon icon-file'></i>";
         result += "</div>";
 
-        // start the main box that all the details go in
-        result += "<div class='span9'>";
+        result += "<div class='pull-left' style='width: 90%'>";
 
         // set the title
         if (resultobj.bibjson.title) {
             result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+        }
+
+        // set the authors
+        if (resultobj.bibjson && resultobj.bibjson.author && resultobj.bibjson.author.length > 0) {
+            var anames = [];
+            var authors = resultobj.bibjson.author;
+            for (var i = 0; i < authors.length; i++) {
+                var author = authors[i];
+                if (author.name) {
+                    anames.push(author.name);
+                }
+            }
+            result += "<em>" + anames.join(", ") + "</em><br>";
+        }
+
+        // set the citation
+        var cite = makeCitation(resultobj);
+        if (cite) {
+            result += cite + "<br>";
         }
 
         // set the doi
@@ -386,27 +438,35 @@ jQuery(document).ready(function($) {
             }
         }
 
-        // set the citation
-        var cite = makeCitation(resultobj);
-        if (cite) {
-            result += cite + "<br>";
-        }
-
         // set the fulltext
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
                 if (t == 'fulltext') {
-                    result += "Fulltext: <a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
+                    result += "[<a href='" +  ls[i].url + "'>Fulltext</a>]<br>";
                 }
             }
         }
 
+        // create the abstract section if desired
+        if (resultobj.bibjson.abstract) {
+            // start the abstract section
+            //result += "<div class='row-fluid'><div class='span12'>";
+
+            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
+            // result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
+            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+
+            // close off the abstract section
+            //result += "</div></div>";
+        }
+
         // close the main details box
-        result += "</div>";
+        result += "</div></div>";
 
         // start the journal properties side-bar
+        /* only the licence is over here right now, and it is not needed
         result += "<div class='span2'>";
 
         // set the tick if it is relevant
@@ -433,22 +493,12 @@ jQuery(document).ready(function($) {
 
         // close the article properties side-bar
         result += "</div>";
+        */
 
         // close off the main result
         result += "</div>";
 
-        // create the abstract section if desired
-        if (resultobj.bibjson.abstract) {
-            // start the abstract section
-            result += "<div class='row-fluid'><div class='span1'>&nbsp;</div><div class='span11'>";
 
-            result += "<strong>Abstract</strong>&nbsp;&nbsp;";
-            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
-            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
-
-            // close off the abstract section
-            result += "</div></div>";
-        }
 
         // close off the result and return
         result += options.resultwrap_end;
@@ -460,6 +510,8 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
 
         render_results_metadata: doajPager,
+        render_result_record: publicSearchResult,
+
         pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
@@ -498,9 +550,6 @@ jQuery(document).ready(function($) {
         ],
 
         page_size : 10,
-        from : 0,
-
-        // replace all of the below with this eventually
-        render_result_record: publicSearchResult
+        from : 0
     });
 });

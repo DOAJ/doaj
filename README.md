@@ -238,7 +238,9 @@ It is likely that history records will only be created upon request by the admin
         "editorial_board_url" : "<editorial board url>",
         "aims_scope_url" : "<aims and scope url>",
         "author_instructions_url" : "<author instructions url>",
-        "oa_statement_url" : "<OA statment url>"
+        "oa_statement_url" : "<OA statment url>",
+        "has_apc" : "Yes|No",
+        "classification_paths" : [<list of all expanded LCC terms, with parents>]
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>",
@@ -321,7 +323,8 @@ It is likely that history records will only be created upon request by the admin
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
-        "publisher" : "<publisher>"
+        "publisher" : "<publisher>",
+        "classification_paths" : [<list of all expanded LCC terms, with parents>]
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"
