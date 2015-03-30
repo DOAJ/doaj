@@ -925,9 +925,16 @@ class OAI_DC(OAI_Crosswalk):
     NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
     NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
-    def _generate_subjects(self, subjects, parent_element):
+    def _generate_subjects(self, parent_element, subjects, keywords):
+        if keywords is None:
+            keywords = []
         if subjects is None:
             subjects = []
+
+        for keyword in keywords:
+            subj = etree.SubElement(parent_element, self.DC + "subject")
+            set_text(subj, keyword)
+
         for subs in subjects:
             scheme = subs.get("scheme")
             code = subs.get("code")
@@ -1001,14 +1008,10 @@ class OAI_DC_Article(OAI_DC):
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
             set_text(pubel, bibjson.publisher)
         
-        for keyword in bibjson.keywords:
-            subj = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subj, keyword)
-        
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "article")
         
-        self._generate_subjects(oai_dc, bibjson.subjects())
+        self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
@@ -1107,10 +1110,6 @@ class OAI_DC_Journal(OAI_DC):
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
         
-        for keyword in bibjson.keywords:
-            subj = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subj, keyword)
-        
         if bibjson.language is not None and len(bibjson.language) > 0:
             for language in bibjson.language:
                 lang = etree.SubElement(oai_dc, self.DC + "language")
@@ -1143,7 +1142,7 @@ class OAI_DC_Journal(OAI_DC):
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "journal")
 
-        self._generate_subjects(oai_dc, bibjson.subjects())
+        self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
             
         return metadata
     
