@@ -225,6 +225,11 @@ def faq():
 def features():
     return render_template("doaj/features.html")
 
+@blueprint.route("/features/oai_doaj/1.0/")
+def doajArticles_oai_namespace_page():
+    return render_template("doaj/doajArticles_oai_namespace.html")
+
+
 @blueprint.route("/oainfo")
 def oainfo():
     return render_template("doaj/oainfo.html")
