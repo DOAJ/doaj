@@ -898,6 +898,22 @@ class OAI_Crosswalk(object):
     def header(self, record):
         raise NotImplementedError()
 
+    def _generate_header_subjects(self, parent_element, subjects):
+        if subjects is None:
+            subjects = []
+        
+        for subs in subjects:
+            scheme = subs.get("scheme", '')
+            term = subs.get("term", '')
+            
+            if term:
+                prefix = ''
+                if scheme:
+                    prefix = scheme + ':'
+
+                subel = etree.SubElement(parent_element, self.PMH + "setSpec")
+                set_text(subel, make_set_spec(prefix + term))
+
 
 class OAI_DC(OAI_Crosswalk):
     OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/"
@@ -1021,13 +1037,7 @@ class OAI_DC_Article(OAI_DC):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(head, self.PMH + "setSpec")
-            set_text(subel, make_set_spec(scheme + ":" + term))
-        
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
     def _make_citation(self, bibjson):
@@ -1147,13 +1157,7 @@ class OAI_DC_Journal(OAI_DC):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(head, self.PMH + "setSpec")
-            set_text(subel, make_set_spec(scheme + ":" + term))
-        
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
 
@@ -1289,13 +1293,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
 
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-
-            subel = etree.SubElement(head, self.PMH + "setSpec")
-            set_text(subel, make_set_spec(scheme + ":" + term))
-
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
 
