@@ -250,7 +250,7 @@ def clean_unreadable(input_string):
     try:
         return _illegal_xml_chars_RE.sub("", input_string)
     except TypeError as e:
-        print app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
+        app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None
 
 def xml_clean(input_string):
