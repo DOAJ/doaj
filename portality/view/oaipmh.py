@@ -1210,7 +1210,17 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
 
         # work out the date of publication
         date = bibjson.get_publication_date()
-        if date != "":
+        # convert it to the format required by the XML schema by parsing
+        # it into a Python datetime and getting it back out as string.
+        # If it's not coming back properly from the bibjson, throw it
+        # away.
+        try:
+            date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+            date = date.strftime("%Y-%m-%d")
+        except:
+            date = ""
+
+        if date:
             monthyear = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publicationDate")
             set_text(monthyear, date)
 
