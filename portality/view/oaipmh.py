@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
+from portality import datasets
 from copy import deepcopy
 
 blueprint = Blueprint('oaipmh', __name__)
@@ -1175,10 +1176,20 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         oai_doaj_article.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
 
+        # look up the journal's language
         jlangs = bibjson.journal_language
+        # first, if there are any languages recorded, get the 3-char code
+        # corresponding to the first language
+        if jlangs:
+            if isinstance(jlangs, list):
+                jlangs = jlangs[0]
+            jlangs = datasets.languages_fullname_to_3char_code.get(jlangs)
+
+        # if the language code lookup was successful, add it to the
+        # result
         if jlangs:
             langel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "language")
-            set_text(langel, jlangs[0])
+            set_text(langel, jlangs)
 
         if bibjson.publisher:
             publel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisher")
