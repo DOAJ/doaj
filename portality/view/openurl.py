@@ -1,5 +1,5 @@
 import re
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
 from urllib import unquote
 
@@ -21,7 +21,10 @@ def openurl():
     # Issue query and redirect to results page
     results = parsed_object.query_es()
     results_url = get_result_page(results)
-    return redirect(results_url)
+    if results_url:
+        return redirect(results_url)
+    else:
+        abort(400)
 
 def parse_query(url_query_string):
     """
@@ -82,4 +85,8 @@ def get_result_page(results):
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
     else:
         # No results found for query
-        pass
+        return None
+
+@blueprint.errorhandler(400)
+def bad_request(e):
+    return render_template("openurl/400.html"), 400

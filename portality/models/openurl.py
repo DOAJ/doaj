@@ -26,7 +26,7 @@ OPENURL_TO_ES = {
     'isbn' : ('index.issn.exact', 'index.issn.exact'),
 }
 
-TERMS_SEARCH = { "query" : {"bool" : { "should" : [] } } }
+TERMS_SEARCH = { "query" : {"bool" : { "must" : [] } } }
 TERM = { "term" : {} }
 
 class OpenURLRequest(object):
@@ -70,7 +70,7 @@ class OpenURLRequest(object):
                 continue
             else:
                 term = { "term" : { es_term : v} }
-            populated_query["query"]["bool"]["should"].append(term)
+            populated_query["query"]["bool"]["must"].append(term)
         print "Query from OpenURL: " + str(populated_query)
 
         # Return the results of the query
