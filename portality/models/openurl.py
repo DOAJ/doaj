@@ -1,4 +1,5 @@
 import re
+from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
@@ -28,7 +29,6 @@ OPENURL_TO_ES = {
 }
 
 TERMS_SEARCH = { "query" : {"bool" : { "must" : [] } } }
-TERM = { "term" : {} }
 
 class OpenURLRequest(object):
     """
@@ -51,13 +51,17 @@ class OpenURLRequest(object):
         return "OpenURLRequest{" + ", ".join(["%s : %s" % (x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS if getattr(self, x)]) + "}"
 
     def query_es(self):
+        """
+        Query Elasticsearch for a set of matches for this request.
+        :return: The results of a query through the dao, a JSON object.
+        """
         # Copy to the template, which will be populated with terms
         populated_query = deepcopy(TERMS_SEARCH)
 
         # Get all of the attributes with values set.
         set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
 
-        # If we don't have a genre, guess journal FIXME: can we guess journal?
+        # If we don't have a genre, guess journal FIXME: is it correct to assume journal?
         if not self.genre:
             self.genre = SUPPORTED_GENRES[0]    # TODO: we may want to handle 404 instead
 
@@ -79,6 +83,30 @@ class OpenURLRequest(object):
             return Journal.query(q=populated_query)
         elif i == 1:
             return Article.query(q=populated_query)
+
+    def get_result_url(self):
+        """
+        Get the URL for this OpenURLRequest's referent.
+        :return: The url as a string, or None if not found.
+        """
+        results = self.query_es()
+
+        if results['hits']['total'] > 0:
+            if results['hits']['hits'][0]['_type'] == 'journal':
+                jtoc_url = url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
+
+                # Append the volume / issue path if present
+                if self.volume:
+                    jtoc_url += "/{0}".format(self.volume)
+                    if self.issue:
+                        jtoc_url += "/{0}".format(self.issue)
+                return jtoc_url
+
+            elif results['hits']['hits'][0]['_type'] == 'article':
+                return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
+        else:
+            # No results found for query
+            return None
 
     def validate_issn(self, issn_str):
         """

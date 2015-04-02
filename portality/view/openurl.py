@@ -16,11 +16,10 @@ def openurl():
     if type(parser_response) != OpenURLRequest:
         return redirect(parser_response, 301)
 
-    # Issue query and redirect to results page
-    results = parser_response.query_es()
-    results_url = get_result_page(results)
-    if results_url:
-        return redirect(results_url)
+    # Get the OpenURLRequest object to issue a query and supply a url for the result
+    result_url = parser_response.get_result_url()
+    if result_url:
+        return redirect(result_url)
     else:
         abort(404)
 
@@ -72,16 +71,6 @@ def old_to_new():
     params.update(rewritten_params)
 
     return url_for('.openurl', **params)
-
-def get_result_page(results):
-    if results['hits']['total'] > 0:
-        if results['hits']['hits'][0]['_type'] == 'journal':
-            return url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
-        elif results['hits']['hits'][0]['_type'] == 'article':
-            return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
-    else:
-        # No results found for query
-        return None
 
 @blueprint.errorhandler(404)
 def bad_request(e):
