@@ -27,6 +27,7 @@ from portality.view.stream import blueprint as stream
 from portality.view.forms import blueprint as forms
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
+from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
@@ -46,6 +47,7 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 
 app.register_blueprint(oaipmh)
+app.register_blueprint(openurl)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
@@ -111,6 +113,8 @@ def legacy():
         return redirect(url_for('atom.feed')), 301
     elif func == "browse" or func == 'byPublicationFee  ':
         return redirect(url_for('doaj.search')), 301
+    elif func == "openurl":
+        return redirect(url_for('openurl.openurl', **request.values.to_dict(flat=True)), 301)
     abort(404)
 
 @app.route("/doaj2csv")
