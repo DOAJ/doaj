@@ -1,6 +1,7 @@
 import re
 from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
+from portality.core import app
 from urllib import unquote
 
 blueprint = Blueprint('openurl', __name__)
@@ -8,37 +9,33 @@ blueprint = Blueprint('openurl', __name__)
 @blueprint.route("/openurl", methods=["GET", "POST"])
 def openurl():
 
-    # Drop the first part of the url to get the raw query
-    url_query = request.url.split(request.base_url).pop()
-
     # Validate the query syntax version and build an object representing it
-    parsed_object = parse_query(url_query)
+    parser_response = parse_query()
 
     # If it's not parsed to an OpenURLRequest, it's a redirect URL to try again.
-    if type(parsed_object) != OpenURLRequest:
-        return redirect(parsed_object, 301)
+    if type(parser_response) != OpenURLRequest:
+        return redirect(parser_response, 301)
 
     # Issue query and redirect to results page
-    results = parsed_object.query_es()
+    results = parser_response.query_es()
     results_url = get_result_page(results)
     if results_url:
         return redirect(results_url)
     else:
-        abort(400)
+        abort(404)
 
-def parse_query(url_query_string):
+def parse_query():
     """
     Create the model which holds the query
     :param url_query_string: The query part of an incoming OpenURL request
     :return: an object representing the query
     """
     # Check if this is new or old syntax, translate if necessary
-    match_1_0 = re.compile("url_ver=Z39.88-2004")
-    if not match_1_0.search(url_query_string):
-        print "Legacy OpenURL 0.1 request: " + unquote(request.url)
+    if "url_ver=Z39.88-2004" not in request.query_string:
+        app.logger.info("Legacy OpenURL 0.1 request: " + unquote(request.url))
         return old_to_new()
 
-    print "OpenURL 1.0 request: " + unquote(request.url)
+    app.logger.info("OpenURL 1.0 request: " + unquote(request.url))
 
     # Wee function to strip of the referrant namespace prefix from paramaterss
     rem_ns = lambda x: re.sub('rft.', '', x)
@@ -51,7 +48,7 @@ def parse_query(url_query_string):
         query_object = OpenURLRequest(**dict_params)
     except:
         query_object = None
-        print "Failed to create OpenURLRequest object"
+        app.logger.info("Failed to create OpenURLRequest object")
 
     return query_object
 
@@ -74,8 +71,7 @@ def old_to_new():
     # Add the rewritten parameters to the meta params
     params.update(rewritten_params)
 
-    redirect_url = url_for('.openurl', **params)
-    return redirect_url
+    return url_for('.openurl', **params)
 
 def get_result_page(results):
     if results['hits']['total'] > 0:
@@ -87,6 +83,6 @@ def get_result_page(results):
         # No results found for query
         return None
 
-@blueprint.errorhandler(400)
+@blueprint.errorhandler(404)
 def bad_request(e):
-    return render_template("openurl/400.html"), 400
+    return render_template("openurl/404.html"), 404

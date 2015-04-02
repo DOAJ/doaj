@@ -1,5 +1,6 @@
 import re
 from portality.models import Journal, Article
+from portality.core import app
 from copy import deepcopy
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
@@ -71,7 +72,7 @@ class OpenURLRequest(object):
             else:
                 term = { "term" : { es_term : v} }
             populated_query["query"]["bool"]["must"].append(term)
-        print "Query from OpenURL: " + str(populated_query)
+        app.logger.info("Query from OpenURL: " + str(populated_query))
 
         # Return the results of the query
         if i == 0:
