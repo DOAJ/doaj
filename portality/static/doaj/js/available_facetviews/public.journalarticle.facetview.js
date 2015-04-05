@@ -345,6 +345,8 @@ jQuery(document).ready(function($) {
     function renderPublicArticle(options, resultobj) {
 
         function makeCitation(record) {
+            // Journal name. YYYY;32(4):489-98
+
             // get all the relevant citation properties
             var ctitle = record.bibjson.journal ? record.bibjson.journal.title : undefined;
             var cvol = record.bibjson.journal ? record.bibjson.journal.volume : undefined;
@@ -365,31 +367,43 @@ jQuery(document).ready(function($) {
             }
 
             var citation = "";
+
+            // journal title
             if (ctitle) {
                 if (issns.length > 0) {
-                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle + "</a>";
+                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle.trim() + "</a>";
                 } else {
-                    citation += ctitle;
+                    citation += ctitle.trim();
                 }
+                citation += ". ";
             }
 
+            // year
+            if (cyear) {
+                // if (citation !== "") { citation += " " }
+                citation += cyear + ";";
+            }
+
+            // volume
             if (cvol) {
-                if (citation !== "") { citation += ", " }
-                citation += "Vol " + cvol;
+                // if (citation !== "") { citation += "" }
+                citation += cvol;
             }
 
             if (ciss) {
-                if (citation !== "") { citation += ", " }
-                citation += "Iss " + ciss;
+                // if (citation !== "") { citation += ", " }
+                citation += "(" + ciss + ")";
             }
 
             if (cstart || cend) {
-                if (citation !== "") { citation += ", " }
+                if (citation !== "") { citation += ":" }
+                /*
                 if ((cstart && !cend) || (!cstart && cend)) {
                     citation += "p ";
                 } else {
                     citation += "Pp ";
                 }
+                */
                 if (cstart) {
                     citation += cstart;
                 }
@@ -399,11 +413,6 @@ jQuery(document).ready(function($) {
                     }
                     citation += cend;
                 }
-            }
-
-            if (cyear) {
-                if (citation !== "") { citation += " " }
-                citation += "(" + cyear + ")";
             }
 
             return citation;
@@ -444,7 +453,7 @@ jQuery(document).ready(function($) {
         // set the citation
         var cite = makeCitation(resultobj);
         if (cite) {
-            result += cite + "<br>";
+            result += cite;
         }
 
         // set the doi
@@ -455,33 +464,40 @@ jQuery(document).ready(function($) {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
                     var url = "http://dx.doi.org/" + doi.substring(tendot);
-                    result += "DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a><br>";
+                    result += " DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a>";
                 }
             }
         }
 
-        // set the fulltext
+        result += "<br>";
+
+        // extract the fulltext link if there is one
+        var ftl = false;
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
                 if (t == 'fulltext') {
-                    result += "[<a href='" +  ls[i].url + "'>Fulltext</a>]<br>";
+                    ftl = ls[i].url;
                 }
             }
         }
 
         // create the abstract section if desired
-        if (resultobj.bibjson.abstract) {
-            // start the abstract section
-            //result += "<div class='row-fluid'><div class='span12'>";
+        if (resultobj.bibjson.abstract || ftl) {
+            if (resultobj.bibjson.abstract) {
+                result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
+            }
+            if (ftl) {
+                if (resultobj.bibjson.abstract) {
+                    result += " | ";
+                }
+                result += "<a href='" + ftl + "'>Full Text</a>";
+            }
 
-            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
-            // result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
-            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
-
-            // close off the abstract section
-            //result += "</div></div>";
+            if (resultobj.bibjson.abstract) {
+                result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+            }
         }
 
         // close the main details box
