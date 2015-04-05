@@ -77,11 +77,16 @@ class Journal(DomainObject):
         hist.save()
 
     def history(self):
+        # get the raw history object from the data.  It constists of a date, an optional replaces/isreplacedby,
+        # and the bibjson of the old version of the journal
         histories = self.data.get("history", [])
         if histories is None:
             histories = []
 
         # convert the histories into a lookup structure that we can use for ordering
+        # of the form ([issns of replaces], [issns of record], [issns of isreplacedby])
+        # also we record a mapping of a record's issns to the return value, which is a tuple of date, replaces, isreplacedby, and the bibjson object
+
         lookup = []
         register = []
         for h in histories:
@@ -101,25 +106,40 @@ class Journal(DomainObject):
             # put all the information we have into the lookup structure
             lookup.append((h.get("replaces"), eissns + pissns, h.get("isreplacedby")))
 
+        # now construct an ordered list of issns based on inspeection of the lookup structure.
+        # we loop through the lookup, and pull out the isreplacedby issns.  For each of those issns,
+        # we look at all the other entries in the lookup to determine if one of them is the one that
+        # replaces the current one (by comparing the irb issns to the record issns).  If we don't find
+        # a match, then the entry in the lookup we are inspecting is the latest history record, and
+        # we record the issn, and delete the record from the lookup.  That way, the lookup structure
+        # reduces in size until there is nothing left.
+        #
+        # There are various things that can throw the ordering - basically, if there isn't a clean
+        # replaces/isreplacedby chain, then the ordering will be unpredictable.  So ... manage your data
+        # properly!
         ordered = []
         while len(lookup) > 0:
-            i = 0
+            i = 0                       # counter that we will use to refer to the current lookup row when we want to delete it
             for entry in lookup:
                 found = False
-                irbs = entry[2]
-                for irb in irbs:
-                    for other in lookup:
-                        if irb in other[1] and irb not in other[2]: # make sure we don't inspect the same record as where our irb comes from
-                            found = True
+                irbs = entry[2]         # is an array, so there could be multiple values here
+                if irbs is not None:    # it could be none - the history API allows for it
+                    for irb in irbs:
+                        for other in lookup:
+                            if irb in other[1] and irb not in other[2]: # make sure we don't inspect the same record as where our irb comes from
+                                found = True
+                                break
+                        if found:               # propagate the break
                             break
-                    if found:
-                        break
                 if not found:
-                    ordered.append(entry[1][0])
-                    del lookup[i]
-                    break
+                    if len(entry[1]) > 0:               # check there is an ISSN.  If there is not, this is a data fail - there's not a lot we can do about it
+                        ordered.append(entry[1][0])     # add just one issn to the ordered list - we don't need any more info
+                    del lookup[i]                   # remove this record from the lookup
+                    break                           # and start again from scratch, since the array has now been modified
                 i += 1
 
+        # finally, take the ordered list of issns, and map them to the return values held in the
+        # register.
         output = []
         for o in ordered:
             for r in register:
@@ -127,8 +147,6 @@ class Journal(DomainObject):
                     output.append(r[1])
 
         return output
-
-        # return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
 
     def get_history_raw(self):
         return self.data.get("history")
