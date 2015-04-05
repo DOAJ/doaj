@@ -80,7 +80,55 @@ class Journal(DomainObject):
         histories = self.data.get("history", [])
         if histories is None:
             histories = []
-        return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
+
+        # convert the histories into a lookup structure that we can use for ordering
+        lookup = []
+        register = []
+        for h in histories:
+            # get the issns for the current bibjson record
+            bj = JournalBibJSON(h.get("bibjson"))
+            eissns = bj.get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = bj.get_identifiers(JournalBibJSON.P_ISSN)
+
+            # store the bibjson record in the register for use later
+            register.append(
+                (
+                    eissns + pissns,
+                    (h.get("date"), h.get("replaces"), h.get("isreplacedby"), bj)
+                )
+            )
+
+            # put all the information we have into the lookup structure
+            lookup.append((h.get("replaces"), eissns + pissns, h.get("isreplacedby")))
+
+        ordered = []
+        while len(lookup) > 0:
+            i = 0
+            for entry in lookup:
+                found = False
+                irbs = entry[2]
+                for irb in irbs:
+                    for other in lookup:
+                        if irb in other[1] and irb not in other[2]: # make sure we don't inspect the same record as where our irb comes from
+                            found = True
+                            break
+                    if found:
+                        break
+                if not found:
+                    ordered.append(entry[1][0])
+                    del lookup[i]
+                    break
+                i += 1
+
+        output = []
+        for o in ordered:
+            for r in register:
+                if o in r[0]:
+                    output.append(r[1])
+
+        return output
+
+        # return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
 
     def get_history_raw(self):
         return self.data.get("history")
@@ -98,6 +146,39 @@ class Journal(DomainObject):
                 return jbj
 
         return None
+
+    def get_history_around(self, issn):
+        cbj = self.bibjson()
+        eissns = cbj.get_identifiers(JournalBibJSON.E_ISSN)
+        pissns = cbj.get_identifiers(JournalBibJSON.P_ISSN)
+
+        # if the supplied issn is one for the current version of the journal, return no
+        # future continuations, and all of the past ones in order
+        if issn in eissns or issn in pissns:
+            return [], [h[3] for h in self.history()]
+
+        # otherwise this is an old issn, so the current version is the most recent
+        # future continuation
+        future = [cbj]
+        past = []
+        trip = False
+
+        # for each historical version, look to see if the supplied ISSN is the one
+        # while putting all others in the past/future bins, depending on whether we've
+        # passed the target or not
+        for h in self.history():
+            eissns = h[3].get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = h[3].get_identifiers(JournalBibJSON.P_ISSN)
+            if issn in eissns or issn in pissns:
+                trip = True
+                continue
+            else:
+                if not trip:
+                    future.append(h[3])
+                else:
+                    past.append(h[3])
+
+        return future, past
 
     def make_continuation(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
