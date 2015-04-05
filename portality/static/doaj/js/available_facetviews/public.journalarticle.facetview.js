@@ -226,14 +226,27 @@ jQuery(document).ready(function($) {
         // set the issn
         if (resultobj.bibjson && resultobj.bibjson.identifier) {
             var ids = resultobj.bibjson.identifier;
-            var issns = [];
+            var pissns = [];
+            var eissns = [];
             for (var i = 0; i < ids.length; i++) {
-                if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                    issns.push(ids[i].id)
+                if (ids[i].type === "pissn") {
+                    pissns.push(ids[i].id)
+                } else if (ids[i].type === "eissn") {
+                    eissns.push(ids[i].id)
                 }
             }
-            if (issns.length > 0) {
-                result += "ISSN(s): " + issns.join(", ") + "<br>"
+            if (pissns.length > 0 || eissns.length > 0) {
+                result += "ISSN: ";
+                if (pissns.length > 0) {
+                    result += pissns.join(", ") + "&nbsp;(Print)";
+                }
+                if (eissns.length > 0) {
+                    if (pissns.length > 0) {
+                        result += "; ";
+                    }
+                    result += eissns.join(", ") + "&nbsp;(Online)";
+                }
+                result += "<br>";
             }
         }
 
@@ -246,6 +259,15 @@ jQuery(document).ready(function($) {
                     result += "<a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
                 }
             }
+        }
+
+        // peer review type
+        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
+            var proc = resultobj.bibjson.editorial_review.process;
+            if (proc === "None") {
+                proc = "No peer review"
+            }
+            result += proc + "<br>";
         }
 
         // add the subjects
@@ -280,15 +302,6 @@ jQuery(document).ready(function($) {
                     result += "<strong>License: " + ltitle + "</strong><br>"
                 }
             }
-        }
-
-        // peer review type
-        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
-            var proc = resultobj.bibjson.editorial_review.process;
-            if (proc === "None") {
-                proc = "No peer review"
-            }
-            result += "<strong>" + proc + "</strong><br>"
         }
 
         // APC
