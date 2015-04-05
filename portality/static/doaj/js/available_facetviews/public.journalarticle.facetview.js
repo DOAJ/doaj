@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
         // journal facets
         apc : {
             field : "index.has_apc.exact",
-            display: "APC?"
+            display: "Article processing charges (APCs)"
         },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
@@ -57,6 +57,11 @@ jQuery(document).ready(function($) {
             },
             size: false,
             sort: "desc",
+            disabled: true
+        },
+        archiving_policy : {
+            field : "bibjson.archiving_policy.policy.exact",
+            display: "Archiving Policy",
             disabled: true
         },
 
@@ -100,6 +105,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
     natural.push(all_facets.year_published_histogram);
+    natural.push(all_facets.archiving_policy);
 
     function dynamicFacets(options, context) {
         function disableFacet(options, field, disable) {
@@ -130,6 +136,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "created_date", false);
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
+                    disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
 
                     // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
@@ -138,6 +145,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "created_date", true);
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
+                    disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -159,6 +167,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "created_date", true);
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
+            disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
         }
     }
 
