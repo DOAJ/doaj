@@ -195,3 +195,19 @@ class GenericBibJSON(object):
     def remove_subjects(self):
         if "subject" in self.bibjson:
             del self.bibjson["subject"]
+
+    def lcc_paths(self):
+        classification_paths = []
+
+        # calculate the classification paths
+        from portality.lcc import lcc # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            if scheme == "LCC":
+                classification_paths.append(lcc.pathify(term))
+
+        # normalise the classification paths, so we only store the longest ones
+        classification_paths = lcc.longest(classification_paths)
+
+        return classification_paths

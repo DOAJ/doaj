@@ -86,7 +86,7 @@
             {% endif %}
 
             {% if bibjson.country %}
-                <p><strong>Country of publisher</strong>:&nbsp;{{bibjson.country}} (FIXME)</p>
+                <p><strong>Country of publisher</strong>:&nbsp;{{bibjson.country_name()}}</p>
             {% endif %}
 
             {% if bibjson.provider %}
@@ -97,10 +97,10 @@
 
     <div class="span5">
         <div class="box with-borders" style="min-height: 140px">
-            {% for s in bibjson.subjects() %}
-                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category (FIXME)</strong>: {% endif %}
-                {% if loop.index0 > 0 %}, {% endif %}
-                {{ s.get("term") }}
+            {% for path in bibjson.lcc_paths() %}
+                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
+                {% if loop.index0 > 0 %} | {% endif %}
+                {{ path }}
                 {% if loop.last %}</p>{% endif %}
             {% endfor %}
 
@@ -109,7 +109,7 @@
             {% endif %}
 
             {% if bibjson.language %}
-                <p><strong>Language of fulltext</strong>:&nbsp;{{bibjson.language|join(", ")}} (FIXME)</p>
+                <p><strong>Language of fulltext</strong>:&nbsp;{{bibjson.language_name()|join(", ")}}</p>
             {% endif %}
 
             {% if bibjson.format|length > 0 %}

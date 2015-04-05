@@ -489,15 +489,11 @@ class Journal(DomainObject):
             if hbib.title is not None:
                 titles.append(hbib.title)
 
-        # copy the languages and convert them to their english forms
-        from portality import datasets  # delayed import, as it loads some stuff from file
-        if cbib.language is not None:
-            langs = cbib.language
-        langs = [datasets.name_for_lang(l) for l in langs]
+        # get the bibjson object to conver the language to the english form
+        langs = cbib.language_name()
 
-        # copy the country
-        if cbib.country is not None:
-            country = xwalk.get_country_name(cbib.country)
+        # get the english name of the country
+        country = cbib.country_name()
 
         # get the title of the license
         lic = cbib.get_license()
@@ -525,22 +521,13 @@ class Journal(DomainObject):
         classification = list(set(classification))
         license = list(set(license))
         publisher = list(set(publisher))
-        langs = list(set(langs))
         schema_codes = list(set(schema_codes))
 
         # work out of the journal has an apc
         has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
 
-        # calculate the classification paths
-        from portality.lcc import lcc # inline import since this hits the database
-        for subs in cbib.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            if scheme == "LCC":
-                classification_paths.append(lcc.pathify(term))
-
-        # normalise the classification paths, so we only store the longest ones
-        classification_paths = lcc.longest(classification_paths)
+        # get the full classification paths for the subjects
+        classification_paths = cbib.lcc_paths()
 
         # build the index part of the object
         self.data["index"] = {}
@@ -740,6 +727,12 @@ class JournalBibJSON(GenericBibJSON):
     @country.setter
     def country(self, val) : self.bibjson["country"] = val
 
+    def country_name(self):
+        if self.country is not None:
+            from portality import datasets  # delayed import because of files to be loaded
+            return datasets.get_country_name(self.country)
+        return None
+
     @property
     def publisher(self): return self.bibjson.get("publisher")
     @publisher.setter
@@ -765,6 +758,14 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def language(self):
         return self.bibjson.get("language", [])
+
+    def language_name(self):
+        # copy the languages and convert them to their english forms
+        from portality import datasets  # delayed import, as it loads some stuff from file
+        if self.language is not None:
+            langs = self.language
+        langs = [datasets.name_for_lang(l) for l in langs]
+        return list(set(langs))
 
     def set_language(self, language):
         if isinstance(language, list):
