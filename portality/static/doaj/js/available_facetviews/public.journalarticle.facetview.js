@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
         // journal facets
         apc : {
             field : "index.has_apc.exact",
-            display: "APC?"
+            display: "Article processing charges (APCs)"
         },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
@@ -57,6 +57,11 @@ jQuery(document).ready(function($) {
             },
             size: false,
             sort: "desc",
+            disabled: true
+        },
+        archiving_policy : {
+            field : "bibjson.archiving_policy.policy.exact",
+            display: "Archiving Policy",
             disabled: true
         },
 
@@ -100,6 +105,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.peer_review);
     natural.push(all_facets.year_added);
     natural.push(all_facets.year_published_histogram);
+    natural.push(all_facets.archiving_policy);
 
     function dynamicFacets(options, context) {
         function disableFacet(options, field, disable) {
@@ -130,6 +136,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "created_date", false);
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
+                    disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
 
                     // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
@@ -138,6 +145,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "created_date", true);
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
+                    disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -159,6 +167,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "created_date", true);
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
+            disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
         }
     }
 
@@ -226,14 +235,27 @@ jQuery(document).ready(function($) {
         // set the issn
         if (resultobj.bibjson && resultobj.bibjson.identifier) {
             var ids = resultobj.bibjson.identifier;
-            var issns = [];
+            var pissns = [];
+            var eissns = [];
             for (var i = 0; i < ids.length; i++) {
-                if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                    issns.push(ids[i].id)
+                if (ids[i].type === "pissn") {
+                    pissns.push(ids[i].id)
+                } else if (ids[i].type === "eissn") {
+                    eissns.push(ids[i].id)
                 }
             }
-            if (issns.length > 0) {
-                result += "ISSN(s): " + issns.join(", ") + "<br>"
+            if (pissns.length > 0 || eissns.length > 0) {
+                result += "ISSN: ";
+                if (pissns.length > 0) {
+                    result += pissns.join(", ") + "&nbsp;(Print)";
+                }
+                if (eissns.length > 0) {
+                    if (pissns.length > 0) {
+                        result += "; ";
+                    }
+                    result += eissns.join(", ") + "&nbsp;(Online)";
+                }
+                result += "<br>";
             }
         }
 
@@ -246,6 +268,15 @@ jQuery(document).ready(function($) {
                     result += "<a href='" + ls[i].url + "'>" + ls[i].url + "</a><br>";
                 }
             }
+        }
+
+        // peer review type
+        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
+            var proc = resultobj.bibjson.editorial_review.process;
+            if (proc === "None") {
+                proc = "No peer review"
+            }
+            result += proc + "<br>";
         }
 
         // add the subjects
@@ -282,15 +313,6 @@ jQuery(document).ready(function($) {
             }
         }
 
-        // peer review type
-        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
-            var proc = resultobj.bibjson.editorial_review.process;
-            if (proc === "None") {
-                proc = "No peer review"
-            }
-            result += "<strong>" + proc + "</strong><br>"
-        }
-
         // APC
         if (resultobj.bibjson.apc) {
             if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {
@@ -323,6 +345,8 @@ jQuery(document).ready(function($) {
     function renderPublicArticle(options, resultobj) {
 
         function makeCitation(record) {
+            // Journal name. YYYY;32(4):489-98
+
             // get all the relevant citation properties
             var ctitle = record.bibjson.journal ? record.bibjson.journal.title : undefined;
             var cvol = record.bibjson.journal ? record.bibjson.journal.volume : undefined;
@@ -343,31 +367,43 @@ jQuery(document).ready(function($) {
             }
 
             var citation = "";
+
+            // journal title
             if (ctitle) {
                 if (issns.length > 0) {
-                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle + "</a>";
+                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle.trim() + "</a>";
                 } else {
-                    citation += ctitle;
+                    citation += ctitle.trim();
                 }
+                citation += ". ";
             }
 
+            // year
+            if (cyear) {
+                // if (citation !== "") { citation += " " }
+                citation += cyear + ";";
+            }
+
+            // volume
             if (cvol) {
-                if (citation !== "") { citation += ", " }
-                citation += "Vol " + cvol;
+                // if (citation !== "") { citation += "" }
+                citation += cvol;
             }
 
             if (ciss) {
-                if (citation !== "") { citation += ", " }
-                citation += "Iss " + ciss;
+                // if (citation !== "") { citation += ", " }
+                citation += "(" + ciss + ")";
             }
 
             if (cstart || cend) {
-                if (citation !== "") { citation += ", " }
+                if (citation !== "") { citation += ":" }
+                /*
                 if ((cstart && !cend) || (!cstart && cend)) {
                     citation += "p ";
                 } else {
                     citation += "Pp ";
                 }
+                */
                 if (cstart) {
                     citation += cstart;
                 }
@@ -377,11 +413,6 @@ jQuery(document).ready(function($) {
                     }
                     citation += cend;
                 }
-            }
-
-            if (cyear) {
-                if (citation !== "") { citation += " " }
-                citation += "(" + cyear + ")";
             }
 
             return citation;
@@ -422,7 +453,7 @@ jQuery(document).ready(function($) {
         // set the citation
         var cite = makeCitation(resultobj);
         if (cite) {
-            result += cite + "<br>";
+            result += cite;
         }
 
         // set the doi
@@ -433,33 +464,40 @@ jQuery(document).ready(function($) {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
                     var url = "http://dx.doi.org/" + doi.substring(tendot);
-                    result += "DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a><br>";
+                    result += " DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a>";
                 }
             }
         }
 
-        // set the fulltext
+        result += "<br>";
+
+        // extract the fulltext link if there is one
+        var ftl = false;
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
                 var t = ls[i].type;
                 if (t == 'fulltext') {
-                    result += "[<a href='" +  ls[i].url + "'>Fulltext</a>]<br>";
+                    ftl = ls[i].url;
                 }
             }
         }
 
         // create the abstract section if desired
-        if (resultobj.bibjson.abstract) {
-            // start the abstract section
-            //result += "<div class='row-fluid'><div class='span12'>";
+        if (resultobj.bibjson.abstract || ftl) {
+            if (resultobj.bibjson.abstract) {
+                result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
+            }
+            if (ftl) {
+                if (resultobj.bibjson.abstract) {
+                    result += " | ";
+                }
+                result += "<a href='" + ftl + "'>Full Text</a>";
+            }
 
-            result += '<a class="abstract_action" href="" rel="' + resultobj.id + '"><strong>Abstract</strong></a>';
-            // result += '<a class="abstract_action" href="" rel="' + resultobj.id + '">(expand)</a><br>';
-            result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
-
-            // close off the abstract section
-            //result += "</div></div>";
+            if (resultobj.bibjson.abstract) {
+                result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+            }
         }
 
         // close the main details box

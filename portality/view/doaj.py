@@ -188,7 +188,22 @@ def toc(identifier=None, volume=None, issue=None):
         resp.mimetype = "application/json"
         return resp
     else:
-        return render_template('doaj/toc.html', journal=journal, articles=articles, volumes=all_volumes, current_volume=volume, issues=all_issues, current_issue=issue, countries=countries_dict)
+        # get the bibjson which forms the core of the page to render
+        # FIXME: at the moment we can only display the latest journal, but the code
+        # below now allows us to generalise this to display any continuation.  Just need
+        # to fix this bit
+        bibjson = journal.bibjson()
+
+        # get the continuations future and past
+        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if issn is None:
+            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
+        future, past = journal.get_history_around(issn)
+
+        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
+                               articles=articles, volumes=all_volumes, current_volume=volume,
+                               issues=all_issues, current_issue=issue,
+                               countries=countries_dict)
 
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):

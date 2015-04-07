@@ -19,7 +19,6 @@
     }
 %}
 
-{% set bibjson = journal.bibjson() %}
 {% set lic = bibjson.get_license() %}
 
 <div class="row-fluid">
@@ -33,10 +32,27 @@
             {{identifier}} (Print)
         {% endfor %}
         {% for identifier in bibjson.get_identifiers(idtype='eissn') %}
-            {% if bibjson.get_identifiers(idtype='pissn') %}&nbsp;//&nbsp;{% endif %}
+            {% if bibjson.get_identifiers(idtype='pissn') %};{% endif %}
             {{identifier}} (Online)
         {% endfor %}
         </p>
+
+        {% if future %}
+            <p><strong>Replaced by: </strong>
+            {% for f in future %}
+                <a href="{{ url_for('doaj.toc', identifier=journal.id) }}">{{ f.title }}</a> (FIXME)
+            {% endfor %}
+            </p>
+        {% endif %}
+
+        {% if past %}
+            <p><strong>Previously known as: </strong>
+            {% for p in past %}
+                <a href="{{ url_for('doaj.toc', identifier=journal.id) }}">{{ p.title }}</a> (FIXME)
+            {% endfor %}
+            </p>
+        {% endif %}
+
     </div>
     <div class="span3">
         {%- set tick = journal.is_ticked() -%}
@@ -59,45 +75,45 @@
     <div class="span5">
         <div class="box with-borders" style="min-height: 140px">
             {% if bibjson.get_single_url("homepage") %}
-                <p><a href="{{bibjson.get_single_url('homepage')}}">Journal Homepage</a></p>
+                <p><a href="{{bibjson.get_single_url('homepage')}}">Homepage</a></p>
             {% endif %}
             {% if bibjson.publisher %}
-                <p>Publisher:&nbsp;{{bibjson.publisher}}</p>
+                <p><strong>Publisher</strong>:&nbsp;{{bibjson.publisher}}</p>
             {% endif %}
 
             {% if bibjson.institution %}
-                <p>Society/Institution:&nbsp;{{bibjson.institution}}</p>
+                <p><strong>Society/Institution</strong>:&nbsp;{{bibjson.institution}}</p>
             {% endif %}
 
             {% if bibjson.country %}
-                <p>Country of publisher:&nbsp;{{bibjson.country}} (FIXME)</p>
+                <p><strong>Country of publisher</strong>:&nbsp;{{bibjson.country_name()}}</p>
             {% endif %}
 
             {% if bibjson.provider %}
-                <p>Platform/Host/Aggregator:&nbsp;{{bibjson.provider}}</p>
+                <p><strong>Platform/Host/Aggregator</strong>:&nbsp;{{bibjson.provider}}</p>
             {% endif %}
         </div>
     </div>
 
     <div class="span5">
         <div class="box with-borders" style="min-height: 140px">
-            {% for s in bibjson.subjects() %}
-                {% if loop.index0 == 0 %}<p>LCC Subject Category (FIXME): {% endif %}
-                {% if loop.index0 > 0 %}, {% endif %}
-                {{ s.get("term") }}
+            {% for path in bibjson.lcc_paths() %}
+                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
+                {% if loop.index0 > 0 %} | {% endif %}
+                {{ path }}
                 {% if loop.last %}</p>{% endif %}
             {% endfor %}
 
             {% if bibjson.keywords %}
-                <p>Publisher's keywords: {{bibjson.keywords|join(", ")}}</p>
+                <p><strong>Publisher's keywords</strong>: {{bibjson.keywords|join(", ")}}</p>
             {% endif %}
 
             {% if bibjson.language %}
-                <p>Language of fulltext:&nbsp;{{bibjson.language|join(", ")}} (FIXME)</p>
+                <p><strong>Language of fulltext</strong>:&nbsp;{{bibjson.language_name()|join(", ")}}</p>
             {% endif %}
 
             {% if bibjson.format|length > 0 %}
-                <p>Full-text formats available: {{bibjson.format|join(", ")}}</p>
+                <p><strong>Full-text formats available</strong>: {{bibjson.format|join(", ")}}</p>
             {% endif %}
         </div>
     </div>
