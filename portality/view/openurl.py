@@ -8,9 +8,16 @@ blueprint = Blueprint('openurl', __name__)
 
 @blueprint.route("/openurl", methods=["GET", "POST"])
 def openurl():
+    # check that we've been given some arguments at all
+    if len(request.values) == 0:
+        abort(404)
 
     # Validate the query syntax version and build an object representing it
     parser_response = parse_query()
+
+    # theoretically this can return None, so catch it
+    if parser_response is None:
+        abort(404)
 
     # If it's not parsed to an OpenURLRequest, it's a redirect URL to try again.
     if type(parser_response) != OpenURLRequest:

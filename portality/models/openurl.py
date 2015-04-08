@@ -76,7 +76,12 @@ class OpenURLRequest(object):
             else:
                 term = { "term" : { es_term : v} }
             populated_query["query"]["bool"]["must"].append(term)
-        app.logger.info("Query from OpenURL: " + str(populated_query))
+
+        # avoid doing an empty query
+        if len(populated_query["query"]["bool"]["must"]) == 0:
+            app.logger.debug("No valid search terms in OpenURL object")
+            return None
+        app.logger.debug("Query from OpenURL: " + str(populated_query))
 
         # Return the results of the query
         if i == 0:
@@ -91,10 +96,17 @@ class OpenURLRequest(object):
         """
         results = self.query_es()
 
-        if results['hits']['total'] > 0:
-            if results['hits']['hits'][0]['_type'] == 'journal':
+        if results is None:
+            return None
+
+        if results.get('hits', {}).get('total', 0) > 0:
+            if results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'journal':
+                # FIXME: in order to support continuations, we should use the ISSN where provided
+                # so that the ToC page is the right one for the desired continuation.
+                # We might also consider doing this for Journal Title
                 jtoc_url = url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
 
+                # FIXME: should probably use the url_for function for this too
                 # Append the volume / issue path if present
                 if self.volume:
                     jtoc_url += "/{0}".format(self.volume)
@@ -102,7 +114,7 @@ class OpenURLRequest(object):
                         jtoc_url += "/{0}".format(self.issue)
                 return jtoc_url
 
-            elif results['hits']['hits'][0]['_type'] == 'article':
+            elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
                 return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
         else:
             # No results found for query
