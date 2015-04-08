@@ -12,7 +12,7 @@ class UpgradeTask(object):
     def upgrade_article(self, article):
         pass
 
-def do_upgrade(definition):
+def do_upgrade(definition, verbose):
     # get the source and target es definitions
     source = definition.get("source")
     target = definition.get("target")
@@ -33,8 +33,12 @@ def do_upgrade(definition):
     sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
     tconn = esprit.raw.Connection(target.get("host"), target.get("index"))
 
+    if verbose:
+        print "Source", source
+        print "Target", target
+
     # get the defined batch size
-    batch_size = definition.get("batch", 1000)
+    batch_size = definition.get("batch", 500)
 
     for tdef in definition.get("types", []):
         print "Upgrading", tdef.get("type")
@@ -50,20 +54,24 @@ def do_upgrade(definition):
             try:
                 obj.prep()
             except AttributeError:
+                if verbose:
+                    print tdef.get("type"), obj.id, "has no prep method - no, pre-save preparation being done"
                 pass
 
             # add the data to the batch
             batch.append(obj.data)
+            if verbose:
+                print "added", tdef.get("type"), obj.id, "to batch update"
 
             # When we have enough, do some writing
             if len(batch) >= batch_size:
-                print "writing ", len(batch)
+                print "writing ", len(batch), "to", tdef.get("type")
                 esprit.raw.bulk(tconn, tdef.get("type"), batch)
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
-            print "writing ", len(batch)
+            print "writing ", len(batch), "to", tdef.get("type")
             esprit.raw.bulk(tconn, tdef.get("type"), batch)
 
 
@@ -71,6 +79,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-u", "--upgrade", help="path to upgrade definition")
+    parser.add_argument("-v", "--verbose", action="store_true", help="verbose output to stdout during processing")
     args = parser.parse_args()
 
     if not args.upgrade:
@@ -88,4 +97,4 @@ if __name__ == "__main__":
             print args.upgrade, "does not parse as JSON"
             exit()
 
-        do_upgrade(definition)
+        do_upgrade(definition, args.verbose)
