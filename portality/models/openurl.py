@@ -16,7 +16,7 @@ OPENURL_TO_ES = {
     'au' : (None, 'author.name.exact'),
     'aucorp' : (None, 'author.affiliation.exact'),
     'atitle' : (None, 'bibjson.title.exact'),
-    'jtitle' : ('bibjson.title.exact', 'bibjson.journal.title.exact'),
+    'jtitle' : ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
     'stitle' : ('bibjson.alternative_title.exact', None),
     'date' : (None, 'index.date'),
     'volume' : (None, 'bibjson.journal.volume'),
@@ -68,6 +68,12 @@ class OpenURLRequest(object):
         # Set i to use either our mapping for journals or articles
         i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
 
+        # FIXME: you can query a journal by volume and issue (which makes sense) but
+        # these values are not used to query the index, so you can get a positive match
+        # for a volume and issue that aren't held by DOAJ.  Since these input values
+        # are then used to point the user to the right endpoint in the journal, this can result
+        # in unexpected errors/behaviour down the line
+
         # Add the attributes to the query
         for (k, v) in set_attributes:
             es_term = OPENURL_TO_ES[k][i]
@@ -101,17 +107,28 @@ class OpenURLRequest(object):
 
         if results.get('hits', {}).get('total', 0) > 0:
             if results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'journal':
-                # FIXME: in order to support continuations, we should use the ISSN where provided
-                # so that the ToC page is the right one for the desired continuation.
-                # We might also consider doing this for Journal Title
-                jtoc_url = url_for("doaj.toc", identifier=results['hits']['hits'][0]['_id'])
 
-                # FIXME: should probably use the url_for function for this too
-                # Append the volume / issue path if present
-                if self.volume:
-                    jtoc_url += "/{0}".format(self.volume)
-                    if self.issue:
-                        jtoc_url += "/{0}".format(self.issue)
+                # construct a journal object around the result
+                journal = Journal(**results['hits']['hits'][0])
+
+                # since we might be looking for a specific continuation of a journal, do a bit of work
+                # to point the user to the correct ToC, which should be by ISSN if possible.  If they have
+                # given us the journal title, then we should try to identify the ISSN associated with it
+                # Failing all that, just fall back to the current version ToC
+                ident = self.issn
+                if ident is None:
+                    if self.jtitle is not None:
+                        issns = journal.issns_for_title(self.jtitle)
+                        if len(issns) > 0:
+                            ident = issns[0]
+                    if ident is None:
+                        ident = journal.id
+
+                # FIXME: the volume and issue are not queried on or validated, so we don't know
+                # for sure at this point whether the user will hit a valid ToC
+                # construct the toc url using the ident, plus volume and issue if they are available
+                jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue if self.volume else None)
+
                 return jtoc_url
 
             elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
