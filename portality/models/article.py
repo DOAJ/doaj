@@ -469,6 +469,37 @@ class ArticleBibJSON(GenericBibJSON):
         if "journal" in self.bibjson:
             del self.bibjson["journal"]
 
+    def vancouver_citation(self):
+        jtitle = self.journal_title
+        year = self.year
+        vol = self.volume
+        iss = self.number
+        start = self.start_page
+        end = self.end_page
+
+        citation = ""
+
+        if year:
+            citation += year + ";"
+
+        if vol:
+            citation += vol
+
+        if iss:
+            citation += "(" + iss + ")"
+
+        if start or end:
+            if citation == "":
+                citation += ":"
+            if start:
+                citation += start
+            if end:
+                if start:
+                    citation += "-"
+                citation += end
+
+        return jtitle.strip(), citation
+
 class ArticleQuery(object):
     base_query = {
         "query" : {

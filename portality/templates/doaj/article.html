@@ -2,32 +2,51 @@
 
 {% block content %}
 
+{%- set CC_MAP = {
+        "CC BY" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
+        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
+        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
+        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
+        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
+        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
+    }
+-%}
+
+{%
+    set TYN = {
+        True : "Yes",
+        False : "No",
+    }
+%}
+
+{% set bibjson = article.bibjson() %}
+{% set jbib = journal.bibjson() %}
+{% set jtitle, cite = bibjson.vancouver_citation() %}
+{% set issns = bibjson.issns() %}
+{% set doi = bibjson.get_one_identifier("doi") %}
+
 <div class="row-fluid">
     <div class="span9">
-        <h1>{{article.bibjson().title}}</h1>
+        <h1>{{bibjson.title}}</h1>
+
         <p>
-        {% if article.bibjson().get_identifiers(idtype='doi') %}
-            <em>DOI: </em>{{ article.bibjson().get_identifiers(idtype='doi')[0] | doi_url | safe}}&nbsp;&nbsp;
+        {# citation #}
+        {% if issns|length > 0 %}
+            <a href="{{url_for('doaj.toc', identifier=issns[0])}}">{{jtitle}}</a>. {{cite}}
+        {% else %}
+            {{jtitle}}. {{cite}}
         {% endif %}
-        {% for identifier in article.bibjson().get_identifiers(idtype='pissn') %}
-            <em>ISSN: {{identifier}}</em>&nbsp;&nbsp;
-        {% endfor %}
-        {% for identifier in article.bibjson().get_identifiers(idtype='eissn') %}
-            <em>E-ISSN: {{identifier}}</em>
-        {% endfor %}
+
+        {# doi #}
+        {% if doi %}
+            DOI {{ doi | doi_url | safe}}
+        {% endif %}
+
         </p>
     </div>
+
     <div class="span3">
-        {%- set CC_MAP = {
-                "CC BY" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
-                "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
-                "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
-                "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
-                "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
-                "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
-            }
-        -%}
-        {%- set lic = article.bibjson().get_journal_license() -%}
+        {%- set lic = bibjson.get_journal_license() -%}
         {%- if lic -%}
             {%- set urls = CC_MAP.get(lic.get("type")) -%}
             {%- if urls -%}
@@ -37,66 +56,122 @@
     </div>
 </div>
 
-<div class="row-fluid" style="margin-bottom: 30px">
-    <div class="span2">&nbsp;</div>
-    <div class="span4">
-        <div class="box with-borders" style="height: 120px">
-            {% if article.bibjson().publisher %}
-                <p><strong>Publisher</strong>:&nbsp;{{article.bibjson().publisher}}</p>
-            {% endif %}
-            {% if article.bibjson().institution %}
-                <p><strong>Society/Institution</strong>:&nbsp;{{article.bibjson().institution}}</p>
+<div class="row-fluid" style="margin-bottom: 30px; margin-top: 30px">
+    <div class="span1">&nbsp;</div>
+    <div class="span5">
+        <div class="box with-borders" style="min-height: 140px">
+            {% if jbib.get_single_url("homepage") %}
+                <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
             {% endif %}
 
-            {% if article.bibjson().provider %}
-                <p><strong>Host/Platform</strong>:&nbsp;{{article.bibjson().provider}}</p>
+            <p>{{ jbib.title }}</p>
+
+            {# this next bit has to be all on one line so that the spacing is correct #}
+            <p>
+            {% for identifier in jbib.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in jbib.get_identifiers(idtype='eissn') %}{% if jbib.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
+            </p>
+
+            {% if jbib.publisher %}
+                <p><strong>Publisher</strong>:&nbsp;{{jbib.publisher}}</p>
             {% endif %}
-            {% if article.bibjson().journal_country %}
-                <p><strong>Country</strong>:&nbsp;{{ countries.get(article.bibjson().journal_country, {}).get("name", article.bibjson().journal_country)}}</p>
+            {% if jbib.institution %}
+                <p><strong>Society/Institution</strong>:&nbsp;{{jbib.institution}}</p>
             {% endif %}
-            {% if article.bibjson().journal_language %}
-                <p><strong>Language(s)</strong>:&nbsp;{{article.bibjson().journal_language|join(", ")}}</p>
-            {% endif %}
+
         </div>
     </div>
 
-    <div class="span4">
-        <div class="box with-borders" style="height: 120px">
-            {% if article.bibjson().journal_title %}
-                {% if article.bibjson().get_identifiers(idtype='pissn') or article.bibjson().get_identifiers(idtype='eissn') %}
-                    <p><strong>Journal</strong>:&nbsp;
-                    <a href={{ "/toc/" + article.bibjson().get_identifiers(idtype='pissn')[0] or article.bibjson().get_identifiers(idtype='eissn')[0]}}>{{ article.bibjson().journal_title }}</a></p>
-                {% else %}
-                    <p><strong>Journal</strong>:&nbsp;{{article.bibjson().journal_title}}</p>
-                {% endif %}
+    <div class="span5">
+        <div class="box with-borders" style="min-height: 140px">
+
+            {% for path in bibjson.lcc_paths() %}
+                {% if loop.index0 == 0 %}<p><strong>LCC Subject Category</strong>: {% endif %}
+                {% if loop.index0 > 0 %} | {% endif %}
+                {{ path }}
+                {% if loop.last %}</p>{% endif %}
+            {% endfor %}
+
+
+            {% if jbib.country %}
+                <p><strong>Country of publisher</strong>:&nbsp;{{jbib.country_name()}}</p>
             {% endif %}
-            {% if article.bibjson().volume %}
-                <strong>Volume</strong>:&nbsp;{{article.bibjson().volume}}<br>
+
+            {% if jbib.language %}
+                <p><strong>Language of fulltext</strong>:&nbsp;{{jbib.language_name()|join(", ")}}</p>
             {% endif %}
-            {% if article.bibjson().number %}
-                <strong>Issue</strong>:&nbsp;{{article.bibjson().number}}<br>
-            {% endif %}
-            {% if article.bibjson().start_page %}
-                <strong>Pages:</strong>:&nbsp;{{article.bibjson().start_page}} {% if article.bibjson().end_page %}- {{article.bibjson().end_page}}{% endif %}<br>
+
+            {% if jbib.format|length > 0 %}
+                <p><strong>Full-text formats available</strong>: {{jbib.format|join(", ")}}</p>
             {% endif %}
         </div>
     </div>
 </div>
 
-<div class="row-fluid">
-    <div class="span12">
-        <div class="row-fluid">
-            <div class="span12" style="padding-left: 20px; padding-bottom: 5px">
-                <p><strong>Author(s)</strong>:&nbsp;{% for author in article.bibjson().author %}<em>{% if not loop.first %}, {% endif %}{{author.name}}{% if author.affiliation %} ({{author.affiliation}}){% endif %}</em>{% endfor %}</p>
-                {% for url in article.bibjson().get_urls("fulltext") %}
-                    <p><strong>Full Text: </strong><a href="{{url}}">{{url}}</a></p>
+<div class="row-fluid" style="margin-top: 30px">
+    <div class="span1">&nbsp;</div>
+    <div class="span5">
+        <div class="box slim">
+            <p><strong>AUTHORS</strong></p>
+
+            <p>
+                {% for author in bibjson.author %}
+                <em>{% if not loop.first %}, {% endif %}{{author.name}}
+                    {% if author.affiliation %} ({{author.affiliation}})
+                    {% endif %}
+                </em>
                 {% endfor %}
-                {% if article.bibjson().abstract %}
-                    <strong>Abstract</strong><a href="{{url}}">{{url}}</a><br>
-                    <p class="abstract_box" id="article_{{article.id}}">{{article.bibjson().abstract}}</p>
-                {% endif %}
-            </div>
+            </p>
+
         </div>
+    </div>
+
+    <div class="span5">
+        <div class="box slim">
+            <p><strong>EDITORIAL INFORMATION</strong></p>
+
+            {% if jbib.editorial_review %}
+                {% if jbib.editorial_review.get("process") or jbib.editorial_review.get("url") %}
+                    <p>
+                    {% if jbib.editorial_review.get("url") %}
+                        <a href="{{jbib.editorial_review.get('url')}}">{{jbib.editorial_review.get("process", "Review process unknown")}}</a>
+                    {% else %}
+                        {{jbib.editorial_review.get("process", "Review process unknown")}}
+                    {% endif %}
+                    </p>
+                {% endif %}
+            {% endif %}
+
+            {% if jbib.get_single_url("editorial_board") %}
+                <p><a href="{{jbib.get_single_url('editorial_board')}}">Editorial Board</a></p>
+            {% endif %}
+
+            {% if jbib.get_single_url("author_instructions") %}
+                <p><a href="{{jbib.get_single_url('author_instructions')}}">Instructions for authors</a></p>
+            {% endif %}
+
+            {% if jbib.publication_time %}
+                <p>Time From Submission to Publication: {{jbib.publication_time}} weeks</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+<div class="row-fluid" style="margin-top: 30px">
+    <div class="span1">&nbsp;</div>
+    <div class="span10">
+
+        <p>
+            <strong>
+                ABSTRACT
+                {% for url in bibjson.get_urls("fulltext") %}
+                    | <a href="{{url}}">Full Text</a>
+                {% endfor %}
+            </strong>
+        </p>
+        <p>{{bibjson.abstract}}</p>
+
     </div>
 </div>
 

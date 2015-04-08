@@ -213,7 +213,15 @@ def article_page(identifier=None):
     if article is None:
         abort(404)
 
-    return render_template('doaj/article.html', article=article, countries=countries_dict)
+    # find the related journal record
+    journal = None
+    issns = article.bibjson().issns()
+    for issn in issns:
+        journals = models.Journal.find_by_issn(issns[0])
+        if len(journals) > 0:
+            journal = journals[0]
+
+    return render_template('doaj/article.html', article=article, journal=journal, countries=countries_dict)
 
 
 ###############################################################
