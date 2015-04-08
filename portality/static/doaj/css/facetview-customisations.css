@@ -96,6 +96,12 @@ hr {
     -ms-filter: none;
 }
 
+.facetview_shorten_url, .facetview_lengthen_url {
+    background-image: none !important;
+    background-color: #f5f5f5 !important;
+    border-color: rgba(0,0,0,0.1) !important;
+}
+
 #facetview_selectedfilters .btn-group {
     margin-right: 1em;
 }
