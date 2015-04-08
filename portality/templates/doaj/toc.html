@@ -28,13 +28,8 @@
             <strong><em>{{bibjson.alternative_title}}</em></strong>
         {% endif %}
         <p>
-        {% for identifier in bibjson.get_identifiers(idtype='pissn') %}
-            {{identifier}} (Print)
-        {% endfor %}
-        {% for identifier in bibjson.get_identifiers(idtype='eissn') %}
-            {% if bibjson.get_identifiers(idtype='pissn') %};{% endif %}
-            {{identifier}} (Online)
-        {% endfor %}
+        {# this next bit has to be all on one line so that the spacing is correct #}
+        {% for identifier in bibjson.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in bibjson.get_identifiers(idtype='eissn') %}{% if bibjson.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
         </p>
 
         {% if future %}
