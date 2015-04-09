@@ -1,0 +1,6 @@
+{
+    "jscodehints.detectedExclusions": [
+        "/Users/one/Code/doaj/src/doaj/portality/static/portality/vendor/facetview2/vendor/highcharts/modules/canvas-tools.src.js",
+        "/Users/one/Code/doaj/src/doaj/portality/static/doaj/js/available_facetviews/public.journalarticle.facetview.js"
+    ]
+}

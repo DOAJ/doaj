@@ -22,6 +22,7 @@ setup(
         "futures==2.1.6",
         "esprit==0.0.2",
         "nose",
+        "unidecode",
         # for deployment
         "gunicorn",
         "newrelic",

@@ -5,6 +5,9 @@ from portality.core import app
 from portality import xwalk
 from portality.models import GenericBibJSON
 
+import string
+from unidecode import unidecode
+
 # NOTE: DomainObject interferes with new style @property getter/setter
 # so we can't use them here
 class Journal(DomainObject):
@@ -511,6 +514,8 @@ class Journal(DomainObject):
         urls = {}
         has_apc = None
         classification_paths = []
+        unpunctitle = None
+        asciiunpunctitle = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -584,6 +589,15 @@ class Journal(DomainObject):
         # get the full classification paths for the subjects
         classification_paths = cbib.lcc_paths()
 
+        # create an unpunctitle
+        if cbib.title is not None:
+            throwlist = string.punctuation + '\n\t'
+            unpunctitle = "".join(c for c in cbib.title if c not in throwlist).strip()
+            try:
+                asciiunpunctitle = unidecode(unpunctitle)
+            except:
+                asciiunpunctitle = unpunctitle
+        
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -612,6 +626,10 @@ class Journal(DomainObject):
             self.data["index"]["has_apc"] = has_apc
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
+        if unpunctitle is not None:
+            self.data["index"]["unpunctitle"] = unpunctitle
+        if asciiunpunctitle is not None:
+            self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ

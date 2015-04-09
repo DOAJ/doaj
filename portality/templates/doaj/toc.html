@@ -340,7 +340,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;">
     {% for v in volumes %}
-        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=journal.id, volume=v)}}">{{v}}</a>
+        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=bibjson.issns()[0], volume=v)}}">{{v}}</a>
     {% endfor %}
   </div>
 </div>
@@ -350,7 +350,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
     {% for i in issues %}
-        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=journal.id, volume=current_volume)}}/{{i}}">{{i}}</a>
+        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=bibjson.issns()[0], volume=current_volume)}}/{{i}}">{{i}}</a>
     {% endfor %}
   </div>
 </div>
@@ -404,13 +404,13 @@ $(document).ready(function() {
         if (issuelist !== undefined ) {
             var isscontent = '';
             for ( var i in issuelist ) {
-                isscontent += '<a class="bjsr issue btn" id="issue_' + issuelist[i] + '" href="/toc/{{journal.id}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
+                isscontent += '<a class="bjsr issue btn btn-doaj" id="issue_' + issuelist[i] + '" href="/toc/{{bibjson.issns()[0]}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
             }
             $('#issuelist').html(isscontent);
-            $('.bjsr.issue').first().addClass('btn-info');
+            $('.bjsr.issue').first().removeClass('btn-doaj').addClass('btn-info');
             $('.bjsr.issue').bind('click',bjsr);
         }
-        var als = [];
+        /*var als = [];
         var sa = {};
         keys = [];
         var nsa = [];
@@ -433,10 +433,10 @@ $(document).ready(function() {
             k = keys[i];
             als.push(sa[k]);
         }
-        var articlelist = als.concat(nsa)
+        var articlelist = als.concat(nsa)*/
         // put the articles on the page
-        for (var a in articlelist) {
-            var artcl = articlelist[a];
+        for (var a in data.articles) {
+            var artcl = data.articles[a];
             if ( a == 0 ) {
                 if ( "bibjson.month" in artcl || "bibjson.year" in artcl ) {
                     content += '<h4 style="margin-bottom: 10px">(';
@@ -464,7 +464,7 @@ $(document).ready(function() {
             }
             if ( "bibjson.start_page" in artcl ) {
                 content += 'pages: ' + artcl["bibjson.start_page"][0];
-                if ( "bibjson.start_page" in artcl ) { content += '- ' + artcl["bibjson.start_page"][0]; }
+                if ( "bibjson.start_page" in artcl ) { content += ' - ' + artcl["bibjson.start_page"][0]; }
                 content += '<br>'
             }
             if ( "bibjson.abstract" in artcl ) {
@@ -485,11 +485,11 @@ $(document).ready(function() {
         $.getJSON(jurl, updatearticles);
         var vol = url.split('/')[3];
         var iss = url.split('/')[4];
-        $('.bjsr').removeClass('btn-info');
-        $('#vol_' + vol).addClass('btn-info');
+        $('.bjsr').removeClass('btn-info').addClass('btn-doaj');
+        $('#vol_' + vol).removeClass('btn-doaj').addClass('btn-info');
         $('#volumeid').html(vol);
         if ( iss !== undefined ) {
-            $('#issue_' + iss).addClass('btn-info');
+            $('#issue_' + iss).removeClass('btn-doaj').addClass('btn-info');
         }
         if ('pushState' in window.history) {
             window.history.pushState("", "search", url);
