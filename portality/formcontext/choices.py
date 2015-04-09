@@ -88,17 +88,18 @@ class Choices(object):
         ('reapplication', 'Reapplication In Progress'),
         ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
-        ('in progress', 'In progress'),
-        ('on hold', 'On Hold')
+        ('in progress', 'In progress')
     ]
 
     _application_status_admin = _application_status_base + [
+        ('on hold', 'On Hold'),
         ('ready', 'Ready'),
         ('rejected', 'Rejected'),
         ('accepted', 'Accepted')
     ]
 
     _application_status_editor = _application_status_base + [
+        ('on hold', 'On Hold'),
         ('ready', 'Ready'),
     ]
 

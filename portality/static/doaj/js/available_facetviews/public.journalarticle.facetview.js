@@ -464,7 +464,7 @@ jQuery(document).ready(function($) {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
                     var url = "http://dx.doi.org/" + doi.substring(tendot);
-                    result += " DOI: <a href='" + url + "'>" + doi.substring(tendot) + "</a>";
+                    result += " DOI <a href='" + url + "'>" + doi.substring(tendot) + "</a>";
                 }
             }
         }

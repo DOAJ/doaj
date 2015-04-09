@@ -211,3 +211,9 @@ class GenericBibJSON(object):
         classification_paths = lcc.longest(classification_paths)
 
         return classification_paths
+
+    def issns(self):
+        issns = []
+        issns += self.get_identifiers(self.P_ISSN)
+        issns += self.get_identifiers(self.E_ISSN)
+        return issns
