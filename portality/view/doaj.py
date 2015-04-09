@@ -148,7 +148,7 @@ def toc(identifier=None, volume=None, issue=None):
     
     # identifier may be the journal id or an issn
     journal = None
-    jid = identifier # track the journal id - this may be an issn, in which case this will get overwritten
+    issn_ref = False
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier)
         if len(js) > 1:
@@ -156,13 +156,25 @@ def toc(identifier=None, volume=None, issue=None):
         if len(js) == 0:
             abort(404)
         journal = js[0]
-        jid = journal.id
+        issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
         journal = models.Journal.pull(identifier)
     if journal is None:
         abort(404)
-    
-    issns = journal.known_issns()
+
+    # get the bibjson that we will render the ToC around - default to the most recent version's
+    # bibjson, and then if we were passed an issn get the historical version if one exists (if
+    # one doesn't it is the current version we want)
+    bibjson = journal.bibjson()
+    if issn_ref:
+        histbibjson = journal.get_history_for(identifier)
+        if histbibjson is not None:
+            bibjson = histbibjson
+
+    # get the issns for this specific continuation
+    issns = bibjson.issns()
+
+    # build the volumes and issues
     all_issues = None
     all_volumes = None
     
@@ -188,13 +200,7 @@ def toc(identifier=None, volume=None, issue=None):
         resp.mimetype = "application/json"
         return resp
     else:
-        # get the bibjson which forms the core of the page to render
-        # FIXME: at the moment we can only display the latest journal, but the code
-        # below now allows us to generalise this to display any continuation.  Just need
-        # to fix this bit
-        bibjson = journal.bibjson()
-
-        # get the continuations future and past
+        # get the continuations for this bibjson record, future and past
         issn = bibjson.get_one_identifier(bibjson.E_ISSN)
         if issn is None:
             issn = bibjson.get_one_identifier(bibjson.P_ISSN)
@@ -202,8 +208,7 @@ def toc(identifier=None, volume=None, issue=None):
 
         return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
                                articles=articles, volumes=all_volumes, current_volume=volume,
-                               issues=all_issues, current_issue=issue,
-                               countries=countries_dict)
+                               issues=all_issues, current_issue=issue)
 
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
@@ -221,7 +226,7 @@ def article_page(identifier=None):
         if len(journals) > 0:
             journal = journals[0]
 
-    return render_template('doaj/article.html', article=article, journal=journal, countries=countries_dict)
+    return render_template('doaj/article.html', article=article, journal=journal)
 
 
 ###############################################################

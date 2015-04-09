@@ -33,17 +33,21 @@
         </p>
 
         {% if future %}
-            <p><strong>Replaced by: </strong>
+            <p><strong>Subsequent title(s): </strong>
             {% for f in future %}
-                <a href="{{ url_for('doaj.toc', identifier=journal.id) }}">{{ f.title }}</a> (FIXME)
+                {% if f.issns()|length > 0 %}
+                <a href="{{ url_for('doaj.toc', identifier=f.issns()[0]) }}">{{ f.title }}</a>
+                {% endif %}
             {% endfor %}
             </p>
         {% endif %}
 
         {% if past %}
-            <p><strong>Previously known as: </strong>
+            <p><strong>Previous title(s): </strong>
             {% for p in past %}
-                <a href="{{ url_for('doaj.toc', identifier=journal.id) }}">{{ p.title }}</a> (FIXME)
+                {% if p.issns()|length > 0 %}
+                <a href="{{ url_for('doaj.toc', identifier=p.issns()[0]) }}">{{ p.title }}</a>
+                {% endif %}
             {% endfor %}
             </p>
         {% endif %}
