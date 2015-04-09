@@ -9,6 +9,7 @@ import os
 
 from flask import request, abort, render_template, redirect, send_file, url_for, flash
 from flask.ext.login import login_user, current_user
+from copy import deepcopy
 
 from datetime import datetime
 import tzlocal
@@ -114,7 +115,9 @@ def legacy():
     elif func == "browse" or func == 'byPublicationFee  ':
         return redirect(url_for('doaj.search')), 301
     elif func == "openurl":
-        return redirect(url_for('openurl.openurl', **request.values.to_dict(flat=True)), 301)
+        vals = request.values.to_dict(flat=True)
+        del vals["func"]
+        return redirect(url_for('openurl.openurl', **vals), 301)
     abort(404)
 
 @app.route("/doaj2csv")

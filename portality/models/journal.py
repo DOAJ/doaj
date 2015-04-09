@@ -76,7 +76,17 @@ class Journal(DomainObject):
         hist = JournalHistory(**snap)
         hist.save()
 
+    ########################################################################
+    ## Functions for handling continuations
+
+
     def history(self):
+        """
+        returns a list of ordered history objects with their date, replaces, replacedby and bibjson object
+        as a tuple
+
+        [(date, replaces, isreplacedby, bibjson)]
+        """
         # get the raw history object from the data.  It constists of a date, an optional replaces/isreplacedby,
         # and the bibjson of the old version of the journal
         histories = self.data.get("history", [])
@@ -244,6 +254,33 @@ class Journal(DomainObject):
             del histories[i]
         if len(histories) == 0:
             del self.data["history"]
+
+    def issns_for_title(self, title):
+        """locate the issns associated with the supplied title"""
+        if title is None:
+            return None
+
+        incoming_title = title.strip().lower()
+
+        # first check the main title on the journal
+        current_title = self.bibjson().title
+        if current_title is not None:
+            if incoming_title == current_title.strip().lower():
+                return self.bibjson().issns()
+
+        # now check all of the historical records
+        for d, r, irb, bj in self.history():
+            history_title = bj.title
+            if history_title is not None:
+                if incoming_title == history_title.strip().lower():
+                    return bj.issns()
+
+        # we didn't find anything
+        return None
+
+
+    #######################################################################
+
 
     def make_reapplication(self):
         from portality.models import Suggestion
