@@ -4,6 +4,9 @@ from copy import deepcopy
 from datetime import datetime
 from portality import xwalk
 
+import string
+from unidecode import unidecode
+
 class Article(DomainObject):
     __type__ = "article"
 
@@ -32,13 +35,13 @@ class Article(DomainObject):
     def list_volumes(cls, issns):
         q = ArticleVolumesQuery(issns)
         result = cls.query(q=q.query())
-        return [t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])]
+        return _human_sort([t.get("term") for t in result.get("facets", {}).get("vols", {}).get("terms", [])])
 
     @classmethod
     def list_volume_issues(cls, issns, volume):
         q = ArticleVolumesIssuesQuery(issns, volume)
         result = cls.query(q=q.query())
-        return [t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])]
+        return _human_sort([t.get("term") for t in result.get("facets", {}).get("issues", {}).get("terms", [])])
 
     @classmethod
     def get_by_volume(cls, issns, volume):
@@ -50,7 +53,7 @@ class Article(DomainObject):
     def get_by_volume_issue(cls, issns, volume, issue):
         q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
         articles = cls.query(q=q.query())
-        return [i['fields'] for i in articles.get('hits',{}).get('hits',[])]
+        return _sort_articles([i['fields'] for i in articles.get('hits',{}).get('hits',[])])
 
     @classmethod
     def find_by_issns(cls, issns):
@@ -194,6 +197,8 @@ class Article(DomainObject):
         license = []
         publisher = []
         classification_paths = []
+        unpunctitle = None
+        asciiunpunctitle = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -264,6 +269,15 @@ class Article(DomainObject):
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)
 
+        # create an unpunctitle
+        if cbib.title is not None:
+            throwlist = string.punctuation + '\n\t'
+            unpunctitle = "".join(c for c in cbib.title if c not in throwlist).strip()
+            try:
+                asciiunpunctitle = unidecode(unpunctitle)
+            except:
+                asciiunpunctitle = unpunctitle
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -288,6 +302,10 @@ class Article(DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
+        if unpunctitle is not None:
+            self.data["index"]["unpunctitle"] = unpunctitle
+        if asciiunpunctitle is not None:
+            self.data["index"]["asciiunpunctitle"] = unpunctitle
 
     def prep(self):
         self._generate_index()
@@ -772,3 +790,63 @@ class DuplicateArticleQuery(object):
             q["query"]["bool"].update(s)
 
         return q
+
+    
+
+    
+def _human_sort(things,reverse=True):
+    numeric = []
+    non_numeric = []
+    nmap = {}
+    for v in things:
+        try:
+            # try to convert n to an int
+            vint = int(v)
+
+            # remember the original string (it may have leading 0s)
+            try:
+                nmap[vint].append(v)
+            except KeyError:
+                nmap[vint] = [v]
+                numeric.append(vint)
+        except:
+            non_numeric.append(v)
+
+    numeric.sort(reverse=reverse)
+    non_numeric.sort(reverse=reverse)
+
+    # convert the integers back to their string representation
+    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
+
+    
+def _sort_articles(articles):
+    # first extract the array we want to sort on
+    # and make a map of that value to the issue itself
+    unsorted = []
+    numbers = []
+    imap = {}
+    for art in articles:
+        sp = art.get("bibjson",{}).get("start_page",None)
+
+        # can't sort anything that doesn't have a start page
+        if sp is None:
+            unsorted.append(art)
+            continue
+
+        # deal with start page clashes and record the start pages
+        # to sort by
+        if sp not in numbers:
+            numbers.append(sp)
+        if sp in imap:
+            imap[sp].append(art)
+        else:
+            imap[sp] = [art]
+
+    sorted_keys = _human_sort(numbers,reverse=False)
+
+    s = []
+    for n in sorted_keys:
+        s += [x for x in imap[n]]
+    s += [x for x in unsorted]
+
+    return s

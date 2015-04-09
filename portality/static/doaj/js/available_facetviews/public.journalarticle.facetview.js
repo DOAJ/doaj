@@ -564,7 +564,7 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Date added to DOAJ','field':'created_date'},
-            {'display':'Title','field':'bibjson.title.exact'},
+            {'display':'Title','field':'index.unpunctitle.exact'},
 
             // check that this works in fv2
             {'display':'Article: Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']}

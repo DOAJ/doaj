@@ -9,6 +9,19 @@ footer {
     margin-bottom: 1em;
 }
 
+.btn-doaj {
+    background-color: #F68B1F;
+    background-image: -moz-linear-gradient(center top , #F6EDE5, #F6BC82);
+    background-image: -webkit-linear-gradient(top, #F6EDE5, #F6BC82);
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F6BC82',GradientType=0);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#F68B1F',endColorstr='#F6BC82',GradientType=0)";*/
+    border-color: #F68B1F #F68B1F #F68411;
+}
+/*.btn-doaj:hover {
+    filter: none;
+    -ms-filter: none;
+}*/
+
 textarea:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="datetime"]:focus, input[type="datetime-local"]:focus, input[type="date"]:focus, input[type="month"]:focus, input[type="time"]:focus, input[type="week"]:focus, input[type="number"]:focus, input[type="email"]:focus, input[type="url"]:focus, input[type="search"]:focus, input[type="tel"]:focus, input[type="color"]:focus, .uneditable-input:focus {
     border-color: rgba(246, 139, 31, 0.8);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(246, 139, 31, 0.6);
