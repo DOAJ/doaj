@@ -438,7 +438,7 @@ class ArticleBibJSON(GenericBibJSON):
     def get_journal_license(self):
         return self.bibjson.get("journal", {}).get("license", [None])[0]
 
-    def get_publication_date(self):
+    def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
@@ -478,7 +478,8 @@ class ArticleBibJSON(GenericBibJSON):
 
             # attempt to confirm the format of our datestamp
             try:
-                datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+                datecheck = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+                date = datecheck.strftime(date_format)
             except:
                 return ""
         return date
