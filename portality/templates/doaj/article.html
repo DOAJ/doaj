@@ -2,16 +2,6 @@
 
 {% block content %}
 
-{%- set CC_MAP = {
-        "CC BY" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
-        "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
-        "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
-        "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
-        "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
-        "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
-    }
--%}
-
 {%
     set TYN = {
         True : "Yes",
@@ -26,7 +16,7 @@
 {% set doi = bibjson.get_one_identifier("doi") %}
 
 <div class="row-fluid">
-    <div class="span9">
+    <div class="span12">
         <h1>{{bibjson.title}}</h1>
 
         <p>
@@ -45,15 +35,6 @@
         </p>
     </div>
 
-    <div class="span3">
-        {%- set lic = bibjson.get_journal_license() -%}
-        {%- if lic -%}
-            {%- set urls = CC_MAP.get(lic.get("type")) -%}
-            {%- if urls -%}
-                <p><a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a></p>
-            {%- endif -%}
-        {%- endif -%}
-    </div>
 </div>
 
 <div class="row-fluid" style="margin-bottom: 30px; margin-top: 30px">
@@ -64,12 +45,15 @@
                 <p><a href="{{jbib.get_single_url('homepage')}}">Journal Homepage</a></p>
             {% endif %}
 
-            <p>{{ jbib.title }}</p>
+            <p><strong>Journal Title</strong>: {{ jbib.title }}</p>
 
             {# this next bit has to be all on one line so that the spacing is correct #}
+            {% if jbib.issns()|length > 0 %}
             <p>
+            <strong>ISSN</strong>:
             {% for identifier in jbib.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in jbib.get_identifiers(idtype='eissn') %}{% if jbib.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
             </p>
+            {% endif %}
 
             {% if jbib.publisher %}
                 <p><strong>Publisher</strong>:&nbsp;{{jbib.publisher}}</p>
@@ -115,10 +99,10 @@
 
             <p>
                 {% for author in bibjson.author %}
-                <em>{% if not loop.first %}, {% endif %}{{author.name}}
+                <em>{{author.name}}
                     {% if author.affiliation %} ({{author.affiliation}})
                     {% endif %}
-                </em>
+                </em><br>
                 {% endfor %}
             </p>
 
@@ -161,16 +145,19 @@
 <div class="row-fluid" style="margin-top: 30px">
     <div class="span1">&nbsp;</div>
     <div class="span10">
+        <div style="padding: 0.5em">
 
         <p>
             <strong>
-                ABSTRACT
+                Abstract
                 {% for url in bibjson.get_urls("fulltext") %}
                     | <a href="{{url}}">Full Text</a>
                 {% endfor %}
             </strong>
         </p>
         <p>{{bibjson.abstract}}</p>
+
+        </div>
 
     </div>
 </div>
