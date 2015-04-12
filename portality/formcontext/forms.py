@@ -116,9 +116,9 @@ class JournalInformation(Form):
     )
     digital_archiving_policy_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('digital_archiving_policy', optvals=Choices.digital_archiving_policy_url_optional()), URLOptionalScheme()],
-        description='This field is optional if you have only selected "No policy in place" above',
+        description='This field is optional if you selected "No policy in place".',
     )
-    crawl_permission = RadioField('Does the journal allow anyone to crawl the full-text of the journal?',
+    crawl_permission = RadioField('Does the journal allow software/spiders to automatically crawl the journal content (also known as text mining)?',
         [validators.DataRequired()],
         choices = Choices.crawl_permission()
     )
@@ -162,7 +162,7 @@ class JournalInformation(Form):
     )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
         [validators.DataRequired(), URLOptionalScheme()],
-        description = 'The journal must have either an editor or an editorial board with at least 5 clearly identifiable members and affiliation information. We may ask for affiliation information and email addresses as part of our checks.'
+        description = 'A journal must have an editor and an editorial board. Only in the case of Humanities journals we will accept a form of editorial review using only two editors and no editorial board. Where an editorial board present, at least 5 of its members must be clearly identifiable with their affiliation information.'
     )
     review_process = SelectField('Please select the review process for papers',
         [validators.DataRequired()],
@@ -185,7 +185,8 @@ class JournalInformation(Form):
         choices = Choices.plagiarism_screening()
     )
     plagiarism_screening_url = URLField("Enter the URL where this information can be found",
-        [OptionalIf('plagiarism_screening', optvals=Choices.plagiarism_screening_url_optional()), URLOptionalScheme()]
+        [OptionalIf('plagiarism_screening', optvals=Choices.plagiarism_screening_url_optional()), URLOptionalScheme()],
+        description="The URL should state that the journal actively checks for plagiarism and detail how this is done."
     )
     publication_time = IntegerField('What is the average number of weeks between submission and publication?',
         [validators.DataRequired(), validators.NumberRange(min=0, max=53)]
