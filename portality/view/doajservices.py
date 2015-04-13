@@ -3,7 +3,8 @@ import json
 from flask import Blueprint, abort, make_response
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required
+from portality.core import app, ssl_required, write_required
+from portality.util import jsonp
 
 from portality import lock
 
@@ -12,6 +13,7 @@ blueprint = Blueprint('doajservices', __name__)
 @blueprint.route("/unlock/<object_type>/<object_id>", methods=["POST"])
 @login_required
 @ssl_required
+@write_required
 def unlock(object_type, object_id):
     # first figure out if we are allowed to even contemplate this action
     if object_type not in ["journal", "suggestion"]:

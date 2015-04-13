@@ -5,7 +5,7 @@ import urllib
 
 from portality import dao
 from portality import models
-from portality.core import app, ssl_required
+from portality.core import app, ssl_required, write_required
 from portality import blog
 from portality.datasets import countries_dict
 from portality import lock
@@ -63,6 +63,7 @@ def search_post():
     return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(qobj)))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
+@write_required
 def suggestion():
     if request.method == "GET":
         fc = formcontext.ApplicationFormFactory.get_form_context()
@@ -191,7 +192,6 @@ def _sort_volumes(volumes):
 
     # convert the integers back to their string representation
     return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
-
 
 ###############################################################
 ## The various static endpoints

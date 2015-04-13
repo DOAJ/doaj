@@ -2,6 +2,9 @@
 A forms system
 
 Build a form template, build a handler for its submission, receive data from end users
+
+FIXME: most of the content in here is junk, and has been superseded, but we need to pick it apart to figure out
+what
 '''
 import json
 import sys
