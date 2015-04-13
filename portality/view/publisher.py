@@ -2,7 +2,7 @@ from flask import Blueprint, request, send_from_directory
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
+from portality.core import app, ssl_required, restrict_to_role, write_required
 
 from portality import models, article
 from portality.view.forms import ArticleForm
@@ -30,6 +30,7 @@ def index():
 @blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def reapplication_page(reapplication_id):
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         abort(404)
@@ -74,6 +75,7 @@ def updates_in_progress():
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def upload_file():
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
@@ -253,6 +255,7 @@ def _url_upload(url, schema, previous):
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def metadata():
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
@@ -317,6 +320,7 @@ def help():
 @blueprint.route("/reapply", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def bulk_reapply():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         abort(404)

@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
+from portality.core import app, ssl_required, restrict_to_role, write_required
 from portality import models
 
 from portality import lock
@@ -52,6 +52,7 @@ def associate_suggestions():
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_page(journal_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_journal"):
@@ -108,6 +109,7 @@ def journal_page(journal_id):
 @blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def suggestion_page(suggestion_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_suggestion"):
