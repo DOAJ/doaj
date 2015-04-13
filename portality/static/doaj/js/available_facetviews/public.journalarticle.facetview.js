@@ -224,12 +224,12 @@ jQuery(document).ready(function($) {
 
         // set the title
         if (resultobj.bibjson.title) {
-            result += "<span class='title'><a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+            result += "<span class='title'><a href='/toc/" + resultobj.id + "'>" + escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
         }
 
         // set the alternative title
         if (resultobj.bibjson.alternative_title) {
-            result += "<span class='alternative_title' style='color: #aaaaaa'>" + resultobj.bibjson.alternative_title + "</span><br>";
+            result += "<span class='alternative_title' style='color: #aaaaaa'>" + escapeHtml(resultobj.bibjson.alternative_title) + "</span><br>";
         }
 
         // set the issn
@@ -239,9 +239,9 @@ jQuery(document).ready(function($) {
             var eissns = [];
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].type === "pissn") {
-                    pissns.push(ids[i].id)
+                    pissns.push(escapeHtml(ids[i].id))
                 } else if (ids[i].type === "eissn") {
-                    eissns.push(ids[i].id)
+                    eissns.push(escapeHtml(ids[i].id))
                 }
             }
             if (pissns.length > 0 || eissns.length > 0) {
@@ -260,6 +260,7 @@ jQuery(document).ready(function($) {
         }
 
         // set the homepage url
+        // FIXME: how to escape the html here?
         if (resultobj.bibjson && resultobj.bibjson.link) {
             var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
@@ -308,7 +309,7 @@ jQuery(document).ready(function($) {
                     var urls = licenceMap[ltitle];
                     result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
                 } else {
-                    result += "<strong>License: " + ltitle + "</strong><br>"
+                    result += "<strong>License: " + escapeHtml(ltitle) + "</strong><br>"
                 }
             }
         }
@@ -318,12 +319,12 @@ jQuery(document).ready(function($) {
             if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {
                 result += "<strong>APC: ";
                 if (resultobj.bibjson.apc.average_price) {
-                    result += resultobj.bibjson.apc.average_price;
+                    result += escapeHtml(resultobj.bibjson.apc.average_price);
                 } else {
                     result += "price unknown ";
                 }
                 if (resultobj.bibjson.apc.currency) {
-                    result += resultobj.bibjson.apc.currency
+                    result += escapeHtml(resultobj.bibjson.apc.currency);
                 } else {
                     result += " currency unknown";
                 }
@@ -361,7 +362,7 @@ jQuery(document).ready(function($) {
                 var ids = resultobj.bibjson.identifier;
                 for (var i = 0; i < ids.length; i++) {
                     if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                        issns.push(ids[i].id)
+                        issns.push(escapeHtml(ids[i].id))
                     }
                 }
             }
@@ -371,9 +372,9 @@ jQuery(document).ready(function($) {
             // journal title
             if (ctitle) {
                 if (issns.length > 0) {
-                    citation += "<a href='/toc/" + issns[0] + "'>" + ctitle.trim() + "</a>";
+                    citation += "<a href='/toc/" + issns[0] + "'>" + escapeHtml(ctitle.trim()) + "</a>";
                 } else {
-                    citation += ctitle.trim();
+                    citation += escapeHtml(ctitle.trim());
                 }
                 citation += ". ";
             }
@@ -381,18 +382,18 @@ jQuery(document).ready(function($) {
             // year
             if (cyear) {
                 // if (citation !== "") { citation += " " }
-                citation += cyear + ";";
+                citation += escapeHtml(cyear) + ";";
             }
 
             // volume
             if (cvol) {
                 // if (citation !== "") { citation += "" }
-                citation += cvol;
+                citation += escapeHtml(cvol);
             }
 
             if (ciss) {
                 // if (citation !== "") { citation += ", " }
-                citation += "(" + ciss + ")";
+                citation += "(" + escapeHtml(ciss) + ")";
             }
 
             if (cstart || cend) {
@@ -405,13 +406,13 @@ jQuery(document).ready(function($) {
                 }
                 */
                 if (cstart) {
-                    citation += cstart;
+                    citation += escapeHtml(cstart);
                 }
                 if (cend) {
                     if (cstart) {
                         citation += "-"
                     }
-                    citation += cend;
+                    citation += escapeHtml(cend);
                 }
             }
 
@@ -434,7 +435,7 @@ jQuery(document).ready(function($) {
 
         // set the title
         if (resultobj.bibjson.title) {
-            result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a></span><br>";
+            result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
         }
 
         // set the authors
@@ -444,7 +445,7 @@ jQuery(document).ready(function($) {
             for (var i = 0; i < authors.length; i++) {
                 var author = authors[i];
                 if (author.name) {
-                    anames.push(author.name);
+                    anames.push(escapeHtml(author.name));
                 }
             }
             result += "<em>" + anames.join(", ") + "</em><br>";
@@ -463,8 +464,8 @@ jQuery(document).ready(function($) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "http://dx.doi.org/" + doi.substring(tendot);
-                    result += " DOI <a href='" + url + "'>" + doi.substring(tendot) + "</a>";
+                    var url = "http://dx.doi.org/" + escapeHtml(doi.substring(tendot));
+                    result += " DOI <a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
                 }
             }
         }
@@ -496,7 +497,7 @@ jQuery(document).ready(function($) {
             }
 
             if (resultobj.bibjson.abstract) {
-                result += '<div class="abstract_text" rel="' + resultobj.id + '">' + resultobj.bibjson.abstract + '</div>';
+                result += '<div class="abstract_text" rel="' + resultobj.id + '">' + escapeHtml(resultobj.bibjson.abstract) + '</div>';
             }
         }
 
