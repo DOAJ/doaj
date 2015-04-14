@@ -3,6 +3,7 @@ from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
+from portality.util import parse_date
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',
@@ -18,11 +19,11 @@ OPENURL_TO_ES = {
     'atitle' : (None, 'bibjson.title.exact'),
     'jtitle' : ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
     'stitle' : ('bibjson.alternative_title.exact', None),
-    'date' : (None, 'index.date'),
-    'volume' : (None, 'bibjson.journal.volume'),
-    'issue' : (None, 'bibjson.journal.number'),
-    'spage' : (None, 'bibjson.start_page'),
-    'epage' : (None, 'bibjson.end_page'),
+    'date' : (None, 'bibjson.year.exact'),
+    'volume' : (None, 'bibjson.journal.volume.exact'),
+    'issue' : (None, 'bibjson.journal.number.exact'),
+    'spage' : (None, 'bibjson.start_page.exact'),
+    'epage' : (None, 'bibjson.end_page.exact'),
     'issn' : ('index.issn.exact', 'index.issn.exact'), # bibjson.identifier.id.exact
     'eissn' : ('index.issn.exact', 'index.issn.exact'),
     'isbn' : ('index.issn.exact', 'index.issn.exact'),
@@ -265,6 +266,13 @@ class OpenURLRequest(object):
 
     @date.setter
     def date(self, val):
+        if val:
+            try:
+                parsed_date = parse_date(val)
+                val = parsed_date.year
+                print val
+            except ValueError:
+                val = None
         self._date = val
 
     @property
