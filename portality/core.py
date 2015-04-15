@@ -66,6 +66,10 @@ application configuration (settings.py or app.cfg).
 
 
 def initialise_index(app):
+    if app.config.get("READ_ONLY_MODE", False):
+        app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
+        return
+
     mappings = app.config["MAPPINGS"]
     i = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     i += '/' + app.config['ELASTIC_SEARCH_DB']
