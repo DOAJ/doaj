@@ -79,6 +79,10 @@ def old_to_new():
 
     return url_for('.openurl', **params)
 
+@blueprint.route("/openurl/help")
+def help():
+    return render_template("openurl/help.html")
+
 @blueprint.errorhandler(404)
 def bad_request(e):
     return render_template("openurl/404.html"), 404
