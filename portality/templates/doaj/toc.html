@@ -91,6 +91,8 @@
             {% if bibjson.provider %}
                 <p><strong>Platform/Host/Aggregator</strong>:&nbsp;{{bibjson.provider}}</p>
             {% endif %}
+
+            <p><strong>Date added to DOAJ</strong>:&nbsp;{{journal.created_timestamp.strftime("%e %b %Y")}}</p>
         </div>
     </div>
 
