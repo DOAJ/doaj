@@ -277,3 +277,20 @@ function publisherStatusMap(value) {
     }
     return value;
 }
+
+//////////////////////////////////////////////////////
+// date formatting function
+/////////////////////////////////////////////////////
+
+var monthmap = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"
+];
+
+function humanDate(datestr) {
+    var date = new Date(datestr);
+    var dom = date.getUTCDate();
+    var monthnum = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+
+    return String(dom) + " " + monthmap[monthnum] + " " + String(year);
+}

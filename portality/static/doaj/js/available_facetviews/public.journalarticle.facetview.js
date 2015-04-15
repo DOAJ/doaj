@@ -83,13 +83,6 @@ jQuery(document).ready(function($) {
             short_display: 15,
             sort: "desc",
             disabled: true
-        },
-
-        year_published : {
-            field : "bibjson.year.exact",
-            display: "Year of publication",
-            order: "reverse_term",
-            disabled: true
         }
     };
 
@@ -138,7 +131,6 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.country.exact", false);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
 
-                    // FIXME: do we need to do something about filters here too?
                 } else if (t === "article") {
                     // disable the journal facets
                     disableFacet(options, "bibjson.editorial_review.process.exact", true);
@@ -151,7 +143,6 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "bibjson.journal.title.exact", false);
                     disableFacet(options, "index.date", false);
 
-                    // FIXME: do we need to do something about filters here too?
                 }
             }
 
@@ -206,6 +197,7 @@ jQuery(document).ready(function($) {
     }
 
     function renderPublicJournal(options, resultobj) {
+
         // start off the string to be rendered
         var result = options.resultwrap_start;
         result += "<div class='row-fluid'>";
@@ -283,7 +275,13 @@ jQuery(document).ready(function($) {
         // add the subjects
         if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
             result += "<strong>Subject:</strong>&nbsp;";
-            result += resultobj.index.classification_paths.join(" | ");
+            result += resultobj.index.classification_paths.join(" | ") + "<br>";
+        }
+
+        // add the date added to doaj
+        if (resultobj.created_date) {
+            result += "<strong>Date added to DOAJ</strong>:&nbsp;";
+            result += humanDate(resultobj.created_date);
         }
 
         // close the main details box
