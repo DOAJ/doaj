@@ -1,5 +1,7 @@
 import os
 
+READ_ONLY_MODE = False
+
 # ========================
 # MAIN SETTINGS
 

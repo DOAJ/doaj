@@ -6,7 +6,7 @@ from copy import deepcopy
 
 from portality import dao
 from portality import models
-from portality.core import app, ssl_required
+from portality.core import app, ssl_required, write_required
 from portality import blog
 from portality.datasets import countries_dict
 from portality import lock
@@ -66,6 +66,7 @@ def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
+@write_required
 def suggestion():
     if request.method == "GET":
         fc = formcontext.ApplicationFormFactory.get_form_context()
@@ -227,7 +228,6 @@ def article_page(identifier=None):
             journal = journals[0]
 
     return render_template('doaj/article.html', article=article, journal=journal)
-
 
 ###############################################################
 ## The various static endpoints

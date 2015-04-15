@@ -5,6 +5,10 @@ import os, csv
 from datetime import datetime
 from operator import itemgetter
 
+if app.config.get("READ_ONLY_MODE", False):
+    print "System is in READ-ONLY mode, script cannot run"
+    exit()
+
 cdir = app.config.get("CACHE_DIR")
 if cdir is None:
     print "You must set CACHE_DIR in the config"

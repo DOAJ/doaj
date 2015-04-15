@@ -1,4 +1,5 @@
 from portality.models import Account
+from portality.core import app
 
 def input_password():
     password = None
@@ -15,6 +16,10 @@ def request_password():
     return password
 
 if __name__ == "__main__":
+    if app.config.get("READ_ONLY_MODE", False):
+        print "System is in READ-ONLY mode, script cannot run"
+        exit()
+
     import argparse, getpass
     parser = argparse.ArgumentParser()
     
