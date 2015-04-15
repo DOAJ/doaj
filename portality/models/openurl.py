@@ -69,12 +69,6 @@ class OpenURLRequest(object):
         # Set i to use either our mapping for journals or articles
         i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
 
-        # FIXME: you can query a journal by volume and issue (which makes sense) but
-        # these values are not used to query the index, so you can get a positive match
-        # for a volume and issue that aren't held by DOAJ.  Since these input values
-        # are then used to point the user to the right endpoint in the journal, this can result
-        # in unexpected errors/behaviour down the line
-
         # Add the attributes to the query
         for (k, v) in set_attributes:
             es_term = OPENURL_TO_ES[k][i]
@@ -125,11 +119,32 @@ class OpenURLRequest(object):
                     if ident is None:
                         ident = journal.id
 
-                # FIXME: the volume and issue are not queried on or validated, so we don't know
-                # for sure at this point whether the user will hit a valid ToC
-                # construct the toc url using the ident, plus volume and issue if they are available
-                jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue if self.volume else None)
+                # If there request has a volume parameter, query for presence of an article with that volume
+                if self.volume:
+                    volume_query = deepcopy(TERMS_SEARCH)
+                    volume_query["size"] = 0
 
+                    issn_term = { "term" : { "index.issn.exact" : ident} }
+                    volume_query["query"]["bool"]["must"].append(issn_term)
+
+                    vol_term = { "term" : {"bibjson.journal.volume.exact" : self.volume} }
+                    volume_query["query"]["bool"]["must"].append(vol_term)
+
+                    # And if there's an issue, query that too. Note, issue does not make sense on its own.
+                    if self.issue:
+                        iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
+                        volume_query["query"]["bool"]["must"].append(iss_term)
+
+                    vol_iss_results = Article.query(q=volume_query)
+                    if vol_iss_results['hits']['total'] > 0:
+                        # construct the toc url using the ident, plus volume and issue
+                        jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
+                    else:
+                        # If no results, the DOAJ does not contain the vol/issue being searched. (Show openurl 404)
+                        jtoc_url = None
+                else:
+                    # if no volume parameter, construct the toc url using the ident only
+                    jtoc_url = url_for("doaj.toc", identifier=ident)
                 return jtoc_url
 
             elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
@@ -148,7 +163,6 @@ class OpenURLRequest(object):
             match_dash = re.compile('[-]')
             if not match_dash.search(issn_str):
                 issn_str = issn_str[:4] + '-' + issn_str[4:]
-
         return issn_str
 
     @property
