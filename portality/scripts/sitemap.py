@@ -5,6 +5,10 @@ import os
 from datetime import datetime
 from operator import itemgetter
 
+if app.config.get("READ_ONLY_MODE", False):
+    print "System is in READ-ONLY mode, script cannot run"
+    exit()
+
 base_url = app.config.get("BASE_URL")
 if base_url is None:
     print "BASE_URL must be set in configuration before we can generate a sitemap"
