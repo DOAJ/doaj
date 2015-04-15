@@ -1,60 +1,94 @@
-<!-- get jquery js -->
-<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<!-- get bootstrap js -->
-<script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min.js"></script>
+{% if config.get("OFFLINE_MODE", False) %}
+
+    <!-- get jquery js -->
+    <script type="text/javascript" src="/static/doaj/js/offline/jquery.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    <!-- get bootstrap js -->
+    <script type="text/javascript" src="/static/doaj/js/offline/bootstrap.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+    {# No AddThis or Google Analytics #}
+
+    {% if edit_suggestion_page or edit_journal_page or subject_page %}
+
+        <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
+        <script type="text/javascript" src="/static/doaj/js/offline/jstree.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
+        {% if not subject_page %}
+            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        {% endif %}
+
+    {% endif %}
+
+{% else %}
+    <!-- get jquery js -->
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <!-- get bootstrap js -->
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/js/bootstrap.min.js"></script>
+
+    {# AddThis (as it is configured right now) uses the anchor part of
+    the URL (after the # sign) to track some more stuff. This interferes
+    with pages using anchors for their own needs (e.g. the user wants to
+    scroll immediately to a section of the page. AddThis is only used on
+    the search page right now and the search page has no use for anchors
+    at the moment, so only load its scripts when the search page is
+    displayed. #}
+    {% if request.path == '/search' %}
+    <!-- get addthis social sharing button scripts -->
+    <script type="text/javascript">var addthis_config = {"data_track_addressbar":true, data_ga_property: 'UA-46560124-1', "ui_click": true};</script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52ae52c34c6f0a3e"></script>
+    {% endif %}
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-46560124-1', 'doaj.org');
+      ga('require', 'linkid', 'linkid.js');
+      ga('send', 'pageview');
+
+    </script>
+
+    {% if edit_suggestion_page or edit_journal_page or subject_page %}
+
+        <script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.jstree/3.0.0-beta10/jstree.min.js"></script>
+
+        {% if not subject_page %}
+            <script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        {% endif %}
+
+    {% endif %}
+{% endif %}
 
 <!-- get our js -->
-<script type="text/javascript" src="/static/portality/js/portality.js"></script>
+<script type="text/javascript" src="/static/portality/js/portality.js?v={{config.get('DOAJ_VERSION')}}"></script>
             
 <!-- get linkify -->
-<script type="text/javascript" src="/static/portality/vendor/facetview/vendor/linkify/1.0/jquery.linkify-1.0-min.js"></script>  
+<script type="text/javascript" src="/static/portality/vendor/facetview/vendor/linkify/1.0/jquery.linkify-1.0-min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get tablesorter -->
-<script type="text/javascript" src="/static/portality/vendor/tablesorter/js/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="/static/portality/vendor/tablesorter/js/jquery.tablesorter.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <!-- get select2 -->
-<script type="text/javascript" src="/static/portality/vendor/select2-release-3.2/select2.min.js"></script>
+<script type="text/javascript" src="/static/portality/vendor/select2-release-3.2/select2.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 {% if search_page or subject_page %}
-<!-- get facetview -->
-<!-- <script type="text/javascript" src="/static/portality/vendor/facetview/jquery.facetview.js"></script> -->
-
-<!-- fv2 and the doaj theme - replaces the above -->
-<script type="text/javascript" src="/static/portality/vendor/facetview2/es.js"></script>
+    <!-- fv2 and the doaj theme - replaces the above -->
+    <script type="text/javascript" src="/static/portality/vendor/facetview2/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
     {% if not subject_page %}
-<script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js"></script>
-<script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js"></script>
-<script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js"></script>
+        <script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        <script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
+        <script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js?v={{config.get('DOAJ_VERSION')}}"></script>
     {% endif %}
 
 {% endif %}
 
-{# AddThis (as it is configured right now) uses the anchor part of
-the URL (after the # sign) to track some more stuff. This interferes
-with pages using anchors for their own needs (e.g. the user wants to
-scroll immediately to a section of the page. AddThis is only used on
-the search page right now and the search page has no use for anchors
-at the moment, so only load its scripts when the search page is
-displayed. #}
-{% if request.path == '/search' %}
-<!-- get addthis social sharing button scripts -->
-<script type="text/javascript">var addthis_config = {"data_track_addressbar":true, data_ga_property: 'UA-46560124-1', "ui_click": true};</script>
-<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-52ae52c34c6f0a3e"></script>
-{% endif %}
 
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-46560124-1', 'doaj.org');
-  ga('require', 'linkid', 'linkid.js');
-  ga('send', 'pageview');
-
-</script>
 
 <script type="text/javascript">var current_domain = document.location.host;</script>
 <script type="text/javascript">var current_scheme = window.location.protocol;</script>
@@ -65,27 +99,13 @@ displayed. #}
   <script type="text/javascript">var es_scheme = current_scheme;</script>
   {% if facetviews %}
   {% for facetview in facetviews %}
-    <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js"></script>
+    <script type="text/javascript" src="/static/doaj/js/available_facetviews/{{facetview}}.js?v={{config.get('DOAJ_VERSION')}}"></script>
   {% endfor %}
   {% endif %}
 {% endif %}
 
 <!-- get the app's js -->
-<script type="text/javascript" src="/static/doaj/js/doaj.js"></script>
-<script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js"></script>
+<script type="text/javascript" src="/static/doaj/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
-{# any admin area javascript includes #}
-{% if request.path.startswith("/admin") %}
 
-{% endif %} 
-
-{% if edit_suggestion_page or edit_journal_page or subject_page %}
-
-<script type="text/javascript">{% if lcc_jstree %}var lcc_jstree = {{lcc_jstree | safe}};{% else %} var lcc_jstree = undefined;{% endif %}</script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/jquery.jstree/3.0.0-beta10/jstree.min.js"></script>
-
-    {% if not subject_page %}
-<script type="text/javascript" src="/static/doaj/js/suggestions_and_journals.js"></script>
-    {% endif %}
-
-{% endif %}
