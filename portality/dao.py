@@ -74,6 +74,11 @@ class DomainObject(UserDict.IterableUserDict, object):
         return self.data.get("last_updated")
 
     def save(self, retries=0, back_off_factor=1):
+
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, save command cannot run")
+            return
+
         if 'id' in self.data:
             id_ = self.data['id'].strip()
         else:
@@ -108,15 +113,12 @@ class DomainObject(UserDict.IterableUserDict, object):
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
 
-    def save_from_form(self,request):
-        newdata = request.json if request.json else request.values
-        for k, v in newdata.items():
-            if k not in ['submit']:
-                self.data[k] = v
-        self.save()
-
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
+            return
+
         data = ''
         for r in bibjson_list:
             data += json.dumps( {'index':{'_id':r[idkey]}} ) + '\n'
@@ -129,9 +131,12 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def refresh(cls):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
+            return
+
         r = requests.post(cls.target() + '_refresh')
         return r.json()
-
 
     @classmethod
     def pull(cls, id_):
@@ -293,30 +298,36 @@ class DomainObject(UserDict.IterableUserDict, object):
             raise exception
         raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
 
-    def accessed(self):
-        if 'last_access' not in self.data:
-            self.data['last_access'] = []
-        try:
-            usr = current_user.id
-        except:
-            usr = "anonymous"
-        self.data['last_access'].insert(0, { 'user':usr, 'date':datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ") } )
-        r = requests.put(self.target() + self.data['id'], data=json.dumps(self.data))
+    def delete(self):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
+            return
 
-    def delete(self):        
         r = requests.delete(self.target() + self.id)
     
     @classmethod
     def remove_by_id(cls, id):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
+            return
+
         r = requests.delete(cls.target() + id)
 
     @classmethod
     def delete_by_query(cls, query):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
+            return
+
         r = requests.delete(cls.target() + "_query", data=json.dumps(query.get("query")))
         return r
 
     @classmethod
     def destroy_index(cls):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
+            return
+
         r = requests.delete(cls.target_whole_index())
         return r
     
@@ -324,10 +335,18 @@ class DomainObject(UserDict.IterableUserDict, object):
         """
         add the provided doc to the existing object
         """
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, update command cannot run")
+            return
+
         return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc" : doc}))
     
     @classmethod
     def delete_all(cls):
+        if app.config.get("READ_ONLY_MODE", False):
+            app.logger.warn("System is in READ-ONLY mode, delete_all command cannot run")
+            return
+
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
     
@@ -362,7 +381,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def iterall(cls, page_size=1000, limit=None):
         return cls.iterate(deepcopy(all_query), page_size, limit)
-    
+
     def csv(self, multival_sep=','):
         raise NotImplementedError
 
