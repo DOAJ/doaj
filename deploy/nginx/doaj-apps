@@ -1,6 +1,6 @@
 server {
     listen          80;
-    server_name     doaj.org .doaj.cottagelabs.com;
+    server_name     doaj.org testdoaj.cottagelabs.com;
 
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
