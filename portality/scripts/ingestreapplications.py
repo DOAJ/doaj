@@ -2,6 +2,10 @@ from portality import models, reapplication
 from portality.core import app
 import os
 
+if app.config.get("READ_ONLY_MODE", False):
+    print "System is in READ-ONLY mode, script cannot run"
+    exit()
+
 # first make sure we have enough information to run
 upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR")
 if upload_dir is None:

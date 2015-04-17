@@ -1,6 +1,7 @@
 from portality import models
 import os, json, argparse
 from copy import deepcopy
+from portality.core import app
 
 SKIPPED = 1
 PROCESSED = 2
@@ -124,6 +125,11 @@ def generate_tocs(verbose=False):
     print "Skipped", skipped, "journals. Created ToCs for", js, "journals.  A total of", volumes, "volumes"
 
 if __name__ == "__main__":
+
+    if app.config.get("READ_ONLY_MODE", False):
+        print "System is in READ-ONLY mode, script cannot run"
+        exit()
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-j", "--journal", help="journal id to generate ToC for")
     args = parser.parse_args()

@@ -4,7 +4,7 @@ from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
+from portality.core import app, ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
@@ -41,6 +41,7 @@ def journals():
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
+@write_required
 def article_endpoint(article_id):
     if not current_user.has_role("delete_article"):
         abort(401)
@@ -60,6 +61,7 @@ def article_endpoint(article_id):
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_page(journal_id):
     if not current_user.has_role("edit_journal"):
         abort(401)
@@ -95,6 +97,7 @@ def journal_page(journal_id):
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_activate(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -131,6 +134,7 @@ def suggestions():
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
@@ -178,6 +182,7 @@ def editor_group_search():
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
