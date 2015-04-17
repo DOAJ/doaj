@@ -661,7 +661,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
-            self.form.application_status.choices = choices.Choices.application_status()
+            self.form.application_status.choices = choices.Choices.application_status("editor")
 
         # get the editor group from the source because it isn't in the form
         egn = self.source.editor_group

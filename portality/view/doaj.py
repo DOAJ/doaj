@@ -2,14 +2,16 @@ from flask import Blueprint, request, abort, make_response
 from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
+from copy import deepcopy
 
 from portality import dao
 from portality import models
-from portality.core import app, ssl_required
+from portality.core import app, ssl_required, write_required
 from portality import blog
 from portality.datasets import countries_dict
 from portality import lock
 from portality.formcontext import formcontext
+from portality.lcc import lcc_jstree
 
 import json
 import os
@@ -41,28 +43,30 @@ def news():
 
 @blueprint.route("/search", methods=['GET'])
 def search():
-    return render_template('doaj/search.html',
-               search_page=True,
-               facetviews=['journals_and_articles']
-           )
+    return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
     if request.form.get('origin') != 'ui':
         abort(501)  # not implemented
 
-    terms = {'_type': []}
-    if request.form.get('include_journals') and request.form.get('include_articles'):
-        terms = {}  # the default anyway
-    elif request.form.get('include_journals'):
-        terms['_type'].append('journal')
-    elif request.form.get('include_articles'):
-        terms['_type'].append('article')
+    filters = None
+    if not (request.form.get('include_journals') and request.form.get('include_articles')):
+        filters = []
+        if request.form.get('include_journals'):
+            filters.append(dao.Facetview2.make_term_filter("_type", "journal"))
+        elif request.form.get('include_articles'):
+            filters.append(dao.Facetview2.make_term_filter("_type", "article"))
 
-    qobj = dao.DomainObject.make_query(q=request.form.get('q'), terms=terms)
-    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(qobj)))  # can't pass source as keyword param to url_for as usual, will urlencode the query object
+    query = dao.Facetview2.make_query(request.form.get("q"), filters=filters)
+    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
+
+@blueprint.route("/subjects")
+def subjects():
+    return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
+@write_required
 def suggestion():
     if request.method == "GET":
         fc = formcontext.ApplicationFormFactory.get_form_context()
@@ -137,10 +141,15 @@ def list_journals():
 
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
-def toc(identifier=None, volume=None):
+@blueprint.route("/toc/<identifier>/<volume>/<issue>")
+def toc(identifier=None, volume=None, issue=None):
+    # check for a browser js request for more volume/issue data
+    bjsr = request.args.get('bjsr',False)
+    bjsri = request.args.get('bjsri',False)
+    
     # identifier may be the journal id or an issn
     journal = None
-    jid = identifier # track the journal id - this may be an issn, in which case this will get overwritten
+    issn_ref = False
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier)
         if len(js) > 1:
@@ -148,50 +157,77 @@ def toc(identifier=None, volume=None):
         if len(js) == 0:
             abort(404)
         journal = js[0]
-        jid = journal.id
+        issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
         journal = models.Journal.pull(identifier)
     if journal is None:
         abort(404)
+
+    # get the bibjson that we will render the ToC around - default to the most recent version's
+    # bibjson, and then if we were passed an issn get the historical version if one exists (if
+    # one doesn't it is the current version we want)
+    bibjson = journal.bibjson()
+    if issn_ref:
+        histbibjson = journal.get_history_for(identifier)
+        if histbibjson is not None:
+            bibjson = histbibjson
+
+    # get the issns for this specific continuation
+    issns = bibjson.issns()
+
+    # build the volumes and issues
+    all_issues = None
+    all_volumes = None
     
-    all_volumes = models.JournalVolumeToC.list_volumes(jid)
-    all_volumes = _sort_volumes(all_volumes)
-    
-    if volume is None and len(all_volumes) > 0:
-        volume = all_volumes[0]
-    
-    table = None
-    if volume is not None:
-        table = models.JournalVolumeToC.get_toc(jid, volume)
-        if table is None:
+    if volume is None or not bjsr:
+        all_volumes = models.Article.list_volumes(issns)
+        if volume is None and not bjsr and len(all_volumes) > 0: volume = all_volumes[0]
+
+    if (issue is None or (not bjsr and not bjsri)) and volume is not None:
+        all_issues = models.Article.list_volume_issues(issns, volume)
+        if len(all_issues) == 0: all_issues = ["unknown"]
+        if issue is None: issue = all_issues[0]
+
+    articles = None
+    if volume is not None and issue is not None:
+        articles = models.Article.get_by_volume_issue(issns, volume, issue) 
+        if (articles is None or len(articles) == 0):
             abort(404)
-    
-    return render_template('doaj/toc.html', journal=journal, table=table, volumes=all_volumes, current_volume=volume, countries=countries_dict)
 
-def _sort_volumes(volumes):
-    numeric = []
-    non_numeric = []
-    nmap = {}
-    for v in volumes:
-        try:
-            # try to convert n to an int
-            vint = int(v)
+    if bjsr:
+        res = {"articles": articles}
+        if bjsri: res["issues"] = all_issues
+        resp = make_response( json.dumps(res) )
+        resp.mimetype = "application/json"
+        return resp
+    else:
+        # get the continuations for this bibjson record, future and past
+        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if issn is None:
+            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
+        future, past = journal.get_history_around(issn)
 
-            # remember the original string (it may have leading 0s)
-            try:
-                nmap[vint].append(v)
-            except KeyError:
-                nmap[vint] = [v]
-                numeric.append(vint)
-        except:
-            non_numeric.append(v)
+        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
+                               articles=articles, volumes=all_volumes, current_volume=volume,
+                               issues=all_issues, current_issue=issue)
 
-    numeric.sort(reverse=True)
-    non_numeric.sort(reverse=True)
+@blueprint.route("/article/<identifier>")
+def article_page(identifier=None):
+    # identifier must be the article id
+    article = models.Article.pull(identifier)
 
-    # convert the integers back to their string representation
-    return reduce(lambda x, y: x+y, [nmap[n] for n in numeric], []) + non_numeric
+    if article is None:
+        abort(404)
 
+    # find the related journal record
+    journal = None
+    issns = article.bibjson().issns()
+    for issn in issns:
+        journals = models.Journal.find_by_issn(issns[0])
+        if len(journals) > 0:
+            journal = journals[0]
+
+    return render_template('doaj/article.html', article=article, journal=journal)
 
 ###############################################################
 ## The various static endpoints
@@ -216,6 +252,11 @@ def faq():
 @blueprint.route("/features")
 def features():
     return render_template("doaj/features.html")
+
+@blueprint.route("/features/oai_doaj/1.0/")
+def doajArticles_oai_namespace_page():
+    return render_template("doaj/doajArticles_oai_namespace.html")
+
 
 @blueprint.route("/oainfo")
 def oainfo():

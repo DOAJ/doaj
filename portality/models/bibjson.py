@@ -146,18 +146,21 @@ class GenericBibJSON(object):
             urlobj["content_type"] = content_type
         self.bibjson["link"].append(urlobj)
 
-    def get_urls(self, urltype=None):
+    def get_urls(self, urltype=None, unpack_urlobj=True):
         if urltype is None:
             return self.bibjson.get("link", [])
 
         urls = []
         for link in self.bibjson.get("link", []):
             if link.get("type") == urltype:
-                urls.append(link.get("url"))
+                if unpack_urlobj:
+                    urls.append(link.get("url"))
+                else:
+                    urls.append(link)
         return urls
 
-    def get_single_url(self, urltype):
-        urls = self.get_urls(urltype=urltype)
+    def get_single_url(self, urltype, unpack_urlobj=True):
+        urls = self.get_urls(urltype=urltype, unpack_urlobj=unpack_urlobj)
         if urls:
             return urls[0]
         return None
@@ -192,3 +195,25 @@ class GenericBibJSON(object):
     def remove_subjects(self):
         if "subject" in self.bibjson:
             del self.bibjson["subject"]
+
+    def lcc_paths(self):
+        classification_paths = []
+
+        # calculate the classification paths
+        from portality.lcc import lcc # inline import since this hits the database
+        for subs in self.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            if scheme == "LCC":
+                classification_paths.append(lcc.pathify(term))
+
+        # normalise the classification paths, so we only store the longest ones
+        classification_paths = lcc.longest(classification_paths)
+
+        return classification_paths
+
+    def issns(self):
+        issns = []
+        issns += self.get_identifiers(self.P_ISSN)
+        issns += self.get_identifiers(self.E_ISSN)
+        return issns
