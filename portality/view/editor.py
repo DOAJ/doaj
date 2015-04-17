@@ -2,7 +2,7 @@ from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
+from portality.core import app, ssl_required, restrict_to_role, write_required
 from portality import models
 
 from portality import lock
@@ -29,29 +29,30 @@ def index():
 @login_required
 @ssl_required
 def group_journals():
-    return render_template("editor/group_journals.html", search_page=True, facetviews=["group_journals"])
+    return render_template("editor/group_journals.html", search_page=True, facetviews=["editor.groupjournals.facetview"])
 
 @blueprint.route('/group_applications')
 @login_required
 @ssl_required
 def group_suggestions():
-    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["group_suggestions"])
+    return render_template("editor/group_suggestions.html", search_page=True, facetviews=["editor.groupapplications.facetview"])
 
 @blueprint.route('/your_journals')
 @login_required
 @ssl_required
 def associate_journals():
-    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate_journals"])
+    return render_template("editor/associate_journals.html", search_page=True, facetviews=["associate.journals.facetview"])
 
 @blueprint.route('/your_applications')
 @login_required
 @ssl_required
 def associate_suggestions():
-    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate_suggestions"])
+    return render_template("editor/associate_suggestions.html", search_page=True, facetviews=["associate.applications.facetview"])
 
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_page(journal_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_journal"):
@@ -108,6 +109,7 @@ def journal_page(journal_id):
 @blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def suggestion_page(suggestion_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_suggestion"):

@@ -1,9 +1,11 @@
-import json, base64, urllib, sys, re
+import json, base64, sys, re
 from lxml import etree
 from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
+from portality import datasets
+from copy import deepcopy
 
 blueprint = Blueprint('oaipmh', __name__)
 
@@ -19,6 +21,7 @@ def oaipmh(specified=None):
     if specified is None:
         dao = OAIPMHJournal()
     else:
+        specified = specified.lower()
         dao = OAIPMHArticle()
     
     # work out the verb and associated parameters
@@ -38,12 +41,12 @@ def oaipmh(specified=None):
     # ListMetadataFormats
     elif verb.lower() == "listmetadataformats":
         params = list_metadata_formats_params(request)
-        result = list_metadata_formats(dao, request.base_url, **params)
+        result = list_metadata_formats(dao, request.base_url, specified, **params)
     
     # GetRecord
     elif verb.lower() == "getrecord":
         params = get_record_params(request)
-        result = get_record(dao, request.base_url, **params)
+        result = get_record(dao, request.base_url, specified, **params)
     
     # ListSets
     elif verb.lower() == "listsets":
@@ -53,12 +56,12 @@ def oaipmh(specified=None):
     # ListRecords
     elif verb.lower() == "listrecords":
         params = list_records_params(request)
-        result = list_records(dao, request.base_url, **params)
+        result = list_records(dao, request.base_url, specified, **params)
     
     # ListIdentifiers
     elif verb.lower() == "listidentifiers":
         params = list_identifiers_params(request)
-        result = list_identifiers(dao, request.base_url, **params)
+        result = list_identifiers(dao, request.base_url, specified, **params)
     
     # A verb we didn't understand
     else:
@@ -99,7 +102,7 @@ class DateFormat(object):
                 datetime.strptime(datestr, f)
                 success = True
                 break
-            except:
+            except Exception:
                 pass
         return success
 
@@ -248,7 +251,7 @@ def clean_unreadable(input_string):
     try:
         return _illegal_xml_chars_RE.sub("", input_string)
     except TypeError as e:
-        print app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
+        app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None
 
 def xml_clean(input_string):
@@ -268,13 +271,13 @@ def set_text(element, input_string):
 ## OAI-PMH protocol operations implemented
 #####################################################################
 
-def get_record(dao, base_url, identifier=None, metadata_prefix=None):
+def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_prefix=None):
     # check that we have both identifier and prefix - they are both required
     if identifier is None or metadata_prefix is None:
         return BadArgument(base_url)
     
     # get the formats and check that we have formats that we can disseminate
-    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
     
@@ -306,26 +309,28 @@ def identify(dao, base_url):
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj
     
-def list_identifiers(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, 
-                    oai_set=None, resumption_token=None):
+def list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, resumption_token=None):
     if resumption_token is None:
         # do an initial list records
-        return _parameterised_list_identifiers(dao, base_url, metadata_prefix=metadata_prefix,
-                    from_date=from_date, until_date=until_date, oai_set=oai_set)
+        return _parameterised_list_identifiers(
+            dao, base_url,
+            specified_oai_endpoint, metadata_prefix=metadata_prefix, from_date=from_date,
+            until_date=until_date, oai_set=oai_set
+        )
     else:
         # resumption of previous request
         if (metadata_prefix is not None or from_date is not None or until_date is not None
                 or oai_set is not None):
             return BadArgument(base_url)
-        return _resume_list_identifiers(dao, base_url, resumption_token=resumption_token)
+        return _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
-def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
     # metadata prefix is required
     if metadata_prefix is None:
         return BadArgument(base_url)
     
     # get the formats and check that we have formats that we can disseminate
-    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
     
@@ -392,14 +397,14 @@ def _parameterised_list_identifiers(dao, base_url, metadata_prefix=None, from_da
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
-def _resume_list_identifiers(dao, base_url, resumption_token=None):
+def _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=None):
     try:
         params = decode_resumption_token(resumption_token)
     except ResumptionTokenException:
         return BadResumptionToken(base_url)
-    return _parameterised_list_identifiers(dao, base_url, **params)
+    return _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, **params)
 
-def list_metadata_formats(dao, base_url, identifier=None):
+def list_metadata_formats(dao, base_url, specified_oai_endpoint, identifier=None):
     # if we are given an identifier, it has to be valid
     if identifier is not None:
         if not dao.identifier_exists(identifier):
@@ -407,7 +412,7 @@ def list_metadata_formats(dao, base_url, identifier=None):
     
     # get the configured formats - there should always be some, but just in case
     # the service is mis-configured, this will throw the correct error
-    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return NoMetadataFormats(base_url)
     
@@ -420,27 +425,25 @@ def list_metadata_formats(dao, base_url, identifier=None):
         lmf.add_format(f.get("metadataPrefix"), f.get("schema"), f.get("metadataNamespace"))
     return lmf
 
-def list_records(dao, base_url, metadata_prefix=None, from_date=None, until_date=None,
-                    oai_set=None, resumption_token=None):
+def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, resumption_token=None):
     
     if resumption_token is None:
         # do an initial list records
-        return _parameterised_list_records(dao, base_url, metadata_prefix=metadata_prefix,
-                    from_date=from_date, until_date=until_date, oai_set=oai_set)
+        return _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=metadata_prefix, from_date=from_date, until_date=until_date, oai_set=oai_set)
     else:
         # resumption of previous request
         if (metadata_prefix is not None or from_date is not None or until_date is not None
                 or oai_set is not None):
             return BadArgument(base_url)
-        return _resume_list_records(dao, base_url, resumption_token=resumption_token)
+        return _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
-def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
     # metadata prefix is required
     if metadata_prefix is None:
         return BadArgument(base_url)
     
     # get the formats and check that we have formats that we can disseminate
-    formats = app.config.get("OAIPMH_METADATA_FORMATS")
+    formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
 
@@ -509,12 +512,12 @@ def _parameterised_list_records(dao, base_url, metadata_prefix=None, from_date=N
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
     
-def _resume_list_records(dao, base_url, resumption_token=None):
+def _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=None):
     try:
         params = decode_resumption_token(resumption_token)
     except ResumptionTokenException:
         return BadResumptionToken(base_url)
-    return _parameterised_list_records(dao, base_url, **params)
+    return _parameterised_list_records(dao, base_url, specified_oai_endpoint, **params)
 
 def list_sets(dao, base_url, resumption_token=None):
     # This implementation does not support resumption tokens for this operation
@@ -881,28 +884,82 @@ class NoSetHierarchy(OAIPMHError):
 ## Crosswalks
 #####################################################################
 
-class OAI_DC_Crosswalk(object):
+class OAI_Crosswalk(object):
     PMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/"
     PMH = "{%s}" % PMH_NAMESPACE
-    
+
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
-    
+
+    NSMAP = {None: PMH_NAMESPACE, "xsi": XSI_NAMESPACE}
+
+    def crosswalk(self, record):
+        raise NotImplementedError()
+
+    def header(self, record):
+        raise NotImplementedError()
+
+    def _generate_header_subjects(self, parent_element, subjects):
+        if subjects is None:
+            subjects = []
+        
+        for subs in subjects:
+            scheme = subs.get("scheme", '')
+            term = subs.get("term", '')
+            
+            if term:
+                prefix = ''
+                if scheme:
+                    prefix = scheme + ':'
+
+                subel = etree.SubElement(parent_element, self.PMH + "setSpec")
+                set_text(subel, make_set_spec(prefix + term))
+
+
+class OAI_DC(OAI_Crosswalk):
     OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/"
     OAIDC = "{%s}" % OAIDC_NAMESPACE
     
     DC_NAMESPACE = "http://purl.org/dc/elements/1.1/"
     DC = "{%s}" % DC_NAMESPACE
     
-    NSMAP = {None : PMH_NAMESPACE, "xsi" : XSI_NAMESPACE, "oai_dc" : OAIDC_NAMESPACE, "dc" : DC_NAMESPACE}
-    
-    def crosswalk(self, record):
-        raise NotImplementedError()
-    
-    def header(self, record):
-        raise NotImplementedError()
+    NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
+    NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
-class OAI_DC_Article(OAI_DC_Crosswalk):
+    def _generate_subjects(self, parent_element, subjects, keywords):
+        if keywords is None:
+            keywords = []
+        if subjects is None:
+            subjects = []
+
+        for keyword in keywords:
+            subj = etree.SubElement(parent_element, self.DC + "subject")
+            set_text(subj, keyword)
+
+        for subs in subjects:
+            scheme = subs.get("scheme")
+            code = subs.get("code")
+            term = subs.get("term")
+
+            if scheme and scheme.lower() == 'lcc':
+                attrib = {"{{{nspace}}}type".format(nspace=self.XSI_NAMESPACE): "dcterms:LCSH"}
+                termtext = term
+                codetext = code
+            else:
+                attrib = {}
+                termtext = scheme + ':' + term if term else None
+                codetext = scheme + ':' + code if code else None
+
+            if termtext:
+                subel = etree.SubElement(parent_element, self.DC + "subject", **attrib)
+                set_text(subel, termtext)
+
+            if codetext:
+                sel2 = etree.SubElement(parent_element, self.DC + "subject", **attrib)
+                set_text(sel2, codetext)
+
+
+class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
         
@@ -914,15 +971,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
-        
+
         # all the external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
+        url = app.config['BASE_URL'] + "/article/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
         
@@ -931,11 +987,14 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         if date != "":
             monthyear = etree.SubElement(oai_dc, self.DC + "date")
             set_text(monthyear, date)
-        
-        if len(bibjson.get_urls()) > 0:
-            for url in bibjson.get_urls():
-                urlel = etree.SubElement(oai_dc, self.DC + "relation")
-                set_text(urlel, url.get("url"))
+
+        for url in bibjson.get_urls():
+            urlel = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(urlel, url.get("url"))
+
+        for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
+            journallink = etree.SubElement(oai_dc, self.DC + "relation")
+            set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
         
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
@@ -950,23 +1009,10 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
             set_text(pubel, bibjson.publisher)
         
-        for keyword in bibjson.keywords:
-            subj = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subj, keyword)
-        
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "article")
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subel, scheme + ":" + term)
-            
-            if "code" in subs:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                set_text(sel2, scheme + ":" + subs.get("code"))
+        self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
 
         jlangs = bibjson.journal_language
         if jlangs is not None:
@@ -995,13 +1041,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(head, self.PMH + "setSpec")
-            set_text(subel, make_set_spec(scheme + ":" + term))
-        
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
     def _make_citation(self, bibjson):
@@ -1048,7 +1088,7 @@ class OAI_DC_Article(OAI_DC_Crosswalk):
 
         return citation if citation != "" else None
 
-class OAI_DC_Journal(OAI_DC_Crosswalk):
+class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
         
@@ -1065,17 +1105,11 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
             set_text(idel, identifier.get("id"))
-        
-        # our internal identifier (currently just links to the search results page)
-        #query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + record.id + '"}}]}}}')])
-        #url = app.config['BASE_URL'] + "/search?" + query
+
+        # our internal identifier
         url = app.config["BASE_URL"] + "/toc/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
-        
-        for keyword in bibjson.keywords:
-            subj = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subj, keyword)
         
         if bibjson.language is not None and len(bibjson.language) > 0:
             for language in bibjson.language:
@@ -1108,17 +1142,8 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "journal")
-        
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(oai_dc, self.DC + "subject")
-            set_text(subel, scheme + ":" + term)
-            
-            if "code" in subs:
-                sel2 = etree.SubElement(oai_dc, self.DC + "subject")
-                set_text(sel2, scheme + ":" + subs.get("code"))
+
+        self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
             
         return metadata
     
@@ -1132,28 +1157,172 @@ class OAI_DC_Journal(OAI_DC_Crosswalk):
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
         
-        for subs in bibjson.subjects():
-            scheme = subs.get("scheme")
-            term = subs.get("term")
-            
-            subel = etree.SubElement(head, self.PMH + "setSpec")
-            set_text(subel, make_set_spec(scheme + ":" + term))
-        
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
+
+
+class OAI_DOAJ_Article(OAI_Crosswalk):
+    OAI_DOAJ_NAMESPACE = "http://doaj.org/features/oai_doaj/1.0/"
+    OAI_DOAJ = "{%s}" % OAI_DOAJ_NAMESPACE
+
+    NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
+    NSMAP.update({"oai_doaj": OAI_DOAJ_NAMESPACE})
+
+    def crosswalk(self, record):
+        bibjson = record.bibjson()
+
+        metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
+        oai_doaj_article = etree.SubElement(metadata, self.OAI_DOAJ + "doajArticle")
+        oai_doaj_article.set(self.XSI + "schemaLocation",
+            "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd")
+
+        # look up the journal's language
+        jlangs = bibjson.journal_language
+        # first, if there are any languages recorded, get the 3-char code
+        # corresponding to the first language
+        if jlangs:
+            if isinstance(jlangs, list):
+                jlangs = jlangs[0]
+            jlangs = datasets.languages_fullname_to_3char_code.get(jlangs)
+
+        # if the language code lookup was successful, add it to the
+        # result
+        if jlangs:
+            langel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "language")
+            set_text(langel, jlangs)
+
+        if bibjson.publisher:
+            publel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisher")
+            set_text(publel, bibjson.publisher)
+
+        if bibjson.journal_title:
+            journtitel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "journalTitle")
+            set_text(journtitel, bibjson.journal_title)
+
+        # all the external identifiers (ISSNs, etc)
+        if bibjson.get_one_identifier(bibjson.P_ISSN):
+            issn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issn")
+            set_text(issn, bibjson.get_one_identifier(bibjson.P_ISSN))
+
+        if bibjson.get_one_identifier(bibjson.E_ISSN):
+            eissn = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "eissn")
+            set_text(eissn, bibjson.get_one_identifier(bibjson.E_ISSN))
+
+        # work out the date of publication
+        date = bibjson.get_publication_date()
+        # convert it to the format required by the XML schema by parsing
+        # it into a Python datetime and getting it back out as string.
+        # If it's not coming back properly from the bibjson, throw it
+        # away.
+        try:
+            date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+            date = date.strftime("%Y-%m-%d")
+        except:
+            date = ""
+
+        if date:
+            monthyear = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publicationDate")
+            set_text(monthyear, date)
+
+        if bibjson.volume:
+            volume = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "volume")
+            set_text(volume, bibjson.volume)
+            
+        if bibjson.number:
+            issue = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issue")
+            set_text(issue, bibjson.number)
+            
+        if bibjson.start_page:
+            start_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "startPage")
+            set_text(start_page, bibjson.start_page)
+            
+        if bibjson.end_page:
+            end_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "endPage")
+            set_text(end_page, bibjson.end_page)
+
+        if bibjson.get_one_identifier(bibjson.DOI):
+            doi = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "doi")
+            set_text(doi, bibjson.get_one_identifier(bibjson.DOI))
+
+        if record.publisher_record_id():
+            pubrecid = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisherRecordId")
+            set_text(pubrecid, record.publisher_record_id())
+
+        # document type
+        # as of Mar 2015 this was not being ingested when people upload XML
+        # conforming to the doajArticle schema, so it's not being output either
+
+        if bibjson.title is not None:
+            title = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "title")
+            set_text(title, bibjson.title)
+
+        affiliations = []
+        if bibjson.author:
+            authors_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "authors")
+            for author in bibjson.author:  # bibjson.author is a list, despite the name
+                author_elem = etree.SubElement(authors_elem, self.OAI_DOAJ + "author")
+                if author.get('name'):
+                    name_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "name")
+                    set_text(name_elem, author.get('name'))
+                if author.get('email'):
+                    email_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "email")
+                    set_text(email_elem, author.get('email'))
+                if author.get('affiliation'):
+                    new_affid = len(affiliations)  # use the length of the list as the id for each new item
+                    affiliations.append((new_affid, author['affiliation']))
+                    author_affiliation_elem = etree.SubElement(author_elem, self.OAI_DOAJ + "affiliationId")
+                    set_text(author_affiliation_elem, str(new_affid))
+
+        if affiliations:
+            affiliations_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "affiliationsList")
+            for affid, affiliation in affiliations:
+                attrib = {"affiliationId": str(affid)}
+                affiliation_elem = etree.SubElement(affiliations_elem, self.OAI_DOAJ + "affiliationName", **attrib)
+                set_text(affiliation_elem, affiliation)
+
+        if bibjson.abstract:
+            abstract = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "abstract")
+            set_text(abstract, bibjson.abstract)
+
+        ftobj = bibjson.get_single_url('fulltext', unpack_urlobj=False)
+        if ftobj:
+            attrib = {}
+            if "content_type" in ftobj:
+                attrib['format'] = ftobj['content_type']
+
+            fulltext_url_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "fullTextUrl", **attrib)
+
+            if "url" in ftobj:
+                set_text(fulltext_url_elem, ftobj['url'])
+
+        if bibjson.keywords:
+            keywords_elem = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + 'keywords')
+            for keyword in bibjson.keywords:
+                kel = etree.SubElement(keywords_elem, self.OAI_DOAJ + 'keyword')
+                set_text(kel, keyword)
+
+        return metadata
+
+    def header(self, record):
+        bibjson = record.bibjson()
+        head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
+
+        identifier = etree.SubElement(head, self.PMH + "identifier")
+        set_text(identifier, make_oai_identifier(record.id, "article"))
+
+        datestamp = etree.SubElement(head, self.PMH + "datestamp")
+        set_text(datestamp, normalise_date(record.last_updated))
+
+        self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
+        return head
+
 
 CROSSWALKS = {
     "oai_dc" : {
         "article" : OAI_DC_Article,
         "journal" : OAI_DC_Journal
+    },
+    'oai_doaj': {
+        "article": OAI_DOAJ_Article
     }
 }
-
-
-
-
-
-
-
-
-
-

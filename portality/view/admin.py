@@ -4,7 +4,7 @@ from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, restrict_to_role
+from portality.core import app, ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
@@ -34,13 +34,14 @@ def journals():
         abort(401)
     return render_template('admin/journals.html',
                search_page=True,
-               facetviews=['journals'],
+               facetviews=['admin.journals.facetview'],
                admin_page=True
            )
 
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
+@write_required
 def article_endpoint(article_id):
     if not current_user.has_role("delete_article"):
         abort(401)
@@ -60,6 +61,7 @@ def article_endpoint(article_id):
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_page(journal_id):
     if not current_user.has_role("edit_journal"):
         abort(401)
@@ -95,6 +97,7 @@ def journal_page(journal_id):
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_activate(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -124,13 +127,14 @@ def journal_deactivate(journal_id):
 def suggestions():
     return render_template('admin/suggestions.html',
                search_page=True,
-               facetviews=['suggestions'],
+               facetviews=["admin.applications.facetview"],
                admin_page=True
            )
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
@@ -166,18 +170,19 @@ def suggestion_page(suggestion_id):
 @login_required
 @ssl_required
 def admin_site_search():
-    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin_journals_and_articles'])
+    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'])
 
 @blueprint.route("/editor_groups")
 @login_required
 @ssl_required
 def editor_group_search():
-    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['editor_group'])
+    return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)

@@ -14,8 +14,9 @@ class Cache(DomainObject):
                 returnable = False
 
         # if the cache exists and is in date (or is otherwise returnable), then explicilty build the
-        # cache object and return it
-        if returnable:
+        # cache object and return it.  If we are read-only mode, then we always return the current stats
+        # since the cache won't be allowed to store the regenerated ones
+        if returnable or app.config.get("READ_ONLY_MODE", False):
             return {
                 "articles" : rec.data.get("articles"),
                 "journals" : rec.data.get("journals"),

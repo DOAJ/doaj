@@ -2,7 +2,7 @@ import os, requests, json
 from functools import wraps
 
 from flask import Flask
-from flask import request, redirect, url_for, flash
+from flask import request, redirect, url_for, flash, render_template
 
 from portality import settings
 from portality.error_handler import setup_error_logging
@@ -66,12 +66,19 @@ application configuration (settings.py or app.cfg).
 
 
 def initialise_index(app):
+    if app.config.get("READ_ONLY_MODE", False):
+        app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
+        return
+
     mappings = app.config["MAPPINGS"]
     i = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     i += '/' + app.config['ELASTIC_SEARCH_DB']
     for key, mapping in mappings.iteritems():
-        im = i + '/' + key + '/_mapping'
-        exists = requests.get(im)
+        # im = i + '/' + key + '/_mapping'  # es 0.x
+        im = i + "/_mapping/" + key         # es 1.x
+        typeurl = i + "/" + key
+        # exists = requests.get(im)         # es 0.x
+        exists = requests.head(typeurl)     # es 1.x
         if exists.status_code != 200:
             ri = requests.post(i)
             r = requests.put(im, json.dumps(mapping))
@@ -120,3 +127,13 @@ def restrict_to_role(role):
     if not current_user.has_role(role):
         flash('You do not have permission to access this area of the site.', 'error')
         return redirect(url_for('doaj.home'))
+
+def write_required(fn):
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        if app.config.get("READ_ONLY_MODE", False):
+            return render_template("doaj/readonly.html")
+
+        return fn(*args, **kwargs)
+
+    return decorated_view

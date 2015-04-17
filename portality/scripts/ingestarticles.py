@@ -3,6 +3,10 @@ from portality.core import app
 import os, requests, time, ftplib
 from urlparse import urlparse
 
+if app.config.get("READ_ONLY_MODE", False):
+    print "System is in READ-ONLY mode, script cannot run"
+    exit()
+
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
 
