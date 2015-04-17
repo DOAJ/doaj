@@ -363,7 +363,19 @@ fv_owner = (function (resultobj) {
 
 fv_user_journals = (function (resultobj) {
     var that = function(resultobj) {
-        var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}}
+        var q = {
+            "query":{
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[{"term":{"admin.owner.exact":resultobj.id}}]
+                        }
+                    },
+                    "query":{"match_all":{}}
+                }
+            }
+        };
+        // var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}};
         return '<a class="pull-right" style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
     };
     return that;

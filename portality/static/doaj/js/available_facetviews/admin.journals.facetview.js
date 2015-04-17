@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
 
         facets: [
             {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
-            {'field': 'admin.owner', 'display': 'Owner'},
+            {'field': 'admin.owner.exact', 'display': 'Owner'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
             {
