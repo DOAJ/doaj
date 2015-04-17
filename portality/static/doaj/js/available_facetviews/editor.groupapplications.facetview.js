@@ -34,9 +34,9 @@ jQuery(document).ready(function($) {
         ],
 
         search_sortby: [
-            {'display':'Date applied','field':'suggestion.suggested_on.exact'},
+            {'display':'Date applied','field':'suggestion.suggested_on'},
             {'display':'Last updated','field':'last_updated'},
-            {'display':'Title','field':'bibjson.title.exact'}
+            {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
         searchbox_fieldselect: [

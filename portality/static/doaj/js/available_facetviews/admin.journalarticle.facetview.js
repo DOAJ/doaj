@@ -33,7 +33,7 @@ jQuery(document).ready(function($) {
         search_sortby: [
             {'display':'Date added to DOAJ','field':'created_date'},
             {'display':'Last updated','field':'last_updated'},
-            {'display':'Title','field':'bibjson.title.exact'},
+            {'display':'Title','field':'index.unpunctitle.exact'},
             {'display':'Article: Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']}
         ],
 

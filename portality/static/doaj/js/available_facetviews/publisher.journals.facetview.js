@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Date added to DOAJ','field':'created_date'},
-            {'display':'Title','field':'index.title.exact'}
+            {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
         searchbox_fieldselect: [
