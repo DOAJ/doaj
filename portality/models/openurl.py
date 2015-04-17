@@ -3,6 +3,7 @@ from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
+from portality.util import parse_date
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',
@@ -18,11 +19,11 @@ OPENURL_TO_ES = {
     'atitle' : (None, 'bibjson.title.exact'),
     'jtitle' : ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
     'stitle' : ('bibjson.alternative_title.exact', None),
-    'date' : (None, 'index.date'),
-    'volume' : (None, 'bibjson.journal.volume'),
-    'issue' : (None, 'bibjson.journal.number'),
-    'spage' : (None, 'bibjson.start_page'),
-    'epage' : (None, 'bibjson.end_page'),
+    'date' : (None, 'bibjson.year.exact'),
+    'volume' : (None, 'bibjson.journal.volume.exact'),
+    'issue' : (None, 'bibjson.journal.number.exact'),
+    'spage' : (None, 'bibjson.start_page.exact'),
+    'epage' : (None, 'bibjson.end_page.exact'),
     'issn' : ('index.issn.exact', 'index.issn.exact'), # bibjson.identifier.id.exact
     'eissn' : ('index.issn.exact', 'index.issn.exact'),
     'isbn' : ('index.issn.exact', 'index.issn.exact'),
@@ -67,12 +68,6 @@ class OpenURLRequest(object):
 
         # Set i to use either our mapping for journals or articles
         i = SUPPORTED_GENRES.index(getattr(self, 'genre').lower())
-
-        # FIXME: you can query a journal by volume and issue (which makes sense) but
-        # these values are not used to query the index, so you can get a positive match
-        # for a volume and issue that aren't held by DOAJ.  Since these input values
-        # are then used to point the user to the right endpoint in the journal, this can result
-        # in unexpected errors/behaviour down the line
 
         # Add the attributes to the query
         for (k, v) in set_attributes:
@@ -124,11 +119,22 @@ class OpenURLRequest(object):
                     if ident is None:
                         ident = journal.id
 
-                # FIXME: the volume and issue are not queried on or validated, so we don't know
-                # for sure at this point whether the user will hit a valid ToC
-                # construct the toc url using the ident, plus volume and issue if they are available
-                jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue if self.volume else None)
+                # If there request has a volume parameter, query for presence of an article with that volume
+                if self.volume:
+                    vol_iss_results = self.query_for_vol(journal)
 
+                    if vol_iss_results == None:
+                        # we were asked for a vol/issue, but weren't given the correct information to get it.
+                        return None
+                    elif vol_iss_results['hits']['total'] > 0:
+                        # construct the toc url using the ident, plus volume and issue
+                        jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
+                    else:
+                        # If no results, the DOAJ does not contain the vol/issue being searched. (Show openurl 404)
+                        jtoc_url = None
+                else:
+                    # if no volume parameter, construct the toc url using the ident only
+                    jtoc_url = url_for("doaj.toc", identifier=ident)
                 return jtoc_url
 
             elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
@@ -136,6 +142,41 @@ class OpenURLRequest(object):
         else:
             # No results found for query
             return None
+
+    def query_for_vol(self, journalobj):
+        # find which continuation the searched issn/title belongs to so we can find accurate volume/issue results
+        issns = None
+        if self.issn is None:                                               # if query was by title, find the issns
+            if self.jtitle is not None:
+                issns = journalobj.issns_for_title(self.jtitle)      # todo: this could find titles using alternative_title too if we want to add that.
+        else:
+            if self.issn in journalobj.bibjson().issns():                   # issn is in current version
+                issns = journalobj.bibjson().issns()
+            else:
+                history_bibjson = journalobj.get_history_for(self.issn)
+                if history_bibjson is not None:                             # issn is from previous version
+                    issns = history_bibjson.issns()
+
+        # If there's no way to get the wanted issns, give up, else run the query
+        if issns == None:
+            return None
+        else:
+            volume_query = deepcopy(TERMS_SEARCH)
+            volume_query["size"] = 0
+
+            issn_term = { "terms" : { "index.issn.exact" : issns} }
+            volume_query["query"]["bool"]["must"].append(issn_term)
+
+            vol_term = { "term" : {"bibjson.journal.volume.exact" : self.volume} }
+            volume_query["query"]["bool"]["must"].append(vol_term)
+
+            # And if there's an issue, query that too. Note, issue does not make sense on its own.
+            if self.issue:
+                iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
+                volume_query["query"]["bool"]["must"].append(iss_term)
+
+            app.logger.debug("Subsequent volume query from OpenURL: " + str(volume_query))
+            return Article.query(q=volume_query)
 
     def validate_issn(self, issn_str):
         """
@@ -147,7 +188,6 @@ class OpenURLRequest(object):
             match_dash = re.compile('[-]')
             if not match_dash.search(issn_str):
                 issn_str = issn_str[:4] + '-' + issn_str[4:]
-
         return issn_str
 
     @property
@@ -265,6 +305,13 @@ class OpenURLRequest(object):
 
     @date.setter
     def date(self, val):
+        if val:
+            try:
+                parsed_date = parse_date(val)
+                val = parsed_date.year
+                print val
+            except ValueError:
+                val = None
         self._date = val
 
     @property
