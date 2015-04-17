@@ -4,7 +4,8 @@ from portality import models
 
 MODELS = {
     "journal" : models.Journal,
-    "article" : models.Article
+    "article" : models.Article,
+    "suggestion" : models.Suggestion
 }
 
 class UpgradeTask(object):
