@@ -2,6 +2,10 @@ import os
 
 READ_ONLY_MODE = False
 
+DOAJ_VERSION = "2.10.1_SNAPSHOT-1"
+
+OFFLINE_MODE=False
+
 # ========================
 # MAIN SETTINGS
 

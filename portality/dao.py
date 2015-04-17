@@ -68,6 +68,10 @@ class DomainObject(UserDict.IterableUserDict, object):
     @property
     def created_date(self):
         return self.data.get("created_date")
+
+    @property
+    def created_timestamp(self):
+        return datetime.strptime(self.data.get("created_date"), "%Y-%m-%dT%H:%M:%SZ")
     
     @property
     def last_updated(self):
