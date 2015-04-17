@@ -121,22 +121,12 @@ class OpenURLRequest(object):
 
                 # If there request has a volume parameter, query for presence of an article with that volume
                 if self.volume:
-                    volume_query = deepcopy(TERMS_SEARCH)
-                    volume_query["size"] = 0
+                    vol_iss_results = self.query_for_vol(journal)
 
-                    issn_term = { "term" : { "index.issn.exact" : ident} }
-                    volume_query["query"]["bool"]["must"].append(issn_term)
-
-                    vol_term = { "term" : {"bibjson.journal.volume.exact" : self.volume} }
-                    volume_query["query"]["bool"]["must"].append(vol_term)
-
-                    # And if there's an issue, query that too. Note, issue does not make sense on its own.
-                    if self.issue:
-                        iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
-                        volume_query["query"]["bool"]["must"].append(iss_term)
-
-                    vol_iss_results = Article.query(q=volume_query)
-                    if vol_iss_results['hits']['total'] > 0:
+                    if vol_iss_results == None:
+                        # we were asked for a vol/issue, but weren't given the correct information to get it.
+                        return None
+                    elif vol_iss_results['hits']['total'] > 0:
                         # construct the toc url using the ident, plus volume and issue
                         jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
                     else:
@@ -152,6 +142,41 @@ class OpenURLRequest(object):
         else:
             # No results found for query
             return None
+
+    def query_for_vol(self, journalobj):
+        # find which continuation the searched issn/title belongs to so we can find accurate volume/issue results
+        issns = None
+        if self.issn is None:                                               # if query was by title, find the issns
+            if self.jtitle is not None:
+                issns = journalobj.issns_for_title(self.jtitle)      # todo: this could find titles using alternative_title too if we want to add that.
+        else:
+            if self.issn in journalobj.bibjson().issns():                   # issn is in current version
+                issns = journalobj.bibjson().issns()
+            else:
+                history_bibjson = journalobj.get_history_for(self.issn)
+                if history_bibjson is not None:                             # issn is from previous version
+                    issns = history_bibjson.issns()
+
+        # If there's no way to get the wanted issns, give up, else run the query
+        if issns == None:
+            return None
+        else:
+            volume_query = deepcopy(TERMS_SEARCH)
+            volume_query["size"] = 0
+
+            issn_term = { "terms" : { "index.issn.exact" : issns} }
+            volume_query["query"]["bool"]["must"].append(issn_term)
+
+            vol_term = { "term" : {"bibjson.journal.volume.exact" : self.volume} }
+            volume_query["query"]["bool"]["must"].append(vol_term)
+
+            # And if there's an issue, query that too. Note, issue does not make sense on its own.
+            if self.issue:
+                iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
+                volume_query["query"]["bool"]["must"].append(iss_term)
+
+            app.logger.debug("Subsequent volume query from OpenURL: " + str(volume_query))
+            return Article.query(q=volume_query)
 
     def validate_issn(self, issn_str):
         """
