@@ -269,11 +269,11 @@ function authorPaysMap(value) {
 }
 
 var publisherStatusMapping = {
-    "reapplication" : {"text" : "pending" }
+    "reapplication" : "pending"
 };
 function publisherStatusMap(value) {
-    if (statusMapping.hasOwnProperty(value)) {
-        return statusMapping[value];
+    if (publisherStatusMapping.hasOwnProperty(value)) {
+        return publisherStatusMapping[value];
     }
     return value;
 }
