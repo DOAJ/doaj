@@ -10,6 +10,7 @@ jQuery(document).ready(function($) {
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
+        default_operator : "AND",
 
         facets: [
             {'field': 'role', 'display': 'Role'}

@@ -10,6 +10,7 @@ jQuery(document).ready(function($) {
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
+        default_operator : "AND",
 
         facets: [
             {'field': 'admin.application_status.exact', 'display': 'Application Status'},
@@ -33,9 +34,9 @@ jQuery(document).ready(function($) {
         ],
 
         search_sortby: [
-            {'display':'Date applied','field':'suggestion.suggested_on.exact'},
+            {'display':'Date applied','field':'suggestion.suggested_on'},
             {'display':'Last updated','field':'last_updated'},
-            {'display':'Title','field':'bibjson.title.exact'}
+            {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
         searchbox_fieldselect: [

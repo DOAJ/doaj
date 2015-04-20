@@ -11,6 +11,7 @@ jQuery(document).ready(function($) {
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
+        default_operator : "AND",
 
         facets: [
             {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
@@ -21,7 +22,7 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Date added to DOAJ','field':'created_date'},
-            {'display':'Title','field':'index.title.exact'}
+            {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
         searchbox_fieldselect: [

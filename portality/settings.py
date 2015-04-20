@@ -1,6 +1,12 @@
 import os
 
+# Use these options to place the application into READ ONLY mode
+
+# This puts the UI into READ_ONLY mode
 READ_ONLY_MODE = False
+
+# This puts the cron jobs into READ_ONLY mode
+SCRIPTS_READ_ONLY_MODE = False
 
 DOAJ_VERSION = "2.10.1_SNAPSHOT-1"
 
