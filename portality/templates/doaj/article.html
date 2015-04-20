@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block page_title %}
+    {% set bibjson = article.bibjson() %}
+    {% set metatitle = bibjson.title %}
+    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
+    <title>{{ metatitle }}</title>
+{% endblock %}
+
+{% block page_desc %}
+    {% set bibjson = article.bibjson() %}
+    <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
+{% endblock %}
+
 {% block extra_meta_tags %}
 
 {% set bibjson = article.bibjson() %}
