@@ -346,7 +346,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;">
     {% for v in volumes %}
-        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=bibjson.issns()[0], volume=v)}}">{{v}}</a>
+        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=journal.toc_id, volume=v)}}">{{v}}</a>
     {% endfor %}
   </div>
 </div>
@@ -356,7 +356,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
     {% for i in issues %}
-        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=bibjson.issns()[0], volume=current_volume)}}/{{i}}">{{i}}</a>
+        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=journal.toc_id, volume=current_volume)}}/{{i}}">{{i}}</a>
     {% endfor %}
   </div>
 </div>

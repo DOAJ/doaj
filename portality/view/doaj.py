@@ -8,8 +8,6 @@ from portality import dao
 from portality import models
 from portality.core import app, ssl_required, write_required
 from portality import blog
-from portality.datasets import countries_dict
-from portality import lock
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 

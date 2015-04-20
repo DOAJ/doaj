@@ -61,7 +61,7 @@ hosted on DOAJ.org) #}
         <p>
         {# citation #}
         {% if issns|length > 0 %}
-            <a href="{{url_for('doaj.toc', identifier=issns[0])}}">{{jtitle}}</a>. {{cite}}
+            <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>. {{cite}}
         {% else %}
             {{jtitle}}. {{cite}}
         {% endif %}

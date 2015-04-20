@@ -2,7 +2,6 @@ from portality.dao import DomainObject
 from copy import deepcopy
 from datetime import datetime
 from portality.core import app
-from portality import xwalk
 from portality.models import GenericBibJSON
 
 import string
@@ -257,6 +256,16 @@ class Journal(DomainObject):
             del histories[i]
         if len(histories) == 0:
             del self.data["history"]
+
+    @property
+    def toc_id(self):
+        bibjson = self.bibjson()
+        id_ = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if not id_:
+            id_ = bibjson.get_one_identifier(bibjson.P_ISSN)
+        if not id_:
+            id_ = self.id
+        return id_
 
     def issns_for_title(self, title):
         """locate the issns associated with the supplied title"""

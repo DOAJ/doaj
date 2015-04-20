@@ -117,7 +117,7 @@ class OpenURLRequest(object):
                         if len(issns) > 0:
                             ident = issns[0]
                     if ident is None:
-                        ident = journal.id
+                        ident = journal.toc_id
 
                 # If there request has a volume parameter, query for presence of an article with that volume
                 if self.volume:

@@ -162,7 +162,7 @@ fv_title_field = (function (resultobj) {
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "&nbsp<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a>";
+                field += "&nbsp<a href='/toc/" + journal_toc_id(resultobj) + "'>" + resultobj.bibjson.title + "</a>";
             } else {
                 field += "&nbsp" + resultobj.bibjson.title;
             }
