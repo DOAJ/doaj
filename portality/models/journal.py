@@ -838,6 +838,20 @@ class JournalBibJSON(GenericBibJSON):
         if self.language is not None:
             langs = self.language
         langs = [datasets.name_for_lang(l) for l in langs]
+
+        # now we need to ensure that these are all correctly unicoded
+        def to_utf8_unicode(val):
+            if isinstance(val, unicode):
+                return val
+            elif isinstance(val, basestring):
+                try:
+                    return val.decode("utf8", "strict")
+                except UnicodeDecodeError:
+                    raise ValueError(u"Could not decode string")
+            else:
+                return unicode(val)
+
+        langs = [to_utf8_unicode(l) for l in langs]
         return list(set(langs))
 
     def set_language(self, language):
