@@ -5,7 +5,7 @@ import os, csv
 from datetime import datetime
 from operator import itemgetter
 
-if app.config.get("READ_ONLY_MODE", False):
+if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
     print "System is in READ-ONLY mode, script cannot run"
     exit()
 

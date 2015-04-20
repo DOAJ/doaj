@@ -66,7 +66,7 @@ application configuration (settings.py or app.cfg).
 
 
 def initialise_index(app):
-    if app.config.get("READ_ONLY_MODE", False):
+    if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
         return
 
