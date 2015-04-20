@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 
+{% block page_title %}
+    {% set metatitle = bibjson.title %}
+    {% if current_volume %}{% set metatitle = metatitle + ', ' + 'Volume ' + current_volume %}{% endif %}
+    {% if current_issue %}{% set metatitle = metatitle + ', ' + 'Issue ' + current_issue %}{% endif %}
+    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
+    <title>{{ metatitle }}</title>
+{% endblock %}
+
+{% block page_desc %}<meta name="description" content="Information about the open-access journal {{ bibjson.title }} in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
+
 {% block content %}
 
 {%- set CC_MAP = {

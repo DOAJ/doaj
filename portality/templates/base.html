@@ -2,8 +2,8 @@
 <html dir="ltr" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ app.config['SERVICE_NAME'] }}</title>
-    <meta name="description" content="{{ app.config['SERVICE_TAGLINE'] }}">
+    {% block page_title %}<title>{{ app.config['SERVICE_NAME'] }}</title>{% endblock %}
+    {% block page_desc %}<meta name="description" content="{{ app.config['SERVICE_TAGLINE'] }}">{% endblock %}
     <meta name="author" content="{{ app.config['ADMIN_NAME'] }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
