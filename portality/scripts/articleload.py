@@ -3,7 +3,7 @@ import json, codecs
 from portality.core import app
 
 if __name__ == "__main__":
-    if app.config.get("READ_ONLY_MODE", False):
+    if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         print "System is in READ-ONLY mode, script cannot run"
         exit()
 

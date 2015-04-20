@@ -75,7 +75,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     def save(self, retries=0, back_off_factor=1):
 
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
             return
 
@@ -115,7 +115,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, bulk command cannot run")
             return
 
@@ -131,7 +131,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def refresh(cls):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, refresh command cannot run")
             return
 
@@ -299,7 +299,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
 
     def delete(self):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, delete command cannot run")
             return
 
@@ -307,7 +307,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     @classmethod
     def remove_by_id(cls, id):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, delete_by_id command cannot run")
             return
 
@@ -315,7 +315,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def delete_by_query(cls, query):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
@@ -324,7 +324,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def destroy_index(cls):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, destroy_index command cannot run")
             return
 
@@ -335,7 +335,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         """
         add the provided doc to the existing object
         """
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, update command cannot run")
             return
 
@@ -343,7 +343,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     @classmethod
     def delete_all(cls):
-        if app.config.get("READ_ONLY_MODE", False):
+        if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, delete_all command cannot run")
             return
 
