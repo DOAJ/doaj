@@ -351,7 +351,7 @@
   </div>
 </div>
 
-<div class="row-fluid"><div class="span12"><h3>Issues in volume <span id="volumeid">{{current_volume}}</span></h3></div></div>
+<div class="row-fluid"><div class="span12"><h3>Issues in Volume <span id="volumeid">{{current_volume}}</span></h3></div></div>
 
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
@@ -400,7 +400,7 @@ $(document).ready(function() {
     
     var tidymonth = function(mth) {
         var mths = {
-            "1" : "Jan", "2" : "Feb", "3" : "Mar", "4" : "Apr", "5" : "May", "6" : "Jun", "7" : "Jul", "8" : "Aug", "9" : "Sept", "10" : "Oct", "11" : "Nov", "12" : "Dec","01" : "Jan", "02" : "Feb", "03" : "Mar", "04" : "Apr", "05" : "May", "06" : "Jun", "07" : "Jul", "08" : "Aug", "09" : "Sept",
+            "1" : "January", "2" : "February", "3" : "March", "4" : "April", "5" : "May", "6" : "June", "7" : "July", "8" : "August", "9" : "September", "10" : "October", "11" : "November", "12" : "December","01" : "January", "02" : "February", "03" : "March", "04" : "April", "05" : "May", "06" : "June", "07" : "July", "08" : "August", "09" : "September",
         }
         return mths[mth];
     }
@@ -445,7 +445,7 @@ $(document).ready(function() {
             var artcl = data.articles[a];
             if ( a == 0 ) {
                 if ( "bibjson.month" in artcl || "bibjson.year" in artcl ) {
-                    content += '<h4 style="margin-bottom: 10px">(';
+                    content += '<h4 style="margin-bottom: 10px">';
                     if ( "bibjson.month" in artcl ) {
                         content += tidymonth(artcl["bibjson.month"][0]);
                     }
@@ -453,7 +453,7 @@ $(document).ready(function() {
                         if ( "bibjson.month" in artcl ) { content += ' '; }
                         content += artcl["bibjson.year"][0];
                     }
-                    content += ')</h4>';
+                    content += '</h4>';
                 }
             }
             content += '<div class="row-fluid">';
