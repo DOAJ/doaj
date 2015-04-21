@@ -162,11 +162,12 @@ def toc(identifier=None, volume=None, issue=None):
         # if not, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
         eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
         if eissn and identifier != eissn:
-            return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
+                return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
         
-        pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
-        if pissn and identifier != pissn:
-            return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
+        if not eissn:
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if pissn and identifier != pissn:
+                return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
 
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
