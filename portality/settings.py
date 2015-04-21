@@ -18,7 +18,7 @@ OFFLINE_MODE=False
 # base path, to the directory where this settings file lives
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
-BASE_URL = "http://doaj.org"
+BASE_URL = "https://doaj.org"
 
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
@@ -254,7 +254,7 @@ FEED_LICENCE = "(c) DOAJ 2013. CC BY-SA."
 FEED_GENERATOR = "CottageLabs feed generator"
 
 # Larger image to use as the logo for all of the feeds
-FEED_LOGO = "http://www.doaj.org/static/doaj/images/favicon.ico"
+FEED_LOGO = "https://doaj.org/static/doaj/images/favicon.ico"
 
 
 # ============================
@@ -269,7 +269,7 @@ OAI_DC_METADATA_FORMAT = {
 OAI_DOAJ_METADATA_FORMAT = {
     "metadataPrefix": "oai_doaj",
     "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
-    "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0/"
+    "metadataNamespace": "https://doaj.org/features/oai_doaj/1.0/"
 }
 
 OAIPMH_METADATA_FORMATS = {
