@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 import sys
 
 setup(
-    name = 'portality',
-    version = '0.8.0',
+    name = 'doaj',
+    version = '1.3.0',
     packages = find_packages(),
     install_requires = [
         "werkzeug==0.8.3",
@@ -34,7 +34,7 @@ setup(
     description = 'A web API layer over an ES backend, with various useful views',
     license = 'Copyheart',
     classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: Copyheart',
