@@ -74,8 +74,11 @@ def initialise_index(app):
     i = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
     i += '/' + app.config['ELASTIC_SEARCH_DB']
     for key, mapping in mappings.iteritems():
-        im = i + '/' + key + '/_mapping'
-        exists = requests.get(im)
+        # im = i + '/' + key + '/_mapping'  # es 0.x
+        im = i + "/_mapping/" + key         # es 1.x
+        typeurl = i + "/" + key
+        # exists = requests.get(im)         # es 0.x
+        exists = requests.head(typeurl)     # es 1.x
         if exists.status_code != 200:
             ri = requests.post(i)
             r = requests.put(im, json.dumps(mapping))

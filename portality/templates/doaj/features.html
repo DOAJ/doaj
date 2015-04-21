@@ -2,10 +2,14 @@
 
 {% block content %}
 
+<a name="oaipmh" id="oaipmh"></a>
 <h2>OAI-PMH</h2>
 
-<p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different urls</p>
+<p><strong>Our OAI-PMH service was updated in April 2015. In that update we reinstated the doajarticle metadata tag and provided more granularity to the data. The notes below have been updated to reflect this change.</strong></p>
 
+<p>DOAJ supports OAI-PMH feeds for both Journals and Articles, at different URL-s.</p>
+
+<a name="journal_feed" id="journal_feed"></a>
 <h3>Journal Feed</h3>
 
 <p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai?verb=Identify">http://www.doaj.org/oai?verb=Identify</a>.</p>
@@ -34,7 +38,7 @@
         </tr>
         <tr>
             <td>subject</td>
-            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. LCC:Science)</td>
+            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. CLASSIFICATION:Science), except in the case of Library of Congress Classification. LCC subjects are denoted by an additional attribute on this element, <code>xsi:type="dcterms:LCSH"</code>.</td>
         </tr>
         <tr>
             <td>language</td>
@@ -97,8 +101,15 @@
             &lt;dc:publisher&gt;The Institute of Economics, Zagreb&lt;/dc:publisher&gt;
             &lt;dc:date&gt;2013-11-06T15:18:52Z&lt;/dc:date&gt;
             &lt;dc:type&gt;journal&lt;/dc:type&gt;
-            &lt;dc:subject&gt;LCC:Economic theory. Demography&lt;/dc:subject&gt;
-            &lt;dc:subject&gt;LCC:Social Sciences&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Diseases of the musculoskeletal system&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC925-935&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Specialties of internal medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC581-951&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Internal medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC31-1245&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;R&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;SOME_NONLCC_FORMAL_CLASSIFICATION:term&lt;/dc:subject&gt;
             &lt;dc:subject&gt;DOAJ:Economics&lt;/dc:subject&gt;
             &lt;dc:subject&gt;DOAJ:Business and Economics&lt;/dc:subject&gt;
         &lt;/oai_dc:dc&gt;
@@ -106,13 +117,42 @@
 &lt;/record&gt;
 </pre>
 
+<h5 style="margin-top: 1em;">Revision history - Journal OAI-PMH DC</h5>
+<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+    <thead>
+        <tr>
+            <th>Date changes were made live</th>
+            <th>Changes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>20 April 2015</td>
+            <td>
+                <ul>
+                    <li><code>subject</code> elements which represent a Library of Congress Classification (LCC) topic will now be marked with an additional OAI DC-compliant attribute to denote this: <code>xsi:type="dcterms:LCSH"</code>. LCC subjects will no longer be prefixed by <code>LCC:</code>.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>13 December 2013</td>
+            <td>Initial release</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<a name="article_feed" id="article_feed"></a>
 <h3>Article Feed</h3>
 
 <p><strong>Identify</strong> - you can get to the base Identify endpoint here: <a href="http://www.doaj.org/oai.article?verb=Identify">http://www.doaj.org/oai.article?verb=Identify</a>.</p>
 
 <p><strong>ListSets</strong> - DOAJ provides all its subject classifications as OAI-PMH sets, so you can harvest just those you are interested in.  A full list of the sets can be found at <a href="http://www.doaj.org/oai.article?verb=ListSets">http://www.doaj.org/oai.article?verb=ListSets</a>.</p>
 
-<p><strong>ListMetadataFormats</strong> - DOAJ currently supports only <code>oai_dc</code>, which can be seen here: <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats">http://www.doaj.org/oai.article?verb=ListMetadataFormats</a>.</p>
+<p><strong>ListMetadataFormats</strong> - DOAJ currently supports the <code>oai_dc</code> and <code>oai_doaj</code> formats, which can be seen here: <a href="http://www.doaj.org/oai.article?verb=ListMetadataFormats">http://www.doaj.org/oai.article?verb=ListMetadataFormats</a>.</p>
+
+<a name="article_oai_dc" id="article_oai_dc"></a>
+<h4>Dublin Core OAI Article format (OAI_DC)</h4>
 
 <p>The metadata held by DOAJ is mapped to Dublin Core in the OAI-PMH feed, with the following interpretations for each Article field:</p>
 
@@ -134,7 +174,7 @@
         </tr>
         <tr>
             <td>subject</td>
-            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. LCC:Science)</td>
+            <td>free-text keywords or formal subject classifications.  Formal classifications are prefixed by their scheme (e.g. CLASSIFICATION:Science), except in the case of Library of Congress Classification. LCC subjects are denoted by an additional attribute on this element, <code>xsi:type="dcterms:LCSH"</code>.</td>
         </tr>
         <tr>
             <td>language</td>
@@ -216,10 +256,17 @@
             &lt;dc:subject&gt;Estudantes&lt;/dc:subject&gt;
             &lt;dc:subject&gt;Estudos Transversais&lt;/dc:subject&gt;
             &lt;dc:type&gt;article&lt;/dc:type&gt;
-            &lt;dc:subject&gt;LCC:Public aspects of medicine&lt;/dc:subject&gt;
-            &lt;dc:subject&gt;LCC:Medicine&lt;/dc:subject&gt;
             &lt;dc:subject&gt;DOAJ:Public Health&lt;/dc:subject&gt;
             &lt;dc:subject&gt;DOAJ:Health Sciences&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Diseases of the musculoskeletal system&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC925-935&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Specialties of internal medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC581-951&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Internal medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;RC31-1245&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;Medicine&lt;/dc:subject&gt;
+            &lt;dc:subject xsi:type=&quot;dcterms:LCSH&quot;&gt;R&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;SOME_NONLCC_FORMAL_CLASSIFICATION:term&lt;/dc:subject&gt;
             &lt;dc:language&gt;English&lt;/dc:language&gt;
             &lt;dc:language&gt;Spanish&lt;/dc:language&gt;
             &lt;dc:language&gt;Portuguese&lt;/dc:language&gt;
@@ -229,6 +276,194 @@
 &lt;/record&gt;
 
 </pre>
+
+<h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DC</h5>
+<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+    <thead>
+        <tr>
+            <th>Date changes were made live</th>
+            <th>Changes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>20 April 2015</td>
+            <td>
+                <ul>
+                    <li>The <code>identifier</code> element will now point to the DOAJ article page rather than the /search page. E.g. <a href="https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e" target="_blank">https://doaj.org/article/0000178c89214dc8b82df1a25c0c478e</a></li>
+                    <li>Up to two new <code>relation</code> elements will appear for each article, containing URL-s to the Table of Contents page for the article's journal. The page can be reached via both print ISSN and E-ISSN, so up to two such links might appear.</li>
+                    <li><code>subject</code> elements which represent a Library of Congress Classification (LCC) topic will now be marked with an additional OAI DC-compliant attribute to denote this: <code>xsi:type="dcterms:LCSH"</code>. LCC subjects will no longer be prefixed by <code>LCC:</code>.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>13 December 2013</td>
+            <td>Initial release</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<a name="article_oai_doaj" id="article_oai_doaj"></a>
+<h4>DOAJ OAI Article format (OAI_DOAJ)</h4>
+
+<p>The following fields are available (not every article will have all the information):</p>
+
+<table border="1" cellpadding="5">
+    <thead>
+        <tr>
+            <th>DOAJ OAI field</th>
+            <th>Meaning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>language</td>
+            <td>The languages that the journal publishing this article publishes in. Does not necessarily strictly denote the language of this article. Only the first language the journal publishes in is provided, even when multiple are recorded on the journal record.</td>
+        </tr>
+        <tr>
+            <td>publisher</td>
+            <td>The publisher/provider of the journal this article appears in.</td>
+        </tr>
+        <tr>
+            <td>journalTitle</td>
+            <td>The title of the journal the article appears in.</td>
+        </tr>
+        <tr>
+            <td>issn</td>
+            <td>The print ISSN of the journal the article appears in.</td>
+        </tr>
+        <tr>
+            <td>eissn</td>
+            <td>The E-ISSN of the journal the article appears in.</td>
+        </tr>
+        <tr>
+            <td>publicationDate</td>
+            <td>The article's date of publication. In YYYY-MM-DD format.</td>
+        </tr>
+        <tr>
+            <td>volume</td>
+            <td>The journal volume the article appears in.</td>
+        </tr>
+        <tr>
+            <td>issue</td>
+            <td>The journal issue the article appears in.</td>
+        </tr>
+        <tr>
+            <td>startPage</td>
+            <td>The number of the journal page the article starts on.</td>
+        </tr>
+        <tr>
+            <td>endPage</td>
+            <td>The number of the journal page the article ends on.</td>
+        </tr>
+        <tr>
+            <td>doi</td>
+            <td>The article's Digital Object Identifier.</td>
+        </tr>
+        <tr>
+            <td>publisherRecordId</td>
+            <td>An ID assigned to this article by its publisher and supplied to DOAJ via metadata upload. Not guaranteed to be unique or otherwise useful in any context, simply a way for the publisher to refer to this article.</td>
+        </tr>
+        <tr>
+            <td>documentType</td>
+            <td>Will never be present in a OAI_DOAJ article record, even though it's in the XML schema.</td>
+        </tr>
+        <tr>
+            <td>title</td>
+            <td>The title of the article</td>
+        </tr>
+        <tr>
+            <td>authors</td>
+            <td>A list of &lt;author&gt; elements. Each &lt;author&gt; element can have a &lt;name&gt;, &lt;email&gt; and &lt;affiliationId&gt; child elements. The <code>affiliationId</code> refers to one of the affiliations in the <code>affiliationsList</code> element described below.</td>
+        </tr>
+        <tr>
+            <td>affiliationsList</td>
+            <td>A list of &lt;affiliationName&gt; elements. The content of the element will be the name of an organisation one or more <code>authors</code> is associated with. The <code>affiliationId</code> attribute identifies the affiliation, and will be referred to by &lt;author&gt;&lt;affiliationId&gt;&lt;/affiliationId&gt;&lt;/author&gt; elements.</td>
+        </tr>
+    </tbody>
+</table>
+
+<br><br>
+<p>This is an example record of how an article record might appear:</p>
+
+<pre>
+&lt;record&gt;
+    &lt;header xmlns:oai_doaj=&quot;http://doaj.org/features/oai_doaj/1.0/&quot;&gt;
+        &lt;identifier&gt;oai:doaj.org/article:2a48ccce13c546ceab0c6bc5b74d433d&lt;/identifier&gt;
+        &lt;datestamp&gt;2015-03-21T20:28:31Z&lt;/datestamp&gt;
+        &lt;setSpec&gt;TENDOkRpc2Vhc2VzIG9mIHRoZSBtdXNjdWxvc2tlbGV0YWwgc3lzdGVt&lt;/setSpec&gt;
+        &lt;setSpec&gt;TENDOlNwZWNpYWx0aWVzIG9mIGludGVybmFsIG1lZGljaW5l&lt;/setSpec&gt;
+        &lt;setSpec&gt;TENDOkludGVybmFsIG1lZGljaW5l&lt;/setSpec&gt;
+        &lt;setSpec&gt;TENDOk1lZGljaW5l&lt;/setSpec&gt;
+        &lt;setSpec&gt;dGVzdDp0ZXJt&lt;/setSpec&gt;
+    &lt;/header&gt;
+    &lt;metadata xmlns:oai_doaj=&quot;http://doaj.org/features/oai_doaj/1.0/&quot;&gt;
+        &lt;oai_doaj:doajArticle xsi:schemaLocation=&quot;http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd http://doaj.org/features/oai_doaj/1.0/ https://doaj.org/static/doaj/doajArticles.xsd&quot;&gt;
+            &lt;oai_doaj:language&gt;ger&lt;/oai_doaj:language&gt;
+            &lt;oai_doaj:publisher&gt;Verlag Krause und Pachernegg GmbH&lt;/oai_doaj:publisher&gt;
+            &lt;oai_doaj:journalTitle&gt;Journal f&amp;#xFC;r Mineralstoffwechsel&lt;/oai_doaj:journalTitle&gt;
+            &lt;oai_doaj:issn&gt;1023-7763&lt;/oai_doaj:issn&gt;
+            &lt;oai_doaj:eissn&gt;1680-9408&lt;/oai_doaj:eissn&gt;
+            &lt;oai_doaj:publicationDate&gt;1998-01-01&lt;/oai_doaj:publicationDate&gt;
+            &lt;oai_doaj:volume&gt;5&lt;/oai_doaj:volume&gt;
+            &lt;oai_doaj:issue&gt;1&lt;/oai_doaj:issue&gt;
+            &lt;oai_doaj:startPage&gt;25&lt;/oai_doaj:startPage&gt;
+            &lt;oai_doaj:endPage&gt;29&lt;/oai_doaj:endPage&gt;
+            &lt;oai_doaj:publisherRecordId&gt;648&lt;/oai_doaj:publisherRecordId&gt;
+            &lt;oai_doaj:title&gt;Leitfaden zur medikament&amp;#xF6;sen Standardtherapie in der Osteoporose&lt;/oai_doaj:title&gt;
+            &lt;authors&gt;
+                &lt;author&gt;
+                    &lt;name&gt;Stevo Popovic&lt;/name&gt;
+                    &lt;affiliationId&gt;0&lt;/affiliationId&gt;
+                &lt;/author&gt;
+                &lt;author&gt;
+                    &lt;name&gt;Dusko Bjelica&lt;/name&gt;
+                    &lt;affiliationId&gt;1&lt;/affiliationId&gt;
+                &lt;/author&gt;
+                &lt;author&gt;
+                    &lt;name&gt;Gabriela Doina Tanase&lt;/name&gt;
+                    &lt;affiliationId&gt;2&lt;/affiliationId&gt;
+                &lt;/author&gt;
+                &lt;author&gt;
+                    &lt;name&gt;Rajko Mila&amp;#x161;inovi&amp;#x107;&lt;/name&gt;
+                    &lt;affiliationId&gt;3&lt;/affiliationId&gt;
+                &lt;/author&gt;
+            &lt;/authors&gt;
+            &lt;affiliationsList&gt;
+                &lt;affiliationName affiliationId=&quot;0&quot;&gt;University of Montenegro, Faculty for Sport and Physical Education, Nik&amp;#x161;i&amp;#x107;, Montenegro&lt;/affiliationName&gt;
+                &lt;affiliationName affiliationId=&quot;1&quot;&gt;University of Montenegro, Faculty for Sport and Physical Education, Nik&amp;#x161;i&amp;#x107;, Montenegro&lt;/affiliationName&gt;
+                &lt;affiliationName affiliationId=&quot;2&quot;&gt;University of Montenegro, Faculty for Sport and Physical Education, Nik&amp;#x161;i&amp;#x107;, Montenegro&lt;/affiliationName&gt;
+                &lt;affiliationName affiliationId=&quot;3&quot;&gt;University of Novi Sad, ACIMSR, Novi Sad, Serbia&lt;/affiliationName&gt;
+            &lt;/affiliationsList&gt;
+            &lt;oai_doaj:fullTextUrl format=&quot;pdf&quot;&gt;http://www.kup.at/kup/pdf/648.pdf&lt;/oai_doaj:fullTextUrl&gt;
+            &lt;oai_doaj:keywords&gt;
+                &lt;oai_doaj:keyword&gt;Empfehlung&lt;/oai_doaj:keyword&gt;
+                &lt;oai_doaj:keyword&gt;Mineralstoffwechsel&lt;/oai_doaj:keyword&gt;
+                &lt;oai_doaj:keyword&gt;Osteoporose&lt;/oai_doaj:keyword&gt;
+                &lt;oai_doaj:keyword&gt;Richtlinie&lt;/oai_doaj:keyword&gt;
+                &lt;oai_doaj:keyword&gt;Therapie&lt;/oai_doaj:keyword&gt;
+            &lt;/oai_doaj:keywords&gt;
+        &lt;/oai_doaj:doajArticle&gt;
+    &lt;/metadata&gt;
+&lt;/record&gt;
+</pre>
+
+<h5 style="margin-top: 1em;">Revision history - Article OAI-PMH DOAJ format</h5>
+<table border="1" cellpadding="5" style="margin-top: 0.5em; margin-bottom: 1.5em;">
+    <thead>
+        <tr>
+            <th>Date changes were made live</th>
+            <th>Changes</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>20 April 2015</td>
+            <td>Initial release</td>
+        </tr>
+    </tbody>
+</table>
 
 <div class="row-fluid"><div class="span11">
 <table border=0 width=100% bgcolor=white cellspacing=0 cellpadding=0>
@@ -393,6 +628,7 @@ The example file below contains only one record.<br>
 <table cellspacing=0 cellpadding=0 width=100% border=0>
 <tr>
 <td colspan=2 class="text">
+<a name="doajArticles_OAI_schema" id="doajArticles_OAI_schema"></a>
 <h3>The <a href=/static/doaj/doajArticles.xsd>doajArticles.xsd</a> schema file</h3>
 This file specifies what may or may not be uploaded to the database. 
 <br> 

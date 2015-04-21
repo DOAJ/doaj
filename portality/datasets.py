@@ -530,6 +530,7 @@ languages_iso639_2 = [
 
 # ok, but we don't care about the Aramaic Empire ... we only want the ISO639-1 subset of those (the ones with 2-char codes)
 languages = {}
+languages_fullname_to_3char_code = {}
 for l in languages_iso639_2:
     if l[2]:
         twochar_code = l[2].upper()
@@ -540,6 +541,9 @@ for l in languages_iso639_2:
             "name": l[3].decode('utf-8')
         }
         languages[twochar_code] = lobj
+
+    if l[3] and l[0]:  # if a name and a 3-char code exist for this lang
+        languages_fullname_to_3char_code[l[3]] = l[0]
 
 languages_dict = OrderedDict(sorted(languages.items(), key=lambda x: x[1]['name']))
 languages = languages_dict.items()
@@ -572,3 +576,41 @@ license_dict = OrderedDict(sorted(licenses.items(), key=lambda x: x[1]['type']))
 main_license_options = []
 for lic_type, lic_info in license_dict.iteritems():
     main_license_options.append((lic_type, lic_info['form_label']))
+
+def language_for(rep):
+    r = rep.lower().strip()
+    for l in languages_iso639_2:
+        for variant in l:
+            if variant.lower() == r:
+                return l
+    return None
+
+def name_for_lang(rep):
+    lang = language_for(rep)
+    if lang is not None:
+        return lang[3]
+    else:
+        return rep
+
+def get_country_code(current_country):
+    new_country = current_country
+    if new_country:
+        if new_country not in country_options_two_char_code_index:
+            for two_char_code, info in countries:
+
+                if new_country.lower() == info['name'].lower():
+                    new_country = two_char_code
+                    break
+
+                if new_country.lower() == info['ISO3166-1-Alpha-3'].lower():
+                    new_country = two_char_code
+                    break
+
+                if info['name'].lower().startswith(new_country.lower()):
+                    new_country = two_char_code
+                    break
+
+    return new_country
+
+def get_country_name(code):
+    return countries_dict.get(code, {}).get('name', code)  # return what was passed in if not found

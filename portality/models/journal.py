@@ -2,8 +2,10 @@ from portality.dao import DomainObject
 from copy import deepcopy
 from datetime import datetime
 from portality.core import app
-from portality import xwalk
 from portality.models import GenericBibJSON
+
+import string
+from unidecode import unidecode
 
 # NOTE: DomainObject interferes with new style @property getter/setter
 # so we can't use them here
@@ -76,11 +78,87 @@ class Journal(DomainObject):
         hist = JournalHistory(**snap)
         hist.save()
 
+    ########################################################################
+    ## Functions for handling continuations
+
+
     def history(self):
+        """
+        returns a list of ordered history objects with their date, replaces, replacedby and bibjson object
+        as a tuple
+
+        [(date, replaces, isreplacedby, bibjson)]
+        """
+        # get the raw history object from the data.  It constists of a date, an optional replaces/isreplacedby,
+        # and the bibjson of the old version of the journal
         histories = self.data.get("history", [])
         if histories is None:
             histories = []
-        return [(h.get("date"), h.get("replaces"), h.get("isreplacedby"), JournalBibJSON(h.get("bibjson"))) for h in histories]
+
+        # convert the histories into a lookup structure that we can use for ordering
+        # of the form ([issns of replaces], [issns of record], [issns of isreplacedby])
+        # also we record a mapping of a record's issns to the return value, which is a tuple of date, replaces, isreplacedby, and the bibjson object
+
+        lookup = []
+        register = []
+        for h in histories:
+            # get the issns for the current bibjson record
+            bj = JournalBibJSON(h.get("bibjson"))
+            eissns = bj.get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = bj.get_identifiers(JournalBibJSON.P_ISSN)
+
+            # store the bibjson record in the register for use later
+            register.append(
+                (
+                    eissns + pissns,
+                    (h.get("date"), h.get("replaces"), h.get("isreplacedby"), bj)
+                )
+            )
+
+            # put all the information we have into the lookup structure
+            lookup.append((h.get("replaces"), eissns + pissns, h.get("isreplacedby")))
+
+        # now construct an ordered list of issns based on inspeection of the lookup structure.
+        # we loop through the lookup, and pull out the isreplacedby issns.  For each of those issns,
+        # we look at all the other entries in the lookup to determine if one of them is the one that
+        # replaces the current one (by comparing the irb issns to the record issns).  If we don't find
+        # a match, then the entry in the lookup we are inspecting is the latest history record, and
+        # we record the issn, and delete the record from the lookup.  That way, the lookup structure
+        # reduces in size until there is nothing left.
+        #
+        # There are various things that can throw the ordering - basically, if there isn't a clean
+        # replaces/isreplacedby chain, then the ordering will be unpredictable.  So ... manage your data
+        # properly!
+        ordered = []
+        while len(lookup) > 0:
+            i = 0                       # counter that we will use to refer to the current lookup row when we want to delete it
+            for entry in lookup:
+                found = False
+                irbs = entry[2]         # is an array, so there could be multiple values here
+                if irbs is not None:    # it could be none - the history API allows for it
+                    for irb in irbs:
+                        for other in lookup:
+                            if irb in other[1] and irb not in other[2]: # make sure we don't inspect the same record as where our irb comes from
+                                found = True
+                                break
+                        if found:               # propagate the break
+                            break
+                if not found:
+                    if len(entry[1]) > 0:               # check there is an ISSN.  If there is not, this is a data fail - there's not a lot we can do about it
+                        ordered.append(entry[1][0])     # add just one issn to the ordered list - we don't need any more info
+                    del lookup[i]                   # remove this record from the lookup
+                    break                           # and start again from scratch, since the array has now been modified
+                i += 1
+
+        # finally, take the ordered list of issns, and map them to the return values held in the
+        # register.
+        output = []
+        for o in ordered:
+            for r in register:
+                if o in r[0]:
+                    output.append(r[1])
+
+        return output
 
     def get_history_raw(self):
         return self.data.get("history")
@@ -98,6 +176,39 @@ class Journal(DomainObject):
                 return jbj
 
         return None
+
+    def get_history_around(self, issn):
+        cbj = self.bibjson()
+        eissns = cbj.get_identifiers(JournalBibJSON.E_ISSN)
+        pissns = cbj.get_identifiers(JournalBibJSON.P_ISSN)
+
+        # if the supplied issn is one for the current version of the journal, return no
+        # future continuations, and all of the past ones in order
+        if issn in eissns or issn in pissns:
+            return [], [h[3] for h in self.history()]
+
+        # otherwise this is an old issn, so the current version is the most recent
+        # future continuation
+        future = [cbj]
+        past = []
+        trip = False
+
+        # for each historical version, look to see if the supplied ISSN is the one
+        # while putting all others in the past/future bins, depending on whether we've
+        # passed the target or not
+        for h in self.history():
+            eissns = h[3].get_identifiers(JournalBibJSON.E_ISSN)
+            pissns = h[3].get_identifiers(JournalBibJSON.P_ISSN)
+            if issn in eissns or issn in pissns:
+                trip = True
+                continue
+            else:
+                if not trip:
+                    future.append(h[3])
+                else:
+                    past.append(h[3])
+
+        return future, past
 
     def make_continuation(self, replaces=None, isreplacedby=None):
         snap = deepcopy(self.data.get("bibjson"))
@@ -145,6 +256,43 @@ class Journal(DomainObject):
             del histories[i]
         if len(histories) == 0:
             del self.data["history"]
+
+    @property
+    def toc_id(self):
+        bibjson = self.bibjson()
+        id_ = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if not id_:
+            id_ = bibjson.get_one_identifier(bibjson.P_ISSN)
+        if not id_:
+            id_ = self.id
+        return id_
+
+    def issns_for_title(self, title):
+        """locate the issns associated with the supplied title"""
+        if title is None:
+            return None
+
+        incoming_title = title.strip().lower()
+
+        # first check the main title on the journal
+        current_title = self.bibjson().title
+        if current_title is not None:
+            if incoming_title == current_title.strip().lower():
+                return self.bibjson().issns()
+
+        # now check all of the historical records
+        for d, r, irb, bj in self.history():
+            history_title = bj.title
+            if history_title is not None:
+                if incoming_title == history_title.strip().lower():
+                    return bj.issns()
+
+        # we didn't find anything
+        return None
+
+
+    #######################################################################
+
 
     def make_reapplication(self):
         from portality.models import Suggestion
@@ -373,6 +521,10 @@ class Journal(DomainObject):
         license = []
         publisher = []
         urls = {}
+        has_apc = None
+        classification_paths = []
+        unpunctitle = None
+        asciiunpunctitle = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -406,13 +558,11 @@ class Journal(DomainObject):
             if hbib.title is not None:
                 titles.append(hbib.title)
 
-        # copy the languages
-        if cbib.language is not None:
-            langs = cbib.language
+        # get the bibjson object to conver the language to the english form
+        langs = cbib.language_name()
 
-        # copy the country
-        if cbib.country is not None:
-            country = xwalk.get_country_name(cbib.country)
+        # get the english name of the country
+        country = cbib.country_name()
 
         # get the title of the license
         lic = cbib.get_license()
@@ -440,9 +590,23 @@ class Journal(DomainObject):
         classification = list(set(classification))
         license = list(set(license))
         publisher = list(set(publisher))
-        langs = list(set(langs))
         schema_codes = list(set(schema_codes))
 
+        # work out of the journal has an apc
+        has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
+
+        # get the full classification paths for the subjects
+        classification_paths = cbib.lcc_paths()
+
+        # create an unpunctitle
+        if cbib.title is not None:
+            throwlist = string.punctuation + '\n\t'
+            unpunctitle = "".join(c for c in cbib.title if c not in throwlist).strip()
+            try:
+                asciiunpunctitle = unidecode(unpunctitle)
+            except:
+                asciiunpunctitle = unpunctitle
+        
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -467,6 +631,14 @@ class Journal(DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(urls.keys()) > 0:
             self.data["index"].update(urls)
+        if has_apc:
+            self.data["index"]["has_apc"] = has_apc
+        if len(classification_paths) > 0:
+            self.data["index"]["classification_paths"] = classification_paths
+        if unpunctitle is not None:
+            self.data["index"]["unpunctitle"] = unpunctitle
+        if asciiunpunctitle is not None:
+            self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
@@ -637,6 +809,12 @@ class JournalBibJSON(GenericBibJSON):
     @country.setter
     def country(self, val) : self.bibjson["country"] = val
 
+    def country_name(self):
+        if self.country is not None:
+            from portality import datasets  # delayed import because of files to be loaded
+            return datasets.get_country_name(self.country)
+        return None
+
     @property
     def publisher(self): return self.bibjson.get("publisher")
     @publisher.setter
@@ -662,6 +840,28 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def language(self):
         return self.bibjson.get("language", [])
+
+    def language_name(self):
+        # copy the languages and convert them to their english forms
+        from portality import datasets  # delayed import, as it loads some stuff from file
+        if self.language is not None:
+            langs = self.language
+        langs = [datasets.name_for_lang(l) for l in langs]
+
+        # now we need to ensure that these are all correctly unicoded
+        def to_utf8_unicode(val):
+            if isinstance(val, unicode):
+                return val
+            elif isinstance(val, basestring):
+                try:
+                    return val.decode("utf8", "strict")
+                except UnicodeDecodeError:
+                    raise ValueError(u"Could not decode string")
+            else:
+                return unicode(val)
+
+        langs = [to_utf8_unicode(l) for l in langs]
+        return list(set(langs))
 
     def set_language(self, language):
         if isinstance(language, list):

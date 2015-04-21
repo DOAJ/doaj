@@ -541,7 +541,7 @@ class ManEdApplicationReview(ApplicationContext):
             j.save()
 
             # record the url the journal is available at in the admin are and alert the user
-            jurl = url_for("doaj.toc", identifier=j.id)
+            jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:
                 self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
                 #self.source.remove_current_journal()
@@ -661,7 +661,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
-            self.form.application_status.choices = choices.Choices.application_status()
+            self.form.application_status.choices = choices.Choices.application_status("editor")
 
         # get the editor group from the source because it isn't in the form
         egn = self.source.editor_group

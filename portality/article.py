@@ -564,7 +564,7 @@ def _year_month(date):
 def _element(xml, field):
     el = xml.find(field)
     if el is not None and el.text is not None and el.text != "":
-        return el.text
+        return el.text.strip()
     return None
     
 ################################################################################

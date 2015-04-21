@@ -25,7 +25,7 @@ def restrict():
 @login_required
 @ssl_required
 def index():
-    return render_template("publisher/index.html", search_page=True, facetviews=["publisher"])
+    return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
 @blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
@@ -69,7 +69,7 @@ def reapplication_page(reapplication_id):
 def updates_in_progress():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         abort(404)
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["reapplications"])
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.reapplications.facetview"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])

@@ -20,11 +20,11 @@ class JournalArticle(DomainObject):
 
         # prep the query and result objects
         q = JournalArticleQuery()
-        stats = {
-            "articles" : 0,
-            "journals" : 0,
-            "countries" : 0,
-            "searchable" : 0
+        stats = {           # Note these values all have to be strings
+            "articles" : "0",
+            "journals" : "0",
+            "countries" : "0",
+            "searchable" : "0"
         }
 
         # do the query

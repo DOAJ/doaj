@@ -17,3 +17,25 @@ function iso_datetime2date_and_time(isodate_str) {
     return isodate_str.replace('T',' ').replace('Z','')
 }
 
+function journal_toc_id(journal) {
+    // if e-issn is available, use that
+    // if not, but a p-issn is available, use that
+    // if neither ISSN is available, use the internal ID
+    var ids = journal.bibjson.identifier;
+    var pissns = [];
+    var eissns = [];
+    for (var i = 0; i < ids.length; i++) {
+        if (ids[i].type === "pissn") {
+            pissns.push(ids[i].id)
+        } else if (ids[i].type === "eissn") {
+            eissns.push(ids[i].id)
+        }
+    }
+
+    var toc_id = undefined;
+    if (eissns.length > 0) { toc_id = eissns[0]; }
+    if (!toc_id && pissns.length > 0) { toc_id = pissns[0]; }
+    if (!toc_id) { toc_id = journal.id; }
+
+    return toc_id;
+}

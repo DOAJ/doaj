@@ -8,7 +8,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.10.1_SNAPSHOT-1"
+DOAJ_VERSION = "2.10.2_SNAPSHOT-1"
 
 OFFLINE_MODE=False
 
@@ -37,7 +37,7 @@ MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
-SERVICE_TAGLINE = ""
+SERVICE_TAGLINE = "DOAJ is an online directory that indexes and provides access to quality open access, peer-reviewed journals."
 HOST = "0.0.0.0"
 DEBUG = False
 PORT = 5004
@@ -260,13 +260,24 @@ FEED_LOGO = "http://www.doaj.org/static/doaj/images/favicon.ico"
 # ============================
 # OAI-PMH SETTINGS
 
-OAIPMH_METADATA_FORMATS = [
-    {
-        "metadataPrefix" : "oai_dc",
-        "schema" : "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
-        "metadataNamespace" : "http://www.openarchives.org/OAI/2.0/oai_dc/"
-    }
-]
+OAI_DC_METADATA_FORMAT = {
+    "metadataPrefix": "oai_dc",
+    "schema": "http://www.openarchives.org/OAI/2.0/oai_dc.xsd",
+    "metadataNamespace": "http://www.openarchives.org/OAI/2.0/oai_dc/"
+}
+
+OAI_DOAJ_METADATA_FORMAT = {
+    "metadataPrefix": "oai_doaj",
+    "schema": "https://doaj.org/static/doaj/doajArticles.xsd",
+    "metadataNamespace": "http://doaj.org/features/oai_doaj/1.0/"
+}
+
+OAIPMH_METADATA_FORMATS = {
+    # "specific endpoint": [list, of, formats, supported]
+
+    None: [OAI_DC_METADATA_FORMAT],  # no specific endpoint, the request is to the root /oai path
+    "article": [OAI_DC_METADATA_FORMAT, OAI_DOAJ_METADATA_FORMAT]
+}
 
 OAIPMH_IDENTIFIER_NAMESPACE = "doaj.org"
 
@@ -380,3 +391,33 @@ NEWS_PAGE_NEWS_ITEMS = 20
 
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
+
+
+# =====================================
+# Search query shortening settings
+
+# bit,ly api shortening service
+BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v3/shorten"
+
+# bitly oauth token
+# ENTER YOUR OWN TOKEN IN APPROPRIATE .cfg FILE
+BITLY_OAUTH_TOKEN = ""
+
+# =====================================
+# date formats that we know about, and should try, in order, when parsing
+DATE_FORMATS = [
+    "%Y-%m-%dT%H:%M:%SZ",   # e.g. 2014-09-23T11:30:45Z
+    "%Y-%m-%d",             # e.g. 2014-09-23
+    "%d/%m/%y",             # e.g. 29/02/80
+    "%d/%m/%Y",             # e.g. 29/02/1980
+    "%d-%m-%Y",             # e.g. 01-01-2015
+    "%Y.%m.%d",             # e.g. 2014.09.12
+    "%d.%m.%Y",             # e.g. 12.9.2014
+    "%d.%m.%y",             # e.g. 12.9.14
+    "%d %B %Y",             # e.g. 21 June 2014
+    "%d-%b-%Y",             # e.g. 31-Jul-13
+    "%d-%b-%y",             # e.g. 31-Jul-2013
+    "%b-%y",                # e.g. Aug-13
+    "%B %Y",                # e.g. February 2014
+    "%Y"                    # e.g. 1978
+]

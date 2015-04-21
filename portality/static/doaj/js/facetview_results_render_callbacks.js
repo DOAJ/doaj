@@ -71,7 +71,7 @@ fv_abstract = (function (resultobj) {
         if (resultobj['bibjson']['abstract']) {
             var result = '<a class="abstract_action" href="" rel="';
             result += resultobj['id'];
-            result += '">(expand)</a> <span class="abstract_text" rel="';
+            result += '">(show/hide)</a> <span class="abstract_text" rel="';
             result += resultobj['id'];
             result += '">' + '<br>';
             result += resultobj['bibjson']['abstract'];
@@ -162,7 +162,7 @@ fv_title_field = (function (resultobj) {
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "&nbsp<a href='/toc/" + resultobj.id + "'>" + resultobj.bibjson.title + "</a>";
+                field += "&nbsp<a href='/toc/" + journal_toc_id(resultobj) + "'>" + resultobj.bibjson.title + "</a>";
             } else {
                 field += "&nbsp" + resultobj.bibjson.title;
             }
@@ -363,7 +363,19 @@ fv_owner = (function (resultobj) {
 
 fv_user_journals = (function (resultobj) {
     var that = function(resultobj) {
-        var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}}
+        var q = {
+            "query":{
+                "filtered":{
+                    "filter":{
+                        "bool":{
+                            "must":[{"term":{"admin.owner.exact":resultobj.id}}]
+                        }
+                    },
+                    "query":{"match_all":{}}
+                }
+            }
+        };
+        // var q = {"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : resultobj.id}}]}}};
         return '<a class="pull-right" style="margin-left: 10px; margin-right: 10px" href="/admin/journals?source=' + encodeURIComponent(JSON.stringify(q)) + '">View Journals</a>'
     };
     return that;

@@ -88,13 +88,19 @@ class Choices(object):
         ('reapplication', 'Reapplication In Progress'),
         ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
-        ('in progress', 'In progress'),
-        ('rejected', 'Rejected'),
-        ('ready', 'Ready')
+        ('in progress', 'In progress')
     ]
 
     _application_status_admin = _application_status_base + [
+        ('on hold', 'On Hold'),
+        ('ready', 'Ready'),
+        ('rejected', 'Rejected'),
         ('accepted', 'Accepted')
+    ]
+
+    _application_status_editor = _application_status_base + [
+        ('on hold', 'On Hold'),
+        ('ready', 'Ready'),
     ]
 
     ############################################################
@@ -375,6 +381,8 @@ class Choices(object):
     def application_status(cls, context=None):
         if context == "admin":
             return cls._application_status_admin
+        elif context == "editor":
+            return cls._application_status_editor
         elif context == "accepted":
             return [cls._application_status_admin[5]] # just the one status - Accepted
         else:

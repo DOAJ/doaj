@@ -1,5 +1,58 @@
 from portality.models import LCC
 
+def loadLCC(source=None):
+    # use delayed imports, as this code will only rarely be run
+    import os
+    from lxml import etree
+
+    if source is None:
+        source = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "lccSubjects.xml")
+
+    doc = etree.parse(open(source))
+    root = doc.getroot()
+
+    nodes = {}
+    tree = {"name" : "LCC", "children" : []}
+    cpmap = {}
+
+    for element in root.findall("subject"):
+        nel = element.find("name")
+        cel = element.find("code")
+        pel = element.find("parent")
+
+        if nel is None:
+            continue
+
+        name = nel.text
+        code = None
+        parent = None
+        if cel is not None:
+            code = cel.text
+        if pel is not None:
+            parent = pel.text
+
+        node = {"name" : name}
+        if code is not None:
+            node["code"] = code
+
+        nodes[name] = node
+
+        if parent is None:
+            tree["children"].append(node)
+        else:
+            cpmap[name] = parent
+
+    for child, parent in cpmap.iteritems():
+        cn = nodes.get(child)
+        pn = nodes.get(parent)
+        if cn is None or pn is None:
+            continue
+        if "children" not in pn:
+            pn["children"] = []
+        pn["children"].append(cn)
+
+    lcc = LCC(**tree)
+    lcc.save()
 
 def lcc2choices(thelcc, level=-2):
     level += 1
@@ -75,6 +128,9 @@ def lcc2flat_code_index(thelcc):
         return {thelcc['code']: thelcc['name']}
 
 
+lcc = LCC.pull('lcc')
+if not lcc:
+    loadLCC()
 lcc = LCC.pull('lcc')
 lcc_choices = []
 lcc_jstree = []

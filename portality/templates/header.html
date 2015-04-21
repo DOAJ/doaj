@@ -21,6 +21,7 @@
           <ul class="nav" id="main-nav-first-menu">
             <li{% if request.path == '/' %} class="active"{% endif %}><a href="{{ url_for('doaj.home') }}">Home</a></li>
             <li{% if request.path == '/search' %} class="active"{% endif %}><a href="{{ url_for('doaj.search') }}" alt="Search or browse DOAJ" title="Search or browse DOAJ">Search</a></li>
+            <li{% if request.path == '/subjects' %} class="active"{% endif %}><a href="{{ url_for('doaj.subjects') }}" alt="Browse Subjects" title="Browse Subjects">Browse Subjects</a></li>
           </ul>
           <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
           <span class="icon-bar"></span>

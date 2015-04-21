@@ -9,6 +9,7 @@ import os
 
 from flask import request, abort, render_template, redirect, send_file, url_for, flash
 from flask.ext.login import login_user, current_user
+from copy import deepcopy
 
 from datetime import datetime
 import tzlocal
@@ -27,6 +28,7 @@ from portality.view.stream import blueprint as stream
 from portality.view.forms import blueprint as forms
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
+from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
@@ -46,6 +48,7 @@ app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 
 app.register_blueprint(oaipmh)
+app.register_blueprint(openurl)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
@@ -112,6 +115,10 @@ def legacy():
         return redirect(url_for('atom.feed')), 301
     elif func == "browse" or func == 'byPublicationFee  ':
         return redirect(url_for('doaj.search')), 301
+    elif func == "openurl":
+        vals = request.values.to_dict(flat=True)
+        del vals["func"]
+        return redirect(url_for('openurl.openurl', **vals), 301)
     abort(404)
 
 @app.route("/doaj2csv")
@@ -169,6 +176,16 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     tt = ld.utctimetuple()
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
     return utcdt.strftime(string_format)
+
+@app.template_filter('doi_url')
+def doi_url(doi):
+    """
+    Create a link from a DOI.
+    :param doi: the string DOI
+    :return: the HTML link
+    """
+    tendot = doi[doi.find('10.'):]
+    return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
 
 @app.before_request
 def standard_authentication():

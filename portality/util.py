@@ -7,6 +7,7 @@ from flask import request, current_app, flash
 from random import choice
 
 from urlparse import urlparse, urljoin
+from datetime import datetime
 
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
@@ -83,3 +84,21 @@ def flash_with_url(message, category=''):
 
 def listpop(l, default=None):
     return l[0] if l else default
+
+def parse_date(s, format=None, guess=True):
+    s = s.strip()
+
+    if format is not None:
+        try:
+            return datetime.strptime(s, format)
+        except ValueError as e:
+            if not guess:
+                raise e
+
+    for f in current_app.config.get("DATE_FORMATS", []):
+        try:
+            return datetime.strptime(s, f)
+        except ValueError as e:
+            pass
+
+    raise ValueError("Unable to parse {x} with any known format".format(x=s))
