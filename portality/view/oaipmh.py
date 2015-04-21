@@ -1107,7 +1107,7 @@ class OAI_DC_Journal(OAI_DC):
             set_text(idel, identifier.get("id"))
 
         # our internal identifier
-        url = app.config["BASE_URL"] + "/toc/" + record.id
+        url = app.config["BASE_URL"] + "/toc/" + record.toc_id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
         

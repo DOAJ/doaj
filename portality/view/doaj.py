@@ -8,8 +8,6 @@ from portality import dao
 from portality import models
 from portality.core import app, ssl_required, write_required
 from portality import blog
-from portality.datasets import countries_dict
-from portality import lock
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 
@@ -157,9 +155,37 @@ def toc(identifier=None, volume=None, issue=None):
         if len(js) == 0:
             abort(404)
         journal = js[0]
+
+        bibjson = journal.bibjson()
+        
+        # if there is an E-ISSN (and it's not the one in the request), redirect to it
+        # if not, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
+        eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if eissn and identifier != eissn:
+                return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
+        
+        if not eissn:
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if pissn and identifier != pissn:
+                return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
+
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
         journal = models.Journal.pull(identifier)
+        if journal is None:
+            abort(404)
+
+        # if there is an E-ISSN, redirect to it
+        # if not, but there is a P-ISSN, redirect to it
+        # if neither ISSN is present, continue loading the page
+        bibjson = journal.bibjson()
+        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if not issn:
+            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
+        if issn:
+            return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
+        # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
+        # and the user is referring to the toc page via that ID
     if journal is None:
         abort(404)
 

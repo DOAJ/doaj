@@ -216,7 +216,7 @@ jQuery(document).ready(function($) {
 
         // set the title
         if (resultobj.bibjson.title) {
-            result += "<span class='title'><a href='/toc/" + resultobj.id + "'>" + escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
+            result += "<span class='title'><a href='/toc/" + journal_toc_id(resultobj) + "'>" + escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
         }
 
         // set the alternative title

@@ -1,5 +1,17 @@
 {% extends "base.html" %}
 
+{% block page_title %}
+    {% set bibjson = article.bibjson() %}
+    {% set metatitle = bibjson.title %}
+    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
+    <title>{{ metatitle }}</title>
+{% endblock %}
+
+{% block page_desc %}
+    {% set bibjson = article.bibjson() %}
+    <meta name="description" content="Information about the open-access article '{{ bibjson.title }}' in DOAJ. {{ app.config['SERVICE_TAGLINE'] }}">
+{% endblock %}
+
 {% block extra_meta_tags %}
 
 {% set bibjson = article.bibjson() %}
@@ -61,7 +73,7 @@ hosted on DOAJ.org) #}
         <p>
         {# citation #}
         {% if issns|length > 0 %}
-            <a href="{{url_for('doaj.toc', identifier=issns[0])}}">{{jtitle}}</a>. {{cite}}
+            <a href="{{url_for('doaj.toc', identifier=journal.toc_id)}}">{{jtitle}}</a>. {{cite}}
         {% else %}
             {{jtitle}}. {{cite}}
         {% endif %}
