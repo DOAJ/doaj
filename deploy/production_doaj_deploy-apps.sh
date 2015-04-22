@@ -15,3 +15,5 @@ sudo supervisorctl reread doaj-production
 sudo supervisorctl update doaj-production
 kill -HUP $(sudo supervisorctl pid doaj-production)
 crontab $DIR/crontab-production
+sudo rm /etc/anacrontab
+sudo ln -sf /home/cloo/repl/apps/doaj/src/doaj/deploy/anacrontab-production /etc/anacrontab
