@@ -44,11 +44,11 @@ for path, change in statics:
     counter += 1
 
 # do all the journal ToCs
-for j in models.Journal.all_in_doaj(page_size=10000, minified=True):
+for j in models.Journal.all_in_doaj(page_size=12000):
     
     # first create an entry purely for the journal
     toc_loc = base_url + "toc/" + j.toc_id
-    lastmod = j.get("last_updated")
+    lastmod = j.last_updated
     
     url = etree.SubElement(urlset, NS + "url")
     loc = etree.SubElement(url, NS + "loc")
@@ -61,7 +61,7 @@ for j in models.Journal.all_in_doaj(page_size=10000, minified=True):
     counter += 1
     
     # now create an entry for each volume in the journal
-    volumes = models.JournalVolumeToC.list_volumes(j["id"])
+    volumes = models.JournalVolumeToC.list_volumes(j.id)
     for v in volumes:
         vol_loc = base_url + "toc/" + j.toc_id + "/" + v
         vurl = etree.SubElement(urlset, NS + "url")
