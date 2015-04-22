@@ -6,4 +6,5 @@ cd $DIR/..
 pip install -r requirements.txt
 sudo supervisorctl reread doaj-production
 sudo supervisorctl update doaj-production
-sudo supervisorctl restart doaj-production
+kill -HUP $(sudo supervisorctl pid doaj-production)
+crontab $DIR/crontab-production
