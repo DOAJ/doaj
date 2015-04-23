@@ -7,8 +7,8 @@
 {% endif %}
 
 {% if current_user.has_role("admin_journals") %}
-    {% set Q1 = '{"query" : {"bool" : {"must" : [{"term" : {"admin.owner.exact" : "' %}
-    {% set Q2 = '"}}]}}}' %}
+    {% set Q1 = '{ "query":{"filtered":{"filter":{"bool":{"must":[{"term":{"admin.owner.exact":"' %}
+    {% set Q2 = '"}}]}},"query":{"match_all":{}}}}}' %}
     <p><a href="/admin/journals?source={{Q1}}{{account.id}}{{Q2}}">view a list of this user's journals</a>
 {% endif %}
 
