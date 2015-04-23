@@ -17,9 +17,9 @@ class Journal(DomainObject):
                     "CC License", "Content in DOAJ"]
 
     @classmethod
-    def find_by_issn(cls, issn):
+    def find_by_issn(cls, issn, in_doaj=None):
         q = JournalQuery()
-        q.find_by_issn(issn)
+        q.find_by_issn(issn, in_doaj=in_doaj)
         result = cls.query(q=q.query)
         # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
@@ -1161,9 +1161,11 @@ class JournalQuery(object):
         self.minified = minified
         self.sort_by_title = sort_by_title
 
-    def find_by_issn(self, issn):
+    def find_by_issn(self, issn, in_doaj=None):
         self.query = deepcopy(self.issn_query)
         self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
+        if in_doaj is not None:
+            self.query["query"]["bool"]["must"].append({"term" : {"admin.in_doaj" : in_doaj}})
 
     def all_in_doaj(self):
         q = deepcopy(self.all_doaj)

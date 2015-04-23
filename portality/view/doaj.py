@@ -149,7 +149,7 @@ def toc(identifier=None, volume=None, issue=None):
     journal = None
     issn_ref = False
     if len(identifier) == 9:
-        js = models.Journal.find_by_issn(identifier)
+        js = models.Journal.find_by_issn(identifier, in_doaj=True)
         if len(js) > 1:
             abort(400) # really this is a 500 - we have more than one journal with this issn
         if len(js) == 0:
