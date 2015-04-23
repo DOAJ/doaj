@@ -375,7 +375,9 @@ class Choices(object):
 
     @classmethod
     def application_status_optional(cls):
-        return [v[0] for v in cls._application_status_base]
+        all = [v[0] for v in cls._application_status_admin]
+        all.remove("accepted")
+        return all
 
     @classmethod
     def application_status(cls, context=None):
@@ -384,6 +386,6 @@ class Choices(object):
         elif context == "editor":
             return cls._application_status_editor
         elif context == "accepted":
-            return [cls._application_status_admin[5]] # just the one status - Accepted
+            return [('accepted', 'Accepted')] # just the one status - Accepted
         else:
             return cls._application_status_base
