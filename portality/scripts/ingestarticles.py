@@ -2,6 +2,7 @@ from portality import models, article
 from portality.core import app
 import os, requests, time, ftplib
 from urlparse import urlparse
+import traceback
 
 if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
     print "System is in READ-ONLY mode, script cannot run"
@@ -174,7 +175,7 @@ for remote in to_download:
         try:
             os.remove(path)
         except:
-            pass
+            print traceback.format_exc()
         remote.failed("Unable to parse file")
         remote.save()
         print "...failed"
