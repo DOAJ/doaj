@@ -17,10 +17,16 @@ server {
     listen          80;
     server_name     doaj.org testdoaj.cottagelabs.com;
 
+    location =/static/doaj/doajArticles.xsd {
+        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
-
-    return 301 https://$host$request_uri;
 }
 
 # actually serve the app on doaj.org via SSL
