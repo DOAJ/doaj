@@ -1,4 +1,4 @@
-import re
+import re, json
 from flask import url_for
 from portality.models import Journal, Article
 from portality.core import app
@@ -30,6 +30,7 @@ OPENURL_TO_ES = {
 }
 
 TERMS_SEARCH = { "query" : {"bool" : { "must" : [] } } }
+IN_DOAJ_TERM = { "term" : { "admin.in_doaj" : True } }
 
 class OpenURLRequest(object):
     """
@@ -59,6 +60,9 @@ class OpenURLRequest(object):
         # Copy to the template, which will be populated with terms
         populated_query = deepcopy(TERMS_SEARCH)
 
+        # Ensure results are visible to public
+        populated_query["query"]["bool"]["must"].append(IN_DOAJ_TERM)
+
         # Get all of the attributes with values set.
         set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
 
@@ -82,12 +86,13 @@ class OpenURLRequest(object):
         if len(populated_query["query"]["bool"]["must"]) == 0:
             app.logger.debug("No valid search terms in OpenURL object")
             return None
-        app.logger.debug("Query from OpenURL: " + str(populated_query))
 
         # Return the results of the query
         if i == 0:
+            app.logger.debug("OpenURL query to journal: " + json.dumps(populated_query))
             return Journal.query(q=populated_query)
         elif i == 1:
+            app.logger.debug("OpenURL query to article: " + json.dumps(populated_query))
             return Article.query(q=populated_query)
 
     def get_result_url(self):
@@ -175,7 +180,7 @@ class OpenURLRequest(object):
                 iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
                 volume_query["query"]["bool"]["must"].append(iss_term)
 
-            app.logger.debug("Subsequent volume query from OpenURL: " + str(volume_query))
+            app.logger.debug("OpenURL subsequent volume query to article: " + json.dumps(volume_query))
             return Article.query(q=volume_query)
 
     def validate_issn(self, issn_str):
