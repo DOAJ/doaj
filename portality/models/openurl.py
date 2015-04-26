@@ -29,8 +29,9 @@ OPENURL_TO_ES = {
     'isbn' : ('index.issn.exact', 'index.issn.exact'),
 }
 
-TERMS_SEARCH = { "query" : {"bool" : { "must" : [] } } }
+# Terms search template. Ensure all queries from OpenURL return publicly visible results with in_doaj : true
 IN_DOAJ_TERM = { "term" : { "admin.in_doaj" : True } }
+TERMS_SEARCH = { "query" : {"bool" : { "must" : [ IN_DOAJ_TERM ] } } }
 
 class OpenURLRequest(object):
     """
@@ -59,9 +60,6 @@ class OpenURLRequest(object):
         """
         # Copy to the template, which will be populated with terms
         populated_query = deepcopy(TERMS_SEARCH)
-
-        # Ensure results are visible to public
-        populated_query["query"]["bool"]["must"].append(IN_DOAJ_TERM)
 
         # Get all of the attributes with values set.
         set_attributes = [(x, getattr(self, x)) for x in JOURNAL_SCHEMA_KEYS[:-1] if getattr(self, x)]
