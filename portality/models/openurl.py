@@ -119,6 +119,10 @@ class OpenURLRequest(object):
                         issns = journal.issns_for_title(self.jtitle)
                         if len(issns) > 0:
                             ident = issns[0]
+                    elif self.stitle is not None:
+                        issns = journal.issns_for_title(self.stitle)
+                        if len(issns) > 0:
+                            ident = issns[0]
                     if ident is None:
                         ident = journal.toc_id
 
