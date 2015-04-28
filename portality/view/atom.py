@@ -1,4 +1,4 @@
-from flask import Blueprint, request, abort, make_response
+from flask import Blueprint, request, abort, make_response, url_for
 from flask.ext.login import current_user
 
 from portality import models as models
@@ -58,8 +58,7 @@ class AtomCrosswalk(object):
             cats.append(scheme + ":" + term)
         entry["categories"] = cats
         
-        query = urllib.urlencode([("source", '{"query":{"bool":{"must":[{"term":{"id":"' + atom_record.id + '"}}]}}}')])
-        content_src = app.config['BASE_URL'] + "/search?" + query
+        content_src = app.config['BASE_URL'] + url_for('doaj.toc', identifier=atom_record.toc_id)
         entry["content_src"] = content_src
         
         entry["id"] = "urn:uuid:" + atom_record.id
