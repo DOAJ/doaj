@@ -103,59 +103,64 @@ class OpenURLRequest(object):
         if results is None:
             return None
 
-        if results.get('hits', {}).get('total', 0) > 0:
-            if results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'journal':
+        if results.get('hits', {}).get('total', 0) == 0:
+            # No results found for query, retry
+            results = self.fallthrough_retry()
+            if results is None or results.get('hits', {}).get('total', 0) == 0:
+                # This time we've definitely failed
+                return None
 
-                # construct a journal object around the result
-                journal = Journal(**results['hits']['hits'][0])
+        if results.get('hits', {}).get('hits', [{}])[0].get('_type') == 'journal':
 
-                # since we might be looking for a specific continuation of a journal, do a bit of work
-                # to point the user to the correct ToC, which should be by ISSN if possible.  If they have
-                # given us the journal title, then we should try to identify the ISSN associated with it
-                # Failing all that, just fall back to the current version ToC
-                ident = self.issn
+            # construct a journal object around the result
+            journal = Journal(**results['hits']['hits'][0])
+
+            # since we might be looking for a specific continuation of a journal, do a bit of work
+            # to point the user to the correct ToC, which should be by ISSN if possible.  If they have
+            # given us the journal title, then we should try to identify the ISSN associated with it
+            # Failing all that, just fall back to the current version ToC
+            ident = self.issn
+            if ident is None:
+                if self.jtitle is not None:
+                    issns = journal.issns_for_title(self.jtitle)
+                    if len(issns) > 0:
+                        ident = issns[0]
+                elif self.stitle is not None:
+                    issns = journal.issns_for_title(self.stitle)
+                    if len(issns) > 0:
+                        ident = issns[0]
                 if ident is None:
-                    if self.jtitle is not None:
-                        issns = journal.issns_for_title(self.jtitle)
-                        if len(issns) > 0:
-                            ident = issns[0]
-                    elif self.stitle is not None:
-                        issns = journal.issns_for_title(self.stitle)
-                        if len(issns) > 0:
-                            ident = issns[0]
-                    if ident is None:
-                        ident = journal.toc_id
+                    ident = journal.id
 
-                # If there request has a volume parameter, query for presence of an article with that volume
-                if self.volume:
-                    vol_iss_results = self.query_for_vol(journal)
+            # If there request has a volume parameter, query for presence of an article with that volume
+            if self.volume:
+                vol_iss_results = self.query_for_vol(journal)
 
-                    if vol_iss_results == None:
-                        # we were asked for a vol/issue, but weren't given the correct information to get it.
-                        return None
-                    elif vol_iss_results['hits']['total'] > 0:
-                        # construct the toc url using the ident, plus volume and issue
-                        jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
-                    else:
-                        # If no results, the DOAJ does not contain the vol/issue being searched. (Show openurl 404)
-                        jtoc_url = None
+                if vol_iss_results == None:
+                    # we were asked for a vol/issue, but weren't given the correct information to get it.
+                    return None
+                elif vol_iss_results['hits']['total'] > 0:
+                    # construct the toc url using the ident, plus volume and issue
+                    jtoc_url = url_for("doaj.toc", identifier=ident, volume=self.volume, issue=self.issue)
                 else:
-                    # if no volume parameter, construct the toc url using the ident only
-                    jtoc_url = url_for("doaj.toc", identifier=ident)
-                return jtoc_url
+                    # If no results, the DOAJ does not contain the vol/issue being searched. (Show openurl 404)
+                    jtoc_url = None
+            else:
+                # if no volume parameter, construct the toc url using the ident only
+                jtoc_url = url_for("doaj.toc", identifier=ident)
+            return jtoc_url
 
-            elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
-                return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
-        else:
-            # No results found for query
-            return None
+        elif results.get('hits', {}).get('hits',[{}])[0].get('_type') == 'article':
+            return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
     def query_for_vol(self, journalobj):
         # find which continuation the searched issn/title belongs to so we can find accurate volume/issue results
         issns = None
         if self.issn is None:                                               # if query was by title, find the issns
             if self.jtitle is not None:
-                issns = journalobj.issns_for_title(self.jtitle)      # todo: this could find titles using alternative_title too if we want to add that.
+                issns = journalobj.issns_for_title(self.jtitle)
+            elif self.stitle is not None:
+                issns = journalobj.issns_for_title(self.stitle)
         else:
             if self.issn in journalobj.bibjson().issns():                   # issn is in current version
                 issns = journalobj.bibjson().issns()
@@ -184,6 +189,22 @@ class OpenURLRequest(object):
 
             app.logger.debug("OpenURL subsequent volume query to article: " + json.dumps(volume_query))
             return Article.query(q=volume_query)
+
+    def fallthrough_retry(self):
+        """
+        Some things to try differently if we get no results on first attempt
+        :return: a new result set, or None
+        """
+        results = None
+
+        # Search again for the title against alternative_title (may catch translations of titles)
+        if self.jtitle and not self.stitle:
+            self.stitle = self.jtitle
+            self.jtitle = None
+            results = self.query_es()
+
+        return results
+
 
     def validate_issn(self, issn_str):
         """
