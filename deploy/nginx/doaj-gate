@@ -17,8 +17,19 @@ server {
     listen          80;
     server_name     doaj.org testdoaj.cottagelabs.com;
 
+    # Serve some crucial XML schemas via plain HTTP as well
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
     location =/static/doaj/doajArticles.xsd {
         alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
 
     location / {
@@ -43,6 +54,11 @@ server {
 
     proxy_read_timeout 600s;
     client_max_body_size 50M;
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
 
     location / {
         proxy_pass http://apps;
