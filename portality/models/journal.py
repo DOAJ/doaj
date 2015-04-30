@@ -274,20 +274,28 @@ class Journal(DomainObject):
 
         incoming_title = title.strip().lower()
 
-        # first check the main title on the journal
+        # first check the main title / alt_title on the journal
         current_title = self.bibjson().title
+        current_alt_title = self.bibjson().alternative_title
         if current_title is not None:
             if incoming_title == current_title.strip().lower():
+                return self.bibjson().issns()
+        if current_alt_title is not None:
+            if incoming_title == current_alt_title.strip().lower():
                 return self.bibjson().issns()
 
         # now check all of the historical records
         for d, r, irb, bj in self.history():
             history_title = bj.title
+            history_alt_title = bj.alternative_title
             if history_title is not None:
                 if incoming_title == history_title.strip().lower():
                     return bj.issns()
+            if history_alt_title is not None:
+                if incoming_title == history_alt_title.strip().lower():
+                    return bj.issns()
 
-        # we didn't find anything
+        # return None if we didn't find anything
         return None
 
 
