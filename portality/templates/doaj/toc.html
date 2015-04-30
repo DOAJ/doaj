@@ -138,6 +138,8 @@
         <div class="box slim">
             <p><strong>PUBLICATION CHARGES</strong></p>
 
+            {% if journal.last_reapplication %}
+
             <p>Article Processing Charges (APCs):
                 {% if bibjson.apc %}
                     {% if bibjson.apc.get("currency") or bibjson.apc.get("average_price") %}
@@ -183,6 +185,12 @@
                     No.
                 {% endif %}
             </p>
+
+            {% else %}
+
+            <p>Information on publication charges not yet available for this journal</p>
+
+            {% endif %}
         </div>
     </div>
 
