@@ -488,7 +488,7 @@ $(document).ready(function() {
             }
             if ( "bibjson.start_page" in artcl ) {
                 content += 'pages: ' + artcl["bibjson.start_page"][0];
-                if ( "bibjson.start_page" in artcl ) { content += ' - ' + artcl["bibjson.start_page"][0]; }
+                if ( "bibjson.end_page" in artcl ) { content += ' - ' + artcl["bibjson.end_page"][0]; }
                 content += '<br>'
             }
             if ( "bibjson.abstract" in artcl ) {
