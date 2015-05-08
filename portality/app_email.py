@@ -4,6 +4,9 @@ from portality.core import app
 
 import uuid
 
+class EmailException(Exception):
+    pass
+
 # Flask-Mail version of email service from util.py
 def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
     bcc = [] if bcc is None else bcc
@@ -69,11 +72,17 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
     if appcontext:
         mail = Mail(app)
-        mail.send(msg)
+        try:
+            mail.send(msg)
+        except Exception as e:
+            raise EmailException(e)
     else:
         with app.test_request_context():
             mail = Mail(app)
-            mail.send(msg)
+            try:
+                mail.send(msg)
+            except Exception as e:
+                raise EmailException(e)
 
 def to_unicode(val):
     if isinstance(val, unicode):

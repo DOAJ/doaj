@@ -476,10 +476,10 @@ class Facetview2(object):
         return {"term" : {term : value}}
 
     @classmethod
-    def make_query(self, query_string=None, filters=None):
+    def make_query(self, query_string=None, filters=None, default_operator="OR"):
         query_part = {"match_all" : {}}
         if query_string is not None:
-            query_part = {"query_string" : {"query" : query_string, "default_operator" : "OR"}}
+            query_part = {"query_string" : {"query" : query_string, "default_operator" : default_operator}}
 
         query = {"query" : query_part}
         if filters is not None:
