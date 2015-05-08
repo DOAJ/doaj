@@ -550,14 +550,23 @@ class ManEdApplicationReview(ApplicationContext):
                 self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
             # create the user account for the owner and send the notification email
-            owner = self._create_account_on_suggestion_approval(self.target, j)
-            self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
+            try:
+                owner = self._create_account_on_suggestion_approval(self.target, j)
+                self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to suggester - probably address is invald")
 
         # if we need to email the editor and/or the associate, handle those here
         if email_editor:
-            self._send_editor_group_email(self.target)
+            try:
+                self._send_editor_group_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to editor - probably address is invald")
         if email_associate:
-            self._send_editor_email(self.target)
+            try:
+                self._send_editor_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to associate editor - probably address is invald")
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -956,7 +965,10 @@ class PublisherReApplication(ApplicationContext):
         self.target.save()
 
         # email the publisher to tell them we received their reapplication
-        self._send_received_email()
+        try:
+            self._send_received_email()
+        except app_email.EmailException as e:
+            self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -1068,7 +1080,10 @@ class PublicApplication(FormContext):
         # Finally save the target
         self.target.save()
 
-        self._send_received_email()
+        try:
+            self._send_received_email()
+        except app_email.EmailException as e:
+            self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
 
     def _send_received_email(self):
         suggester = self.target.suggester
