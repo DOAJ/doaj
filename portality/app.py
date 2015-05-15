@@ -72,7 +72,7 @@ SPONSORS = {
         # /static/doaj/images/sponsors without the extension for
         # consistency - no code should rely on this though
         'biomed-central': {'name':'BioMed Central', 'logo': 'biomed-central.gif', 'url': 'http://www.biomedcentral.com/'},
-        'coaction': {'name': 'Co-Action Publishing', 'logo': 'coaction.gif', 'url': 'http://www.co-action.net/'},
+        'coaction': {'name': 'Co-Action Publishing', 'logo': 'coaction.jpg', 'url': 'http://www.co-action.net/'},
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.gif', 'url': 'http://www.frontiersin.org/'},
