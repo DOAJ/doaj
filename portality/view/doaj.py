@@ -156,36 +156,12 @@ def toc(identifier=None, volume=None, issue=None):
             abort(404)
         journal = js[0]
 
-        bibjson = journal.bibjson()
-        
-        # if there is an E-ISSN (and it's not the one in the request), redirect to it
-        # if not, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
-        eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
-        if eissn and identifier != eissn:
-                return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
-        
-        if not eissn:
-            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
-            if pissn and identifier != pissn:
-                return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
-
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
         journal = models.Journal.pull(identifier)
         if journal is None:
             abort(404)
 
-        # if there is an E-ISSN, redirect to it
-        # if not, but there is a P-ISSN, redirect to it
-        # if neither ISSN is present, continue loading the page
-        bibjson = journal.bibjson()
-        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
-        if not issn:
-            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
-        if issn:
-            return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
-        # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
-        # and the user is referring to the toc page via that ID
     if journal is None:
         abort(404)
 
@@ -195,8 +171,52 @@ def toc(identifier=None, volume=None, issue=None):
     bibjson = journal.bibjson()
     if issn_ref:
         histbibjson = journal.get_history_for(identifier)
-        if histbibjson is not None:
+        if histbibjson is None:
+            continuation = False
+        else:
             bibjson = histbibjson
+            continuation = True
+    else:
+        # it can't be a continuation if it's not being referred to by ISSN
+        continuation = False
+
+    # before we proceed, check to see if this is a continuation or not
+    # if it is a current journal, we want people to use the E-ISSN to
+    # refer to the toc page, and must issue some redirects for this
+    if not continuation:
+
+        if issn_ref:  # the journal is referred to by an ISSN
+
+            # if there is an E-ISSN (and it's not the one in the request), redirect to it
+            # if not, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
+            eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+            if eissn and identifier != eissn:
+                    return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
+            
+            if not eissn:
+                pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+                if pissn and identifier != pissn:
+                    return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
+
+            # The journal has neither a PISSN or an EISSN. Yet somehow
+            # issn_ref is True, the request was referring to the journal
+            # by its ISSN. Not sure how this could ever happen, but just
+            # continue loading the data and do nothing else in such a
+            # case.
+
+        else:  # the journal is NOT referred to by any ISSN
+
+            # if there is an E-ISSN, redirect to it
+            # if not, but there is a P-ISSN, redirect to it
+            # if neither ISSN is present, continue loading the page
+            issn = bibjson.get_one_identifier(bibjson.E_ISSN)
+            if not issn:
+                issn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if issn:
+                return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
+
+            # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
+            # and the user is referring to the toc page via that ID
 
     # get the issns for this specific continuation
     issns = bibjson.issns()
