@@ -312,6 +312,11 @@ jQuery(document).ready(function($) {
             }
         }
 
+        // show the seal if it's set
+        if (resultobj.admin && resultobj.admin.seal) {
+            result += "<img src='/static/doaj/images/seal_long.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal'>​​<br>";
+        }
+
         // APC
         if (resultobj.bibjson.apc) {
             if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {

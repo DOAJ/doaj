@@ -497,6 +497,14 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["ticked"] = ticked
 
+    def has_seal(self):
+        return self.data.get("admin", {}).get("seal", False)
+
+    def set_seal(self, value):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["seal"] = value
+
     @property
     def last_reapplication(self):
         return self.data.get("last_reapplication")
