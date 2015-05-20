@@ -41,6 +41,10 @@ jQuery(document).ready(function($) {
             field : "index.has_apc.exact",
             display: "Article processing charges (APCs)"
         },
+        seal : {
+            field : "admin.seal.exact",
+            display: "DOAJ Seal"
+        },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
             display : "Peer review",
@@ -91,6 +95,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.subject);
     natural.push(all_facets.journal_title);
     natural.push(all_facets.apc);
+    natural.push(all_facets.seal);
     natural.push(all_facets.licence);
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
@@ -130,6 +135,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
+                    disableFacet(options, "admin.seal.exact", false);
 
                 } else if (t === "article") {
                     // disable the journal facets
@@ -138,11 +144,11 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+                    disableFacet(options, "admin.seal.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
                     disableFacet(options, "index.date", false);
-
                 }
             }
 
@@ -159,6 +165,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
             disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+            disableFacet(options, "admin.seal.exact", true);
         }
     }
 
