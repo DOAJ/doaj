@@ -15,6 +15,9 @@
     <meta property="og:description" content="{{ app.config['SERVICE_TAGLINE'] }}"/>
     <meta property="og:image" content="{{ app.config['BASE_URL'] + url_for('static', filename='doaj/images/logo_square.jpg') }}"/>
 
+    <!-- Stop iOS from highlighting phone numbers - it was linkifying ISSNs, too-->
+    <meta name="format-detection" content="telephone=no" />
+
     {% block extra_meta_tags %}{% endblock %}
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
