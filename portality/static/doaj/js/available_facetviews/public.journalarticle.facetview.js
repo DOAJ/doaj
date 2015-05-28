@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
             display: "Article processing charges (APCs)"
         },
         seal : {
-            field : "admin.seal.exact",
+            field : "index.has_seal.exact",
             display: "DOAJ Seal"
         },
         peer_review : {
@@ -135,7 +135,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
-                    disableFacet(options, "admin.seal.exact", false);
+                    disableFacet(options, "index.has_seal.exact", false);
 
                 } else if (t === "article") {
                     // disable the journal facets
@@ -144,7 +144,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
-                    disableFacet(options, "admin.seal.exact", true);
+                    disableFacet(options, "index.has_seal.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -165,7 +165,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
             disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
-            disableFacet(options, "admin.seal.exact", true);
+            disableFacet(options, "index.has_seal.exact", true);
         }
     }
 
@@ -302,6 +302,11 @@ jQuery(document).ready(function($) {
             result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
         }
 
+        // show the seal if it's set
+        if (resultobj.admin && resultobj.admin.seal) {
+            result += "<img src='/static/doaj/images/seal_long.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal'>​​<br>";
+        }
+
         // licence
         if (resultobj.bibjson.license) {
             var ltitle = undefined;
@@ -317,11 +322,6 @@ jQuery(document).ready(function($) {
                     result += "<strong>License: " + escapeHtml(ltitle) + "</strong><br>"
                 }
             }
-        }
-
-        // show the seal if it's set
-        if (resultobj.admin && resultobj.admin.seal) {
-            result += "<img src='/static/doaj/images/seal_long.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal'>​​<br>";
         }
 
         // APC

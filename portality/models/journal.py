@@ -538,6 +538,7 @@ class Journal(DomainObject):
         publisher = []
         urls = {}
         has_apc = None
+        has_seal = None
         classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
@@ -611,6 +612,9 @@ class Journal(DomainObject):
         # work out of the journal has an apc
         has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
 
+        # determine if the seal is applied
+        has_seal = "Yes" if self.has_seal() else "No"
+
         # get the full classification paths for the subjects
         classification_paths = cbib.lcc_paths()
 
@@ -649,6 +653,8 @@ class Journal(DomainObject):
             self.data["index"].update(urls)
         if has_apc:
             self.data["index"]["has_apc"] = has_apc
+        if has_seal:
+            self.data["index"]["has_seal"] = has_seal
         if len(classification_paths) > 0:
             self.data["index"]["classification_paths"] = classification_paths
         if unpunctitle is not None:
