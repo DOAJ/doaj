@@ -731,6 +731,7 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_seal(self.source.has_seal())
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

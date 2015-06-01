@@ -747,6 +747,11 @@ class JournalFormXWalk(JournalGenericXWalk):
             if editor:
                 journal.set_editor(editor)
 
+
+        if getattr(form, "doaj_seal", None):
+            print "form2obj {0}".format(form.doaj_seal.data)
+            journal.set_seal(form.doaj_seal.data)
+
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
@@ -917,6 +922,9 @@ class JournalFormXWalk(JournalGenericXWalk):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        forminfo['doaj_seal'] = obj.has_seal()
+        print "obj2form {0}".format(forminfo['doaj_seal'])
 
         # old fields - only show them if the values actually exist in the journal record
         if bibjson.author_pays:
