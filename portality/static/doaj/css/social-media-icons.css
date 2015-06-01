@@ -47,6 +47,10 @@
     background: #1E88BD;
 }
 
+#social-bar .icon-google-plus {
+    background: #E14107;
+}
+
 /* Don't underline icon etc. */
 #social-bar a:hover {
     text-decoration: none;
