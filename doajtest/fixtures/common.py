@@ -17,3 +17,7 @@ EDITORIAL = {
     "editor_group": "editorgroup",
     "editor": "associate"
 }
+
+SEAL = {
+    "doaj_seal": True,
+}

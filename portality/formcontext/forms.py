@@ -373,7 +373,7 @@ class Workflow(Form):
 class Seal(Form):
     """ Field to set the DOAJ Seal """
 
-    doaj_seal = BooleanField('Set DOAJ Seal', [validators.Optional()], description='description for doaj seal field.')
+    doaj_seal = BooleanField('Set DOAJ Seal', [validators.Optional()], description='description for doaj seal field.', false_values=(BooleanField.false_values + (False,)))
 
 #####################################################################
 # The context sensitive forms themselves
