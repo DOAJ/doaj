@@ -179,3 +179,30 @@ class TestManEdJournalReview(DoajTestCase):
         assert fc.target.bibjson().author_pays == JOURNAL_FORM['author_pays']
         assert fc.target.bibjson().author_pays_url == JOURNAL_FORM['author_pays_url']
         assert fc.target.bibjson().oa_end.get('year') == JOURNAL_FORM['oa_end_year']
+
+    def test_04_maned_review_doaj_seal(self):
+        """Test the seal checkbox on the maned review form"""
+
+        # construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(JOURNAL_FORM),
+            source=models.Journal(**JOURNAL_SOURCE)
+        )
+
+        # set the seal to False using the form
+        fc.form.doaj_seal.data = False
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # ensure the model has seal set to False
+        assert fc.target.has_seal() is False
+
+        # Set the seal to True in the object and check the form reflects this
+        fc.target.set_seal(True)
+        fc.data2form()
+
+        assert fc.form.doaj_seal.data is True
