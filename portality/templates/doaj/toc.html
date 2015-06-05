@@ -64,19 +64,19 @@
 
     </div>
     <div class="span2">
+        {%- if lic -%}
+            {%- set urls = CC_MAP.get(lic.get("type")) -%}
+            {%- if urls -%}
+                <a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a>
+            {%- endif -%}
+        {%- endif -%}
         {%- set tick = journal.is_ticked() -%}
         {%- if tick -%}
             <img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style="padding-bottom: 3px">​
         {%- endif -%}
         {%- set seal = journal.has_seal() -%}
         {%- if seal -%}
-            <img src='/static/doaj/images/seal_long.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal' style="padding-bottom: 3px">​
-        {%- endif -%}
-        {%- if lic -%}
-            {%- set urls = CC_MAP.get(lic.get("type")) -%}
-            {%- if urls -%}
-                <a href="{{urls[1]}}" title="{{lic.get('title')}}" target='blank'><img src="{{urls[0]}}" width='80' height='15' valign='middle' alt="{{lic.get('title')}}"></a>
-            {%- endif -%}
+            <img src='/static/doaj/images/seal_short.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal' style="padding-bottom: 3px">​
         {%- endif -%}
     </div>
 </div>

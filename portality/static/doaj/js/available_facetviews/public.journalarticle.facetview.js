@@ -297,16 +297,6 @@ jQuery(document).ready(function($) {
         // start the journal properties side-bar
         result += "<div class='span2'>";
 
-        // set the tick if it is relevant
-        if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
-        }
-
-        // show the seal if it's set
-        if (resultobj.admin && resultobj.admin.seal) {
-            result += "<img src='/static/doaj/images/seal_long.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal'>​​<br>";
-        }
-
         // licence
         if (resultobj.bibjson.license) {
             var ltitle = undefined;
@@ -322,6 +312,16 @@ jQuery(document).ready(function($) {
                     result += "<strong>License: " + escapeHtml(ltitle) + "</strong><br>"
                 }
             }
+        }
+
+        // set the tick if it is relevant
+        if (resultobj.admin && resultobj.admin.ticked) {
+            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
+        }
+
+        // show the seal if it's set
+        if (resultobj.admin && resultobj.admin.seal) {
+            result += "<img src='/static/doaj/images/seal_short.png' title='Fulfilled criteria for DOAJ Seal' alt='Seal icon: fulfilled criteria for DOAJ Seal'>​​<br>";
         }
 
         // APC
