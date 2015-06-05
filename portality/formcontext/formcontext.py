@@ -191,6 +191,9 @@ class FormContext(object):
     def render_field_group(self, field_group_name=None):
         return self.renderer.render_field_group(self, field_group_name)
 
+    def check_field_group_exists(self, field_group_name):
+        return self.renderer.check_field_group_exists(field_group_name)
+
 
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
