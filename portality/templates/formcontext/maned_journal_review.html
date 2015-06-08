@@ -96,11 +96,11 @@
         </div>
 
         {# include the base form which contains all the biblio data #}
-        {# we use the base application here because it contains extra information regarding the DOAJ seal #}
-        {% include 'formcontext/_base_application_form.html' %}
+        {% include 'formcontext/_base_journal_form.html' %}
 
         <div class="row-fluid">
-            <div class="span3">&nbsp;</div>
+                {# include the DOAJ seal information and checkbox #}
+                {% include 'formcontext/_doaj_seal_components.html' %}
             <div class="span6 with-borders form-section">
                 <div class="control-group">
                     <div class="controls">
