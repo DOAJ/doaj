@@ -1,6 +1,6 @@
 from copy import deepcopy
 from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
-from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER
+from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -53,6 +53,7 @@ APPLICATION_SOURCE = {
         "owner" : "Owner",
         "editor_group" : "editorgroup",
         "editor" : "associate",
+        "seal" : True,
     }
 }
 
@@ -79,6 +80,7 @@ APPLICATION_FORMINFO.update(deepcopy(NOTES))
 APPLICATION_FORMINFO.update(deepcopy(SUBJECT))
 APPLICATION_FORMINFO.update(deepcopy(OWNER))
 APPLICATION_FORMINFO.update(deepcopy(EDITORIAL))
+APPLICATION_FORMINFO.update(deepcopy(SEAL))
 APPLICATION_FORMINFO.update(deepcopy(WORKFLOW))
 
 APPLICATION_FORM = deepcopy(APPLICATION_FORMINFO)

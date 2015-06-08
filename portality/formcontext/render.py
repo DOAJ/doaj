@@ -9,6 +9,14 @@ class Renderer(object):
         self._error_fields = []
         self._disabled_fields = []
 
+    def check_field_group_exists(self, field_group_name):
+        """ Return true if the field group exists in this form """
+        group_def = self.FIELD_GROUPS.get(field_group_name)
+        if group_def is None:
+            return False
+        else:
+            return True
+
     def render_field_group(self, form_context, field_group_name=None):
         if field_group_name is None:
             return self._render_all(form_context)
@@ -344,6 +352,9 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
                 }
             }
         ]
+        self.FIELD_GROUPS["seal"] = [
+            {"doaj_seal" : {}}
+        ]
 
         self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]  # but do NOT include the new groups in self.NUMBERING_ORDER, don"t want them numbered
 
@@ -453,7 +464,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.FIELD_GROUPS["editorial"] = [
             {"editor_group" : {"class" : "input-large"}},
-            {"editor" : {"class" : "input-large"}}
+            {"editor" : {"class" : "input-large"}},
         ]
         self.FIELD_GROUPS["notes"] = [
             {
@@ -467,6 +478,9 @@ class ManEdJournalReviewRenderer(JournalRenderer):
         ]
         self.FIELD_GROUPS["make_all_fields_optional"] = [
             {"make_all_fields_optional": {}}
+        ]
+        self.FIELD_GROUPS["seal"] = [
+            {"doaj_seal" : {}}
         ]
 
         self.ERROR_CHECK_ORDER = ["make_all_fields_optional", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]

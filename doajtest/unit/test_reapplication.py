@@ -126,6 +126,7 @@ APPLICATION_SOURCE = {
         "owner" : "Owner",
         "editor_group" : "editorgroup",
         "editor" : "associate",
+        "seal" : False,
     }
 }
 
@@ -486,6 +487,7 @@ class TestReApplication(DoajTestCase):
         del forminfo_obj["suggester_email_confirm"]
         del forminfo_obj["suggester_name"]
         del forminfo_obj["owner"]
+        del forminfo_obj["doaj_seal"]
 
         # these two objects should be the same
         assert forminfo_col == forminfo_obj

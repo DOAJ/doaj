@@ -191,6 +191,9 @@ class FormContext(object):
     def render_field_group(self, field_group_name=None):
         return self.renderer.render_field_group(self, field_group_name)
 
+    def check_field_group_exists(self, field_group_name):
+        return self.renderer.check_field_group_exists(field_group_name)
+
 
 class PrivateContext(FormContext):
     def _expand_descriptions(self, fields):
@@ -731,6 +734,7 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self.target.set_seal(self.source.has_seal())
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 
 from wtforms import Form, validators
-from wtforms import TextField, StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
+from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
 from wtforms import widgets
 
 from portality.formcontext.fields import URLField, TagListField, DisabledTextField
@@ -370,6 +370,11 @@ class Workflow(Form):
                     ' completed your review.'
     )
 
+class Seal(Form):
+    """ Field to set the DOAJ Seal """
+
+    doaj_seal = BooleanField('<b>Qualifies for Seal</b>', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
+
 #####################################################################
 # The context sensitive forms themselves
 #####################################################################
@@ -384,7 +389,7 @@ class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
     pass
 
 
-class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
+class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes, Seal):
     """
     Managing Editor's Application Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -395,6 +400,7 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
         * Subject - ability to use subject hierarchy browser
         * AdminSuggester - suggester's contact details, from an administrator's perspective
         * Notes - repeatable notes field
+        * Seal - checkbox for DOAJ seal
     """
     pass
 
@@ -431,7 +437,7 @@ class PublisherReApplicationForm(JournalInformation, Suggestion):
     """
     pass
 
-class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, JournalInformation, Notes, OptionalValidation):
+class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal):
     """
     Managing Editor's Journal Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -441,6 +447,7 @@ class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, J
         * Notes - repeatable notes field
         * RequiredOwner - adds an Owner field which is required - validation will fail if it is not provided
         * OptionalValidation - Make the form provide an option to bypass validation
+        * Seal - checkbox for DOAJ seal
     """
     pass
 

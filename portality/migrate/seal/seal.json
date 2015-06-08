@@ -1,0 +1,12 @@
+{
+    "types" : [
+        {
+            "type" : "journal",
+            "keepalive" : "1m"
+        },
+        {
+            "type" : "suggestion",
+            "keepalive" : "1m"
+        }
+    ]
+}
