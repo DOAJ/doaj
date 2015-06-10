@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER
+from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 class JournalFixtureFactory(object):
     @staticmethod
@@ -127,6 +127,7 @@ JOURNAL_SOURCE = {
         "owner": "Owner",
         "editor_group": "editorgroup",
         "editor": "associate",
+        "seal": True,
     }
 }
 
@@ -208,6 +209,7 @@ JOURNAL_LEGACY = {
 
 JOURNAL_FORMINFO = deepcopy(JOURNAL_INFO)
 JOURNAL_FORMINFO.update(EDITORIAL)
+JOURNAL_FORMINFO.update(SEAL)
 JOURNAL_FORMINFO.update(SUBJECT)
 JOURNAL_FORMINFO.update(NOTES)
 JOURNAL_FORMINFO.update(OWNER)

@@ -41,6 +41,10 @@ jQuery(document).ready(function($) {
             field : "index.has_apc.exact",
             display: "Article processing charges (APCs)"
         },
+        seal : {
+            field : "index.has_seal.exact",
+            display: "DOAJ Seal"
+        },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
             display : "Peer review",
@@ -91,6 +95,7 @@ jQuery(document).ready(function($) {
     natural.push(all_facets.subject);
     natural.push(all_facets.journal_title);
     natural.push(all_facets.apc);
+    natural.push(all_facets.seal);
     natural.push(all_facets.licence);
     natural.push(all_facets.publisher);
     natural.push(all_facets.country_publisher);
@@ -130,6 +135,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
+                    disableFacet(options, "index.has_seal.exact", false);
 
                 } else if (t === "article") {
                     // disable the journal facets
@@ -138,11 +144,11 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+                    disableFacet(options, "index.has_seal.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
                     disableFacet(options, "index.date", false);
-
                 }
             }
 
@@ -159,6 +165,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
             disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+            disableFacet(options, "index.has_seal.exact", true);
         }
     }
 
@@ -288,12 +295,7 @@ jQuery(document).ready(function($) {
         result += "</div>";
 
         // start the journal properties side-bar
-        result += "<div class='span2'>";
-
-        // set the tick if it is relevant
-        if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
-        }
+        result += "<div class='span2' align='right'>";
 
         // licence
         if (resultobj.bibjson.license) {
@@ -310,6 +312,16 @@ jQuery(document).ready(function($) {
                     result += "<strong>License: " + escapeHtml(ltitle) + "</strong><br>"
                 }
             }
+        }
+
+        // set the tick if it is relevant
+        if (resultobj.admin && resultobj.admin.ticked) {
+            result += "<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
+        }
+
+        // show the seal if it's set
+        if (resultobj.admin && resultobj.admin.seal) {
+            result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
         }
 
         // APC
@@ -501,36 +513,6 @@ jQuery(document).ready(function($) {
 
         // close the main details box
         result += "</div></div>";
-
-        // start the journal properties side-bar
-        /* only the licence is over here right now, and it is not needed
-        result += "<div class='span2'>";
-
-        // set the tick if it is relevant
-        if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​<br>";
-        }
-
-        // licence
-        if (resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
-            var ltitle = undefined;
-            var lics = resultobj.bibjson.journal.license;
-            if (lics.length > 0) {
-                ltitle = lics[0].title
-            }
-            if (ltitle) {
-                if (licenceMap[ltitle]) {
-                    var urls = licenceMap[ltitle];
-                    result += "<a href='" + urls[1] + "' title='" + ltitle + "' target='_blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + ltitle + "'></a><br>"
-                } else {
-                    result += "<strong>License: " + ltitle + "</strong><br>"
-                }
-            }
-        }
-
-        // close the article properties side-bar
-        result += "</div>";
-        */
 
         // close off the main result
         result += "</div>";

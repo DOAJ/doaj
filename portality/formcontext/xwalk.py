@@ -391,6 +391,9 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             if editor:
                 suggestion.set_editor(editor)
 
+        if getattr(form, "doaj_seal", None):
+            suggestion.set_seal(form.doaj_seal.data)
+
         return suggestion
 
 
@@ -484,7 +487,6 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['metadata_provision'] = reverse_interpret_special(obj.article_metadata)
 
-
         forminfo['download_statistics'] = reverse_interpret_special(bibjson.article_statistics.get('statistics'))
         forminfo['download_statistics_url'] = bibjson.article_statistics.get('url')
 
@@ -564,6 +566,8 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        forminfo['doaj_seal'] = obj.has_seal()
 
         return forminfo
 
@@ -747,6 +751,9 @@ class JournalFormXWalk(JournalGenericXWalk):
             if editor:
                 journal.set_editor(editor)
 
+        if getattr(form, "doaj_seal", None):
+            journal.set_seal(form.doaj_seal.data)
+
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
@@ -917,6 +924,8 @@ class JournalFormXWalk(JournalGenericXWalk):
             forminfo['editor_group'] = obj.editor_group
         if obj.editor is not None:
             forminfo['editor'] = obj.editor
+
+        forminfo['doaj_seal'] = obj.has_seal()
 
         # old fields - only show them if the values actually exist in the journal record
         if bibjson.author_pays:

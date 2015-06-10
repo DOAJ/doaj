@@ -107,7 +107,6 @@ It is likely that history records will only be created upon request by the admin
                 "code" : "<code>"
             }
         ],
-
         "oa_start" : {
             "year" : "<year>", 
             "volume" : "<volume>", # Deprecated - may be removed
@@ -183,7 +182,7 @@ It is likely that history records will only be created upon request by the admin
             "isreplacedby" : [<list of p/e-issns that this record is immediately superseded by>]
             "bibjson" : { <snapshot of historic bibjson record> }
         }
-    ]
+    ],
     "suggestion" : {
         "suggester" : { 
             "name" : "name of person suggesting journal",
@@ -195,7 +194,7 @@ It is likely that history records will only be created upon request by the admin
             "url" : "<link to proof of above number>"
         },
         "article_metadata" : true|false
-        
+
         # Deprecated - may be removed
         "description" : "description of the journal's activities",
         "suggested_by_owner" : true|false,
@@ -203,6 +202,7 @@ It is likely that history records will only be created upon request by the admin
     "admin" : {
         "in_doaj" : true|false,
         "ticked" : true|false,
+        "seal" : true|false,
         "application_status" : "state of journal application",
         "bulk_upload" : "<id of bulk_upload from which this journal/application came>",
         "notes" : [
@@ -240,6 +240,7 @@ It is likely that history records will only be created upon request by the admin
         "author_instructions_url" : "<author instructions url>",
         "oa_statement_url" : "<OA statment url>",
         "has_apc" : "Yes|No",
+        "has_seal" : "Yes|No",
         "classification_paths" : [<list of all expanded LCC terms, with parents>]
     },
     "created_date" : "<date created>",
