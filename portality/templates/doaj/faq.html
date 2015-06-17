@@ -1,67 +1,116 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>General information</h3>
+
+<h2>Frequently Asked Questions</h2>
 <a name="top"></a>
-<p>
+
+<h3>About</h3>
 <ul>
-<li><a href="#sponsor">How can I support/donate to DOAJ?</a></li>
 <li><a href="#whatis">What is DOAJ?</a></li>
+<li><a href="#works">Who works for DOAJ?</a></li>
+<li><a href="#owns">Who owns DOAJ?</a></li>
 <li><a href="#definition">How do we define 'Open Access Journal', 'Quality Control', 'Research Journal', 'Periodical'?</a></li>
-<li><a href="#standards">What are the basic standards that a journal must meet for the application to be
-considered?</a></li>
-<li><a href="#procedure">What is the procedure for a journal being accepted into DOAJ?</a></li>
 <li><a href="#lcc">How are journals classified / categorised?</a></li>
-<li><a href="#oai">What is Open Archives Initiative, OAI, OAI-PMH?</a></li>
-<!--
-<li><a href="#seal">What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)</a></li>
-<li><a href="#sealedJournals">Which journals have the DOAJ Seal now?</a></li>
--->
-<li><a href="#restrictionsA">Do you have any restrictions for the use of your metadata?</a></li>
+<li><a href="#keywords">What are keywords and how are they generated?</a></li>
+<li><a href="#list">Is there a list of journals added to and removed from DOAJ?</a></li>
+<li><a href="#seal">What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)?</a></li>
+<li><a href="#orange">What does the orange circle symbol next to some journals mean?</a></li>
+<li><a href="#sealedJournals">Which journals have the DOAJ Seal?</a></li>
+<li><a href="#thetick">What does the green tick next to some journals mean?</a></li>
+<li><a href="#news">How do I sign up for news alerts from DOAJ?</a></li>
 </ul>
-</p>
-<h3>For authors and other users</h3>
-<p>
+
+<h3>Account</h3>
 <ul>
-<li><a href="#sponsor">How can I support/sponsor DOAJ?</a></li>
-<li><a href="#search">How do I search in DOAJ and what information about a journal or article can I find in the
-directory?</a></li>
+<li><a href="#login">How do I log into my account?</a></li>
+<li><a href="#login">How do I get an account?</a></li>
+</ul>
+
+<h3>Contribute</h3>
+<ul>
+<li><a href="#contribute">How can I contribute to DOAJ?</a></li>
+<li><a href="#volunteer">Can I volunteer for DOAJ?</a></li>
+<li><a href="#associate">How do I become an Associate Editor?</a></li>
+<li><a href="#broken">I have found a broken link. What should I do?</a></li>
+<li><a href="#questionable">I have found a questionable journal in DOAJ. Why? What should I do?</a></li>
+<li><a href="#indexing">How can I suggest a journal for indexing?</a></li>
+<li><a href="#notin">The journal I am looking for isn't in DOAJ. Why? What should I do?</a></li>
+</ul>
+
+<h3>Developers</h3>
+<ul>
+<li><a href="#api1">Does DOAJ have an API?</a></li>
+<li><a href="#restrictions">Do you have any restrictions on the reuse of your site code and software?</a></li>
+<li><a href="#hood">Under the hood</a></li>
+</ul>
+
+<h3>Features and Functionality</h3>
+<ul>
+<li><a href="#search">How do I search in DOAJ and what information about a journal or article can I find?</a></li>
+<li><a href="#searchresults">What do the search results show?</a></li>
+<li><a href="#browse">How do I browse by subject?</a></li>
 <li><a href="#tocs">How do I browse issues and Tables of Contents?</a></li>
 <li><a href="#licensedJournals">Which journals in DOAJ have a CC-license?</a></li>
 <li><a href="#journallicense">How is license information applied and displayed in DOAJ?</a></li>
-<li><a href="#thetick">What does the green tick symbol mean?</a></li>
+<li><a href="#China">I am in China and DOAJ doesn't work properly.</a></li>
 <li><a href="#java">Can I use DOAJ with Javascript disabled?</a></li>
-<li><a href="#browse">What happened to Browse? How can I browse journals by Subject?</a></li>
-<li><a href="#byCountry">Can I find information about which countries have journals included in DOAJ?</a></li>
-<li><a href="#Other_OA">Are there other ways to Open Access?</a></li>
-<li><a href="#notcovered">Why is the subject area that I am looking for not covered?</a></li>
-<li><a href="#rss">Is there an RSS/Atom feature in DOAJ?</a></li>
-<li><a href="#fees">How can I find out whether a journal charges author processing fees (APCs)?</a></li>
+<li><a href="#byCountry">Can I find information about which countries have journals in DOAJ?</a></li>
+<li><a href="#subject">Why is the subject area that I am looking for not covered?</a></li>
+<li><a href="#rss">Is there an RSS/Atom feed?</a></li>
 </ul>
-</p>
-<h3>For libraries</h3>
-<p>
+
+<h3>Membership</h3>
 <ul>
-<li><a href="#sponsor">How can I support/sponsor DOAJ?</a></li>
-<li><a href="#metadata">How can I get journal metadata from DOAJ?</a></li>
-<li><a href="#metadata">Can I download all the DOAJ metadata as a CSV file?</a></li>
-<li><a href="#metadataA">How can I get article level metadata from DOAJ?</a></li>
-<li><a href="#restrictions">Do you have any restrictions on the use of your metadata?</a></li>
+<li><a href="#institution">How can I or my institution/organisation become a member?</a></li>
+<li><a href="#sponsor">How can I donate to or sponsor DOAJ?</a></li>
+<li><a href="#member">Who can become a DOAJ member?</a></li>
 </ul>
-</p>
-<h3>For publishers</h3>
-<p>FAQs for publishers have moved to the <a href="/publishers">For Publishers page</a>.</p>
+
+<h3>Metadata</h3>
+<ul>
+<li><a href="#api2">Does DOAJ have an API?</a></li>
+<li><a href="#metadata">How can I get journal metadata from DOAJ?</a></li>
+<li><a href="#metadataA">How can I get article metadata from DOAJ?</a></li>
+<li><a href="#alldata">Can I download all the DOAJ metadata?</a></li>
+<li><a href="#oai">Do you support Open Archives Initiative, OAI, OAI-PMH?</a></li>
+<li><a href="#">Can I link to DOAJ using OpenURL?</a></li>
+<li><a href="#restrictionsA">Do you have any restrictions on the reuse of your metadata?</a></li>
+</ul>
+
+<h3>Open Access</h3>
+<ul>
+<li><a href="#Other_OA">Are there other ways to find open access content?</a></li>
+<li><a href="#fees">How can I find out whether a journal charges author processing fees (APCs)?</a></li>
+<li><a href="#predatory">What is DOAJ's policy on "predatory" publishers and journals?</a></li>
+<li><a href="#removed">Why do journals get removed from DOAJ?</a></li>
+</ul>
+
+<h3>Publishers</h3>
+<p>Please see our <a href="{{ url_for('doaj.publishers') }}">Information for Publishers</a> page.</p>
 
 <br><br>
-<!-- GENERAL INFORMATION FAQS -->
+
+
+<!-- ABOUT FAQS -->
+
 <h3><b><a name="whatis"></a>What is DOAJ?</b></h3>
 <p>The Directory of Open Access Journals is a service that indexes high quality, peer reviewed Open
 Access research journals, periodicals and their articles' metadata. The Directory aims to be comprehensive and cover
-all open access scientific and scholarly journals that use an appropriate quality control system (see the section below) and is not limited
-to particular languages or subject areas. The Directory aims to increase the visibility and ease of use of open access
-scientific and scholarly journals—regardless of size and country of origin—thereby promoting their visibility, usage
+all open access academic journals that use an appropriate quality control system (see below for definitions) and is not limited to particular languages or subject areas. The Directory aims to increase the visibility and ease of use of open access academic journals—regardless of size and country of origin—thereby promoting their visibility, usage
 and impact.</p>
 <a href="#top">Back to top</a>
 <br><br>
+
+<h3><b><a name="works"></a>Who works for DOAJ?</b></h3>
+<p>The <a href="{{ url_for('doaj.about') }}">DOAJ Team is on our About page</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="owns"></a>Who owns DOAJ?</b></h3>
+<p>DOAJ is entirely independent and is managed, not owned, by <a href="http://is4oa.org/">Infrastructure Services for Open Access</a>. DOAJ is not connected to, owned by, or influenced by any other organisation or business. DOAJ does receive sponsorship monies from its sponsor, many of whom are large publishers, but 100% of those monies goes towards the running and technical development of DOAJ.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 <h3><b><a name="definition"></a>How do we define 'Open Access Journal', 'Quality Control', 'Research Journal' and 'Periodical'?</b></h3>
 <p><b>Open Access Journal:</b><br>
 We define open access journals as journals that use a funding model that does not charge readers or their institutions for access. From the BOAI definition<sup>[1]</sup> of 'open access' we take the right of users to <b>"read, download, copy, distribute, print, search, or link to the full texts of these articles"</b> as mandatory for a journal to be included in the directory.<br>
@@ -78,151 +127,166 @@ the Humanities) carried out by at least two editors.</p>
 each issue of which is numbered or dated consecutively and normally contains separate articles, stories, or other
 writings.</p>
 <a href="#top">Back to top</a>
-<p></p>
-<br><br>
-<h3><b><a name="standards"></a>What are the basic standards that a journal must meet for an application to be considered?</b></h3>
-<p><i>DOAJ adheres to <a href="/bestpractice">the Principles of Transparency and Best Practice in Scholarly Publishing</a>, a joint statement published by COPE, DOAJ, OASPA and WAME. We advise that all applicants read through this statement before applying.</i></p>
-
-<p>To facilitate a faster response time, applications are initially triaged to ensure they meet some basic criteria. These are:</p>
-<p><b>Coverage:</b><br>
-<ul>
-<li>Subject: all scientific and scholarly subjects are covered. We use the
-<a href="http://www.loc.gov/catdir/cpso/lcco/">Library of Congress Classification Outline</a>.</li>
-<li>Types of resource: scientific and scholarly periodicals that publish research or review papers in full text.</li>
-<li>Acceptable sources: academic, government, commercial, non-profit and private sources are all acceptable.</li>
-<li>Level: the primary target group should be researchers.</li>
-<li>Content: a substantive part of the journal should consist of research papers. All content should be available in 
-full text. See our <a href="/publishers#casereport">policy for case report journals</a>.</li>
-<li>All languages are accepted.</li>
-</ul>
-<p><b>Access:</b><br>
-<ul>
-<li>The full text of ALL content must be available for free and be Open Access without delay (i.e. no embargo period).</li>
-<li>Registration: User registration online is acceptable on the condition that the journal has a proper Privacy Policy
-in place and abides by Data Protection rules. That is to say: user data will never be distributed without the
-explicit permission of the user; upon request, a user's email address is removed from mailing lists; all data held about
-the user will be made available to the user upon request.</li>
-</ul>
-<p><b>Quality:</b> The journal must exercise quality control on submitted papers using a peer-review system. A journal
-must have an editor and an editorial board. Only in the case of Humanities journals we will accept a form of 
-editorial review using only two editors and no editorial board. Where an editorial board present, at least 5 of its 
-members must be clearly identifiable with their affiliation information.  
-See our <a href="http://doaj.org/publishers#humanities">policy for Humanities journals</a>.</p>
-<p><b>Periodical:</b> The journal must have at least one ISSN (International Standard Serial Number) registered at
-<a href="http://www.issn.org">issn.org</a>. In general, if a journal exists in print and online, then it should have both an
-ISSN for the print version and an ISSN for the electronic version.</p>
-<a href="#top">Back to top</a>
-<p></p>
-<br><br>
-
-<h3><b><a name="procedure"></a>What is the procedure for a journal being accepted into DOAJ?</b></h3>
-<p><b>Application</b></p>
-<p>We must receive an application for every journal wishing to be considered for inclusion. Due to the level of detail required, we recommend that the application is made by the journal's editor or publisher. Once submitted, the application passes through <a href="#standards">a triage process</a> and is assigned to a DOAJ Associate Editor. There are over 40 pieces of
-information in every application that we will check and verify. As you complete the application form, remember to ensure that
-the journal's web site states clearly and accurately the information DOAJ is asking for in the application form. The things that we will check include but are not limited to:
-<ul>
-<li>That the journal's ISSN(s) number(s) is registered at issn.org and matches the application;</li>
-<li>That the title in the application matches what is registered at issn.org and what is stated on the journal's web site;</li>
-<li>That the country of the publisher in the application matches the country registered at issn.org; this may not always be the country to which the journal is registered.</li>
-<li>That the journal has an editor or an editor and an editorial board with identifiable members; we will contact you for members' contact details as part of our review process. These will not be made publicly available.</li>
-<li>That the full text of articles is free, without embargo, upon publication;</li>
-<li>That the journal's Open Access policy is clearly stated <b>on the journal's web site</b> and is easily findable;</li>
-<li>That the journal executes some form of editorial review or peer review, that this is clearly stated on the web site and that it matches the answer given in the application form;</li>
-<li>That the journal is Open Access according to <a href="http://www.budapestopenaccessinitiative.org/read">the BOAI definition</a>. By this we mean that the journal's articles have
-"free availability on the public internet, permitting any users to read, download, copy, distribute, print, search,
-or link to the full texts of these articles, crawl them for indexing, pass them as data to software, or use them for
-any other lawful purpose, without financial, legal, or technical barriers other than those inseparable from gaining
-access to the internet itself."</li>
-<li>That any fees for publishing in the journal are clearly displayed in a place that is easy to find;
-if there are no charges to authors this should also be highlighted.</li>
-<li>That if the journal has any other kind of author charges, they are clearly stated and easily findable on the web
-site;</li>
-<li>That the language of the full text articles match the language stated in the application.</li>
-</ul>
-</p>
-<p>If the information provided in the
-application is unclear or does not match what is on the site, or we think that it is incorrect, the member of our team handling your application will contact you for clarification.</p>
-<p><b>Status updates</b><br>
-<p>We are unable to provide status updates for any application that is less than THREE months old.</p>
-<p><b>Acceptance into DOAJ</b><br>
-<p>Upon acceptance into DOAJ, the journal is classified by the DOAJ team according to the Library of Congress
-Classification (LCC) system. An automatic confirmation email is sent to the person listed in Question 9; it contains
-details on how to log into your Publisher account. You will need these details to upload article metadata. The journal is then visible in DOAJ immediately.</p>
-<p><b>Rejection of an Application</b></br>
-<p>If your application is rejected, a member of the DOAJ team will let you know, along with the reason for the rejection. A rejected journal may reapply for inclusion once it has demonstrated clearly that it has made the improvements suggested by the DOAJ.</p>
-<p><b>Uploading or creating metadata in DOAJ</b><br>
-<p>We <b><i>strongly</i></b> recommend that ALL journals provide us with <a href="/publisher/uploadfile">article
-metadata in XML format</a> or create the data manually using <a href="/publisher/metadata">our metadata entry form</a>.
-A script looking for new articles to publish to the site runs every 30 minutes. DOAJ is <a href="#oai">OAI-PMH</a> compliant and once the article is available in DOAJ it becomes automatically OAI harvestable.</p>
-<a href="#top">Back to top</a>
-<p></p>
 <br><br>
 
 <h3><b><a name="lcc"></a>How are journals classified / categorised?</b></h3>
 <p>All journals in DOAJ are classified according to the <a href="http://www.loc.gov/catdir/cpso/lcco/">Library of Congress
-Classification (LCC) system</a>. The subjects are assigned by our editorial team once a journal is accepted for 
+Classification (LCC) system</a>. The classification is made by our editorial team as a journal is accepted for 
 indexing in the database. If a publisher chooses to upload article metadata to us, a journal's articles inherit the 
-same subjects.</p>
-<p>Subject categories appear in search results for journals and are structured as follows:<br>
-- where subjects are separated by a full stop, the subjects are part of the same category level at LCC and in DOAJ. 
-For example: 'Philosophy. Psychology. Religion' is one category.<br>
-- where subjects are separated by a colon, the second subject is a sub-category of the first. 
-For example: 'Philosophy. Psychology. Religion: Philosophy (General)' shows that 'Philosophy (General)' is a 
-sub-category of 'Philosophy. Psychology. Religion' and this journal has been categorised as General Philosophy.<br>
-- where subjects are separated by a pipe, the second category has no relation to the first. For example:
-'Philosophy. Psychology. Religion: Philosophy (General) | Social Sciences: Social sciences (General)' means that this 
-journal has been categorised both as General Philosophy AND General Social Sciences. 
-<a href="#top">Back to top</a>
-<p></p>
-<br><br>
-
-<h3><b><a name="oai"></a>What is Open Archives Initiative, OAI, OAI-PMH?</b></h3>
-<p><a href="http://www.openarchives.org/">OAI, Open Archives Initiative</a>, supplies a common framework to web
-communities that allows them to gain access to content in a standard manner by means of metadata harvesting.
-<a href="/features">Read the details of our OAI feature.</a></p>
-<p></p>
-<br><br>
-
-<!--
-<h3><b><a name="seal">What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)</a></b></h3>
-<p>A Seal to Set Standards for Open Access Journals.</p>
-<p>DOAJ has introduced a certification scheme for Open Access journals, the 'DOAJ Seal'.</p>
-<p>To receive the Seal, the journal must comply with all of the criteria in the last section of the Application form:
+same classification. Once a journal has been accepted the classification appears in the 'Subject' facet of search.</p>
+<p>Subjects appear in search results for journals and are structured as follows:</p>
 <ul>
-<li>The journal uses DOIs as permanent identifiers;</li>
-<li>Provide DOAJ with article metadata;</li>
-<li>A long term digital preservation or archiving program;</li>
-<li>Embedded machine-readable CC licensing information in articles;</li>
-<li>Allows generous reuse and mixing of content, in accordance with a CC BY license;</li>
-<li>Has a deposit policy registered wíth a deposit policy registry, like Sherpa/Romeo.</li>
+<li>where subjects are separated by a full stop (.), the subjects are part of the same category level at LCC and in DOAJ. For example: 'Philosophy. Psychology. Religion' is one category.</li>
+<li>where subjects are separated by a colon (:), the second subject is a sub-category of the first. 
+For example: 'Philosophy. Psychology. Religion: Philosophy (General)' shows that 'Philosophy (General)' is a 
+sub-category of 'Philosophy. Psychology. Religion' and this journal has been categorised as General Philosophy.</li>
+<li>where subjects are separated by a pipe (|), the second category has no relation to the first. For example:
+'Philosophy. Psychology. Religion: Philosophy (General) | Social Sciences: Social sciences (General)' means that this journal has been categorised both as General Philosophy AND General Social Sciences.</li>
+</ul>
+<p>You can browse articles and journals by subject classification in <a href="{{ url_for('doaj.subjects') }}">our subject browser</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="keywords"></a>What are keywords and how are they generated?</b></h3>
+<p>Keywords are selected by the publisher at the time of applying for the journal to be in DOAJ or at the time of uploading article metadata to us. They are not the same as 'Subject' which is a classification made by the DOAJ Team (see above). Keywords are more arbitrary because there is no control measure.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="list"></a>Is there a list of journals added to and removed from DOAJ?</b></h3>
+<p>Yes, it is <a href="http://bit.ly/1IOA9AJ">currently a Google Spreadsheet</a>, updated manually by our editorial team and goes back to the beginning of January 2014.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="seal"></a>What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)?</b></h3>
+<p>The DOAJ Seal is a mark of certification for open access journals, awarded by DOAJ to journals that achieve a high level of openness, adhere to Best Practice and high publishing standards. To receive the Seal, the journal must comply with the following 7 conditions:</p>
+<ul>
+<li>use DOIs as permanent identifiers;</li>
+<li>provides DOAJ with article metadata;</li>
+<li>deposits content with a long term digital preservation or archiving program;</li>
+<li>embeds machine-readable CC licensing information in articles;</li>
+<li>allows generous reuse and mixing of content, in accordance with a CC BY license;</li>
+<li>has a deposit policy registered wíth a deposit policy registry;</li>
+<li>allows the author to hold the copyright without restrictions.</li>
 </ul>
 <a href="#top">Back to top</a>
-<h3><b><a name="sealedJournals">Which journals have the DOAJ Seal for Open Access Journals right now?</b></h3>
-<p>Use <a href="/XXXXXXX">this link</a> to see a list of all journals having the Seal.</p>
+<br><br>
+
+<h3><b><a name="sealedJournals"></a>Which journals have the DOAJ Seal?</b></h3>
+<p>Here is <a href="http://bit.ly/1JK9YhF">a list of journals that have the Seal</a>.</p>
 <a href="#top">Back to top</a>
--->
+<br><br>
+
+<h3><b><a name="orange"></a>What does the orange circle symbol next to some journals mean?</b></h3>
+<p>These are journals that have been awarded <a href="#seal">the DOAJ Seal</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="thetick"></a>What does the green tick symbol next to some journals mean?</b></h3>
+<p>The green tick ("The Tick") is displayed against all journals that were accepted into DOAJ after March 2014 when DOAJ launched its new criteria for journals to be accepted into DOAJ. The new criteria require a higher level of compliance to best practices and publishing standards. Journals that do not have The Tick are in the process of reapplying under the new criteria.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="news"></a>How do I sign up for news alerts from DOAJ?</b></h3>
+<p>We don't have a newsletter or email alerts but you can follow our developments in 4 places:</p>
+<ul>
+<li><a href="https://doajournals.wordpress.com/">the DOAJ News Service</a></li>
+<li><a href="{{ url_for('doaj.feed') }}">our Atom feed</a></li>
+<li><a href="http://twitter.com/doajplus">our Twitter account</a></li>
+<li><a href="http://www.facebook.com/DirectoryofOpenAccessJournals">our Facebook page</a></li> 
+</ul>
+<p>We are also on <a href="http://www.linkedin.com/company/directory-of-open-access-journals-doaj-">LinkedIn</a> and <a href="https://plus.google.com/114982932758789726160/posts">Google+</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
 
 
-<h3><b><a name="sponsor"></a>How can I support/sponsor DOAJ?</b></h3>
-<p>We would be delighted if you donate to DOAJ. We rely entirely on contributions. Please read our
-<a href="/supportDoaj">Support DOAJ</a> page for further information.</p>
+<!-- ACCOUNT FAQS -->
+
+
+<h3><b><a name="login"></a>How do I log in to my account? How do I get an account?</b></h3>
+<p>Only publishers and volunteers need accounts. Everyone else is free to use DOAJ without logging in.</p>
+<p>If you are a volunteer and cannot access your account, contact your managing editor.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+
+<!-- CONTRIBUTE FAQS -->
+
+
+<h3><b><a name="contribute"></a>How can I contribute to DOAJ?</b></h3>
+<p>There are 4 ways that you can contribute to DOAJ.</p>
+<ul>
+<li>Contact us if you have firsthand evidence that a journal in DOAJ is carrying out questionable practices, is of low quality, or may even be fake.</li>
+<li><a href="{{ url_for('doaj.supportDoaj') }}">Become a member</a>. All monies received through membership go directly to the development and running of DOAJ.</li>
+<li><a href="http://bit.ly/1A0124t">Become a volunteer Associate Editor</a> and help us review the hundreds of new applications that we receive every month.</li> 
+<li>Contact us if you find a broken link on our site, or if you think that the information we have for a journal is outdated or incomplete. This feedback is so important for us and we are always grateful for the community being our eyes and ears.</li> 
+</ul>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="volunteer"></a>Can I volunteer for DOAJ?</b></h3>
+<p>Thank you for considering becoming a volunteer!</p>
+<p>If you are associated with scholarly communication, academic publishing or libraries, or simply have a keen interest in open access, we are always keen to hear from you. We use volunteers to review the new applications that get sent to us every week. <a href="http://bit.ly/1A0124t">Read more about volunteering here</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="associate"></a>How do I become an Associate Editor</b></h3>
+<p>Thank you for considering becoming an Associate Editor!</p>
+<p>You must fulfill <a href="http://bit.ly/1A0124t">the right criteria and complete an application form</a>. We are always looking for volunteers, particularly those who can speak two or more languages, one of which must be English. After receiving your application, a Managing Editor will be in touch to let you know whether your application has been successful or not.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="broken"></a>I have found a broken link. Who should I contact?</b></h3>
+<p>Thanks for taking the trouble to report the broken link to us. Please send an email to feedback[at]doaj[.]org.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="questionable"></a>I have found a questionable journal in DOAJ. Why? What should I do?</b></h3>
+<p>DOAJ prides itself on being a directory of quality open access journals. We have strict criteria for entry but they haven't always been so rigorous. In March 2014, we launched an extended and detailed application form that raises the bar for entry into DOAJ. At the time of writing (June 2015), 99% of all the journals that were already in DOAJ have yet to reapply using the new form. This means that a portion of the journals in DOAJ, some of which have been in since 2003, may not meet the high standards of the DOAJ of 2015. All journals must reapply by the end of December 2015.</p>
+
+<p>If you find a journal that you believe to be questionable, please send an email to feedback[at]doaj[.]org with the details and we will be very happy to investigate.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="suggest"></a>How can I suggest a journal for indexing?</b></h3>
+<p>If you publish the journal or are the editor for the journal, <a href="{{ url_for('doaj.suggestion') }}">fill in an application</a>. Otherwise, contact the journal and ask them to submit an application.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="notin"></a>The journal I am looking for isn't in DOAJ. Why? What should I do?</b></h3>
+<p>It may be that the journal hasn't applied or that its application is still pending. It may be that the journal was <a href="http://bit.ly/1IOA9AJ">removed from DOAJ</a>. Contact us to see if the journal has a pending application.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+
+<!-- DEVELOPERS FAQS -->
+
+
+<h3><b><a name="api1"></a>Does DOAJ have an API?</b></h3>
+<p>Not yet but we will be launching one in 2015. Follow us on <a href="#news">our news channels</a> to find out more.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="restrictions"></a>Do you have any restrictions on the reuse of your site code and software?</b></h3>
+<p>The code used to generate the DOAJ web site is open source, as are the various pieces of software used for the different features. The site or "work" is licensed under a CC-BY-SA license and those license terms apply.</p>
 <a href="#top">Back to top</a>
 <p></p>
 <br><br>
 
-<h3><b><a name="restrictionsA"></a>Do you have any restrictions for the use of your site code and software?</b></h3>
-<p>The code used to generate the DOAJ web site is open source as are the various pieces of software used for the
-different features. The site or "work" is licensed under a
-<a href="http://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA license</a>.</p>
+<h3><b><a name="hood"></a>Under the hood</b></h3>
+<p>Under the hood, DOAJ is built in JSON and is hosted on open source software in GitHub.</p>
 <a href="#top">Back to top</a>
 <p></p>
 <br><br>
 
-<!-- SECTION FOR USERS/AUTHORS -->
+
+<!-- FEATURES AND FUNCTIONALITY FAQS -->
+
+
 <h3><b><a name="search"></a>How do I search in DOAJ and what information about a journal or article can I find?</b></h3>
-<p>Use <a href="/search">the Search</a> to look for journals and article metadata in DOAJ. You may refine your
-search results by using the facets in the panel on the left, or by sorting and filtering using the fields at the
-top of the search results.</p>
+<p>You can use the <a href="/">quick search box</a> on our home page or start with the <a href="{{ url_for('doaj.search') }}">Advanced Search</a>.</p>
+
+<p>You may refine your search results by using the facets in the panel on the left, or by sorting and filtering using the tools at the top of the search results.</p>
+
 <p>You can choose to search on any of the following fields:</p>
 <ul>
 <li>All fields</li>
@@ -238,178 +302,219 @@ top of the search results.</p>
 <li>Publisher</li>
 <li>Journal title</li>
 <li>Alternative title</li>
-<li>Provider</li>
 </ul>
+
 <p>If you write more than one word in your search query it will be treated as a phrase. To search on full article
 titles, use " " around the title, e.g. "Is social, cultural and recreational participation a luxury for people
 living in poverty? An analysis of policy intentions and measures"</p>
+
 <p><a name="searchresults"></a>The search results in DOAJ contain the following fields:</p>
+
 <p><b>Journal Title</b><br>
 The title of the journal. If there is a green tick next to it then the journal was accepted using the new criteria.</p>
-<p><b>Publisher</b><br>
-The entity responsible for publishing the journal.</p>
-<p><b>Platform, host or aggregator</b><br>
-The entity responsible for delivering or hosting the journal or content.</p>
-<p><b>Publication charges?</b><br>
-Does the journal charge article processing charges (APCs)?</p>
-<p><b>Started publishing open access content in?</b><br>
-The year that the first complete year of fully open access content is available freely online.</p>
-<p><b>Journal Language</b><br>
-The language that the full text articles are published in.</p>
+
 <p><b>ISSN(s)</b><br>
 Either the ISSN for the print version of the journal OR the ISSN for the electronic version of the journal OR BOTH.
-<p><b>Keywords</b><br>
-The keywords that best describe the journal, as provided by the publisher.</p>
-<p><b>Date added to DOAJ</b></p>
-<p><b>Home page</b><br>
+
+<p><b>URL</b><br>
 The URL of the journal's home page.</p>
+
+<p><b>Peer review</b><br>
+The type of peer review used by the journal.</p>
+
+<p><b>Subject</b><br>
+The <a href="http://www.loc.gov/catdir/cpso/lcco/">Library of Congress Classification</a> that has been assigned to the journal by DOAJ.</p>
+
+<p><b>Date added to DOAJ</b></p>
+
 <p><b>Journal license</b><br>
-The type of license that the publisher assigns to the journal. This may be a Creative Commons license, or an
-equivalent. Some publishers have different types of licenses for different articles. We list the most restrictive
-license in search results.</p>
-<p><b>Country of publisher</b><br>
-The country where the publisher has legally registered their offices.</p>
+The type of license that the publisher assigns to the journal. This may be a Creative Commons license, or an equivalent. Some publishers have different types of licenses for different articles. We list the most restrictive license only.</p>
+
+<p><b>The Tick</b><br>
+Only displays when the journal qualifies.</p>
+
+<p><b>DOAJ Seal</b><br>
+Only displays when the journal qualifies.</p>
+
+<p><b>Article Processing Charges (APCs)</b><br>
+APCs with the amount and currency. Only displays if the journal charges APCs.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
+
+<h3><b><a name="browse"></a>How do I browse by subject?</b></h3>
+<p>You can either use <a href="{{ url_for('doaj.subjects') }}">our subject browser</a> or do a more detailed, manual browse from the <a href="{{ url_for('doaj.search') }}">Advanced Search page</a> and then filtering with the Subject facet.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 <h3><b><a name="tocs"></a>How do I browse issues or Tables of Contents?</b></h3>
-<p>You can browse the tables of content for those journals where publishers have uploaded article metadata to us.
-Click on the blue, hyperlinked journal title in search results to access them.</p>
+<p>You can only browse issues and tables of contents for those journals where publishers have uploaded article metadata to us. Click on the large blue, hyperlinked journal title in search results to access them. If you know the journal's ISSN, you can craft the URL for the ToCs yourself. The URL always starts https://doaj.org/toc/ and is then followed by the ISSN number with hyphen, for example: https://doaj.org/toc/2332-7308.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
+
 <h3><b><a name="licensedJournals"></a>Which journals in DOAJ have a CC-license?</b></h3>
-<p>Go to <a href="http://bit.ly/1qNfpTI">this search of journals</a> and expand the Journal License facet in the left
-hand panel. The number of journals per license is in brackets next to each license type.</p>
+<p>Go to <a href="http://bit.ly/1qNfpTI">this search for journals</a> and expand the 'Journal License' facet in the left hand panel. The number of journals per license is in brackets next to each license type.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
+
 <h3><b><a name="journallicense"></a>How is license information applied and displayed in DOAJ?</b></h3>
 <p>The current version of DOAJ allows publishers to supply license information at the JOURNAL level.
-Because some journals have different licenses from one article to another, we ask publishers to supply the license
-that best fits ALL of the content; this is usually the most restrictive license. We are working to give greater
-granularity to license information.</p>
+Because some journals have different licenses from one article to another, we ask publishers to supply only the most restrictive license. We are working to give greater granularity to license information.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<h3><b><a name="thetick"></a>What does the green tick symbol mean?</b></h3>
-<p>In March 2014, DOAJ started to implemented its new criteria for journals being accepted into the directory. All
-journals accepted after this date display a green tick symbol:</br>
-<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014'
-alt='Tick icon: journal was accepted after March 2014'> appears next to the journal title in search results;</br>
-<img src='/static/doaj/images/tick_long.png' title='Accepted after March 2014'
-alt='Tick icon: journal was accepted after March 2014'> appears on a journal's Table of Contents page.</p>
+
+<h3><b><a name="China"></a>I'm in China and DOAJ doesn't work properly.</b></h3>
+<p>We have received reports that DOAJ does not work correctly for some of our users in China. We suspect that this is because DOAJ uses Google's Javascript hosting service and Google is blocked in some places in China. We are working to resolve this issue by eventually moving our Javascript service away from Google.  We thank our Chinese colleagues for their patience while we resolve this. If you are having trouble using DOAJ from China, send email to feedback[at]doaj[.]org with the details of your query. We might be able to retrieve the information for you and send it to you in another format.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
+
 <h3><b><a name="java"></a>Can I use DOAJ with Javascript disabled?</b></h3>
-<p>If you disable all Javascript, it will not be possible to search the DOAJ. If you can switch off certain components
-and allow others, then you can continue to use DOAJ. Search will not work with Javascript switched off completely because
-some of the code that is required is served by Google's Javascript library hosting so if disallowed, search will fail.
-Other Javascript components are 'Addthis' which is our share feature that allows people to share items from within our
-site. Disabling this will simply disable the feature. Another component is Bootstrap (http://getbootstrap.com/) which is the
-framework used to build the DOAJ website. This contains some Javascript for some of its features. Bootstrap was
-originally created by Twitter and made publicly available. We're not aware of any data collected by Twitter as part of
-its integration into the DOAJ site.</p>
+<p>If you disable all Javascript, it will not be possible to search the DOAJ. If you can switch off certain components and allow others, then you can continue to use DOAJ. Search will not work with Javascript switched off completely because some of the code that is required is served by Google's Javascript library hosting so if disallowed, search will fail. Other Javascript components are 'Addthis' which is our share feature that allows people to share items from within our site. Disabling this will simply disable the feature. Another component is Bootstrap (http://getbootstrap.com/) which is the framework used to build the DOAJ website. This contains some Javascript for some of its features. Bootstrap was originally created by Twitter and made publicly available. We're not aware of any data collected by Twitter as part of its integration into the DOAJ site.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<h3><b><a name="browse"></a>What happened to Browse? How can I browse journals by Subject?</b></h3>
-<p>The updated Search functionality in DOAJ combines the traditional functions of search and browse into one.
-This is an updated way of finding information, in line with the process of filtering and drilling down to the results
-that are required.</p>
-<p>To browse for journals by subject:<br></p>
-<ul>Starting at the <a href="/search">Search page</a>:
-<li>Select 'journal' from the 'Journals vs Articles' facet</li>
-<li>From under the 'Subject' facet, choose the subject that you wish to browse</li>
-<li>To see more Subjects than the 10 listed, change the number at the top of the facet from '10' to the number of
-Subjects you would like to see.</li>
-</ul>
-<p></p>Only journals corresponding to the chosen subject will show. You may make further refinements by selecting other
-facets.</p>
-<p>We will be adding a Subject browser to the site at some point in the near future.</p>
-<a href="#top">Back to top</a>
-<p></p>
-<br><br>
+
 <h3><b><a name="byCountry"></a>Can I find information about which countries have journals included in DOAJ?</b></h3>
-<p>Yes, go to the <a ref="/search">Advanced Search page</a> and select 'journal' from the 'Journals vs. Articles' facet
-at the top of the left hand panel. Then expand the 'Country of publisher/publication' facet to show all journals
-published by country. By default the list is sorted by country with the most journals, in descending order.To see more
-than 10 countries, change the number at the top of the facet from '10' to a greater number.</p>
+<p>Yes, go to the <a href="{{ url_for('doaj.search') }}">Advanced Search page</a> and select 'Journals' from the 'Journals vs. Articles' facet. Then expand the 'Country of publisher' facet to show all journals
+published by country. By default the list is sorted by country with the most journals at the top, in descending order.To see more
+than 10 countries in the facet, change the number at the top of the facet from '10' to a greater number.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<br><h3><a name="Other_OA"></a>Are there other ways to find Open Access content?</h3>
-<p>Yes, read more about Self-Archiving and Open Archives in <a href="http://www.eprints.org/self-faq/">the
-Southampton Self-Archiving FAQ</a>. You can also consult the
-<a href="http://www.opendoar.org/">Directory of Open Access Repositories</a> and the <a href="http://www.doabooks.org/">
-Directory of Open Access Book.</a></p>
+
+<h3><b><a name="subject"></a>Why is the subject area that I'm looking for not covered?</b></h3>
+<p>This may be because we have not indexed any journals in that subject area yet. Applications for journals in under-represented areas, or areas that are not represented at all, are always welcome. Please <a href="{{ url_for('doaj.suggestion') }}">submit an application</a>.</p>
+
+<p>Alternatively, it may be that the specific subject area you are looking for is not represented in the LCC list that we use. Try using a related search term instead.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<h3><b><a name="notcovered"></a>Why is the subject area that I'm looking for not covered?</b></h3>
-<p>This is because we have not indexed any journals in that subject area yet. Applications for journals in
-under-represented areas, or areas that are not represented at all, are always welcome. Please
-<a href="{{ url_for('doaj.suggestion') }}">apply here</a> for inclusion in DOAJ.</p>
-<a href="#top">Back to top</a>
-<p></p>
-<br><br>
+
 <h3><b><a name="rss"></a>Is there an RSS/ATOM feed in DOAJ?</b></h3>
-<p>We have <a href="/feed">an ATOM feed</a>. The feed contains information on journals added in the last 30 days
+<p>We have <a href="{{ url_for('doaj.feed') }}">an ATOM feed</a>. The feed contains information on journals added in the last 30 days
 and includes the latest 100 items.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<h3><b><a name="fees"></a>How can I find out whether a journal charges author processing fees (APCs)?</b></h3>
-<p>You can find this information in two ways:
-<ul>
-<li>Go to the Advanced Search page and expand the 'Publication charges' facet. By selecting 'No charges', you will
-retrieve a list of all the journals in DOAJ where the publisher has told us that they do not charge authors anything
-at all.</li>
-<li>APC information is displayed under each journal in search results.</li>
-</ul>
-</p>
+
+
+<!-- MEMBERSHIP FAQS -->
+
+
+<h3><b><a name="institution"></a>How can I or my institution/organisation become a member?</b></h3>
+<p>Please read <a href="{{ url_for('doaj.membership') }}">our membership page</a> and contact us if you have any questions. We are delighted that you want to become a DOAJ Member!</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<!-- SECTION FOR LIBRARIES -->
+
+<h3><b><a name="sponsor"></a>How can I donate to or sponsor DOAJ?</b></h3>
+<p>We are delighted that you are considering a sponsorship or a donation. For a sponsorship, email Lars (lars[at]doaj[.]org). For a donation, please use our <a href="{{ url_for('doaj.membership') }}">Donate button on our payments page</a>.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="member"></a>Who can become a DOAJ Member?</b></h3>
+<p>We accept membership requests from publishers, libraries, private individuals, industry related organisations, government organisations. DOAJ reserves the right to deny membership.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+
+<!-- METADATA FAQS -->
+
+
+<h3><b><a name="api2"></a>Does DOAJ have an API?</b></h3>
+<p>Not yet but we will be launching one in 2015. Follow us on <a href="#news">our news channels</a> to find out more.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 <h3><b><a name="metadata"></a>How can I get journal metadata from DOAJ?</b></h3>
 <p>The DOAJ service supports the OAI protocol for metadata harvesting
 (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>). Thus, any OAI compatible service
-can obtain records from DOAJ. The OAI data is always up to date. OAI is well-established and easy to use. The base URL
-is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. <a href="/features">
-Read a full description of this service here</a>. Our current OAI offering is standardised around Dublin Core. We will
-expanding the metadata in it in the latter half of 2014.</p>
+can obtain records from DOAJ. The OAI data is always up to date. OAI is well-established and easy to use. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. <a href="{{ url_for('doaj.features') }}">Read a full description of this service here</a>. Our current OAI offering is standardised around Dublin Core. We expanded the granularity of the metadata in mid-2015.</p>
+
 <a name="metadata_csv"></a>
 <p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
 <ol>
-<li><a href="/csv">Download the file to your computer</a></li>
-<li>Open the file in a document processing program like Excel or OpenOffice.</li>
-<li>You can then choose which format you want the spreadsheet in.</li>
+<li><a href="{{ url_for('doaj.csv') }}">Download the file to your computer</a></li>
+<li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file.</li>
 </ol>
-<p>Please be aware that the data included in this file ONLY includes a subset of the data currently and some 
-information may be missing until a journal has reapplied and been accepted back into the DOAJ.</p>
-<p>Finally, you can connect up to our <b><a href="http://doaj.org/feed">RSS feed of new journals added</a></b> which 
-is updated every time new journals are added to the database. You can integrate the feed into your browser or straight 
-into a web site.</p>
+
+<p>Please be aware that we will be updating the structure of the CSV file and the data included in it over the summer of 2015. Currently, this file ONLY includes a subset of the data and some information is missing, such as APCs.</p>
+
+<p>If you wish to crawl DOAJ, you may do so as long as you follow the general guidelines for good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
+
+<p>Finally, you can connect up to our <a href="{{ url_for('doaj.feed') }}">ATOM feed of new journals added</a> which is updated every time new journals are added to the database. You can integrate the feed into your browser or straight into a web site.</p>
+
+<p>If you have any questions about how to collect and use DOAJ's metadata, do not hesitate to send email: feedback[at]doaj[.]org.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
+
 <h3><b><a name="metadataA"></a>How do I get article level metadata from DOAJ?</b></h3>
-<p>Article level metadata can be harvested using the OAI protocol. <a href="/features">
+<p>Article level metadata can be harvested using the OAI protocol. <a href="{{ url_for('doaj.features') }}">
 Read a full description of this service here</a>.</p>
 <a href="#top">Back to top</a>
-<p></p>
 <br><br>
-<h3><b><a name="restrictions"></a>Do you have any restrictions on the use of your site code and software?</b></h3>
-<p>The data in DOAJ is licensed to you under the Creative Commons Attribution-ShareAlike License (CC BY-SA). The
-essence of this license is explained at <a href="http://creativecommons.org/licenses/by-sa/4.0/">the creative commons
-web site</a>. (You may also <a href="http://creativecommons.org/licenses/by-sa/4.0/legalcode">be
-interested in the fine print</a>.) The rights of the site-generated metadata, such as the Atom feed, are listed in the
-feed.</p>
+
+<h3><b><a name="alldata"></a>Can I download all of the DOAJ metadata?</b></h3>
+<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv') }}">download the CSV file</a> but if you are an advanced user you can collect the JSON data.</p>
 <a href="#top">Back to top</a>
-<p></p>
+<br><br>
+
+<h3><b><a name="oai"></a>Does DOAJ support Open Archives Initiative, OAI, OAI-PMH?</b></h3>
+<p>Yes. <a href="http://www.openarchives.org/">OAI, Open Archives Initiative</a>, supplies a common framework to web
+communities that allows them to gain access to content in a standard manner by means of metadata harvesting.
+<a href="{{ url_for('doaj.features') }}">Read the details of our OAI feature</a>.</p>
+<br><br>
+
+<h3><b><a name="openurl"></a>Can I link to DOAJ using OpenURL?</b></h3>
+<p>Yes. We reinstated <a href="{{ url_for('doaj.openurl/help') }}">our OpenURL service</a> in April 2015.</p>
+<br><br>
+
+<h3><b><a name="restrictionsA"></a>Do you have any restrictions on the reuse of your metadata?</b></h3>
+<p>The data in DOAJ is licensed to you under the <a href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike License</a> (CC BY-SA). The essence of this license is explained at the creative commons web site. (You may also be interested in <a href="http://creativecommons.org/licenses/by-sa/4.0/legalcode">the fine print</a>.) The rights of the site-generated metadata in the Atom feed are listed in the feed.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+
+<!-- OPEN ACCESS FAQS -->
+
+
+<br><h3><a name="Other_OA"></a>Are there other ways to find Open Access content?</h3>
+<p>Yes, read more about Self-Archiving and Open Archives in <a href="http://www.eprints.org/self-faq/">the
+Southampton Self-Archiving FAQ</a>. You can also consult the
+<a href="http://www.opendoar.org/">Directory of Open Access Repositories</a> and the <a href="http://www.doabooks.org/">Directory of Open Access Book.</a></p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="fees"></a>How can I find out whether a journal charges article processing fees (APCs)?</b></h3>
+<p>You can find this information in two ways:</p>
+<ol>
+<li>Go to the <a href="{{ url_for('doaj.search') }}">Advanced Search page</a>, select 'Journals' from the 'Journals vs Articles' facet and expand the 'Article Processing Charges (APCs)' facet. By selecting 'No', you will
+retrieve a list of all the journals where the publisher has told us that they do not charge authors anything
+at all. <b>WARNING</b>: <a href="https://doajournals.wordpress.com/2015/05/11/historical-apc-data-from-before-the-april-upgrade/">read this blog post</a> about the APC data in DOAJ.</li>
+<li>APC information is displayed under each journal in search results and under the 'Publication Charges' section on a journal's home page. For example: <a href="https://doaj.org/toc/2193-6544">https://doaj.org/toc/2193-6544</a> </li>
+</ol>
+<a href="#top">Back to top</a>
+<br><br>
+
+<br><h3><a name="predatory"></a>What is DOAJ's policy on "predatory" publishers and journals?</h3>
+<p>DOAJ prefers to use the term 'questionable' instead of predatory. We do not believe in black lists and we do not discuss details of individual publishers or journals, with the public, whether they are in DOAJ or not. We will provide advice, when asked, on improvements a journal can make to meet our own high standards.</p>
+
+<p>We believe that, when confronted with a possible questionable journal, it is our duty to review it as objectively as possible. That is why every single application is reviewed by 4 different individuals. Difficult cases are discussed at team meetings. In general, we communicate extensively with applicants to pin down the facts of their application and be certain of the all-important details. We have operate under <a href="{{ url_for('doaj.publishers', _anchor='disclaimer') }}">a disclaimer</a> that allows us to remove journals from DOAJ without warning.</p>
+
+<p>It is important to remember that questionable publishing practices are not restricted to open access publishing alone but, sadly, are seen throughout academic publishing.</p>
+
+<p>If you believe that you have found a questionable journal in DOAJ, please contact us: feedback[at]doaj[.]org.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="removed"></a>Why do journals get removed from DOAJ?</b></h3>
+<p>Journals get removed for the following reasons:</p>
+<ul>
+<li>the journal is no longer Open Access;</li>
+<li>the journal is inactive (has not published in the last calender year);</li>
+<li>the journal has not published enough articles this calendar year;</li>
+<li>the journal has ceased publishing;</li>
+<li>the journal's web site URL no longer works;</li>
+<li>evidence of Editorial misconduct;</li>
+<li>the publisher failed to submit a new application within the given time period for reapplications;</li>
+<li>the journal does not adhere to Best practice.</li>
+</ul>
+<a href="#top">Back to top</a>
 <br><br>
 
 {% endblock %}
