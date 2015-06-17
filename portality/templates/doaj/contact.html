@@ -7,18 +7,21 @@
 <li><b>I want to publish my article in your journal.</b><br>
 DOAJ is not a journal or a publisher; do not submit papers to us. We are a directory of open access journals.</li><br>
 <li><b>I want to index my journal in DOAJ. What do I do?</b><br>
-Have a look at <a href="/faq#standards">our standards for selection</a>. If your journal is still suitable please
-<a href="{{ url_for('doaj.suggestion') }}">fill in the application form</a>.</li><br>
-<li><b>I have filled in an application for my journal to be in DOAJ. How long do I have to wait?</b><br>
-We process applications as fast as possible. If you have not received an answer within 3 months, feel free to
-contact us. Before you do so, please check your Spam folder to make sure we haven't contacted you already.</li><br>
+Have a look at our <a href="{{ url_for('doaj.publishers') }}">Information for Publishers</a>. If your journal fills our
+criteria please <a href="{{ url_for('doaj.suggestion') }}">fill in an application</a>.</li><br>
+<li><b>I have filled in an application or a reapplication. How long do I have to wait?</b><br>
+We process applications as fast as possible. If you have not received an answer within 4 months, feel free to
+contact us but please check your Spam folder to make sure a message from us hasn't been spammed by your email 
+program.</li><br>
 <li><b>Please send me articles about subject X.</b><br>
-We do not supply that service. <a href="/search">Search our catalogue</a></li><br>
+We do not supply that service. <a href="{{ url_for('doaj.subjects') }}">Use our subject browser</a> and then contact 
+the relevant journal.</li><br>
 <li><b>Please send me a list of journals on subject X.</b><br>
-You can either <a href="/faq#metadata">harvest our metadata or download a .csv file</a>.</li>
+We do not supply that service. You can either <a href="{{ url_for('doaj.subjects') }}">use our subject browser</a>, 
+<a href="/faq#metadata">harvest our metadata or download a .csv file</a>.</li>
 </ol> 
 
-<p>To contact us please send us email to feedback [at] doaj[.]org</a></p>
+<p>To contact us please send us email to feedback[at]doaj[.]org</a></p>
 
 {#
 <div class="alert alert-danger">THIS FORM DOES NOT CURRENTLY WORK</div>
