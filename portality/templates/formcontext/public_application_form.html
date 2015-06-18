@@ -4,20 +4,24 @@
 
 <h2>Journal Application Form</h2>
 
-<p>If you know a journal that should be included in DOAJ, please ask its publisher to apply using this form.</p>
+<p><b>Before you start</b><br>
+Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
+that your journal fulfills all the criteria.</p>
 
-<p>Read our <a href="{{ url_for('doaj.faq', _anchor='procedure') }}">guidance on making an application</a> before you
-fill out the form.  If you do not know the answer to a question, you can request help by contacting us. Review your 
-website before making an application and make sure that the information that we are looking for is clearly stated 
-on the <b>journal site</b> or clearly linked to from the journal site. </p>
+<p>DO NOT SUBMIT REAPPLICATIONS WITH THIS FORM. You must do that from <a href="https://doaj.org/publisher/progress">
+    the Reapplications tab</a> in your account.</p>
 
-<p>It is not possible to save your progress and return to the form later. Instead, we have
-<a href="{{ url_for('doaj.publishers', _anchor='application') }}">created a spreadsheet version of the form</a> and have provided 
-some other tips to help you fill in the form. Guides to completing the form are also
-<a href="{{ url_for('doaj.translated') }}">available in other languages
+<p>Guides to completing the form are also <a href="{{ url_for('doaj.translated') }}">available in other languages
 (中文, فارسی, Polski, Português, Русский, Español, Türkçe)</a>.</p>
 
-
+<p><b><i>DISCLAIMER</i></b><br>
+<p>The applicant is responsible for providing accurate information when submitting an application for consideration. 
+If the information provided is not sufficient or is incomplete, the application will not be considered. In cases where 
+the information provided is found to be untrue—either during reviewing or even after admission—we reserve the right to 
+reject or remove the journal with immediate effect and to not accept new applications for a period of 1 year. In cases
+where a single publisher has submitted more than 5 applications with false information, we reserve the right to remove 
+all of the publisher's journals and to not accept any more applications for a maximum period of 3 years, depending on 
+the number of journals for which false information was provided and the eventual number of repeated incidents.</p>
 
 <form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
     {% if form_context.errors %}
