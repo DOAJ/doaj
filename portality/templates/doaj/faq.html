@@ -190,7 +190,7 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 <p>We don't have a newsletter or email alerts but you can follow our developments in 4 places:</p>
 <ul>
 <li><a href="https://doajournals.wordpress.com/">the DOAJ News Service</a></li>
-<li><a href="{{ url_for('doaj.feed') }}">our Atom feed</a></li>
+<li><a href="{{ url_for('atom.feed') }}">our Atom feed</a></li>
 <li><a href="http://twitter.com/doajplus">our Twitter account</a></li>
 <li><a href="http://www.facebook.com/DirectoryofOpenAccessJournals">our Facebook page</a></li> 
 </ul>
@@ -216,7 +216,7 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 <p>There are 4 ways that you can contribute to DOAJ.</p>
 <ul>
 <li>Contact us if you have firsthand evidence that a journal in DOAJ is carrying out questionable practices, is of low quality, or may even be fake.</li>
-<li><a href="{{ url_for('doaj.supportDoaj') }}">Become a member</a>. All monies received through membership go directly to the development and running of DOAJ.</li>
+<li><a href="{{ url_for('doaj.support_doaj') }}">Become a member</a>. All monies received through membership go directly to the development and running of DOAJ.</li>
 <li><a href="http://bit.ly/1A0124t">Become a volunteer Associate Editor</a> and help us review the hundreds of new applications that we receive every month.</li> 
 <li>Contact us if you find a broken link on our site, or if you think that the information we have for a journal is outdated or incomplete. This feedback is so important for us and we are always grateful for the community being our eyes and ears.</li> 
 </ul>
@@ -387,7 +387,7 @@ than 10 countries in the facet, change the number at the top of the facet from '
 <br><br>
 
 <h3><b><a name="rss"></a>Is there an RSS/ATOM feed in DOAJ?</b></h3>
-<p>We have <a href="{{ url_for('doaj.feed') }}">an ATOM feed</a>. The feed contains information on journals added in the last 30 days
+<p>We have <a href="{{ url_for('atom.feed') }}">an ATOM feed</a>. The feed contains information on journals added in the last 30 days
 and includes the latest 100 items.</p>
 <a href="#top">Back to top</a>
 <br><br>
@@ -429,7 +429,7 @@ can obtain records from DOAJ. The OAI data is always up to date. OAI is well-est
 <p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
 <ol>
-<li><a href="{{ url_for('doaj.csv') }}">Download the file to your computer</a></li>
+<li><a href="{{ url_for('doaj.csv_data') }}">Download the file to your computer</a></li>
 <li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file.</li>
 </ol>
 
@@ -437,7 +437,7 @@ imported into Excel or any equivalent analysis tool. The CSV file is updated eve
 
 <p>If you wish to crawl DOAJ, you may do so as long as you follow the general guidelines for good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
 
-<p>Finally, you can connect up to our <a href="{{ url_for('doaj.feed') }}">ATOM feed of new journals added</a> which is updated every time new journals are added to the database. You can integrate the feed into your browser or straight into a web site.</p>
+<p>Finally, you can connect up to our <a href="{{ url_for('atom.feed') }}">ATOM feed of new journals added</a> which is updated every time new journals are added to the database. You can integrate the feed into your browser or straight into a web site.</p>
 
 <p>If you have any questions about how to collect and use DOAJ's metadata, do not hesitate to send email: feedback[at]doaj[.]org.</p>
 <a href="#top">Back to top</a>
@@ -450,7 +450,7 @@ Read a full description of this service here</a>.</p>
 <br><br>
 
 <h3><b><a name="alldata"></a>Can I download all of the DOAJ metadata?</b></h3>
-<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv') }}">download the CSV file</a> but if you are an advanced user you can collect the JSON data.</p>
+<p>Yes. The simplest way is to <a href="{{ url_for('doaj.csv_data') }}">download the CSV file</a> but if you are an advanced user you can collect the JSON data.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
@@ -461,7 +461,7 @@ communities that allows them to gain access to content in a standard manner by m
 <br><br>
 
 <h3><b><a name="openurl"></a>Can I link to DOAJ using OpenURL?</b></h3>
-<p>Yes. We reinstated <a href="{{ url_for('doaj.openurl/help') }}">our OpenURL service</a> in April 2015.</p>
+<p>Yes. We reinstated <a href="{{ url_for('openurl.help') }}">our OpenURL service</a> in April 2015.</p>
 <br><br>
 
 <h3><b><a name="restrictionsA"></a>Do you have any restrictions on the reuse of your metadata?</b></h3>
