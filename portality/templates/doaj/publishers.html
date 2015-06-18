@@ -217,7 +217,7 @@ It is recommended that publishers make use of one of the several plagiarism dete
 <h3><a name="upload"></a>7) How to get your journal content indexed in DOAJ</h3>
 <p>It is the publisher's responsibility to upload article metadata to DOAJ. DOAJ does not actively collect article metadata for journals it indexes.</p>
 
-<p>You must log in to <a href="{{ url_for('doaj.publisher') }}">your Publisher Area</a> before you can begin to upload metadata to us. You may only upload metadata for those journals in your account. You should ensure that your journal record is up-to-date in DOAJ before you upload metadata to us. Discrepancies in the ISSN information will cause the upload to fail. If you need to update a journal record please contact us: feedback[at]doaj[.]org. </p>
+<p>You must log in to <a href="{{ url_for('doaj.publishers') }}">your Publisher Area</a> before you can begin to upload metadata to us. You may only upload metadata for those journals in your account. You should ensure that your journal record is up-to-date in DOAJ before you upload metadata to us. Discrepancies in the ISSN information will cause the upload to fail. If you need to update a journal record please contact us: feedback[at]doaj[.]org. </p>
 
 <p>There are two ways to get your metadata in to DOAJ.</p>
 <ul>
@@ -285,31 +285,10 @@ will happen because no matching can occur so the publisher must contact us so we
 Use case 3: one article in an issue contains a spelling mistake in one of the author names. The publisher can correct the entry manually without contacting DOAJ. The URL of the article is not changing so the correction will overwrite the old version.</p>
 <br><br>
 
-<!-- SECTION CORRECTING METADATA -->
-
-<h3><a name="correct"></a>9) How do I correct an error in article metadata?</h3>
-<p>If you need to correct an error, you must upload the metadata again. To make sure that your new upload overwrites
-the old one, at least one of two specific pieces of metadata in the new file must be the same as in the old file.
-The 2 specific pieces of metadata that we look for are, in priority order:</p>
-<ol>
-<li><b>DOI</b> - if you assign DOIs to your articles then we will match on the DOI.</li>
-<li><b>Full Text URL</b> - this is the URL that you give us for the full text of the article.</li>
-</ol>
-<p>If there is no DOI, the script will look for the Full Text URL.</p>
-<p><b>Some examples</b></p>
-<p>Use case 1: a publisher wants to correct some article metadata because an author is missing. The publisher must
-reupload the file. The article's DOI in the XML is the same as on the site so the site automatically overwrites the
-older version.<br>
-Use case 2: a publisher wants to correct the URL for their full text articles because their site has moved.
-The publisher does not use DOIs. The publisher must upload a new version. No automatic overwriting
-will happen because no matching can occur so the publisher must contact us so we can remove the older version.<br>
-Use case 3: one article in an issue contains a spelling mistake in one of the author names. The publisher can correct the entry manually without contacting DOAJ. The URL of the article is not changing so the correction will overwrite the old version.</p>
-<br><br>
-
 
 <!-- SECTION COMPLAINT -->
 
-<h3><a name="faqs"></a>10) How to make a complaint or appeal</h3>
+<h3><a name="complaint"></a>10) How to make a complaint or appeal</h3>
 <p>If you would like to make a complaint, or would like to appeal against the decision to reject your application you should send email to Dominic Mitchell, Community Manager, (dom[@]doaj[.]org) that contains the following information:</p>
 
 <p>
@@ -369,7 +348,7 @@ Use case 3: one article in an issue contains a spelling mistake in one of the au
 <p>If a new account has been created, an automated email is sent to the Journal Contact listed in Question 9 of the application form that was submitted to us. The email contains the username and instructions on how to choose a password. The link is valid for 14 days only. </p>
 <p>If you have problems logging in, or you cannot see your journal listed, or you would like to merge two publisher accounts, then please Contact us.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="password"></a>Forgotten password | How do I reset my password?</b></h3>
@@ -382,7 +361,7 @@ Use case 3: one article in an issue contains a spelling mistake in one of the au
 <li>it is possible that we have a different email address on record. Contact us for what to do next.</li>
 </ol>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="username"></a>Forgotten username</b></h3>
@@ -392,19 +371,19 @@ Use case 3: one article in an issue contains a spelling mistake in one of the au
 <li>Contact us and we will remind you of your username</li>
 </ol>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="journal"></a>Why can't I find my journal in DOAJ?</b></h3>
 <p>It maybe that your journal has not applied to be in the DOAJ, in which case, please <a href="{{ url_for('doaj.suggestion') }}">submit an Application</a>. It may be that the journal's application is still pending or that the journal has been removed. If you belive that your journal has been wrongly removed then please contact us.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="uploadmetadata"></a>How do I upload article metadata?</b></h3>
 <p>Once a journal has been accepted in to DOAJ, article metadata may be uploaded as XML or created manually. If the journal belongs to an existing DOAJ account, then you must log in to the existing account and then add metadata via the Publisher Area. For more information read <a href="#upload">'Uploading Metadata'</a>. [LINK]</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="nometadata"></a>I have uploaded article metadata to DOAJ but it has not appeared on the site. Has something gone wrong?</b></h3>
@@ -412,7 +391,7 @@ Use case 3: one article in an issue contains a spelling mistake in one of the au
 
 <p>If, after 24 hours, you still cannot find your article on the site, please Contact us.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="definition"></a>How do we define 'Open Access Journal', 'Quality Control', 'Research Journal' and 'Periodical'?</b></h3>
@@ -429,26 +408,26 @@ We define open access journals as journals that use a funding model that does no
 each issue of which is numbered or dated consecutively and normally contains separate articles, stories, or other
 writings.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="oai"></a>What is Open Archives Initiative, OAI, OAI-PMH?</b></h3>
 <p><a href="http://www.openarchives.org/">OAI, Open Archives Initiative</a>, supplies a common framework to web
 communities that allows them to gain access to content in a standard manner by means of metadata harvesting.
 <a href="{{ url_for('doaj.features') }}">Read the details of our OAI feature.</a> Read <a href="https://en.wikipedia.org/wiki/Open_Archives_Initiative_Protocol_for_Metadata_Harvesting">the full Wikipedia entry</a>.</p>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="openurl"></a>What is OpenURL?</b></h3>
 <p>OpenURL is a standardized format of Uniform Resource Locator (URL) intended to enable Internet users to more easily find a copy of a resource that they are allowed to access. It is most heavily used by libraries to help connect their customers to journal content. DOAJ's OpenURL service is Version 1.0 which is compatible with the previous 0.1 version as well. Read <a href="https://en.wikipedia.org/wiki/OpenURL">the full Wikipedia entry</a>.</p>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="logo"></a>Do you have a logo I can use to show that my journal is indexed in DOAJ?</b></h3>
 <p>We have an 'Indexed in DOAJ' logo in .eps and .png formats. Please contact us to
 request it and a member of our team will check that your journal qualifies.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="seal"></a>What is the DOAJ Seal of Approval for Open Access Journals (the DOAJ Seal)?</b></h3>
@@ -492,12 +471,12 @@ future. In the meantime, you could try these two tips to help you keep a record 
 <li>Before you start, print out a version of the form to use as a draft. The form prints best in Google Chrome.</li>
 <li>The application form requires a lot of information to be entered into one place. Before you start filling it in,
 we recommend that you collect upfront all the information you will require. We have created
-<a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdDJIOHpVcXBleFRZOTRIRW5naVY3Smc&usp=sharing">a
+<a href="http://bit.ly/1MLszb4">a
 spreadsheet version of the form for you to download and complete offline</a>. For your convenience there are columns for more than one journal but you MUST complete ONE online application per journal.</li>
 <li>If you haven't used the spreadsheet to collect your application's information, you can record your answers by taking screenshots of the completed form BEFORE you hit the Submit button.</li>
 </ul>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="casereports"></a>Do case reports count as original articles?</b></h3>
@@ -505,7 +484,7 @@ spreadsheet version of the form for you to download and complete offline</a>. Fo
 include the retrospective analysis of more than 3 clinical cases. When more than three cases are involved, the
 article constitutes "research."</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="humanities"></a>Do you accept journals that carry out editorial review only (instead of peer review)?</b></h3> 
@@ -515,7 +494,7 @@ board only—is in place. This is particularly relevant to the Humanities. 'Edit
 an answer to <a href="/application/new#review_process-container">Question 35 of the Application Form</a> if the 
 journal publishes in some such field. We do not accept journals that only have one editor with no editorial board.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="deposit"></a>We have no deposit restrictions on articles published in our journal. Why does the
@@ -543,7 +522,7 @@ long-term preservation and text- and data-mining.</li>
 <a href="http://wiki.creativecommons.org/Marking_your_work_with_a_CC_license">Read how</a>. Best Practice recommends that the
 license metadata is machine readable that is to say: embedded in the HTML, XML or in the PDF metadata.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="whichlicense"></a>How do I know which CC license to choose?</b></h3>
@@ -553,7 +532,7 @@ to help you choose the correct license for your content: <a href="http://creativ
 http://creativecommons.org/choose/</a>.</p>
 <p>Both pages are available in 24 different languages.</p>
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 <h3><b><a name="embedded"></a>How do I know if my license information is embedded in the metadata?</b></h3>
@@ -570,7 +549,7 @@ Displayed at the bottom of the full text</a></li>
 </ol>
 
 <a href="#top">Back to top</a>
-<p></p>
+
 <br><br>
 
 {% endblock %}
