@@ -63,16 +63,20 @@ class XWalk(object):
         return True
     
     def is_legitimate_owner(self, article, owner):
+        # get all the issns for the article
         b = article.bibjson()
         issns = b.get_identifiers(b.P_ISSN)
         issns += b.get_identifiers(b.E_ISSN)
+
+        # check each issn against the index, and if a related journal is found
+        # record the owner of that journal
         owners = []
         for issn in issns:
-            journals = models.Journal.find_by_issn(issn) # FIXME: could make this query more efficient
-            if len(journals) == 0:
-                # if we can't find a matching journal, this article is a dud
-                return False
-            owners += [j.owner for j in journals if j.owner is not None]
+            journals = models.Journal.find_by_issn(issn)
+            if journals is not None and len(journals) > 0:
+                owners += [j.owner for j in journals if j.owner is not None]
+
+        # deduplicate the list of owners
         owners = list(set(owners))
         
         if len(owners) == 0:
@@ -81,7 +85,8 @@ class XWalk(object):
         if len(owners) > 1:
             # multiple owners means ownership of this article is confused
             return False
-        
+
+        # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
     
     def get_duplicate(self, article, owner=None):
@@ -327,7 +332,8 @@ class DOAJXWalk(XWalk):
     def validate(self, doc):
         valid = self.schema.validate(doc)
         return valid
-    
+
+    # FIXME: this doesn't appear to be used anywhere, so maybe we should remove it?
     def crosswalk_file(self, handle, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
         doc = etree.parse(handle)
         return self.crosswalk_doc(doc, add_journal_info=add_journal_info, article_callback=article_callback, 
@@ -582,7 +588,7 @@ def article_upload_closure(upload_id):
 def article_save_callback(article):
     article.save()
     
-def ingest_file(handle, format_name=None, owner=None, upload_id=None):
+def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fail_callback=None):
     try:
         doc = etree.parse(handle)
     except:
@@ -615,7 +621,7 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None):
     # do the crosswalk
     try:
         cb = article_save_callback if upload_id is None else article_upload_closure(upload_id)
-        results = xwalk.crosswalk_doc(doc, article_callback=cb, limit_to_owner=owner)
+        results = xwalk.crosswalk_doc(doc, article_callback=cb, limit_to_owner=owner, fail_callback=article_fail_callback)
         return results
     except Exception as e:
         # raise e
