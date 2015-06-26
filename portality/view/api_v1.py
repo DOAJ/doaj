@@ -19,6 +19,26 @@ def docs():
 
 @blueprint.route('/search')
 def search():
+    """
+    Search journals and articles
+    ---
+    tags:
+      - search
+    parameters:
+      - in: body
+        name: query
+        schema:
+          id: query
+          required:
+            - q
+          properties:
+            q:
+              type: string
+              description: search query
+    responses:
+      200:
+        description: Search results
+    """
     if not request.args.get('q'):
         return make_response((jsonify({'error': 'Missing "q" search query parameter. Append ?q=your%20url%20encoded%20search%20query to your request.'}), 400))
 
