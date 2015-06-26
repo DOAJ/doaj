@@ -7,15 +7,13 @@ new ones as required too.
 '''
 import os
 
-from flask import request, abort, render_template, redirect, send_file, url_for, jsonify, make_response
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask.ext.login import login_user, current_user
 from copy import deepcopy
 
 from datetime import datetime
 import tzlocal
 import pytz
-
-from flask_swagger import swagger
 
 import portality.models as models
 from portality.core import app, login_manager
@@ -235,11 +233,6 @@ def page_not_found(e):
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
-
-@app.route('/api/spec')
-def api_spec():
-    return make_response((jsonify(swagger(app)), 200, {'Access-Control-Allow-Origin': '*'}))
-        
 
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
