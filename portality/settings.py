@@ -12,6 +12,8 @@ DOAJ_VERSION = "2.10.3_SNAPSHOT-1"
 
 OFFLINE_MODE=False
 
+FEATURES = []
+
 # ========================
 # MAIN SETTINGS
 

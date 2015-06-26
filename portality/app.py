@@ -49,7 +49,8 @@ app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(forms, url_prefix='/forms')
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
-app.register_blueprint(api_v1, url_prefix='/api/v1')
+if 'api' in app.config['FEATURES']:
+    app.register_blueprint(api_v1, url_prefix='/api/v1')
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)
@@ -211,13 +212,16 @@ def standard_authentication():
 @app.route('/api')
 @app.route('/api/')
 def api_directory():
+    if 'api' not in app.config['FEATURES']:
+        return ''
+
     return jsonify(
         {
             'api_versions': [
                 {
-                    'version': '1.0.0',
+                    'version': '0.0.1',
                     'base_url': url_for('api_v1.list_operations', _external=True),
-                    'note': 'First version of the DOAJ API',
+                    'note': 'First version of the DOAJ API (IN DEVELOPMENT DO NOT USE!)',
                     'docs_url': url_for('api_v1.docs', _external=True)
                 }
             ]
