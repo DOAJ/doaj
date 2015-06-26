@@ -7,7 +7,7 @@ new ones as required too.
 '''
 import os
 
-from flask import request, abort, render_template, redirect, send_file, url_for, flash
+from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask.ext.login import login_user, current_user
 from copy import deepcopy
 
@@ -32,6 +32,7 @@ from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
+from portality.view.api_v1 import blueprint as api_v1
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
@@ -46,6 +47,7 @@ app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(forms, url_prefix='/forms')
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
+app.register_blueprint(api_v1, url_prefix='/api/v1')
 
 app.register_blueprint(oaipmh)
 app.register_blueprint(openurl)
@@ -204,6 +206,21 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
+@app.route('/api')
+@app.route('/api/')
+def api_directory():
+    return jsonify(
+        {
+            'api_versions': [
+                {
+                    'version': '1.0.0',
+                    'base_url': url_for('api_v1.list_operations', _external=True),
+                    'note': 'First version of the DOAJ API',
+                    'docs_url': url_for('api_v1.docs', _external=True)
+                }
+            ]
+        }
+    )
 
 @app.errorhandler(404)
 def page_not_found(e):
