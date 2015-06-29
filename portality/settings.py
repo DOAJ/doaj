@@ -234,7 +234,7 @@ REPOS = {
 # ========================
 # FEED SETTINGS
 
-FEED_TITLE = "Directory of Open Access Journals"
+FEED_TITLE = "DOAJ Recent Journals Added"
 
 # Maximum number of feed entries to be given in a single response.  If this is omitted, it will
 # default to 20
