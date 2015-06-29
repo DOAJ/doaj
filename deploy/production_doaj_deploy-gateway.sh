@@ -12,6 +12,13 @@ ln -sf /home/cloo/repl/apps/nginx/sites-available/doaj-apps /home/cloo/repl/apps
 ln -sf /home/cloo/repl/apps/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-gate
 
+# install app on gate
+sudo apt-get update -q -y
+sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
+cd $DIR/..
+. ../../bin/activate
+pip install -r requirements.txt
+
 # replicate across app servers
 /home/cloo/repl/replicate.sh
 /home/cloo/repl/command.sh apps /home/cloo/repl/apps/doaj/src/doaj/deploy/production_doaj_deploy-apps.sh
