@@ -12,38 +12,82 @@ blueprint = Blueprint('atom', __name__)
 
 @blueprint.route('/feed')
 def feed():
-    max_size = app.config.get("MAX_FEED_ENTRIES", 20)
-    max_age = app.config.get("MAX_FEED_ENTRY_AGE", 2592000)
-    from_date = (datetime.now() - timedelta(0, max_age)).strftime("%Y-%m-%dT%H:%M:%SZ")
-    
-    dao = models.AtomRecord()
-    records = dao.list_records(from_date, max_size)
-    
-    title = app.config.get("FEED_TITLE", "untitled")
-    url = request.base_url
-    generator = app.config.get('FEED_GENERATOR',"")
-    icon = app.config.get("FEED_LOGO","")
-    logo = app.config.get("FEED_LOGO","")
-    link = app.config.get('BASE_URL',"")
-    rights = app.config.get('FEED_LICENCE',"")
-    
-    xwalk = AtomCrosswalk()
-    f = AtomFeed(title, url, generator, icon, logo, link, rights)
-    
-    for record in records:
-        entry = xwalk.crosswalk(record)
-        f.add_entry(entry)
-        
+    # get the feed for this base_url (which is just used to set the metadata of
+    # the feed, but we want to do this outside of a request context so it
+    # is testable)
+    f = get_feed(request.base_url)
+
     # serialise and respond with the atom xml
     resp = make_response(f.serialise())
     resp.mimetype = "application/atom+xml"
     return resp
 
+
+def get_feed(base_url=None):
+    """
+    Main method for generating the feed.  Gets all of the settings
+    out of config and returns the feed object, which can then
+    be serialised and delivered by the web layer
+
+    :param base_url:    The base url to include in the feed metadata
+    :return:    AtomFeed object
+    """
+    max_size = app.config.get("MAX_FEED_ENTRIES", 20)
+    max_age = app.config.get("MAX_FEED_ENTRY_AGE", 2592000)
+    from_date = (datetime.now() - timedelta(0, max_age)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    dao = models.AtomRecord()
+    records = dao.list_records(from_date, max_size)
+
+    title = app.config.get("FEED_TITLE", "untitled")
+    url = base_url
+    generator = app.config.get('FEED_GENERATOR',"")
+    icon = app.config.get("FEED_LOGO","")
+    logo = app.config.get("FEED_LOGO","")
+    link = app.config.get('BASE_URL',"")
+    rights = app.config.get('FEED_LICENCE',"")
+
+    xwalk = AtomCrosswalk()
+    f = AtomFeed(title, url, generator, icon, logo, link, rights)
+
+    for record in records:
+        entry = xwalk.crosswalk(record)
+        f.add_entry(entry)
+
+    return f
+
 class AtomCrosswalk(object):
     def crosswalk(self, atom_record):
         entry = {}
         b = atom_record.bibjson()
-        
+
+        doaj_url = app.config['BASE_URL'] + url_for('doaj.toc', identifier=atom_record.toc_id) + "?rss"
+
+        title = b.title
+        issns = b.issns()
+        if len(issns) > 0:
+            title += " (" + ", ".join(issns) + ")"
+
+        summary = ""
+        if b.publisher:
+            summary += "Published by " + b.publisher
+        if b.institution:
+            if not b.publisher:
+                summary += "Published in " + b.institution
+            else:
+                summary += " in " + b.institution
+        if b.provider:
+            if summary == "":
+                summary += "Published on " + b.provider
+            else:
+                summary += " using " + b.provider
+        if summary != "":
+            summary += "\n"
+        summary += "Added to DOAJ on " + atom_record.created_timestamp.strftime("%e %b %Y") + "\n"
+        lccs = b.lcc_paths()
+        if len(lccs) > 0:
+            summary += "LCC Subject Category: " + " | ".join(lccs)
+
         if b.publisher is not None:
             entry["author"] = b.publisher
         elif b.provider is not None:
@@ -57,20 +101,20 @@ class AtomCrosswalk(object):
             term = subs.get("term")
             cats.append(scheme + ":" + term)
         entry["categories"] = cats
-        
-        content_src = app.config['BASE_URL'] + url_for('doaj.toc', identifier=atom_record.toc_id)
-        entry["content_src"] = content_src
+
+        entry["content_src"] = doaj_url
+        entry["alternate"] = doaj_url
         
         entry["id"] = "urn:uuid:" + atom_record.id
         
         urls = b.get_urls(urltype="homepage")
         if len(urls) > 0:
-            entry['alternate'] = urls[0]
+            entry['related'] = urls[0]
         
         entry['rights'] = app.config['FEED_LICENCE']
         
-        entry['summary'] = b.title
-        entry['title'] = b.title
+        entry['summary'] = summary
+        entry['title'] = title
         entry['updated'] = atom_record.last_updated
         
         return entry
@@ -170,11 +214,17 @@ class AtomFeed(object):
         alt = etree.SubElement(entry, self.ATOM + "link")
         alt.set("rel", "alternate")
         alt.set("href", e['alternate'])
+
+        if "related" in e:
+            rel = etree.SubElement(entry, self.ATOM + "link")
+            rel.set("rel", "related")
+            rel.set("href", e['related'])
         
         rights = etree.SubElement(entry, self.ATOM + "rights")
         rights.text = e['rights']
         
         summary = etree.SubElement(entry, self.ATOM + "summary")
+        summary.set("type", "text")
         summary.text = e['summary']
         
         title = etree.SubElement(entry, self.ATOM + "title")
