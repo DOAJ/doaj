@@ -14,6 +14,7 @@ pip install -r requirements.txt
 sudo supervisorctl reread doaj-production
 sudo supervisorctl update doaj-production
 kill -HUP $(sudo supervisorctl pid doaj-production)
-crontab $DIR/crontab-production
-sudo rm /etc/anacrontab
-sudo ln -sf /home/cloo/repl/apps/doaj/src/doaj/deploy/anacrontab-production /etc/anacrontab
+
+echo "Setting up crontab and anacrontab"
+crontab $DIR/crontab-production-apps
+sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-production-apps /etc/anacrontab
