@@ -18,3 +18,7 @@ ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/g
 
 # reload the config if syntax is OK
 sudo nginx -t && sudo nginx -s reload
+
+echo "Setting up crontab and anacrontab"
+crontab $DIR/crontab-production-gate
+sudo rm /etc/anacrontab && sudo ln -sf $DIR/anacrontab-production-gate /etc/anacrontab
