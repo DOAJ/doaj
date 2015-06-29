@@ -207,24 +207,22 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
-@app.route('/api')
-@app.route('/api/')
-def api_directory():
-    if 'api' not in app.config['FEATURES']:
-        return ''
-
-    return jsonify(
-        {
-            'api_versions': [
-                {
-                    'version': '0.0.1',
-                    'base_url': url_for('api_v1.list_operations', _external=True),
-                    'note': 'First version of the DOAJ API (IN DEVELOPMENT DO NOT USE!)',
-                    'docs_url': url_for('api_v1.docs', _external=True)
-                }
-            ]
-        }
-    )
+if 'api' in app.config['FEATURES']:
+    @app.route('/api')
+    @app.route('/api/')
+    def api_directory():
+        return jsonify(
+            {
+                'api_versions': [
+                    {
+                        'version': '0.0.1',
+                        'base_url': url_for('api_v1.list_operations', _external=True),
+                        'note': 'First version of the DOAJ API (IN DEVELOPMENT DO NOT USE!)',
+                        'docs_url': url_for('api_v1.docs', _external=True)
+                    }
+                ]
+            }
+        )
 
 @app.errorhandler(404)
 def page_not_found(e):
