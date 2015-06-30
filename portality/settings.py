@@ -433,5 +433,15 @@ DISCOVERY_MAX_PAGE_SIZE = 100
 DISCOVERY_ARTICLE_SUBS = {
     "title" : "bibjson.title",
     "doi" : "bibjson.identifier.id.exact",
-    "publisher" : "bibjson.journal.publisher"
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.journal.publisher",
+    "journal" : "bibjson.journal.title",
+    "abstract" :  "bibjson.abstract"
+}
+
+DISCOVERY_JOURNAL_SUBS = {
+    "title" : "index.title",
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.publisher",
+    "license" : "index.license.exact"
 }

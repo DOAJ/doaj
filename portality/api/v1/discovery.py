@@ -76,6 +76,15 @@ class DiscoveryApi(Api):
         q = substitute(q, subs)
         # print q
 
+        # sanitise the page size information
+        if page < 1:
+            page = 1
+
+        if page_size > app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100):
+            page_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
+        elif page_size < 1:
+            page_size = 10
+
         # calculate the position of the from cursor in the document set
         fro = (page - 1) * page_size
 
@@ -83,7 +92,7 @@ class DiscoveryApi(Api):
         query = SearchQuery(q, fro, page_size)
         # print json.dumps(query.query())
 
-        return query
+        return query, page, page_size
 
     @classmethod
     def _make_response(cls, res, q, page, page_size, obs):
@@ -104,7 +113,7 @@ class DiscoveryApi(Api):
     @classmethod
     def search_articles(cls, q, page, page_size):
         subs = app.config.get("DISCOVERY_ARTICLE_SUBS", {})
-        query = cls._make_query(q, page, page_size, subs)
+        query, page, page_size = cls._make_query(q, page, page_size, subs)
 
         # execute the query against the articles
         res = models.Article.query(q=query.query(), consistent_order=False)
@@ -120,7 +129,7 @@ class DiscoveryApi(Api):
     @classmethod
     def search_journals(cls, q, page, page_size):
         subs = app.config.get("DISCOVERY_JOURNAL_SUBS", {})
-        query = cls._make_query(q, page, page_size, subs)
+        query, page, page_size = cls._make_query(q, page, page_size, subs)
 
         # execute the query against the articles
         res = models.Journal.query(q=query.query(), consistent_order=False)

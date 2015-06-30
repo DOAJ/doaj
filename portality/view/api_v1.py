@@ -75,24 +75,17 @@ def search(search_type, search_query):
     page = request.values.get("page", 1)
     psize = request.values.get("pageSize", 10)
 
-    # check the page is an integer greater than 0
+    # check the page is an integer
     try:
         page = int(page)
     except:
         return _bad_request("Page number was not an integer")
-    if page < 1:
-        page = 1
 
-    # limit the page size as per the configuration
+    # check the page size is an integer
     try:
         psize = int(psize)
     except:
         return _bad_request("Page size was not an integer")
-
-    if psize > app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100):
-        psize = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
-    elif psize < 1:
-        psize = 10
 
     results = None
     if search_type == "articles":
