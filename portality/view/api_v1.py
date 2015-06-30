@@ -1,10 +1,21 @@
-from flask import Blueprint, jsonify, url_for, request, make_response
+from flask import Blueprint, jsonify, url_for, request, make_response, abort
 from flask_swagger import swagger
 
-from portality.api.v1 import DiscoveryApi, jsonify_models
+from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models
 from portality.core import app
 
+import json
+
 blueprint = Blueprint('api_v1', __name__)
+
+def _bad_request(message=None, exception=None):
+    if exception is not None:
+        message = exception.message
+    app.logger.info("Sending 400 Bad Request from client: {x}".format(x=message))
+    resp = make_response(json.dumps({"status" : "error", "error" : message}))
+    resp.mimetype = "application/json"
+    resp.status_code = 400
+    return resp
 
 @blueprint.route('/spec')
 def api_spec():
@@ -25,7 +36,7 @@ def list_operations():
 def docs():
     return 'Documentation root'
 
-@blueprint.route('/search/<search_type>/<search_query>')
+@blueprint.route('/search/<search_type>/<path:search_query>')
 def search(search_type, search_query):
     """
     Search journals and articles
@@ -44,20 +55,57 @@ def search(search_type, search_query):
         in: "path"
         required: true
         type: "string"
+      -
+        name: "page"
+        in: "body":
+        required: false
+        type: "int"
+      -
+        name: "pageSize"
+        in: "body"
+        required: false,
+        type: "int"
     responses:
       200:
         description: Search results
+      400:
+        description: Bad Request
     """
-    results = {
-        'results': {
-            'search_query': search_query,
-        }
-    }
+    # get the values for the 2 other bits of search info: the page number and the page size
+    page = request.values.get("page", 1)
+    psize = request.values.get("pageSize", 10)
 
-    if search_type == 'articles' or search_type == 'all':
-        results['results'].update({'articles': DiscoveryApi.search_articles(search_query)})
+    # check the page is an integer greater than 0
+    try:
+        page = int(page)
+    except:
+        return _bad_request("Page number was not an integer")
+    if page < 1:
+        page = 1
 
-    if search_type == 'journals' or search_type == 'all':
-        results['results'].update({'journals': DiscoveryApi.search_journals(search_query)})
+    # limit the page size as per the configuration
+    try:
+        psize = int(psize)
+    except:
+        return _bad_request("Page size was not an integer")
+
+    if psize > app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100):
+        psize = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
+    elif psize < 1:
+        psize = 10
+
+    results = None
+    if search_type == "articles":
+        try:
+            results = DiscoveryApi.search_articles(search_query, page, psize)
+        except DiscoveryException as e:
+            return _bad_request(e.message)
+    elif search_type == "journals":
+        try:
+            results = DiscoveryApi.search_journals(search_query, page, psize)
+        except DiscoveryException as e:
+            return _bad_request(e.message)
+    else:
+        abort(404)
 
     return jsonify_models(results)

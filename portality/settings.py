@@ -423,3 +423,15 @@ DATE_FORMATS = [
     "%B %Y",                # e.g. February 2014
     "%Y"                    # e.g. 1978
 ]
+
+
+# ========================================
+# API configuration
+
+DISCOVERY_MAX_PAGE_SIZE = 100
+
+DISCOVERY_ARTICLE_SUBS = {
+    "title" : "bibjson.title",
+    "doi" : "bibjson.identifier.id.exact",
+    "publisher" : "bibjson.journal.publisher"
+}
