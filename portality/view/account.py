@@ -3,7 +3,7 @@ import uuid, json
 from flask import Blueprint, request, url_for, flash, redirect, make_response, session
 from flask import render_template, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from flask.ext.wtf import TextField, TextAreaField, SelectField, HiddenField
+from flask.ext.wtf import StringField, TextAreaField, SelectField, HiddenField
 from flask.ext.wtf import Form, PasswordField, validators, ValidationError
 
 from portality.core import app, ssl_required, write_required
@@ -31,8 +31,8 @@ def username(username):
     if acc is None:
         abort(404)
     elif ( request.method == 'DELETE' or 
-            ( request.method == 'POST' and 
-            request.values.get('submit',False) == 'Delete' ) ):
+            ( request.method == 'POST' and
+            request.values.get('submit', False) == 'Delete' ) ):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
@@ -81,7 +81,7 @@ def get_redirect_target(form=None):
     if form and hasattr(form, 'next') and getattr(form, 'next'):
         form_target = form.next.data
 
-    for target in form_target, request.args.get('next',[]):
+    for target in form_target, request.args.get('next', []):
         if not target:
             continue
         if target == util.is_safe_url(target):
@@ -103,8 +103,8 @@ class RedirectForm(Form):
         return redirect(target or url_for(endpoint, **values))
 
 class LoginForm(RedirectForm):
-    username = TextField('Username', [validators.Required()])
-    password = PasswordField('Password', [validators.Required()])
+    username = StringField('Username', [validators.DataRequired()])
+    password = PasswordField('Password', [validators.DataRequired()])
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
@@ -136,7 +136,7 @@ def forgot():
     CONTACT_INSTR = ' Please <a href="{url}">contact us.</a>'.format(url=url_for('doaj.contact'))
     if request.method == 'POST':
         # get hold of the user account
-        un = request.form.get('un',"")
+        un = request.form.get('un', "")
         account = models.Account.pull(un)
         if account is None: 
             account = models.Account.pull_by_email(un)
@@ -162,7 +162,7 @@ def forgot():
 
         to = [account.data['email']]
         fro = app.config.get('SYSTEM_EMAIL_FROM', app.config['ADMIN_EMAIL'])
-        subject = app.config.get("SERVICE_NAME","") + " - password reset"
+        subject = app.config.get("SERVICE_NAME", "") + " - password reset"
         try:
             app_email.send_mail(to=to,
                                 fro=fro,
@@ -226,13 +226,13 @@ def existscheck(form, field):
         raise ValidationError('Taken! Please try another.')
 
 class RegisterForm(Form):
-    w = TextField('Username', [validators.Length(min=3, max=25),existscheck])
-    n = TextField('Email Address', [
-        validators.Length(min=3, max=35), 
+    w = StringField('Username', [validators.Length(min=3, max=25), existscheck])
+    n = StringField('Email Address', [
+        validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address')
     ])
     s = PasswordField('Password', [
-        validators.Required(),
+        validators.DataRequired(),
         validators.EqualTo('c', message='Passwords must match')
     ])
     c = PasswordField('Repeat Password')
@@ -242,7 +242,7 @@ class RegisterForm(Form):
 @ssl_required
 @write_required
 def register():
-    if not app.config.get('PUBLIC_REGISTER',False) and not current_user.has_role("create_user"):
+    if not app.config.get('PUBLIC_REGISTER', False) and not current_user.has_role("create_user"):
         abort(401)
     form = RegisterForm(request.form, csrf_enabled=False)
     if request.method == 'POST' and form.validate():
