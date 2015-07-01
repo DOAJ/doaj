@@ -52,9 +52,9 @@ for online journals and digital posting. We have also consulted <a href="http://
 <li>Types of resource: scientific and scholarly periodicals that publish research or review papers in full text.</li>
 <li>Acceptable sources: academic, government, commercial, non-profit and private sources are all acceptable.</li>
 <li>Level: the primary target group should be researchers.  If the journal is run by a student body, the journal must 
-have an advisory board of which at least two members have a PhD or an equivalent.</li>
+have an advisory board of which at least two members have a PhD or equivalent.</li>
 <li>Content: a substantive part of the journal should consist of research and/or review papers. All content 
-should be available in full text on the site. See our <a href="#casereport">policy for case report journals</a>.</li>
+should be available in full text on the site. See our <a href="#casereports">policy for case report journals</a>.</li>
 <li>All languages are accepted.</li>
 </ul>
 
@@ -129,12 +129,12 @@ us. <a href="#upload">Read more about uploading metadata here</a>.</p>
 
 <p>If publishing different types of articles (for example original articles, review articles, case studies, essays or 
 book reviews), it is advantageous to display articles of the same type together in each volume and to mark each 
-article with the specific article type. Articles should be arranged into Tables of Contents and there must be a 
+article with the specific article type. Articles should be arranged in to Tables of Contents and there must be a 
 Browse feature to allow users to browse for articles.</p>
 
 <p><b>Home page quality, commercials and ads</b><br>
 A journal's home page should be clear, concise and easy-to-use. It must contain visible links to 
-<a href="#inforpages">the journal information pages</a>. It must 'demonstrate that care has been taken to ensure high 
+<a href="#infopages">the journal information pages</a>. It must 'demonstrate that care has been taken to ensure high 
 ethical and professional standards.' (From the <a href="{{ url_for('doaj.bestpractice') }}">Principles of Transparency
 and Best Practice in Scholarly Publishing</a>.) It must contain clear navigation with links to a Current Issue, the 
 Archive or Past Issues, Search, Browse, the About page, the Editorial Board and Contact Us. <i style="color: red">This is a basic 
@@ -265,9 +265,9 @@ a spreadsheet'</a> document as this will help you complete the application.</li>
 <p>The information that you provide in the application must match what is displayed on your web site. Double 
 check that the information you are submitting matches.</p>
 
-<p>The country that you enter in the application form must be the country where the majority of the editorial 
-processes, business functions and day-to-day activities around the journal are carried out. Entering a country for 
-business addresses registered in countries overseas from the main office is not permitted.</p>
+<p>The country that you enter in the application form must be the country of the publisher, where the publisher 
+carries out the majority of the editorial processes, business functions and day-to-day activities. The country of an 
+address registered via a registering agent (typically: the United States) is not allowed.</p>
 
 <p><b>Once you submit your application</b><br>
 <p>Upon submission you will be shown a confirmation screen and you will be sent a confirmation email. Save this 
@@ -300,7 +300,7 @@ also to a very high standard. We ask you to refrain for requesting status update
 <p>One of the most common reasons for rejecting an application is that we receive no response from the applicant to 
 our emails. We will automatically reject the application after 1 month. Please be sure to check your Spam folder 
 frequently and be aware that the Associate Editor who is reviewing your application is a volunteer and will not be 
-emailing your from a doaj.org email address.</p>
+emailing you from a doaj.org email address.</p>
 
 <p>Common reasons for rejection are:</p>
 <ul>
@@ -318,9 +318,9 @@ emailing your from a doaj.org email address.</p>
 <!-- SECTION ACCEPTED -->
 
 <h3><a name="accepted"></a>4) If your application is accepted</h3>
-<p>Upon acceptance into DOAJ, the journal is classified by subject and assigned an LCC code by the DOAJ team. An 
+<p>Upon acceptance in to DOAJ, the journal is classified by subject and assigned an LCC code by the DOAJ team. An 
 automatic confirmation email is sent to the Journal Contact (this may be different to the Applicant). A second 
-email is sent that contains details on how to log into your Publisher account. You will need these details to 
+email is sent that contains details on how to log in to your Publisher account. You will need these details to 
 upload article metadata. The journal is then visible in DOAJ immediately. If you do not get your email, check your 
 Spam folder before contacting us.</p>
 <br><br>
@@ -353,7 +353,7 @@ eventual number of repeated incidents.</p>
 <p>It is the publisher's responsibility to upload article metadata to DOAJ. DOAJ does not actively collect article
 metadata for journals it indexes.</p>
 
-<p>You must log in to <a href="{{ url_for('doaj.publishers') }}">your Publisher Area</a> before you can begin to
+<p>You must log in to <a href="{{ url_for('doaj.publisher') }}">your Publisher Area</a> before you can begin to
 upload metadata to us. You may only upload metadata for those journals in your account. You should ensure that 
 your journal record is up-to-date in DOAJ before you upload metadata to us. Discrepancies in the ISSN information 
 will cause the upload to fail. If you need to update a journal record please contact us: feedback[at]doaj[.]org.</p>
@@ -400,9 +400,9 @@ specific tag, such as [publicationDate]. You can see exactly
 difficulty with your XML file, there are plenty of resources online where you can check the validity of your XML file.
 We are unable to provide specific XML advice. If you are trying to upload a file that was automatically generated by the
 OJS DOAJ plugin, then you should first contact OJS for help.</li>
-<li><b>The XML is not formatted to the correct .xsd file.</b> The xsd file for DOAJ is here:
-https://doaj.org/static/doaj/doajArticles.xsd. All XML files uploaded to DOAJ must reference this xsd file and validate
-against it.</li>
+<li><b>The XML is not formatted to the correct .xsd file.</b> 
+<a href="https://doaj.org/static/doaj/doajArticles.xsd">The xsd file for DOAJ is here</a>. All XML files uploaded to 
+DOAJ must reference this xsd file and validate against it.</li>
 <li><b>The XML file contains characters not recognised in the XML language.</b> Sometimes, special characters, especially
 those in scientific articles are submitted in the wrong format. XML does not support many special characters but those
 that it does can be
@@ -464,7 +464,7 @@ will inform you whether or not your complaint has been upheld.</p>
 <h3><a name="faqs"></a>11) Publisher FAQs</h3>
 
 <ul>
-<li><a href="#login">How do I log into my account?</a></li>
+<li><a href="#login">How do I log in to my account?</a></li>
 <li><a href="#password">Forgotten password | How do I reset my password?</a></li>
 <li><a href="#username">Forgotten username</a></li>
 <li><a href="#journal">Why can't I find my journal in DOAJ?</a></li>
@@ -502,7 +502,7 @@ Application Form ask for information about deposit policies?</a></li>
 
 
 
-<h3><b><a name="login"></a>How do I log into my account?</b></h3>
+<h3><b><a name="login"></a>How do I log in to my account?</b></h3>
 <p><a href="https://doaj.org/account/login">Log in here</a>.</p>
 <p>If your journal has been added to an existing publisher account then you should login using the details that you 
 have already.</p>
@@ -633,7 +633,7 @@ must comply with the following 7 conditions:</p>
 <li>provides DOAJ with article metadata;</li>
 <li>deposits content with a long term digital preservation or archiving program;</li>
 <li>embeds machine-readable CC licensing information in articles;</li>
-<li>allows generous reuse and mixing of content, in accordance with a CC BY license;</li>
+<li>allows generous reuse and mixing of content, in accordance with a CC BY, CC BY-SA or CC BY-NC license;</li>
 <li>has a deposit policy registered wíth a deposit policy registry;</li>
 <li>allows the author to hold the copyright without restrictions.</li>
 </ul>
@@ -651,8 +651,8 @@ must comply with the following 7 conditions:</p>
 <br><br>
 
 <h3><b><a name="thetick"></a>What does the green tick symbol next to some journals mean?</b></h3>
-<p>The green tick ("The Tick") is displayed against all journals that were accepted into DOAJ after March 2014 
-when DOAJ launched its new criteria for journals to be accepted into DOAJ. The new criteria require a higher level
+<p>The green tick ("The Tick") is displayed against all journals that were accepted in to DOAJ after March 2014 
+when DOAJ launched its new criteria for journals to be accepted in to DOAJ. The new criteria require a higher level
 of compliance to best practices and publishing standards. Journals that do not have The Tick are in the process of 
 reapplying under the new criteria.</p>
 <a href="#top">Back to top</a>
@@ -668,7 +668,7 @@ reapplying under the new criteria.</p>
 future. In the meantime, you could try these two tips to help you keep a record of your application(s):</p>
 <ul>
 <li>Before you start, print out a version of the form to use as a draft. The form prints best in Google Chrome.</li>
-<li>The application form requires a lot of information to be entered into one place. Before you start filling it in,
+<li>The application form requires a lot of information. Before you start filling it in,
 we recommend that you collect upfront all the information you will require. We have created
 <a href="http://bit.ly/1MLszb4">a
 spreadsheet version of the form for you to download and complete offline</a>. For your convenience there are columns
@@ -711,7 +711,7 @@ Best Practice. A good example of a deposit policy directory is
 <ul>
 <li>Choose the most appropriate CC license from the Creative Commons web site—refer to the paragraph below.</li>
 <li>We recommend that you apply the CC BY license which is the most user friendly allowing for, among other things,
-long-term preservation and text- and data-mining.</li>
+self-archiving and text- and data-mining.</li>
 <li>If you have different licenses for different articles within the same journal, you may only display the most
 restrictive alongside your journal in DOAJ.</li>
 </ul>
@@ -743,13 +743,14 @@ http://creativecommons.org/choose/</a>.</p>
 machine-readable licensing information embedded in your article metadata. There are
 <a href="http://wiki.creativecommons.org/Ccrel">guidelines on the Creative Commons</a> web site that tell you
 more about
-this. The information must be embedded in the HTML, the XML or the PDFs. The emphasis for DOAJ is not HOW the
-license is embedded but that there IS a <b>machine-readable</b> version of it. Here are a couple of examples:
+this. The information must be embedded in the HTML, the XML or the PDFs. Sometimes, it will be embedded in individual
+article components too, such as an MP3, an image or a video. The emphasis for DOAJ is not HOW the license is embedded
+but that there IS a <b>machine-readable</b> version of it. Here are a couple of examples:
 <ol>
 <li><a href="http://www.globalhealthaction.net/index.php/gha/article/view/23456">Displayed in the HTML on an article
 abstract page</a></li>
 <li><a href="http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0097648">
-Displayed at the bottom of the full text</a></li>
+Displayed at the bottom of the abstract, as part of the abstract</a></li>
 </ol>
 
 <a href="#top">Back to top</a>
