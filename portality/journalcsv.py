@@ -20,13 +20,13 @@ CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language
 
 def make_journals_csv(path):
 
-    # Avoid unicode issues by forcing the whole system to use unicode.
+    # Avoid unicode issues by forcing the whole system to use unicode. fixme: is this a hack? :)
     current_encoding = sys.getdefaultencoding()
     reload(sys)
     sys.setdefaultencoding('utf8')
 
     cols = {}
-    for j in models.Journal.iterall():
+    for j in models.Journal.iterall(page_size=100000):  # 10x how many journals we have right now
         assert isinstance(j, models.Journal) # for pycharm type inspection
         bj = j.bibjson()
         issn = bj.get_one_identifier(idtype=bj.P_ISSN)
