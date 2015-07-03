@@ -1,66 +1,320 @@
+import csv
+import codecs
+import sys
+from copy import deepcopy
+from portality import models, datasets
+from portality.formcontext import choices
+from portality.formcontext.xwalk import JournalFormXWalk
+
+# OLD CSV HEADER
+"""
 CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
                     "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
                     "Subjects", "Country", "Publication fee", "Further Information",
                     "CC License", "Content in DOAJ"]
+"""
 
-def csv(self, multival_sep=','):
-    """
-    CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language",
-                "ISSN", "EISSN", "Keyword", "Start Year", "End Year", "Added on date",
-                "Subjects", "Country", "Publication fee", "Further Information",
-                "CC License", "Content in DOAJ"]
-    """
-    YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
-    row = []
+#################################################################
+# code for creating CSVs of all Journals
+#################################################################
 
-    bibjson = self.bibjson()
-    index = self.data.get('index', {})
-    row.append(bibjson.title) # Title
-    row.append(bibjson.alternative_title) # Title Alternative
-    # Identifier
-    homepage = bibjson.get_urls(urltype="homepage")
-    if len(homepage) > 0:
-        row.append(homepage[0])
-    else:
-        row.append("")
-    row.append(bibjson.publisher)
-    row.append( multival_sep.join(bibjson.language))
+def make_journals_csv(path):
 
-    # we're following the old CSV format strictly for now, so only 1
-    # ISSN allowed - below is the code for handling multiple ones
+    # Avoid unicode issues by forcing the whole system to use unicode.
+    current_encoding = sys.getdefaultencoding()
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
-    # ISSN taken from Print ISSN
-    # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'pissn']) )
-    pissns = bibjson.get_identifiers(bibjson.P_ISSN)
-    row.append(pissns[0] if len(pissns) > 0 else '') # just the 1st one
+    cols = {}
+    for j in models.Journal.iterall():
+        assert isinstance(j, models.Journal) # for pycharm type inspection
+        bj = j.bibjson()
+        issn = bj.get_one_identifier(idtype=bj.P_ISSN)
+        if issn is None:
+            issn = bj.get_one_identifier(idtype=bj.E_ISSN)
+        if issn is None:
+            continue
 
-    # EISSN - the same as ISSN applies
-    # row.append( multival_sep.join([id_['id'] for id_ in c['identifier'] if id_['type'] == 'eissn']) )
-    eissns = bibjson.get_identifiers(bibjson.E_ISSN)
-    row.append(eissns[0] if len(eissns) > 0 else '') # just the 1st one
+        kvs = Journal2QuestionXwalk.suggestion2question(j)
+        cols[issn] = kvs
 
-    row.append( multival_sep.join(bibjson.keywords) ) # Keywords
-    row.append( bibjson.oa_start.get('year', '')) # Year OA began
-    row.append( bibjson.oa_end.get('year', '')) # Year OA ended
-    row.append( self.created_date ) # Date created
-    row.append( multival_sep.join([subject['term'] for subject in bibjson.subjects()]) ) # Subject terms
-    row.append( index.get('country', '') ) # Country
-    row.append( "" ) # author pays - DEPRECATED
-    row.append("") # author pays url - DEPRECATED
+    issns = cols.keys()
+    issns.sort()
 
-    # for now, follow the strange format of the CC License column
-    # that the old CSV had. Also, only take the first CC license we see!
-    lic = bibjson.get_license()
-    if lic is not None:
-        lt = lic.get("type", "")
-        if lt.lower().startswith("cc"):
-            row.append(lt[3:])
-        else:
-            row.append("")
-    else:
-        row.append("")
-    #cc_licenses = [lic['type'][3:] for lic in c.get('license', []) if lic['type'].startswith('cc-')]
-    #row.append(cc_licenses[0] if len(cc_licenses) > 0 else '')
+    with codecs.open(path, 'wb', encoding='utf8') as csvfile:
+        csvwriter = csv.writer(csvfile)
+        qs = None
+        for i in issns:
+            if qs is None:
+                qs = [q for q, _ in cols[i]]
+                csvwriter.writerow(qs)
+            vs = [v for _, v in cols[i]]
+            csvwriter.writerow(vs)
 
-    row.append(YES_NO.get(self.is_in_doaj(), ""))
-    return row
+    # Put the encoding back the way it was when we started
+    sys.setdefaultencoding(current_encoding)
+
+
+#################################################################
+# Crosswalk between Journals and spreadsheet rows
+#################################################################
+
+class JournalXwalkException(Exception):
+    pass
+
+class Journal2QuestionXwalk(object):
+
+    QTUP = [
+        ("title",                               "Journal title"),
+        ("url",                                 "Journal URL"),
+        ("alternative_title",                   "Alternative title"),
+        ("pissn",                               "Journal ISSN (print version)"),
+        ("eissn",                               "Journal EISSN (online version)"),
+        ("publisher",                           "Publisher"),
+        ("society_institution",                 "Society or institution"),
+        ("platform",                            "Platform, host or aggregator"),
+        #("contact_name",                        "9) Name of contact for this journal EDIT ONLY IF BLANK *"),
+        #("contact_email",                       "10) Contact's email address EDIT ONLY IF BLANK *"),
+        #("confirm_contact_email",               "11) Confirm contact's email address EDIT ONLY IF BLANK *"),
+        ("country",                             "Country of publisher"),
+        ("processing_charges",                  "Journal article processing charges (APCs)"),
+        ("processing_charges_url",              "APC information URL"),
+        ("processing_charges_amount",           "APC amount"),
+        ("processing_charges_currency",         "Currency"),
+        ("submission_charges",                  "Journal article submission fee"),
+        ("submission_charges_url",              "Submission fee URL"),
+        ("submission_charges_amount",           "Submission fee amount"),
+        ("submission_charges_currency",         "Submission fee currency"),
+        ("articles_last_year",                  "Number of articles publish in the last calendar year"),
+        ("articles_last_year_url",              "Number of articles information URL"),
+        ("waiver_policy",                       "Journal waiver policy (for developing country authors etc)"),
+        ("waiver_policy_url",                   "Waiver policy information URL"),
+        ("digital_archiving_policy",            "Digital archiving policy or program(s)"),
+        ("digital_archiving_policy_library",    "Archiving: national library"),
+        ("digital_archiving_policy_other",      "Archiving: other"),
+        ("digital_archiving_policy_url",        "Archiving infomation URL"),
+        ("crawl_permission",                    "Journal full-text crawl permission"),
+        ("article_identifiers",                 "Permanent article identifiers"),
+        ("metadata_provision",                  "Article level metadata in DOAJ"),
+        ("download_statistics",                 "Journal provides download statistics"),
+        ("download_statistics_url",             "Download statistics information URL"),
+        ("first_fulltext_oa_year",              "First calendar year journal provided online Open Access content"),
+        ("fulltext_format",                     "Full text formats"),
+        ("keywords",                            "Keywords"),
+        ("languages",                           "Full text language"),
+        ("editorial_board_url",                 "URL for the Editorial Board page"),
+        ("review_process",                      "Review process"),
+        ("review_process_url",                  "Review process information URL"),
+        ("aims_scope_url",                      "URL for journal's aims & scope"),
+        ("instructions_authors_url",            "URL for journal's instructions for authors"),
+        ("plagiarism_screening",                "Journal plagiarism screening policy"),
+        ("plagiarism_screening_url",            "Plagiarism information URL"),
+        ("publication_time",                    "Average number of weeks between submission and publication"),
+        ("oa_statement_url",                    "URL for journal's Open Access statement"),
+        ("license_embedded",                    "Machine-readable CC licensing information embedded or displayed in articles"),
+        ("license_embedded_url",                "URL to an example page with embedded licensing information"),
+        ("license",                             "Journal license"),
+        ("license_checkbox",                    "License attributes"),
+        ("license_url",                         "URL for license terms"),
+        ("open_access",                         "Open Access"),
+        ("deposit_policy",                      "Deposit policy directory"),
+        ("copyright",                           "Author holds copyright without restrictions"),
+        ("copyright_url",                       "Copyright information URL"),
+        ("publishing_rights",                   "Author holds publishing rights without restrictions"),
+        ("publishing_rights_url",               "Publishing rights information URL")
+    ]
+
+    DEGEN = {
+        "article_identifiers_other" : "article_identifiers",
+        "fulltext_format_other" : "fulltext_format",
+        "license_other" : "license",
+        "deposit_policy_other" : "deposit_policy",
+        "copyright_other" : "copyright",
+        "publishing_rights_other" : "publishing_rights"
+    }
+
+    @classmethod
+    def q(cls, ident):
+        if ident in cls.DEGEN:
+            ident = cls.DEGEN[ident]
+        for k, q in cls.QTUP:
+            if k == ident:
+                return q
+        return None
+
+    @classmethod
+    def q2idx(cls, ident):
+        if ident in cls.DEGEN:
+            ident = cls.DEGEN[ident]
+        i = 0
+        for k, q in cls.QTUP:
+            if k == ident:
+                return i
+            i += 1
+        return -1
+
+    @classmethod
+    def a(cls, answers, ident):
+        row = cls.q2idx(ident)
+        return answers[row]
+
+    @classmethod
+    def question_list(cls):
+        return [q for _, q in cls.QTUP]
+
+    @classmethod
+    def remove_disabled(cls, forminfo):
+        """
+        The role of this method is to remove any fields from the forminfo object that
+        are not strictly allowed by the spreadsheet.  This function could sit in a variety
+        of places, but we put it here to keep it next to the xwalk which knows about the
+        structure of the forminfo dictionary
+        :return: nothing - does operation on forminfo by reference
+        """
+        if "pissn" in forminfo:
+            del forminfo["pissn"]
+        if "eissn" in forminfo:
+            del forminfo["eissn"]
+        if "contact_name" in forminfo:
+            del forminfo["contact_name"]
+        if "contact_email" in forminfo:
+            del forminfo["contact_email"]
+        if "confirm_contact_email" in forminfo:
+            del forminfo["confirm_contact_email"]
+
+    @classmethod
+    def suggestion2question(cls, journal):
+
+        def other_list(main_field, other_field, other_value):
+            aids = forminfo.get(main_field, [])
+            if aids is None or aids == "" or aids == "None":
+                aids = []
+
+            # if the xwalk has returned a single-list element like ["None"]
+            # we want to strip that "None" for the purpose of the CSV
+            if choices.Choices.NONE in aids:
+                aids.remove(choices.Choices.NONE)
+
+            aidother = forminfo.get(other_field)
+
+            if other_value in aids:
+                aids.remove(other_value)
+            if aidother is not None and aidother != "" and aidother != "None":
+                aids.append(aidother)
+            return ", ".join(aids)
+
+        def yes_or_blank(val):
+            return "Yes" if val in [True, "True", "Yes", "true", "yes"] else ''
+
+        def license_checkbox(val):
+            opts = {}
+            [opts.update({k : v}) for k,v  in choices.Choices.licence_checkbox()]
+            nv = [opts.get(v) for v in val]
+            return ", ".join(nv)
+
+        def languages(vals):
+            keep = []
+            codes = [c.lower() for c, _ in datasets.language_options]
+            names = [n.lower() for _, n in datasets.language_options]
+            for v in vals:
+                if v.lower() in codes or v.lower() in names:
+                    keep.append(v)
+            return ", ".join(keep)
+
+        # start by converting the object to the forminfo version
+        forminfo = JournalFormXWalk.obj2form(journal)
+
+        kvs = []
+
+        # create key/value pairs for the questions in order
+        kvs.append((cls.q("title"), forminfo.get("title")))
+        kvs.append((cls.q("url"), forminfo.get("url")))
+        kvs.append((cls.q("alternative_title"), forminfo.get("alternative_title")))
+        kvs.append((cls.q("pissn"), forminfo.get("pissn")))
+        kvs.append((cls.q("eissn"), forminfo.get("eissn")))
+        kvs.append((cls.q("publisher"), forminfo.get("publisher")))
+        kvs.append((cls.q("society_institution"), forminfo.get("society_institution")))
+        kvs.append((cls.q("platform"), forminfo.get("platform")))
+        #kvs.append((cls.q("contact_name"), forminfo.get("contact_name")))
+        #kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
+        #kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
+        kvs.append((cls.q("country"), forminfo.get("country")))
+        kvs.append((cls.q("processing_charges"), yes_or_blank(forminfo.get("processing_charges"))))
+        kvs.append((cls.q("processing_charges_url"), forminfo.get("processing_charges_url")))
+        kvs.append((cls.q("processing_charges_amount"), forminfo.get("processing_charges_amount")))
+        kvs.append((cls.q("processing_charges_currency"), forminfo.get("processing_charges_currency")))
+        kvs.append((cls.q("submission_charges"), yes_or_blank(forminfo.get("submission_charges"))))
+        kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
+        kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
+        kvs.append((cls.q("submission_charges_currency"), forminfo.get("submission_charges_currency")))
+        kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year")))
+        kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url")))
+        kvs.append((cls.q("waiver_policy"), yes_or_blank(forminfo.get("waiver_policy"))))
+        kvs.append((cls.q("waiver_policy_url"), forminfo.get("waiver_policy_url")))
+
+        dap = deepcopy(forminfo.get("digital_archiving_policy", []))
+        lib = choices.Choices.digital_archiving_policy_val("library")
+        oth = choices.Choices.digital_archiving_policy_val("other")
+        if lib in dap: dap.remove(lib)
+        if oth in dap: dap.remove(oth)
+        if choices.Choices.digital_archiving_policy_val('none') in dap:
+            dap.remove(choices.Choices.digital_archiving_policy_val('none'))
+        kvs.append((cls.q("digital_archiving_policy"), ", ".join(dap)))
+        kvs.append((cls.q("digital_archiving_policy_library"), forminfo.get("digital_archiving_policy_library")))
+        kvs.append((cls.q("digital_archiving_policy_other"), forminfo.get("digital_archiving_policy_other")))
+
+        kvs.append((cls.q("digital_archiving_policy_url"), forminfo.get("digital_archiving_policy_url")))
+        kvs.append((cls.q("crawl_permission"), yes_or_blank(forminfo.get("crawl_permission"))))
+
+        article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
+        kvs.append((cls.q("article_identifiers"), article_identifiers))
+
+        kvs.append((cls.q("metadata_provision"), yes_or_blank(forminfo.get("metadata_provision"))))
+        kvs.append((cls.q("download_statistics"), yes_or_blank(forminfo.get("download_statistics"))))
+        kvs.append((cls.q("download_statistics_url"), forminfo.get("download_statistics_url")))
+        kvs.append((cls.q("first_fulltext_oa_year"), forminfo.get("first_fulltext_oa_year")))
+
+        fulltext_formats = other_list("fulltext_format", "fulltext_format_other", choices.Choices.fulltext_format_val("other"))
+        kvs.append((cls.q("fulltext_format"), fulltext_formats))
+
+        kvs.append((cls.q("keywords"), ", ".join(forminfo.get("keywords", []))))
+        kvs.append((cls.q("languages"), languages(forminfo.get("languages", []))))
+        kvs.append((cls.q("editorial_board_url"), forminfo.get("editorial_board_url")))
+        kvs.append((cls.q("review_process"), forminfo.get("review_process", '')))
+        kvs.append((cls.q("review_process_url"), forminfo.get("review_process_url")))
+        kvs.append((cls.q("aims_scope_url"), forminfo.get("aims_scope_url")))
+        kvs.append((cls.q("instructions_authors_url"), forminfo.get("instructions_authors_url")))
+        kvs.append((cls.q("plagiarism_screening"), yes_or_blank(forminfo.get("plagiarism_screening"))))
+        kvs.append((cls.q("plagiarism_screening_url"), forminfo.get("plagiarism_screening_url")))
+        kvs.append((cls.q("publication_time"), forminfo.get("publication_time")))
+        kvs.append((cls.q("oa_statement_url"), forminfo.get("oa_statement_url")))
+        kvs.append((cls.q("license_embedded"), yes_or_blank(forminfo.get("license_embedded"))))
+        kvs.append((cls.q("license_embedded_url"), forminfo.get("license_embedded_url")))
+
+        lic = forminfo.get("license")
+        if lic == choices.Choices.licence_val("other"):
+            lic = forminfo.get("license_other")
+        kvs.append((cls.q("license"), lic))
+
+        kvs.append((cls.q("license_checkbox"), license_checkbox(forminfo.get("license_checkbox", []))))
+        kvs.append((cls.q("license_url"), forminfo.get("license_url")))
+        kvs.append((cls.q("open_access"), yes_or_blank(forminfo.get("open_access"))))
+
+        deposit_policies = other_list("deposit_policy", "deposit_policy_other", choices.Choices.deposit_policy_other_val("other"))
+        kvs.append((cls.q("deposit_policy"), deposit_policies))
+
+        cr = forminfo.get("copyright")
+        if cr == choices.Choices.copyright_other_val("other"):
+            cr = forminfo.get("copyright_other")
+        kvs.append((cls.q("copyright"), cr))
+
+        kvs.append((cls.q("copyright_url"), forminfo.get("copyright_url")))
+
+        pr = forminfo.get("publishing_rights")
+        if pr == choices.Choices.publishing_rights_other_val("other"):
+            pr = forminfo.get("publishing_rights_other")
+        kvs.append((cls.q("publishing_rights"), pr))
+
+        kvs.append((cls.q("publishing_rights_url"), forminfo.get("publishing_rights_url")))
+
+        return kvs
