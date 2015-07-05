@@ -1,5 +1,4 @@
 import csv
-import codecs
 import sys
 from copy import deepcopy
 from portality import models, datasets
@@ -14,16 +13,17 @@ CSV_HEADER = ["Title", "Title Alternative", "Identifier", "Publisher", "Language
                     "CC License", "Content in DOAJ"]
 """
 
+YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
+
 #################################################################
 # code for creating CSVs of all Journals
 #################################################################
 
-def make_journals_csv(path):
-
-    # Avoid unicode issues by forcing the whole system to use unicode. fixme: is this a hack? :)
-    current_encoding = sys.getdefaultencoding()
-    reload(sys)
-    sys.setdefaultencoding('utf8')
+def make_journals_csv(file_object):
+    """
+    Make a CSV file of information for all journals.
+    :param file_object: a utf8 encoded file object. * System default encoding must also be utf8
+    """
 
     cols = {}
     for j in models.Journal.iterall(page_size=100000):  # 10x how many journals we have right now
@@ -35,25 +35,32 @@ def make_journals_csv(path):
         if issn is None:
             continue
 
-        kvs = Journal2QuestionXwalk.suggestion2question(j)
-        cols[issn] = kvs
+        kvs = Journal2QuestionXwalk.journal2question(j)
+        meta_kvs = get_doaj_meta_kvs(j)
+        cols[issn] = kvs + meta_kvs
 
     issns = cols.keys()
     issns.sort()
 
-    with codecs.open(path, 'wb', encoding='utf8') as csvfile:
-        csvwriter = csv.writer(csvfile)
-        qs = None
-        for i in issns:
-            if qs is None:
-                qs = [q for q, _ in cols[i]]
-                csvwriter.writerow(qs)
-            vs = [v for _, v in cols[i]]
-            csvwriter.writerow(vs)
+    csvwriter = csv.writer(file_object)
+    qs = None
+    for i in issns:
+        if qs is None:
+            qs = [q for q, _ in cols[i]]
+            csvwriter.writerow(qs)
+        vs = [v for _, v in cols[i]]
+        csvwriter.writerow(vs)
 
-    # Put the encoding back the way it was when we started
-    sys.setdefaultencoding(current_encoding)
-
+def get_doaj_meta_kvs(journal):
+    """
+    Get key, value pairs for some meta information we want from the journal object
+    :param journal: a models.Journal
+    :return: a list of (key, value) tuples for our metadata
+    """
+    kvs = []
+    kvs.append( ("Added on Date", journal.created_date) )
+    kvs.append( ("Content in DOAJ", YES_NO.get(journal.is_in_doaj(), "")) )
+    return kvs
 
 #################################################################
 # Crosswalk between Journals and spreadsheet rows
@@ -183,7 +190,7 @@ class Journal2QuestionXwalk(object):
             del forminfo["confirm_contact_email"]
 
     @classmethod
-    def suggestion2question(cls, journal):
+    def journal2question(cls, journal):
 
         def other_list(main_field, other_field, other_value):
             aids = forminfo.get(main_field, [])
