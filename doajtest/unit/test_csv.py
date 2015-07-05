@@ -1,6 +1,13 @@
+import time
+import csv
 from doajtest.helpers import DoajTestCase
-from portality import models
-'''
+from doajtest.fixtures import JournalFixtureFactory
+from portality import models, journalcsv
+from StringIO import StringIO
+
+# wee function to check for differences between lists
+diff = lambda l1, l2: filter(lambda x: x not in l2, l1)
+
 class TestClient(DoajTestCase):
     def setUp(self):
         super(TestClient, self).setUp()
@@ -8,49 +15,91 @@ class TestClient(DoajTestCase):
     def tearDown(self):
         super(TestClient, self).tearDown()
 
-    def test_01_row(self):
-        j = models.Journal()
-        b = j.bibjson()
+    def test_01_single_row(self):
+        """ Writing a CSV for a single-journal index. """
+        expected_titles = ['Journal title', 'Journal URL', 'Alternative title', 'Journal ISSN (print version)', 'Journal EISSN (online version)', 'Publisher', 'Society or institution', 'Platform, host or aggregator', 'Country of publisher', 'Journal article processing charges (APCs)', 'APC information URL', 'APC amount', 'Currency', 'Journal article submission fee', 'Submission fee URL', 'Submission fee amount', 'Submission fee currency', 'Number of articles publish in the last calendar year', 'Number of articles information URL', 'Journal waiver policy (for developing country authors etc)', 'Waiver policy information URL', 'Digital archiving policy or program(s)', 'Archiving: national library', 'Archiving: other', 'Archiving infomation URL', 'Journal full-text crawl permission', 'Permanent article identifiers', 'Article level metadata in DOAJ', 'Journal provides download statistics', 'Download statistics information URL', 'First calendar year journal provided online Open Access content', 'Full text formats', 'Keywords', 'Full text language', 'URL for the Editorial Board page', 'Review process', 'Review process information URL', "URL for journal's aims & scope", "URL for journal's instructions for authors", 'Journal plagiarism screening policy', 'Plagiarism information URL', 'Average number of weeks between submission and publication', "URL for journal's Open Access statement", 'Machine-readable CC licensing information embedded or displayed in articles', 'URL to an example page with embedded licensing information', 'Journal license', 'License attributes', 'URL for license terms', 'Open Access', 'Deposit policy directory', 'Author holds copyright without restrictions', 'Copyright information URL', 'Author holds publishing rights without restrictions', 'Publishing rights information URL', 'Added on Date', 'Content in DOAJ']
 
-        b.title = "My Title"
-        b.alternative_title = "Alt Title"
-        b.add_url("http://home.com", "homepage")
-        b.add_url("http://other.com", "other")
-        b.publisher = "Journal House"
-        b.add_language("en")
-        b.add_language("fr")
-        b.add_identifier(b.P_ISSN, "1234-5678")
-        b.add_identifier(b.E_ISSN, "9876-5432")
-        b.add_keyword("one")
-        b.add_keyword("two")
-        b.set_oa_start("2004")
-        b.set_oa_end("2007")
-        b.add_subject("LCC", "Medicine")
-        b.country = "GB"
-        b.set_license("CC BY", "CC BY")
+        csv_source_journal1 = models.Journal(**JournalFixtureFactory.make_journal_source())
+        csv_source_journal1.save()
 
-        j.set_in_doaj(True)
-        j.prep()
+        expected_journalrow = ['The Title', 'http://journal.url', 'Alternative Title', '1234-5678', '9876-5432', 'The Publisher', 'Society Institution', 'Platform Host Aggregator', 'US', 'Yes', 'http://apc.com', '2', 'GBP', 'Yes', 'http://submission.com', '4', 'USD', '', '', 'Yes', 'http://waiver.policy', 'LOCKSS, CLOCKSS', 'Trinity', 'A safe place', 'http://digital.archiving.policy', 'Yes', 'DOI, ARK, PURL', '', 'Yes', 'http://download.stats', '1980', 'HTML, XML, Wordperfect', 'word, key', 'EN, FR', 'http://editorial.board', 'Open peer review', 'http://review.process', 'http://aims.scope', 'http://author.instructions.com', 'Yes', 'http://plagiarism.screening', '8', 'http://oa.statement', 'Yes', 'http://licence.embedded', 'CC MY', 'Attribution, No Commercial Usage', 'http://licence.url', 'Yes', 'Sherpa/Romeo, Store it', 'Sometimes', 'http://copyright.com', 'Occasionally', 'http://publishing.rights', '2000-01-01T00:00:00Z', 'No']
 
-        row = j.csv()
+        # Wait a sec to let the index catch up
+        time.sleep(1)
 
-        assert len(row) == 17
-        assert row[0] == "My Title"
-        assert row[1] == "Alt Title"
-        assert row[2] == "http://home.com", row[2]
-        assert row[3] == "Journal House"
-        assert row[4] in ["en,fr", "fr,en"]
-        assert row[5] == "1234-5678"
-        assert row[6] == "9876-5432"
-        assert row[7] in ["one,two", "two,one"]
-        assert row[8] == "2004"
-        assert row[9] == "2007"
-        # assert row[10] is not None and row[10] != "", row[10] # created_date, only set on save()
-        assert row[11] == "Medicine"
-        assert row[12] == "United Kingdom", row[12]
-        assert row[13] == ""
-        assert row[14] == ""
-        assert row[15] == "BY"
-        assert row[16] == "Yes"
+        # make the single-journal csv file
+        csvstream = StringIO()
+        journalcsv.make_journals_csv(csvstream)
 
-'''
+        # read back the csv and check the rows are as expected.
+        csvstream.seek(0)
+        csvreader = csv.reader(csvstream)
+        csv_rows = []
+        for row in csvreader:
+            csv_rows.append(row)
+
+        assert len(csv_rows) == 2                      # 2 rows: titles and single journal
+        assert csv_rows[0] == expected_titles
+        assert csv_rows[1] == expected_journalrow
+
+    def test_02_multi_row(self):
+        """ Test adding two items to index and writing a CSV """
+        csv_source_journal1 = models.Journal(**JournalFixtureFactory.make_journal_source())
+        csv_source_journal1.save()
+
+        # add a second journal by editing the id and issn from source of the first
+        j2_source = JournalFixtureFactory.make_journal_source()
+        j2_source['id'] = 'lmnopqrstuvxyz_journal'
+        j2_source['bibjson']['identifier'][0] = {"type": "pissn", "id": "8765-4321"}
+        csv_source_journal2 = models.Journal(**j2_source)
+        csv_source_journal2.save()
+
+        # Wait a sec to let the index catch up
+        time.sleep(1)
+
+        # make the multi-journal csv file
+        csvstream = StringIO()
+        journalcsv.make_journals_csv(csvstream)
+
+        # read back the csv and check the rows are as expected.
+        csvstream.seek(0)
+        csvreader = csv.reader(csvstream)
+        csv_rows = []
+        for row in csvreader:
+            csv_rows.append(row)
+
+        assert len(csv_rows) == 3                     # we expect 3 rows this time
+        assert csv_rows[1] != csv_rows[2]             # ID was changed, rows should differ
+
+        # check that the difference between rows is the ISSN
+
+        assert diff(csv_rows[2], csv_rows[1]) == ["8765-4321"]
+
+    def test_03_overwrite_by_issn(self):
+        """ The CSV rows are unique by ISSN - the second entry with the same ISSN should replace the first. """
+        csv_source_journal1 = models.Journal(**JournalFixtureFactory.make_journal_source())
+        csv_source_journal1.save()
+
+        # add a second journal by editing the id and the title from source of the first
+        j2_source = JournalFixtureFactory.make_journal_source()
+        j2_source['id'] = 'lmnopqrstuvxyz_journal'
+        j2_source['bibjson']['title'] = 'The New Title'
+        csv_source_journal2 = models.Journal(**j2_source)
+        csv_source_journal2.save()
+
+        # Wait a sec to let the index catch up
+        time.sleep(1)
+
+        # make the multi-journal csv file
+        csvstream = StringIO()
+        journalcsv.make_journals_csv(csvstream)
+
+        # read back the csv and check the rows are as expected.
+        csvstream.seek(0)
+        csvreader = csv.reader(csvstream)
+        csv_rows = []
+        for row in csvreader:
+            csv_rows.append(row)
+
+        assert len(csv_rows) == 2                     # We only expect one journal here - the second should overwrite the first
+        assert csv_rows[1].pop(0) == 'The New Title'  # The title should be the second one we added
