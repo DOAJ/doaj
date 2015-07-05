@@ -354,3 +354,8 @@ def translated():
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
+
+# an informational page about content licensing rights
+@blueprint.route('/rights')
+def rights():
+    return render_template('doaj/rights.html')
