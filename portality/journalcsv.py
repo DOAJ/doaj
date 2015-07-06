@@ -58,6 +58,8 @@ def get_doaj_meta_kvs(journal):
     :return: a list of (key, value) tuples for our metadata
     """
     kvs = []
+    kvs.append( ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")) )
+    kvs.append( ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")) )
     kvs.append( ("Added on Date", journal.created_date) )
     kvs.append( ("Content in DOAJ", YES_NO.get(journal.is_in_doaj(), "")) )
     return kvs
@@ -224,7 +226,9 @@ class Journal2QuestionXwalk(object):
             codes = [c.lower() for c, _ in datasets.language_options]
             names = [n.lower() for _, n in datasets.language_options]
             for v in vals:
-                if v.lower() in codes or v.lower() in names:
+                if v.lower() in codes:
+                    keep.append(datasets.name_for_lang(v))
+                elif v.lower() in names:
                     keep.append(v)
             return ", ".join(keep)
 
@@ -245,15 +249,15 @@ class Journal2QuestionXwalk(object):
         #kvs.append((cls.q("contact_name"), forminfo.get("contact_name")))
         #kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
         #kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
-        kvs.append((cls.q("country"), forminfo.get("country")))
+        kvs.append((cls.q("country"), datasets.get_country_name(forminfo.get("country"))))
         kvs.append((cls.q("processing_charges"), yes_or_blank(forminfo.get("processing_charges"))))
         kvs.append((cls.q("processing_charges_url"), forminfo.get("processing_charges_url")))
         kvs.append((cls.q("processing_charges_amount"), forminfo.get("processing_charges_amount")))
-        kvs.append((cls.q("processing_charges_currency"), forminfo.get("processing_charges_currency")))
+        kvs.append((cls.q("processing_charges_currency"), datasets.get_currency_name(forminfo.get("processing_charges_currency"))))
         kvs.append((cls.q("submission_charges"), yes_or_blank(forminfo.get("submission_charges"))))
         kvs.append((cls.q("submission_charges_url"), forminfo.get("submission_charges_url")))
         kvs.append((cls.q("submission_charges_amount"), forminfo.get("submission_charges_amount")))
-        kvs.append((cls.q("submission_charges_currency"), forminfo.get("submission_charges_currency")))
+        kvs.append((cls.q("submission_charges_currency"), datasets.get_currency_name(forminfo.get("submission_charges_currency"))))
         kvs.append((cls.q("articles_last_year"), forminfo.get("articles_last_year")))
         kvs.append((cls.q("articles_last_year_url"), forminfo.get("articles_last_year_url")))
         kvs.append((cls.q("waiver_policy"), yes_or_blank(forminfo.get("waiver_policy"))))
