@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, url_for, request, make_response, abort
+from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template
 from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models
@@ -19,7 +19,9 @@ def _bad_request(message=None, exception=None):
 
 @blueprint.route('/spec')
 def api_spec():
-    return make_response((jsonify(swagger(app)), 200, {'Access-Control-Allow-Origin': '*'}))
+    swag = swagger(app)
+    swag['info']['title'] = "DOAJ API documentation"
+    return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
 @blueprint.route('/')
 def list_operations():
@@ -34,7 +36,7 @@ def list_operations():
 
 @blueprint.route('/docs')
 def docs():
-    return 'Documentation root'
+    return render_template('doaj/api_docs.html')
 
 @blueprint.route('/search/<search_type>/<path:search_query>')
 def search(search_type, search_query):
