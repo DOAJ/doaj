@@ -1,4 +1,6 @@
 from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template
+from flask.ext.login import current_user
+
 from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models
@@ -40,8 +42,68 @@ def list_operations():
 def docs():
     return render_template('doaj/api_docs.html')
 
+# FIXME: requires authentication, so current_user gets set
+@blueprint.route("/search/applications/<path:search_query>")
+def search_applications(search_query):
+    """
+    Search your applications
+    ---
+    tags:
+      - search
+    description: "Search your applications to the DOAJ"
+    parameters:
+      -
+        name: "search_query"
+        in: "path"
+        required: true
+        type: "string"
+      -
+        name: "page"
+        in: "body":
+        required: false
+        type: "int"
+      -
+        name: "pageSize"
+        in: "body"
+        required: false,
+        type: "int"
+      -
+        name: "sort"
+        in: "body"
+        required: false,
+        type: "string"
+    responses:
+      200:
+        description: Search results
+      400:
+        description: Bad Request
+    """
+    # get the values for the 2 other bits of search info: the page number and the page size
+    page = request.values.get("page", 1)
+    psize = request.values.get("pageSize", 10)
+
+    # check the page is an integer
+    try:
+        page = int(page)
+    except:
+        return _bad_request("Page number was not an integer")
+
+    # check the page size is an integer
+    try:
+        psize = int(psize)
+    except:
+        return _bad_request("Page size was not an integer")
+
+    try:
+        results = DiscoveryApi.search_applications(current_user, search_query, page, psize)
+    except DiscoveryException as e:
+        return _bad_request(e.message)
+
+    return jsonify_models(results)
+
 @blueprint.route('/search/journals/<path:search_query>')
 def search_journals(search_query):
+
     """
     Search for journals
     ---
@@ -221,11 +283,15 @@ def search_articles(search_query):
         required: false
         type: integer
       -
-        name: pageSize
-        description: How many results per page you wish to see, the default is 100.
-        in: path
-        required: false
-        type: integer
+        name: "pageSize"
+        in: "body"
+        required: false,
+        type: "int"
+      -
+        name: "sort"
+        in: "body"
+        required: false,
+        type: "string"
     responses:
       200:
         schema:
@@ -359,6 +425,7 @@ def search_articles(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
     psize = request.values.get("pageSize", 10)
+    sort = request.values.get("sort")
 
     # check the page is an integer
     try:
