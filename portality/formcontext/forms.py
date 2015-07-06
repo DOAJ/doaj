@@ -55,7 +55,7 @@ class JournalInformation(Form):
     )
     country = SelectField('In which country is the publisher of the journal based?',
         [validators.DataRequired()],
-        description='Select the country where the publishing company is legally registered',
+        description='Select the country where the publishing company carries out its business activities. Addresses registered via a registered agent are not allowed.',
         choices=Choices.country(),
     )
     processing_charges = RadioField('Does the journal have article processing charges (APCs)?',
