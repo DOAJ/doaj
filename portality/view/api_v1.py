@@ -81,6 +81,7 @@ def search_applications(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
     psize = request.values.get("pageSize", 10)
+    sort = request.values.get("sort")
 
     # check the page is an integer
     try:
@@ -95,7 +96,7 @@ def search_applications(search_query):
         return _bad_request("Page size was not an integer")
 
     try:
-        results = DiscoveryApi.search_applications(current_user, search_query, page, psize)
+        results = DiscoveryApi.search_applications(current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
         return _bad_request(e.message)
 

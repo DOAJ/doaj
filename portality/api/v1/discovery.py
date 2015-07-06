@@ -12,7 +12,6 @@ class SearchResult(object):
     def __init__(self, raw=None):
         self.data = raw if raw is not None else {}
 
-
 def query_substitute(query, substitutions):
     if len(substitutions.keys()) == 0:
         return query
@@ -66,7 +65,6 @@ def allowed(query, wildcards=False, fuzzy=False):
 
     return True
 
-
 class DiscoveryApi(Api):
 
     @classmethod
@@ -92,30 +90,31 @@ class DiscoveryApi(Api):
         # interpret the sort field into the form required by the query
         sortby = None
         sortdir = None
-        if ":" in sort:
-            bits = sort.split(":")
-            if len(bits) != 2:
-                raise DiscoveryException("Malformed sort parameter")
+        if sort is not None:
+            if ":" in sort:
+                bits = sort.split(":")
+                if len(bits) != 2:
+                    raise DiscoveryException("Malformed sort parameter")
 
-            sortby = bits[0]
-            if sortby in sort_subs:
-                sortby = sort_subs[sortby]
+                sortby = bits[0]
+                if sortby in sort_subs:
+                    sortby = sort_subs[sortby]
 
-            if bits[1] in ["asc", "desc"]:
-                sortdir = bits[1]
+                if bits[1] in ["asc", "desc"]:
+                    sortdir = bits[1]
+                else:
+                    raise DiscoveryException("Sort direction must be 'asc' or 'desc'")
             else:
-                raise DiscoveryException("Sort direction must be 'asc' or 'desc'")
-        else:
-            sortby = sort
-            if sortby in sort_subs:
-                sortby = sort_subs[sortby]
+                sortby = sort
+                if sortby in sort_subs:
+                    sortby = sort_subs[sortby]
 
-        return q, fro, page_size, sortby, sortdir
+        return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
     def _make_search_query(cls, q, page, page_size, sort, search_subs, sort_subs):
         # sanitise and prep the inputs
-        q, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
+        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
 
         # assemble the query
         query = SearchQuery(q, fro, page_size, sortby, sortdir)
@@ -126,7 +125,7 @@ class DiscoveryApi(Api):
     @classmethod
     def _make_application_query(cls, account, q, page, page_size, sort, search_subs, sort_subs):
         # sanitise and prep the inputs
-        q, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
+        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
 
         # assemble the query
         query = ApplicationQuery(account.id, q, fro, page_size, sortby, sortdir)
@@ -135,7 +134,7 @@ class DiscoveryApi(Api):
         return query, page, page_size
 
     @classmethod
-    def _make_response(cls, res, q, page, page_size, obs):
+    def _make_response(cls, res, q, page, page_size, sort, obs):
         total = res.get("hits", {}).get("total", 0)
 
         # build the response object
@@ -147,6 +146,9 @@ class DiscoveryApi(Api):
             "query" : q,
             "results" : obs
         }
+
+        if sort is not None:
+            result["sort"] = sort
 
         return SearchResult(result)
 
@@ -165,7 +167,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query")
 
         obs = [models.Article(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, obs)
+        return cls._make_response(res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_journals(cls, q, page, page_size, sort=None):
@@ -182,7 +184,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query")
 
         obs = [models.Journal(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, obs)
+        return cls._make_response(res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_applications(cls, account, q, page, page_size, sort=None):
@@ -199,7 +201,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query")
 
         obs = [models.Suggestion(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, obs)
+        return cls._make_response(res, q, page, page_size, sort, obs)
 
 class SearchQuery(object):
     def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
@@ -250,7 +252,7 @@ class ApplicationQuery(object):
         self.sortdir = sortdir if sortdir is not None else "asc"
 
     def query(self):
-        return {
+        q = {
             "query" : {
                 "filtered" : {
                     "filter" : {
@@ -274,3 +276,8 @@ class ApplicationQuery(object):
             "from" : self.fro,
             "size" : self.psize
         }
+
+        if self.sortby is not None:
+            q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
+
+        return q
