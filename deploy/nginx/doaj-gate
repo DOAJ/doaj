@@ -84,8 +84,13 @@ server {
     proxy_read_timeout 600s;
     client_max_body_size 50M;
 
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
     location / {
-        proxy_pass http://apps;
+        proxy_pass http://testapps;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
