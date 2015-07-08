@@ -386,9 +386,6 @@ class DomainObject(UserDict.IterableUserDict, object):
     def iterall(cls, page_size=1000, limit=None):
         return cls.iterate(deepcopy(all_query), page_size, limit)
 
-    def csv(self, multival_sep=','):
-        raise NotImplementedError
-
     @classmethod
     def prefix_query(cls, field, prefix, size=5):
         # example of a prefix query
