@@ -26,7 +26,7 @@ def make_journals_csv(file_object):
     """
 
     cols = {}
-    for j in models.Journal.iterall(page_size=100000):  # 10x how many journals we have right now
+    for j in models.Journal.all_in_doaj(page_size=100000):  # 10x how many journals we have right now
         assert isinstance(j, models.Journal) # for pycharm type inspection
         bj = j.bibjson()
         issn = bj.get_one_identifier(idtype=bj.P_ISSN)
