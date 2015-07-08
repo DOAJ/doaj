@@ -11,7 +11,13 @@
 
 {% endblock %}
 
-{% block extra_head %}
+{% block content %}
+<body class="swagger-section">
+<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</body>
+{% endblock %}
+
+{% block extra_js_bottom %}
 <!--get Swagger UI's javascripts -->
 <script src='/static/portality/vendor/swagger-ui/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
 <script src='/static/portality/vendor/swagger-ui/lib/jquery.slideto.min.js' type='text/javascript'></script>
@@ -86,10 +92,4 @@
       }
   });
   </script>
-{% endblock %}
-
-{% block content %}
-<body class="swagger-section">
-<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
-</body>
 {% endblock %}
