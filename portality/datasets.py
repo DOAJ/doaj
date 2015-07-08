@@ -39,6 +39,8 @@ for code, country_info in countries:
             )
             currency_options_code_index.append(country_info['currency_alphabetic_code'])
 
+currencies_dict = dict(currency_options)
+
 # languages
 languages_iso639_2 = [
     ["aar", "", "aa", "Afar", "afar"],
@@ -614,3 +616,6 @@ def get_country_code(current_country):
 
 def get_country_name(code):
     return countries_dict.get(code, {}).get('name', code)  # return what was passed in if not found
+
+def get_currency_name(code):
+    return currencies_dict.get(code, code)  # return what was passed in if not found
