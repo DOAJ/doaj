@@ -1,0 +1,14 @@
+body.swagger-section {
+    padding-top: 1em;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+}
+
+.with-borders.sidebar-nav {
+    display: none;
+}
+
+footer {
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
