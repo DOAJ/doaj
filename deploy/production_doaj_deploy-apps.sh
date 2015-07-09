@@ -11,6 +11,8 @@ sudo supervisorctl reread doaj-production
 sudo supervisorctl update doaj-production
 kill -HUP $(sudo supervisorctl pid doaj-production)
 
+sudo nginx -t && sudo nginx -s reload
+
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-production-apps
 sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-production-apps /etc/anacrontab
