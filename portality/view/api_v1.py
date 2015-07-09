@@ -56,7 +56,7 @@ def search_journals(search_query):
         type: string
       -
         name: page
-        description: Which page of the results you wish to see. This field is optional.
+        description: Which page of the results you wish to see.
         in: path
         required: false
         type: integer
@@ -216,7 +216,7 @@ def search_articles(search_query):
         type: string
       -
         name: page
-        description: Which page of the results you wish to see. This field is optional.
+        description: Which page of the results you wish to see.
         in: path
         required: false
         type: integer
