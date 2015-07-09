@@ -162,7 +162,7 @@ class Account(DomainObject, UserMixin):
     @classmethod
     def pull_by_api_key(cls, key):
         """Find a user by their API key - only succeed if they currently have API access."""
-        res = cls.query(q='api_key:"' + key + '"')
+        res = cls.query(q='api_key.exact:"' + key + '"')
         if res.get('hits', {}).get('total', 0) == 1:
             usr = cls(**res['hits']['hits'][0]['_source'])
             if usr.has_role('api'):
