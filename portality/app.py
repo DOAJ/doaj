@@ -9,7 +9,6 @@ import os
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask.ext.login import login_user, current_user
-from copy import deepcopy
 
 from datetime import datetime
 import tzlocal
@@ -18,7 +17,6 @@ import pytz
 import portality.models as models
 from portality.core import app, login_manager
 from portality import settings
-from portality.util import flash_with_url
 
 from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin

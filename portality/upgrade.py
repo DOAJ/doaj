@@ -1,11 +1,13 @@
 import json, os, esprit
+from collections import OrderedDict
 from portality.core import app
 from portality import models
 
 MODELS = {
     "journal" : models.Journal,
     "article" : models.Article,
-    "suggestion" : models.Suggestion
+    "suggestion" : models.Suggestion,
+    "account" : models.Account
 }
 
 class UpgradeTask(object):
@@ -49,7 +51,16 @@ def do_upgrade(definition, verbose):
             m = MODELS.get(tdef.get("type"))
             obj = m(**result)
 
-            # FIXME: do something with explicit upgrade tasks
+            # run the tasks specified with this object type
+            tasks = tdef.get("tasks", None)
+            if tasks:
+                for func_call, args in tasks.iteritems():
+                    if args:
+                        getattr(obj, func_call)(**args)
+                    else:
+                        getattr(obj, func_call)()
+
+            # FIXME: do something with explicit upgrade tasks which can't easily be expressed as JSON strings
 
             # run the prep routine for the record
             try:
@@ -93,7 +104,7 @@ if __name__ == "__main__":
 
     with open(args.upgrade) as f:
         try:
-            definition = json.loads(f.read())
+            definition = json.loads(f.read(), object_pairs_hook=OrderedDict)
         except:
             print args.upgrade, "does not parse as JSON"
             exit()
