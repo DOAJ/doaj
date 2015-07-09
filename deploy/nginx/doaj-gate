@@ -15,7 +15,7 @@ server {
 # redirect to SSL version
 server {
     listen          80;
-    server_name     doaj.org testdoaj.cottagelabs.com;
+    server_name     doaj.org;
 
     # Serve some crucial XML schemas via plain HTTP as well
 
@@ -40,8 +40,37 @@ server {
     error_log /var/log/nginx/doaj.error.log;
 }
 
+# separate section for test app due to paths to the XML schemas
+# being different to the live app
+server {
+    listen          80;
+    server_name     testdoaj.cottagelabs.com;
+
+    # Serve some crucial XML schemas via plain HTTP as well
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/doajArticles.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+}
+
 # actually serve the app on doaj.org via SSL
-# there's 2 server sections since doaj.cottagelabs.com is covered by a
+# there's 2 server sections since *.cottagelabs.com is covered by a
 # different SSL cert, see further down
 server {
     listen          443 ssl;
@@ -86,7 +115,7 @@ server {
 
     # Common misspelling of doajArticle**s**.xsd
     location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location / {
