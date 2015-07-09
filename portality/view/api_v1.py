@@ -21,7 +21,7 @@ def _bad_request(message=None, exception=None):
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
-    swag['info']['description'] = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In a augue nulla. In vehicula est eget erat iaculis, et lacinia enim faucibus. Aliquam diam dolor, euismod ultrices viverra vitae, congue sit amet massa. Duis vestibulum, quam ut ultrices sagittis, nunc diam cursus odio, sed efficitur eros erat a sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In a augue nulla. In vehicula est eget erat iaculis, et lacinia enim faucibus. Aliquam diam dolor, euismod ultrices viverra vitae, congue sit amet massa. Duis vestibulum, quam ut ultrices sagittis, nunc diam cursus odio, sed efficitur eros erat a sapien. I am fairly sure there is no limit to this, but it is limited to the type of stuff we can put in here because it's all one big string, so no paragrahing or the like, I think. "
+    swag['info']['description'] = "This page documents the first version of the DOAJ API."
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
 
@@ -40,60 +40,140 @@ def list_operations():
 def docs():
     return render_template('doaj/api_docs.html')
 
-@blueprint.route('/search/<search_type>/<path:search_query>')
-def search(search_type, search_query):
+@blueprint.route('/search/journals/<path:search_query>')
+def search_journals(search_query):
     """
-    Search journals and articles
+    Search for journals
     ---
     tags:
       - search
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In a augue nulla. In vehicula est eget erat iaculis, et lacinia enim faucibus. Aliquam diam dolor, euismod ultrices viverra vitae, congue sit amet massa. Duis vestibulum, quam ut ultrices sagittis, nunc diam cursus odio, sed efficitur eros erat a sapien."
     parameters:
       -
-        name: "search_type"
-        description: "lalalalallalala"
-        in: "path"
+        name: search_query
+        description: What you are searching for, e.g. computers
+        in: path
         required: true
-        type: "string"
+        type: string
       -
-        name: "search_query"
-        description: "this is definitely a very useful place to put some description of each parameter"
-        in: "path"
-        required: true
-        type: "string"
-      -
-        name: "page"
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In a augue nulla. In vehicula est eget erat iaculis, et lacinia enim faucibus. Aliquam diam dolor, euismod ultrices viverra vitae, congue sit amet massa. Duis vestibulum, quam ut ultrices sagittis, nunc diam cursus odio, sed efficitur eros erat a sapien."
-        in: "body"
+        name: page
+        description: Which page of the results you wish to see. This field is optional.
+        in: path
         required: false
-        type: "int"
+        type: integer
       -
-        name: "pageSize"
-        description: "Wooo, we can write small essays in here as well. Again limited as it is a string, but pretty neat"
-        in: "body"
-        required: false,
-        type: "int"
+        name: pageSize
+        description: How many results per page you wish to see, the default is 100.
+        in: path
+        required: false
+        type: integer
     responses:
       200:
-        description: "Search results"
         schema:
-            properties:
-                company:
-                  type: "string"
-                description:
-                  type: "string"
-                rating:
-                  type: "number"
-                images:
-                  type: "array"
-                  items:
-                    type: "string"
-                datetime:
-                  type: "number"
-                location:
-                  type: "string"
+          title: Journal search
+          properties:
+            pageSize:
+              type: integer
+            timestamp:
+              type: string
+              format: dateTime
+            results:
+              type: array
+              items:
+                type: object
+                title: Journal
+                properties:
+                  last_updated:
+                    type: string
+                    format: dateTime
+                  id:
+                    type: string
+                  bibjson:
+                    type: object
+                    title: bibjson
+                    properties:
+                      publisher:
+                        type: string
+                      author_pays:
+                        type: string
+                      license:
+                        type: array
+                        items:
+                          type: object
+                          title: license
+                          properties:
+                            title:
+                              type: string
+                            url:
+                              type: string
+                            NC:
+                              type: boolean
+                            ND:
+                              type: boolean
+                            embedded_example_url:
+                              type: string
+                            SA:
+                              type: boolean
+                            type:
+                              type: string
+                            BY:
+                              type: boolean
+                      title:
+                        type: string
+                      author_pays_url:
+                        type: string
+                      country:
+                        type: string
+                      link:
+                        type: array
+                        items:
+                          type: object
+                          title: link
+                          properties:
+                            url:
+                              type: string
+                            type:
+                              type: string
+                      provider:
+                        type: string
+                      keywords:
+                        type: array
+                        items:
+                            type: string
+                      oa_start:
+                        type: object
+                      identifier:
+                        type: array
+                        items:
+                          type: object
+                          title: identifier
+                          properties:
+                            type:
+                              type: string
+                            id:
+                              type: string
+                      subject:
+                        type: array
+                        items:
+                          type: object
+                          title: subject
+                          properties:
+                            code:
+                              type: string
+                            terms:
+                              type: string
+                            scheme:
+                              type: string
+                  created_date:
+                    type: string
+                    format: dateTime
+            query:
+              type: string
+            total:
+              type: integer
+            page:
+              type: integer
       400:
-        description: "Bad Request"
+        description: Bad Request
     """
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
@@ -112,17 +192,190 @@ def search(search_type, search_query):
         return _bad_request("Page size was not an integer")
 
     results = None
-    if search_type == "articles":
-        try:
-            results = DiscoveryApi.search_articles(search_query, page, psize)
-        except DiscoveryException as e:
-            return _bad_request(e.message)
-    elif search_type == "journals":
-        try:
-            results = DiscoveryApi.search_journals(search_query, page, psize)
-        except DiscoveryException as e:
-            return _bad_request(e.message)
-    else:
-        abort(404)
+    try:
+        results = DiscoveryApi.search_journals(search_query, page, psize)
+    except DiscoveryException as e:
+        return _bad_request(e.message)
+
+    return jsonify_models(results)
+
+@blueprint.route('/search/articles/<path:search_query>')
+def search_articles(search_query):
+    """
+    Search for articles
+    ---
+    tags:
+      - search
+    notes: This is a longer string of important things
+    parameters:
+      -
+        name: search_query
+        description: What you are searching for, e.g. computers
+        in: path
+        required: true
+        type: string
+      -
+        name: page
+        description: Which page of the results you wish to see. This field is optional.
+        in: path
+        required: false
+        type: integer
+      -
+        name: pageSize
+        description: How many results per page you wish to see, the default is 100.
+        in: path
+        required: false
+        type: integer
+    responses:
+      200:
+        schema:
+          title: Article search
+          properties:
+            pageSize:
+              type: integer
+            timestamp:
+              type: string
+              format: dateTime
+            results:
+              type: array
+              items:
+                type: object
+                title: Article
+                properties:
+                  last_updated:
+                    type: string
+                    format: dateTime
+                  id:
+                    type: string
+                  bibjson:
+                    type: object
+                    title: bibjson
+                    properties:
+                      identifier:
+                        type: array
+                        items:
+                          type: object
+                          title: identifier
+                          properties:
+                            type:
+                              type: string
+                            id:
+                              type: string
+                      start_page:
+                        type: integer
+                      title:
+                        type: string
+                      journal:
+                        type: object
+                        title: journal
+                        properties:
+                          publisher:
+                            type: string
+                          language:
+                            type: array
+                            items:
+                              type: string
+                          license:
+                            type: array
+                            items:
+                              type: object
+                              title: license
+                              properties:
+                                url:
+                                  type: string
+                                type:
+                                  type: string
+                                title:
+                                  type: string
+                          title:
+                            type: string
+                          country:
+                            type: string
+                          number:
+                            type: integer
+                          volume:
+                            type: integer
+                      author:
+                        type: array
+                        items:
+                          type: object
+                          title: author
+                          properties:
+                            affiliation:
+                              type: string
+                            email:
+                              type: string
+                            name:
+                              type: string
+                      month:
+                        type: integer
+                      link:
+                        type: array
+                        items:
+                          type: object
+                          title: link
+                          properties:
+                            url:
+                              type: string
+                            type:
+                              type: string
+                            content_type:
+                              type: string
+                      year:
+                        type: integer
+                      keywords:
+                        type: array
+                        items:
+                            type: string
+                      subject:
+                        type: array
+                        items:
+                          type: object
+                          title: subject
+                          properties:
+                            code:
+                              type: string
+                            terms:
+                              type: string
+                            scheme:
+                              type: string
+                      abstract:
+                        type: string
+                      end_page:
+                        type: integer
+                  created_date:
+                    type: string
+                    format: dateTime
+            query:
+              type: string
+            total:
+              type: integer
+            page:
+              type: integer
+      400:
+        description: "Bad Request"
+    """
+
+    # get the values for the 2 other bits of search info: the page number and the page size
+    page = request.values.get("page", 1)
+    psize = request.values.get("pageSize", 10)
+
+    # check the page is an integer
+    try:
+        page = int(page)
+    except:
+        return _bad_request("Page number was not an integer")
+
+    # check the page size is an integer
+    try:
+        psize = int(psize)
+    except:
+        return _bad_request("Page size was not an integer")
+
+    results = None
+    try:
+        results = DiscoveryApi.search_articles(search_query, page, psize)
+    except DiscoveryException as e:
+        return _bad_request(e.message)
 
     return jsonify_models(results)
