@@ -11,6 +11,8 @@ sudo supervisorctl reread doaj-test
 sudo supervisorctl update doaj-test
 kill -HUP $(sudo supervisorctl pid doaj-test)
 
+sudo nginx -t && sudo nginx -s reload
+
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-test-apps
 sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-test-apps /etc/anacrontab
