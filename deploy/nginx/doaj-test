@@ -19,7 +19,7 @@ server {
     }
 
     location  /static/ {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/;
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;
     }
