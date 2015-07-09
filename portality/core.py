@@ -1,12 +1,13 @@
-import os, requests, json
-from functools import wraps
+import os
+import json
 
+import requests
 from flask import Flask
-from flask import request, redirect, url_for, flash, render_template
+from flask.ext.login import LoginManager
 
 from portality import settings
 from portality.error_handler import setup_error_logging
-from flask.ext.login import LoginManager, current_user
+
 login_manager = LoginManager()
 
 
@@ -16,7 +17,7 @@ def create_app():
     if app.config['INITIALISE_INDEX']: initialise_index(app)
     setup_error_logging(app)
     setup_jinja(app)
-    login_manager.setup_app(app)
+    login_manager.init_app(app)
     return app
 
 def configure_app(app):
@@ -101,39 +102,3 @@ def setup_jinja(app):
 
 app = create_app()
 
-
-# misc stuff available for importing anywhere
-
-# a decorator to be used elsewhere (or in this file) in the app,
-# anywhere where a view f() should be served only over SSL
-def ssl_required(fn):
-    @wraps(fn)
-    def decorated_view(*args, **kwargs):
-        if app.config.get("SSL"):
-            if request.is_secure:
-                return fn(*args, **kwargs)
-            else:
-                return redirect(request.url.replace("http://", "https://"))
-        
-        return fn(*args, **kwargs)
-            
-    return decorated_view
-
-def restrict_to_role(role):
-    if current_user.is_anonymous():
-        flash('You are trying to access a protected area. Please log in first.', 'error')
-        return redirect(url_for('account.login', next=request.url))
-
-    if not current_user.has_role(role):
-        flash('You do not have permission to access this area of the site.', 'error')
-        return redirect(url_for('doaj.home'))
-
-def write_required(fn):
-    @wraps(fn)
-    def decorated_view(*args, **kwargs):
-        if app.config.get("READ_ONLY_MODE", False):
-            return render_template("doaj/readonly.html")
-
-        return fn(*args, **kwargs)
-
-    return decorated_view

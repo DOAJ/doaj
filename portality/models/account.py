@@ -1,9 +1,10 @@
-from portality.dao import DomainObject as DomainObject
-from flask.ext.login import UserMixin
 import uuid
+from flask.ext.login import UserMixin
 from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from portality.dao import DomainObject as DomainObject
 from portality.core import app
-from werkzeug import generate_password_hash, check_password_hash
 from portality.authorise import Authorise
 
 class Account(DomainObject, UserMixin):
@@ -18,8 +19,16 @@ class Account(DomainObject, UserMixin):
         a = Account(id=username)
         a.set_name(name) if name else None
         a.set_email(email) if email else None
+
         for role in roles:
             a.add_role(role)
+        # If the api role was not added explicitly, add it now
+        if "api" not in roles:
+            a.add_role("api")
+
+        # generate a new API key for this user
+        a.generate_api_key()
+
         for jid in associated_journal_ids:
             a.add_journal(jid)
         reset_token = uuid.uuid4().hex
@@ -30,7 +39,7 @@ class Account(DomainObject, UserMixin):
     @classmethod
     def pull_by_email(cls, email):
         res = cls.query(q='email:"' + email + '"')
-        if res.get('hits',{}).get('total',0) == 1:
+        if res.get('hits', {}).get('total', 0) == 1:
             return cls(**res['hits']['hits'][0]['_source'])
         else:
             return None
@@ -122,6 +131,12 @@ class Account(DomainObject, UserMixin):
         if role not in self.data["role"]:
             self.data["role"].append(role)
 
+    def remove_role(self, role):
+        if "role" not in self.data:
+            return
+        if role in self.data["role"]:
+            self.data["role"].remove(role)
+
     @property
     def role(self):
         return self.data.get("role", [])
@@ -133,3 +148,24 @@ class Account(DomainObject, UserMixin):
 
     def prep(self):
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    @property
+    def api_key(self):
+        if self.has_role('api'):
+            return self.data.get('api_key', None)
+        else:
+            return None
+
+    def generate_api_key(self):
+        self.data['api_key'] = uuid.uuid4().hex
+
+    @classmethod
+    def pull_by_api_key(cls, key):
+        """Find a user by their API key - only succeed if they currently have API access."""
+        res = cls.query(q='api_key:"' + key + '"')
+        if res.get('hits', {}).get('total', 0) == 1:
+            usr = cls(**res['hits']['hits'][0]['_source'])
+            if usr.has_role('api'):
+                return usr
+        return None
+
