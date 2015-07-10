@@ -54,9 +54,9 @@ def do_upgrade(definition, verbose):
             # run the tasks specified with this object type
             tasks = tdef.get("tasks", None)
             if tasks:
-                for func_call, args in tasks.iteritems():
+                for func_call, kwargs in tasks.iteritems():
                     if args:
-                        getattr(obj, func_call)(**args)
+                        getattr(obj, func_call)(**kwargs)
                     else:
                         getattr(obj, func_call)()
 
