@@ -13,6 +13,7 @@ if __name__ == "__main__":
     parser.add_argument("-u", "--username", help="username of user whose articles to remove.")
     parser.add_argument("-g", "--ghost", help="specify if you want the articles being deleted not to be snapshot", action="store_true")
     parser.add_argument("-q", "--query", help="file page of json document containing delete-by query")
+    parser.add_argument("-ip", "--ignore-paging", help="ignore the from: and size: parameters in a query object", action="store_true")
 
     args = parser.parse_args()
 
@@ -33,9 +34,17 @@ if __name__ == "__main__":
         f = open(args.query)
         query = json.loads(f.read())
 
+        if args.ignore_paging:
+            del query['from']
+            del query['size']
+
         res = models.Article.query(q=query)
         total = res.get("hits", {}).get("total")
 
+        # NOTE: if you have paging, like from: and size: in a query, the
+        # hits['total'] will show you all results that match the query,
+        # not just the articles that will actually be deleted (which
+        # will be just the page of results specified by from: and size:).
         go_on = raw_input("This will delete " + str(total) + " articles.  Are you sure? [Y/N]:")
         if go_on.lower() == "y":
             models.Article.delete_selected(query=query, snapshot=snapshot)
