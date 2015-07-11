@@ -101,12 +101,10 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 
 SUPER_USER_ROLE = "admin"
 
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "user", ]
+#"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api"]
 
 ROLE_MAP = {
-    "publisher": [
-        #"api"                  # added on account creation, commented out here so it can be revoked per account
-    ],
     "editor": [
         "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
@@ -115,16 +113,11 @@ ROLE_MAP = {
         "assign_to_associate",
         "list_group_journals",
         "list_group_suggestions",
-        #"api"
     ],
     "associate_editor": [
         "edit_journal",
         "edit_suggestion",
         "editor_area",
-        #"api"
-    ],
-    "user": [
-        #"api"
     ]
 }
 

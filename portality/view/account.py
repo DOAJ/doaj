@@ -32,8 +32,7 @@ def username(username):
     if acc is None:
         abort(404)
     elif ( request.method == 'DELETE' or 
-            ( request.method == 'POST' and
-            request.values.get('submit', False) == 'Delete' ) ):
+            ( request.method == 'POST' and request.values.get('submit', False) == 'Delete' ) ):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         else:
@@ -48,11 +47,11 @@ def username(username):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
         newdata = request.json if request.json else request.values
-        if newdata.get('id',False):
+        if newdata.get('id', False):
             if newdata['id'] != username:
                 acc = models.Account.pull(newdata['id'])
-            else:
-                newdata['api_key'] = acc.data['api_key']
+        if request.values.get('submit', False) == 'Generate':
+            acc.generate_api_key()
         for k, v in newdata.items():
             if k not in ['submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
@@ -110,7 +109,7 @@ class LoginForm(RedirectForm):
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
 def login():
-    current_info = {'next':request.args.get('next', '')}
+    current_info = {'next': request.args.get('next', '')}
     form = LoginForm(request.form, csrf_enabled=False, **current_info)
     if request.method == 'POST' and form.validate():
         password = form.password.data
@@ -173,12 +172,12 @@ def forgot():
                                 reset_url=reset_url,
                                 )
             flash('Instructions to reset your password have been sent to you. Please check your emails.')
-            if app.config.get('DEBUG',False):
+            if app.config.get('DEBUG', False):
                 flash('Debug mode - url for reset is ' + reset_url)
         except Exception as e:
             magic = str(uuid.uuid1())
             util.flash_with_url('Hm, sorry - sending the password reset email didn\'t work.' + CONTACT_INSTR + ' It would help us if you also quote this magic number: ' + magic + ' . Thank you!', 'error')
-            if app.config.get('DEBUG',False):
+            if app.config.get('DEBUG', False):
                 flash('Debug mode - url for reset is ' + reset_url)
             app.logger.error(magic + "\n" + repr(e))
 
@@ -237,6 +236,7 @@ class RegisterForm(Form):
         validators.EqualTo('c', message='Passwords must match')
     ])
     c = PasswordField('Repeat Password')
+    roles = StringField('Roles')
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 @login_required
@@ -245,13 +245,11 @@ class RegisterForm(Form):
 def register():
     if not app.config.get('PUBLIC_REGISTER', False) and not current_user.has_role("create_user"):
         abort(401)
-    form = RegisterForm(request.form, csrf_enabled=False)
+    form = RegisterForm(request.form, csrf_enabled=False, roles='api')
     if request.method == 'POST' and form.validate():
-        api_key = str(uuid.uuid4())
-        account = models.Account(
-            id=form.w.data, 
+        account = models.Account.make_account(
+            username=form.w.data,
             email=form.n.data,
-            api_key=api_key
         )
         account.set_password(form.s.data)
         account.save()
@@ -260,4 +258,3 @@ def register():
     if request.method == 'POST' and not form.validate():
         flash('Please correct the errors', 'error')
     return render_template('account/register.html', form=form)
-
