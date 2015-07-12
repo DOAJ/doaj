@@ -323,7 +323,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             app.logger.warn("System is in READ-ONLY mode, delete_by_query command cannot run")
             return
 
-        r = requests.delete(cls.target() + "_query", data=json.dumps(query.get("query")))
+        r = requests.delete(cls.target() + "_query", data=json.dumps(query))
         return r
 
     @classmethod

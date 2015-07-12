@@ -35,8 +35,11 @@ if __name__ == "__main__":
         query = json.loads(f.read())
 
         if args.ignore_paging:
-            del query['from']
-            del query['size']
+            try:
+                del query['from']
+                del query['size']
+            except KeyError:
+                pass
 
         res = models.Article.query(q=query)
         total = res.get("hits", {}).get("total")
