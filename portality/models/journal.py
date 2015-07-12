@@ -1085,6 +1085,14 @@ class JournalBibJSON(GenericBibJSON):
     @publication_time.setter
     def publication_time(self, weeks): self.bibjson["publication_time"] = weeks
 
+    # to help with ToC - we prefer to refer to a journal by E-ISSN, or
+    # if not, then P-ISSN
+    def get_preferred_issn(self):
+        issn = self.get_one_identifier(self.E_ISSN)
+        if not issn:
+            issn = self.get_one_identifier(self.P_ISSN)
+        return issn
+
 class JournalQuery(object):
     """
     wrapper around the kinds of queries we want to do against the journal type
