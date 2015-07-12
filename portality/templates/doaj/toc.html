@@ -366,7 +366,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;">
     {% for v in volumes %}
-        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=journal.toc_id, volume=v)}}">{{v}}</a>
+        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=bibjson.get_preferred_issn(), volume=v)}}">{{v}}</a>
     {% endfor %}
   </div>
 </div>
@@ -376,7 +376,7 @@
 <div class="row-fluid">
   <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
     {% for i in issues %}
-        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=journal.toc_id, volume=current_volume)}}/{{i}}">{{i}}</a>
+        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=bibjson.get_preferred_issn(), volume=current_volume)}}/{{i}}">{{i}}</a>
     {% endfor %}
   </div>
 </div>
@@ -420,7 +420,7 @@ $(document).ready(function() {
     
     var tidymonth = function(mth) {
         var mths = {
-            "1" : "January", "2" : "February", "3" : "March", "4" : "April", "5" : "May", "6" : "June", "7" : "July", "8" : "August", "9" : "September", "10" : "October", "11" : "November", "12" : "December","01" : "January", "02" : "February", "03" : "March", "04" : "April", "05" : "May", "06" : "June", "07" : "July", "08" : "August", "09" : "September",
+            "1" : "January", "2" : "February", "3" : "March", "4" : "April", "5" : "May", "6" : "June", "7" : "July", "8" : "August", "9" : "September", "10" : "October", "11" : "November", "12" : "December","01" : "January", "02" : "February", "03" : "March", "04" : "April", "05" : "May", "06" : "June", "07" : "July", "08" : "August", "09" : "September"
         }
         return mths[mth];
     }
@@ -430,36 +430,13 @@ $(document).ready(function() {
         if (issuelist !== undefined ) {
             var isscontent = '';
             for ( var i in issuelist ) {
-                isscontent += '<a class="bjsr issue btn btn-doaj" id="issue_' + issuelist[i] + '" href="/toc/{{bibjson.issns()[0]}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
+                isscontent += '<a class="bjsr issue btn btn-doaj" id="issue_' + issuelist[i] + '" href="/toc/{{bibjson.get_preferred_issn()}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
             }
             $('#issuelist').html(isscontent);
             $('.bjsr.issue').first().removeClass('btn-doaj').addClass('btn-info');
             $('.bjsr.issue').bind('click',bjsr);
         }
-        /*var als = [];
-        var sa = {};
-        keys = [];
-        var nsa = [];
-        // sort the article list by start_page if present
-        for ( var c in data.articles ) {
-            if ( "bibjson.start_page" in data.articles[c] ) {
-                if ( data.articles[c]["bibjson.start_page"].length > 0 ) {
-                    sa[data.articles[c]["bibjson.start_page"]] = data.articles[c];
-                    keys.push(data.articles[c]["bibjson.start_page"]);
-                } else {
-                    nsa.push(data.articles[c]);
-                }
-            } else {
-                nsa.push(data.articles[c]);
-            }
-        }
-        function sortNumber(a,b) { return a - b; }
-        keys.sort(sortNumber);
-        for ( var i = 0; i < keys.length; i++ ) {
-            k = keys[i];
-            als.push(sa[k]);
-        }
-        var articlelist = als.concat(nsa)*/
+
         // put the articles on the page
         for (var a in data.articles) {
             var artcl = data.articles[a];
