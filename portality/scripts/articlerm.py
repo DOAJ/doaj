@@ -41,6 +41,10 @@ if __name__ == "__main__":
             except KeyError:
                 pass
 
+        if 'sort' in query:
+            print 'You can\'t have "sort" in the query, it breaks ES delete by query. Removing your sort.'
+            del query['sort']
+
         res = models.Article.query(q=query)
         total = res.get("hits", {}).get("total")
 
