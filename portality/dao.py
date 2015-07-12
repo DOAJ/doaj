@@ -355,7 +355,8 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
     
     @classmethod
-    def iterate(cls, q, page_size=1000, limit=None, wrap=True):
+    def iterate(cls, theq, page_size=1000, limit=None, wrap=True):
+        q = deepcopy(theq)
         q["size"] = page_size
         q["from"] = 0
         if "sort" not in q: # to ensure complete coverage on a changing index, sort by id is our best bet
