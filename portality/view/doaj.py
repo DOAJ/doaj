@@ -159,8 +159,6 @@ def toc(identifier=None, volume=None, issue=None):
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
         journal = models.Journal.pull(identifier)
-        if journal is None:
-            abort(404)
 
     if journal is None:
         abort(404)
@@ -188,11 +186,11 @@ def toc(identifier=None, volume=None, issue=None):
         if issn_ref:  # the journal is referred to by an ISSN
 
             # if there is an E-ISSN (and it's not the one in the request), redirect to it
-            # if not, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
             eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
             if eissn and identifier != eissn:
                     return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
-            
+
+            # if there's no E-ISSN, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
             if not eissn:
                 pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
                 if pissn and identifier != pissn:
@@ -243,7 +241,7 @@ def toc(identifier=None, volume=None, issue=None):
     if bjsr:
         res = {"articles": articles}
         if bjsri: res["issues"] = all_issues
-        resp = make_response( json.dumps(res) )
+        resp = make_response(json.dumps(res))
         resp.mimetype = "application/json"
         return resp
     else:
