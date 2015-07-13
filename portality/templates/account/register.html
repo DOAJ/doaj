@@ -13,15 +13,15 @@ jQuery(document).ready(function($) {
         "-moz-box-shadow":"none",
         "-webkit-box-shadow":"none",
         "box-shadow":"none"
-    })
+    });
     var signup = function(event) {
-        event.preventDefault()
+        event.preventDefault();
         if ( $('#m').val() == "" ) {
             $('#signupform').submit()
         } else {
             alert("Are you human? If so, don't put anything in that last box...")
         }
-    }
+    };
     $('#signup').bind('click',signup)
 });
 </script>
@@ -35,9 +35,12 @@ jQuery(document).ready(function($) {
                 {{ render_field(form.n) }}
                 {{ render_field(form.s, placeholder="********") }}
                 {{ render_field(form.c, placeholder="********") }}
+                {# Check current user role is super incase public registration is activated at some point #}
+                {% if current_user.is_super %}
+                    {{ render_field(form.roles) }}
+                {% endif %}
                 <div class="actions">
                     <input id="signup" type="submit" value="Create User" class="btn btn-primary" />
-                    {#<br /><br /><br /><br /><br /><br /><input id="m" type="text" name="m" />#}
                 </div>
             </form>
         </div>
@@ -47,4 +50,14 @@ jQuery(document).ready(function($) {
 </div>
 
 {% endblock %}
+
+{% block extra_js_bottom %}
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('#roles').select2({tags:["{{current_user.all_top_level_roles()|join('","')|safe}}"],width:'70%'});
+});
+</script>
+
+{% endblock extra_js_bottom %}
 

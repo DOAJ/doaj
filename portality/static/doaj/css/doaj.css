@@ -355,6 +355,13 @@ button[target^="notes-"][target$="-container"] {
     width: 34em;
 }
 
+.grey_bordered_div {
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin: 10px;
+    overflow: hidden;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
