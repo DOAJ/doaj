@@ -3,7 +3,7 @@ from portality import models
 from portality.core import app
 from datetime import datetime
 import esprit
-import re, json
+import re, json, uuid
 
 class DiscoveryException(Exception):
     pass
@@ -163,8 +163,9 @@ class DiscoveryApi(Api):
 
         # check to see if there was a search error
         if res.get("error") is not None:
-            app.logger.error("Error executing discovery query search: {x}".format(x=res.get("error")))
-            raise DiscoveryException("There was an error executing your query")
+            magic = uuid.uuid1()
+            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
+            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Article(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response(res, q, page, page_size, sort, obs)
@@ -180,8 +181,9 @@ class DiscoveryApi(Api):
 
         # check to see if there was a search error
         if res.get("error") is not None:
-            app.logger.error("Error executing discovery query search: {x}".format(x=res.get("error")))
-            raise DiscoveryException("There was an error executing your query")
+            magic = uuid.uuid1()
+            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
+            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Journal(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response(res, q, page, page_size, sort, obs)
@@ -197,8 +199,9 @@ class DiscoveryApi(Api):
 
         # check to see if there was a search error
         if res.get("error") is not None:
-            app.logger.error("Error executing discovery query search: {x}".format(x=res.get("error")))
-            raise DiscoveryException("There was an error executing your query")
+            magic = uuid.uuid1()
+            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
+            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Suggestion(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response(res, q, page, page_size, sort, obs)
