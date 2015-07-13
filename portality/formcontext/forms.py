@@ -37,7 +37,7 @@ class JournalInformation(Form):
     )
     society_institution = StringField('Society or Institution',
         [validators.Optional()],
-        description='The name of the Society or Institution that the journal belongs to',
+        description='The name of the Society or Institution that the journal belongs to.',
     )
     platform = StringField('Platform, Host or Aggregator',
         [validators.Optional()],
@@ -45,7 +45,7 @@ class JournalInformation(Form):
     )
     contact_name = StringField('Name of contact for this journal',
         [validators.DataRequired()],
-        description='Somebody who DOAJ can contact about this journal',
+        description='Somebody who DOAJ can contact about this journal.',
     )
     contact_email = StringField('Contact\'s email address',
         [validators.DataRequired(), validators.Email(message='Invalid email address.')]
@@ -105,7 +105,7 @@ class JournalInformation(Form):
             ExtraFieldRequiredIf('digital_archiving_policy_library', reqval=Choices.digital_archiving_policy_val("library")),
             ExtraFieldRequiredIf('digital_archiving_policy_other', reqval=Choices.digital_archiving_policy_val("other")),
         ],
-        description = "Select all that apply. Institutional archives and publishers' own online archives are not valid",
+        description = "Select all that apply. Institutional archives and publishers' own online archives are not valid.",
         choices = Choices.digital_archiving_policy(),
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False)
@@ -132,7 +132,7 @@ class JournalInformation(Form):
     )
     download_statistics = RadioField('Does the journal provide article download statistics?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question 32',
+        description = 'If "No" proceed to question 32.',
         choices = Choices.download_statistics()
     )
     download_statistics_url = StringField('Enter the URL where this information can be found',
@@ -140,11 +140,11 @@ class JournalInformation(Form):
     )
     first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)',
         [validators.DataRequired(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
-        description = 'Use 4 digits for the year, i.e. YYYY format'
+        description = 'Use 4 digits for the year, i.e. YYYY format.'
     )
     fulltext_format = SelectMultipleField('Please indicate which formats of full text are available',
         [validators.DataRequired(), ExtraFieldRequiredIf('fulltext_format_other', reqval=Choices.fulltext_format_val("other"))],
-        description = 'Tick all that apply',
+        description = 'Tick all that apply.',
         choices = Choices.fulltext_format(),
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False)
@@ -158,7 +158,7 @@ class JournalInformation(Form):
     languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
         [validators.DataRequired()],
         choices = Choices.language(),
-        description="You can select multiple languages"
+        description="You can select multiple languages."
     )
     editorial_board_url = URLField('What is the URL for the Editorial Board page?',
         [validators.DataRequired(), URLOptionalScheme()],
@@ -181,7 +181,7 @@ class JournalInformation(Form):
     )
     plagiarism_screening = RadioField('Does the journal have a policy of screening for plagiarism?',
         [validators.DataRequired()],
-        description = 'If "No" proceed to question 43',
+        description = 'If "No" proceed to question 43.',
         choices = Choices.plagiarism_screening()
     )
     plagiarism_screening_url = URLField("Enter the URL where this information can be found",
@@ -220,7 +220,7 @@ class JournalInformation(Form):
     open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?",
         [validators.DataRequired()],
         choices = Choices.open_access(),
-        description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>',
+        description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>.',
     )
     deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?',
         [validators.DataRequired(), ExtraFieldRequiredIf('deposit_policy_other', reqval=Choices.deposit_policy_other_val("other")), ExclusiveCheckbox()],
@@ -266,14 +266,14 @@ class Suggestion(Form):
 
     articles_last_year = IntegerField('How many research and review articles did the journal publish in the last calendar year?',
         [validators.DataRequired(), validators.NumberRange(min=0)],
-        description='A journal must publish at least 5 articles per year to stay in the DOAJ',
+        description='A journal must publish at least 5 articles per year to stay in the DOAJ.',
     )
     articles_last_year_url = URLField('Enter the URL where this information can be found',
         [validators.DataRequired(), URLOptionalScheme()]
     )
     metadata_provision = RadioField('Does the journal provide, or intend to provide, article level metadata to DOAJ?',
         [validators.DataRequired()],
-        description='For new applications, metadata must be provided within 3 months of acceptance into DOAJ',
+        description='If yes, metadata must be provided within 3 months of acceptance into DOAJ.',
         choices=Choices.metadata_provision()
     )
 
