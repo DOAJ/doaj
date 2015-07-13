@@ -241,6 +241,7 @@ def search_journals(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
     page = request.values.get("page", 1)
     psize = request.values.get("pageSize", 10)
+    sort = request.values.get("sort")
 
     # check the page is an integer
     try:
@@ -256,7 +257,7 @@ def search_journals(search_query):
 
     results = None
     try:
-        results = DiscoveryApi.search_journals(search_query, page, psize)
+        results = DiscoveryApi.search_journals(search_query, page, psize, sort)
     except DiscoveryException as e:
         return _bad_request(e.message)
 
@@ -442,7 +443,7 @@ def search_articles(search_query):
 
     results = None
     try:
-        results = DiscoveryApi.search_articles(search_query, page, psize)
+        results = DiscoveryApi.search_articles(search_query, page, psize, sort)
     except DiscoveryException as e:
         return _bad_request(e.message)
 
