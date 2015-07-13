@@ -181,13 +181,14 @@ class DomainObject(UserDict.IterableUserDict, object):
         return keys
         
     @staticmethod
-    def make_query(recid='', endpoint='_search', q='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
+    def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
         '''
         Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
         parameters as the query method. See query method for explanation
         of parameters.
         '''
+        q = deepcopy(theq)
         if recid and not recid.endswith('/'): recid += '/'
         if isinstance(q,dict):
             query = q
