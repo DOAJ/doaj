@@ -73,8 +73,7 @@ class Article(DomainObject):
             articles = cls.iterate(query, page_size=1000)
             for article in articles:
                 article.snapshot()
-
-        cls.delete_by_query(query)
+        return cls.delete_by_query(query)
 
     def bibjson(self):
         if "bibjson" not in self.data:
