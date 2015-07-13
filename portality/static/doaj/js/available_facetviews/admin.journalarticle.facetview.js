@@ -1,10 +1,84 @@
 jQuery(document).ready(function($) {
 
+    function adminButtons(options, context) {
+        var type = false;
+        if ("_type" in options.active_filters) {
+            type = options.active_filters._type[0];
+        }
+        if (type === "article") {
+            $("#delete-articles").removeAttr("disabled");
+            $("#delete-journals").attr("disabled", "disabled");
+        } else if (type === "journal") {
+            $("#delete-journals").removeAttr("disabled");
+            $("#delete-articles").attr("disabled", "disabled");
+        } else {
+            $("#delete-journals").attr("disabled", "disabled");
+            $("#delete-articles").attr("disabled", "disabled");
+        }
+    }
+
+    function adminJAPostRender(options, context) {
+        doajJAPostRender(options, context);
+
+        var query = elasticSearchQuery({
+            options: options,
+            include_facets: false,
+            include_fields: false
+        });
+
+        function article_success_callback(data) {
+            alert("All selected articles deleted");
+            $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+            $(".facetview_freetext").trigger("keyup") // cause a search
+        }
+
+        function article_confirm_callback(data) {
+            var sure = confirm("This operation will delete " + data.total + " articles.  Still ok to continue?");
+            if (sure) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/admin/articles",
+                    data: JSON.stringify(query),
+                    success : article_success_callback,
+                    error: article_error_callback
+                });
+            } else {
+                $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+            }
+        }
+
+        function article_error_callback() {
+            alert("There was an error deleting the articles")
+        }
+
+        $("#delete-articles").unbind("click").bind("click", function(event) {
+            event.preventDefault();
+
+            $("#delete-articles").attr("disabled", "disabled").html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Deleting Articles");
+
+            var sure = confirm("Are you sure?  This operation cannot be undone!");
+            if (sure) {
+                var obj = {q: JSON.stringify(query)};
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/articles",
+                    data: obj,
+                    success : article_confirm_callback,
+                    error: article_error_callback
+                });
+            } else {
+                $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+            }
+        });
+
+    }
+
     $('.facetview.admin_journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/journal,article/_search?',
 
         render_results_metadata: doajPager,
-        post_render_callback: doajJAPostRender,
+        post_render_callback: adminJAPostRender,
+        post_search_callback: adminButtons,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
@@ -285,14 +359,6 @@ jQuery(document).ready(function($) {
                     "field": "bibjson.abstract"
                 }
             ],
-
-// Share Button
-            [
-                {
-                    "field": "addthis-social-share-button"
-                }
-            ],
-
             [
                 {
                     "field": "edit_journal"

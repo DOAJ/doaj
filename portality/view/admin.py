@@ -8,7 +8,7 @@ from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
-from portality.util import flash_with_url
+from portality.util import flash_with_url, jsonp
 
 from portality.view.forms import EditorGroupForm
 
@@ -37,6 +37,39 @@ def journals():
                facetviews=['admin.journals.facetview'],
                admin_page=True
            )
+
+@blueprint.route("/articles", methods=["POST", "DELETE"])
+@login_required
+@ssl_required
+@write_required
+@jsonp
+def articles_list():
+    if request.method == "POST":
+        try:
+            query = json.loads(request.values.get("q"))
+        except:
+            print request.values.get("q")
+            abort(400)
+        total = models.Article.hit_count(query, consistent_order=False)
+        resp = make_response(json.dumps({"total" : total}))
+        resp.mimetype = "application/json"
+        return resp
+    elif request.method == "DELETE":
+        if not current_user.has_role("delete_article"):
+            abort(401)
+
+        try:
+            query = json.loads(request.data)
+        except:
+            print request.data
+            abort(400)
+
+        # get only the query part
+        query = {"query" : query.get("query")}
+        models.Article.delete_selected(query=query, snapshot=True)
+        resp = make_response(json.dumps({"status" : "success"}))
+        resp.mimetype = "application/json"
+        return resp
 
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
