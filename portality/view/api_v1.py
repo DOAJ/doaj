@@ -5,6 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models
 from portality.core import app
+from portality.decorators import api_key_required
 
 import json
 
@@ -17,6 +18,13 @@ def _bad_request(message=None, exception=None):
     resp = make_response(json.dumps({"status" : "error", "error" : message}))
     resp.mimetype = "application/json"
     resp.status_code = 400
+    return resp
+
+def _not_found(message=None):
+    app.logger.info("Sending 404 Not Found from client: {x}".format(x=message))
+    resp = make_response(json.dumps({"status" : "not_found", "error" : message}))
+    resp.mimetype = "application/json"
+    resp.status_code = 404
     return resp
 
 @blueprint.route('/spec')
@@ -42,8 +50,8 @@ def list_operations():
 def docs():
     return render_template('doaj/api_docs.html')
 
-# FIXME: requires authentication, so current_user gets set
 @blueprint.route("/search/applications/<path:search_query>")
+@api_key_required
 def search_applications(search_query):
     """
     Search your applications
@@ -70,7 +78,12 @@ def search_applications(search_query):
       -
         name: "sort"
         in: "body"
-        required: false,
+        required: false
+        type: "string"
+      -
+        name: "api_key"
+        in: "body"
+        required: true
         type: "string"
     responses:
       200:
