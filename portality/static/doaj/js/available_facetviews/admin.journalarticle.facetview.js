@@ -26,10 +26,13 @@ jQuery(document).ready(function($) {
             include_fields: false
         });
 
+        ////////////////////////////////////////////////////////////
+        // functions for handling the article delete requests
+
         function article_success_callback(data) {
             alert("All selected articles deleted");
             $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
-            $(".facetview_freetext").trigger("keyup") // cause a search
+            $(".facetview_freetext").trigger("keyup"); // cause a search
         }
 
         function article_confirm_callback(data) {
@@ -48,7 +51,8 @@ jQuery(document).ready(function($) {
         }
 
         function article_error_callback() {
-            alert("There was an error deleting the articles")
+            alert("There was an error deleting the articles");
+            $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
         }
 
         $("#delete-articles").unbind("click").bind("click", function(event) {
@@ -68,6 +72,55 @@ jQuery(document).ready(function($) {
                 });
             } else {
                 $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+            }
+        });
+
+        ////////////////////////////////////////////////////////////
+        // functions for handling the journal delete requests
+
+        function journal_success_callback(data) {
+            alert("All selected journals and associated articles deleted");
+            $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
+            $(".facetview_freetext").trigger("keyup"); // cause a search
+        }
+
+        function journal_error_callback() {
+            alert("There was an error deleting the journals");
+            $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
+        }
+
+        function journal_confirm_callback(data) {
+            var sure = confirm("This operation will delete " + data.journals + " journals and " + data.articles + " articles.  Still ok to continue?");
+            if (sure) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "/admin/journals",
+                    data: JSON.stringify(query),
+                    success : journal_success_callback,
+                    error: journal_error_callback
+                });
+            } else {
+                $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
+            }
+        }
+
+        $("#delete-journals").unbind("click").bind("click", function(event) {
+            event.preventDefault();
+
+            $("#delete-journals").attr("disabled", "disabled").html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Deleting Journals");
+
+            var sure = confirm("Are you sure?  This operation cannot be undone!");
+            if (sure) {
+                var obj = {q: JSON.stringify(query)};
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/journals",
+                    data: obj,
+                    success : journal_confirm_callback,
+                    error: journal_error_callback
+                });
+            } else {
+                $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
             }
         });
 

@@ -26,7 +26,7 @@ def restrict():
 def index():
     return render_template('admin/index.html', admin_page=True)
 
-@blueprint.route("/journals")
+@blueprint.route("/journals", methods=["GET"])
 @login_required
 @ssl_required
 def journals():
@@ -37,6 +37,48 @@ def journals():
                facetviews=['admin.journals.facetview'],
                admin_page=True
            )
+
+@blueprint.route("/journals", methods=["POST", "DELETE"])
+@login_required
+@ssl_required
+@write_required
+@jsonp
+def journals_list():
+    if request.method == "POST":
+        try:
+            query = json.loads(request.values.get("q"))
+        except:
+            print request.values.get("q")
+            abort(400)
+
+        # get the total number of journals to be affected
+        jtotal = models.Journal.hit_count(query, consistent_order=False)
+
+        # get the total number of articles to be affected
+        issns = models.Journal.issns_by_query(query)
+        atotal = models.Article.count_by_issns(issns)
+
+        resp = make_response(json.dumps({"journals" : jtotal, "articles" : atotal}))
+        resp.mimetype = "application/json"
+        return resp
+
+    elif request.method == "DELETE":
+        if not current_user.has_role("delete_article"):
+            abort(401)
+
+        try:
+            query = json.loads(request.data)
+        except:
+            print request.data
+            abort(400)
+
+        # get only the query part
+        query = {"query" : query.get("query")}
+        models.Journal.delete_selected(query=query, articles=True, snapshot_journals=True, snapshot_articles=True)
+        resp = make_response(json.dumps({"status" : "success"}))
+        resp.mimetype = "application/json"
+        return resp
+
 
 @blueprint.route("/articles", methods=["POST", "DELETE"])
 @login_required
