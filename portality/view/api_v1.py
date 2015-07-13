@@ -3,29 +3,13 @@ from flask.ext.login import current_user
 
 from flask_swagger import swagger
 
-from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models
+from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models, bad_request
 from portality.core import app
 from portality.decorators import api_key_required
 
 import json
 
 blueprint = Blueprint('api_v1', __name__)
-
-def _bad_request(message=None, exception=None):
-    if exception is not None:
-        message = exception.message
-    app.logger.info("Sending 400 Bad Request from client: {x}".format(x=message))
-    resp = make_response(json.dumps({"status" : "error", "error" : message}))
-    resp.mimetype = "application/json"
-    resp.status_code = 400
-    return resp
-
-def _not_found(message=None):
-    app.logger.info("Sending 404 Not Found from client: {x}".format(x=message))
-    resp = make_response(json.dumps({"status" : "not_found", "error" : message}))
-    resp.mimetype = "application/json"
-    resp.status_code = 404
-    return resp
 
 @blueprint.route('/spec')
 def api_spec():
@@ -100,18 +84,18 @@ def search_applications(search_query):
     try:
         page = int(page)
     except:
-        return _bad_request("Page number was not an integer")
+        return bad_request("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return _bad_request("Page size was not an integer")
+        return bad_request("Page size was not an integer")
 
     try:
         results = DiscoveryApi.search_applications(current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
-        return _bad_request(e.message)
+        return bad_request(e.message)
 
     return jsonify_models(results)
 
@@ -260,19 +244,19 @@ def search_journals(search_query):
     try:
         page = int(page)
     except:
-        return _bad_request("Page number was not an integer")
+        return bad_request("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return _bad_request("Page size was not an integer")
+        return bad_request("Page size was not an integer")
 
     results = None
     try:
         results = DiscoveryApi.search_journals(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return _bad_request(e.message)
+        return bad_request(e.message)
 
     return jsonify_models(results)
 
@@ -446,18 +430,18 @@ def search_articles(search_query):
     try:
         page = int(page)
     except:
-        return _bad_request("Page number was not an integer")
+        return bad_request("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return _bad_request("Page size was not an integer")
+        return bad_request("Page size was not an integer")
 
     results = None
     try:
         results = DiscoveryApi.search_articles(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return _bad_request(e.message)
+        return bad_request(e.message)
 
     return jsonify_models(results)
