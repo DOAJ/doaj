@@ -241,7 +241,9 @@ It is likely that history records will only be created upon request by the admin
         "oa_statement_url" : "<OA statment url>",
         "has_apc" : "Yes|No",
         "has_seal" : "Yes|No",
-        "classification_paths" : [<list of all expanded LCC terms, with parents>]
+        "classification_paths" : [<list of all expanded LCC terms, with parents>],
+        "unpunctitle" : "<title without punctuation>",
+        "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>",
@@ -325,7 +327,9 @@ It is likely that history records will only be created upon request by the admin
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
-        "classification_paths" : [<list of all expanded LCC terms, with parents>]
+        "classification_paths" : [<list of all expanded LCC terms, with parents>],
+        "unpunctitle" : "<title without punctuation>",
+        "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"

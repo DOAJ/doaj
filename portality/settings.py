@@ -431,7 +431,7 @@ DATE_FORMATS = [
 
 DISCOVERY_MAX_PAGE_SIZE = 100
 
-DISCOVERY_ARTICLE_SUBS = {
+DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",
     "doi" : "bibjson.identifier.id.exact",
     "issn" :  "index.issn.exact",
@@ -440,9 +440,30 @@ DISCOVERY_ARTICLE_SUBS = {
     "abstract" :  "bibjson.abstract"
 }
 
-DISCOVERY_JOURNAL_SUBS = {
+DISCOVERY_ARTICLE_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact"
+}
+
+DISCOVERY_JOURNAL_SEARCH_SUBS = {
     "title" : "index.title",
     "issn" :  "index.issn.exact",
     "publisher" : "bibjson.publisher",
     "license" : "index.license.exact"
+}
+
+DISCOVERY_JOURNAL_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact",
+    "issn" :  "index.issn.exact"
+}
+
+DISCOVERY_APPLICATION_SEARCH_SUBS = {
+    "title" : "index.title",
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.publisher",
+    "license" : "index.license.exact"
+}
+
+DISCOVERY_APPLICATION_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact",
+    "issn" :  "index.issn.exact"
 }
