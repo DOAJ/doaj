@@ -12,9 +12,10 @@
 <a href="#disclaimer">6) Disclaimer</a><br>
 <a href="#upload">7) How to get your journal content indexed in DOAJ. Uploading content.</a><br>
 <a href="#failed">8) What to do if your XML upload fails</a><br>
-<a href="#correct">9) How to correct an error in article metadata on DOAJ</a><br>
-<a href="#complaint">10) How to make a complaint or appeal</a><br>
-<a href="#faqs">11) FAQS</a>
+<a href="#trouble">9) Troubleshooting your XML upload</a><br>
+<a href="#correct">10) How to correct an error in article metadata on DOAJ</a><br>
+<a href="#complaint">11) How to make a complaint or appeal</a><br>
+<a href="#faqs">12) FAQS</a>
 </p>
 <br><br>
 
@@ -87,7 +88,7 @@ information is held elsewhere. Neither should they take it for granted that user
 information that they need to carry out a full assessment of the journal. It is the publishers' responsbility to 
 ensure that the information pages are easily accessible and relevant.</p>
 
-<p>DOAJ also requests that a journals has its own dedicated, web site. No other service or product should be present 
+<p>DOAJ also requests that a journal has its own dedicated, web site. No other service or product should be present 
 under that URL. All the journal content that the publisher is including in the application must be in one place and 
 not spread over various locations. This includes archive material. <i style="color: red">This is a basic requirement 
 for entry into DOAJ.</i></p>
@@ -358,6 +359,8 @@ upload metadata to us. You may only upload metadata for those journals in your a
 your journal record is up-to-date in DOAJ before you upload metadata to us. Discrepancies in the ISSN information 
 will cause the upload to fail. If you need to update a journal record please contact us: feedback[at]doaj[.]org.</p>
 
+<p>Every article you upload to DOAJ must have a unique URL.</p>
+
 <p>There are two ways to get your metadata in to DOAJ.</p>
 <ul>
 <li><b>Manually enter the metadata, article by article</b>, using the 'Enter Article Metadata' tab. Metadata 
@@ -412,14 +415,59 @@ on Wikipedia</a>.</li>
 <p>If you have any questions, please contact us.</p>
 <br><br>
 
+
+<!-- SECTION TROUBLESHOOTING XML -->
+
+<h3><a name="trouble"></a>9) Troubleshooting XML uploads</h3>
+<p>DOAJ is not staffed to help with XML queries. We have put together this list of resources and possible solutions 
+that we have collected over the years. It is your responsibility to provide us with correctly formatted XML. HTML 
+coding is NOT accepted: we only display plain text.</p>
+<ul>
+<li>If you can't see the article on the Table of Contents (ToC) for your journal, it doesn't necessarily mean that the 
+article did not upload successfully to DOAJ. It may be that you didn't provide an issue value so the article failed
+to attach itself to the ToC correctly. Do a <a href="http://bit.ly/1RyJ4Ot">search on the full article title</a> to see if it 
+upload to DOAJ. If you do find the article, you will need to reupload it with an issue value in place.</li>
+<li>If only the last article that you uploaded is appearing on the site (both in search and on the ToC), then it is 
+likely that you have not provided a unique full text URL for every article. Every article's full text URL MUST be
+ unique.</li>
+<li>Make sure that the ISSN details in the file you are trying to upload match exactly what we hold for the journal on DOAJ.
+Discrepancies may cause the uplaod to fail.</li>
+<li>Make sure your XML file is formatted correctly. There is 
+<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">a sample file here</a> and 
+<a href="https://drive.google.com/file/d/0B0fPCpIPjZlmSmRlZW9IcHdwUGc/view?usp=sharing">a more detailed example here</a>.
+You can also check the validity of your file using <a href="http://www.freeformatter.com/xml-validator-xsd.html">an online 
+XML validator</a> and the format of your file using <a href="http://www.freeformatter.com/xml-formatter.html">an online 
+XML file formatter</a>. Some browsers, such as Internet Explorer 11, have very good built-in XML display plugins that will 
+also allow you to make sure that the file is structured properly.</li>
+<li>Make sure that you have no HTML codes in your XML. XML files can only contain XML coding.</li>
+<li>If you received a message that the file you tried to upload to DOAJ is not valid XML, this maybe because you have
+included non-XML codes in the file. If you are using OJS to host your journal and to export the DOAJ XML, note the details of this particular problem:
+There are some fields (e.g. abstract) where it is possible to include HTML-code in OJS. OJS uses a third party plugin,
+TinyMCE, as an HTML editor for those fields. If you paste text from Microsoft Word into the abstract field, the plugin
+also copies HTML and stylesheet coding from the Word document into the abstract field. (You can check if this is
+happening by opening the field in the HTML view on OJS and you will see the additional code.) XML can only contain plain 
+text and XML coding. We recommend that when you are creating your articles in OJS, you do NOT copy directly from Word. 
+Instead, copy the abstract content into a plain text editor, such as Notepad, WordPad or TextPad, first.</li>
+<li>If you get repeated messages that your file has failed, try to upload a handful of articles manually using the manual 
+entry method. If this works successfully, then you know for certain that there is something problematic with your file
+rather than the upload process itself.</li>
+<li>We have created <a href="https://drive.google.com/file/d/0B0fPCpIPjZlmSmRlZW9IcHdwUGc/view?usp=sharing">a very basic 
+template XML file with notes</a> for you. Open it with a plain text editor. It explains how the file is formatted and 
+shows you how each record in the file should be structured. Next to each field is a note telling you whether the field 
+is compulsory or not.</li>
+</ol>
+
+<br><br>
+
+
 <!-- SECTION CORRECTING METADATA -->
 
-<h3><a name="correct"></a>9) How do I correct an error in article metadata?</h3>
+<h3><a name="correct"></a>10) How do I correct an error in article metadata?</h3>
 <p>If you need to correct an error, you must upload the metadata again. To make sure that your new upload overwrites
 the old one, at least one of two specific pieces of metadata in the new file must be the same as in the old file.
 The 2 specific pieces of metadata that we look for are, in priority order:</p>
 <ol>
-<li><b>DOI</b> - if you assign DOIs to your articles then we will match on the DOI.</li>
+<li><b>DOIj - if you assign DOIs to your articles then we will match on the DOI.</li>
 <li><b>Full Text URL</b> - this is the URL that you give us for the full text of the article.</li>
 </ol>
 <p>If there is no DOI, the script will look for the Full Text URL.</p>
@@ -438,7 +486,7 @@ the old version.</p>
 
 <!-- SECTION COMPLAINT -->
 
-<h3><a name="complaint"></a>10) How to make a complaint or appeal</h3>
+<h3><a name="complaint"></a>11) How to make a complaint or appeal</h3>
 <p>If you would like to make a complaint, or would like to appeal against the decision to reject your application you
 should send email to Dominic Mitchell, Community Manager, (dom[@]doaj[.]org) that contains the following information:
 </p>
@@ -461,7 +509,7 @@ will inform you whether or not your complaint has been upheld.</p>
 
 <!-- SECTION FAQS -->
 
-<h3><a name="faqs"></a>11) Publisher FAQs</h3>
+<h3><a name="faqs"></a>12) Publisher FAQs</h3>
 
 <ul>
 <li><a href="#login">How do I log in to my account?</a></li>
