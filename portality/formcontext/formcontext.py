@@ -534,6 +534,7 @@ class ManEdApplicationReview(ApplicationContext):
         email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         # if this application is being accepted, then do the conversion to a journal
@@ -541,6 +542,7 @@ class ManEdApplicationReview(ApplicationContext):
             # this suggestion is just getting accepted
             j = self.target.make_journal()
             j.set_in_doaj(True)
+            j.set_last_manual_update()
             j.save()
 
             # record the url the journal is available at in the admin are and alert the user
@@ -650,6 +652,7 @@ class EditorApplicationReview(ApplicationContext):
         email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         # if we need to email the associate, handle that here
@@ -749,6 +752,8 @@ class AssEdApplicationReview(ApplicationContext):
         super(AssEdApplicationReview, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
+        self.target.set_last_manual_update()
         self.target.save()
 
     def render_template(self, **kwargs):
@@ -860,6 +865,8 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_application_status('submitted')
 
         # Save the target
+        self.target.set_last_manual_update()
+        self.target.set_last_manual_update()
         self.target.save()
 
     def render_template(self, **kwargs):
@@ -966,6 +973,7 @@ class PublisherReApplication(ApplicationContext):
         self.target.set_application_status('submitted')
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         # email the publisher to tell them we received their reapplication
@@ -1082,6 +1090,7 @@ class PublicApplication(FormContext):
         self.target.set_application_status('pending')
 
         # Finally save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         try:
@@ -1175,6 +1184,7 @@ class ManEdJournalReview(PrivateContext):
         super(PrivateContext, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
     def validate(self):
@@ -1266,6 +1276,7 @@ class EditorJournalReview(PrivateContext):
         super(PrivateContext, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
 
@@ -1318,6 +1329,7 @@ class AssEdJournalReview(PrivateContext):
         super(AssEdJournalReview, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
     def render_template(self, **kwargs):
