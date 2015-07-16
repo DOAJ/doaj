@@ -36,6 +36,7 @@ jQuery(document).ready(function($) {
         search_sortby: [
             {'display':'Date applied','field':'suggestion.suggested_on'},
             {'display':'Last updated','field':'last_updated'},
+            {'display':'Last manual update','field':'last_manual_update'},
             {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
@@ -67,6 +68,7 @@ jQuery(document).ready(function($) {
             "edit_suggestion" : fv_edit_suggestion,
             "country_name": fv_country_name,
             'last_updated': fv_last_updated,
+            'last_manual_update': fv_last_manual_update,
             'suggested_on': fv_suggested_on,
             'readonly_journal': fv_readonly_journal
         },
@@ -93,6 +95,12 @@ jQuery(document).ready(function($) {
                 {
                     "pre": "<strong>Last updated</strong>: ",
                     "field": "last_updated"
+                }
+            ],
+            [
+                {
+                    "pre": "<strong>Last manual update</strong>: ",
+                    "field": "last_manual_update"
                 }
             ],
             [

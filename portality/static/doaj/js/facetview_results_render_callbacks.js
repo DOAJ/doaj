@@ -54,6 +54,19 @@ fv_last_updated = (function (resultobj) {
     return that;
 })();
 
+fv_last_manual_update = (function (resultobj) {
+    var that = function(resultobj) {
+        var man_update = resultobj['last_manual_update'];
+        if (man_update == '1970-01-01T00:00:00Z')
+        {
+            return 'Never'
+        } else {
+            return iso_datetime2date_and_time(man_update);
+        }
+    };
+    return that;
+})();
+
 fv_suggested_on = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj && resultobj['suggestion'] && resultobj['suggestion']['suggested_on']) {

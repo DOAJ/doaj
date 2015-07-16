@@ -520,6 +520,20 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["bulk_upload"] = bulk_upload_id
 
+    def set_last_manual_update(self, date=None):
+        if date is None:
+            self.data['last_manual_update'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            self.data['last_manual_update'] = date
+
+    @property
+    def last_manual_update(self):
+        return self.data.get('last_manual_update')
+
+    @property
+    def last_manual_update_timestamp(self):
+        return datetime.strptime(self.data.get('last_manual_update'), '%Y-%m-%dT%H:%M:%SZ')
+
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
