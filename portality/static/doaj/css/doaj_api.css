@@ -12,3 +12,15 @@ footer {
     margin-top: 2em;
     margin-bottom: 1em;
 }
+
+#swagger-ui-container #resources_container > .footer > h4 {
+    display: none;
+}
+
+.search-query-docs {
+    font-weight: normal;
+}
+
+.swagger-section .swagger-ui-wrap .markdown ol {
+    list-style-type: decimal;
+}

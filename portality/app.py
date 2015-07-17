@@ -214,9 +214,9 @@ if 'api' in app.config['FEATURES']:
             {
                 'api_versions': [
                     {
-                        'version': '0.0.1',
-                        'base_url': url_for('api_v1.list_operations', _external=True),
-                        'note': 'First version of the DOAJ API (IN DEVELOPMENT DO NOT USE!)',
+                        'version': '1.0.0',
+                        'base_url': url_for('api_v1.api_spec', _external=True),
+                        'note': 'First version of the DOAJ API',
                         'docs_url': url_for('api_v1.docs', _external=True)
                     }
                 ]
