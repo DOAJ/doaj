@@ -62,6 +62,16 @@ class Article(DomainObject):
         return articles
 
     @classmethod
+    def count_by_issns(cls, issns):
+        q = ArticleQuery(issns=issns)
+        return cls.hit_count(q.query())
+
+    @classmethod
+    def delete_by_issns(cls, issns, snapshot=True):
+        q = ArticleQuery(issns=issns)
+        cls.delete_selected(query=q.query(), snapshot=snapshot)
+
+    @classmethod
     def delete_selected(cls, query=None, owner=None, snapshot=True):
         if owner is not None:
             from portality.models import Journal

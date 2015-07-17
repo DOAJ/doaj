@@ -448,6 +448,11 @@ class DomainObject(UserDict.IterableUserDict, object):
     def count(cls):
         return requests.get(cls.target() + '_count').json()['count']
 
+    @classmethod
+    def hit_count(cls, query, **kwargs):
+        res = cls.query(q=query, **kwargs)
+        return res.get("hits", {}).get("total", 0)
+
 ########################################################################
 ## Some useful ES queries
 ########################################################################

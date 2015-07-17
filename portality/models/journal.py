@@ -48,6 +48,32 @@ class Journal(DomainObject):
         records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
+    @classmethod
+    def issns_by_query(cls, query):
+        issns = []
+        for j in cls.iterate(query):
+            issns += j.known_issns()
+        return issns
+
+    @classmethod
+    def delete_selected(cls, query, articles=False, snapshot_journals=True, snapshot_articles=True):
+        if articles:
+            # list the issns of all the journals
+            issns = cls.issns_by_query(query)
+
+            # issue a delete request over all the articles by those issns
+            from portality.models import Article
+            Article.delete_by_issns(issns, snapshot=snapshot_articles)
+
+        # snapshot the journal record
+        if snapshot_journals:
+            js = cls.iterate(query, page_size=1000)
+            for j in js:
+                j.snapshot()
+
+        # finally issue a delete request against the journals
+        cls.delete_by_query(query)
+
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
