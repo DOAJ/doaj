@@ -65,6 +65,16 @@ def allowed(query, wildcards=False, fuzzy=False):
 
     return True
 
+def escape(query):
+    # just escapes all instances of "/" in the query with "\\/"
+
+    # Function which does the replacement
+    def slasher(m):
+        return m.group(0)[0] + "\\/"
+
+    slash_rx = "[^\\\\](/)"
+    return re.sub(slash_rx, slasher, query)
+
 class DiscoveryApi(Api):
 
     @classmethod
@@ -73,7 +83,8 @@ class DiscoveryApi(Api):
             raise DiscoveryException("Query contains disallowed Lucene features")
 
         q = query_substitute(q, search_subs)
-        # print q
+        q = escape(q)
+        print q
 
         # sanitise the page size information
         if page < 1:
