@@ -84,7 +84,7 @@ class DiscoveryApi(Api):
 
         q = query_substitute(q, search_subs)
         q = escape(q)
-        print q
+        # print q
 
         # sanitise the page size information
         if page < 1:
