@@ -21,56 +21,15 @@ def api_spec():
     swag['info']['description'] = """
 <p>This page documents the first version of the DOAJ API, v.{api_version}</p>
 <p>Base URL: <a href="{base_url}" target="_blank">{base_url}</a></p>
-<a name="api_desc_search_api" id="api_desc_search_api"></a>
+<h2 id="intro">Using this live documentation page</h2>
+This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page. You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration. Further information on advanced usage of the routes is available at the bottom below the route list.
 
-<h2>Search API</h2>
-
-<h3>Friendly field names</h3>
-
-<p>When you are querying on a specific field you can use the json dot notation used by Elasticsearch, so for example to access the journal title of an article, you could use
-            <pre>bibjson.journal.title:"Journal of Science"</pre>
-
-<p>Note that all fields are analysed, which means that the above search does not look for the exact string "Journal of Science". To do that, add ".exact" to any string field (not date or number fields) to match the exact contents:</p>
-            <pre>bibjson.journal.title.exact:"Journal of Science"</pre>
-</p>
-
-<h3>The query string - advanced usage</h3>
-
-<p>The format of the query part of the URL is that of a Lucene query string, as documented here: <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html</a></p>
-
-<p>Some of the lucene query syntax has been disabled in order to prevent queries which may damage performance.  The disabled features are:</p>
-
-<ol>
-<li><p>Wildcard searches.  You may not put a * into a query string: <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Wildcard Searches">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Wildcard Searches</a></p></li>
-<li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Fuzzy Searches">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Fuzzy Searches</a></p></li>
-<li><p>Proximity Searches. <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Proximity Searches">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Proximity Searches</a></p></li>
-</ol>
-
-<h3>Sorting of results</h3>
-
-<p>Each request can take a "sort" url parameter, which can be of the form of one of:</p>
-
-<pre>
-sort=field
-sort=field:direction
-</pre>
-
-<p>The field again uses the dot notation.</p>
-
-<p>If specifying the direction, it must be one of "asc" or "desc". If no direction is supplied then "asc" is used.</p>
-
-<p>So for example</p>
-
-<pre>
-sort=bibjson.title
-sort=bibjson.title:desc
-</pre>
-
-<p>Note that for fields which may contain multiple values (i.e. arrays), the sort will use the "smallest" value in that field to sort by (depending on the definition of "smallest" for that field type)</p>
-
+<h2 id="intro_auth">Authenticated routes</h2>
+<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>.</p>
 """.format(
         api_version=API_VERSION_NUMBER,
-        base_url=url_for('.api_spec', _external=True)
+        base_url=url_for('.api_spec', _external=True),
+        contact_us_url=url_for('doaj.contact')
     )
     swag['info']['version'] = API_VERSION_NUMBER
 
@@ -84,7 +43,7 @@ def docs():
 @api_key_required
 def search_applications(search_query):
     """
-    Search your applications [Authenticated, not public]
+    Search your applications <span class="red">[Authenticated, not public]</span>
     ---
     tags:
       - search
@@ -161,16 +120,13 @@ def search_journals(search_query):
             What you are searching for, e.g. computers
             <br>
             <br>
-            For convenience we also offer shorter field names for you to use when querying. Note that you cannot use the ".exact" notation mentioned above on these substitutions. The substitutions for articles are as follows:<br>
-            <ul>
-            <li>title - search within the journal's title</li>
-            <li>issn - the journal's issn</li>
-            <li>publisher - the journal's publisher (not exact match)</li>
-            <li>license - the exact licence</li>
-            </ul>
-            E.g. you can search for
+            You can search inside any field you see in the results or the schema. <a href="#specific_field_search">More details</a>
+            <br>
+            For example, to search for all journals tagged with the keyword "heritage"
+            <pre>bibjson.keywords:heritage</pre>
+            <a href="#short_field_names">Short-hand names are available</a> for some fields
             <pre>issn:1874-9496</pre>
-            <pre>license:CC-BY</pre>
+            <pre>publisher:dove</pre>
             </div>
         in: path
         required: true
@@ -352,16 +308,14 @@ def search_articles(search_query):
             What you are searching for, e.g. computers
             <br>
             <br>
-            For convenience we also offer shorter field names for you to use when querying. Note that you cannot use the ".exact" notation mentioned above on these substitutions. The substitutions for articles are as follows:<br>
-            <ul>
-            <li>title - search within the article title</li>
-            <li>doi - the article's doi</li>
-            <li>issn - the article's journal's issn</li>
-            <li>publisher - the article's journal's publisher (not exact match)</li>
-            <li>abstract - search within the article abstract</li>
-            </ul>
-            E.g. you can search for
+            You can search inside any field you see in the results or the schema. <a href="#specific_field_search">More details</a>
+            <br>
+            For example, to search for all articles with abstracts containing the word "shadow"
+            <pre>bibjson.abstract:"shadow"</pre>
+            <a href="#short_field_names">Short-hand names are available</a> for some fields
             <pre>doi:10.3389/fpsyg.2013.00479</pre>
+            <pre>issn:1874-9496</pre>
+            <pre>license:CC-BY</pre>
             <pre>title:hydrostatic pressure</pre>
             </div>
         in: path
