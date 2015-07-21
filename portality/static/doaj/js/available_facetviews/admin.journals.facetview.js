@@ -35,8 +35,7 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Date added to DOAJ','field':'created_date'},
-            {'display':'Last updated','field':'last_updated'},
-            {'display':'Last manual update','field':'last_manual_update'},
+            {'display':'Last updated','field':'last_manual_update'}, // Note: last updated on UI points to when last updated by a person (via form)
             {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
@@ -59,7 +58,6 @@ jQuery(document).ready(function($) {
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
             'created_date': fv_created_date,
-            'last_updated': fv_last_updated,
             'last_manual_update': fv_last_manual_update,
             'bibjson.abstract': fv_abstract,
             'addthis-social-share-button': fv_addthis,
@@ -120,13 +118,7 @@ jQuery(document).ready(function($) {
             [
                 {
                     "pre": "<strong>Last updated</strong>: ",
-                    "field": "last_updated"
-                }
-            ],
-            [
-                {
-                    "pre": "<strong>Last manual update</strong>: ",
-                    "field": "last_manual_update"
+                    "field": "last_manual_update"  // Note: last updated on UI points to when last updated by a person (via form)
                 }
             ],
             [
