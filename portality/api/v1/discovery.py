@@ -65,6 +65,27 @@ def allowed(query, wildcards=False, fuzzy=False):
 
     return True
 
+def escape(query):
+    # just escapes all instances of "/" in the query with "\\/"
+
+    # Function which does the replacement
+    def slasher(m):
+        return m.group(0)[0] + "\\/"
+
+
+    # the regular expression which looks for an unescaped /
+    slash_rx = "[^\\\\]/"
+
+    # because the regex matches two characters, neighbouring /s will not both
+    # get replaced at the same time because re.sub looks at "non overlapping matches".
+    # This means "//" will not be properly escaped.  So, we run the re.subn
+    # function repeatedly until the number of replacements drops to 0
+    count = 1
+    while count > 0:
+        query, count = re.subn(slash_rx, slasher, query)
+
+    return query
+
 class DiscoveryApi(Api):
 
     @classmethod
@@ -73,6 +94,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("Query contains disallowed Lucene features")
 
         q = query_substitute(q, search_subs)
+        q = escape(q)
         # print q
 
         # sanitise the page size information

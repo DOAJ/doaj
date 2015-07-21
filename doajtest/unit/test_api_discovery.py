@@ -116,6 +116,13 @@ class TestArticleMatch(DoajTestCase):
         with self.assertRaises(DiscoveryException):
             res = DiscoveryApi.search_journals("Test", 1, 10, "some.missing.field:asc")
 
+        # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
+        res = DiscoveryApi.search_journals('"http\://homepage.com/1"', 1, 10)
+        assert res.data.get("total") == 1
+
+        res = DiscoveryApi.search_journals('"http\:\/\/homepage.com\/1"', 1, 10)
+        assert res.data.get("total") == 1
+
     def test_02_articles(self):
         # populate the index with some articles
         for i in range(5):
@@ -124,6 +131,7 @@ class TestArticleMatch(DoajTestCase):
             bj = a.bibjson()
             bj.title = "Test Article {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.add_identifier(bj.DOI, "10.test/{x}".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
             a.save()
 
@@ -210,6 +218,13 @@ class TestArticleMatch(DoajTestCase):
         with self.assertRaises(DiscoveryException):
             res = DiscoveryApi.search_articles("Test", 1, 10, "some.missing.field:asc")
 
+        # 12. with a forward slash, with and without escaping
+        res = DiscoveryApi.search_articles('"10.test/1"', 1, 10)
+        assert res.data.get("total") == 1
+
+        res = DiscoveryApi.search_articles('"10.test\/1"', 1, 10)
+        assert res.data.get("total") == 1
+
     def test_03_applications(self):
         # create an account that will own the suggestions
         acc = models.Account()
@@ -225,6 +240,7 @@ class TestArticleMatch(DoajTestCase):
             bj.title = "Test Suggestion {x}".format(x=i)
             bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
             bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
             a.save()
 
             # make sure the last updated dates are suitably different
@@ -329,3 +345,10 @@ class TestArticleMatch(DoajTestCase):
         other.set_id("other")
         res = DiscoveryApi.search_applications(other, "Test", 1, 10, "created_date:desc")
         assert res.data.get("total") == 0
+
+        # 13. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
+        res = DiscoveryApi.search_applications(acc, '"http\://homepage.com/1"', 1, 10)
+        assert res.data.get("total") == 1
+
+        res = DiscoveryApi.search_applications(acc, '"http\:\/\/homepage.com\/1"', 1, 10)
+        assert res.data.get("total") == 1
