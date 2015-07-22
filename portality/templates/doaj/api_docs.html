@@ -14,6 +14,95 @@
 {% block content %}
 <body class="swagger-section">
 <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+<div id="extra-docs" class="swagger-ui-wrap">
+
+    <h2 id="search_api">Search API</h2>
+
+    <h3 id="specific_field_search">Searching inside a specific field</h3>
+
+    <p>When you are querying on a specific field you can use the json dot notation used by Elasticsearch, so for example to access the journal title of an article, you could use
+        <pre>bibjson.journal.title:"Journal of Science"</pre>
+    </p>
+
+    <p>Note that all fields are analysed, which means that the above search does not look for the exact string "Journal of Science". To do that, add ".exact" to any string field (not date or number fields) to match the exact contents:</p>
+                <pre>bibjson.journal.title.exact:"Journal of Science"</pre>
+    </p>
+
+
+
+    <h3 id="special_characters">Special characters</h3>
+    <p></p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL since a "naked" backslash <code>\</code> is not allowed in a URL. So you can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
+
+<pre>
+doi:10.3389/fpsyg.2013.00479
+doi:10.3389%5C/fpsyg.2013.00479
+</pre>
+    </p>
+
+
+
+    <h3 id="short_field_names">Short field names</h3>
+    <p>For convenience we also offer shorter field names for you to use when querying. Note that <em>you cannot use the ".exact" notation mentioned above on these substitutions</em>.</p>
+
+    <p>The substitutions for journals are as follows:<br>
+        <ul>
+            <li>title - search within the journal's title</li>
+            <li>issn - the journal's issn</li>
+            <li>publisher - the journal's publisher (not exact match)</li>
+            <li>license - the exact licence</li>
+        </ul>
+    </p>
+
+    <p>The substitutions for articles are as follows:<br>
+        <ul>
+            <li>title - search within the article title</li>
+            <li>doi - the article's doi</li>
+            <li>issn - the article's journal's issn</li>
+            <li>publisher - the article's journal's publisher (not exact match)</li>
+            <li>abstract - search within the article abstract</li>
+        </ul>
+    </p>
+
+
+
+    <h3 id="sorting">Sorting of results</h3>
+
+    <p>Each request can take a "sort" url parameter, which can be of the form of one of:</p>
+
+<pre>
+sort=field
+sort=field:direction
+</pre>
+
+    <p>The field again uses the dot notation.</p>
+
+    <p>If specifying the direction, it must be one of "asc" or "desc". If no direction is supplied then "asc" is used.</p>
+
+    <p>So for example</p>
+
+<pre>
+sort=bibjson.title
+sort=bibjson.title:desc
+</pre>
+
+    <p>Note that for fields which may contain multiple values (i.e. arrays), the sort will use the "smallest" value in that field to sort by (depending on the definition of "smallest" for that field type)</p>
+
+
+
+    <h3 id="query_string_advanced_usage">The query string - advanced usage</h3>
+
+    <p>The format of the query part of the URL is that of a Lucene query string, as documented here: <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html</a></p>
+
+    <p>Some of the Lucene query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance.  The disabled features are:</p>
+
+    <ol>
+        <li><p>Wildcard searches.  You may not put a * into a query string: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Wildcard_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Wildcard_Searches</a></p></li>
+        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Regexp_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Regexp_Searches</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
+        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Fuzzy_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Fuzzy_Searches</a></p></li>
+        <li><p>Proximity Searches. <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Proximity_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Proximity_Searches</a></p></li>
+    </ol>
+
+</div>
 </body>
 {% endblock %}
 
@@ -37,10 +126,12 @@
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = current_scheme + '//' + current_domain + "/api/v1/spec";
+        url = current_scheme + '//' + current_domain + "/api/v1";
       }
       window.swaggerUi = new SwaggerUi({
         url: url,
+        validatorUrl: null,
+        docExpansion: 'list',
         dom_id: "swagger-ui-container",
         supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
         onComplete: function(swaggerApi, swaggerUi){
@@ -56,12 +147,11 @@
             hljs.highlightBlock(e)
           });
 
-          addApiKeyAuthorization();
+          //addApiKeyAuthorization();
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
         },
-        docExpansion: "none",
         apisSorter: "alpha",
         showRequestHeaders: false
       });
