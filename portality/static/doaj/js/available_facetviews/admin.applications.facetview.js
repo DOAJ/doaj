@@ -13,7 +13,10 @@ jQuery(document).ready(function($) {
         default_operator : "AND",
 
         facets: [
-            {'field': 'admin.application_status.exact', 'display': 'Application Status'},
+            {   'field': 'admin.application_status.exact',
+                'display': 'Application Status',
+                'value_function': adminStatusMap
+            },
             {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
@@ -57,6 +60,7 @@ jQuery(document).ready(function($) {
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
+            'admin.application_status': fv_application_status,
             'created_date': fv_created_date,
             'bibjson.abstract': fv_abstract,
             'journal_license' : fv_journal_license,

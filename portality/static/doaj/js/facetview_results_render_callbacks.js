@@ -2,7 +2,7 @@
 // the function, a bit cleaner
 fv_author_pays = (function(resultobj) {
     var that = function(resultobj) {
-        field = ""
+        field = "";
         if (resultobj.bibjson && resultobj.bibjson.author_pays) {
             if(that.mapping[resultobj['bibjson']['author_pays']]) {
                 var result = '<span class=' + that.mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
@@ -13,7 +13,7 @@ fv_author_pays = (function(resultobj) {
                 field += resultobj['bibjson']['author_pays'];
             }
             if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
-                url = resultobj.bibjson.author_pays_url
+                url = resultobj.bibjson.author_pays_url;
                 field += " (see <a href='" + url + "'>" + url + "</a>)"
             }
             if (field === "") {
@@ -31,7 +31,27 @@ fv_author_pays.mapping = {
     "N": {"text": "No charges", "class": "green"},
     "CON": {"text": "Conditional charges", "class": "blue"},
     "NY": {"text": "No info available", "class": ""},
-}
+};
+
+fv_application_status = (function(resultobj) {
+    var that = function(resultobj) {
+        return that.mapping[resultobj['admin']['application_status']];
+    };
+    return that;
+})();
+
+// This must be updated in line with the list in formcontext/choices.py
+fv_application_status.mapping = {
+    'reapplication' : 'Reapplication Pending',
+    'submitted' : 'Reapplication Submitted',
+    'pending' : 'Pending',
+    'in progress' : 'In Progress',
+    'completed' : 'Completed',
+    'on hold' : 'On Hold',
+    'ready' : 'Ready',
+    'rejected' : 'Rejected',
+    'accepted' : 'Accepted'
+};
 
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
