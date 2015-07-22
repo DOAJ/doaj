@@ -33,6 +33,26 @@ fv_author_pays.mapping = {
     "NY": {"text": "No info available", "class": ""},
 };
 
+fv_application_status = (function(resultobj) {
+    var that = function(resultobj) {
+        return that.mapping[resultobj['admin']['application_status']];
+    };
+    return that;
+})();
+
+// This must be updated in line with the list in formcontext/choices.py
+fv_application_status.mapping = {
+    'reapplication' : 'Reapplication Pending',
+    'submitted' : 'Reapplication Submitted',
+    'pending' : 'Pending',
+    'in progress' : 'In Progress',
+    'completed' : 'Completed',
+    'on hold' : 'On Hold',
+    'ready' : 'Ready',
+    'rejected' : 'Rejected',
+    'accepted' : 'Accepted'
+};
+
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
         return iso_datetime2date(resultobj['created_date']);

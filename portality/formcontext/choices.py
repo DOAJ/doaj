@@ -85,10 +85,11 @@ class Choices(object):
 
     _application_status_base = [
         ('', ' '),
-        ('reapplication', 'Reapplication In Progress'),
+        ('reapplication', 'Reapplication Pending'),
         ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
-        ('in progress', 'In progress')
+        ('in progress', 'In Progress'),
+        ('completed', 'Completed')
     ]
 
     _application_status_admin = _application_status_base + [
