@@ -14,6 +14,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
+        app.logger.info("Email template {0} called to send, but email has been disabled.".format(template_name))
         return
 
     assert type(to) == list
