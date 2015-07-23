@@ -24,7 +24,7 @@ def api_key_required(fn):
 
 
 def api_key_optional(fn):
-    """ Decorator for API functions, requiring a valid key to find a user """
+    """ Decorator for API functions, requiring a valid key to find a user if a key is provided. OK if none provided. """
     @wraps(fn)
     def decorated_view(*args, **kwargs):
         api_key = request.values.get("api_key", None)
