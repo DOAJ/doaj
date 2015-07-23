@@ -3,9 +3,9 @@ from flask.ext.login import current_user
 
 from flask_swagger import swagger
 
-from portality.api.v1 import DiscoveryApi, DiscoveryException, jsonify_models, bad_request
+from portality.api.v1 import DiscoveryApi, DiscoveryException, CrudApi, jsonify_models, bad_request
 from portality.core import app
-from portality.decorators import api_key_required
+from portality.decorators import api_key_required, api_key_optional
 
 import json
 
@@ -872,3 +872,29 @@ def search_articles(search_query):
         return bad_request(e.message)
 
     return jsonify_models(results)
+
+
+@api_key_optional
+@blueprint.route('/journals/<jid>')
+def retrieve_journal(jid):
+    # depending on current_user being there or not, call one of these
+    j = CrudApi.retrieve_public_journal(jid)
+    # OR
+    j = CrudApi.retrieve_auth_journal(jid, current_user)
+
+    return jsonify_models(j)
+
+    # also consider: Somebody is authenticated but tries to access a journal
+    # that is not theirs. In that case, return 404 Not Found.
+    # You should make portality.api.v1.crud.journals.JournalsCrudApi#retrieve_auth_journal
+    # return an appropriate value in that case (None is fine) and cause a 404 here in the view
+
+    # then finally, consider handling if the journal id we're given really
+    # is not found - should also result in 404 Not Found
+
+    # ideally (bonus points) if the id is malformed (check elasticsearch id format)
+    # then return 400 Bad Request
+
+    # there are helpers you can use as-is in the view route to generate 400 Bad Request and 404 Not Found:
+    # not_found(message)
+    # bad_request(message)

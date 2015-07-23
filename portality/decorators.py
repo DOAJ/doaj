@@ -23,6 +23,25 @@ def api_key_required(fn):
     return decorated_view
 
 
+def api_key_optional(fn):
+    """ Decorator for API functions, requiring a valid key to find a user if a key is provided. OK if none provided. """
+    @wraps(fn)
+    def decorated_view(*args, **kwargs):
+        api_key = request.values.get("api_key", None)
+        if api_key:
+            user = Account.pull_by_api_key(api_key)
+            if user is not None:
+                if login_user(user, remember=False):
+                    return fn(*args, **kwargs)
+            # else
+            abort(401)
+
+        # no api key, which is ok
+        return fn(*args, **kwargs)
+
+    return decorated_view
+
+
 def ssl_required(fn):
     """ Decorator for when a view f() should be served only over SSL """
     @wraps(fn)
