@@ -659,6 +659,10 @@ class EditorApplicationReview(ApplicationContext):
         if email_associate:
             self._send_editor_email(self.target)
 
+        # email managing editors if this was newly set to 'ready'
+        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+            self._send_admin_ready_email()
+
     def render_template(self, **kwargs):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
@@ -692,6 +696,37 @@ class EditorApplicationReview(ApplicationContext):
             else:
                 self.form.editor.choices = [("", "")]
 
+    def _send_admin_ready_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+
+        # This is to admins
+        admin_query = \
+            { "query" :
+                { "term" : { "role" : "admin" } }
+            }
+
+        res = models.Account.query(q=admin_query)
+        admins = [models.Account(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+        to = [acc.email for acc in admins]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - application ready"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/admin_application_ready.txt",
+                                application_title=journal_name,
+                                url_root=url_root
+            )
+            self.add_alert('A confirmation email has been sent to {0} admins.'.format(len(admins)))
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to admin email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 
 class AssEdApplicationReview(ApplicationContext):
