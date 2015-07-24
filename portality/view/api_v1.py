@@ -3,7 +3,9 @@ from flask.ext.login import current_user
 
 from flask_swagger import swagger
 
-from portality.api.v1 import DiscoveryApi, DiscoveryException, CrudApi, jsonify_models, bad_request
+from portality.api.v1 import DiscoveryApi, DiscoveryException
+from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
+from portality.api.v1 import jsonify_models, bad_request
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -878,9 +880,9 @@ def search_articles(search_query):
 @blueprint.route('/journals/<jid>')
 def retrieve_journal(jid):
     # depending on current_user being there or not, call one of these
-    j = CrudApi.retrieve_public_journal(jid)
+    j = JournalsCrudApi.retrieve_public(jid)
     # OR
-    j = CrudApi.retrieve_auth_journal(jid, current_user)
+    j = JournalsCrudApi.retrieve_auth(jid, current_user)
 
     return jsonify_models(j)
 
