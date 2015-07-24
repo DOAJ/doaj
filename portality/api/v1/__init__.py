@@ -2,4 +2,4 @@ from portality.api.v1.common import jsonify_models, bad_request, forbidden, not_
 
 from portality.api.v1.discovery import DiscoveryApi, DiscoveryException
 
-from portality.api.v1.crud import CrudApi
+from portality.api.v1.crud import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi

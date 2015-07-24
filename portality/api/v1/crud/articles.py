@@ -1,5 +1,5 @@
-from portality.api.v1.common import Api
+from portality.api.v1.crud.common import CrudApi
 
 
-class ArticlesCrudApi(Api):
+class ArticlesCrudApi(CrudApi):
     pass
