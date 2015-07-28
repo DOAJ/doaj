@@ -6,6 +6,7 @@ from portality.formcontext import forms, xwalk, render, choices
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
+from portality.dao import Facetview2
 
 class FormContextException(Exception):
     pass
@@ -700,8 +701,11 @@ class EditorApplicationReview(ApplicationContext):
 
         journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
         url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
 
-        # This is to admins
+        # This is to admins todo: might this instead be to their mailing list?
         admin_query = \
             { "query" :
                 { "term" : { "role" : "admin" } }
@@ -719,7 +723,7 @@ class EditorApplicationReview(ApplicationContext):
                                 subject=subject,
                                 template_name="email/admin_application_ready.txt",
                                 application_title=journal_name,
-                                url_root=url_root
+                                url_for_application=url_for_application
             )
             self.add_alert('A confirmation email has been sent to {0} admins.'.format(len(admins)))
         except Exception as e:
