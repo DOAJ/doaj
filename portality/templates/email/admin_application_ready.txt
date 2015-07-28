@@ -1,6 +1,6 @@
 Admins,
 
 The application for "{{ application_title }}" has been marked 'Ready'.
-You may access the application via the Admin area: {{ url_root }}/admin/applications .
+You may access the application via the Admin area: {{ url_for_application }} .
 
 The DOAJ Team
