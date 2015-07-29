@@ -574,6 +574,10 @@ class ManEdApplicationReview(ApplicationContext):
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invald")
 
+        # inform editor if this application was previously set to 'ready', but has been changed to 'in progress'
+        if self.source.application_status == 'ready' and self.target.application_status == 'in progress':
+            self._send_editor_inprogress_email()
+
     def render_template(self, **kwargs):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
@@ -591,6 +595,40 @@ class ManEdApplicationReview(ApplicationContext):
         else:
             self.form.editor.choices = [("", "")]
 
+    def _send_editor_inprogress_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+
+        # This is to the editor in charge of this AssEd's group
+        editor_group_name = self.target.admin.editor_group
+        editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+
+        editor_group = models.EditorGroup.pull(editor_group_id)
+        editor_acc = editor_group.get_editor_account()
+        editor_name = editor_acc.name
+        to = editor_acc.email
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - 'Ready' application marked 'In Progress' by Managing Editor"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/workflow/editor_application_inprogress.txt",
+                                editor_name=editor_name,
+                                application_title=journal_name,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 class EditorApplicationReview(ApplicationContext):
     """
@@ -721,7 +759,7 @@ class EditorApplicationReview(ApplicationContext):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/admin_application_ready.txt",
+                                template_name="email/workflow/admin_application_ready.txt",
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
@@ -795,6 +833,10 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
+        # inform editor if this was newly set to 'completed'
+        if self.source.application_status != 'completed' and self.target.application_status == 'completed':
+            self._send_editor_completed_email()
+
     def render_template(self, **kwargs):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
@@ -810,6 +852,41 @@ class AssEdApplicationReview(ApplicationContext):
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             self.form.application_status.choices = choices.Choices.application_status()
+
+    def _send_editor_completed_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+
+        # This is to the editor in charge of this application's assigned editor group
+        editor_group_name = self.target.admin.editor_group
+        editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+        editor_group = models.EditorGroup.pull(editor_group_id)
+        editor_acc = editor_group.get_editor_account()
+
+        editor_name = editor_acc.name
+        to = editor_acc.email
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/workflow/editor_application_completed.txt",
+                                editor_name=editor_name,
+                                application_title=journal_name,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 class PublisherCsvReApplication(ApplicationContext):
     def __init__(self, form_data=None, source=None):

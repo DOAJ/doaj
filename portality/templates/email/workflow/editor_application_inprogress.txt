@@ -1,0 +1,6 @@
+Dear {{ editor_name }},
+
+The application for "{{ application_title }}" has been marked 'In Progress' by a Managing Editor, where it was previously 'Ready'.
+You may access the application via the Editor area: {{ url_for_application }} .
+
+The DOAJ Team
