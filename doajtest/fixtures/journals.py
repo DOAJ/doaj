@@ -4,8 +4,36 @@ from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source():
-        return deepcopy(JOURNAL_SOURCE)
+    def make_journal_source(in_doaj=False):
+        template = deepcopy(JOURNAL_SOURCE)
+        template['admin']['in_doaj'] = in_doaj
+        template['bibjson']['active'] = in_doaj  # legacy field?
+        return
+
+    @staticmethod
+    def make_many_journal_sources(count=2, in_doaj=False):
+        journal_sources = []
+        for i in range(0, count):
+            template = deepcopy(JOURNAL_SOURCE)
+            template['id'] = 'journalid{0}'.format(i)
+            # now some very quick and very dirty date generation
+            fakemonth = i
+            if fakemonth < 1:
+                fakemonth = 1
+            if fakemonth > 9:
+                fakemonth = 9
+            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
+            template['identifier'] = [
+                # not really proper ISSN format, but then 1234-5678 is not
+                # a correct checksummed ISSN either. Need to write a nicer
+                # faker module and just ask it for fake ISSNs, IDs, names, publishers, etc.
+                {"type": "pissn", "id": "1234-{0}".format(i)},
+                {"type": "eissn", "id": "{0}-5432".format(i)},
+            ]
+            template['admin']['in_doaj'] = in_doaj
+            template['bibjson']['active'] = in_doaj  # legacy field?
+            journal_sources.append(deepcopy(template))
+        return journal_sources
 
     @staticmethod
     def make_journal_source_with_legacy_info():
