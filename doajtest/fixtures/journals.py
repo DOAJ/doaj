@@ -7,8 +7,7 @@ class JournalFixtureFactory(object):
     def make_journal_source(in_doaj=False):
         template = deepcopy(JOURNAL_SOURCE)
         template['admin']['in_doaj'] = in_doaj
-        template['bibjson']['active'] = in_doaj  # legacy field?
-        return
+        return template
 
     @staticmethod
     def make_many_journal_sources(count=2, in_doaj=False):
