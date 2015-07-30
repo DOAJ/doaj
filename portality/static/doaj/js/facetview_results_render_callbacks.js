@@ -2,7 +2,7 @@
 // the function, a bit cleaner
 fv_author_pays = (function(resultobj) {
     var that = function(resultobj) {
-        field = ""
+        field = "";
         if (resultobj.bibjson && resultobj.bibjson.author_pays) {
             if(that.mapping[resultobj['bibjson']['author_pays']]) {
                 var result = '<span class=' + that.mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
@@ -13,7 +13,7 @@ fv_author_pays = (function(resultobj) {
                 field += resultobj['bibjson']['author_pays'];
             }
             if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
-                url = resultobj.bibjson.author_pays_url
+                url = resultobj.bibjson.author_pays_url;
                 field += " (see <a href='" + url + "'>" + url + "</a>)"
             }
             if (field === "") {
@@ -31,7 +31,7 @@ fv_author_pays.mapping = {
     "N": {"text": "No charges", "class": "green"},
     "CON": {"text": "Conditional charges", "class": "blue"},
     "NY": {"text": "No info available", "class": ""},
-}
+};
 
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
@@ -74,7 +74,7 @@ fv_abstract = (function (resultobj) {
             result += '">(show/hide)</a> <span class="abstract_text" rel="';
             result += resultobj['id'];
             result += '">' + '<br>';
-            result += resultobj['bibjson']['abstract'];
+            result += escapeHtml(resultobj['bibjson']['abstract']);
             result += '</span>';
             return result;
         }
@@ -162,9 +162,9 @@ fv_title_field = (function (resultobj) {
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "&nbsp<a href='/toc/" + journal_toc_id(resultobj) + "'>" + resultobj.bibjson.title + "</a>";
+                field += "&nbsp<a href='/toc/" + journal_toc_id(resultobj) + "'>" + escapeHtml(resultobj.bibjson.title) + "</a>";
             } else {
-                field += "&nbsp" + resultobj.bibjson.title;
+                field += "&nbsp" + escapeHtml(resultobj.bibjson.title);
             }
             if (resultobj.admin.ticked) {
                 field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
@@ -186,7 +186,7 @@ fv_doi_link = (function (resultobj) {
                     var doi = ids[i].id
                     var tendot = doi.indexOf("10.")
                     var url = "http://dx.doi.org/" + doi.substring(tendot)
-                    return "<a href='" + url + "'>" + doi.substring(tendot) + "</a>"
+                    return "<a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>"
                 }
             }
         }
@@ -209,7 +209,7 @@ fv_links = (function (resultobj) {
                 } else {
                     label = t.substring(0, 1).toUpperCase() + t.substring(1)
                 }
-                return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + ls[i].url + "</a>"
+                return "<strong>" + label + "</strong>: <a href='" + ls[i].url + "'>" + escapeHtml(ls[i].url) + "</a>"
             }
         }
         return false;
@@ -224,7 +224,7 @@ fv_issns = (function (resultobj) {
             var issns = []
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].type === "pissn" || ids[i].type === "eissn") {
-                    issns.push(ids[i].id)
+                    issns.push(escapeHtml(ids[i].id))
                 }
             }
             return issns.join(", ")
@@ -315,7 +315,7 @@ fv_edit_user = (function (resultobj) {
 
 fv_in_doaj = (function(resultobj) {
     var that = function(resultobj) {
-        field = ""
+        var field = ""
         if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
             if(that.mapping[resultobj['admin']['in_doaj']]) {
                 var result = '<span class=' + that.mapping[resultobj['admin']['in_doaj']]['class'] + '>';
@@ -343,7 +343,7 @@ fv_in_doaj.mapping = {
 fv_country_name = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.index && resultobj.index.country) {
-            return resultobj.index.country;
+            return escapeHtml(resultobj.index.country);
         }
         return false
     };
@@ -354,7 +354,7 @@ fv_owner = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.admin && resultobj.admin.owner !== undefined) {
             var own = resultobj.admin.owner
-            return '<a href="/account/' + own + '">' + own + '</a>'
+            return '<a href="/account/' + own + '">' + escapeHtml(own) + '</a>'
         }
         return false
     };
@@ -391,7 +391,7 @@ fv_linked_associates = (function (resultobj) {
                     frag += ", "
                 }
                 var ass = resultobj.associates[i]
-                frag += '<a href="/account/' + ass + '">' + ass + '</a>'
+                frag += '<a href="/account/' + ass + '">' + escapeHtml(ass) + '</a>'
             }
             return frag
         }
