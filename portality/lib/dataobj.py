@@ -2,6 +2,8 @@ from portality.lib import dates
 from copy import deepcopy
 import locale, json
 
+import inspect
+
 #########################################################
 ## Data coerce functions
 
@@ -170,11 +172,13 @@ class DataSchemaException(Exception):
 
 class DataObj(object):
     """
-    Class which provides services to other classes which store their internal data
-    as a python data structure in the self.data field.
+    Class which stores data according to a defined structure and provides
+    validation on setting any attribute. Recursive (if any of its attributes
+    contain an object or a list of objects, these will be wrapped in a
+    DataObj themselves and any actions delegated to the new DataObj).
     """
 
-    DEFAULT_COERCE = {
+    _coerce = {
         "unicode": to_unicode(),
         "utcdatetime": date_str(),
         "integer": to_int(),
@@ -184,26 +188,53 @@ class DataObj(object):
         "bool": to_bool()
     }
 
-    def __init__(self, raw=None, struct=None, type=None, drop_extra_fields=False):
+    _RESERVED_ATTR_NAMES = [
+        '__class__',
+        '__delattr__',
+        '__dict__',
+        '__doc__',
+        '__format__',
+        '__getattribute__',
+        '__hash__',
+        '__init__',
+        '__members__',
+        '__methods__',
+        '__module__',
+        '__new__',
+        '__reduce__',
+        '__reduce_ex__',
+        '__repr__',
+        '__setattr__',
+        '__sizeof__',
+        '__str__',
+        '__subclasshook__',
+        '__weakref__',
+        '_add_struct',
+        '_struct',
+        '_type',
+        '_silent_drop_extra_fields',
+        '_RESERVED_ATTR_NAMES',
+        '_coerce',
+        '_data'
+    ]
+
+    def __init__(self, raw=None, _struct=None, _type=None, _silent_drop_extra_fields=False):
         assert isinstance(raw, dict), "The raw data passed in must be iteratable as a dict."
-        # if no subclass has set a type and none is passed in, error
-        if not hasattr(self, 'type'):
-            if not type:
-                raise ValueError("Can't create DataObj without a type")
-            self.type = type
 
-        # if no subclass has set the coerce, then set it from default
-        if not hasattr(self, "coerce"):
-            self.coerce = deepcopy(self.DEFAULT_COERCE)
+        self._silent_drop_extra_fields = _silent_drop_extra_fields
 
-        # if no subclass has set the struct, use the one passed in
-        if not hasattr(self, "struct"):
-            # if no struct has been passed in, initialise to empty
-            if struct:
-                self.struct = struct
-            else:
-                self.struct = {}
+        if _type:
+            self._type = _type
 
+        if not self._type:
+            raise ValueError("Can't create DataObj without a type")
+
+        if _struct:
+            self._struct = _struct
+        else:
+            self._struct = {}
+
+        self._data = {}
         for k, v in raw.iteritems():
             setattr(self, k, v)
 
@@ -212,7 +243,7 @@ class DataObj(object):
         # if self.struct is not None:
         #     self.data = self.construct(self.data, self.struct, self.coerce, drop_extra_fields=drop_extra_fields)
 
-    def __getattr__(self, name):
+    def __getattribute__(self, name):
         # If this attribute is not already set in the internal data
         # but it's supposed to be an object (not primitive type)
         # then set it to an empty DataObj with the struct it's
@@ -228,31 +259,34 @@ class DataObj(object):
 
         # attrs used in creating a DataObj should behave as they usually
         # would in Python
-        if name in ['data', 'struct', 'coerce', 'type']:
+        if name in object.__getattribute__(self, '_RESERVED_ATTR_NAMES'):
             return object.__getattribute__(self, name)
 
-        #TODO rework to work with lists! Now they are just wrapped in dataobjects, where that should be lists of dataobjects I guess
+        print name
 
-        if not self.data.get(name):
+        if not object.__getattribute__(self, '_data').get(name):
         # the requested attribute is not present in the data already
-            if name in self.struct.get('structs', {}):
-                self.data[name] = DataObj(struct=self.struct['structs'][name], type=name)
-            elif name in self.struct.get('fields', {}):
+
+            if name in object.__getattribute__(self, '_struct').get('objects', {}):
+                object.__getattribute__(self, '_data')[name] = DataObj(_struct=object.__getattribute__(self, '_struct')['structs'][name], _type=name)
+            if name in object.__getattribute__(self, '_struct').get('lists', {}):
+                object.__getattribute__(self, '_data')[name] = []
+            elif name in object.__getattribute__(self, '_struct').get('fields', {}):
             # it's a primitive field that isn't set
                 try:
-                    return self.coerce[self.struct['fields'][name]['coerce']](None)
+                    return object.__getattribute__(self, '_coerce')[object.__getattribute__(self, '_struct')['fields'][name]['coerce']](None)
                 except ValueError:
                     raise AttributeError('{name} is not set'.format(name=name))
             else:
             # it's not a valid attribute of this object
-                raise AttributeError('{name} is not an attribute of {type}'.format(name=name, type=self.type))
+                raise AttributeError('{name} is not an attribute of {type}'.format(name=name, type=object.__getattribute__(self, '_type')))
 
         # the requested attribute is in the internal data
-        if name in self.struct.get('structs', {}) and not isinstance(self.data[name], DataObj):
-            self.data[name] = DataObj(raw=self.data[name], struct=self.struct['structs'][name], type=name)
-            # return self.data[name] wrapped in a DataObj with type=name, struct set to self.struct['structs'][name]
+        return object.__getattribute__(self, '_data')[name]
 
-        return self.data[name]
+    # TODO note that on any serialisation each field that is not required and its contents are not truthy
+    # (unless they are False) or only an empty data object, those fields should not be serialised.
+    # TODO add .empty to data objects
 
     def __setattr__(self, name, value):
         # If what we're trying to set is an object itself,
@@ -262,361 +296,383 @@ class DataObj(object):
 
         # attrs used in creating a DataObj should behave as they usually
         # would in Python
-        if name in ['data', 'struct', 'coerce', 'type']:
+        if name in object.__getattribute__(self, '_RESERVED_ATTR_NAMES'):
             return object.__setattr__(self, name, value)
 
-        #TODO rework to work with lists! Now they are just wrapped in dataobjects, where that should be lists of dataobjects I guess
+        # it's another object, in which case we need to recurse
+        if name in self._struct.get('objects', {}):
+            self._data[name] = DataObj(raw=value, _struct=self._struct['structs'][name], _type=name, _silent_drop_extra_fields=self._silent_drop_extra_fields)
 
-        if name in self.struct.get('structs', {}):
-            self.data[name] = DataObj(struct=self.struct['structs'][name], type=name, raw=value)
-        elif name in self.struct.get('fields', {}):
-            self.data[name] = self.coerce[self.struct['fields'][name]['coerce']](value)
-        else:
-        # not an allowed attribute
-            raise AttributeError('{name} is not an attribute of {type}'.format(name=name, type=self.type))
+        # it's a list - what we do depends on if it contains simple fields or objects (recurse if latter)
+        if name in self._struct.get('lists', {}):
+            if not isinstance(value, list):
+                raise ValueError('The "{name}" attribute of this data object is a list. Please supply a list as the value. Current value: {value}'.format(name=name, value=value))
 
-    @classmethod
-    def construct(cls, obj, struct, coerce, context="", drop_extra_fields=False):
-        """
-        {
-            "fields" : {
-                "field_name" : {"coerce" :"coerce_function"}
-
-            },
-            "objects" : [
-                "field_name"
-            ],
-            "lists" : {
-                "field_name" : {"contains" : "object|list|field", "coerce" : "field_coerce_function}
-            },
-            "reqired" : ["field_name"],
-            "structs" : {
-                "field_name" : {
-                    <construct>
-                }
-            }
-        }
-
-        :param obj:
-        :param struct:
-        :param coerce:
-        :param drop_extra_fields:
-        :return:
-        """
-        if obj is None:
-            return None
-
-        # check that all the required fields are there
-        keys = obj.keys()
-        for r in struct.get("required", []):
-            if r not in keys:
-                c = context if context != "" else "root"
-                raise DataStructureException("Field '{r}' is required but not present at '{c}'".format(r=r, c=c))
-
-        # check that there are no fields that are not allowed if we don't want to drop anything silently
-        if not drop_extra_fields:
-            allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
-            for k in keys:
-                if k not in allowed:
-                    c = context if context != "" else "root"
-                    raise DataStructureException("Field '{k}' is not permitted at '{c}'".format(k=k, c=c))
-
-        # this is the new object we'll be creating from the old
-        constructed = {}
-
-        # now check all the fields
-        for field_name, instructions in struct.get("fields", {}).iteritems():
-            val = obj.get(field_name)
-            if val is None:
-                continue
-            coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
-            if coerce_fn is None:
-                raise DataStructureException("No coercion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
-
-            try:
-                constructed[field_name] = coerce_fn(val)
-            except ValueError as e:
-                raise DataStructureException("Unable to coerce '{v}' to '{fn}' at '{c}'".format(v=val, fn=instructions.get("coerce", "unicode"), c=context + field_name))
-
-        # next check all the objects (which will involve a recursive call to this function
-        for field_name in struct.get("objects", []):
-            val = obj.get(field_name)
-            if val is None:
-                continue
-            if type(val) != dict:
-                raise DataStructureException("Found '{x}' = '{y}' but expected object/dict".format(x=context + field_name, y=val))
-
-            instructions = struct.get("structs", {}).get(field_name)
-            if instructions is None:
-                constructed[field_name] = deepcopy(val)
-            else:
-                constructed[field_name] = cls.construct(val, instructions, coerce=coerce, context=context + field_name + ".", drop_extra_fields=drop_extra_fields)
-
-        # now check all the lists
-        for field_name, instructions in struct.get("lists", {}).iteritems():
-            vals = obj.get(field_name)
-            if vals is None:
-                continue
-
-            nvals = []
-            contains = instructions.get("contains")
-            if contains == "field":
-                # coerce all the values in the list
-                coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
-                if coerce_fn is None:
-                    raise DataStructureException("No coercion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
-
-                for i in xrange(len(vals)):
-                    val = vals[i]
-                    try:
-                        nvals.append(coerce_fn(val))
-                    except ValueError as e:
-                        raise DataStructureException("Unable to coerce '{v}' to '{fn}' at '{c}' position '{p}'".format(v=val, fn=instructions.get("coerce", "unicode"), c=context + field_name, p=i))
-
-            elif contains == "object":
-                # for each object in the list, send it for construction
-                for i in range(len(vals)):
-                    val = vals[i]
-
-                    if type(val) != dict:
-                        raise DataStructureException("Found '{x}[{p}]' = '{y}' but expected object/dict".format(x=context + field_name, y=val, p=i))
-
-                    subinst = struct.get("struct", {}).get(field_name)
-                    if subinst is None:
-                        nvals.append(deepcopy(val))
-                    else:
-                        nvals.append(cls.construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", drop_extra_fields=drop_extra_fields))
-
-            else:
-                extra_info = ''
-                if contains is None:
-                    extra_info += " Perhaps the struct entry for list '{x}' is missing a 'contains' key?"
-                raise DataStructureException(("Cannot understand structure where list '{x}' elements contain '{y}'." + extra_info).format(x=context + field_name, y=contains))
-
-            constructed[field_name] = nvals
-
-        return constructed
-
-
-
-    ### Old methods from JPER
-
-    def populate(self, fields_and_values):
-        for k, v in fields_and_values.iteritems():
-            setattr(self, k, v)
-
-    def clone(self):
-        return self.__class__(deepcopy(self.data))
-
-    def json(self):
-        return json.dumps(self.data)
-
-    def _add_struct(self, struct):
-        if hasattr(self, "struct"):
-            self.struct = construct_merge(self.struct, struct)
-        else:
-            self.struct = struct
-
-    def _get_path(self, path, default):
-        parts = path.split(".")
-        context = self.data
-
-        for i in range(len(parts)):
-            p = parts[i]
-            d = {} if i < len(parts) - 1 else default
-            context = context.get(p, d)
-        return context
-
-    def _set_path(self, path, val):
-        parts = path.split(".")
-        context = self.data
-
-        for i in range(len(parts)):
-            p = parts[i]
-
-            if p not in context and i < len(parts) - 1:
-                context[p] = {}
-                context = context[p]
-            elif p in context and i < len(parts) - 1:
-                context = context[p]
-            else:
-                context[p] = val
-
-    def _delete_from_list(self, path, val=None, matchsub=None, prune=True):
-        l = self._get_list(path)
-
-        removes = []
-        i = 0
-        for entry in l:
-            if val is not None:
-                if entry == val:
-                    removes.append(i)
-            elif matchsub is not None:
-                matches = 0
-                for k, v in matchsub.iteritems():
-                    if entry.get(k) == v:
-                        matches += 1
-                if matches == len(matchsub.keys()):
-                    removes.append(i)
-            i += 1
-
-        removes.sort(reverse=True)
-        for r in removes:
-            del l[r]
-
-        if len(l) == 0 and prune:
-            self._delete(path, prune)
-
-    def _delete(self, path, prune=True):
-        parts = path.split(".")
-        context = self.data
-
-        stack = []
-        for i in range(len(parts)):
-            p = parts[i]
-            if p in context:
-                if i < len(parts) - 1:
-                    stack.append(context[p])
-                    context = context[p]
+            self._data[name] = []
+            for i in value:
+                if self._struct['lists'][name]['contains'] == 'object':
+                    coerced_i = DataObj(raw=i, _struct=self._struct['structs'][name], _type=name, _silent_drop_extra_fields=self._silent_drop_extra_fields)
+                elif self._struct['lists'][name]['contains'] == 'field':
+                    coerced_i = self._coerce[self._struct['lists'][name]['coerce']](value)
                 else:
-                    del context[p]
-                    if prune and len(stack) > 0:
-                        stack.pop() # the last element was just deleted
-                        self._prune_stack(stack)
+                    raise DataStructureException("Data object struct definition error: Don't understand how to interpret struct for list '{name}'. Only allowing 'contains':'object' and 'contains':'field'.".format(name=name))
 
-    def _prune_stack(self, stack):
-        while len(stack) > 0:
-            context = stack.pop()
-            todelete = []
-            for k, v in context.iteritems():
-                if isinstance(v, dict) and len(v.keys()) == 0:
-                    todelete.append(k)
-            for d in todelete:
-                del context[d]
+                self._data[name].append(coerced_i)
 
-    def _coerce(self, val, cast, accept_failure=False):
-        if cast is None:
-            return val
-        try:
-            return cast(val)
-        except (ValueError, TypeError):
-            if accept_failure:
-                return val
-            raise DataSchemaException(u"Cast with {x} failed on {y}".format(x=cast, y=val))
+        # it's a normal field, just set it with coercion
+        elif name in self._struct.get('fields', {}):
+            self._data[name] = self._coerce[self._struct['fields'][name]['coerce']](value)
 
-    def _get_single(self, path, coerce=None, default=None, allow_coerce_failure=True):
-        # get the value at the point in the object
-        val = self._get_path(path, default)
-
-        if coerce is not None and val is not None:
-            # if you want to coerce and there is something to coerce do it
-            return self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+        # not an allowed attribute
         else:
-            # otherwise return the value
-            return val
-
-    def _get_list(self, path, coerce=None, by_reference=True, allow_coerce_failure=True):
-        # get the value at the point in the object
-        val = self._get_path(path, None)
-
-        # if there is no value and we want to do by reference, then create it, bind it and return it
-        if val is None and by_reference:
-            mylist = []
-            self._set_single(path, mylist)
-            return mylist
-
-        # otherwise, default is an empty list
-        elif val is None and not by_reference:
-            return []
-
-        # check that the val is actually a list
-        if not isinstance(val, list):
-            raise DataSchemaException(u"Expecting a list at {x} but found {y}".format(x=path, y=val))
-
-        # if there is a value, do we want to coerce each of them
-        if coerce is not None:
-            coerced = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val]
-            if by_reference:
-                self._set_single(path, coerced)
-            return coerced
+            if not self._silent_drop_extra_fields:
+                raise AttributeError('{name} is not an attribute of {type}'.format(name=name, type=self._type))
+            return False  # still indicate it couldn't be set, more silently
+        return True
+        
+    def _add_struct(self, struct):
+        if hasattr(self, "_struct"):
+            self._struct = construct_merge(self._struct, struct)
         else:
-            if by_reference:
-                return val
-            else:
-                return deepcopy(val)
+            self._struct = struct
 
-    def _set_single(self, path, val, coerce=None, allow_coerce_failure=False, allowed_values=None, allowed_range=None,
-                    allow_none=True, ignore_none=False):
-
-        if val is None and ignore_none:
-            return
-
-        if val is None and not allow_none:
-            raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
-
-        # first see if we need to coerce the value (and don't coerce None)
-        if coerce is not None and val is not None:
-            val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
-
-        if allowed_values is not None and val not in allowed_values:
-            raise DataSchemaException(u"Value {x} is not permitted at {y}".format(x=val, y=path))
-
-        if allowed_range is not None:
-            lower, upper = allowed_range
-            if (lower is not None and val < lower) or (upper is not None and val > upper):
-                raise DataSchemaException("Value {x} is outside the allowed range: {l} - {u}".format(x=val, l=lower, u=upper))
-
-        # now set it at the path point in the object
-        self._set_path(path, val)
-
-    def _set_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=True, ignore_none=False):
-        # first ensure that the value is a list
-        if not isinstance(val, list):
-            val = [val]
-
-        # now carry out the None check
-        # for each supplied value, if it is none, and none is not allowed, raise an error if we do not
-        # plan to ignore the nones.
-        for v in val:
-            if v is None and not allow_none:
-                if not ignore_none:
-                    raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
-
-        # now coerce each of the values, stripping out Nones if necessary
-        val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
-
-        # check that the cleaned array isn't empty, and if it is behave appropriately
-        if len(val) == 0:
-            # this is equivalent to a None, so we need to decide what to do
-            if ignore_none:
-                # if we are ignoring nones, just do nothing
-                return
-            elif not allow_none:
-                # if we are not ignoring nones, and not allowing them, raise an error
-                raise DataSchemaException(u"Empty array not permitted at {x}".format(x=path))
-
-        # now set it on the path
-        self._set_path(path, val)
-
-    def _add_to_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=False, ignore_none=True, unique=False):
-        if val is None and ignore_none:
-            return
-
-        if val is None and not allow_none:
-            raise DataSchemaException(u"NoneType is not allowed in list at {x}".format(x=path))
-
-        # first coerce the value
-        if coerce is not None:
-            val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
-        current = self._get_list(path, by_reference=True)
-
-        # if we require the list to be unique, check for the value first
-        if unique:
-            if val in current:
-                return
-
-        # otherwise, append
-        current.append(val)    
+    # @classmethod
+    # def construct(cls, obj, struct, coerce, context="", drop_extra_fields=False):
+    #     """
+    #     {
+    #         "fields" : {
+    #             "field_name" : {"coerce" :"coerce_function"}
+    #
+    #         },
+    #         "objects" : [
+    #             "field_name"
+    #         ],
+    #         "lists" : {
+    #             "field_name" : {"contains" : "object|list|field", "coerce" : "field_coerce_function}
+    #         },
+    #         "reqired" : ["field_name"],
+    #         "structs" : {
+    #             "field_name" : {
+    #                 <construct>
+    #             }
+    #         }
+    #     }
+    #
+    #     :param obj:
+    #     :param struct:
+    #     :param coerce:
+    #     :param drop_extra_fields:
+    #     :return:
+    #     """
+    #     if obj is None:
+    #         return None
+    #
+    #     # check that all the required fields are there
+    #     keys = obj.keys()
+    #     for r in struct.get("required", []):
+    #         if r not in keys:
+    #             c = context if context != "" else "root"
+    #             raise DataStructureException("Field '{r}' is required but not present at '{c}'".format(r=r, c=c))
+    #
+    #     # check that there are no fields that are not allowed if we don't want to drop anything silently
+    #     if not drop_extra_fields:
+    #         allowed = struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+    #         for k in keys:
+    #             if k not in allowed:
+    #                 c = context if context != "" else "root"
+    #                 raise DataStructureException("Field '{k}' is not permitted at '{c}'".format(k=k, c=c))
+    #
+    #     # this is the new object we'll be creating from the old
+    #     constructed = {}
+    #
+    #     # now check all the fields
+    #     for field_name, instructions in struct.get("fields", {}).iteritems():
+    #         val = obj.get(field_name)
+    #         if val is None:
+    #             continue
+    #         coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
+    #         if coerce_fn is None:
+    #             raise DataStructureException("No coercion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
+    #
+    #         try:
+    #             constructed[field_name] = coerce_fn(val)
+    #         except ValueError as e:
+    #             raise DataStructureException("Unable to coerce '{v}' to '{fn}' at '{c}'".format(v=val, fn=instructions.get("coerce", "unicode"), c=context + field_name))
+    #
+    #     # next check all the objects (which will involve a recursive call to this function
+    #     for field_name in struct.get("objects", []):
+    #         val = obj.get(field_name)
+    #         if val is None:
+    #             continue
+    #         if type(val) != dict:
+    #             raise DataStructureException("Found '{x}' = '{y}' but expected object/dict".format(x=context + field_name, y=val))
+    #
+    #         instructions = struct.get("structs", {}).get(field_name)
+    #         if instructions is None:
+    #             constructed[field_name] = deepcopy(val)
+    #         else:
+    #             constructed[field_name] = cls.construct(val, instructions, coerce=coerce, context=context + field_name + ".", drop_extra_fields=drop_extra_fields)
+    #
+    #     # now check all the lists
+    #     for field_name, instructions in struct.get("lists", {}).iteritems():
+    #         vals = obj.get(field_name)
+    #         if vals is None:
+    #             continue
+    #
+    #         nvals = []
+    #         contains = instructions.get("contains")
+    #         if contains == "field":
+    #             # coerce all the values in the list
+    #             coerce_fn = coerce.get(instructions.get("coerce", "unicode"))
+    #             if coerce_fn is None:
+    #                 raise DataStructureException("No coercion function defined for type '{x}' at '{c}'".format(x=instructions.get("coerce", "unicode"), c=context + field_name))
+    #
+    #             for i in xrange(len(vals)):
+    #                 val = vals[i]
+    #                 try:
+    #                     nvals.append(coerce_fn(val))
+    #                 except ValueError as e:
+    #                     raise DataStructureException("Unable to coerce '{v}' to '{fn}' at '{c}' position '{p}'".format(v=val, fn=instructions.get("coerce", "unicode"), c=context + field_name, p=i))
+    #
+    #         elif contains == "object":
+    #             # for each object in the list, send it for construction
+    #             for i in range(len(vals)):
+    #                 val = vals[i]
+    #
+    #                 if type(val) != dict:
+    #                     raise DataStructureException("Found '{x}[{p}]' = '{y}' but expected object/dict".format(x=context + field_name, y=val, p=i))
+    #
+    #                 subinst = struct.get("struct", {}).get(field_name)
+    #                 if subinst is None:
+    #                     nvals.append(deepcopy(val))
+    #                 else:
+    #                     nvals.append(cls.construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", drop_extra_fields=drop_extra_fields))
+    #
+    #         else:
+    #             extra_info = ''
+    #             if contains is None:
+    #                 extra_info += " Perhaps the struct entry for list '{x}' is missing a 'contains' key?"
+    #             raise DataStructureException(("Cannot understand structure where list '{x}' elements contain '{y}'." + extra_info).format(x=context + field_name, y=contains))
+    #
+    #         constructed[field_name] = nvals
+    #
+    #     return constructed
+    #
+    #
+    #
+    # ### Old methods from JPER
+    #
+    # def populate(self, fields_and_values):
+    #     for k, v in fields_and_values.iteritems():
+    #         setattr(self, k, v)
+    #
+    # def clone(self):
+    #     return self.__class__(deepcopy(self.data))
+    #
+    # def json(self):
+    #     return json.dumps(self.data)
+    #
+    #
+    # def _get_path(self, path, default):
+    #     parts = path.split(".")
+    #     context = self.data
+    #
+    #     for i in range(len(parts)):
+    #         p = parts[i]
+    #         d = {} if i < len(parts) - 1 else default
+    #         context = context.get(p, d)
+    #     return context
+    #
+    # def _set_path(self, path, val):
+    #     parts = path.split(".")
+    #     context = self.data
+    #
+    #     for i in range(len(parts)):
+    #         p = parts[i]
+    #
+    #         if p not in context and i < len(parts) - 1:
+    #             context[p] = {}
+    #             context = context[p]
+    #         elif p in context and i < len(parts) - 1:
+    #             context = context[p]
+    #         else:
+    #             context[p] = val
+    #
+    # def _delete_from_list(self, path, val=None, matchsub=None, prune=True):
+    #     l = self._get_list(path)
+    #
+    #     removes = []
+    #     i = 0
+    #     for entry in l:
+    #         if val is not None:
+    #             if entry == val:
+    #                 removes.append(i)
+    #         elif matchsub is not None:
+    #             matches = 0
+    #             for k, v in matchsub.iteritems():
+    #                 if entry.get(k) == v:
+    #                     matches += 1
+    #             if matches == len(matchsub.keys()):
+    #                 removes.append(i)
+    #         i += 1
+    #
+    #     removes.sort(reverse=True)
+    #     for r in removes:
+    #         del l[r]
+    #
+    #     if len(l) == 0 and prune:
+    #         self._delete(path, prune)
+    #
+    # def _delete(self, path, prune=True):
+    #     parts = path.split(".")
+    #     context = self.data
+    #
+    #     stack = []
+    #     for i in range(len(parts)):
+    #         p = parts[i]
+    #         if p in context:
+    #             if i < len(parts) - 1:
+    #                 stack.append(context[p])
+    #                 context = context[p]
+    #             else:
+    #                 del context[p]
+    #                 if prune and len(stack) > 0:
+    #                     stack.pop() # the last element was just deleted
+    #                     self._prune_stack(stack)
+    #
+    # def _prune_stack(self, stack):
+    #     while len(stack) > 0:
+    #         context = stack.pop()
+    #         todelete = []
+    #         for k, v in context.iteritems():
+    #             if isinstance(v, dict) and len(v.keys()) == 0:
+    #                 todelete.append(k)
+    #         for d in todelete:
+    #             del context[d]
+    #
+    # def _coerce(self, val, cast, accept_failure=False):
+    #     if cast is None:
+    #         return val
+    #     try:
+    #         return cast(val)
+    #     except (ValueError, TypeError):
+    #         if accept_failure:
+    #             return val
+    #         raise DataSchemaException(u"Cast with {x} failed on {y}".format(x=cast, y=val))
+    #
+    # def _get_single(self, path, coerce=None, default=None, allow_coerce_failure=True):
+    #     # get the value at the point in the object
+    #     val = self._get_path(path, default)
+    #
+    #     if coerce is not None and val is not None:
+    #         # if you want to coerce and there is something to coerce do it
+    #         return self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+    #     else:
+    #         # otherwise return the value
+    #         return val
+    #
+    # def _get_list(self, path, coerce=None, by_reference=True, allow_coerce_failure=True):
+    #     # get the value at the point in the object
+    #     val = self._get_path(path, None)
+    #
+    #     # if there is no value and we want to do by reference, then create it, bind it and return it
+    #     if val is None and by_reference:
+    #         mylist = []
+    #         self._set_single(path, mylist)
+    #         return mylist
+    #
+    #     # otherwise, default is an empty list
+    #     elif val is None and not by_reference:
+    #         return []
+    #
+    #     # check that the val is actually a list
+    #     if not isinstance(val, list):
+    #         raise DataSchemaException(u"Expecting a list at {x} but found {y}".format(x=path, y=val))
+    #
+    #     # if there is a value, do we want to coerce each of them
+    #     if coerce is not None:
+    #         coerced = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val]
+    #         if by_reference:
+    #             self._set_single(path, coerced)
+    #         return coerced
+    #     else:
+    #         if by_reference:
+    #             return val
+    #         else:
+    #             return deepcopy(val)
+    #
+    # def _set_single(self, path, val, coerce=None, allow_coerce_failure=False, allowed_values=None, allowed_range=None,
+    #                 allow_none=True, ignore_none=False):
+    #
+    #     if val is None and ignore_none:
+    #         return
+    #
+    #     if val is None and not allow_none:
+    #         raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
+    #
+    #     # first see if we need to coerce the value (and don't coerce None)
+    #     if coerce is not None and val is not None:
+    #         val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+    #
+    #     if allowed_values is not None and val not in allowed_values:
+    #         raise DataSchemaException(u"Value {x} is not permitted at {y}".format(x=val, y=path))
+    #
+    #     if allowed_range is not None:
+    #         lower, upper = allowed_range
+    #         if (lower is not None and val < lower) or (upper is not None and val > upper):
+    #             raise DataSchemaException("Value {x} is outside the allowed range: {l} - {u}".format(x=val, l=lower, u=upper))
+    #
+    #     # now set it at the path point in the object
+    #     self._set_path(path, val)
+    #
+    # def _set_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=True, ignore_none=False):
+    #     # first ensure that the value is a list
+    #     if not isinstance(val, list):
+    #         val = [val]
+    #
+    #     # now carry out the None check
+    #     # for each supplied value, if it is none, and none is not allowed, raise an error if we do not
+    #     # plan to ignore the nones.
+    #     for v in val:
+    #         if v is None and not allow_none:
+    #             if not ignore_none:
+    #                 raise DataSchemaException(u"NoneType is not allowed at {x}".format(x=path))
+    #
+    #     # now coerce each of the values, stripping out Nones if necessary
+    #     val = [self._coerce(v, coerce, accept_failure=allow_coerce_failure) for v in val if v is not None or not ignore_none]
+    #
+    #     # check that the cleaned array isn't empty, and if it is behave appropriately
+    #     if len(val) == 0:
+    #         # this is equivalent to a None, so we need to decide what to do
+    #         if ignore_none:
+    #             # if we are ignoring nones, just do nothing
+    #             return
+    #         elif not allow_none:
+    #             # if we are not ignoring nones, and not allowing them, raise an error
+    #             raise DataSchemaException(u"Empty array not permitted at {x}".format(x=path))
+    #
+    #     # now set it on the path
+    #     self._set_path(path, val)
+    #
+    # def _add_to_list(self, path, val, coerce=None, allow_coerce_failure=False, allow_none=False, ignore_none=True, unique=False):
+    #     if val is None and ignore_none:
+    #         return
+    #
+    #     if val is None and not allow_none:
+    #         raise DataSchemaException(u"NoneType is not allowed in list at {x}".format(x=path))
+    #
+    #     # first coerce the value
+    #     if coerce is not None:
+    #         val = self._coerce(val, coerce, accept_failure=allow_coerce_failure)
+    #     current = self._get_list(path, by_reference=True)
+    #
+    #     # if we require the list to be unique, check for the value first
+    #     if unique:
+    #         if val in current:
+    #             return
+    #
+    #     # otherwise, append
+    #     current.append(val)
 
 ############################################################
 ## Data structure coercion

@@ -3,9 +3,11 @@ from portality import models
 
 
 class JournalDO(dataobj.DataObj):
-    type = 'journal'
+    _type = 'journal'
 
-    def __init__(self, raw=None, struct=None, type=None, drop_extra_fields=False):
+    def __init__(self, __raw=None):
+        self._RESERVED_ATTR_NAMES += ['from_model']
+
         struct = {
             "coerce_behaviour": {
                 "integer": {"onfail": "leave_unset"}
@@ -177,8 +179,7 @@ class JournalDO(dataobj.DataObj):
             }
         }
 
-        self._add_struct(struct)
-        super(JournalDO, self).__init__(raw, drop_extra_fields=True)
+        super(JournalDO, self).__init__(__raw, _struct=struct, _silent_drop_extra_fields=True)
 
     @classmethod
     def from_model(cls, jm):
