@@ -356,21 +356,21 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
     
     @classmethod
-    def iterate(cls, theq, page_size=1000, limit=None, wrap=True):
-        q = deepcopy(theq)
-        q["size"] = page_size
-        q["from"] = 0
-        if "sort" not in q: # to ensure complete coverage on a changing index, sort by id is our best bet
-            q["sort"] = [{"id" : {"order" : "asc"}}]
+    def iterate(cls, q, page_size=1000, limit=None, wrap=True):
+        theq = deepcopy(q)
+        theq["size"] = page_size
+        theq["from"] = 0
+        if "sort" not in theq: # to ensure complete coverage on a changing index, sort by id is our best bet
+            theq["sort"] = [{"id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit
             if limit is not None and counter >= limit:
                 break
             
-            res = cls.query(q=q)
+            res = cls.query(q=theq)
             rs = [r.get("_source") if "_source" in r else r.get("fields") for r in res.get("hits", {}).get("hits", [])]
-            # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(q)
+            # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(theq)
             if len(rs) == 0:
                 break
             for r in rs:
@@ -382,7 +382,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                     yield cls(**r)
                 else:
                     yield r
-            q["from"] += page_size   
+            theq["from"] += page_size   
     
     @classmethod
     def iterall(cls, page_size=1000, limit=None):

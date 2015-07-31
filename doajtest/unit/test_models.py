@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
 import time
 
 class TestClient(DoajTestCase):
@@ -246,3 +246,16 @@ class TestClient(DoajTestCase):
 
         assert len(models.Journal.all()) == 4
         assert len(models.JournalHistory.all()) == 6    # Because all journals are snapshot at create time
+
+    def test_08_iterate(self):
+        for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
+            j = models.Journal(**jsrc)
+            j.save()
+        time.sleep(1) # index all the journals
+        journal_ids = []
+        theqgen = models.JournalQuery()
+        for j in models.Journal.iterate(q=theqgen.all_in_doaj(), page_size=10):
+            journal_ids.append(j.id)
+        journal_ids = list(set(journal_ids[:]))  # keep only unique ids
+        assert len(journal_ids) == 99
+
