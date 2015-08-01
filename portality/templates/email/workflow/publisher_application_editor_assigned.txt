@@ -1,0 +1,5 @@
+Dear {{ publisher_name }},
+
+Your application for "{{ application_title }}" has been assigned to an editor for review for inclusion in the DOAJ.
+
+The DOAJ Team
