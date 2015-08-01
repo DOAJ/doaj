@@ -257,7 +257,7 @@ def file_error_closure(upload, account):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/bulk_reapp_file_error.txt",
+                                    template_name="email/publisher_bulk_reapp_file_error.txt",
                                     when=when,
                                     account=account
                 )
@@ -279,7 +279,7 @@ def email_csv_complete(account):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/bulk_reapp_complete.txt",
+                                template_name="email/publisher_bulk_reapp_complete.txt",
                                 account=account
             )
     except Exception as e:
@@ -303,7 +303,7 @@ def content_error_closure(upload, account):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/bulk_reapp_error.txt",
+                                    template_name="email/publisher_bulk_reapp_error.txt",
                                     files=[att],
                                     when=when,
                                     account=account

@@ -315,7 +315,7 @@ class ApplicationContext(PrivateContext):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/suggestion_assigned_group.txt",
+                            template_name="email/editor_application_assigned_group.txt",
                             editor=editor.id, #.encode('utf-8', 'replace'),
                             journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
                             url_root=url_root
@@ -334,7 +334,7 @@ class ApplicationContext(PrivateContext):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/suggestion_assigned_editor.txt",
+                            template_name="email/assoc_editor_application_assigned.txt",
                             editor=editor.id, #.encode('utf-8', 'replace'),
                             journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
                             group_name=eg.name, #.encode("utf-8", "replace"),
@@ -355,7 +355,7 @@ class ApplicationContext(PrivateContext):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/workflow/publisher_application_editor_assigned.txt",
+                            template_name="email/publisher_application_editor_assigned.txt",
                             application_title=application.bibjson().title, #.encode('utf-8', 'replace'),
                             publisher_name=publisher_name
                             )
@@ -445,9 +445,9 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                template = "email/suggestion_accepted.txt"
+                template = "email/publisher_application_accepted.txt"
                 if reapplication:
-                    template = "email/reapplication_accepted.txt"
+                    template = "email/publisher_reapplication_accepted.txt"
                 jn = journal_name #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -474,9 +474,9 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                template = "email/workflow/publisher_application_rejected.txt"
+                template = "email/publisher_application_rejected.txt"
                 if reapplication:
-                    template = "email/reapplication_accepted.txt"
+                    template = "email/publisher_reapplication_rejected.txt"
                 jn = journal_name #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -668,7 +668,7 @@ class ManEdApplicationReview(ApplicationContext):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/workflow/editor_application_inprogress.txt",
+                                template_name="email/editor_application_inprogress.txt",
                                 editor_name=editor_name,
                                 application_title=journal_name,
                                 url_for_application=url_for_application
@@ -816,7 +816,7 @@ class EditorApplicationReview(ApplicationContext):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/workflow/admin_application_ready.txt",
+                                template_name="email/admin_application_ready.txt",
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
@@ -937,7 +937,7 @@ class AssEdApplicationReview(ApplicationContext):
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
-                                template_name="email/workflow/editor_application_completed.txt",
+                                template_name="email/editor_application_completed.txt",
                                 editor_name=editor_name,
                                 application_title=journal_name,
                                 url_for_application=url_for_application
@@ -966,7 +966,7 @@ class AssEdApplicationReview(ApplicationContext):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/workflow/publisher_application_inprogress.txt",
+                                    template_name="email/publisher_application_inprogress.txt",
                                     publisher_name=publisher_name,
                                     application_title=journal_name,
                 )
@@ -1229,7 +1229,7 @@ class PublisherReApplication(ApplicationContext):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/reapplication_received.txt",
+                                    template_name="email/publisher_reapplication_received.txt",
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
@@ -1315,7 +1315,7 @@ class PublicApplication(FormContext):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/suggestion_received.txt",
+                            template_name="email/publisher_application_received.txt",
                             # suggestion=self.target,
                             title=self.target.bibjson().title,
                             url=self.target.bibjson().get_single_url(urltype="homepage")
