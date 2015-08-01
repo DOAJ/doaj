@@ -341,6 +341,25 @@ class ApplicationContext(PrivateContext):
                             url_root=url_root
                             )
 
+    @staticmethod
+    def _send_publisher_editor_assigned_email(application):
+
+        # This is to the publisher contact on the application
+        publisher_name = application.admin.contact.name
+        publisher_email = application.admin.contact.email
+
+        to = [publisher_email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/workflow/publisher_application_editor_assigned.txt",
+                            application_title=application.bibjson().title, #.encode('utf-8', 'replace'),
+                            publisher_name=publisher_name
+                            )
+
     def _create_account_on_suggestion_approval(self, suggestion, journal):
         o = models.Account.pull(suggestion.owner)
         if o:
@@ -447,6 +466,33 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
+    def _send_application_rejected_email(self, journal_name, email, reapplication=False):
+
+        to = [email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - journal rejected"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                template = "email/workflow/publisher_application_rejected.txt"
+                if reapplication:
+                    template = "email/reapplication_accepted.txt"
+                jn = journal_name #.encode('utf-8', 'replace')
+
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name=template,
+                                    journal_name=jn,
+                )
+                self.add_alert('Sent email to ' + email + ' to tell them about their journal being rejected from DOAJ.')
+            else:
+                self.add_alert('Did not send email to ' + email + 'to tell them about their journal being rejected from DOAJ, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 class ApplicationFormFactory(object):
     @classmethod
@@ -560,19 +606,23 @@ class ManEdApplicationReview(ApplicationContext):
                 owner = self._create_account_on_suggestion_approval(self.target, j)
                 self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to suggester - probably address is invald")
+                self.add_alert("Problem sending email to suggester - probably address is invalid")
 
         # if we need to email the editor and/or the associate, handle those here
         if email_editor:
             try:
                 self._send_editor_group_email(self.target)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to editor - probably address is invald")
+                self.add_alert("Problem sending email to editor - probably address is invalid")
         if email_associate:
             try:
                 self._send_editor_email(self.target)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to associate editor - probably address is invald")
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            try:
+                self._send_publisher_editor_assigned_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
 
         # inform editor if this application was previously set to 'ready', but has been changed to 'in progress'
         if self.source.application_status == 'ready' and self.target.application_status == 'in progress':
@@ -694,9 +744,16 @@ class EditorApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
-        # if we need to email the associate, handle that here
+        # if we need to email the associate, handle that here. Also tell the publisher we've assigned an editor.
         if email_associate:
-            self._send_editor_email(self.target)
+            try:
+                self._send_editor_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+            try:
+                self._send_publisher_editor_assigned_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
 
         # email managing editors if this was newly set to 'ready'
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
@@ -833,6 +890,10 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
+        # inform publisher if this was set to 'in progress' from 'pending'
+        if self.source.application_status == 'pending' and self.target.application_status == 'in progress':
+            self._send_publisher_inprogress_email()
+
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != 'completed' and self.target.application_status == 'completed':
             self._send_editor_completed_email()
@@ -885,6 +946,36 @@ class AssEdApplicationReview(ApplicationContext):
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+    def _send_publisher_inprogress_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+
+        # This is to the publisher contact on the application
+        publisher_name = self.target.admin.contact.name
+        publisher_email = self.target.admin.contact.email
+
+        to = publisher_email
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/workflow/publisher_application_inprogress.txt",
+                                    publisher_name=publisher_name,
+                                    application_title=journal_name,
+                )
+                self.add_alert('A confirmation email has been sent to notify the publisher of the change in status.')
+            else:
+                self.add_alert('Did not send email to ' + to + ' to tell them about the status change, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to publisher email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.error(magic + "\n" + repr(e))
             raise e
 

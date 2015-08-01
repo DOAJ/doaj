@@ -1,0 +1,5 @@
+Dear {{ publisher_name }},
+
+The application for "{{ application_title }}" is now under review by the DOAJ editors.
+
+The DOAJ Team
