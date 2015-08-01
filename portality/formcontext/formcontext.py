@@ -345,8 +345,8 @@ class ApplicationContext(PrivateContext):
     def _send_publisher_editor_assigned_email(application):
 
         # This is to the publisher contact on the application
-        publisher_name = application.admin.contact.name
-        publisher_email = application.admin.contact.email
+        publisher_name = application.get_latest_contact_name()
+        publisher_email = application.get_latest_contact_email()
 
         to = [publisher_email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -577,8 +577,9 @@ class ManEdApplicationReview(ApplicationContext):
         super(ManEdApplicationReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_editor = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        # If we have changed the editors assinged to this application, let them know.
+        is_editor_group_changed = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -609,12 +610,12 @@ class ManEdApplicationReview(ApplicationContext):
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
 
         # if we need to email the editor and/or the associate, handle those here
-        if email_editor:
+        if is_editor_group_changed:
             try:
                 self._send_editor_group_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to editor - probably address is invalid")
-        if email_associate:
+        if is_associate_editor_changed:
             try:
                 self._send_editor_email(self.target)
             except app_email.EmailException as e:
@@ -652,9 +653,10 @@ class ManEdApplicationReview(ApplicationContext):
         query_for_id = Facetview2.make_query(query_string=self.target.id)
         string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
         url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+        print url_for_application
 
         # This is to the editor in charge of this AssEd's group
-        editor_group_name = self.target.admin.editor_group
+        editor_group_name = self.target.editor_group
         editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
 
         editor_group = models.EditorGroup.pull(editor_group_id)
@@ -673,7 +675,7 @@ class ManEdApplicationReview(ApplicationContext):
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
-            self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
+            self.add_alert('An email has been sent to notify the editor of the change in status.')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
@@ -923,7 +925,7 @@ class AssEdApplicationReview(ApplicationContext):
         url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
 
         # This is to the editor in charge of this application's assigned editor group
-        editor_group_name = self.target.admin.editor_group
+        editor_group_name = self.target.editor_group
         editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
         editor_group = models.EditorGroup.pull(editor_group_id)
         editor_acc = editor_group.get_editor_account()
@@ -954,8 +956,8 @@ class AssEdApplicationReview(ApplicationContext):
         journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
 
         # This is to the publisher contact on the application
-        publisher_name = self.target.admin.contact.name
-        publisher_email = self.target.admin.contact.email
+        publisher_name = self.target.get_latest_contact_name()
+        publisher_email = self.target.get_latest_contact_email()
 
         to = publisher_email
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')

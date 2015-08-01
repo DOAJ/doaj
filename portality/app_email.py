@@ -4,8 +4,10 @@ from portality.core import app
 
 import uuid
 
+
 class EmailException(Exception):
     pass
+
 
 # Flask-Mail version of email service from util.py
 def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
@@ -14,7 +16,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
-        app.logger.info("Email template {0} called to send, but email has been disabled.".format(template_name))
+        app.logger.info("Email template {0} called to send, but email has been disabled.\nto:{1}\tsubject:{2}".format(template_name, to, subject))
         return
 
     assert type(to) == list
@@ -85,6 +87,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
             except Exception as e:
                 raise EmailException(e)
 
+
 def to_unicode(val):
     if isinstance(val, unicode):
         return val
@@ -95,6 +98,7 @@ def to_unicode(val):
             raise ValueError("Could not decode string")
     else:
         return val
+
 
 def make_attachment(filename, content_type, data, disposition=None, headers=None):
     """
