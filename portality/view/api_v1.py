@@ -906,6 +906,8 @@ def retrieve_journal(jid):
     # ideally (bonus points) if the id is malformed (check elasticsearch id format)
     # then return 400 Bad Request
 
-    # there are helpers you can use as-is in the view route to generate 400 Bad Request and 404 Not Found:
-    # not_found(message)
-    # bad_request(message)
+    # there are error handlers in the view route to generate 400 Bad Request, 401 Forbidden and 404 Not Found,
+    # just raise these exceptions:
+    # Api400Error(message)
+    # Api401Error(message)
+    # Api404Error(message)
