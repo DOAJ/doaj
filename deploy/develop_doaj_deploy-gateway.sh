@@ -21,6 +21,7 @@ git submodule update --recursive
 
 # symlink the app config into place
 ln -sf /home/cloo/repl/test/appconfig/doaj-test.cfg test.cfg
+ln -sf /home/cloo/repl/test/appconfig/doaj-test-deploy-newrelic.ini deploy/newrelic.ini
 
 # install app on gate
 sudo apt-get update -q -y
