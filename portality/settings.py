@@ -10,9 +10,11 @@ SCRIPTS_READ_ONLY_MODE = False
 
 DOAJ_VERSION = "2.10.3_SNAPSHOT-1"
 
-OFFLINE_MODE=False
+OFFLINE_MODE = False
 
+# List the features we want to be active
 FEATURES = []
+VALID_FEATURES = ['api']
 
 # ========================
 # MAIN SETTINGS

@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, bad_request
+from portality.api.v1 import jsonify_models, Api400Error, Api401Error, Api404Error
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -40,6 +40,15 @@ This page contains a list of all routes available via the DOAJ API. It also serv
     swag['info']['version'] = API_VERSION_NUMBER
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
+
+
+# Handle wayward paths by raising an API404Error
+@blueprint.route("/<path:invalid_path>")
+def missing_resource(invalid_path):
+    docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
+    spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
+    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(invalid_path, spec_url, docs_url))
+
 
 @blueprint.route('/docs')
 def docs():
@@ -358,18 +367,18 @@ def search_applications(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     try:
         results = DiscoveryApi.search_applications(current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
@@ -654,18 +663,18 @@ def search_journals(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     try:
         results = DiscoveryApi.search_journals(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
@@ -863,19 +872,19 @@ def search_articles(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     results = None
     try:
         results = DiscoveryApi.search_articles(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
@@ -901,6 +910,8 @@ def retrieve_journal(jid):
     # ideally (bonus points) if the id is malformed (check elasticsearch id format)
     # then return 400 Bad Request
 
-    # there are helpers you can use as-is in the view route to generate 400 Bad Request and 404 Not Found:
-    # not_found(message)
-    # bad_request(message)
+    # there are error handlers in the view route to generate 400 Bad Request, 401 Forbidden and 404 Not Found,
+    # just raise these exceptions:
+    # Api400Error(message)
+    # Api401Error(message)
+    # Api404Error(message)
