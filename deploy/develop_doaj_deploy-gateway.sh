@@ -19,6 +19,9 @@ cd doaj
 git submodule update --recursive --init
 git submodule update --recursive
 
+# symlink the app config into place
+ln -sf /home/cloo/repl/test/appconfig/doaj-test.cfg test.cfg
+
 # install app on gate
 sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
