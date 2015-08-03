@@ -31,7 +31,7 @@
 
 
     <h3 id="special_characters">Special characters</h3>
-    <p></p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL since a "naked" backslash <code>\</code> is not allowed in a URL. So you can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
+    <p>All forward slash <code>/</code> characters will be automatically escaped for you unless you escape them yourself. This means any forward slashes <code>/</code> will become <code>\/</code> which ends up encoded as <code>%5C/</code> in a URL since a "naked" backslash <code>\</code> is not allowed in a URL. So you can search for a DOI by giving the articles endpoint either of the following queries (they will give you the same results):
 
 <pre>
 doi:10.3389/fpsyg.2013.00479
@@ -91,15 +91,15 @@ sort=bibjson.title:desc
 
     <h3 id="query_string_advanced_usage">The query string - advanced usage</h3>
 
-    <p>The format of the query part of the URL is that of a Lucene query string, as documented here: <a href="https://lucene.apache.org/core/2_9_4/queryparsersyntax.html">https://lucene.apache.org/core/2_9_4/queryparsersyntax.html</a></p>
+    <p>The format of the query part of the URL is that of an Elasticsearch query string, as documented here: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#query-string-syntax</a>. Elasticsearch uses Lucene under the hood.</p>
 
-    <p>Some of the Lucene query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance.  The disabled features are:</p>
+    <p>Some of the Elasticsearch query syntax <strong>has been disabled</strong> in order to prevent queries which may damage performance. The disabled features are:</p>
 
     <ol>
-        <li><p>Wildcard searches.  You may not put a * into a query string: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Wildcard_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Wildcard_Searches</a></p></li>
-        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Regexp_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Regexp_Searches</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
-        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Fuzzy_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Fuzzy_Searches</a></p></li>
-        <li><p>Proximity Searches. <a href="http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Proximity_Searches">http://lucene.apache.org/core/5_2_1/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Proximity_Searches</a></p></li>
+        <li><p>Wildcard searches.  You may not put a * into a query string: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_wildcards</a></p></li>
+        <li><p>Regular expression searches.  You may not put an expression between two forward slashes <code>/regex/</code> into a query string: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_regular_expressions</a>. This is done both for performance reasons and because of the escaping of forward slashes <code>/</code> <a href="#special_characters">described above.</a></p></li>
+        <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness</a></p></li>
+        <li><p>Proximity Searches. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches</a></p></li>
     </ol>
 
 </div>
@@ -122,32 +122,18 @@ sort=bibjson.title:desc
 
 <script type="text/javascript">
     $(function () {
-      var url = window.location.search.match(/url=([^&]+)/);
-      if (url && url.length > 1) {
-        url = decodeURIComponent(url[1]);
-      } else {
-        url = current_scheme + '//' + current_domain + "/api/v1";
-      }
+      var url = current_scheme + '//' + current_domain + "/api/v1/swagger.json";
+      console.log(url);
       window.swaggerUi = new SwaggerUi({
         url: url,
         validatorUrl: null,
         docExpansion: 'list',
         dom_id: "swagger-ui-container",
-        supportedSubmitMethods: ['get', 'post', 'put', 'delete', 'patch'],
+        supportedSubmitMethods: ['get', 'post', 'put', 'delete'],
         onComplete: function(swaggerApi, swaggerUi){
-          if(typeof initOAuth == "function") {
-            initOAuth({
-              clientId: "your-client-id",
-              realm: "your-realms",
-              appName: "your-app-name"
-            });
-          }
-
           $('pre code').each(function(i, e) {
             hljs.highlightBlock(e)
           });
-
-          //addApiKeyAuthorization();
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
@@ -155,23 +141,6 @@ sort=bibjson.title:desc
         apisSorter: "alpha",
         showRequestHeaders: false
       });
-
-      function addApiKeyAuthorization(){
-        var key = encodeURIComponent($('#input_apiKey')[0].value);
-        if(key && key.trim() != "") {
-            var apiKeyAuth = new SwaggerClient.ApiKeyAuthorization("api_key", key, "query");
-            window.swaggerUi.api.clientAuthorizations.add("api_key", apiKeyAuth);
-            log("added key " + key);
-        }
-      }
-
-      //$('#input_apiKey').change(addApiKeyAuthorization);
-
-      // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
-      /*
-        var apiKey = "myApiKeyXXXX123456789";
-        $('#input_apiKey').val(apiKey);
-      */
 
       window.swaggerUi.load();
 

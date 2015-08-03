@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template
+from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template, redirect
 from flask.ext.login import current_user
 
 from flask_swagger import swagger
@@ -16,6 +16,10 @@ blueprint = Blueprint('api_v1', __name__)
 API_VERSION_NUMBER = '1.0.0'
 
 @blueprint.route('/')
+def api_v1_root():
+    return redirect(url_for('.api_spec'))
+
+@blueprint.route('/swagger.json')
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
