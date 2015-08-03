@@ -241,7 +241,9 @@ It is likely that history records will only be created upon request by the admin
         "oa_statement_url" : "<OA statment url>",
         "has_apc" : "Yes|No",
         "has_seal" : "Yes|No",
-        "classification_paths" : [<list of all expanded LCC terms, with parents>]
+        "classification_paths" : [<list of all expanded LCC terms, with parents>],
+        "unpunctitle" : "<title without punctuation>",
+        "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
     "last_updated" : "<date record last modified>",
@@ -325,7 +327,9 @@ It is likely that history records will only be created upon request by the admin
         "country" : "<country of journal publication>",
         "license" : [<list of titles of licences>],
         "publisher" : "<publisher>",
-        "classification_paths" : [<list of all expanded LCC terms, with parents>]
+        "classification_paths" : [<list of all expanded LCC terms, with parents>],
+        "unpunctitle" : "<title without punctuation>",
+        "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
     "last_modified" : "<date record last modified>"
@@ -334,30 +338,31 @@ It is likely that history records will only be created upon request by the admin
 
 NOTE: there's an argument for putting the issn identifiers inside the journal part of the bibjson, rather than at the root of the bibliographic record, but this creates some annoying complexities in the software implementation and its API for interacting with identifiers, so it has not yet been done.  Sould it be?  The same goes for the subject, which currently comes from the journal record, but which can effectively be applied the the article too.
 
-### Contact Data Model
-
-    {
-        "id" : "<the username of the user>",
-        "password" : "<hashed password>",
-        "name" : "<user's actual name>",
-        "email" : "<user's email address>",
-        "role" : [<list of user roles>]
-        "journal" : [<list of journal ids the user can administer>]
-    }
-
+### Account Data Model
+```python
+{
+    "id" : "<the username of the user>",
+    "password" : "<hashed password>",
+    "name" : "<user's actual name>",
+    "email" : "<user's email address>",
+    "role" : [<list of user roles>],
+    "journal" : [<list of journal ids the user can administer>],
+    "api_key" : "<32 character-long hexadecimal key to access API>"
+}
+```
 ### File Upload Data Model
-
-    {
-        "id": "<opaque id of upload>",
-        "status": "incoming|validated|failed|processed",
-        "last_updated": "<last date modified>",
-        "created_date": "<date of initial upload>",
-        "owner": "<user id of owner>",
-        "schema": "<metadata scheme used>",
-        "filename": "<filename of upload>",
-        "error" : "<any error associated with the upload>"
-    }
-
+```python
+{
+    "id": "<opaque id of upload>",
+    "status": "incoming|validated|failed|processed",
+    "last_updated": "<last date modified>",
+    "created_date": "<date of initial upload>",
+    "owner": "<user id of owner>",
+    "schema": "<metadata scheme used>",
+    "filename": "<filename of upload>",
+    "error" : "<any error associated with the upload>"
+}
+```
 ### Journal ToC Data Model
 
 The Journal ToC data model stores a cache of the Table of Contents on a per-volume basis

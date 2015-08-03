@@ -1,0 +1,12 @@
+{
+  "types": [
+      {
+        "type": "account",
+        "tasks": {
+          "add_role": {"role" : "api"},
+          "generate_api_key": {}
+        },
+        "keepalive": "1m"
+      }
+  ]
+}

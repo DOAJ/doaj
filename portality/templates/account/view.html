@@ -20,13 +20,19 @@
                 <div class="alert alert-danger"><strong>NOTE</strong> you are editing a user account that is not your own.  Be careful!</div>
             {% endif %}
             <h2>Hi {{ account.id }}</h2>
-            <p><strong>role</strong>: {{account.role|join(", ")}}
+            {%  if account.role|length > 0 %}
+                <p><strong>Role(s)</strong>: {{account.role|join(", ")}}
+            {% endif %}
+            {% if account.api_key %}
+                <p><strong>API Key</strong>: <code>{{account.api_key}}</code>
+            {% endif %}
         </div>
     </div>
+
     <h3>Edit your details</h3>
     <div class="row-fluid">
         <div class="span6">
-            <div style="border: 1px solid #cccccc; padding: 10px; margin: 10px">
+            <div class="grey_bordered_div">
                 <h4>Update your email address</h4>
                 <form action="" method="POST">
                     {% if account.email %}
@@ -34,41 +40,56 @@
                     {% else %}
                         <input type="text" name="email" value="" placeholder="enter your email address">
                     {% endif %}
-                    <input type="submit" class="btn btn-success" name="submit" value="Update">
+                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
                 </form>
             </div>
+
+            {% if account.has_role('api') %}
+            <div class="grey_bordered_div">
+                <form action="" method="POST">
+                    <div>
+                        <h4 style="width: 90%; display: inline">Generate a new API Key</h4>
+                        <input type="submit" class="btn btn-success" name="submit" value="Generate" style="float: right">
+                    </div>
+                </form>
+            </div>
+            {% endif %}
             
-            <div style="border: 1px solid #cccccc; padding: 10px; margin: 10px">
+            <div class="grey_bordered_div">
                 <h4>Edit your user roles</h4>
                 <form action="" method="POST">
                     {% if current_user.is_super %}
-                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 90%"><br><br>
-                        <input type="submit" class="btn btn-success" name="submit" value="Update">
+                        <input id="editable_role" type="text" name="role" value="{{account.role|join(',')}}" style="width: 70%; display: inline">
+                        <input type="submit" class="btn btn-success" name="submit" value="Update" style="display: inline; float: right">
                     {% else %}
                         <input type="text" name="role" value="{{account.role|join(',')}}" disabled="disabled">
-                        <input type="submit" class="btn btn-success" name="submit" value="Update" disabled="disabled">
+                        <input type="submit" class="btn btn-success" name="submit" value="Update" disabled="disabled" style="float: right">
                     {% endif %}
                 </form>
             </div>
         </div>
         
         <div class="span6">
-            <div style="border: 1px solid #cccccc; padding: 10px; margin: 10px">
+            <div class="grey_bordered_div">
                 <h4>Change your password</h4>
                 <form action="" method="POST">
                     <input type="password" name="password" placeholder="new password"><br>
-                    <input type="password" name="confirm" placeholder="confirm your new password"><br>
-                    <input type="submit" class="btn btn-success" name="submit" value="Update">
+                    <input type="password" name="confirm" placeholder="confirm your new password">
+                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
                 </form>
             </div>
             
             {% if current_user.is_super %}
-            <div style="border: 1px solid #cccccc; padding: 10px; margin: 10px">
+            <div class="grey_bordered_div">
                 <h4>Delete this account</h4>
                 <p>(This <strong>irrevocably</strong> deletes the account)</p>
                 <form action="" method="POST">
-                    <input type="submit" name="submit" value="Delete" class="btn btn-danger">
-                    <input type="radio" name="confirm" value="confirm">&nbsp;yes, I'm sure
+                    <span class="span8">
+                        <input type="radio" name="confirm" value="confirm">&nbsp;&nbsp;yes, I'm sure
+                    </span>
+                    <span class="span4">
+                        <input type="submit" name="submit" value="Delete" class="btn btn-danger" style="float: right">
+                    </span>
                 </form>
             </div>
             {% endif %}

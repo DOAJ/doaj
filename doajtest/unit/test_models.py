@@ -150,6 +150,103 @@ class TestClient(DoajTestCase):
         s = models.Suggestion.pull(s.id)
         assert s.owner == "another_new_owner"
 
+    def test_08_article_deletes(self):
+        # populate the index with some articles
+        for i in range(5):
+            a = models.Article()
+            a.set_in_doaj(True)
+            bj = a.bibjson()
+            bj.title = "Test Article {x}".format(x=i)
+            bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.publisher = "Test Publisher {x}".format(x=i)
+            a.save()
+
+            # make sure the last updated dates are suitably different
+            time.sleep(1)
+        time.sleep(1)
+
+        # now hit the key methods involved in article deletes
+        query = {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"bibjson.title.exact" : "Test Article 0"}}
+                    ]
+                }
+            }
+        }
+        count = models.Article.hit_count(query)
+        assert count == 1
+
+        count = models.Article.count_by_issns(["1000-0000", "2000-0000"])
+        assert count == 2
+
+        models.Article.delete_selected(query)
+        time.sleep(2)
+        assert len(models.Article.all()) == 4
+        assert len(models.ArticleHistory.all()) == 1
+
+        models.Article.delete_by_issns(["2000-0000", "3000-0000"])
+        time.sleep(2)
+        assert len(models.Article.all()) == 2
+        assert len(models.ArticleHistory.all()) == 3
+
+    def test_08_journal_deletes(self):
+        # tests the various methods that are key to journal deletes
+
+        # populate the index with some journals
+        for i in range(5):
+            j = models.Journal()
+            j.set_in_doaj(True)
+            bj = j.bibjson()
+            bj.title = "Test Journal {x}".format(x=i)
+            bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
+            j.save()
+
+            # make sure the last updated dates are suitably different
+            time.sleep(1)
+
+        # populate the index with some articles
+        for i in range(5):
+            a = models.Article()
+            a.set_in_doaj(True)
+            bj = a.bibjson()
+            bj.title = "Test Article {x}".format(x=i)
+            bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.publisher = "Test Publisher {x}".format(x=i)
+            a.save()
+
+            # make sure the last updated dates are suitably different
+            time.sleep(1)
+
+        # now hit the key methods involved in journal deletes
+        query = {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"bibjson.title.exact" : "Test Journal 1"}}
+                    ]
+                }
+            }
+        }
+        count = models.Journal.hit_count(query)
+        assert count == 1
+
+        issns = models.Journal.issns_by_query(query)
+        assert len(issns) == 1
+        assert "1000-0000" in issns
+
+        models.Journal.delete_selected(query, articles=True)
+        time.sleep(2)
+
+        assert len(models.Article.all()) == 4
+        assert len(models.ArticleHistory.all()) == 1
+
+        assert len(models.Journal.all()) == 4
+        assert len(models.JournalHistory.all()) == 6    # Because all journals are snapshot at create time
+
     def test_08_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
@@ -161,3 +258,4 @@ class TestClient(DoajTestCase):
             journal_ids.append(j.id)
         journal_ids = list(set(journal_ids[:]))  # keep only unique ids
         assert len(journal_ids) == 99
+

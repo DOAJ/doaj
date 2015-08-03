@@ -1,12 +1,12 @@
-from flask import Blueprint, request, abort, make_response
-from flask import render_template, abort, redirect, url_for, flash, send_file, jsonify
+from flask import Blueprint, request, make_response
+from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
-from copy import deepcopy
 
 from portality import dao
 from portality import models
-from portality.core import app, ssl_required, write_required
+from portality.core import app
+from portality.decorators import ssl_required, write_required, api_key_required
 from portality import blog
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree

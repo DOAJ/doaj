@@ -23,6 +23,7 @@ setup(
         "esprit==0.0.2",
         "nose",
         "unidecode",
+        "Flask-Swagger==0.2.8",
         # for deployment
         "gunicorn",
         "newrelic",

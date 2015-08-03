@@ -1,11 +1,11 @@
-import os, json, UserDict, requests, uuid
+import json, UserDict, requests, uuid
 from copy import deepcopy
 from datetime import datetime
 import time
 # debugging
 import traceback, sys
 
-from portality.core import app, current_user
+from portality.core import app
 
 '''
 All models in models.py should inherig this DomainObject to know how to save themselves in the index and so on.
@@ -447,6 +447,11 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def count(cls):
         return requests.get(cls.target() + '_count').json()['count']
+
+    @classmethod
+    def hit_count(cls, query, **kwargs):
+        res = cls.query(q=query, **kwargs)
+        return res.get("hits", {}).get("total", 0)
 
 ########################################################################
 ## Some useful ES queries

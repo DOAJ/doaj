@@ -1,11 +1,11 @@
 import json, urllib, requests
 
-from flask import Blueprint, abort, make_response, request, abort, url_for
+from flask import Blueprint, make_response, request, abort, url_for
 from flask.ext.login import current_user, login_required
 
-from portality.core import app, ssl_required, write_required
+from portality.core import app
+from portality.decorators import ssl_required, write_required
 from portality.util import jsonp
-
 from portality import lock
 
 blueprint = Blueprint('doajservices', __name__)

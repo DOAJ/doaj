@@ -30,5 +30,3 @@ class Authorise(object):
     def top_level_roles(cls):
         return app.config.get("TOP_LEVEL_ROLES", [])
 
-        
-        

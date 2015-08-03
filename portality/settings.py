@@ -12,6 +12,8 @@ DOAJ_VERSION = "2.10.3_SNAPSHOT-1"
 
 OFFLINE_MODE=False
 
+FEATURES = []
+
 # ========================
 # MAIN SETTINGS
 
@@ -99,22 +101,23 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 
 SUPER_USER_ROLE = "admin"
 
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor"]
+#"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api"]
 
 ROLE_MAP = {
     "editor": [
-        "associate_editor", # note, these don't cascade, so we still need to list all the low-level roles
+        "associate_editor",     # note, these don't cascade, so we still need to list all the low-level roles
         "edit_journal",
         "edit_suggestion",
         "editor_area",
         "assign_to_associate",
         "list_group_journals",
-        "list_group_suggestions"
+        "list_group_suggestions",
     ],
-    "associate_editor" : [
+    "associate_editor": [
         "edit_journal",
         "edit_suggestion",
-        "editor_area"
+        "editor_area",
     ]
 }
 
@@ -421,3 +424,46 @@ DATE_FORMATS = [
     "%B %Y",                # e.g. February 2014
     "%Y"                    # e.g. 1978
 ]
+
+
+# ========================================
+# API configuration
+
+DISCOVERY_MAX_PAGE_SIZE = 100
+
+DISCOVERY_ARTICLE_SEARCH_SUBS = {
+    "title" : "bibjson.title",
+    "doi" : "bibjson.identifier.id.exact",
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.journal.publisher",
+    "journal" : "bibjson.journal.title",
+    "abstract" :  "bibjson.abstract"
+}
+
+DISCOVERY_ARTICLE_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact"
+}
+
+DISCOVERY_JOURNAL_SEARCH_SUBS = {
+    "title" : "index.title",
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.publisher",
+    "license" : "index.license.exact"
+}
+
+DISCOVERY_JOURNAL_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact",
+    "issn" :  "index.issn.exact"
+}
+
+DISCOVERY_APPLICATION_SEARCH_SUBS = {
+    "title" : "index.title",
+    "issn" :  "index.issn.exact",
+    "publisher" : "bibjson.publisher",
+    "license" : "index.license.exact"
+}
+
+DISCOVERY_APPLICATION_SORT_SUBS = {
+    "title" : "index.unpunctitle.exact",
+    "issn" :  "index.issn.exact"
+}
