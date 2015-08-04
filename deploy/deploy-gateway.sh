@@ -34,6 +34,9 @@ git submodule update --recursive
 sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
 pip install -r requirements.txt
+# insert assorted swearwords and curses
+pip install flask-swagger==0.2.8
+pip install flask==0.9  # we need to bump flask to 10.1 and retest the app .. soon
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
