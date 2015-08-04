@@ -494,6 +494,35 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
+    def _send_admin_ready_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+
+        # This is to the managing editor email list
+        to = app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME","") + " - application ready"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/admin_application_ready.txt",
+                                application_title=journal_name,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('A confirmation email has been sent to the Managing Editors.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+
 class ApplicationFormFactory(object):
     @classmethod
     def get_form_context(cls, role=None, source=None, form_data=None):
@@ -628,6 +657,10 @@ class ManEdApplicationReview(ApplicationContext):
         # inform editor if this application was previously set to 'ready', but has been changed to 'in progress'
         if self.source.application_status == 'ready' and self.target.application_status == 'in progress':
             self._send_editor_inprogress_email()
+
+        # email other managing editors if this was newly set to 'ready'
+        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+            self._send_admin_ready_email()
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -793,41 +826,6 @@ class EditorApplicationReview(ApplicationContext):
                 self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
             else:
                 self.form.editor.choices = [("", "")]
-
-    def _send_admin_ready_email(self):
-
-        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
-        url_root = app.config.get("BASE_URL")
-        query_for_id = Facetview2.make_query(query_string=self.target.id)
-        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
-        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
-
-        # This is to admins todo: might this instead be to their mailing list?
-        admin_query = \
-            { "query" :
-                { "term" : { "role" : "admin" } }
-            }
-
-        res = models.Account.query(q=admin_query)
-        admins = [models.Account(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
-        to = [acc.email for acc in admins]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - application ready"
-
-        try:
-            app_email.send_mail(to=to,
-                                fro=fro,
-                                subject=subject,
-                                template_name="email/admin_application_ready.txt",
-                                application_title=journal_name,
-                                url_for_application=url_for_application
-            )
-            self.add_alert('A confirmation email has been sent to {0} admins.'.format(len(admins)))
-        except Exception as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the ready status to admin email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.error(magic + "\n" + repr(e))
-            raise e
 
 
 class AssEdApplicationReview(ApplicationContext):
@@ -1340,7 +1338,7 @@ class ManEdJournalReview(PrivateContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent journal")
 
-        return super(PrivateContext, self).render_template(
+        return super(ManEdJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
             **kwargs)
@@ -1390,7 +1388,7 @@ class ManEdJournalReview(PrivateContext):
             raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PrivateContext, self).finalise()
+        super(ManEdJournalReview, self).finalise()
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1422,7 +1420,7 @@ class EditorJournalReview(PrivateContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent journal")
 
-        return super(PrivateContext, self).render_template(
+        return super(EditorJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
             **kwargs)
@@ -1482,7 +1480,7 @@ class EditorJournalReview(PrivateContext):
             raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PrivateContext, self).finalise()
+        super(EditorJournalReview, self).finalise()
 
         # Save the target
         self.target.set_last_manual_update()
