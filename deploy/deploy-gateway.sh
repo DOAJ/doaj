@@ -35,7 +35,7 @@ sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
 pip install -r requirements.txt
 
-# prep sym links for the test server
+# prep sym links for the app server
 ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
 ln -sf $DIR/nginx/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV
 ln -sf /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-enabled/doaj-$ENV

@@ -21,15 +21,15 @@ server {
 
     # Common misspelling of doajArticle**s**.xsd
     location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location =/static/doaj/doajArticles.xsd {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location =/static/doaj/iso_639-2b.xsd {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
     }
 
     location / {
@@ -86,7 +86,7 @@ server {
 
     # Common misspelling of doajArticle**s**.xsd
     location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/repl/apps/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
     }
 
     location / {
