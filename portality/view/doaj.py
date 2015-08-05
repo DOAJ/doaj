@@ -301,7 +301,6 @@ def features():
 def doajArticles_oai_namespace_page():
     return render_template("doaj/doajArticles_oai_namespace.html")
 
-
 @blueprint.route("/oainfo")
 def oainfo():
     return render_template("doaj/oainfo.html")
@@ -322,6 +321,10 @@ def membership():
 def sponsors():
     return render_template("doaj/our_sponsors.html")
 
+@blueprint.route("/volunteers")
+def volunteers():
+    return render_template("doaj/volunteers.html")
+
 @blueprint.route("/support")
 def support():
     return render_template("doaj/support.html")
@@ -333,7 +336,7 @@ def publishermembers():
 @blueprint.route("/suggest", methods=['GET'])
 def suggest():
     return redirect(url_for('.suggestion'), code=301)
-    
+
 @blueprint.route("/supportDoaj")
 def support_doaj():
     return render_template("doaj/supportDoaj.html")
@@ -349,3 +352,8 @@ def translated():
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
+
+# an informational page about content licensing rights
+@blueprint.route('/rights')
+def rights():
+    return render_template('doaj/rights.html')
