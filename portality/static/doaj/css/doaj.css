@@ -182,6 +182,10 @@ a.readonly_journal_link {
     margin-left: 220px;
 }
 
+.form-horizontal.wide .heading-no-margin-bottom {
+    margin-bottom: 0;
+}
+
 .form-horizontal .nested-field-container .control-label {
     width: auto;
     margin-right: 1em;
