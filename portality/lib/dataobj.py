@@ -310,18 +310,30 @@ class DataObj(object):
 
             self._data[name] = []
             for i in value:
-                if self._struct['lists'][name]['contains'] == 'object':
-                    coerced_i = DataObj(raw=i, _struct=self._struct['structs'][name], _type=name, _silent_drop_extra_fields=self._silent_drop_extra_fields)
-                elif self._struct['lists'][name]['contains'] == 'field':
-                    coerced_i = self._coerce[self._struct['lists'][name]['coerce']](value)
-                else:
-                    raise DataStructureException("Data object struct definition error: Don't understand how to interpret struct for list '{name}'. Only allowing 'contains':'object' and 'contains':'field'.".format(name=name))
-
+                try:
+                    if self._struct['lists'][name]['contains'] == 'object':
+                        coerced_i = DataObj(raw=i, _struct=self._struct['structs'][name], _type=name, _silent_drop_extra_fields=self._silent_drop_extra_fields)
+                    elif self._struct['lists'][name]['contains'] == 'field':
+                        coerced_i = self._coerce[self._struct['lists'][name]['coerce']](value)
+                    else:
+                        raise DataStructureException("Data object struct definition error: Don't understand how to interpret struct for list '{name}'. Only allowing 'contains':'object' and 'contains':'field'.".format(name=name))
+                except KeyError as e:
+                    if e.message == 'contains':
+                        raise DataSchemaException("No information in struct provided on what {0} contains".format(name))
+                    else:
+                        raise DataSchemaException("Problem while setting {0}: KeyError for {1}".format(name, e.message))
                 self._data[name].append(coerced_i)
 
         # it's a normal field, just set it with coercion
         elif name in self._struct.get('fields', {}):
-            self._data[name] = self._coerce[self._struct['fields'][name]['coerce']](value)
+            try:
+                self._data[name] = self._coerce[self._struct['fields'][name]['coerce']](value)
+            except KeyError as e:
+                if e.message == 'coerce':
+                    raise DataSchemaException("No information in struct provided on how to coerce {0}".format(name))
+                else:
+                    raise DataSchemaException("Problem while setting {0}: KeyError for {1}".format(name, e.message))
+
 
         # not an allowed attribute
         else:

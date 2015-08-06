@@ -32,8 +32,8 @@ class JournalDO(dataobj.DataObj):
                     "structs": {
                         "contact": {
                             "fields": {
-                                "email": {"contains": "unicode"},
-                                "name": {"contains": "unicode"},
+                                "email": {"coerce": "unicode"},
+                                "name": {"coerce": "unicode"},
                             }
                         }
                     }
@@ -107,7 +107,7 @@ class JournalDO(dataobj.DataObj):
                                 "url": {"coerce": "unicode"},
                             },
                             "lists": {
-                                "policy": {"coerce": "unicode"},
+                                "policy": {"coerce": "unicode", "contains": "field"},
                             }
                         },
                         "editorial_review": {
