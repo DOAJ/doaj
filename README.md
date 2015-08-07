@@ -2,14 +2,6 @@
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
-## Deployment
-We're running supervisord on our server. Every time you push changes, do
-    
-    git pull  # or git clone https://github.com/DOAJ/doaj.git if deploying for the first time
-    git submodule init  # if this is the first time you're deploying the app, but won't hurt if it's not
-    git submodule update  # in case one of the repo's submodules are at a newer commit now
-    sudo supervisorctl restart doaj
-
 ## Setting up the software
 
 ### Elasticsearch
