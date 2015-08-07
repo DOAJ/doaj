@@ -30,7 +30,8 @@ from portality.view.openurl import blueprint as openurl
 from portality.view.atom import blueprint as atom
 from portality.view.editor import blueprint as editor
 from portality.view.doajservices import blueprint as services
-from portality.view.api_v1 import blueprint as api_v1
+if 'api' in app.config['FEATURES']:
+    from portality.view.api_v1 import blueprint as api_v1
 
 app.register_blueprint(account, url_prefix='/account')
 app.register_blueprint(admin, url_prefix='/admin')
