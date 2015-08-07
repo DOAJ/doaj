@@ -219,7 +219,7 @@ class DataObj(object):
     ]
 
     def __init__(self, raw=None, _struct=None, _type=None, _silent_drop_extra_fields=False):
-        assert isinstance(raw, dict), "The raw data passed in must be iteratable as a dict."
+        assert isinstance(raw, dict), "The raw data passed in must be iterable as a dict."
 
         self._silent_drop_extra_fields = _silent_drop_extra_fields
 
@@ -262,18 +262,20 @@ class DataObj(object):
         if name in object.__getattribute__(self, '_RESERVED_ATTR_NAMES'):
             return object.__getattribute__(self, name)
 
-        print name
-
-        if not object.__getattribute__(self, '_data').get(name):
+        if object.__getattribute__(self, '_data').get(name) is None:
         # the requested attribute is not present in the data already
 
-            if name in object.__getattribute__(self, '_struct').get('objects', {}):
-                object.__getattribute__(self, '_data')[name] = DataObj(_struct=object.__getattribute__(self, '_struct')['structs'][name], _type=name)
-            if name in object.__getattribute__(self, '_struct').get('lists', {}):
+            if name in object.__getattribute__(self, '_struct').get('objects', []):
+                object.__getattribute__(self, '_data')[name] = DataObj(raw={}, _struct=object.__getattribute__(self, '_struct')['structs'][name], _type=name)
+            elif name in object.__getattribute__(self, '_struct').get('lists', {}):
                 object.__getattribute__(self, '_data')[name] = []
             elif name in object.__getattribute__(self, '_struct').get('fields', {}):
             # it's a primitive field that isn't set
                 try:
+                    # if there is a default set in the struct, return it
+                    if object.__getattribute__(self, '_struct')['fields'][name].get("default") is not None:
+                        return object.__getattribute__(self, '_struct')['fields'][name]["default"]
+                    # else cast a None
                     return object.__getattribute__(self, '_coerce')[object.__getattribute__(self, '_struct')['fields'][name]['coerce']](None)
                 except ValueError:
                     raise AttributeError('{name} is not set'.format(name=name))

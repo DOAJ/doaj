@@ -158,7 +158,7 @@ JOURNAL_SOURCE = {
         "owner": "Owner",
         "editor_group": "editorgroup",
         "editor": "associate",
-        "seal": True,
+        "seal": True
     }
 }
 
@@ -260,9 +260,6 @@ for n in notes:
     i += 1
 
 JOURNAL_APIDO_STRUCT = {
-    "coerce_behaviour": {
-        "integer": {"onfail": "leave_unset"}
-    },
     "objects": ["bibjson", "admin"],
     "fields": {
         "id": {"coerce": "unicode"},
@@ -272,9 +269,9 @@ JOURNAL_APIDO_STRUCT = {
     "structs": {
         "admin": {
             "fields": {
-                "in_doaj": {"coerce": "bool"},
-                "ticked": {"coerce": "bool"},
-                "seal": {"coerce": "bool"},
+                "in_doaj": {"coerce": "bool", "default": False},
+                "ticked": {"coerce": "bool", "default": False},
+                "seal": {"coerce": "bool", "default": False},
                 "owner": {"coerce": "unicode"},
             },
             "lists": {

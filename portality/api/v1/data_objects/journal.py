@@ -9,9 +9,6 @@ class JournalDO(dataobj.DataObj):
         self._RESERVED_ATTR_NAMES += ['from_model']
 
         struct = {
-            "coerce_behaviour": {
-                "integer": {"onfail": "leave_unset"}
-            },
             "objects": ["bibjson", "admin"],
             "fields": {
                 "id": {"coerce": "unicode"},
@@ -21,9 +18,9 @@ class JournalDO(dataobj.DataObj):
             "structs": {
                 "admin": {
                     "fields": {
-                        "in_doaj": {"coerce": "bool"},
-                        "ticked": {"coerce": "bool"},
-                        "seal": {"coerce": "bool"},
+                        "in_doaj": {"coerce": "bool", "default": False},
+                        "ticked": {"coerce": "bool", "default": False},
+                        "seal": {"coerce": "bool", "default": False},
                         "owner": {"coerce": "unicode"},
                     },
                     "lists": {
