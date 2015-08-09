@@ -182,3 +182,8 @@ class JournalDO(dataobj.DataObj):
     def from_model(cls, jm):
         assert isinstance(jm, models.Journal)
         return cls(jm.data)
+
+    @classmethod
+    def from_model_by_id(cls, id_):
+        j = models.Journal.pull(id_)
+        return cls.from_model(j)

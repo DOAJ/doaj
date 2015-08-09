@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, Api400Error, Api401Error, Api404Error
+from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 

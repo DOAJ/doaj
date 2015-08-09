@@ -238,11 +238,6 @@ class DataObj(object):
         for k, v in raw.iteritems():
             setattr(self, k, v)
 
-        # restructure the object based on the struct if required
-        # ET note to self and not isinstance(self.data, DataObj) ?
-        # if self.struct is not None:
-        #     self.data = self.construct(self.data, self.struct, self.coerce, drop_extra_fields=drop_extra_fields)
-
     def __getattribute__(self, name):
         # If this attribute is not already set in the internal data
         # but it's supposed to be an object (not primitive type)
@@ -316,7 +311,7 @@ class DataObj(object):
                     if self._struct['lists'][name]['contains'] == 'object':
                         coerced_i = DataObj(raw=i, _struct=self._struct['structs'][name], _type=name, _silent_drop_extra_fields=self._silent_drop_extra_fields)
                     elif self._struct['lists'][name]['contains'] == 'field':
-                        coerced_i = self._coerce[self._struct['lists'][name]['coerce']](value)
+                        coerced_i = self._coerce[self._struct['lists'][name]['coerce']](i)
                     else:
                         raise DataStructureException("Data object struct definition error: Don't understand how to interpret struct for list '{name}'. Only allowing 'contains':'object' and 'contains':'field'.".format(name=name))
                 except KeyError as e:

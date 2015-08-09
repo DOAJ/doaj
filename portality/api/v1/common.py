@@ -18,15 +18,21 @@ class Api400Error(Exception):
 class Api401Error(Exception):
     pass
 
+class DataObjectJsonEncoder(json.JSONEncoder):
+    def default(self, o):
+        return o._data
+
 class ModelJsonEncoder(json.JSONEncoder):
     def default(self, o):
         return o.data
 
+def jsonify_data_object(do):
+    data = json.dumps(do, cls=DataObjectJsonEncoder)
+    return respond(data, 200)
 
 def jsonify_models(models):
     data = json.dumps(models, cls=ModelJsonEncoder)
     return respond(data, 200)
-
 
 def respond(data, status):
     callback = request.args.get('callback', False)
