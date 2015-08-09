@@ -6,7 +6,7 @@ class JournalDO(dataobj.DataObj):
     _type = 'journal'
 
     def __init__(self, __raw=None):
-        self._RESERVED_ATTR_NAMES += ['from_model']
+        self._RESERVED_ATTR_NAMES += ['from_model', 'from_model_by_id']
 
         struct = {
             "objects": ["bibjson", "admin"],
