@@ -3,11 +3,8 @@ from portality import models
 
 
 class JournalDO(dataobj.DataObj):
-    _type = 'journal'
 
-    def __init__(self, __raw=None):
-        self._RESERVED_ATTR_NAMES += ['from_model', 'from_model_by_id']
-
+    def __init__(self, raw=None):
         struct = {
             "objects": ["bibjson", "admin"],
             "fields": {
@@ -18,9 +15,9 @@ class JournalDO(dataobj.DataObj):
             "structs": {
                 "admin": {
                     "fields": {
-                        "in_doaj": {"coerce": "bool", "default": False},
-                        "ticked": {"coerce": "bool", "default": False},
-                        "seal": {"coerce": "bool", "default": False},
+                        "in_doaj": {"coerce": "bool", "get__default": False},
+                        "ticked": {"coerce": "bool", "get__default": False},
+                        "seal": {"coerce": "bool", "get__default": False},
                         "owner": {"coerce": "unicode"},
                     },
                     "lists": {
@@ -176,7 +173,7 @@ class JournalDO(dataobj.DataObj):
             }
         }
 
-        super(JournalDO, self).__init__(__raw, _struct=struct, _silent_drop_extra_fields=True)
+        super(JournalDO, self).__init__(raw, struct=struct, construct_silent_prune=True, expose_data=True)
 
     @classmethod
     def from_model(cls, jm):

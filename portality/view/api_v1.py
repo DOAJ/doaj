@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error
+from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -915,3 +915,36 @@ def retrieve_journal(jid):
     # Api400Error(message)
     # Api401Error(message)
     # Api404Error(message)
+
+#########################################
+## Application CRUD API
+
+@blueprint.route("/applications", methods=["POST"])
+@api_key_required
+def create_application():
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    # delegate to the API implementation
+    a = ApplicationsCrudApi.create(data, current_user)
+
+    # respond with a suitable Created response
+    return created(a, url_for("api_v1.retrieve_application", aid=a.id))
+
+@blueprint.route("/application/<aid>", methods=["GET"])
+@api_key_required
+def retrieve_application(aid):
+    pass
+
+@blueprint.route("/application/<aid>", methods=["PUT"])
+@api_key_required
+def update_application(aid):
+    pass
+
+@blueprint.route("/application/<aid>", methods=["DELETE"])
+@api_key_required
+def delete_application(aid):
+    pass

@@ -269,9 +269,9 @@ JOURNAL_APIDO_STRUCT = {
     "structs": {
         "admin": {
             "fields": {
-                "in_doaj": {"coerce": "bool", "default": False},
-                "ticked": {"coerce": "bool", "default": False},
-                "seal": {"coerce": "bool", "default": False},
+                "in_doaj": {"coerce": "bool", "get__default": False},
+                "ticked": {"coerce": "bool", "get__default": False},
+                "seal": {"coerce": "bool", "get__default": False},
                 "owner": {"coerce": "unicode"},
             },
             "lists": {

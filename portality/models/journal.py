@@ -985,6 +985,24 @@ class JournalBibJSON(GenericBibJSON):
     def submission_charges(self):
         return self.bibjson.get("submission_charges", {})
 
+    """
+    FIXME: when the models are updated, we want to change the storage structure to
+    {
+        "other" : "other value"
+        "nat_lib" : "library value",
+        "known" : ["known values"],
+        "url" : "url>
+    }
+    The below methods then need to receive and expose data in the original form
+    {
+        "policy" : [
+            "<known policy type (e.g. LOCKSS)>",
+            ["<policy category>", "<previously unknown policy type>"]
+        ],
+        "url" : "<url to policy information page>"
+    }
+    """
+
     def set_archiving_policy(self, policies, policy_url):
         if "archiving_policy" not in self.bibjson:
             self.bibjson["archiving_policy"] = {}

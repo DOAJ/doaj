@@ -6,7 +6,7 @@ from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
 import time
 
-class TestClient(DoajTestCase):
+class TestAPIDataObj(DoajTestCase):
 
     # we aren't going to talk to ES so override setup and teardown of index
     def setUp(self):
@@ -17,25 +17,21 @@ class TestClient(DoajTestCase):
 
     def test_01_create_empty(self):
         """Create an empty dataobject, mostly to check it doesn't die a recursive death"""
-        do = DataObj(raw={}, _type='test')
-        assert do._type == 'test'
-        assert do._data == {}
-        assert do._struct == {}
+        do = DataObj()
+        assert do.data == {}
+        assert do._struct is None
         with self.assertRaises(AttributeError):
             do.nonexistent_attribute
 
     def test_02_create_from_dict(self):
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
-        do = DataObj(raw=self.jm.data, _struct=expected_struct, _type='journal', _silent_drop_extra_fields=True)
-        assert do._type == 'journal'
+        do = DataObj(raw=self.jm.data, struct=expected_struct, construct_silent_prune=True, expose_data=True)
         assert do._struct == expected_struct
         self.check_do(do, expected_struct)
 
     def test_03_create_from_model(self):
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = JournalDO.from_model(self.jm)
-        assert do._type == 'journal'
-        #assert do._data == {}
         assert do._struct == expected_struct
         self.check_do(do, expected_struct)
 
@@ -90,3 +86,4 @@ class TestClient(DoajTestCase):
         assert isinstance(do.bibjson.archiving_policy.policy, list)
         # TODO the below line passes but journal struct needs enhancing here
         # assert do.bibjson.archiving_policy.policy == [u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]"], do.bibjson.archiving_policy.policy
+

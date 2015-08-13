@@ -619,3 +619,6 @@ def get_country_name(code):
 
 def get_currency_name(code):
     return currencies_dict.get(code, code)  # return what was passed in if not found
+
+def get_currency_code(name):
+    pass
