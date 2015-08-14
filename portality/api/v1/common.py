@@ -1,6 +1,6 @@
 import json, uuid
 from portality.core import app
-from flask import request
+from flask import request, url_for
 
 
 class Api(object):
@@ -25,6 +25,13 @@ class DataObjectJsonEncoder(json.JSONEncoder):
 class ModelJsonEncoder(json.JSONEncoder):
     def default(self, o):
         return o.data
+
+def created(obj, location):
+    app.logger.info("Sending 201 Created: {x}".format(x=location))
+    resp = respond(json.dumps({"status" : "created", "id" : obj.id, "location" : location }))
+    resp.headers["Location"] = location
+    resp.status_code = 201
+    return resp
 
 def jsonify_data_object(do):
     data = json.dumps(do, cls=DataObjectJsonEncoder)
