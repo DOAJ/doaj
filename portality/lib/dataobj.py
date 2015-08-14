@@ -1,5 +1,5 @@
 from portality.lib import dates
-from portality.datasets import get_country_code
+from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
 import locale, json, urlparse
 
@@ -7,17 +7,22 @@ import locale, json, urlparse
 ## Data coerce functions
 
 def to_currency_code(val):
-    # FIXME: implement
-    return val
+    if val is None:
+        return None
+    nv = get_currency_code(val)
+    if nv is None:
+        raise ValueError("Unable to convert {x} to a valid currency code".format(x=val))
+    uc = to_unicode()
+    return uc(nv)
 
-def to_country_code():
-
-    def cc(val):
-        val = get_country_code(val)
-        uc = to_unicode()
-        return uc(val)
-
-    return cc
+def to_country_code(val):
+    if val is None:
+        return None
+    nv = get_country_code(val, fail_if_not_found=True)
+    if nv is None:
+        raise ValueError("Unable to convert {x} to a valid country code".format(x=val))
+    uc = to_unicode()
+    return uc(nv)
 
 def to_unicode():
     def to_utf8_unicode(val):
@@ -127,6 +132,8 @@ def to_isolang(output_format=None):
         if val is None:
             return None
         l = dataset.find(val)
+        if l is None:
+            raise ValueError("Unable to find iso code for language {x}".format(x=val))
         for f in output_format:
             v = l.get(f)
             if v is None or v == "":
@@ -193,7 +200,7 @@ class DataObj(object):
         "url": to_url,
         "bool": to_bool,
         "isolang_2letter": to_isolang(output_format="alpha2"),
-        "country_code" : to_country_code(),
+        "country_code" : to_country_code,
         "currency_code" : to_currency_code
     }
 

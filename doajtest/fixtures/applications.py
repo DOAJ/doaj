@@ -61,8 +61,23 @@ APPLICATION_SOURCE = {
     }
 }
 
+_isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
+_isbj["archiving_policy"] = {
+    "policy" : [
+        {"name" : "LOCKSS"},
+        {"name" : "CLOCKSS"},
+        {"name" : "Trinity", "domain" : "A national library"},
+        {"name" : "A safe place", "domain" : "Other"}
+    ],
+    "url": "http://digital.archiving.policy"
+}
+
 INCOMING_SOURCE = {
-    "bibjson": deepcopy(JOURNAL_SOURCE['bibjson']),
+    "id" : "ignore_me",
+    "created_date" : "2001-01-01T00:00:00Z",
+    "last_updated" : "2001-01-01T00:00:00Z",
+
+    "bibjson": _isbj,
     "suggestion" : {
         "articles_last_year" : {
             "count" : 16,

@@ -1,5 +1,7 @@
 from portality.lib import dataobj
 from portality import models
+from portality.formcontext import choices
+from copy import deepcopy
 
 class IncomingApplication(dataobj.DataObj):
     def __init__(self, raw=None):
@@ -17,7 +19,7 @@ class IncomingApplication(dataobj.DataObj):
                     "fields": {
                         "title": {"coerce": "unicode"},
                         "alternative_title": {"coerce": "unicode"},
-                        "country": {"coerce": "country_code"},       # FIXME: need to make sure this is the correct form
+                        "country": {"coerce": "country_code"},
                         "publisher": {"coerce": "unicode"},
                         "provider": {"coerce": "unicode"},
                         "institution": {"coerce": "unicode"},
@@ -29,7 +31,7 @@ class IncomingApplication(dataobj.DataObj):
                     "lists": {
                         "identifier": {"contains": "object"},
                         "keywords": {"coerce": "unicode", "contains": "field"},
-                        "language": {"coerce": "isolang_2letter", "contains": "field"}, # FIXME: need to make sure this is the correct form
+                        "language": {"coerce": "isolang_2letter", "contains": "field"},
                         "link": {"contains": "object"},
                         "deposit_policy": {"coerce": "unicode", "contains": "field"},
                         "persistent_identifier_scheme": {"coerce": "unicode", "contains": "field"},
@@ -90,19 +92,29 @@ class IncomingApplication(dataobj.DataObj):
 
                         "submission_charges": {
                             "fields": {
-                                "currency": {"coerce": "currency_code"},    # FIXME: need to be implemented, but requires refactor of dataset stuff
+                                "currency": {"coerce": "currency_code"},
                                 "average_price": {"coerce": "integer"}
                             }
                         },
 
-                        "archiving_policy": {
+                        "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
                             "fields": {
                                 "url": {"coerce": "url"},
                             },
-                            "lists": {                                                  # FIXME: this can take one of a limited set, so we may need to enforce that here
-                                "policy": {"coerce": "unicode", "contains": "field"},   # FIXME: technically, this can also contain a list - data model is a bit broken here
+                            "lists": {
+                                "policy": {"coerce": "unicode", "contains": "object"},
                             },
-                            "required" : ["url", "policy"]
+                            "required" : ["url", "policy"],
+
+                            "structs" : {
+                                "policy" : {
+                                    "fields" : {
+                                        "name" : {"coerce": "unicode"},
+                                        "domain" : {"coerce" : "unicode"}
+                                    },
+                                    "required" : ["name"]
+                                }
+                            }
                         },
 
                         "editorial_review": {
@@ -297,6 +309,20 @@ class IncomingApplication(dataobj.DataObj):
             if self.bibjson.author_publishing_rights.url is None:
                 raise dataobj.DataStructureException("In this context bibjson.author_copyright.url is required")
 
+        # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
+        # if the archiving policy does have "domain" set, then the domain must be from one of an allowed list
+        for ap in self.bibjson.archiving_policy.policy:
+            if ap.domain is not None:
+                # domain is in allowed list
+                opts = choices.Choices.digital_archiving_policy_list("optional")
+                if ap.domain not in opts:
+                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.domain must be one of {x}".format(x=" or ".join(opts)))
+            else:
+                # policy name is in allowed list
+                opts = choices.Choices.digital_archiving_policy_list("named")
+                if ap.name not in opts:
+                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
+
     def _normalise_issn(self, issn):
         issn = issn.upper()
         if len(issn) > 8: return issn
@@ -310,7 +336,25 @@ class IncomingApplication(dataobj.DataObj):
                 return issn[:4] + "-" + issn[4:]
 
     def to_application_model(self):
-        return models.Suggestion(**self.data)
+        nd = deepcopy(self.data)
+
+        # we need to re-write the archiving policy section
+        ap = nd.get("bibjson", {}).get("archiving_policy")
+        if ap is not None:
+            nap = {}
+            if "url" in ap:
+                nap["url"] = ap["url"]
+            if "policy" in ap:
+                npol = []
+                for pol in ap["policy"]:
+                    if "domain" in pol:
+                        npol.append([pol.get("domain"), pol.get("name")])
+                    else:
+                        npol.append(pol.get("name"))
+                nap["policy"] = npol
+            nd["bibjson"]["archiving_policy"] = nap
+
+        return models.Suggestion(**nd)
 
     @classmethod
     def from_model(cls, jm):

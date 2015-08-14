@@ -23,12 +23,11 @@ class TestCrudApplication(DoajTestCase):
         data = ApplicationFixtureFactory.incoming_application()
         ia = IncomingApplication(data)
 
-        # FIXME: this bit doesn't yet work - dataobj refactor required
         # make another one that's broken
-        #data = ApplicationFixtureFactory.incoming_application()
-        #del data["bibjson"]["title"]
-        #with self.assertRaises(DataStructureException):
-        #    ia = IncomingApplication(data)
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["bibjson"]["title"]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
 
         # now progressively remove the conditionally required/advanced validation stuff
         #
@@ -81,6 +80,18 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
+        # invalid domain in archiving_policy
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["archiving_policy"]["policy"] = [{"domain" : "my house", "name" : "something"}]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # invalid name in non-domained policy
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["archiving_policy"]["policy"] = [{"name" : "something"}]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
     def test_02_create_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
@@ -94,11 +105,30 @@ class TestCrudApplication(DoajTestCase):
 
         # check that it got created with the right properties
         assert isinstance(a, models.Suggestion)
-        assert a.id is not None
+        assert a.id != "ignore_me"
+        assert a.created_date != "2001-01-01T00:00:00Z"
+        assert a.last_updated != "2001-01-01T00:00:00Z"
         assert a.suggester.get("name") == "Tester"
         assert a.suggester.get("email") == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
+
+        # also, because it's a special case, check the archiving_policy
+        archiving_policy = a.bibjson().archiving_policy
+        assert len(archiving_policy.get("policy")) == 4
+        lcount = 0
+        scount = 0
+        for ap in archiving_policy.get("policy"):
+            if isinstance(ap, list):
+                lcount += 1
+                assert ap[0] in ["A national library", "Other"]
+                assert ap[1] in ["Trinity", "A safe place"]
+            else:
+                scount += 1
+        assert lcount == 2
+        assert scount == 2
+        assert "CLOCKSS" in archiving_policy.get("policy")
+        assert "LOCKSS" in archiving_policy.get("policy")
 
         time.sleep(2)
 
@@ -119,3 +149,61 @@ class TestCrudApplication(DoajTestCase):
             account.set_email("test@test.com")
             data = {"some" : {"junk" : "data"}}
             a = ApplicationsCrudApi.create(data, account)
+
+    def test_04_coerce(self):
+        data = ApplicationFixtureFactory.incoming_application()
+
+        # first test a load of successes
+        data["bibjson"]["country"] = "Bangladesh"
+        data["bibjson"]["apc"]["currency"] = "Taka"
+        data["bibjson"]["allows_fulltext_indexing"] = "true"
+        data["bibjson"]["publication_time"] = "15"
+        data["bibjson"]["language"] = ["French", "English"]
+
+        ia = IncomingApplication(data)
+
+        assert ia.bibjson.country == "BD"
+        assert ia.bibjson.apc.currency == "BDT"
+        assert ia.bibjson.allows_fulltext_indexing is True
+        assert isinstance(ia.bibjson.title, unicode)
+        assert ia.bibjson.publication_time == 15
+        assert "fr" in ia.bibjson.language
+        assert "en" in ia.bibjson.language
+        assert len(ia.bibjson.language) == 2
+
+        # now test some failures
+        # invalid country name
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["country"] = "LandLand"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # invalid currency name
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["apc"]["currency"] = "Wonga"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # an invalid url
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["apc_url"] = "Two streets down on the left"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # invalid bool
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["allows_fulltext_indexing"] = "Yes"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # invalid int
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["publication_time"] = "Fifteen"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
+        # invalid language code
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["language"] = ["Hagey Pagey"]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
