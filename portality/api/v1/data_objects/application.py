@@ -13,10 +13,27 @@ class IncomingApplication(dataobj.DataObj):
                 "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
                 "last_updated": {"coerce": "utcdatetime"}   # to the real object
             },
-            "objects": ["bibjson", "suggestion", "admin"],
-            "required" : ["bibjson", "suggestion", "admin"],
+            "objects": ["admin", "bibjson", "suggestion"],
+            "required" : ["admin", "bibjson", "suggestion"],
 
             "structs": {
+                "admin" : {
+                    "lists" : {
+                        "contact" : {"contains" : "object"}
+                    },
+                    "required" : ["contact"],
+
+                    "structs" : {
+                        "contact": {
+                            "fields" : {
+                                "email" : {"coerce" : "unicode"},
+                                "name" : {"coerce" : "unicode"}
+                            },
+                            "required" : ["name", "email"]
+                        }
+                    }
+                },
+
                 "bibjson": {
                     "fields": {
                         "allows_fulltext_indexing": {"coerce": "bool"},
@@ -52,47 +69,32 @@ class IncomingApplication(dataobj.DataObj):
                         "submission_charges",
                     ],
                     "required": [
-                        "title",
-                        "publisher",
-                        "country",
-                        "apc_url",
-                        "submission_charges_url",
                         "allows_fulltext_indexing",
-                        "publication_time",
+                        "apc_url",
+                        "archiving_policy",
+                        "article_statistics",
+                        "author_copyright",
+                        "author_publishing_rights",
+                        "country",
+                        "deposit_policy",
+                        "editorial_review",
+                        "format",
                         "identifier",
                         "keywords",
                         "language",
-                        "link",
-                        "deposit_policy",
-                        "persistent_identifier_scheme",
-                        "format",
                         "license",
+                        "link",
                         "oa_start",
-                        "archiving_policy",
-                        "editorial_review",
+                        "persistent_identifier_scheme",
                         "plagiarism_detection",
-                        "article_statistics",
-                        "author_copyright",
-                        "author_publishing_rights"
+                        "publication_time",
+                        "publisher",
+                        "submission_charges_url",
+                        "title"
                     ],
 
-
                     "structs": {
-                        "oa_start": {
-                            "fields": {
-                                "year": {"coerce": "integer"}
-                            },
-                            "required" : ["year"]
-                        },
-
                         "apc": {
-                            "fields": {
-                                "currency": {"coerce": "currency_code"},
-                                "average_price": {"coerce": "integer"}
-                            }
-                        },
-
-                        "submission_charges": {
                             "fields": {
                                 "currency": {"coerce": "currency_code"},
                                 "average_price": {"coerce": "integer"}
@@ -119,22 +121,6 @@ class IncomingApplication(dataobj.DataObj):
                             }
                         },
 
-                        "editorial_review": {
-                            "fields": {
-                                "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["process", "url"]
-                        },
-
-                        "plagiarism_detection": {
-                            "fields": {
-                                "detection": {"coerce": "bool"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["detection", "url"]
-                        },
-
                         "article_statistics": {
                             "fields": {
                                 "statistics": {"coerce": "bool"},
@@ -159,20 +145,20 @@ class IncomingApplication(dataobj.DataObj):
                             "required" : ["publishing_rights"]
                         },
 
+                        "editorial_review": {
+                            "fields": {
+                                "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["process", "url"]
+                        },
+
                         "identifier": {
                             "fields": {
                                 "type": {"coerce": "unicode"},
                                 "id": {"coerce": "unicode"},
                             },
                             "required" : ["type", "id"]
-                        },
-
-                        "link": {
-                            "fields": {
-                                "type": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["type", "url"]
                         },
 
                         "license": {
@@ -195,6 +181,36 @@ class IncomingApplication(dataobj.DataObj):
                                 "type",
                                 "open_access"
                             ]
+                        },
+
+                        "link": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["type", "url"]
+                        },
+
+                        "oa_start": {
+                            "fields": {
+                                "year": {"coerce": "integer"}
+                            },
+                            "required" : ["year"]
+                        },
+
+                        "plagiarism_detection": {
+                            "fields": {
+                                "detection": {"coerce": "bool"},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["detection", "url"]
+                        },
+
+                        "submission_charges": {
+                            "fields": {
+                                "currency": {"coerce": "currency_code"},
+                                "average_price": {"coerce": "integer"}
+                            }
                         }
                     }
                 },
@@ -215,23 +231,6 @@ class IncomingApplication(dataobj.DataObj):
                                 "url" : {"coerce" : "url"}
                             },
                             "required" : ["count", "url"]
-                        }
-                    }
-                },
-
-                "admin" : {
-                    "lists" : {
-                        "contact" : {"contains" : "object"}
-                    },
-                    "required" : ["contact"],
-
-                    "structs" : {
-                        "contact": {
-                            "fields" : {
-                                "email" : {"coerce" : "unicode"},
-                                "name" : {"coerce" : "unicode"}
-                            },
-                            "required" : ["name", "email"]
                         }
                     }
                 }
