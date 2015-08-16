@@ -1,3 +1,5 @@
+# -*- coding: UTF-8 -*-
+
 from portality.lib import dataobj
 from portality import models
 from portality.formcontext import choices
@@ -17,37 +19,37 @@ class IncomingApplication(dataobj.DataObj):
             "structs": {
                 "bibjson": {
                     "fields": {
-                        "title": {"coerce": "unicode"},
-                        "alternative_title": {"coerce": "unicode"},
-                        "country": {"coerce": "country_code"},
-                        "publisher": {"coerce": "unicode"},
-                        "provider": {"coerce": "unicode"},
-                        "institution": {"coerce": "unicode"},
-                        "apc_url": {"coerce": "url"},
-                        "submission_charges_url": {"coerce": "url"},
                         "allows_fulltext_indexing": {"coerce": "bool"},
+                        "alternative_title": {"coerce": "unicode"},
+                        "apc_url": {"coerce": "url"},
+                        "country": {"coerce": "country_code"},
+                        "institution": {"coerce": "unicode"},
+                        "provider": {"coerce": "unicode"},
                         "publication_time": {"coerce": "integer"},
+                        "publisher": {"coerce": "unicode"},
+                        "submission_charges_url": {"coerce": "url"},
+                        "title": {"coerce": "unicode"},
                     },
                     "lists": {
+                        "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
+                        "format": {"coerce": "format", "contains": "field"},
                         "identifier": {"contains": "object"},
                         "keywords": {"coerce": "unicode", "contains": "field"},
                         "language": {"coerce": "isolang_2letter", "contains": "field"},
-                        "link": {"contains": "object"},
-                        "deposit_policy": {"coerce": "unicode", "contains": "field"},
-                        "persistent_identifier_scheme": {"coerce": "unicode", "contains": "field"},
-                        "format": {"coerce": "unicode", "contains": "field"},
                         "license": {"contains": "object"},
+                        "link": {"contains": "object"},
+                        "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
                     },
                     "objects": [
-                        "oa_start",
                         "apc",
-                        "submission_charges",
                         "archiving_policy",
-                        "editorial_review",
-                        "plagiarism_detection",
                         "article_statistics",
                         "author_copyright",
                         "author_publishing_rights",
+                        "editorial_review",
+                        "oa_start",
+                        "plagiarism_detection",
+                        "submission_charges",
                     ],
                     "required": [
                         "title",
@@ -119,7 +121,7 @@ class IncomingApplication(dataobj.DataObj):
 
                         "editorial_review": {
                             "fields": {
-                                "process": {"coerce": "unicode"},
+                                "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                                 "url": {"coerce": "url"},
                             },
                             "required" : ["process", "url"]
@@ -143,7 +145,7 @@ class IncomingApplication(dataobj.DataObj):
 
                         "author_copyright": {
                             "fields": {
-                                "copyright": {"coerce": "unicode"},     # FIXME: from a defined list
+                                "copyright": {"coerce": "unicode"},
                                 "url": {"coerce": "url"},
                             },
                             "required" : ["copyright"]
@@ -175,8 +177,8 @@ class IncomingApplication(dataobj.DataObj):
 
                         "license": {
                             "fields": {
-                                "title": {"coerce": "unicode"},
-                                "type": {"coerce": "unicode"},
+                                "title": {"coerce": "license"},
+                                "type": {"coerce": "license"},
                                 "url": {"coerce": "unicode"},
                                 "version": {"coerce": "unicode"},
                                 "open_access": {"coerce": "bool"},
@@ -236,7 +238,13 @@ class IncomingApplication(dataobj.DataObj):
             }
         }
 
-        super(IncomingApplication, self).__init__(raw, struct=struct, construct_silent_prune=True, expose_data=True)
+        mycoerce = deepcopy(self.DEFAULT_COERCE)
+        mycoerce["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
+        mycoerce["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
+        mycoerce["license"] = dataobj.string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
+        mycoerce["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
+
+        super(IncomingApplication, self).__init__(raw, struct=struct, construct_silent_prune=False, expose_data=True, coerce_map=mycoerce)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -323,6 +331,10 @@ class IncomingApplication(dataobj.DataObj):
                 if ap.name not in opts:
                     raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
 
+        # check the number of keywords is no more than 6
+        if len(self.bibjson.keywords) > 6:
+            raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
+
     def _normalise_issn(self, issn):
         issn = issn.upper()
         if len(issn) > 8: return issn
@@ -356,6 +368,7 @@ class IncomingApplication(dataobj.DataObj):
 
         return models.Suggestion(**nd)
 
+    """
     @classmethod
     def from_model(cls, jm):
         assert isinstance(jm, models.Suggestion)
@@ -365,3 +378,4 @@ class IncomingApplication(dataobj.DataObj):
     def from_model_by_id(cls, id_):
         j = models.Suggestion.pull(id_)
         return cls.from_model(j)
+    """

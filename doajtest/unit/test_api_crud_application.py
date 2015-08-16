@@ -92,6 +92,12 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
 
+        # too many keywords
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
+        with self.assertRaises(DataStructureException):
+            ia = IncomingApplication(data)
+
     def test_02_create_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
@@ -159,6 +165,11 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["allows_fulltext_indexing"] = "true"
         data["bibjson"]["publication_time"] = "15"
         data["bibjson"]["language"] = ["French", "English"]
+        data["bibjson"]["persistent_identifier_scheme"] = ["doi", "HandleS", "something"]
+        data["bibjson"]["format"] = ["pdf", "html", "doc"]
+        data["bibjson"]["license"][0]["title"] = "cc by"
+        data["bibjson"]["license"][0]["type"] = "CC by"
+        data["bibjson"]["deposit_policy"] = ["sherpa/romeo", "other"]
 
         ia = IncomingApplication(data)
 
@@ -170,6 +181,16 @@ class TestCrudApplication(DoajTestCase):
         assert "fr" in ia.bibjson.language
         assert "en" in ia.bibjson.language
         assert len(ia.bibjson.language) == 2
+        assert ia.bibjson.persistent_identifier_scheme[0] == "DOI"
+        assert ia.bibjson.persistent_identifier_scheme[1] == "Handles"
+        assert ia.bibjson.persistent_identifier_scheme[2] == "something"
+        assert ia.bibjson.format[0] == "PDF"
+        assert ia.bibjson.format[1] == "HTML"
+        assert ia.bibjson.format[2] == "doc"
+        assert ia.bibjson.license[0].title == "CC BY"
+        assert ia.bibjson.license[0].type == "CC BY"
+        assert ia.bibjson.deposit_policy[0] == "Sherpa/Romeo"
+        assert ia.bibjson.deposit_policy[1] == "other"
 
         # now test some failures
         # invalid country name

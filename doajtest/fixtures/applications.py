@@ -71,6 +71,7 @@ _isbj["archiving_policy"] = {
     ],
     "url": "http://digital.archiving.policy"
 }
+del _isbj["subject"]
 
 INCOMING_SOURCE = {
     "id" : "ignore_me",

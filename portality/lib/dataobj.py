@@ -172,7 +172,31 @@ def to_bool(val):
 
     raise ValueError(u"Could not convert {val} to boolean. Expect either boolean or string.".format(val=val))
 
+def string_canonicalise(canon, allow_fail=False):
+    normalised = {}
+    for a in canon:
+        normalised[a.strip().lower()] = a
 
+    def sn(val):
+        if val is None:
+            if allow_fail:
+                return None
+            raise ValueError("NoneType not permitted")
+
+        try:
+            norm = val.strip().lower()
+        except:
+            raise ValueError("Unable to treat value as a string")
+
+        uc = to_unicode()
+        if norm in normalised:
+            return uc(normalised[norm])
+        if allow_fail:
+            return uc(val)
+
+        raise ValueError("Unable to canonicalise string")
+
+    return sn
 
 ############################################################
 
@@ -863,6 +887,8 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
         vals = obj.get(field_name)
         if vals is None:
             continue
+        if not isinstance(vals, list):
+            vals = [vals]
 
         # prep the keyword arguments for the setters
         kwargs = construct_kwargs("list", "set", instructions)
