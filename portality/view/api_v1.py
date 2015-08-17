@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, bad_request
+from portality.api.v1 import jsonify_models, Api400Error, Api401Error, Api404Error
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -24,6 +24,14 @@ def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
     # TODO use a Jinja template for the description below, HTML works. Emails use jinja templates already.
+    auth_info = """
+<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>. If you already have an account, please log in as usual and click on your username in the top right corner to manage API keys.</p>
+"""
+    if current_user.is_authenticated():
+        auth_info = """
+        <p>Note that some routes require authentication. You can generate an API key and view your key for later reference at {account_url}.</p>
+        """.format(account_url = url_for('account.username', username=current_user.id, _external=True))
+
     swag['info']['description'] = """
 <p>This page documents the first version of the DOAJ API, v.{api_version}</p>
 <p>Base URL: <a href="{base_url}" target="_blank">{base_url}</a></p>
@@ -31,15 +39,25 @@ def api_spec():
 This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page. You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration. Please note that not all fields will be available on all records. Further information on advanced usage of the routes is available at the bottom below the route list.
 
 <h2 id="intro_auth">Authenticated routes</h2>
-<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>.</p>
+{auth_info}
 """.format(
         api_version=API_VERSION_NUMBER,
-        base_url=url_for('.api_spec', _external=True),
-        contact_us_url=url_for('doaj.contact')
+        base_url=url_for('.api_v1_root', _external=True),
+        contact_us_url=url_for('doaj.contact'),
+        auth_info=auth_info
     )
     swag['info']['version'] = API_VERSION_NUMBER
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
+
+
+# Handle wayward paths by raising an API404Error
+@blueprint.route("/<path:invalid_path>")
+def missing_resource(invalid_path):
+    docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
+    spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
+    raise Api404Error("No endpoint at {0}. See {1} for valid paths or read the documentation at {2}.".format(invalid_path, spec_url, docs_url))
+
 
 @blueprint.route('/docs')
 def docs():
@@ -358,18 +376,18 @@ def search_applications(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     try:
         results = DiscoveryApi.search_applications(current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
@@ -654,18 +672,18 @@ def search_journals(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     try:
         results = DiscoveryApi.search_journals(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
@@ -863,19 +881,19 @@ def search_articles(search_query):
     try:
         page = int(page)
     except:
-        return bad_request("Page number was not an integer")
+        raise Api400Error("Page number was not an integer")
 
     # check the page size is an integer
     try:
         psize = int(psize)
     except:
-        return bad_request("Page size was not an integer")
+        raise Api400Error("Page size was not an integer")
 
     results = None
     try:
         results = DiscoveryApi.search_articles(search_query, page, psize, sort)
     except DiscoveryException as e:
-        return bad_request(e.message)
+        raise Api400Error(e.message)
 
     return jsonify_models(results)
 
