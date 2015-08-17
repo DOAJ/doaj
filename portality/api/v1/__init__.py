@@ -1,4 +1,4 @@
-from portality.api.v1.common import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created
+from portality.api.v1.common import jsonify_models, Api400Error, Api401Error, Api404Error
 
 from portality.api.v1.discovery import DiscoveryApi, DiscoveryException
 

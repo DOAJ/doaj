@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created
+from portality.api.v1 import jsonify_models, Api400Error, Api401Error, Api404Error
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -24,6 +24,14 @@ def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
     # TODO use a Jinja template for the description below, HTML works. Emails use jinja templates already.
+    auth_info = """
+<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>. If you already have an account, please log in as usual and click on your username in the top right corner to manage API keys.</p>
+"""
+    if current_user.is_authenticated():
+        auth_info = """
+        <p>Note that some routes require authentication. You can generate an API key and view your key for later reference at {account_url}.</p>
+        """.format(account_url = url_for('account.username', username=current_user.id, _external=True))
+
     swag['info']['description'] = """
 <p>This page documents the first version of the DOAJ API, v.{api_version}</p>
 <p>Base URL: <a href="{base_url}" target="_blank">{base_url}</a></p>
@@ -31,11 +39,12 @@ def api_spec():
 This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page. You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration. Please note that not all fields will be available on all records. Further information on advanced usage of the routes is available at the bottom below the route list.
 
 <h2 id="intro_auth">Authenticated routes</h2>
-<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>.</p>
+{auth_info}
 """.format(
         api_version=API_VERSION_NUMBER,
-        base_url=url_for('.api_spec', _external=True),
-        contact_us_url=url_for('doaj.contact')
+        base_url=url_for('.api_v1_root', _external=True),
+        contact_us_url=url_for('doaj.contact'),
+        auth_info=auth_info
     )
     swag['info']['version'] = API_VERSION_NUMBER
 
@@ -910,41 +919,6 @@ def retrieve_journal(jid):
     # ideally (bonus points) if the id is malformed (check elasticsearch id format)
     # then return 400 Bad Request
 
-    # there are error handlers in the view route to generate 400 Bad Request, 401 Forbidden and 404 Not Found,
-    # just raise these exceptions:
-    # Api400Error(message)
-    # Api401Error(message)
-    # Api404Error(message)
-
-#########################################
-## Application CRUD API
-
-@blueprint.route("/applications", methods=["POST"])
-@api_key_required
-def create_application():
-    # get the data from the request
-    try:
-        data = json.loads(request.data)
-    except:
-        raise Api400Error("Supplied data was not valid JSON")
-
-    # delegate to the API implementation
-    a = ApplicationsCrudApi.create(data, current_user)
-
-    # respond with a suitable Created response
-    return created(a, url_for("api_v1.retrieve_application", aid=a.id))
-
-@blueprint.route("/application/<aid>", methods=["GET"])
-@api_key_required
-def retrieve_application(aid):
-    pass
-
-@blueprint.route("/application/<aid>", methods=["PUT"])
-@api_key_required
-def update_application(aid):
-    pass
-
-@blueprint.route("/application/<aid>", methods=["DELETE"])
-@api_key_required
-def delete_application(aid):
-    pass
+    # there are helpers you can use as-is in the view route to generate 400 Bad Request and 404 Not Found:
+    # not_found(message)
+    # bad_request(message)
