@@ -22,6 +22,11 @@ class ApplicationsCrudApi(CrudApi):
         # if that works, convert it to a Suggestion object
         ap = ia.to_application_model()
 
+        # if the caller set the id, created_date or last_updated, then can the data, and apply our
+        # own values (note that last_updated will get overwritten anyway)
+        ap.set_id()
+        ap.set_created()
+
         # now augment the suggestion object with all the additional information it requires
         #
         # suggester name and email from the user account

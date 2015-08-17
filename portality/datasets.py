@@ -22,8 +22,9 @@ country_options_two_char_code_index = []
 
 currency_options = [('','')]
 currency_options_code_index = []
+currency_name_opts = []
 
-for code, country_info in countries:
+for code, country_info in countries:        # FIXME: a bit of a mess - would be better to have an object that just gave us the answers on demand
     country_options.append((code, country_info['name']))
     country_options_two_char_code_index.append(code)
     if 'currency_alphabetic_code' in country_info and 'currency_name' in country_info:
@@ -37,9 +38,16 @@ for code, country_info in countries:
                     country_info['currency_alphabetic_code'] + ' - ' + country_info['currency_name']
                 )
             )
+            currency_name_opts.append(
+                (
+                    country_info['currency_alphabetic_code'],
+                    country_info['currency_name']
+                )
+            )
             currency_options_code_index.append(country_info['currency_alphabetic_code'])
 
 currencies_dict = dict(currency_options)
+currency_name_map = dict(currency_name_opts)
 
 # languages
 languages_iso639_2 = [
@@ -594,24 +602,24 @@ def name_for_lang(rep):
     else:
         return rep
 
-def get_country_code(current_country):
+def get_country_code(current_country, fail_if_not_found=False):
     new_country = current_country
     if new_country:
-        if new_country not in country_options_two_char_code_index:
+        if new_country in country_options_two_char_code_index:
+            return new_country
+        else:
             for two_char_code, info in countries:
-
                 if new_country.lower() == info['name'].lower():
-                    new_country = two_char_code
-                    break
+                    return two_char_code
 
                 if new_country.lower() == info['ISO3166-1-Alpha-3'].lower():
-                    new_country = two_char_code
-                    break
+                    return two_char_code
 
                 if info['name'].lower().startswith(new_country.lower()):
-                    new_country = two_char_code
-                    break
+                    return two_char_code
 
+    if fail_if_not_found:
+        return None
     return new_country
 
 def get_country_name(code):
@@ -621,4 +629,9 @@ def get_currency_name(code):
     return currencies_dict.get(code, code)  # return what was passed in if not found
 
 def get_currency_code(name):
-    pass
+    if name in currency_name_map.keys():
+        return name
+    for k, v in currency_name_map.iteritems():
+        if v.lower() == name.lower():
+            return k
+    return None

@@ -1,5 +1,9 @@
+# -*- coding: UTF-8 -*-
+
 from portality.lib import dataobj
 from portality import models
+from portality.formcontext import choices
+from copy import deepcopy
 
 class IncomingApplication(dataobj.DataObj):
     def __init__(self, raw=None):
@@ -9,78 +13,87 @@ class IncomingApplication(dataobj.DataObj):
                 "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
                 "last_updated": {"coerce": "utcdatetime"}   # to the real object
             },
-            "objects": ["bibjson", "suggestion", "admin"],
-            "required" : ["bibjson", "suggestion", "admin"],
+            "objects": ["admin", "bibjson", "suggestion"],
+            "required" : ["admin", "bibjson", "suggestion"],
 
             "structs": {
+                "admin" : {
+                    "lists" : {
+                        "contact" : {"contains" : "object"}
+                    },
+                    "required" : ["contact"],
+
+                    "structs" : {
+                        "contact": {
+                            "fields" : {
+                                "email" : {"coerce" : "unicode"},
+                                "name" : {"coerce" : "unicode"}
+                            },
+                            "required" : ["name", "email"]
+                        }
+                    }
+                },
+
                 "bibjson": {
                     "fields": {
-                        "title": {"coerce": "unicode"},
-                        "alternative_title": {"coerce": "unicode"},
-                        "country": {"coerce": "country_code"},       # FIXME: need to make sure this is the correct form
-                        "publisher": {"coerce": "unicode"},
-                        "provider": {"coerce": "unicode"},
-                        "institution": {"coerce": "unicode"},
-                        "apc_url": {"coerce": "url"},
-                        "submission_charges_url": {"coerce": "url"},
                         "allows_fulltext_indexing": {"coerce": "bool"},
+                        "alternative_title": {"coerce": "unicode"},
+                        "apc_url": {"coerce": "url"},
+                        "country": {"coerce": "country_code"},
+                        "institution": {"coerce": "unicode"},
+                        "provider": {"coerce": "unicode"},
                         "publication_time": {"coerce": "integer"},
+                        "publisher": {"coerce": "unicode"},
+                        "submission_charges_url": {"coerce": "url"},
+                        "title": {"coerce": "unicode"},
                     },
                     "lists": {
+                        "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
+                        "format": {"coerce": "format", "contains": "field"},
                         "identifier": {"contains": "object"},
                         "keywords": {"coerce": "unicode", "contains": "field"},
-                        "language": {"coerce": "isolang_2letter", "contains": "field"}, # FIXME: need to make sure this is the correct form
-                        "link": {"contains": "object"},
-                        "deposit_policy": {"coerce": "unicode", "contains": "field"},
-                        "persistent_identifier_scheme": {"coerce": "unicode", "contains": "field"},
-                        "format": {"coerce": "unicode", "contains": "field"},
+                        "language": {"coerce": "isolang_2letter", "contains": "field"},
                         "license": {"contains": "object"},
+                        "link": {"contains": "object"},
+                        "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
                     },
                     "objects": [
-                        "oa_start",
                         "apc",
-                        "submission_charges",
                         "archiving_policy",
-                        "editorial_review",
-                        "plagiarism_detection",
                         "article_statistics",
                         "author_copyright",
                         "author_publishing_rights",
+                        "editorial_review",
+                        "oa_start",
+                        "plagiarism_detection",
+                        "submission_charges",
                     ],
                     "required": [
-                        "title",
-                        "publisher",
-                        "country",
-                        "apc_url",
-                        "submission_charges_url",
                         "allows_fulltext_indexing",
-                        "publication_time",
+                        "apc_url",
+                        "archiving_policy",
+                        "article_statistics",
+                        "author_copyright",
+                        "author_publishing_rights",
+                        "country",
+                        "deposit_policy",
+                        "editorial_review",
+                        "format",
                         "identifier",
                         "keywords",
                         "language",
-                        "link",
-                        "deposit_policy",
-                        "persistent_identifier_scheme",
-                        "format",
                         "license",
+                        "link",
                         "oa_start",
-                        "archiving_policy",
-                        "editorial_review",
+                        "persistent_identifier_scheme",
                         "plagiarism_detection",
-                        "article_statistics",
-                        "author_copyright",
-                        "author_publishing_rights"
+                        "publication_time",
+                        "publisher",
+                        "submission_charges_url",
+                        "title"
                     ],
 
-
                     "structs": {
-                        "oa_start": {
-                            "fields": {
-                                "year": {"coerce": "integer"}
-                            },
-                            "required" : ["year"]
-                        },
-
                         "apc": {
                             "fields": {
                                 "currency": {"coerce": "currency_code"},
@@ -88,37 +101,24 @@ class IncomingApplication(dataobj.DataObj):
                             }
                         },
 
-                        "submission_charges": {
+                        "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
                             "fields": {
-                                "currency": {"coerce": "currency_code"},    # FIXME: need to be implemented, but requires refactor of dataset stuff
-                                "average_price": {"coerce": "integer"}
+                                "url": {"coerce": "url"},
+                            },
+                            "lists": {
+                                "policy": {"coerce": "unicode", "contains": "object"},
+                            },
+                            "required" : ["url", "policy"],
+
+                            "structs" : {
+                                "policy" : {
+                                    "fields" : {
+                                        "name" : {"coerce": "unicode"},
+                                        "domain" : {"coerce" : "unicode"}
+                                    },
+                                    "required" : ["name"]
+                                }
                             }
-                        },
-
-                        "archiving_policy": {
-                            "fields": {
-                                "url": {"coerce": "url"},
-                            },
-                            "lists": {                                                  # FIXME: this can take one of a limited set, so we may need to enforce that here
-                                "policy": {"coerce": "unicode", "contains": "field"},   # FIXME: technically, this can also contain a list - data model is a bit broken here
-                            },
-                            "required" : ["url", "policy"]
-                        },
-
-                        "editorial_review": {
-                            "fields": {
-                                "process": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["process", "url"]
-                        },
-
-                        "plagiarism_detection": {
-                            "fields": {
-                                "detection": {"coerce": "bool"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["detection", "url"]
                         },
 
                         "article_statistics": {
@@ -131,7 +131,7 @@ class IncomingApplication(dataobj.DataObj):
 
                         "author_copyright": {
                             "fields": {
-                                "copyright": {"coerce": "unicode"},     # FIXME: from a defined list
+                                "copyright": {"coerce": "unicode"},
                                 "url": {"coerce": "url"},
                             },
                             "required" : ["copyright"]
@@ -145,6 +145,14 @@ class IncomingApplication(dataobj.DataObj):
                             "required" : ["publishing_rights"]
                         },
 
+                        "editorial_review": {
+                            "fields": {
+                                "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["process", "url"]
+                        },
+
                         "identifier": {
                             "fields": {
                                 "type": {"coerce": "unicode"},
@@ -153,18 +161,10 @@ class IncomingApplication(dataobj.DataObj):
                             "required" : ["type", "id"]
                         },
 
-                        "link": {
-                            "fields": {
-                                "type": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["type", "url"]
-                        },
-
                         "license": {
                             "fields": {
-                                "title": {"coerce": "unicode"},
-                                "type": {"coerce": "unicode"},
+                                "title": {"coerce": "license"},
+                                "type": {"coerce": "license"},
                                 "url": {"coerce": "unicode"},
                                 "version": {"coerce": "unicode"},
                                 "open_access": {"coerce": "bool"},
@@ -181,6 +181,36 @@ class IncomingApplication(dataobj.DataObj):
                                 "type",
                                 "open_access"
                             ]
+                        },
+
+                        "link": {
+                            "fields": {
+                                "type": {"coerce": "unicode"},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["type", "url"]
+                        },
+
+                        "oa_start": {
+                            "fields": {
+                                "year": {"coerce": "integer"}
+                            },
+                            "required" : ["year"]
+                        },
+
+                        "plagiarism_detection": {
+                            "fields": {
+                                "detection": {"coerce": "bool"},
+                                "url": {"coerce": "url"},
+                            },
+                            "required" : ["detection", "url"]
+                        },
+
+                        "submission_charges": {
+                            "fields": {
+                                "currency": {"coerce": "currency_code"},
+                                "average_price": {"coerce": "integer"}
+                            }
                         }
                     }
                 },
@@ -203,28 +233,17 @@ class IncomingApplication(dataobj.DataObj):
                             "required" : ["count", "url"]
                         }
                     }
-                },
-
-                "admin" : {
-                    "lists" : {
-                        "contact" : {"contains" : "object"}
-                    },
-                    "required" : ["contact"],
-
-                    "structs" : {
-                        "contact": {
-                            "fields" : {
-                                "email" : {"coerce" : "unicode"},
-                                "name" : {"coerce" : "unicode"}
-                            },
-                            "required" : ["name", "email"]
-                        }
-                    }
                 }
             }
         }
 
-        super(IncomingApplication, self).__init__(raw, struct=struct, construct_silent_prune=True, expose_data=True)
+        mycoerce = deepcopy(self.DEFAULT_COERCE)
+        mycoerce["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
+        mycoerce["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
+        mycoerce["license"] = dataobj.string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
+        mycoerce["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
+
+        super(IncomingApplication, self).__init__(raw, struct=struct, construct_silent_prune=False, expose_data=True, coerce_map=mycoerce)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -297,6 +316,24 @@ class IncomingApplication(dataobj.DataObj):
             if self.bibjson.author_publishing_rights.url is None:
                 raise dataobj.DataStructureException("In this context bibjson.author_copyright.url is required")
 
+        # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
+        # if the archiving policy does have "domain" set, then the domain must be from one of an allowed list
+        for ap in self.bibjson.archiving_policy.policy:
+            if ap.domain is not None:
+                # domain is in allowed list
+                opts = choices.Choices.digital_archiving_policy_list("optional")
+                if ap.domain not in opts:
+                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.domain must be one of {x}".format(x=" or ".join(opts)))
+            else:
+                # policy name is in allowed list
+                opts = choices.Choices.digital_archiving_policy_list("named")
+                if ap.name not in opts:
+                    raise dataobj.DataStructureException("bibjson.archiving_policy.policy.name must be one of '{x}' when 'domain' is not also set".format(x=", ".join(opts)))
+
+        # check the number of keywords is no more than 6
+        if len(self.bibjson.keywords) > 6:
+            raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
+
     def _normalise_issn(self, issn):
         issn = issn.upper()
         if len(issn) > 8: return issn
@@ -310,8 +347,27 @@ class IncomingApplication(dataobj.DataObj):
                 return issn[:4] + "-" + issn[4:]
 
     def to_application_model(self):
-        return models.Suggestion(**self.data)
+        nd = deepcopy(self.data)
 
+        # we need to re-write the archiving policy section
+        ap = nd.get("bibjson", {}).get("archiving_policy")
+        if ap is not None:
+            nap = {}
+            if "url" in ap:
+                nap["url"] = ap["url"]
+            if "policy" in ap:
+                npol = []
+                for pol in ap["policy"]:
+                    if "domain" in pol:
+                        npol.append([pol.get("domain"), pol.get("name")])
+                    else:
+                        npol.append(pol.get("name"))
+                nap["policy"] = npol
+            nd["bibjson"]["archiving_policy"] = nap
+
+        return models.Suggestion(**nd)
+
+    """
     @classmethod
     def from_model(cls, jm):
         assert isinstance(jm, models.Suggestion)
@@ -321,3 +377,4 @@ class IncomingApplication(dataobj.DataObj):
     def from_model_by_id(cls, id_):
         j = models.Suggestion.pull(id_)
         return cls.from_model(j)
+    """
