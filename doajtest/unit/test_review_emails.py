@@ -11,12 +11,15 @@ import re
 
 from werkzeug.routing import BuildError
 
-from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
+from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 
 APPLICATION_SOURCE_TEST_1 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_2 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_3 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
+
+JOURNAL_SOURCE_TEST_1 = JournalFixtureFactory.make_journal_source()
+JOURNAL_SOURCE_TEST_2 = JournalFixtureFactory.make_journal_source()
 
 EDITOR_GROUP_SOURCE = EditorGroupFixtureFactory.make_editor_group_source()
 EDITOR_SOURCE = AccountFixtureFactory.make_editor_source()
@@ -47,6 +50,7 @@ def editor_account_pull(self, _id):
 
 # A regex string for searching the log entries
 email_log_regex = 'template.*%s.*to:\[\'%s.*subject:.*%s'
+
 
 class TestApplicationReviewEmails(DoajTestCase):
 
@@ -141,7 +145,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * and to the publisher informing there's an editor assigned.
         editor_template = re.escape('editor_application_assigned_group.txt')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = 'new journal assigned to your group'
+        editor_subject = 'new application assigned to your group'
 
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
@@ -150,7 +154,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         assEd_template = 'assoc_editor_application_assigned.txt'
         assEd_to = re.escape(models.Account.pull('associate_3').email)
-        assEd_subject = 'new journal assigned to you'
+        assEd_subject = 'new application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -272,7 +276,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         #   * and to the publisher informing there's an editor assigned.
         assEd_template = 'assoc_editor_application_assigned.txt'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
-        assEd_subject = 'new journal assigned to you'
+        assEd_subject = 'new application assigned to you'
 
         assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
                                         info_stream_contents,
@@ -339,3 +343,119 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert bool(editor_email_matched)
         
         assert True     # gives us a place to drop a break point later if we need it
+
+
+class TestJournalReviewEmails(DoajTestCase):
+
+    def setUp(self):
+        super(TestJournalReviewEmails, self).setUp()
+
+        self.editor_group_pull_by_key = models.EditorGroup.pull_by_key
+        self.editor_group_pull = models.EditorGroup.pull
+        models.EditorGroup.pull_by_key = editor_group_pull_by_key
+        models.EditorGroup.pull = editor_group_pull
+
+        self.editor_account_pull = models.Account.pull
+        models.Account.pull = editor_account_pull
+
+        # These tests produce a fair bit of output to stdout - disable the log handler which prints those
+        self.stdout_handler = app.logger.handlers[0]
+        app.logger.removeHandler(self.stdout_handler)
+
+        # Register a new log handler so we can inspect the info logs
+        self.info_stream = StringIO()
+        self.read_info = logging.StreamHandler(self.info_stream)
+        self.read_info.setLevel(logging.INFO)
+        app.logger.addHandler(self.read_info)
+
+    def tearDown(self):
+        super(TestJournalReviewEmails, self).tearDown()
+
+        models.EditorGroup.pull_by_key = self.editor_group_pull_by_key
+        models.EditorGroup.pull = self.editor_group_pull
+        models.Account.pull = self.editor_account_pull
+
+        # Blank the info_stream and remove the error handler from the app
+        self.info_stream.truncate(0)
+        app.logger.removeHandler(self.read_info)
+
+        # Re-enable the old log handler
+        app.logger.addHandler(self.stdout_handler)
+
+    def test_01_maned_review_emails(self):
+        """ Ensure the Managing Editor's journal review form sends the right emails"""
+        journal = models.Suggestion(**JOURNAL_SOURCE_TEST_1)
+
+        # Construct an journal form
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            source=journal
+        )
+        assert isinstance(fc, formcontext.ManEdJournalReview)
+
+        # If we change the editor group or assigned editor, emails should be sent to editors
+        fc.form.editor_group.data = "Test Editor Group"
+        fc.form.editor.data = "associate_3"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # check the associate was changed
+        assert fc.target.editor == "associate_3"
+
+        # We expect 2 emails to be sent:
+        #   * to the editor of the assigned group,
+        #   * to the AssEd who's been assigned,
+        editor_template = re.escape('editor_journal_assigned_group.txt')
+        editor_to = re.escape('eddie@example.com')
+        editor_subject = 'new journal assigned to your group'
+
+        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(editor_email_matched)
+
+        assEd_template = 'assoc_editor_journal_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_3').email)
+        assEd_subject = 'new journal assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
+
+    def test_02_ed_review_emails(self):
+        """ Ensure the Editor's journal review form sends the right emails"""
+        journal = models.Suggestion(**JOURNAL_SOURCE_TEST_2)
+
+        # Construct an journal form
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="editor",
+            source=journal
+        )
+        assert isinstance(fc, formcontext.EditorJournalReview)
+
+        # Editors can reassign journals to associate editors.
+        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Suggestion(**JOURNAL_SOURCE_TEST_2))
+        assert isinstance(fc, formcontext.EditorJournalReview)
+
+        fc.form.editor.data = "associate_2"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # check the associate was changed
+        assert fc.target.editor == "associate_2"
+
+        # We expect 1 email to be sent:
+        #   * to the AssEd who's been assigned
+        assEd_template = 'assoc_editor_journal_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_2').email)
+        assEd_subject = 'new journal assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
