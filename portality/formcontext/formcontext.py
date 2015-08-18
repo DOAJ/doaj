@@ -467,16 +467,16 @@ class ApplicationContext(PrivateContext):
             raise e
 
     def _send_application_rejected_email(self, journal_name, email, reapplication=False):
-
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - journal rejected"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/publisher_application_rejected.txt"
+                subject = app.config.get("SERVICE_NAME", "") + " - application rejected"
                 if reapplication:
                     template = "email/publisher_reapplication_rejected.txt"
+                    subject = app.config.get("SERVICE_NAME", "") + " - reapplication rejected"
                 jn = journal_name #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -503,9 +503,9 @@ class ApplicationContext(PrivateContext):
         url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
 
         # This is to the managing editor email list
-        to = app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')
+        to = [app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - application ready"
+        subject = app.config.get("SERVICE_NAME", "") + " - application ready"
 
         try:
             app_email.send_mail(to=to,
@@ -662,6 +662,10 @@ class ManEdApplicationReview(ApplicationContext):
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
             self._send_admin_ready_email()
 
+        # email publisher if this was newly set to 'rejected'
+        if self.source.application_status != 'rejected' and self.target.application_status == 'rejected':
+            self._send_application_rejected_email(journal_name=self.target.bibjson().title, email=self.target.get_latest_contact_email())
+
     def render_template(self, **kwargs):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
@@ -692,10 +696,17 @@ class ManEdApplicationReview(ApplicationContext):
         editor_group_name = self.target.editor_group
         editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
 
-        editor_group = models.EditorGroup.pull(editor_group_id)
-        editor_acc = editor_group.get_editor_account()
-        editor_name = editor_acc.name
-        to = editor_acc.email
+        try:
+            editor_group = models.EditorGroup.pull(editor_group_id)
+            editor_acc = editor_group.get_editor_account()
+            editor_name = editor_acc.name
+            to = [editor_acc.email]
+        except AttributeError as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Couldn\'t find a recipient for this email - check editor groups are correct. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - 'Ready' application marked 'In Progress' by Managing Editor"
 
@@ -790,7 +801,7 @@ class EditorApplicationReview(ApplicationContext):
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
 
-        # email managing editors if this was newly set to 'ready'
+        # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
             self._send_admin_ready_email()
 
@@ -929,7 +940,7 @@ class AssEdApplicationReview(ApplicationContext):
         editor_acc = editor_group.get_editor_account()
 
         editor_name = editor_acc.name
-        to = editor_acc.email
+        to = [editor_acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
 
@@ -957,7 +968,7 @@ class AssEdApplicationReview(ApplicationContext):
         publisher_name = self.target.get_latest_contact_name()
         publisher_email = self.target.get_latest_contact_email()
 
-        to = publisher_email
+        to = [publisher_email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
 
