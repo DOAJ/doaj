@@ -2,59 +2,86 @@ from doajtest.helpers import DoajTestCase
 
 from portality import models
 from portality.formcontext import formcontext
-from portality.core import app
+from portality.app import app
 from portality import lcc
+
+from StringIO import StringIO
+import logging
+import re
 
 from werkzeug.routing import BuildError
 
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
-APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE_TEST_1 = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE_TEST_2 = ApplicationFixtureFactory.make_application_source()
+APPLICATION_SOURCE_TEST_3 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_FORM = ApplicationFixtureFactory.make_application_form()
 
 EDITOR_GROUP_SOURCE = EditorGroupFixtureFactory.make_editor_group_source()
 EDITOR_SOURCE = AccountFixtureFactory.make_editor_source()
-ASSED_SOURCE = AccountFixtureFactory.make_assed3_source()
+ASSED2_SOURCE = AccountFixtureFactory.make_assed2_source()
+ASSED3_SOURCE = AccountFixtureFactory.make_assed3_source()
 
 #####################################################################
 # Mocks required to make some of the lookups work
 #####################################################################
 
 @classmethod
-def editor_group_pull(cls, field, value):
+def editor_group_pull_by_key(cls, field, value):
     eg = models.EditorGroup(**EDITOR_GROUP_SOURCE)
     return eg
+
+@classmethod
+def editor_group_pull(self, _id):
+    return models.EditorGroup(**EDITOR_GROUP_SOURCE)
 
 @classmethod
 def editor_account_pull(self, _id):
     if _id == 'eddie':
         return models.Account(**EDITOR_SOURCE)
+    if _id == 'associate_2':
+        return models.Account(**ASSED2_SOURCE)
     if _id == 'associate_3':
-        return models.Account(**ASSED_SOURCE)
+        return models.Account(**ASSED3_SOURCE)
 
+# A regex string for searching the log entries
+email_log_regex = 'template.*%s.*to:\[\'%s.*subject:.*%s'
 
 class TestApplicationReviewEmails(DoajTestCase):
 
     def setUp(self):
         super(TestApplicationReviewEmails, self).setUp()
 
-        self.editor_group_pull = models.EditorGroup.pull_by_key
-        models.EditorGroup.pull_by_key = editor_group_pull
+        self.editor_group_pull_by_key = models.EditorGroup.pull_by_key
+        self.editor_group_pull = models.EditorGroup.pull
+        models.EditorGroup.pull_by_key = editor_group_pull_by_key
+        models.EditorGroup.pull = editor_group_pull
 
         self.editor_account_pull = models.Account.pull
         models.Account.pull = editor_account_pull
 
+        # Register a new log handler so we can inspect the info logs
+        self.info_stream = StringIO()
+        self.read_info = logging.StreamHandler(self.info_stream)
+        self.read_info.setLevel(logging.INFO)
+        app.logger.addHandler(self.read_info)
+
     def tearDown(self):
         super(TestApplicationReviewEmails, self).tearDown()
 
-        models.EditorGroup.pull_by_key = self.editor_group_pull
+        models.EditorGroup.pull_by_key = self.editor_group_pull_by_key
+        models.EditorGroup.pull = self.editor_group_pull
         models.Account.pull = self.editor_account_pull
+
+        # Blank the info_stream and remove the error handler from the app
+        self.info_stream.truncate(0)
+        app.logger.removeHandler(self.read_info)
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's application review form sends the right emails"""
-
         # If an application has been set to 'ready' but is returned to 'in progress', an email is sent to the editor
-        ready_application = models.Suggestion(**APPLICATION_SOURCE)
+        ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
         ready_application.set_application_status("ready")
 
         # Construct an application form
@@ -69,25 +96,239 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         with app.test_request_context():
-            try:                # fixme: this might be bad. I expect it to error, but the error shows my code works so I've incorporated it into my test.
-                fc.finalise()
-            except BuildError as e:
-                assert str(e) == "('editor.group_suggestions', {'source': '{\"query\":{\"query_string\":{\"query\":\"abcdefghijk\",\"default_operator\":\"OR\"}}}'}, None)"
+            fc.finalise()
+        # Use the captured info stream to get email send logs
+        info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
         assert fc.source.application_status == "ready"
         assert fc.target.application_status == "in progress"
 
-        # Next, if we change the editor group or assigned editor, emails should be sent to editors and the publisher.
-        # Construct a new application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        # We expect one email sent:
+        #   * to the editor, informing them an application has been bounced from ready back to in progress.
+        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_to = re.escape('eddie@example.com')
+        editor_subject = "'Ready' application marked 'In Progress' by Managing Editor"
+        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(editor_email_matched)
 
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # Next, if we change the editor group or assigned editor, emails should be sent to editors and the publisher.
         fc.form.editor_group.data = "Test Editor Group"
         fc.form.editor.data = "associate_3"
 
-        # Finalise again to send emails, no url building this time so no request context required.
-        fc.finalise()
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
 
+        # check the associate was changed
         assert fc.target.editor == "associate_3"
-        assert True # gives us a place to drop a break point later if we need it
+
+        # We expect 3 emails to be sent:
+        #   * to the editor of the assigned group,
+        #   * to the AssEd who's been assigned,
+        #   * and to the publisher informing there's an editor assigned.
+        editor_template = re.escape('editor_application_assigned_group.txt')
+        editor_to = re.escape('eddie@example.com')
+        editor_subject = 'new journal assigned to your group'
+
+        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(editor_email_matched)
+
+        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_3').email)
+        assEd_subject = 'new journal assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
+        
+        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_subject = 'your application has been assigned an editor for review'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # Finally, a Managing Editor will also trigger emails to the publisher when they accept / reject an Application
+
+        # Refresh the application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
+        fc.form.application_status.data = 'rejected'
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect one email to be sent here:
+        #   * to the publisher, notifying that the application was rejected
+        publisher_template = 'publisher_application_rejected.txt'
+        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_subject = 'application rejected'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        fc.form.application_status.data = 'accepted'
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect 2 emails to be sent:
+        #   * to the publisher, because they have a new account
+        #   * to the publisher, informing them of the journal's acceptance
+        publisher_template = 'account_created.txt'
+        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_subject = 'account created'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+        publisher_template = 'publisher_application_accepted.txt'
+        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_subject = 'journal accepted'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+
+    def test_02_ed_review_emails(self):
+        """ Ensure the Editor's application review form sends the right emails"""
+        # If an application has been set to 'ready' from another status, the ManEds are notified
+        pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+
+        # Construct an application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="editor",
+            source=pending_application
+        )
+        assert isinstance(fc, formcontext.EditorApplicationReview)
+
+        # Make changes to the application status via the form
+        fc.form.application_status.data = "ready"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect one email to be sent here:
+        #   * to the ManEds, saying a n application is ready
+        manEd_template = 'admin_application_ready.txt'
+        manEd_to = re.escape(app.config.get('MANAGING_EDITOR_EMAIL'))
+        manEd_subject = 'application ready'
+
+        manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(manEd_email_matched)
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # Editors can also reassign applications to associate editors.
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
+        assert isinstance(fc, formcontext.EditorApplicationReview)
+
+        fc.form.editor.data = "associate_2"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # check the associate was changed
+        assert fc.target.editor == "associate_2"
+
+        # We expect 2 emails to be sent:
+        #   * to the AssEd who's been assigned,
+        #   * and to the publisher informing there's an editor assigned.
+        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_2').email)
+        assEd_subject = 'new journal assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
+
+        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_to = re.escape(pending_application.get_latest_contact_email())
+        publisher_subject = 'your application has been assigned an editor for review'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+    def test_03_assoc_ed_review_emails(self):
+        """ Ensure the Associate Editor's application review form sends the right emails"""
+        # If an application has been set to 'in progress' from 'pending', the publisher is notified
+        pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_3)
+
+        # Construct an application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="associate_editor",
+            source=pending_application
+        )
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
+
+        # Make changes to the application status via the form
+        fc.form.application_status.data = "in progress"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect one email to be sent here:
+        #   * to the publisher, notifying that an editor is viewing their application
+        publisher_template = re.escape('publisher_application_inprogress.txt')
+        publisher_to = re.escape(pending_application.get_latest_contact_email())
+        publisher_subject = 'your application is under review'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # When the application is then set to 'completed', the editor in charge of this group is informed
+        fc.form.application_status.data = "completed"
+
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect one email sent:
+        #   * to the editor, informing them an application has been completed by an Associate Editor
+        editor_template = re.escape('editor_application_completed.txt')
+        editor_to = re.escape('eddie@example.com')
+        editor_subject = "application marked 'completed'"
+        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(editor_email_matched)
+        
+        assert True     # gives us a place to drop a break point later if we need it
