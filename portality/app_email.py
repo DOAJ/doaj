@@ -77,6 +77,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
         mail = Mail(app)
         try:
             mail.send(msg)
+            app.logger.info("Email template {0} sent.\nto:{1}\tsubject:{2}".format(template_name, to, subject))
         except Exception as e:
             raise EmailException(e)
     else:
@@ -84,6 +85,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
             mail = Mail(app)
             try:
                 mail.send(msg)
+                app.logger.info("Email template {0} sent (via test context).\nto:{1}\tsubject:{2}".format(template_name, to, subject))
             except Exception as e:
                 raise EmailException(e)
 
