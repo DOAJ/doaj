@@ -441,6 +441,8 @@ a CRUD API and widgets.</p>
 (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>). Thus, any OAI compatible service
 can obtain records from DOAJ. The OAI data is always up to date. OAI is well-established and easy to use. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. <a href="{{ url_for('doaj.features') }}">Read a full description of this service here</a>. Our current OAI offering is standardised around Dublin Core. We expanded the granularity of the metadata in mid-2015.</p>
 
+<p>A <a href="https://doaj.org/api/v1/docs">beta version of our search API</a> is available now.</p>
+
 <a name="metadata_csv"></a>
 <p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
 imported into Excel or any equivalent analysis tool. The CSV file is updated every 30 minutes. To retrieve the data:</p>
@@ -449,9 +451,10 @@ imported into Excel or any equivalent analysis tool. The CSV file is updated eve
 <li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file.</li>
 </ol>
 
-<p>Please be aware that we will be updating the structure of the CSV file and the data included in it over the summer of 2015. Currently, this file ONLY includes a subset of the data and some information is missing, such as APCs.</p>
+<p>Please be aware that much of the information in the CSV file is only present for journals with a green Tick next to
+them.</p>
 
-<p>If you wish to crawl DOAJ, you may do so as long as you follow the general guidelines for good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
+<p>If you wish to crawl DOAJ, you may do so as long as you follow general guidelines for crawling good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
 
 <p>Finally, you can connect up to our <a href="{{ url_for('atom.feed') }}">ATOM feed of new journals added</a> which is updated every time new journals are added to the database. You can integrate the feed into your browser or straight into a web site.</p>
 
