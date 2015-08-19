@@ -10,7 +10,7 @@ SCRIPTS_READ_ONLY_MODE = False
 
 DOAJ_VERSION = "2.10.4_SNAPSHOT-1"
 
-OFFLINE_MODE = True
+OFFLINE_MODE = False
 
 # List the features we want to be active
 FEATURES = []
