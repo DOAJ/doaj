@@ -3,13 +3,10 @@ from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.formcontext import formcontext
 from portality.app import app
-from portality import lcc
 
 from StringIO import StringIO
 import logging
 import re
-
-from werkzeug.routing import BuildError
 
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 
@@ -127,6 +124,9 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
+
+        # Refresh the application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
 
         # Next, if we change the editor group or assigned editor, emails should be sent to editors and the publisher.
         fc.form.editor_group.data = "Test Editor Group"

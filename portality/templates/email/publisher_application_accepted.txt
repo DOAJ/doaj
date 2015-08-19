@@ -1,6 +1,6 @@
-Dear publisher,
+Dear {{ publisher_name }},
 
-The journal {{ journal_name }} has now been added to DOAJ.
+The journal {{ journal_title }} has now been added to DOAJ.
 You may access the journal in your Publisher Area: {{ url_root }}/publisher/ .
 You will need your username and password.
 If you do not already have a DOAJ account, you will receive more information in a separate email. (If you do not have your username or the instructions to set your password then please contact us: {{ url_root }}/contact .)

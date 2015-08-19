@@ -1,4 +1,4 @@
-Dear {{ editor_name }},
+Dear {{ editor }},
 
 The application for "{{ application_title }}" has been marked 'Completed'.
 You may access the application via the Editor area: {{ url_for_application }} .
