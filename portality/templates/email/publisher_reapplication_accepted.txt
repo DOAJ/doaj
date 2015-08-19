@@ -1,6 +1,6 @@
-Dear publisher,
+Dear {{ publisher_name }},
 
-Congratulations! Your reapplication for {{ journal_name }} has been successful and the journal has been accepted back into DOAJ.
+Congratulations! Your reapplication for {{ journal_title }} has been successful and the journal has been accepted back into DOAJ.
 
 To increase the visibility, impact, distribution and usage* of your journal, we urge you to upload the journal's article metadata to us as soon as possible. You may do this from the Publisher Area in two ways:
 

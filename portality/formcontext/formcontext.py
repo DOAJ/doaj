@@ -452,27 +452,28 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_suggestion_approved_email(self, journal_name, email, reapplication=False):
+    def _send_application_approved_email(self, journal_title, publisher_name, email, reapplication=False):
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
 
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - journal accepted"
+        subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/publisher_application_accepted.txt"
                 if reapplication:
                     template = "email/publisher_reapplication_accepted.txt"
-                jn = journal_name #.encode('utf-8', 'replace')
+                jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_name=jn,
+                                    journal_title=jn,
+                                    publisher_name=publisher_name,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -484,10 +485,10 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
-    def _send_application_rejected_email(self, journal_name, email, reapplication=False):
+    def _send_application_rejected_email(self, journal_title, publisher_name, email, reapplication=False):
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-
+        jn = journal_title #.encode('utf-8', 'replace')
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/publisher_application_rejected.txt"
@@ -495,13 +496,14 @@ class ApplicationContext(PrivateContext):
                 if reapplication:
                     template = "email/publisher_reapplication_rejected.txt"
                     subject = app.config.get("SERVICE_NAME", "") + " - reapplication rejected"
-                jn = journal_name #.encode('utf-8', 'replace')
+
 
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_name=jn,
+                                    journal_title=jn,
+                                    publisher_name=publisher_name
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal being rejected from DOAJ.')
             else:
@@ -652,7 +654,7 @@ class ManEdApplicationReview(ApplicationContext):
             # create the user account for the owner and send the notification email
             try:
                 owner = self._create_account_on_suggestion_approval(self.target, j)
-                self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
+                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
 
@@ -682,7 +684,9 @@ class ManEdApplicationReview(ApplicationContext):
 
         # email publisher if this was newly set to 'rejected'
         if self.source.application_status != 'rejected' and self.target.application_status == 'rejected':
-            self._send_application_rejected_email(journal_name=self.target.bibjson().title, email=self.target.get_latest_contact_email())
+            self._send_application_rejected_email(journal_title=self.target.bibjson().title,
+                                                  email=self.target.get_latest_contact_email(),
+                                                  publisher_name=self.target.get_latest_contact_name())
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -716,7 +720,7 @@ class ManEdApplicationReview(ApplicationContext):
         try:
             editor_group = models.EditorGroup.pull(editor_group_id)
             editor_acc = editor_group.get_editor_account()
-            editor_name = editor_acc.name
+            editor_id = editor_acc.id
             to = [editor_acc.email]
         except AttributeError as e:
             magic = str(uuid.uuid1())
@@ -732,7 +736,7 @@ class ManEdApplicationReview(ApplicationContext):
                                 fro=fro,
                                 subject=subject,
                                 template_name="email/editor_application_inprogress.txt",
-                                editor_name=editor_name,
+                                editor=editor_id,
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
@@ -956,7 +960,7 @@ class AssEdApplicationReview(ApplicationContext):
         editor_group = models.EditorGroup.pull(editor_group_id)
         editor_acc = editor_group.get_editor_account()
 
-        editor_name = editor_acc.name
+        editor_id = editor_acc.id
         to = [editor_acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
@@ -966,7 +970,7 @@ class AssEdApplicationReview(ApplicationContext):
                                 fro=fro,
                                 subject=subject,
                                 template_name="email/editor_application_completed.txt",
-                                editor_name=editor_name,
+                                editor=editor_id,
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
@@ -979,7 +983,7 @@ class AssEdApplicationReview(ApplicationContext):
 
     def _send_publisher_inprogress_email(self):
 
-        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        journal_title = self.target.bibjson().title #.encode('utf-8', 'replace')
 
         # This is to the publisher contact on the application
         publisher_name = self.target.get_latest_contact_name()
@@ -996,7 +1000,7 @@ class AssEdApplicationReview(ApplicationContext):
                                     subject=subject,
                                     template_name="email/publisher_application_inprogress.txt",
                                     publisher_name=publisher_name,
-                                    application_title=journal_name,
+                                    journal_title=journal_title,
                 )
                 self.add_alert('A confirmation email has been sent to notify the publisher of the change in status.')
             else:
