@@ -8,9 +8,9 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.10.3_SNAPSHOT-1"
+DOAJ_VERSION = "2.10.4_SNAPSHOT-1"
 
-OFFLINE_MODE = False
+OFFLINE_MODE = True
 
 # List the features we want to be active
 FEATURES = []

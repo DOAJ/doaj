@@ -6,7 +6,7 @@
     text-align: center;
 }
 
-#social-bar .icon {
+#social-bar .fa {
     color: white;
     border-radius: 4px;
     border: 1px outset rgba(128, 128, 128, 0.5);
@@ -31,24 +31,28 @@
     margin-left: 5px;
 }
 
-#social-bar .icon-rss {
+#social-bar .fa-rss {
     background: #e5842f;
 }
 
-#social-bar .icon-facebook {
+#social-bar .fa-facebook {
     background: #3B5998;
 }
 
-#social-bar .icon-twitter {
+#social-bar .fa-twitter {
     background: #00ACED;
 }
 
-#social-bar .icon-linkedin {
+#social-bar .fa-linkedin {
     background: #1E88BD;
 }
 
-#social-bar .icon-google-plus {
+#social-bar .fa-google-plus {
     background: #E14107;
+}
+
+#social-bar .fa-slideshare {
+    background: #0077b5;
 }
 
 /* Don't underline icon etc. */
@@ -62,11 +66,11 @@
 }
 
 /* Animate mouse hover */
-#social-bar a .icon {
+#social-bar a .fa {
    transition: background 0.5s;
 }
 
-#social-bar a:hover .icon {
+#social-bar a:hover .fa {
     background: #333333;
     transition: background 0.5s;
 }
