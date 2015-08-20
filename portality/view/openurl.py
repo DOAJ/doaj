@@ -43,7 +43,7 @@ def parse_query():
 
     app.logger.info("OpenURL 1.0 request: " + unquote(request.url))
 
-    # Wee function to strip of the referrant namespace prefix from paramaterss
+    # Wee function to strip of the referent namespace prefix from paramaters
     rem_ns = lambda x: re.sub('rft.', '', x)
 
     # Pack the list of parameters into a dictionary, while un-escaping the string.
