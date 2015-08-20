@@ -269,7 +269,7 @@ confidence, is anonymous and is never published.</p>
 
 
 <h3><b><a name="api1"></a>Does DOAJ have an API?</b></h3>
-<p>We will be launching a full API suite later in 2015. A <a href="https://doaj.org/api/v1/docs">beta version of our search
+<p>We will be launching a full API suite later in 2015. A <a href="{{ url_for('api_v1.docs')  }}">beta version of our search
 API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
 
 <p>Follow us on <a href="#news">our news channels</a> to find out more about our full API offering, that will include
@@ -435,7 +435,7 @@ and includes the latest 100 items.</p>
 
 
 <h3><b><a name="api2"></a>Does DOAJ have an API?</b></h3>
-<p>We will be launching a full API suite later in 2015. A <a href="https://doaj.org/api/v1/docs">beta version of our search
+<p>We will be launching a full API suite later in 2015. A <a href="{{ url_for('api_v1.docs') }}">beta version of our search
 API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
 
 <p>Follow us on <a href="#news">our news channels</a> to find out more about our full API offering, that will include
@@ -448,7 +448,7 @@ a CRUD API and widgets.</p>
 (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>). Thus, any OAI compatible service
 can obtain records from DOAJ. The OAI data is always up to date. OAI is well-established and easy to use. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. <a href="{{ url_for('doaj.features') }}">Read a full description of this service here</a>. Our current OAI offering is standardised around Dublin Core. We expanded the granularity of the metadata in mid-2015.</p>
 
-<p>A <a href="https://doaj.org/api/v1/docs">beta version of our search API</a> is available now.</p>
+<p>A <a href="{{ url_for('api_v1.docs') }}">beta version of our search API</a> is available now.</p>
 
 <a name="metadata_csv"></a>
 <p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
