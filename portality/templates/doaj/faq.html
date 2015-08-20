@@ -215,7 +215,7 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 <h3><b><a name="contribute"></a>How can I contribute to DOAJ?</b></h3>
 <p>There are 4 ways that you can contribute to DOAJ.</p>
 <ul>
-<li>Contact us if you have firsthand evidence that a journal in DOAJ is carrying out questionable practices, is of low quality, or may even be fake.</li>
+<li>Contact us if you have first hand evidence that a journal in DOAJ might be carrying out questionable practices, is of low quality, or may even be fake. All information shared with DOAJ is done so in the strictest confidence, is anonymous and is never published.</li>
 <li><a href="{{ url_for('doaj.support_doaj') }}">Become a member</a>. All monies received through membership go directly to the development and running of DOAJ.</li>
 <li><a href="http://bit.ly/1A0124t">Become a volunteer Associate Editor</a> and help us review the hundreds of new applications that we receive every month.</li> 
 <li>Contact us if you find a broken link on our site, or if you think that the information we have for a journal is outdated or incomplete. This feedback is so important for us and we are always grateful for the community being our eyes and ears.</li> 
@@ -241,9 +241,16 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 <br><br>
 
 <h3><b><a name="questionable"></a>I have found a questionable journal in DOAJ. Why? What should I do?</b></h3>
-<p>DOAJ prides itself on being a directory of quality open access journals. We have strict criteria for entry but they haven't always been so rigorous. In March 2014, we launched an extended and detailed application form that raises the bar for entry into DOAJ. At the time of writing (June 2015), 99% of all the journals that were already in DOAJ have yet to reapply using the new form. This means that a portion of the journals in DOAJ, some of which have been in since 2003, may not meet the high standards of the DOAJ of 2015. All journals must reapply by the end of December 2015.</p>
+<p>DOAJ prides itself on being a directory of quality open access journals. We have strict criteria for entry but 
+they haven't always been so rigorous. In March 2014, we launched an extended and detailed application form that 
+raises the bar for entry into DOAJ. At the time of writing (June 2015), 99% of all the journals that were already 
+in DOAJ have yet to reapply using the new form. This means that a portion of the journals in DOAJ, some of which 
+have been in since 2003, may not meet the high standards of the DOAJ of 2015. All journals must reapply by the end of 
+December 2015.</p>
 
-<p>If you find a journal that you believe to be questionable, please send an email to feedback[at]doaj[.]org with the details and we will be very happy to investigate.</p>
+<p>If you find a journal that you believe to be questionable, please send an email to feedback[at]doaj[.]org with 
+the details and we will be very happy to investigate. All information shared with DOAJ is done so in the strictest 
+confidence, is anonymous and is never published.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
@@ -262,7 +269,11 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 
 
 <h3><b><a name="api1"></a>Does DOAJ have an API?</b></h3>
-<p>Not yet but we will be launching one in 2015. Follow us on <a href="#news">our news channels</a> to find out more.</p>
+<p>We will be launching a full API suite later in 2015. A <a href="https://doaj.org/api/v1/docs">beta version of our search
+API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
+
+<p>Follow us on <a href="#news">our news channels</a> to find out more about our full API offering, that will include
+a CRUD API and widgets.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
@@ -424,7 +435,11 @@ and includes the latest 100 items.</p>
 
 
 <h3><b><a name="api2"></a>Does DOAJ have an API?</b></h3>
-<p>Not yet but we will be launching one in 2015. Follow us on <a href="#news">our news channels</a> to find out more.</p>
+<p>We will be launching a full API suite later in 2015. A <a href="https://doaj.org/api/v1/docs">beta version of our search
+API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
+
+<p>Follow us on <a href="#news">our news channels</a> to find out more about our full API offering, that will include
+a CRUD API and widgets.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
@@ -432,6 +447,8 @@ and includes the latest 100 items.</p>
 <p>The DOAJ service supports the OAI protocol for metadata harvesting
 (<a href="http://www.openarchives.org/OAI/openarchivesprotocol.html">OAI-PMH</a>). Thus, any OAI compatible service
 can obtain records from DOAJ. The OAI data is always up to date. OAI is well-established and easy to use. The base URL is: http://www.doaj.org/oai. You can add most OAI verbs and other commands directly on to that. <a href="{{ url_for('doaj.features') }}">Read a full description of this service here</a>. Our current OAI offering is standardised around Dublin Core. We expanded the granularity of the metadata in mid-2015.</p>
+
+<p>A <a href="https://doaj.org/api/v1/docs">beta version of our search API</a> is available now.</p>
 
 <a name="metadata_csv"></a>
 <p>You can also <b>Download a list of journals in CSV (comma-separated) format</b> which can then be
@@ -441,9 +458,10 @@ imported into Excel or any equivalent analysis tool. The CSV file is updated eve
 <li>Open or import the file into a document processing program like Excel or OpenOffice. Be careful to check the configuration options when you import the file.</li>
 </ol>
 
-<p>Please be aware that we will be updating the structure of the CSV file and the data included in it over the summer of 2015. Currently, this file ONLY includes a subset of the data and some information is missing, such as APCs.</p>
+<p>Please be aware that much of the information in the CSV file is only present for journals with a green Tick next to
+them.</p>
 
-<p>If you wish to crawl DOAJ, you may do so as long as you follow the general guidelines for good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
+<p>If you wish to crawl DOAJ, you may do so as long as you follow general guidelines for crawling good behaviour. If your crawler hits our servers too often, or your crawler starts to affect DOAJ's performance in any way, then your access will be restricted or even blocked.</p>
 
 <p>Finally, you can connect up to our <a href="{{ url_for('atom.feed') }}">ATOM feed of new journals added</a> which is updated every time new journals are added to the database. You can integrate the feed into your browser or straight into a web site.</p>
 
@@ -500,13 +518,22 @@ at all. <b>WARNING</b>: <a href="https://doajournals.wordpress.com/2015/05/11/hi
 <br><br>
 
 <br><h3><a name="predatory"></a>What is DOAJ's policy on "predatory" publishers and journals?</h3>
-<p>DOAJ prefers to use the term 'questionable' instead of predatory. We do not believe in black lists and we do not discuss details of individual publishers or journals, with the public, whether they are in DOAJ or not. We will provide advice, when asked, on improvements a journal can make to meet our own high standards.</p>
+<p>DOAJ prefers to use the term 'questionable' instead of predatory. We do not believe in black lists and we do not 
+discuss details of individual publishers or journals, with the public, whether they are in DOAJ or not. We will 
+provide advice, when asked, on improvements a journal can make to meet our own high standards.</p>
 
-<p>We believe that, when confronted with a possible questionable journal, it is our duty to review it as objectively as possible. That is why every single application is reviewed by 4 different individuals. Difficult cases are discussed at team meetings. In general, we communicate extensively with applicants to pin down the facts of their application and be certain of the all-important details. We operate under <a href="{{ url_for('doaj.publishers', _anchor='disclaimer') }}">a disclaimer</a> that allows us to remove journals from DOAJ without warning.</p>
+<p>We believe that, when confronted with a possible questionable journal, it is our duty to review it as objectively 
+as possible. That is why every single application is reviewed by 4 different individuals. Difficult cases are 
+discussed at team meetings. In general, we communicate extensively with applicants to pin down the facts of their 
+application and be certain of the all-important details. We operate under 
+<a href="{{ url_for('doaj.publishers', _anchor='disclaimer') }}">a disclaimer</a> that allows us to remove journals 
+from DOAJ without warning.</p>
 
-<p>It is important to remember that questionable publishing practices are not restricted to open access publishing alone but, sadly, are seen throughout academic publishing.</p>
+<p>It is important to remember that questionable publishing practices are not restricted to open access publishing 
+alone but, sadly, are seen throughout academic publishing.</p>
 
-<p>If you believe that you have found a questionable journal in DOAJ, please contact us: feedback[at]doaj[.]org.</p>
+<p>If you believe that you have found a questionable journal in DOAJ, please contact us: feedback[at]doaj[.]org. 
+All information shared with DOAJ is done so in the strictest confidence, is anonymous and is never published.</p>
 <a href="#top">Back to top</a>
 <br><br>
 
