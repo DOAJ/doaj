@@ -1,8 +1,9 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api401Error, Api400Error
-from portality.api.v1.data_objects import IncomingApplication
+from portality.api.v1 import Api401Error, Api400Error, Api404Error
+from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.lib import dataobj
 from datetime import datetime
+from portality import models
 
 class ApplicationsCrudApi(CrudApi):
 
@@ -44,3 +45,24 @@ class ApplicationsCrudApi(CrudApi):
         # finally save the new application, and return to the caller
         ap.save()
         return ap
+
+    @classmethod
+    def retrieve(cls, id, account):
+        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # we are good to proceed
+        if account is None:
+            raise Api401Error()
+
+        # is the application id valid
+        ap = models.Suggestion.pull(id)
+        if ap is None:
+            raise Api404Error()
+
+        # is the current account the owner of the application
+        # if not we raise a 404 because that id does not exist for that user account.
+        if ap.owner != account.id:
+            raise Api404Error()
+
+        # if we get to here we're going to give the user back the application
+        oa = OutgoingApplication.from_model(ap)
+        return oa

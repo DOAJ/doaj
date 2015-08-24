@@ -5,245 +5,378 @@ from portality import models
 from portality.formcontext import choices
 from copy import deepcopy
 
-class IncomingApplication(dataobj.DataObj):
-    def __init__(self, raw=None):
-        struct = {
-            "fields": {
-                "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
-                "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
-                "last_updated": {"coerce": "utcdatetime"}   # to the real object
+BASE_APPLICATION_STRUCT = {
+    "fields": {
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}   # to the real object
+    },
+    "objects": ["admin", "bibjson", "suggestion"],
+    "required" : ["admin", "bibjson", "suggestion"],
+
+    "structs": {
+        "admin" : {
+            "lists" : {
+                "contact" : {"contains" : "object"}
             },
-            "objects": ["admin", "bibjson", "suggestion"],
-            "required" : ["admin", "bibjson", "suggestion"],
+            "required" : ["contact"],
+
+            "structs" : {
+                "contact": {
+                    "fields" : {
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
+                    },
+                    "required" : ["name", "email"]
+                }
+            }
+        },
+
+        "bibjson": {
+            "fields": {
+                "allows_fulltext_indexing": {"coerce": "bool"},
+                "alternative_title": {"coerce": "unicode"},
+                "apc_url": {"coerce": "url"},
+                "country": {"coerce": "country_code"},
+                "institution": {"coerce": "unicode"},
+                "provider": {"coerce": "unicode"},
+                "publication_time": {"coerce": "integer"},
+                "publisher": {"coerce": "unicode"},
+                "submission_charges_url": {"coerce": "url"},
+                "title": {"coerce": "unicode"},
+            },
+            "lists": {
+                "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
+                "format": {"coerce": "format", "contains": "field"},
+                "identifier": {"contains": "object"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
+                "license": {"contains": "object"},
+                "link": {"contains": "object"},
+                "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
+            },
+            "objects": [
+                "apc",
+                "archiving_policy",
+                "article_statistics",
+                "author_copyright",
+                "author_publishing_rights",
+                "editorial_review",
+                "oa_start",
+                "plagiarism_detection",
+                "submission_charges",
+            ],
+            "required": [
+                "allows_fulltext_indexing",
+                "apc_url",
+                "archiving_policy",
+                "article_statistics",
+                "author_copyright",
+                "author_publishing_rights",
+                "country",
+                "deposit_policy",
+                "editorial_review",
+                "format",
+                "identifier",
+                "keywords",
+                "language",
+                "license",
+                "link",
+                "oa_start",
+                "persistent_identifier_scheme",
+                "plagiarism_detection",
+                "publication_time",
+                "publisher",
+                "submission_charges_url",
+                "title"
+            ],
 
             "structs": {
-                "admin" : {
-                    "lists" : {
-                        "contact" : {"contains" : "object"}
-                    },
-                    "required" : ["contact"],
-
-                    "structs" : {
-                        "contact": {
-                            "fields" : {
-                                "email" : {"coerce" : "unicode"},
-                                "name" : {"coerce" : "unicode"}
-                            },
-                            "required" : ["name", "email"]
-                        }
+                "apc": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
                     }
                 },
 
-                "bibjson": {
+                "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
                     "fields": {
-                        "allows_fulltext_indexing": {"coerce": "bool"},
-                        "alternative_title": {"coerce": "unicode"},
-                        "apc_url": {"coerce": "url"},
-                        "country": {"coerce": "country_code"},
-                        "institution": {"coerce": "unicode"},
-                        "provider": {"coerce": "unicode"},
-                        "publication_time": {"coerce": "integer"},
-                        "publisher": {"coerce": "unicode"},
-                        "submission_charges_url": {"coerce": "url"},
-                        "title": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                     },
                     "lists": {
-                        "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
-                        "format": {"coerce": "format", "contains": "field"},
-                        "identifier": {"contains": "object"},
-                        "keywords": {"coerce": "unicode", "contains": "field"},
-                        "language": {"coerce": "isolang_2letter", "contains": "field"},
-                        "license": {"contains": "object"},
-                        "link": {"contains": "object"},
-                        "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
+                        "policy": {"coerce": "unicode", "contains": "object"},
                     },
-                    "objects": [
-                        "apc",
-                        "archiving_policy",
-                        "article_statistics",
-                        "author_copyright",
-                        "author_publishing_rights",
-                        "editorial_review",
-                        "oa_start",
-                        "plagiarism_detection",
-                        "submission_charges",
-                    ],
-                    "required": [
-                        "allows_fulltext_indexing",
-                        "apc_url",
-                        "archiving_policy",
-                        "article_statistics",
-                        "author_copyright",
-                        "author_publishing_rights",
-                        "country",
-                        "deposit_policy",
-                        "editorial_review",
-                        "format",
-                        "identifier",
-                        "keywords",
-                        "language",
-                        "license",
-                        "link",
-                        "oa_start",
-                        "persistent_identifier_scheme",
-                        "plagiarism_detection",
-                        "publication_time",
-                        "publisher",
-                        "submission_charges_url",
-                        "title"
-                    ],
+                    "required" : ["url", "policy"],
 
-                    "structs": {
-                        "apc": {
-                            "fields": {
-                                "currency": {"coerce": "currency_code"},
-                                "average_price": {"coerce": "integer"}
-                            }
-                        },
-
-                        "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
-                            "fields": {
-                                "url": {"coerce": "url"},
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
                             },
-                            "lists": {
-                                "policy": {"coerce": "unicode", "contains": "object"},
-                            },
-                            "required" : ["url", "policy"],
-
-                            "structs" : {
-                                "policy" : {
-                                    "fields" : {
-                                        "name" : {"coerce": "unicode"},
-                                        "domain" : {"coerce" : "unicode"}
-                                    },
-                                    "required" : ["name"]
-                                }
-                            }
-                        },
-
-                        "article_statistics": {
-                            "fields": {
-                                "statistics": {"coerce": "bool"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["statistics"]
-                        },
-
-                        "author_copyright": {
-                            "fields": {
-                                "copyright": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["copyright"]
-                        },
-
-                        "author_publishing_rights": {
-                            "fields": {
-                                "publishing_rights": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["publishing_rights"]
-                        },
-
-                        "editorial_review": {
-                            "fields": {
-                                "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["process", "url"]
-                        },
-
-                        "identifier": {
-                            "fields": {
-                                "type": {"coerce": "unicode"},
-                                "id": {"coerce": "unicode"},
-                            },
-                            "required" : ["type", "id"]
-                        },
-
-                        "license": {
-                            "fields": {
-                                "title": {"coerce": "license"},
-                                "type": {"coerce": "license"},
-                                "url": {"coerce": "unicode"},
-                                "version": {"coerce": "unicode"},
-                                "open_access": {"coerce": "bool"},
-                                "BY": {"coerce": "bool"},
-                                "NC": {"coerce": "bool"},
-                                "ND": {"coerce": "bool"},
-                                "SA": {"coerce": "bool"},
-                                "embedded": {"coerce": "bool"},
-                                "embedded_example_url": {"coerce": "url"},
-                            },
-                            "required" : [
-                                "embedded",
-                                "title",
-                                "type",
-                                "open_access"
-                            ]
-                        },
-
-                        "link": {
-                            "fields": {
-                                "type": {"coerce": "unicode"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["type", "url"]
-                        },
-
-                        "oa_start": {
-                            "fields": {
-                                "year": {"coerce": "integer"}
-                            },
-                            "required" : ["year"]
-                        },
-
-                        "plagiarism_detection": {
-                            "fields": {
-                                "detection": {"coerce": "bool"},
-                                "url": {"coerce": "url"},
-                            },
-                            "required" : ["detection", "url"]
-                        },
-
-                        "submission_charges": {
-                            "fields": {
-                                "currency": {"coerce": "currency_code"},
-                                "average_price": {"coerce": "integer"}
-                            }
+                            "required" : ["name"]
                         }
                     }
                 },
 
-                "suggestion" : {
-                    "fields" : {
-                        "article_metadata" : {"coerce" : "bool"}
+                "article_statistics": {
+                    "fields": {
+                        "statistics": {"coerce": "bool"},
+                        "url": {"coerce": "url"},
                     },
-                    "objects" : [
-                        "articles_last_year"
-                    ],
-                    "required" : ["article_metadata", "articles_last_year"],
+                    "required" : ["statistics"]
+                },
 
+                "author_copyright": {
+                    "fields": {
+                        "copyright": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    },
+                    "required" : ["copyright"]
+                },
+
+                "author_publishing_rights": {
+                    "fields": {
+                        "publishing_rights": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    },
+                    "required" : ["publishing_rights"]
+                },
+
+                "editorial_review": {
+                    "fields": {
+                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "url": {"coerce": "url"},
+                    },
+                    "required" : ["process", "url"]
+                },
+
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
+                    },
+                    "required" : ["type", "id"]
+                },
+
+                "license": {
+                    "fields": {
+                        "title": {"coerce": "license"},
+                        "type": {"coerce": "license"},
+                        "url": {"coerce": "unicode"},
+                        "version": {"coerce": "unicode"},
+                        "open_access": {"coerce": "bool"},
+                        "BY": {"coerce": "bool"},
+                        "NC": {"coerce": "bool"},
+                        "ND": {"coerce": "bool"},
+                        "SA": {"coerce": "bool"},
+                        "embedded": {"coerce": "bool"},
+                        "embedded_example_url": {"coerce": "url"},
+                    },
+                    "required" : [
+                        "embedded",
+                        "title",
+                        "type",
+                        "open_access"
+                    ]
+                },
+
+                "link": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    },
+                    "required" : ["type", "url"]
+                },
+
+                "oa_start": {
+                    "fields": {
+                        "year": {"coerce": "integer"}
+                    },
+                    "required" : ["year"]
+                },
+
+                "plagiarism_detection": {
+                    "fields": {
+                        "detection": {"coerce": "bool"},
+                        "url": {"coerce": "url"},
+                    },
+                    "required" : ["detection", "url"]
+                },
+
+                "submission_charges": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
+                    }
+                }
+            }
+        },
+
+        "suggestion" : {
+            "fields" : {
+                "article_metadata" : {"coerce" : "bool"}
+            },
+            "objects" : [
+                "articles_last_year"
+            ],
+            "required" : ["article_metadata", "articles_last_year"],
+
+            "structs" : {
+                "articles_last_year" : {
+                    "fields" : {
+                        "count" : {"coerce" : "integer"},
+                        "url" : {"coerce" : "url"}
+                    },
+                    "required" : ["count", "url"]
+                }
+            }
+        }
+    }
+}
+
+INCOMING_APPLICATION_REQUIREMENTS = {
+    "required" : ["admin", "bibjson", "suggestion"],
+
+    "structs": {
+        "admin" : {
+            "required" : ["contact"],
+            "structs" : {
+                "contact": {
+                    "required" : ["name", "email"]
+                }
+            }
+        },
+
+        "bibjson": {
+            "required": [
+                "allows_fulltext_indexing",
+                "apc_url",
+                "archiving_policy",
+                "article_statistics",
+                "author_copyright",
+                "author_publishing_rights",
+                "country",
+                "deposit_policy",
+                "editorial_review",
+                "format",
+                "identifier",
+                "keywords",
+                "language",
+                "license",
+                "link",
+                "oa_start",
+                "persistent_identifier_scheme",
+                "plagiarism_detection",
+                "publication_time",
+                "publisher",
+                "submission_charges_url",
+                "title"
+            ],
+
+            "structs": {
+                "archiving_policy": {
+                    "required" : ["url", "policy"],
                     "structs" : {
-                        "articles_last_year" : {
-                            "fields" : {
-                                "count" : {"coerce" : "integer"},
-                                "url" : {"coerce" : "url"}
-                            },
-                            "required" : ["count", "url"]
+                        "policy" : {
+                            "required" : ["name"]
                         }
+                    }
+                },
+
+                "article_statistics": {
+                    "required" : ["statistics"]
+                },
+
+                "author_copyright": {
+                    "required" : ["copyright"]
+                },
+
+                "author_publishing_rights": {
+                    "required" : ["publishing_rights"]
+                },
+
+                "editorial_review": {
+                    "required" : ["process", "url"]
+                },
+
+                "identifier": {
+                    "required" : ["type", "id"]
+                },
+
+                "license": {
+                    "required" : [
+                        "embedded",
+                        "title",
+                        "type",
+                        "open_access"
+                    ]
+                },
+
+                "link": {
+                    "required" : ["type", "url"]
+                },
+
+                "oa_start": {
+                    "required" : ["year"]
+                },
+
+                "plagiarism_detection": {
+                    "required" : ["detection", "url"]
+                }
+            }
+        },
+
+        "suggestion" : {
+            "required" : ["article_metadata", "articles_last_year"],
+            "structs" : {
+                "articles_last_year" : {
+                    "required" : ["count", "url"]
+                }
+            }
+        }
+    }
+}
+
+OUTGOING_APPLICATION_EXTRAS = {
+    "objects": ["admin", "suggestion"],
+
+    "structs": {
+        "admin" : {
+            "fields" : {
+                "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
+                "owner" : {"coerce" : "unicode"}
+            }
+        },
+
+        "suggestion" : {
+            "fields" : {
+                "suggested_on" : {"coerce" : "utcdatetime"}
+            },
+            "objects" : ["suggester"],
+
+            "structs" : {
+                "suggester" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"}
                     }
                 }
             }
         }
+    }
+}
 
-        mycoerce = deepcopy(self.DEFAULT_COERCE)
-        mycoerce["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
-        mycoerce["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
-        mycoerce["license"] = dataobj.string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
-        mycoerce["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
+BASE_APPLICATION_COERCE = deepcopy(dataobj.DataObj.DEFAULT_COERCE)
+BASE_APPLICATION_COERCE["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
+BASE_APPLICATION_COERCE["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
+BASE_APPLICATION_COERCE["license"] = dataobj.string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
+BASE_APPLICATION_COERCE["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
 
-        super(IncomingApplication, self).__init__(raw, struct=struct, construct_silent_prune=False, expose_data=True, coerce_map=mycoerce)
+class IncomingApplication(dataobj.DataObj):
+    def __init__(self, raw=None):
+        self._add_struct(BASE_APPLICATION_STRUCT)
+        super(IncomingApplication, self).__init__(raw, construct_silent_prune=False, expose_data=True, coerce_map=BASE_APPLICATION_COERCE)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -367,14 +500,33 @@ class IncomingApplication(dataobj.DataObj):
 
         return models.Suggestion(**nd)
 
-    """
-    @classmethod
-    def from_model(cls, jm):
-        assert isinstance(jm, models.Suggestion)
-        return cls(jm.data)
+class OutgoingApplication(dataobj.DataObj):
+    def __init__(self, raw=None):
+        self._add_struct(BASE_APPLICATION_STRUCT)
+        self._add_struct(OUTGOING_APPLICATION_EXTRAS)
+        super(OutgoingApplication, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_APPLICATION_COERCE)
 
     @classmethod
-    def from_model_by_id(cls, id_):
-        j = models.Suggestion.pull(id_)
-        return cls.from_model(j)
-    """
+    def from_model(cls, application):
+        assert isinstance(application, models.Suggestion)
+        d = deepcopy(application.data)
+
+        # we need to re-write the archiving policy section
+        ap = d.get("bibjson", {}).get("archiving_policy")
+        if ap is not None:
+            nap = {}
+            if "url" in ap:
+                nap["url"] = ap["url"]
+            if "policy" in ap:
+                npol = []
+                for pol in ap["policy"]:
+                    if isinstance(pol, list):
+                        npol.append({"name" : pol[1], "domain" : pol[0]})
+                    else:
+                        npol.append({"name" : pol})
+                nap["policy"] = npol
+            d["bibjson"]["archiving_policy"] = nap
+
+        return cls(d)
+
+

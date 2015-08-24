@@ -937,7 +937,8 @@ def create_application():
 @blueprint.route("/application/<aid>", methods=["GET"])
 @api_key_required
 def retrieve_application(aid):
-    pass
+    a = ApplicationsCrudApi.retrieve(aid, current_user)
+    return jsonify_models(a)
 
 @blueprint.route("/application/<aid>", methods=["PUT"])
 @api_key_required

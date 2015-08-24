@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataObj, DataStructureException
-from portality.api.v1.data_objects import IncomingApplication
-from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error
+from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
+from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory
@@ -228,3 +228,70 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["language"] = ["Hagey Pagey"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
+
+    def test_05_outgoing_application_do(self):
+        # make a blank one
+        oa = OutgoingApplication()
+
+        # make one from an incoming application model fixture
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        oa = OutgoingApplication.from_model(ap)
+
+        # check that it does not contain information that it shouldn't
+        assert oa.data.get("index") is None
+        assert oa.data.get("history") is None
+        assert oa.data.get("admin", {}).get("notes") is None
+        assert oa.data.get("admin", {}).get("editor_group") is None
+        assert oa.data.get("admin", {}).get("editor") is None
+        assert oa.data.get("admin", {}).get("seal") is None
+
+        # FIXME: is this really what we want to happen?
+        # make another one that's broken
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["bibjson"]["title"]
+        with self.assertRaises(DataStructureException):
+            oa = OutgoingApplication.from_model(models.Suggestion(**data))
+
+    def test_06_retrieve_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        ap.save()
+        time.sleep(2)
+
+        account = models.Account()
+        account.set_id(ap.owner)
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call retrieve on the object
+        a = ApplicationsCrudApi.retrieve(ap.id, account)
+
+        # check that we got back the object we expected
+        assert isinstance(a, OutgoingApplication)
+        assert a.id == ap.id
+
+    def test_07_retrieve_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        ap.save()
+        time.sleep(2)
+
+        # no user
+        with self.assertRaises(Api401Error):
+            a = ApplicationsCrudApi.retrieve(ap.id, None)
+
+        # wrong user
+        account = models.Account()
+        account.set_id("asdklfjaioefwe")
+        with self.assertRaises(Api404Error):
+            a = ApplicationsCrudApi.retrieve(ap.id, account)
+
+        # non-existant application
+        account = models.Account()
+        account.set_id(ap.id)
+        with self.assertRaises(Api404Error):
+            a = ApplicationsCrudApi.retrieve("ijsidfawefwefw", account)
+

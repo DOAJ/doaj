@@ -969,6 +969,9 @@ def construct_merge(target, source):
             merged["structs"] = {}
         if field not in merged["structs"]:
             merged["structs"][field] = deepcopy(struct)
+        else:
+            # recursively merge
+            merged["structs"][field] = construct_merge(merged["structs"][field], struct)
 
     return merged
 
