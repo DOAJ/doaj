@@ -958,4 +958,5 @@ def update_application(aid):
 @blueprint.route("/application/<aid>", methods=["DELETE"])
 @api_key_required
 def delete_application(aid):
-    pass
+    ApplicationsCrudApi.delete(aid, current_user)
+    return no_content()

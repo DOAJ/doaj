@@ -322,7 +322,7 @@ class TestCrudApplication(DoajTestCase):
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
 
-    def test_08_update_application_fail(self):
+    def test_09_update_application_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
         account = models.Account()
@@ -366,5 +366,69 @@ class TestCrudApplication(DoajTestCase):
 
         with self.assertRaises(Api403Error):
             ApplicationsCrudApi.update(a.id, data, account)
+
+    def test_10_delete_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # now delete it
+        ApplicationsCrudApi.delete(a.id, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        ap = models.Suggestion.pull(a.id)
+        assert ap is None
+
+    def test_11_delete_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in test later
+        created = models.Suggestion.pull(a.id)
+
+        # call delete on the object in various context that will fail
+
+        # without an account
+        with self.assertRaises(Api401Error):
+            ApplicationsCrudApi.delete(a.id, None)
+
+        # with the wrong account
+        account.set_id("other")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.delete(a.id, account)
+
+        # on the wrong id
+        account.set_id("test")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.delete("adfasdfhwefwef", account)
+
+        # on one with a disallowed workflow status
+        created.set_application_status("accepted")
+        created.save()
+        time.sleep(2)
+
+        with self.assertRaises(Api403Error):
+            ApplicationsCrudApi.delete(a.id, account)
 
 

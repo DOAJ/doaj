@@ -110,3 +110,28 @@ class ApplicationsCrudApi(CrudApi):
         # finally save the new application, and return to the caller
         new_ap.save()
         return ap
+
+    @classmethod
+    def delete(cls, id, account):
+        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # we are good to proceed
+        if account is None:
+            raise Api401Error()
+
+        # now see if there's something for us to delete
+        ap = models.Suggestion.pull(id)
+        if ap is None:
+            raise Api404Error()
+
+        # is the current account the owner of the application
+        # if not we raise a 404 because that id does not exist for that user account.
+        if ap.owner != account.id:
+            raise Api404Error()
+
+        # now we need to determine whether the records is in an editable state, which means its application_status
+        # must be from an allowed list
+        if ap.application_status not in ["rejected", "submitted", "pending"]:
+            raise Api403Error()
+
+        # issue the delete (no record of the delete required)
+        ap.delete()
