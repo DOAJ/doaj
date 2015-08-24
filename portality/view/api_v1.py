@@ -5,7 +5,7 @@ from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created
+from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional
 
@@ -943,7 +943,17 @@ def retrieve_application(aid):
 @blueprint.route("/application/<aid>", methods=["PUT"])
 @api_key_required
 def update_application(aid):
-    pass
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    # delegate to the API implementation
+    ApplicationsCrudApi.update(aid, data, current_user)
+
+    # respond with a suitable No Content successful response
+    return no_content()
 
 @blueprint.route("/application/<aid>", methods=["DELETE"])
 @api_key_required

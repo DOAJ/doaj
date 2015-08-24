@@ -12,22 +12,19 @@ BASE_APPLICATION_STRUCT = {
         "last_updated": {"coerce": "utcdatetime"}   # to the real object
     },
     "objects": ["admin", "bibjson", "suggestion"],
-    "required" : ["admin", "bibjson", "suggestion"],
 
     "structs": {
         "admin" : {
             "lists" : {
                 "contact" : {"contains" : "object"}
             },
-            "required" : ["contact"],
 
             "structs" : {
                 "contact": {
                     "fields" : {
                         "email" : {"coerce" : "unicode"},
                         "name" : {"coerce" : "unicode"}
-                    },
-                    "required" : ["name", "email"]
+                    }
                 }
             }
         },
@@ -66,30 +63,6 @@ BASE_APPLICATION_STRUCT = {
                 "plagiarism_detection",
                 "submission_charges",
             ],
-            "required": [
-                "allows_fulltext_indexing",
-                "apc_url",
-                "archiving_policy",
-                "article_statistics",
-                "author_copyright",
-                "author_publishing_rights",
-                "country",
-                "deposit_policy",
-                "editorial_review",
-                "format",
-                "identifier",
-                "keywords",
-                "language",
-                "license",
-                "link",
-                "oa_start",
-                "persistent_identifier_scheme",
-                "plagiarism_detection",
-                "publication_time",
-                "publisher",
-                "submission_charges_url",
-                "title"
-            ],
 
             "structs": {
                 "apc": {
@@ -106,15 +79,13 @@ BASE_APPLICATION_STRUCT = {
                     "lists": {
                         "policy": {"coerce": "unicode", "contains": "object"},
                     },
-                    "required" : ["url", "policy"],
 
                     "structs" : {
                         "policy" : {
                             "fields" : {
                                 "name" : {"coerce": "unicode"},
                                 "domain" : {"coerce" : "unicode"}
-                            },
-                            "required" : ["name"]
+                            }
                         }
                     }
                 },
@@ -123,40 +94,35 @@ BASE_APPLICATION_STRUCT = {
                     "fields": {
                         "statistics": {"coerce": "bool"},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["statistics"]
+                    }
                 },
 
                 "author_copyright": {
                     "fields": {
                         "copyright": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["copyright"]
+                    }
                 },
 
                 "author_publishing_rights": {
                     "fields": {
                         "publishing_rights": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["publishing_rights"]
+                    }
                 },
 
                 "editorial_review": {
                     "fields": {
                         "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["process", "url"]
+                    }
                 },
 
                 "identifier": {
                     "fields": {
                         "type": {"coerce": "unicode"},
                         "id": {"coerce": "unicode"},
-                    },
-                    "required" : ["type", "id"]
+                    }
                 },
 
                 "license": {
@@ -172,36 +138,27 @@ BASE_APPLICATION_STRUCT = {
                         "SA": {"coerce": "bool"},
                         "embedded": {"coerce": "bool"},
                         "embedded_example_url": {"coerce": "url"},
-                    },
-                    "required" : [
-                        "embedded",
-                        "title",
-                        "type",
-                        "open_access"
-                    ]
+                    }
                 },
 
                 "link": {
                     "fields": {
                         "type": {"coerce": "unicode"},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["type", "url"]
+                    }
                 },
 
                 "oa_start": {
                     "fields": {
                         "year": {"coerce": "integer"}
-                    },
-                    "required" : ["year"]
+                    }
                 },
 
                 "plagiarism_detection": {
                     "fields": {
                         "detection": {"coerce": "bool"},
                         "url": {"coerce": "url"},
-                    },
-                    "required" : ["detection", "url"]
+                    }
                 },
 
                 "submission_charges": {
@@ -220,15 +177,13 @@ BASE_APPLICATION_STRUCT = {
             "objects" : [
                 "articles_last_year"
             ],
-            "required" : ["article_metadata", "articles_last_year"],
 
             "structs" : {
                 "articles_last_year" : {
                     "fields" : {
                         "count" : {"coerce" : "integer"},
                         "url" : {"coerce" : "url"}
-                    },
-                    "required" : ["count", "url"]
+                    }
                 }
             }
         }
@@ -376,6 +331,7 @@ BASE_APPLICATION_COERCE["deposit_policy"] = dataobj.string_canonicalise(["None",
 class IncomingApplication(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
+        self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
         super(IncomingApplication, self).__init__(raw, construct_silent_prune=False, expose_data=True, coerce_map=BASE_APPLICATION_COERCE)
 
     def custom_validate(self):
@@ -479,7 +435,7 @@ class IncomingApplication(dataobj.DataObj):
                 issn = ("0" * (8 - len(issn))) + issn
                 return issn[:4] + "-" + issn[4:]
 
-    def to_application_model(self):
+    def to_application_model(self, existing=None):
         nd = deepcopy(self.data)
 
         # we need to re-write the archiving policy section
@@ -498,7 +454,11 @@ class IncomingApplication(dataobj.DataObj):
                 nap["policy"] = npol
             nd["bibjson"]["archiving_policy"] = nap
 
-        return models.Suggestion(**nd)
+        if existing is None:
+            return models.Suggestion(**nd)
+        else:
+            nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
+            return models.Suggestion(**nnd)
 
 class OutgoingApplication(dataobj.DataObj):
     def __init__(self, raw=None):

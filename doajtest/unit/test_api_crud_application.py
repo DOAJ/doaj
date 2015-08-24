@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataObj, DataStructureException
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
-from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error
+from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory
@@ -246,13 +246,6 @@ class TestCrudApplication(DoajTestCase):
         assert oa.data.get("admin", {}).get("editor") is None
         assert oa.data.get("admin", {}).get("seal") is None
 
-        # FIXME: is this really what we want to happen?
-        # make another one that's broken
-        data = ApplicationFixtureFactory.incoming_application()
-        del data["bibjson"]["title"]
-        with self.assertRaises(DataStructureException):
-            oa = OutgoingApplication.from_model(models.Suggestion(**data))
-
     def test_06_retrieve_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.make_application_source()
@@ -294,4 +287,84 @@ class TestCrudApplication(DoajTestCase):
         account.set_id(ap.id)
         with self.assertRaises(Api404Error):
             a = ApplicationsCrudApi.retrieve("ijsidfawefwefw", account)
+
+    def test_08_update_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+
+        # call update on the object
+        ApplicationsCrudApi.update(a.id, data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the updated version
+        updated = models.Suggestion.pull(a.id)
+
+        # now check the properties to make sure the update tool
+        assert updated.bibjson().title == "An updated title"
+        assert updated.created_date == created.created_date
+
+    def test_08_update_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+
+        # call update on the object in various context that will fail
+
+        # without an account
+        with self.assertRaises(Api401Error):
+            ApplicationsCrudApi.update(a.id, data, None)
+
+        # with the wrong account
+        account.set_id("other")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
+        # on the wrong id
+        account.set_id("test")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update("adfasdfhwefwef", data, account)
+
+        # on one with a disallowed workflow status
+        created.set_application_status("accepted")
+        created.save()
+        time.sleep(2)
+
+        with self.assertRaises(Api403Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
 

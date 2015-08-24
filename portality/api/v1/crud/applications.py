@@ -1,5 +1,5 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api401Error, Api400Error, Api404Error
+from portality.api.v1 import Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.lib import dataobj
 from datetime import datetime
@@ -66,3 +66,47 @@ class ApplicationsCrudApi(CrudApi):
         # if we get to here we're going to give the user back the application
         oa = OutgoingApplication.from_model(ap)
         return oa
+
+    @classmethod
+    def update(cls, id, data, account):
+        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # we are good to proceed
+        if account is None:
+            raise Api401Error()
+
+        # now see if there's something for us to update
+        ap = models.Suggestion.pull(id)
+        if ap is None:
+            raise Api404Error()
+
+        # is the current account the owner of the application
+        # if not we raise a 404 because that id does not exist for that user account.
+        if ap.owner != account.id:
+            raise Api404Error()
+
+        # now we need to determine whether the records is in an editable state, which means its application_status
+        # must be from an allowed list
+        if ap.application_status not in ["rejected", "submitted", "pending"]:
+            raise Api403Error()
+
+        # next thing to do is a structural validation of the replacement data, by instantiating the object
+        try:
+            ia = IncomingApplication(data)
+        except dataobj.DataStructureException as e:
+            raise Api400Error(e.message)
+
+        # if that works, convert it to a Suggestion object bringing over everything outside the
+        # incoming application from the original application
+        new_ap = ia.to_application_model(ap)
+
+        # we need to ensure that any properties of the existing application that aren't allowed to change
+        # are copied over
+        new_ap.set_id(id)
+        new_ap.set_created(ap.created_date)
+
+        # reset the status on the application
+        new_ap.set_application_status('pending')
+
+        # finally save the new application, and return to the caller
+        new_ap.save()
+        return ap
