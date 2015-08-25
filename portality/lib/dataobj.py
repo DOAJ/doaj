@@ -363,12 +363,13 @@ class DataObj(object):
             # as a single node (may be a field, list or dict, we'll find out in a mo)
             val = self._get_single(path)
 
-            # if this is a dict or a list and a wrapper is supplied, wrap it
+            # if this is a dict or a list of dicts and a wrapper is supplied, wrap it
             if wrapper is not None:
                 if isinstance(val, dict):
                     return wrapper(val, expose_data=self._expose_data)
-                elif isinstance(val, list):
-                    return [wrapper(v, expose_data=self._expose_data) for v in val]
+                elif isinstance(val, list) and len(val) > 0:
+                    if isinstance(val[0], dict):    # just check the first one
+                        return [wrapper(v, expose_data=self._expose_data) for v in val]
 
             # otherwise, return the raw value if it is not None, or raise an AttributeError
             if val is None:
@@ -969,6 +970,9 @@ def construct_merge(target, source):
             merged["structs"] = {}
         if field not in merged["structs"]:
             merged["structs"][field] = deepcopy(struct)
+        else:
+            # recursively merge
+            merged["structs"][field] = construct_merge(merged["structs"][field], struct)
 
     return merged
 
@@ -1039,6 +1043,33 @@ def construct_kwargs(type, dir, instructions):
 
 def construct_data_keys(struct):
     return struct.get("fields", {}).keys() + struct.get("objects", []) + struct.get("lists", {}).keys()
+
+def merge_outside_construct(struct, target, source):
+    merged = deepcopy(target)
+
+    for source_key in source.keys():
+        # if the source_key is one of the struct's fields, ignore it
+        if source_key in struct.get("fields", {}).keys():
+            continue
+
+        # if the source_key is one of the struct's lists, ignore it
+        if source_key in struct.get("lists", {}).keys():
+            continue
+
+        # if the source_key is one of the struct's object, we will need to go deeper
+        if source_key in struct.get("objects", []):
+            subsource = source[source_key]
+            subtarget = target.get(source_key, {})
+            substruct = struct.get("structs", {}).get(source_key, {})
+            merged[source_key] = merge_outside_construct(substruct, subtarget, subsource)
+            continue
+
+        # if we get to here, the field in the source is not represented at this level in the struct,
+        # so we should copy it over in full (unless the target already has a value here)
+        if source_key not in merged:
+            merged[source_key] = deepcopy(source[source_key])
+
+    return merged
 
 ############################################################
 ## Unit test support

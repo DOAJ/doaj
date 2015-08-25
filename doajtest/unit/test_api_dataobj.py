@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataObj
+from portality.lib.dataobj import DataObj, merge_outside_construct
 from portality.api.v1.data_objects import JournalDO
 from portality import models
 from datetime import datetime
@@ -87,3 +87,66 @@ class TestAPIDataObj(DoajTestCase):
         # TODO the below line passes but journal struct needs enhancing here
         # assert do.bibjson.archiving_policy.policy == [u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]"], do.bibjson.archiving_policy.policy
 
+    def test_04_merge_outside_construct(self):
+        struct = {
+            "fields" : {
+                "one" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "two" : {"contains" : "field", "coerce" : "unicode"}
+            },
+            "objects" : ["three"],
+
+            "structs" : {
+                "three" : {
+                    "fields" : {
+                        "alpha" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "beta" : {"contains" : "field", "coerce" : "unicode"}
+                    },
+                    "objects" : ["gamma"]
+                }
+            }
+        }
+
+        target = {
+            "one" : "first",
+            "two" : ["second1", "second2"],
+            "three" : {
+                "alpha" : "a",
+                "beta" : ["b1", "b2"],
+                "gamma" : {"letter" : "c"}
+            }
+        }
+
+        source = {
+            "one" : "not first",
+            "two" : ["not second1", "not second2"],
+            "three" : {
+                "alpha" : "not a",
+                "beta" : ["not b1", "not b2"],
+                "gamma" : {"letter" : "not c"},
+                "delta" : "d",
+                "epsilon" : ["e1", "e2"],
+                "zeta" : {"another" : "object"}
+            },
+            "four" : "fourth",
+            "five" : ["fifth1", "fifth2"],
+            "six" : {"an" : "object"}
+        }
+
+        merged = merge_outside_construct(struct, target, source)
+
+        do = DataObj(raw=merged, expose_data=True)
+        assert do.one == "first"
+        assert do.two == ["second1", "second2"]
+        assert do.three.alpha == "a"
+        assert do.three.beta == ["b1", "b2"]
+        assert do.three.gamma.letter == "c"
+        assert do.three.delta == "d"
+        assert do.three.epsilon == ["e1", "e2"]
+        assert do.three.zeta.another == "object"
+        assert do.four == "fourth"
+        assert do.five == ["fifth1", "fifth2"]
+        assert do.six.an == "object"

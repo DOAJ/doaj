@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataObj, DataStructureException
-from portality.api.v1.data_objects import IncomingApplication
-from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error
+from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
+from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory
@@ -228,3 +228,207 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["language"] = ["Hagey Pagey"]
         with self.assertRaises(DataStructureException):
             ia = IncomingApplication(data)
+
+    def test_05_outgoing_application_do(self):
+        # make a blank one
+        oa = OutgoingApplication()
+
+        # make one from an incoming application model fixture
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        oa = OutgoingApplication.from_model(ap)
+
+        # check that it does not contain information that it shouldn't
+        assert oa.data.get("index") is None
+        assert oa.data.get("history") is None
+        assert oa.data.get("admin", {}).get("notes") is None
+        assert oa.data.get("admin", {}).get("editor_group") is None
+        assert oa.data.get("admin", {}).get("editor") is None
+        assert oa.data.get("admin", {}).get("seal") is None
+
+    def test_06_retrieve_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        ap.save()
+        time.sleep(2)
+
+        account = models.Account()
+        account.set_id(ap.owner)
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call retrieve on the object
+        a = ApplicationsCrudApi.retrieve(ap.id, account)
+
+        # check that we got back the object we expected
+        assert isinstance(a, OutgoingApplication)
+        assert a.id == ap.id
+
+    def test_07_retrieve_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.make_application_source()
+        ap = models.Suggestion(**data)
+        ap.save()
+        time.sleep(2)
+
+        # no user
+        with self.assertRaises(Api401Error):
+            a = ApplicationsCrudApi.retrieve(ap.id, None)
+
+        # wrong user
+        account = models.Account()
+        account.set_id("asdklfjaioefwe")
+        with self.assertRaises(Api404Error):
+            a = ApplicationsCrudApi.retrieve(ap.id, account)
+
+        # non-existant application
+        account = models.Account()
+        account.set_id(ap.id)
+        with self.assertRaises(Api404Error):
+            a = ApplicationsCrudApi.retrieve("ijsidfawefwefw", account)
+
+    def test_08_update_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+
+        # call update on the object
+        ApplicationsCrudApi.update(a.id, data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the updated version
+        updated = models.Suggestion.pull(a.id)
+
+        # now check the properties to make sure the update tool
+        assert updated.bibjson().title == "An updated title"
+        assert updated.created_date == created.created_date
+
+    def test_09_update_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+
+        # call update on the object in various context that will fail
+
+        # without an account
+        with self.assertRaises(Api401Error):
+            ApplicationsCrudApi.update(a.id, data, None)
+
+        # with the wrong account
+        account.set_id("other")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
+        # on the wrong id
+        account.set_id("test")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update("adfasdfhwefwef", data, account)
+
+        # on one with a disallowed workflow status
+        created.set_application_status("accepted")
+        created.save()
+        time.sleep(2)
+
+        with self.assertRaises(Api403Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
+    def test_10_delete_application_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # now delete it
+        ApplicationsCrudApi.delete(a.id, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        ap = models.Suggestion.pull(a.id)
+        assert ap is None
+
+    def test_11_delete_application_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in test later
+        created = models.Suggestion.pull(a.id)
+
+        # call delete on the object in various context that will fail
+
+        # without an account
+        with self.assertRaises(Api401Error):
+            ApplicationsCrudApi.delete(a.id, None)
+
+        # with the wrong account
+        account.set_id("other")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.delete(a.id, account)
+
+        # on the wrong id
+        account.set_id("test")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.delete("adfasdfhwefwef", account)
+
+        # on one with a disallowed workflow status
+        created.set_application_status("accepted")
+        created.save()
+        time.sleep(2)
+
+        with self.assertRaises(Api403Error):
+            ApplicationsCrudApi.delete(a.id, account)
+
+
