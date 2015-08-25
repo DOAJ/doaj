@@ -24,6 +24,14 @@ def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
     # TODO use a Jinja template for the description below, HTML works. Emails use jinja templates already.
+    auth_info = """
+<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>. If you already have an account, please log in as usual and click on your username in the top right corner to manage API keys.</p>
+"""
+    if current_user.is_authenticated():
+        auth_info = """
+        <p>Note that some routes require authentication. You can generate an API key and view your key for later reference at {account_url}.</p>
+        """.format(account_url = url_for('account.username', username=current_user.id, _external=True))
+
     swag['info']['description'] = """
 <p>This page documents the first version of the DOAJ API, v.{api_version}</p>
 <p>Base URL: <a href="{base_url}" target="_blank">{base_url}</a></p>
@@ -31,11 +39,12 @@ def api_spec():
 This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page. You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration. Please note that not all fields will be available on all records. Further information on advanced usage of the routes is available at the bottom below the route list.
 
 <h2 id="intro_auth">Authenticated routes</h2>
-<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>.</p>
+{auth_info}
 """.format(
         api_version=API_VERSION_NUMBER,
-        base_url=url_for('.api_spec', _external=True),
-        contact_us_url=url_for('doaj.contact')
+        base_url=url_for('.api_v1_root', _external=True),
+        contact_us_url=url_for('doaj.contact'),
+        auth_info=auth_info
     )
     swag['info']['version'] = API_VERSION_NUMBER
 

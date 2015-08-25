@@ -1,6 +1,6 @@
 import json, uuid
 from portality.core import app
-from flask import request, url_for
+from flask import request
 
 
 class Api(object):
@@ -46,6 +46,7 @@ def jsonify_data_object(do):
 def jsonify_models(models):
     data = json.dumps(models, cls=ModelJsonEncoder)
     return respond(data, 200)
+
 
 def respond(data, status):
     callback = request.args.get('callback', False)

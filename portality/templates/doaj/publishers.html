@@ -10,7 +10,7 @@
 <a href="#accepted">4) If your application is accepted</a><br>
 <a href="#rejected">5) If your application is rejected</a><br>
 <a href="#disclaimer">6) Disclaimer</a><br>
-<a href="#upload">7) How to get your journal content indexed in DOAJ. Uploading content.</a><br>
+<a href="#upload">7) How to get your journal content / article metadata indexed in DOAJ. Uploading content.</a><br>
 <a href="#failed">8) What to do if your XML upload fails</a><br>
 <a href="#trouble">9) Troubleshooting your XML upload</a><br>
 <a href="#correct">10) How to correct an error in article metadata on DOAJ</a><br>
@@ -22,7 +22,7 @@
 
 <h3><a name="pubmem"></a>1) How to become a Publisher Member</h3>
 <p>DOAJ is a membership organisation that relies entirely on voluntary donations from the community to develop and 
-grow. We urge you to become a Publisher Member.
+grow. We urge you to <a href="{{ url_for('doaj.support') }}">become a Publisher Member</a>.
 
 <ul>
 <li>It is a clear statement of intent about your commitment to quality, peer-reviewed open access.</li>
@@ -94,11 +94,11 @@ not spread over various locations. This includes archive material. <i style="col
 for entry into DOAJ.</i></p>
 
 
-<p><b>One unique URL per article. One PDF per article.</b><br>
-<p>Your content must be available article by article, one PDF for each article, and not one PDF per issue. This 
+<p><b>One unique URL per article. One HTML entry and/or PDF per article.</b><br>
+<p>Your content should be available article by article, one URL for each article, and not one URL per issue. This 
 enables direct linking to the articles from DOAJ and 3rd party databases that link to DOAJ, promoting findability and 
 increasing usage of your content. When article metadata is uploaded to DOAJ, every article must have a unique URL 
-otherwise the upload will not work. <i style="color: red">This is a basic requirement for entry into DOAJ.</i></p>
+otherwise the upload will not work.</p>
 
 <p><b>ISSN number(s)</b><br>
 <p>A journal must have at least one ISSN (International Standard Serial Number) registered at issn.org. <i style="color: red">This is a 
@@ -350,7 +350,7 @@ eventual number of repeated incidents.</p>
 
 <!-- SECTION UPLOADING XML -->
 
-<h3><a name="upload"></a>7) How to get your journal content indexed in DOAJ</h3>
+<h3><a name="upload"></a>7) How to get your journal content / article metadata indexed in DOAJ. Uploading content.</h3>
 <p>It is the publisher's responsibility to upload article metadata to DOAJ. DOAJ does not actively collect article
 metadata for journals it indexes.</p>
 
@@ -376,11 +376,17 @@ old version.</li>
 
 <li><b>Upload DOAJ XML to us</b> via the 'Upload Article XML' tab. You can either upload the file manually by 
 selecting it from a location on your computer OR you can enter the URL where the DOAJ site should go to look for the 
-file. The location can be either http or ftp.<br> 
-All XML files are checked within 10 minutes for errors and, if a problem is found, an error message will be 
-displayed: 'processing failed'. If the upload has been successful, you will see a 'Successfully processed' message.
-Refresh your page if you do not see a new message after 10 minutes. As soon as the XML has processed successfully, the
-articles are published to the site by an automated script. The Table of Contents for a journal updates overnight.</li>
+file. The location can be either http or ftp.<br>
+Before you upload the file to us, <a href="http://www.freeformatter.com/xml-formatter.html">format it</a> and 
+<a href="http://www.freeformatter.com/xml-validator-xsd.html">validate it</a>. 
+(<a href="https://doaj.org/static/doaj/doajArticles.xsd">The xsd file for DOAJ is here</a>.) These two steps identify most 
+upload problems.<br>
+You will see a message 'File successfully uploaded - it will be processed shortly'. Processing takes place every 30 minutes.
+All XML files are checked for errors and, if a problem is found, an error message will be displayed, 'processing failed', in the
+'History of uploads' section. If the upload has been successful, you will see a 'Successfully processed' message in the 
+'History of uploads' section. Articles are processed every half hour so come back to your account after 30 minutes. As soon as 
+the XML has processed successfully, the articles are published to the site. The Table of Contents for a journal updates 
+overnight.</li>
 </ul>
 <p>For help with creating DOAJ XML and details on XML tags, read the
 <a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a> on our Features pages.</p>
@@ -454,9 +460,11 @@ plugin, note the details of this particular problem:<br>
 There are some fields (e.g. abstract) where it is possible to include HTML code in OJS. OJS uses a third party plugin,
 TinyMCE, as an HTML editor for those fields. If you paste text from Microsoft Word into the abstract field, the plugin
 also copies HTML and style sheet coding from the Word document into the abstract field. (You can check if this is
-happening by opening the field in the HTML view on OJS and you will see the additional code.) XML can only contain plain 
-text and XML coding. We recommend that when you are creating your articles in OJS, you do NOT copy directly from Word. 
-Instead, copy the abstract content into a plain text editor, such as Notepad, WordPad or TextPad, first.</li>
+happening by opening the field in the HTML view on OJS and you will see the additional code.)<br>
+XML can only contain plain text and XML coding. We recommend that when you are creating your articles in OJS, you do NOT copy 
+directly from Word. Instead, copy the abstract content into a plain text editor, such as Notepad, WordPad or TextPad, first. You
+can also use <a href="http://www.freeformatter.com/xml-formatter.html">an XML formatter</a> to strip out this code before you upload
+the XML to DOAJ.</li>
 <li>If you get repeated messages that your file has failed, try to upload a handful of articles manually using the manual 
 entry method. If this works successfully, then you know for certain that there is something problematic with your file
 rather than the upload process itself.</li>
