@@ -298,10 +298,11 @@ It is likely that history records will only be created upon request by the admin
         "keywords" : [<list of free text keywords>],
         "subject" : [
             {
-                "scheme" : "<subject scheme>",
-                "term" : "<subject term>"
+                "scheme" : "<scheme>", 
+                "term" : "<term>",
+                "code" : "<code>"
             }
-        ]
+        ],
     },
     "history" : [
         {

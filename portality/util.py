@@ -9,6 +9,7 @@ from random import choice
 from urlparse import urlparse, urljoin
 from datetime import datetime
 
+
 def is_safe_url(target):
     ref_url = urlparse(request.host_url)
     test_url = urlparse(urljoin(request.host_url, target))
@@ -17,6 +18,7 @@ def is_safe_url(target):
         return target
     else:
         return '/'
+
 
 def jsonp(f):
     """Wraps JSONified output for JSONP"""
@@ -74,16 +76,20 @@ def get_gravatar(email, size=None, default=None, border=None):
 
     return image
 
+
 def generate_password(length=8):
     chars = string.letters + string.digits
     pw = ''.join(choice(chars) for _ in range(length))
     return pw
 
+
 def flash_with_url(message, category=''):
     flash(message, category + '+contains-url')
 
+
 def listpop(l, default=None):
     return l[0] if l else default
+
 
 def parse_date(s, format=None, guess=True):
     s = s.strip()
@@ -102,3 +108,19 @@ def parse_date(s, format=None, guess=True):
             pass
 
     raise ValueError("Unable to parse {x} with any known format".format(x=s))
+
+
+def normalise_issn(issn):
+    issn = issn.upper()
+    if len(issn) > 8:
+        return issn
+    if len(issn) == 8:
+        if "-" in issn:
+            return "0" + issn
+        else: return issn[:4] + "-" + issn[4:]
+    if len(issn) < 8:
+        if "-" in issn:
+            return ("0" * (9 - len(issn))) + issn
+        else:
+            issn = ("0" * (8 - len(issn))) + issn
+            return issn[:4] + "-" + issn[4:]

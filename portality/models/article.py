@@ -7,6 +7,7 @@ from portality import xwalk
 import string
 from unidecode import unidecode
 
+
 class Article(DomainObject):
     __type__ = "article"
 
