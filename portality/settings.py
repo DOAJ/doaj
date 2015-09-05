@@ -75,6 +75,9 @@ MAIL_PORT = 25              # default 25
 #MAIL_MAX_EMAILS            # default None
 #MAIL_SUPPRESS_SEND         # default app.testing
 
+# workflow email notification settings
+MAN_ED_IDLE_CUTOFF = 2      # weeks before an application is considered reminder-worthy
+
 # ========================
 # user login settings
 
