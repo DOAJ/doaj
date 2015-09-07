@@ -969,3 +969,52 @@ def update_application(aid):
 def delete_application(aid):
     ApplicationsCrudApi.delete(aid, current_user)
     return no_content()
+
+
+#########################################
+## Article CRUD API
+
+@blueprint.route("/articles", methods=["POST"])
+@api_key_required
+def create_article():
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    # delegate to the API implementation
+    a = ArticlesCrudApi.create(data, current_user)
+
+    # respond with a suitable Created response
+    return created(a, url_for("api_v1.retrieve_article", aid=a.id))
+
+
+@blueprint.route("/articles/<aid>", methods=["GET"])
+@api_key_required
+def retrieve_article(aid):
+    a = ArticlesCrudApi.retrieve(aid, current_user)
+    return jsonify_models(a)
+
+
+@blueprint.route("/articles/<aid>", methods=["PUT"])
+@api_key_required
+def update_article(aid):
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    # delegate to the API implementation
+    ArticlesCrudApi.update(aid, data, current_user)
+
+    # respond with a suitable No Content successful response
+    return no_content()
+
+
+@blueprint.route("/articles/<aid>", methods=["DELETE"])
+@api_key_required
+def delete_article(aid):
+    ArticlesCrudApi.delete(aid, current_user)
+    return no_content()
