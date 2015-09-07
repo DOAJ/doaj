@@ -77,6 +77,8 @@ MAIL_PORT = 25              # default 25
 
 # workflow email notification settings
 MAN_ED_IDLE_CUTOFF = 2      # weeks before an application is considered reminder-worthy
+ASSOC_ED_IDLE_DAYS = 2
+ASSOC_ED_IDLE_WEEKS = 2
 
 # ========================
 # user login settings
