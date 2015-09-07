@@ -6,7 +6,7 @@ from portality.core import app
 from datetime import datetime, timedelta
 import time
 
-# Store all of the emails: { email_addr : [paragraphs] }
+# Store all of the emails: { email_addr : (name, [paragraphs]) }
 emails_dict = {}
 
 
@@ -95,7 +95,7 @@ def managing_editor_notifications():
     num_never = idle_res.get('aggregations').get('never_updated').get('buckets')[0].get('doc_count')
 
     text = MAN_ED_AGE_TEMPLATE.format(num_idle=num_idle, num_never=num_never, x_weeks=X_WEEKS, url=age_url)
-    _add_email_paragraph(MAN_ED_EMAIL, text)
+    _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
     ready_query = {
@@ -119,7 +119,7 @@ def managing_editor_notifications():
     num_ready = ready_res.get('hits').get('total')
 
     text = READY_TEMPLATE.format(num=num_ready, url=ready_url)
-    _add_email_paragraph(MAN_ED_EMAIL, text)
+    _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
 
 def editor_notifications():
@@ -188,7 +188,7 @@ def editor_notifications():
         ed_email = editor.email
 
         text = ED_TEMPLATE.format(num=group_count, ed_group=group_name, url=ed_url)
-        _add_email_paragraph(ed_email, text)
+        _add_email_paragraph(ed_email, eg.editor, text)
 
 
 def associate_editor_notifications():
@@ -284,20 +284,13 @@ def associate_editor_notifications():
             continue
 
         text = ASSOC_ED_TEMPLATE.format(num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
-        _add_email_paragraph(assoc_email, text)
+        _add_email_paragraph(assoc_email, assoc_id, text)
 
 
 def send_emails():
     global emails_dict
 
-    for (email, paragraphs) in emails_dict.iteritems():
-        # Address recipient by account id
-        to_acc = models.Account.pull_by_email(email)
-        if to_acc is None:
-            to_name = 'Managing Editors'
-        else:
-            to_name = to_acc.id
-
+    for (email, (to_name, paragraphs)) in emails_dict.iteritems():
         pre = 'Dear ' + to_name + ',\n\n'
         post = '\n\nThe DOAJ Team'
         full_body = pre + '\n\n'.join(paragraphs) + post
@@ -309,10 +302,11 @@ def send_emails():
                             )
 
 
-def _add_email_paragraph(addr, para_string):
+def _add_email_paragraph(addr, to_name, para_string):
     global emails_dict
 
     try:
-        emails_dict[addr].append(para_string)
+        (name, paras) = emails_dict[addr]
+        paras.append(para_string)
     except KeyError:
-        emails_dict[addr] = [para_string]
+        emails_dict[addr] = (to_name, [para_string])
