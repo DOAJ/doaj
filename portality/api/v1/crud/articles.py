@@ -24,7 +24,7 @@ class ArticlesCrudApi(CrudApi):
         am = ia.to_article_model()
 
         # Check we are allowed to create an article for this journal
-        if not XWalk.is_legitimate_owner(am, account):
+        if not XWalk.is_legitimate_owner(am, account.id):
             raise Api403Error()
 
         # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
@@ -49,7 +49,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account):
+        if not XWalk.is_legitimate_owner(ar, account.id):
             raise Api403Error()
 
         # Return the article
@@ -69,7 +69,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to edit this article
-        if not XWalk.is_legitimate_owner(ar, account):
+        if not XWalk.is_legitimate_owner(ar, account.id):
             raise Api403Error()
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
@@ -104,7 +104,7 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account):
+        if not XWalk.is_legitimate_owner(ar, account.id):
             raise Api403Error()
 
         # issue the delete (no record of the delete required)

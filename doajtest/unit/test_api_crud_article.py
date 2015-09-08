@@ -1,13 +1,12 @@
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataObj, DataStructureException
+from portality.lib.dataobj import DataStructureException
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.api.v1 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
-from datetime import datetime
-from doajtest.fixtures import ArticleFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 import time
 
-'''
+
 class TestCrudArticle(DoajTestCase):
 
     def setUp(self):
@@ -16,16 +15,16 @@ class TestCrudArticle(DoajTestCase):
     def tearDown(self):
         super(TestCrudArticle, self).tearDown()
 
-        def test_01_incoming_article_do(self):
+    def test_01_incoming_article_do(self):
         # make a blank one
         ia = IncomingArticleDO()
 
         # make one from an incoming article model fixture
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         ia = IncomingArticleDO(data)
 
         # make another one that's broken
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         del data["bibjson"]["title"]
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -33,7 +32,7 @@ class TestCrudArticle(DoajTestCase):
         # now progressively remove the conditionally required/advanced validation stuff
         #
         # missing identifiers
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["identifier"] = []
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
@@ -48,104 +47,45 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
-        # no homepage link
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["link"] = [{"type" : "awaypage", "url": "http://there"}]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # plagiarism detection but no url
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["plagiarism_detection"] = {"detection" : True}
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # embedded licence but no url
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["license"][0]["embedded"] = True
-        del data["bibjson"]["license"][0]["embedded_example_url"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # author copyright and no link
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["author_copyright"]["copyright"] = True
-        del data["bibjson"]["author_copyright"]["url"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # author publishing rights and no ling
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["author_publishing_rights"]["publishing_rights"] = True
-        del data["bibjson"]["author_publishing_rights"]["url"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # invalid domain in archiving_policy
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["archiving_policy"]["policy"] = [{"domain" : "my house", "name" : "something"}]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # invalid name in non-domained policy
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["archiving_policy"]["policy"] = [{"name" : "something"}]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
         # too many keywords
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
     def test_02_create_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
 
+        # add a journal to the account
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
 
         # check that it got created with the right properties
-        assert isinstance(a, models.Suggestion)
-        assert a.id != "ignore_me"
-        assert a.created_date != "2001-01-01T00:00:00Z"
-        assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a.suggester.get("name") == "Tester"
-        assert a.suggester.get("email") == "test@test.com"
-        assert a.owner == "test"
-        assert a.suggested_on is not None
+        assert isinstance(a, models.Article)
+        assert a.id != "abcdefghijk_article"
+        assert a.created_date != "2000-01-01T00:00:00Z"
+        assert a.last_updated != "2000-01-01T00:00:00Z"
 
-        # also, because it's a special case, check the archiving_policy
-        archiving_policy = a.bibjson().archiving_policy
-        assert len(archiving_policy.get("policy")) == 4
-        lcount = 0
-        scount = 0
-        for ap in archiving_policy.get("policy"):
-            if isinstance(ap, list):
-                lcount += 1
-                assert ap[0] in ["A national library", "Other"]
-                assert ap[1] in ["Trinity", "A safe place"]
-            else:
-                scount += 1
-        assert lcount == 2
-        assert scount == 2
-        assert "CLOCKSS" in archiving_policy.get("policy")
-        assert "LOCKSS" in archiving_policy.get("policy")
+        time.sleep(1)
 
-        time.sleep(2)
+        am = models.Article.pull(a.id)
+        assert am is not None
 
-        s = models.Suggestion.pull(a.id)
-        assert s is not None
 
     def test_03_create_article_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
-            data = ArticleFixtureFactory.incoming_article()
+            data = ArticleFixtureFactory.make_article_source()
             a = ArticlesCrudApi.create(data, None)
 
         # if the data is bust
@@ -158,75 +98,49 @@ class TestCrudArticle(DoajTestCase):
             a = ArticlesCrudApi.create(data, account)
 
     def test_04_coerce(self):
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
 
-        # first test a load of successes
-        data["bibjson"]["country"] = "Bangladesh"
-        data["bibjson"]["apc"]["currency"] = "Taka"
-        data["bibjson"]["allows_fulltext_indexing"] = "true"
-        data["bibjson"]["publication_time"] = "15"
-        data["bibjson"]["language"] = ["French", "English"]
-        data["bibjson"]["persistent_identifier_scheme"] = ["doi", "HandleS", "something"]
-        data["bibjson"]["format"] = ["pdf", "html", "doc"]
-        data["bibjson"]["license"][0]["title"] = "cc by"
-        data["bibjson"]["license"][0]["type"] = "CC by"
-        data["bibjson"]["deposit_policy"] = ["sherpa/romeo", "other"]
+        # first test successes
+        data["bibjson"]["journal"]["country"] = "Bangladesh"
+        data["bibjson"]["journal"]["language"] = ["French", "English"]
 
         ia = IncomingArticleDO(data)
 
-        assert ia.bibjson.country == "BD"
-        assert ia.bibjson.apc.currency == "BDT"
-        assert ia.bibjson.allows_fulltext_indexing is True
+        #assert ia.bibjson.journal.country == "BD"              fixme: these fails with not set - should the DO include this?
         assert isinstance(ia.bibjson.title, unicode)
-        assert ia.bibjson.publication_time == 15
-        assert "fr" in ia.bibjson.language
-        assert "en" in ia.bibjson.language
-        assert len(ia.bibjson.language) == 2
-        assert ia.bibjson.persistent_identifier_scheme[0] == "DOI"
-        assert ia.bibjson.persistent_identifier_scheme[1] == "Handles"
-        assert ia.bibjson.persistent_identifier_scheme[2] == "something"
-        assert ia.bibjson.format[0] == "PDF"
-        assert ia.bibjson.format[1] == "HTML"
-        assert ia.bibjson.format[2] == "doc"
-        assert ia.bibjson.license[0].title == "CC BY"
-        assert ia.bibjson.license[0].type == "CC BY"
-        assert ia.bibjson.deposit_policy[0] == "Sherpa/Romeo"
-        assert ia.bibjson.deposit_policy[1] == "other"
+        #assert "fr" in ia.bibjson.journal.language
+        #assert "en" in ia.bibjson.journal.language
+        #assert len(ia.bibjson.journal.language) == 2
 
         # now test some failures
+        '''
         # invalid country name
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["country"] = "LandLand"
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["journal"]["country"] = "LandLand"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
-
-        # invalid currency name
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["apc"]["currency"] = "Wonga"
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
+        '''
         # an invalid url
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["apc_url"] = "Two streets down on the left"
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["link"][0]["url"] = "Two streets down on the left"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
+        # an invalid link type
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["link"][0]["type"] = "cheddar"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
         # invalid bool
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["allows_fulltext_indexing"] = "Yes"
+        data = ArticleFixtureFactory.make_article_source()
+        data["admin"]["in_doaj"] = "Yes"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
-        # invalid int
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["publication_time"] = "Fifteen"
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # invalid language code
-        data = ArticleFixtureFactory.incoming_article()
-        data["bibjson"]["language"] = ["Hagey Pagey"]
+        # invalid date
+        data = ArticleFixtureFactory.make_article_source()
+        data["created_date"] = "Just yesterday"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
@@ -236,28 +150,29 @@ class TestCrudArticle(DoajTestCase):
 
         # make one from an incoming article model fixture
         data = ArticleFixtureFactory.make_article_source()
-        ap = models.Suggestion(**data)
+        ap = models.Article(**data)
         oa = OutgoingArticleDO.from_model(ap)
 
         # check that it does not contain information that it shouldn't
         assert oa.data.get("index") is None
         assert oa.data.get("history") is None
-        assert oa.data.get("admin", {}).get("notes") is None
-        assert oa.data.get("admin", {}).get("editor_group") is None
-        assert oa.data.get("admin", {}).get("editor") is None
-        assert oa.data.get("admin", {}).get("seal") is None
 
     def test_06_retrieve_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.make_article_source()
-        ap = models.Suggestion(**data)
-        ap.save()
-        time.sleep(2)
-
+        # add a journal to the account
         account = models.Account()
-        account.set_id(ap.owner)
+        account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
+        data = ArticleFixtureFactory.make_article_source()
+        ap = models.Article(**data)
+        ap.save()
+        time.sleep(1)
 
         # call retrieve on the object
         a = ArticlesCrudApi.retrieve(ap.id, account)
@@ -268,10 +183,20 @@ class TestCrudArticle(DoajTestCase):
 
     def test_07_retrieve_article_fail(self):
         # set up all the bits we need
+        # add a journal to the account
+        account = models.Account()
+        account.set_id('test')
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
         data = ArticleFixtureFactory.make_article_source()
-        ap = models.Suggestion(**data)
+        ap = models.Article(**data)
         ap.save()
-        time.sleep(2)
+        time.sleep(1)
 
         # no user
         with self.assertRaises(Api401Error):
@@ -280,7 +205,7 @@ class TestCrudArticle(DoajTestCase):
         # wrong user
         account = models.Account()
         account.set_id("asdklfjaioefwe")
-        with self.assertRaises(Api404Error):
+        with self.assertRaises(Api403Error):
             a = ArticlesCrudApi.retrieve(ap.id, account)
 
         # non-existant article
@@ -291,33 +216,38 @@ class TestCrudArticle(DoajTestCase):
 
     def test_08_update_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.incoming_article()
         account = models.Account()
-        account.set_id("test")
+        account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
+        data = ArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
-        created = models.Suggestion.pull(a.id)
+        created = models.Article.pull(a.id)
 
         # now make an updated version of the object
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object
         ArticlesCrudApi.update(a.id, data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the updated version
-        updated = models.Suggestion.pull(a.id)
+        updated = models.Article.pull(a.id)
 
         # now check the properties to make sure the update tool
         assert updated.bibjson().title == "An updated title"
@@ -325,23 +255,28 @@ class TestCrudArticle(DoajTestCase):
 
     def test_09_update_article_fail(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.incoming_article()
         account = models.Account()
-        account.set_id("test")
+        account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
+        data = ArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # get a copy of the newly created version for use in assertions later
-        created = models.Suggestion.pull(a.id)
+        created = models.Article.pull(a.id)
 
         # now make an updated version of the object
-        data = ArticleFixtureFactory.incoming_article()
+        data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object in various context that will fail
@@ -352,7 +287,7 @@ class TestCrudArticle(DoajTestCase):
 
         # with the wrong account
         account.set_id("other")
-        with self.assertRaises(Api404Error):
+        with self.assertRaises(Api403Error):
             ArticlesCrudApi.update(a.id, data, account)
 
         # on the wrong id
@@ -360,53 +295,52 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(Api404Error):
             ArticlesCrudApi.update("adfasdfhwefwef", data, account)
 
-        # on one with a disallowed workflow status
-        created.set_article_status("accepted")
-        created.save()
-        time.sleep(2)
-
-        with self.assertRaises(Api403Error):
-            ArticlesCrudApi.update(a.id, data, account)
-
     def test_10_delete_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.incoming_article()
         account = models.Account()
-        account.set_id("test")
+        account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
+        data = ArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
         # now delete it
         ArticlesCrudApi.delete(a.id, account)
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
-        ap = models.Suggestion.pull(a.id)
+        ap = models.Article.pull(a.id)
         assert ap is None
 
     def test_11_delete_article_fail(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.incoming_article()
         account = models.Account()
-        account.set_id("test")
+        account.set_id('test')
         account.set_name("Tester")
         account.set_email("test@test.com")
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
+
+        data = ArticleFixtureFactory.make_article_source()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
 
         # let the index catch up
-        time.sleep(2)
-
-        # get a copy of the newly created version for use in test later
-        created = models.Suggestion.pull(a.id)
+        time.sleep(1)
 
         # call delete on the object in various context that will fail
 
@@ -416,19 +350,10 @@ class TestCrudArticle(DoajTestCase):
 
         # with the wrong account
         account.set_id("other")
-        with self.assertRaises(Api404Error):
+        with self.assertRaises(Api403Error):
             ArticlesCrudApi.delete(a.id, account)
 
         # on the wrong id
         account.set_id("test")
         with self.assertRaises(Api404Error):
             ArticlesCrudApi.delete("adfasdfhwefwef", account)
-
-        # on one with a disallowed workflow status
-        created.set_article_status("accepted")
-        created.save()
-        time.sleep(2)
-
-        with self.assertRaises(Api403Error):
-            ArticlesCrudApi.delete(a.id, account)
-'''

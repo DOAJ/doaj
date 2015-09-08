@@ -250,7 +250,8 @@ It is likely that history records will only be created upon request by the admin
     "id" : "<some opaque identifier>",
     "admin" : {
         "in_doaj" : true|false,
-        "publisher_record_id" : "<publisher identifier for item>"
+        "publisher_record_id" : "<publisher identifier for item>",
+        "upload_id" : "<opaque identifier>"
     },
     "bibjson" : {
         "title" : "<title of the article>",
@@ -273,7 +274,7 @@ It is likely that history records will only be created upon request by the admin
                     "open_access": true|false,
                 }
             ],
-            "language" : "<language of journal as a whole>",
+            "language" : "[list of journal's languages]",
             "country" : "<country of publication>"
         },
         "year" : "<year of publication>",

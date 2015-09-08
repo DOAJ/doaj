@@ -16,7 +16,8 @@ BASE_ARTICLE_STRUCT = {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
-                "publisher_record_id": {"coerce": "unicode"}
+                "publisher_record_id": {"coerce": "unicode"},
+                "upload_id": {"coerce": "unicode"}
             }
         },
 
@@ -128,11 +129,11 @@ OUTGOING_ARTICLE_EXTRAS = {
                     "fields": {
                         "publisher": {"coerce": "unicode"},
                         "title": {"coerce": "unicode"},
-                        "language": {"coerce": "unicode"},
                         "country": {"coerce": "unicode"}
                     },
                     "lists": {
-                        "license": {"contains": "object"}
+                        "license": {"contains": "object"},
+                        "language": {"coerce": "unicode", "contains": "field"}
                     },
                     "structs": {
 
@@ -196,6 +197,10 @@ class IncomingArticleDO(dataobj.DataObj):
         # check they are not the same
         if pissn.id == eissn.id:
             raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
+
+        # check the number of keywords is no more than 6
+        if len(self.bibjson.keywords) > 6:
+            raise dataobj.DataStructureException("bibjson.keywords may only contain a maximum of 6 keywords")
 
     def to_article_model(self, existing=None):
         dat = deepcopy(self.data)
