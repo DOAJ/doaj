@@ -1,6 +1,6 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api400Error, Api401Error, Api404Error
-from portality.api.v1.data_objects import ArticleDO
+from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error
+from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
 from portality.article import XWalk
@@ -16,12 +16,16 @@ class ArticlesCrudApi(CrudApi):
 
         # first thing to do is a structural validation, by instantiating the data object
         try:
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
         except dataobj.DataStructureException as e:
             raise Api400Error(e.message)
 
         # if that works, convert it to an Article object
         am = ia.to_article_model()
+
+        # Check we are allowed to create an article for this journal
+        if not XWalk.is_legitimate_owner(am, account):
+            raise Api403Error()
 
         # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
         # own values (note that last_updated will get overwritten anyway)
@@ -46,10 +50,10 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account):
-            raise Api401Error()
+            raise Api403Error()
 
         # Return the article
-        oa = ArticleDO.from_model(ar)
+        oa = OutgoingArticleDO.from_model(ar)
         return oa
 
     @classmethod
@@ -64,11 +68,28 @@ class ArticlesCrudApi(CrudApi):
         if ar is None:
             raise Api404Error()
 
-        # Check we're allowed to retrieve this article
+        # Check we're allowed to edit this article
         if not XWalk.is_legitimate_owner(ar, account):
-            raise Api401Error()
+            raise Api403Error()
 
-        # Continue on to updating it...
+        # next thing to do is a structural validation of the replacement data, by instantiating the object
+        try:
+            ia = IncomingArticleDO(data)
+        except dataobj.DataStructureException as e:
+            raise Api400Error(e.message)
+
+        # if that works, convert it to an Article object bringing over everything outside the
+        # incoming article from the original article
+        new_ar = ia.to_article_model(ar)
+
+        # we need to ensure that any properties of the existing article that aren't allowed to change
+        # are copied over
+        new_ar.set_id(id)
+        new_ar.set_created(ar.created_date)
+
+        # finally save the new article, and return to the caller
+        new_ar.save()
+        return new_ar
 
     @classmethod
     def delete(cls, id, account):
@@ -84,7 +105,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account):
-            raise Api401Error()
+            raise Api403Error()
 
         # issue the delete (no record of the delete required)
         ar.delete()

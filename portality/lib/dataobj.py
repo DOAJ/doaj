@@ -224,8 +224,9 @@ class DataObj(object):
         "url": to_url,
         "bool": to_bool,
         "isolang_2letter": to_isolang(output_format="alpha2"),
-        "country_code" : to_country_code,
-        "currency_code" : to_currency_code
+        "country_code": to_country_code,
+        "currency_code": to_currency_code,
+        "license": string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
     }
 
     def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False):

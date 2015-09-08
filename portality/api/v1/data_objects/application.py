@@ -129,7 +129,7 @@ BASE_APPLICATION_STRUCT = {
                     "fields": {
                         "title": {"coerce": "license"},
                         "type": {"coerce": "license"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                         "version": {"coerce": "unicode"},
                         "open_access": {"coerce": "bool"},
                         "BY": {"coerce": "bool"},
@@ -325,7 +325,6 @@ OUTGOING_APPLICATION_EXTRAS = {
 BASE_APPLICATION_COERCE = deepcopy(dataobj.DataObj.DEFAULT_COERCE)
 BASE_APPLICATION_COERCE["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
 BASE_APPLICATION_COERCE["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
-BASE_APPLICATION_COERCE["license"] = dataobj.string_canonicalise(["CC BY", "CC BY-NC", "CC BY-NC-ND", "CC BY-NC-SA", "CC BY-ND", "CC BY-SA", "Not CC-like"], allow_fail=True)
 BASE_APPLICATION_COERCE["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
 
 class IncomingApplication(dataobj.DataObj):
@@ -488,5 +487,4 @@ class OutgoingApplication(dataobj.DataObj):
             d["bibjson"]["archiving_policy"] = nap
 
         return cls(d)
-
 

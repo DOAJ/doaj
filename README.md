@@ -255,7 +255,7 @@ It is likely that history records will only be created upon request by the admin
     "bibjson" : {
         "title" : "<title of the article>",
         "identifier": [
-            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"},
+            {"type" : "doi", "id" : "<doi>"},
             {"type" : "pissn", "id" : "<print issn>"},
             {"type" : "eissn", "id" : "<electronic issn>"}
         ],
@@ -284,7 +284,7 @@ It is likely that history records will only be created upon request by the admin
             {
                 "url" : "<fulltext url>",
                 "type" : "fulltext",
-                "content-type" : "<content type of resource>"
+                "content_type" : "<content type of resource>"
             }
         ],
         "abstract" : "<the abstract>",
@@ -325,7 +325,7 @@ It is likely that history records will only be created upon request by the admin
         "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
-    "last_modified" : "<date record last modified>"
+    "last_updated" : "<date record last modified>"
 }
 ```
 

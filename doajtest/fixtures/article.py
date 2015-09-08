@@ -1,9 +1,11 @@
 import os
 from lxml import etree
 from StringIO import StringIO
+from copy import deepcopy
 
 RESOURCES = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "unit", "resources")
 ARTICLES = os.path.join(RESOURCES, "article_uploads.xml")
+
 
 class ArticleFixtureFactory(object):
 
@@ -31,3 +33,8 @@ class ArticleFixtureFactory(object):
     def upload_1_issn_correct(cls):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct']")
 
+    @staticmethod
+    def make_article_source():
+        return deepcopy(ARTICLE_SOURCE)
+
+ARTICLE_SOURCE = {}

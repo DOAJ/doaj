@@ -1,14 +1,13 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataObj, DataStructureException
-from portality.api.v1.data_objects import ArticleDO
+from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.api.v1 import ArticlesCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ArticleFixtureFactory
 import time
 
-"""
-
+'''
 class TestCrudArticle(DoajTestCase):
 
     def setUp(self):
@@ -17,19 +16,19 @@ class TestCrudArticle(DoajTestCase):
     def tearDown(self):
         super(TestCrudArticle, self).tearDown()
 
-    def test_01_incoming_article_do(self):
+        def test_01_incoming_article_do(self):
         # make a blank one
-        ia = ArticleDO()
+        ia = IncomingArticleDO()
 
         # make one from an incoming article model fixture
         data = ArticleFixtureFactory.incoming_article()
-        ia = ArticleDO(data)
+        ia = IncomingArticleDO(data)
 
         # make another one that's broken
         data = ArticleFixtureFactory.incoming_article()
         del data["bibjson"]["title"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # now progressively remove the conditionally required/advanced validation stuff
         #
@@ -37,68 +36,68 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["identifier"] = []
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # no issns specified
         data["bibjson"]["identifier"] = [{"type" : "wibble", "id": "alksdjfas"}]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # issns the same (but not normalised the same)
         data["bibjson"]["identifier"] = [{"type" : "pissn", "id": "12345678"}, {"type" : "eissn", "id": "1234-5678"}]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # no homepage link
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["link"] = [{"type" : "awaypage", "url": "http://there"}]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # plagiarism detection but no url
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["plagiarism_detection"] = {"detection" : True}
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # embedded licence but no url
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["license"][0]["embedded"] = True
         del data["bibjson"]["license"][0]["embedded_example_url"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # author copyright and no link
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["author_copyright"]["copyright"] = True
         del data["bibjson"]["author_copyright"]["url"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # author publishing rights and no ling
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["author_publishing_rights"]["publishing_rights"] = True
         del data["bibjson"]["author_publishing_rights"]["url"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid domain in archiving_policy
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["archiving_policy"]["policy"] = [{"domain" : "my house", "name" : "something"}]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid name in non-domained policy
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["archiving_policy"]["policy"] = [{"name" : "something"}]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # too many keywords
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["keywords"] = ["one", "two", "three", "four", "five", "six", "seven"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
     def test_02_create_article_success(self):
         # set up all the bits we need
@@ -173,7 +172,7 @@ class TestCrudArticle(DoajTestCase):
         data["bibjson"]["license"][0]["type"] = "CC by"
         data["bibjson"]["deposit_policy"] = ["sherpa/romeo", "other"]
 
-        ia = ArticleDO(data)
+        ia = IncomingArticleDO(data)
 
         assert ia.bibjson.country == "BD"
         assert ia.bibjson.apc.currency == "BDT"
@@ -199,46 +198,46 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["country"] = "LandLand"
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid currency name
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["apc"]["currency"] = "Wonga"
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # an invalid url
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["apc_url"] = "Two streets down on the left"
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid bool
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["allows_fulltext_indexing"] = "Yes"
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid int
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["publication_time"] = "Fifteen"
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
         # invalid language code
         data = ArticleFixtureFactory.incoming_article()
         data["bibjson"]["language"] = ["Hagey Pagey"]
         with self.assertRaises(DataStructureException):
-            ia = ArticleDO(data)
+            ia = IncomingArticleDO(data)
 
     def test_05_outgoing_article_do(self):
         # make a blank one
-        oa = ArticleDO()
+        oa = OutgoingArticleDO()
 
         # make one from an incoming article model fixture
         data = ArticleFixtureFactory.make_article_source()
         ap = models.Suggestion(**data)
-        oa = ArticleDO.from_model(ap)
+        oa = OutgoingArticleDO.from_model(ap)
 
         # check that it does not contain information that it shouldn't
         assert oa.data.get("index") is None
@@ -264,7 +263,7 @@ class TestCrudArticle(DoajTestCase):
         a = ArticlesCrudApi.retrieve(ap.id, account)
 
         # check that we got back the object we expected
-        assert isinstance(a, ArticleDO)
+        assert isinstance(a, OutgoingArticleDO)
         assert a.id == ap.id
 
     def test_07_retrieve_article_fail(self):
@@ -432,5 +431,4 @@ class TestCrudArticle(DoajTestCase):
 
         with self.assertRaises(Api403Error):
             ArticlesCrudApi.delete(a.id, account)
-
-"""
+'''

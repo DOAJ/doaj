@@ -61,8 +61,9 @@ class XWalk(object):
         indoaj = journal.is_in_doaj()
         article.set_in_doaj(indoaj)
         return True
-    
-    def is_legitimate_owner(self, article, owner):
+
+    @staticmethod
+    def is_legitimate_owner(article, owner):
         # get all the issns for the article
         b = article.bibjson()
         issns = b.get_identifiers(b.P_ISSN)
