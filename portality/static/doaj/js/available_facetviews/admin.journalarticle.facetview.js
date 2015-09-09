@@ -130,6 +130,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/admin_query/journal,article/_search?',
 
         render_results_metadata: doajPager,
+        render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: adminJAPostRender,
         post_search_callback: adminButtons,
 

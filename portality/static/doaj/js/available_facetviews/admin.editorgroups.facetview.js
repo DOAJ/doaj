@@ -4,6 +4,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/admin_query/editor,group/_search?',
 
         render_results_metadata: doajPager,
+        render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: doajEGPostRender,
 
         sharesave_link: false,
