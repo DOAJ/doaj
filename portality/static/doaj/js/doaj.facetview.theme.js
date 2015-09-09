@@ -209,6 +209,55 @@ function doajEGPostRender(options, context) {
     });
 }
 
+function doajRenderActiveTermsFilter(options, facet, field, filter_list) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     * options.show_filter_logic - whether to include AND/OR along with filters
+     * facet.value_function - the value function to be applied to all displayed values
+     */
+
+    // DOAJ note: we are overriding this (99.9% the same as facetview2's bootstrap2 theme)
+    // because we need to change the class of the cross icon used to close active filters.
+    // We use FontAwesome at the DOAJ because the colours are overridable unlike Bootstrap's glyphicons.
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+    var logic = facet.logic ? facet.logic : options.default_facet_operator;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    for (var i = 0; i < filter_list.length; i++) {
+        var value = filter_list[i];
+        if (facet.value_function) {
+            value = facet.value_function(value)
+        }
+
+        frag += '<span class="facetview_filterselected_text">' + value + '</span>&nbsp;';
+        frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" data-value="' + value + '" alt="remove" title="Remove" href="' + value + '">';
+        frag += '<i class="fa fa-remove" style="margin-top:1px;"></i>';
+        frag += "</a>";
+
+        if (i !== filter_list.length - 1 && options.show_filter_logic) {
+            frag += '<span class="facetview_filterselected_text">&nbsp;<strong>' + logic + '</strong>&nbsp;</span>';
+        }
+    }
+    frag += "</div>";
+
+    return frag
+}
+
 function editorGroupJournalNotFound() {
     return "<tr class='facetview_not_found'>" +
         "<td><p>There are no journals for your editor group(s) that meet the search criteria</p>" +

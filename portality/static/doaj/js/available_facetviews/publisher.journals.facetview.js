@@ -4,6 +4,7 @@ jQuery(document).ready(function($) {
         search_url: es_scheme + '//' + es_domain + '/publisher_query/journal/_search?',
 
         render_results_metadata: doajPager,
+        render_active_terms_filter: doajRenderActiveTermsFilter,
         render_not_found: publisherJournalNotFound,
         post_render_callback: doajScrollTop,
 
