@@ -1,5 +1,4 @@
 import csv
-import sys
 from copy import deepcopy
 from portality import models, datasets
 from portality.formcontext import choices
@@ -18,6 +17,7 @@ YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
 #################################################################
 # code for creating CSVs of all Journals
 #################################################################
+
 
 def make_journals_csv(file_object):
     """
@@ -51,6 +51,7 @@ def make_journals_csv(file_object):
         vs = [v for _, v in cols[i]]
         csvwriter.writerow(vs)
 
+
 def get_doaj_meta_kvs(journal):
     """
     Get key, value pairs for some meta information we want from the journal object
@@ -61,6 +62,7 @@ def get_doaj_meta_kvs(journal):
     kvs.append( ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")) )
     kvs.append( ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")) )
     kvs.append( ("Added on Date", journal.created_date) )
+    kvs.append( ("Subjects", ', '.join(journal.data.get("index", {}).get("classification", []))) )
     kvs.append( ("Content in DOAJ", YES_NO.get(journal.is_in_doaj(), "")) )
     return kvs
 
@@ -68,8 +70,10 @@ def get_doaj_meta_kvs(journal):
 # Crosswalk between Journals and spreadsheet rows
 #################################################################
 
+
 class JournalXwalkException(Exception):
     pass
+
 
 class Journal2QuestionXwalk(object):
 
@@ -125,7 +129,7 @@ class Journal2QuestionXwalk(object):
         ("license",                             "Journal license"),
         ("license_checkbox",                    "License attributes"),
         ("license_url",                         "URL for license terms"),
-        ("open_access",                         "Open Access"),
+        ("open_access",                         "Does this journal allow unrestricted reuse in compliance with BOAI?"),
         ("deposit_policy",                      "Deposit policy directory"),
         ("copyright",                           "Author holds copyright without restrictions"),
         ("copyright_url",                       "Copyright information URL"),
