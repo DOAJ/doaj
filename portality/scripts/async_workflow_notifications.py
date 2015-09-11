@@ -10,18 +10,7 @@ import time
 emails_dict = {}
 
 
-def run_async_notifications():
-    """ Run through each notification type, pausing the give the index a rest, then send emails """
-    managing_editor_notifications()
-    time.sleep(1)
-    editor_notifications()
-    time.sleep(1)
-    associate_editor_notifications()
-    time.sleep(1)
-
-    send_emails()
-
-
+# Functions for each notification recipient - ManEd, Editor, Assoc_editor
 def managing_editor_notifications():
     """
     Notify managing editors about two things:
@@ -287,6 +276,7 @@ def associate_editor_notifications():
         _add_email_paragraph(assoc_email, assoc_id, text)
 
 
+# Helper functions
 def send_emails():
     global emails_dict
 
@@ -303,6 +293,12 @@ def send_emails():
 
 
 def _add_email_paragraph(addr, to_name, para_string):
+    """
+    Add a new email to the global dict which stores the email fragments, or extend an existing one.
+    :param addr: email address for recipient
+    :param to_name: name of recipient
+    :param para_string: paragraph to add to the email
+    """
     global emails_dict
 
     try:
@@ -310,3 +306,20 @@ def _add_email_paragraph(addr, to_name, para_string):
         paras.append(para_string)
     except KeyError:
         emails_dict[addr] = (to_name, [para_string])
+
+
+# Main function for running all notification types in sequence
+def run_async_notifications():
+    """ Run through each notification type, pausing the give the index a rest, then send emails """
+    managing_editor_notifications()
+    time.sleep(1)
+    editor_notifications()
+    time.sleep(1)
+    associate_editor_notifications()
+    time.sleep(1)
+
+    send_emails()
+
+# Run all if the script is called.
+if __name__ == '__main__':
+    run_async_notifications()
