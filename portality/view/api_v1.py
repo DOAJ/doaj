@@ -52,7 +52,7 @@ This page contains a list of all routes available via the DOAJ API. It also serv
 
 
 # Handle wayward paths by raising an API404Error
-@blueprint.route("/<path:invalid_path>")
+@blueprint.route("/<path:invalid_path>", methods=["POST", "GET", "PUT", "DELETE", "PATCH", "HEAD"])     # leaving out methods should mean all, but tests haven't shown that behaviour.
 def missing_resource(invalid_path):
     docs_url = app.config.get("BASE_URL", "") + url_for('.docs')
     spec_url = app.config.get("BASE_URL", "") + url_for('.api_spec')
