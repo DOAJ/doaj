@@ -25,7 +25,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we are allowed to create an article for this journal
         if not XWalk.is_legitimate_owner(am, account.id):
-            raise Api403Error()
+            raise Api404Error()                 # not found for this account
 
         # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
         # own values (note that last_updated will get overwritten anyway)
@@ -50,7 +50,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api403Error()
+            raise Api404Error()                 # not found for this account
 
         # Return the article
         oa = OutgoingArticleDO.from_model(ar)
@@ -70,7 +70,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to edit this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api403Error()
+            raise Api404Error()                 # not found for this account
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
         try:
@@ -105,7 +105,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api403Error()
+            raise Api404Error()                 # not found for this account
 
         # issue the delete (no record of the delete required)
         ar.delete()

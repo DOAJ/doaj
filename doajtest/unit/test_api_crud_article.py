@@ -5,6 +5,7 @@ from portality.api.v1 import ArticlesCrudApi, Api401Error, Api400Error, Api404Er
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 import time
+from datetime import datetime
 
 
 class TestCrudArticle(DoajTestCase):
@@ -100,29 +101,22 @@ class TestCrudArticle(DoajTestCase):
     def test_04_coerce(self):
         data = ArticleFixtureFactory.make_article_source()
 
-        # first test successes
-        data["bibjson"]["journal"]["country"] = "Bangladesh"
-        data["bibjson"]["journal"]["language"] = ["French", "English"]
-
+        # first some successes
+        data["bibjson"]["link"][0]["url"] = "http://www.example.com/this_location/here"     # protocol required
+        data["bibjson"]["link"][0]["type"] = "fulltext"
+        data["admin"]["in_doaj"] = False
+        data["created_date"] = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         ia = IncomingArticleDO(data)
-
-        #assert ia.bibjson.journal.country == "BD"              fixme: these fails with not set - should the DO include this?
         assert isinstance(ia.bibjson.title, unicode)
-        #assert "fr" in ia.bibjson.journal.language
-        #assert "en" in ia.bibjson.journal.language
-        #assert len(ia.bibjson.journal.language) == 2
 
         # now test some failures
-        '''
-        # invalid country name
-        data = ArticleFixtureFactory.make_article_source()
-        data["bibjson"]["journal"]["country"] = "LandLand"
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-        '''
-        # an invalid url
+
+        # an invalid urls
         data = ArticleFixtureFactory.make_article_source()
         data["bibjson"]["link"][0]["url"] = "Two streets down on the left"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+        data["bibjson"]["link"][0]["url"] = "www.example.com/this_location/here"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
@@ -151,6 +145,11 @@ class TestCrudArticle(DoajTestCase):
         # make one from an incoming article model fixture
         data = ArticleFixtureFactory.make_article_source()
         ap = models.Article(**data)
+
+        # add some history to the article (it doesn't matter what it looks like since it shouldn't be there at the other end)
+        ap.add_history(bibjson={'Lorem': {'ipsum': 'dolor', 'sit': 'amet'}, 'consectetur': 'adipiscing elit.'})
+
+        # Create the DataObject
         oa = OutgoingArticleDO.from_model(ap)
 
         # check that it does not contain information that it shouldn't
@@ -205,7 +204,7 @@ class TestCrudArticle(DoajTestCase):
         # wrong user
         account = models.Account()
         account.set_id("asdklfjaioefwe")
-        with self.assertRaises(Api403Error):
+        with self.assertRaises(Api404Error):
             a = ArticlesCrudApi.retrieve(ap.id, account)
 
         # non-existant article
@@ -252,6 +251,8 @@ class TestCrudArticle(DoajTestCase):
         # now check the properties to make sure the update tool
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
+        assert updated.last_updated != created.last_updated
+        assert updated.data['admin']['upload_id'] == created.data['admin']['upload_id']
 
     def test_09_update_article_fail(self):
         # set up all the bits we need
@@ -287,7 +288,7 @@ class TestCrudArticle(DoajTestCase):
 
         # with the wrong account
         account.set_id("other")
-        with self.assertRaises(Api403Error):
+        with self.assertRaises(Api404Error):
             ArticlesCrudApi.update(a.id, data, account)
 
         # on the wrong id
@@ -350,7 +351,7 @@ class TestCrudArticle(DoajTestCase):
 
         # with the wrong account
         account.set_id("other")
-        with self.assertRaises(Api403Error):
+        with self.assertRaises(Api404Error):
             ArticlesCrudApi.delete(a.id, account)
 
         # on the wrong id
