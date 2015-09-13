@@ -285,7 +285,7 @@ def send_emails():
         post = '\n\nThe DOAJ Team'
         full_body = pre + '\n\n'.join(paragraphs) + post
 
-        app_email.send_mail(to=email,
+        app_email.send_mail(to=[email],
                             fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                             subject="DOAJ editorial reminders",
                             msg_body=full_body
