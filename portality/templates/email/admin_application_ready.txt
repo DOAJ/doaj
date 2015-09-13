@@ -1,6 +1,2 @@
-Admins,
-
-The application for "{{ application_title }}" has been marked 'Ready'.
-You may access the application via the Admin area: {{ url_for_application }} .
-
-The DOAJ Team
+The application for "{{ application_title }}" has been marked 'Ready' by {{ editor }}. Please review it as soon as possible.
+{{ url_for_application }}

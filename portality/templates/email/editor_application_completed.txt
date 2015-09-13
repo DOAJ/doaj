@@ -1,6 +1,5 @@
 Dear {{ editor }},
 
-The application for "{{ application_title }}" has been marked 'Completed'.
-You may access the application via the Editor area: {{ url_for_application }} .
-
-The DOAJ Team
+{{ associate_editor }} has finished a review of the application for "{{ application_title }}"
+and marked it as Completed. Please review within 5 working days.
+{{ url_for_application }} .

@@ -3,3 +3,6 @@ Dear {{ publisher_name }},
 The application for "{{ journal_title }}" is now under review by the DOAJ editors.
 
 The DOAJ Team
+
+***
+Please do not reply to this email.

@@ -1,6 +1,6 @@
-Dear {{ editor }},
+Dear {{ associate_editor }},
 
-The journal "{{ journal_name }}" has been assigned to you by the Editor in your Editor Group "{{ group_name }}".
-You may access the journal in your Editor Area: {{ url_root }}/editor/ .
-
-The DOAJ Team
+The journal "{{ journal_name }}" has been assigned to you by the
+Editor of your Group "{{ group_name }}". Please start work on this
+within 10 days.
+{{ url_root }}/editor/ .
