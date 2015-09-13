@@ -8,8 +8,10 @@ from portality import models, app_email, util
 from portality.core import app
 from portality.dao import Facetview2
 
+
 class FormContextException(Exception):
     pass
+
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -318,7 +320,7 @@ class PrivateContext(FormContext):
                             )
 
     @staticmethod
-    def _send_editor_email(obj):
+    def _send_assoc_editor_email(obj):
         if type(obj) is models.Suggestion:
             template = "email/assoc_editor_application_assigned.txt"
             subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to you"
@@ -329,18 +331,18 @@ class PrivateContext(FormContext):
             app.logger.error("Attempted to send email to editors for something that's not an Application or Journal")
             return
 
-        editor = models.Account.pull(obj.editor)
+        assoc_editor = models.Account.pull(obj.editor)
         eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
 
         url_root = app.config.get("BASE_URL")
-        to = [editor.email]
+        to = [assoc_editor.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
 
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
                             template_name=template,
-                            editor=editor.id, #.encode('utf-8', 'replace'),
+                            associate_editor=assoc_editor.id, #.encode('utf-8', 'replace'),
                             journal_name=obj.bibjson().title, #.encode('utf-8', 'replace'),
                             group_name=eg.name, #.encode("utf-8", "replace"),
                             url_root=url_root
@@ -485,36 +487,7 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
-    def _send_application_rejected_email(self, journal_title, publisher_name, email, reapplication=False):
-        to = [email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        jn = journal_title #.encode('utf-8', 'replace')
-        try:
-            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                template = "email/publisher_application_rejected.txt"
-                subject = app.config.get("SERVICE_NAME", "") + " - application rejected"
-                if reapplication:
-                    template = "email/publisher_reapplication_rejected.txt"
-                    subject = app.config.get("SERVICE_NAME", "") + " - reapplication rejected"
-
-
-                app_email.send_mail(to=to,
-                                    fro=fro,
-                                    subject=subject,
-                                    template_name=template,
-                                    journal_title=jn,
-                                    publisher_name=publisher_name
-                )
-                self.add_alert('Sent email to ' + email + ' to tell them about their journal being rejected from DOAJ.')
-            else:
-                self.add_alert('Did not send email to ' + email + 'to tell them about their journal being rejected from DOAJ, as publisher emails are disabled.')
-        except Exception as e:
-            magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.error(magic + "\n" + repr(e))
-            raise e
-
-    def _send_admin_ready_email(self):
+    def _send_admin_ready_email(self, editor_id):
 
         journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
         url_root = app.config.get("BASE_URL")
@@ -533,6 +506,7 @@ class ApplicationContext(PrivateContext):
                                 subject=subject,
                                 template_name="email/admin_application_ready.txt",
                                 application_title=journal_name,
+                                editor=editor_id,
                                 url_for_application=url_for_application
             )
             self.add_alert('A confirmation email has been sent to the Managing Editors.')
@@ -558,6 +532,7 @@ class ApplicationFormFactory(object):
             return PublisherReApplication(source=source, form_data=form_data)
         elif role == "csv":
             return PublisherCsvReApplication(source=source, form_data=form_data)
+
 
 class JournalFormFactory(object):
     @classmethod
@@ -666,7 +641,7 @@ class ManEdApplicationReview(ApplicationContext):
                 self.add_alert("Problem sending email to editor - probably address is invalid")
         if is_associate_editor_changed:
             try:
-                self._send_editor_email(self.target)
+                self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
             try:
@@ -680,13 +655,9 @@ class ManEdApplicationReview(ApplicationContext):
 
         # email other managing editors if this was newly set to 'ready'
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
-            self._send_admin_ready_email()
-
-        # email publisher if this was newly set to 'rejected'
-        if self.source.application_status != 'rejected' and self.target.application_status == 'rejected':
-            self._send_application_rejected_email(journal_title=self.target.bibjson().title,
-                                                  email=self.target.get_latest_contact_email(),
-                                                  publisher_name=self.target.get_latest_contact_name())
+            # this template requires who made the change, say it was an Admin
+            ed_id = 'an administrator'
+            self._send_admin_ready_email(editor_id=ed_id)
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -746,6 +717,7 @@ class ManEdApplicationReview(ApplicationContext):
             self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.error(magic + "\n" + repr(e))
             raise e
+
 
 class EditorApplicationReview(ApplicationContext):
     """
@@ -814,7 +786,7 @@ class EditorApplicationReview(ApplicationContext):
         # if we need to email the associate, handle that here. Also tell the publisher we've assigned an editor.
         if email_associate:
             try:
-                self._send_editor_email(self.target)
+                self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
             try:
@@ -824,7 +796,14 @@ class EditorApplicationReview(ApplicationContext):
 
         # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
-            self._send_admin_ready_email()
+            # Tell the ManEds who has made the status change - the editor in charge of the group
+            editor_group_name = self.target.editor_group
+            editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+            editor_group = models.EditorGroup.pull(editor_group_id)
+            editor_acc = editor_group.get_editor_account()
+
+            editor_id = editor_acc.id
+            self._send_admin_ready_email(editor_id=editor_id)
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -965,12 +944,16 @@ class AssEdApplicationReview(ApplicationContext):
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
 
+        # The status change will have come from the associate editor assigned to the journal
+        assoc_id = self.target.editor
+
         try:
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
                                 template_name="email/editor_application_completed.txt",
                                 editor=editor_id,
+                                associate_editor=assoc_id,
                                 application_title=journal_name,
                                 url_for_application=url_for_application
             )
@@ -1004,7 +987,7 @@ class AssEdApplicationReview(ApplicationContext):
                 )
                 self.add_alert('A confirmation email has been sent to notify the publisher of the change in status.')
             else:
-                self.add_alert('Did not send email to ' + to + ' to tell them about the status change, as publisher emails are disabled.')
+                self.add_alert('Did not send email to ' + to[0] + ' to tell them about the status change, as publisher emails are disabled.')
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the ready status to publisher email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
@@ -1440,7 +1423,7 @@ class ManEdJournalReview(PrivateContext):
                 self.add_alert("Problem sending email to editor - probably address is invalid")
         if is_associate_editor_changed:
             try:
-                self._send_editor_email(self.target)
+                self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
 
@@ -1542,9 +1525,10 @@ class EditorJournalReview(PrivateContext):
         # if we need to email the associate, handle that here.
         if email_associate:
             try:
-                self._send_editor_email(self.target)
+                self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
+
 
 class AssEdJournalReview(PrivateContext):
     """

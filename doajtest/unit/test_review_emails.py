@@ -173,30 +173,36 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
-        # Finally, a Managing Editor will also trigger emails to the publisher when they accept / reject an Application
-
+        # A Managing Editor will notify other ManEds when they set an application to 'Ready'
         # Refresh the application form
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
-        fc.form.application_status.data = 'rejected'
+        pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
+
+        # Make changes to the application status via the form
+        fc.form.application_status.data = "ready"
 
         with app.test_request_context():
             fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
-        #   * to the publisher, notifying that the application was rejected
-        publisher_template = 'publisher_application_rejected.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
-        publisher_subject = 'application rejected'
+        #   * to the ManEds, saying an application is ready
+        manEd_template = 'admin_application_ready.txt'
+        manEd_to = re.escape(app.config.get('MANAGING_EDITOR_EMAIL'))
+        manEd_subject = 'application ready'
 
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
+        manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(manEd_email_matched)
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
+        # Finally, a Managing Editor will also trigger emails to the publisher when they accept an Application
+
+        # Refresh the application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
         fc.form.application_status.data = 'accepted'
 
         with app.test_request_context():
@@ -223,7 +229,6 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
