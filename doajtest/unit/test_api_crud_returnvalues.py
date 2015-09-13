@@ -1,9 +1,10 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.app import app
+from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
+from copy import deepcopy
 import json
-from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory
-
+import time
 
 class TestCrudReturnValues(DoajTestCase):
 
@@ -18,6 +19,11 @@ class TestCrudReturnValues(DoajTestCase):
         account.set_password('password123')
         self.api_key = account.api_key
         account.save()
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+        time.sleep(1)
 
     def tearDown(self):
         super(TestCrudReturnValues, self).tearDown()
@@ -58,9 +64,9 @@ class TestCrudReturnValues(DoajTestCase):
             # log into the app as our user
             self.login(t_client, 'test', 'password123')
 
-            # create a new application
+            # CREATE a new application
             response = t_client.post('/api/v1/applications?api_key=' + self.api_key, data=json.dumps(user_data))
-            assert response.status_code == 201
+            assert response.status_code == 201          # 201 "Created"
             assert response.mimetype == 'application/json'
 
             # Check it gives back a newly created application, with an ID
@@ -68,17 +74,93 @@ class TestCrudReturnValues(DoajTestCase):
             new_app_loc = json.loads(response.data)['location']
             assert new_app_id is not None
             assert new_app_id in new_app_loc
-            print new_app_loc
 
-            # retrieve the same application using the location then ID
+            # RETRIEVE the same application using the ID
             response = t_client.get('/api/v1/application/{0}?api_key={1}'.format(new_app_id, self.api_key))
-            assert response.status_code == 200
+            assert response.status_code == 200          # 200 "OK"
             assert response.mimetype == 'application/json'
 
             retrieved_application = json.loads(response.data)
             new_app_title = retrieved_application['bibjson']['title']
-            assert new_app_title == ApplicationFixtureFactory.incoming_application()['bibjson']['title']
+            assert new_app_title == user_data['bibjson']['title']
 
+            # UPDATE the title of the application
+            updated_data = deepcopy(user_data)
+            updated_data['bibjson']['title'] = 'This is a new title for this application'
+            response = t_client.put('/api/v1/application/{0}?api_key={1}'.format(new_app_id, self.api_key), data=json.dumps(updated_data))
+            assert response.status_code == 204          # 204 "No Content"
+            assert response.mimetype == 'application/json'
+
+            response = t_client.get('/api/v1/application/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            retrieved_application = json.loads(response.data)
+            new_app_title = retrieved_application['bibjson']['title']
+            assert new_app_title == updated_data['bibjson']['title']
+            assert new_app_title != user_data['bibjson']['title']
+
+            # DELETE the application
+            assert models.Suggestion.pull(new_app_id) is not None
+            response = t_client.delete('/api/v1/application/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            assert response.status_code == 204          # 204 "No Content"
+            assert response.mimetype == 'application/json'
+
+            # Try to RETRIEVE the Application again - check it isn't there anymore
+            response = t_client.get('/api/v1/application/{0}?api_key={1}'.format(new_app_id, self.api_key))
+            assert response.status_code == 404
+            assert response.mimetype == 'application/json'
+
+            self.logout(t_client)
+
+    def test_03_articles_crud(self):
+        # add some data to the index with a Create
+        user_data = ArticleFixtureFactory.make_article_source()
+
+        with app.test_client() as t_client:
+            # log into the app as our user
+            self.login(t_client, 'test', 'password123')
+
+            # CREATE a new article
+            response = t_client.post('/api/v1/articles?api_key=' + self.api_key, data=json.dumps(user_data))
+            assert response.status_code == 201          # 201 "Created"
+            assert response.mimetype == 'application/json'
+
+            # Check it gives back a newly created article, with an ID
+            new_ar_id = json.loads(response.data)['id']
+            new_ar_loc = json.loads(response.data)['location']
+            assert new_ar_id is not None
+            assert new_ar_id in new_ar_loc
+
+            # RETRIEVE the same article using the ID
+            response = t_client.get('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            assert response.status_code == 200          # 200 "OK"
+            assert response.mimetype == 'application/json'
+
+            retrieved_article = json.loads(response.data)
+            new_ar_title = retrieved_article['bibjson']['title']
+            assert new_ar_title == user_data['bibjson']['title']
+
+            # UPDATE the title of the article
+            updated_data = deepcopy(user_data)
+            updated_data['bibjson']['title'] = 'This is a new title for this article'
+            response = t_client.put('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key), data=json.dumps(updated_data))
+            assert response.status_code == 204          # 204 "No Content"
+            assert response.mimetype == 'application/json'
+
+            response = t_client.get('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            retrieved_article = json.loads(response.data)
+            new_ar_title = retrieved_article['bibjson']['title']
+            assert new_ar_title == updated_data['bibjson']['title']
+            assert new_ar_title != user_data['bibjson']['title']
+
+            # DELETE the article
+            assert models.Article.pull(new_ar_id) is not None
+            response = t_client.delete('/api/v1/articles/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            assert response.status_code == 204          # 204 "No Content"
+            assert response.mimetype == 'application/json'
+
+            # Try to RETRIEVE the article again - check it isn't there anymore
+            response = t_client.get('/api/v1/application/{0}?api_key={1}'.format(new_ar_id, self.api_key))
+            assert response.status_code == 404
+            assert response.mimetype == 'application/json'
 
     @staticmethod
     def login(app, username, password):
