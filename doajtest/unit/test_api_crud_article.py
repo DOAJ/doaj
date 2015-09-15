@@ -240,7 +240,8 @@ class TestCrudArticle(DoajTestCase):
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object
-        ArticlesCrudApi.update(a.id, data, account)
+        a2 = ArticlesCrudApi.update(a.id, data, account)
+        assert a2 != a
 
         # let the index catch up
         time.sleep(1)
@@ -248,7 +249,7 @@ class TestCrudArticle(DoajTestCase):
         # get a copy of the updated version
         updated = models.Article.pull(a.id)
 
-        # now check the properties to make sure the update tool
+        # now check the properties to make sure the update took
         assert updated.bibjson().title == "An updated title"
         assert updated.created_date == created.created_date
         assert updated.last_updated != created.last_updated

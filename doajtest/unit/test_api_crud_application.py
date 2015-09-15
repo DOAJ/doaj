@@ -310,7 +310,8 @@ class TestCrudApplication(DoajTestCase):
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object
-        ApplicationsCrudApi.update(a.id, data, account)
+        a2 = ApplicationsCrudApi.update(a.id, data, account)
+        assert a2 != a
 
         # let the index catch up
         time.sleep(2)
