@@ -5,6 +5,7 @@ from portality.formcontext import formcontext
 from portality.app import app
 
 from StringIO import StringIO
+from copy import deepcopy
 import logging
 import re
 
@@ -47,6 +48,9 @@ def editor_account_pull(self, _id):
 
 # A regex string for searching the log entries
 email_log_regex = 'template.*%s.*to:\[\'%s.*subject:.*%s'
+
+# A string present in each email log entry (for counting them)
+email_count_string = 'Email template'
 
 
 class TestApplicationReviewEmails(DoajTestCase):
@@ -121,6 +125,48 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          info_stream_contents,
                                          re.DOTALL)
         assert bool(editor_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # When an application is assigned to an associate editor for the first time, email the assoc_ed and publisher.
+
+        # Refresh the application form
+        no_ed = deepcopy(ready_application)
+        del no_ed['admin']['editor']
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+
+        # Assign the associate editor and save the form
+        fc.form.editor.data = "associate_3"
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # check the associate was changed
+        assert fc.target.editor == "associate_3"
+
+        # We expect 2 emails to be sent:
+        #   * to the AssEd who's been assigned,
+        #   * and to the publisher informing them there's an editor assigned.
+        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_3').email)
+        assEd_subject = 'new application assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
+
+        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_to = re.escape(no_ed.get_latest_contact_email())
+        publisher_subject = 'your application has been assigned an editor for review'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -128,7 +174,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Refresh the application form
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
 
-        # Next, if we change the editor group or assigned editor, emails should be sent to editors and the publisher.
+        # Next, if we change the editor group or assigned editor, emails should be sent to editors, & NOT the publisher
         fc.form.editor_group.data = "Test Editor Group"
         fc.form.editor.data = "associate_3"
 
@@ -139,10 +185,9 @@ class TestApplicationReviewEmails(DoajTestCase):
         # check the associate was changed
         assert fc.target.editor == "associate_3"
 
-        # We expect 3 emails to be sent:
+        # We expect 2 emails to be sent:
         #   * to the editor of the assigned group,
-        #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing there's an editor assigned.
+        #   * to the AssEd who's been assigned
         editor_template = re.escape('editor_application_assigned_group.txt')
         editor_to = re.escape('eddie@example.com')
         editor_subject = 'new application assigned to your group'
@@ -160,15 +205,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
-        
-        publisher_template = 'publisher_application_editor_assigned.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
-        publisher_subject = 'your application has been assigned an editor for review'
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -195,6 +232,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(manEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -229,6 +267,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
@@ -250,7 +289,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
-        #   * to the ManEds, saying a n application is ready
+        #   * to the ManEds, saying an application is ready
         manEd_template = 'admin_application_ready.txt'
         manEd_to = re.escape(app.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
@@ -259,11 +298,53 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(manEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
 
-        # Editors can also reassign applications to associate editors.
+        # When an application is assigned to an associate editor for the first time, email the assoc_ed and publisher.
+
+        # Refresh the application form
+        no_ed = deepcopy(pending_application)
+        del no_ed['admin']['editor']
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=no_ed)
+
+        # Assign the associate editor and save the form
+        fc.form.editor.data = "associate_3"
+        with app.test_request_context():
+            fc.finalise()
+        info_stream_contents = self.info_stream.getvalue()
+
+        # check the associate was changed
+        assert fc.target.editor == "associate_3"
+
+        # We expect 2 emails to be sent:
+        #   * to the AssEd who's been assigned,
+        #   * and to the publisher informing them there's an editor assigned.
+        assEd_template = 'assoc_editor_application_assigned.txt'
+        assEd_to = re.escape(models.Account.pull('associate_3').email)
+        assEd_subject = 'new application assigned to you'
+
+        assEd_email_matched = re.search(email_log_regex % (assEd_template, assEd_to, assEd_subject),
+                                        info_stream_contents,
+                                        re.DOTALL)
+        assert bool(assEd_email_matched)
+
+        publisher_template = 'publisher_application_editor_assigned.txt'
+        publisher_to = re.escape(no_ed.get_latest_contact_email())
+        publisher_subject = 'your application has been assigned an editor for review'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # Editors can also reassign applications to different associate editors.
         fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE_TEST_2))
         assert isinstance(fc, formcontext.EditorApplicationReview)
 
@@ -276,9 +357,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         # check the associate was changed
         assert fc.target.editor == "associate_2"
 
-        # We expect 2 emails to be sent:
+        # We expect 1 email to be sent:
         #   * to the AssEd who's been assigned,
-        #   * and to the publisher informing there's an editor assigned.
         assEd_template = 'assoc_editor_application_assigned.txt'
         assEd_to = re.escape(models.Account.pull('associate_2').email)
         assEd_subject = 'new application assigned to you'
@@ -287,15 +367,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
-
-        publisher_template = 'publisher_application_editor_assigned.txt'
-        publisher_to = re.escape(pending_application.get_latest_contact_email())
-        publisher_subject = 'your application has been assigned an editor for review'
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
     def test_03_assoc_ed_review_emails(self):
         """ Ensure the Associate Editor's application review form sends the right emails"""
@@ -326,6 +398,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -346,8 +419,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          info_stream_contents,
                                          re.DOTALL)
         assert bool(editor_email_matched)
-        
-        assert True     # gives us a place to drop a break point later if we need it
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
 
 class TestJournalReviewEmails(DoajTestCase):
@@ -429,6 +501,7 @@ class TestJournalReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's journal review form sends the right emails"""
@@ -464,3 +537,4 @@ class TestJournalReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
