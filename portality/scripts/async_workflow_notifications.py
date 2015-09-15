@@ -3,6 +3,8 @@
 
 from portality import models, app_email
 from portality.core import app
+
+from flask import render_template
 from datetime import datetime, timedelta
 import time
 
@@ -16,8 +18,13 @@ def managing_editor_notifications():
     Notify managing editors about two things:
         * Summary of records not touched for X weeks
         * Records marked as ready
+    Note: requires request context to render the email text from templates
     """
     MAN_ED_EMAIL = app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')
+
+    relevant_statuses = app.config.get("MAN_ED_NOTIFICATION_STATUSES")
+    term = "admin.application_status.exact"
+    status_filters = [{"term": {term: status}} for status in relevant_statuses]
 
     # First note - records not touched for so long
     X_WEEKS = app.config.get('MAN_ED_IDLE_CUTOFF', 2)
@@ -37,23 +44,7 @@ def managing_editor_notifications():
                                 }
                             }
                         },
-                        "should": [
-                            {
-                                "term": {"admin.application_status.exact": "submitted"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "pending"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "in progress"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "completed"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "on hold"}
-                            }
-                        ]
+                        "should": status_filters
                     }
                 },
                 "query": {
@@ -74,16 +65,14 @@ def managing_editor_notifications():
         }
     }
 
-    MAN_ED_AGE_TEMPLATE = '{num_idle} applications in the pipeline have not been updated for {x_weeks} weeks or more,' \
-                          ' of which {num_never} have never been updated by an editor.' \
-                          ' These can be viewed at the following url: \n{url}'
+    # todo: build URLS nicely
     age_url = app.config.get('BASE_URL') + "/admin/applications?source={%22query%22%3A{%22match_all%22%3A{}}%2C%22sort%22%3A[{%22last_manual_update%22%3A{%22order%22%3A%22asc%22}}]%2C%22from%22%3A0%2C%22size%22%3A10}"
 
     idle_res = models.Suggestion.query(q=age_query)
     num_idle = idle_res.get('hits').get('total')
     num_never = idle_res.get('aggregations').get('never_updated').get('buckets')[0].get('doc_count')
 
-    text = MAN_ED_AGE_TEMPLATE.format(num_idle=num_idle, num_never=num_never, x_weeks=X_WEEKS, url=age_url)
+    text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, num_never=num_never, x_weeks=X_WEEKS, url=age_url)
     _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
@@ -100,19 +89,24 @@ def managing_editor_notifications():
         }
     }
 
-    READY_TEMPLATE = 'There are {num} records in status \'Ready\' which are awaiting the attention of a Managing Editor.' \
-                     ' View them here: \n{url}'
     ready_url = app.config.get("BASE_URL") + '/admin/applications?source={%22query%22%3A{%22filtered%22%3A{%22filter%22%3A{%22bool%22%3A{%22must%22%3A[{%22term%22%3A{%22admin.application_status.exact%22%3A%22ready%22}}]}}%2C%22query%22%3A{%22match_all%22%3A{}}}}%2C%22sort%22%3A[{%22last_updated%22%3A{%22order%22%3A%22asc%22}}]%2C%22from%22%3A0%2C%22size%22%3A10}'
 
     ready_res = models.Suggestion.query(q=ready_query)
     num_ready = ready_res.get('hits').get('total')
 
-    text = READY_TEMPLATE.format(num=num_ready, url=ready_url)
+    text = render_template('email/workflow_reminder_fragments/admin_ready_frag', num=num_ready, url=ready_url)
     _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
 
 def editor_notifications():
-    """ Notify editors how many records are assigned to their group. """
+    """
+    Notify editors how many records are assigned to their group.
+    Note: requires request context to render the email text from templates
+    """
+
+    relevant_statuses = app.config.get("ED_NOTIFICATION_STATUSES")
+    term = "admin.application_status.exact"
+    status_filters = [{"term": {term: status}} for status in relevant_statuses]
 
     ed_app_query = {
         "query": {
@@ -122,23 +116,7 @@ def editor_notifications():
                         "must": {
                             "exists": {"field": "admin.editor_group"}
                         },
-                        "should": [
-                            {
-                                "term": {"admin.application_status.exact": "submitted"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "pending"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "in progress"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "completed"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "on hold"}
-                            }
-                        ]
+                        "should": status_filters
                     }
                 },
                 "query": {
@@ -157,8 +135,6 @@ def editor_notifications():
         }
     }
 
-    ED_TEMPLATE = "There are {num} applications currently assigned to your Editor Group, \"{ed_group}\". " \
-                  "You can view these in the Editor area: {url}"
     ed_url = app.config.get("BASE_URL") + "/editor/group_applications"
 
     # Query for editor groups which have items in the required statuses, count their numbers
@@ -176,7 +152,7 @@ def editor_notifications():
         editor = models.Account.pull(eg.editor)
         ed_email = editor.email
 
-        text = ED_TEMPLATE.format(num=group_count, ed_group=group_name, url=ed_url)
+        text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
         _add_email_paragraph(ed_email, eg.editor, text)
 
 
@@ -185,6 +161,7 @@ def associate_editor_notifications():
     Notify associates about two things:
         * Records assigned that haven't been updated for X days
         * Record(s) that haven't been updated for Y weeks
+    Note: requires request context to render the email text from templates
     """
 
     # Get our thresholds from settings
@@ -195,6 +172,10 @@ def associate_editor_notifications():
     very_idle_date = now - timedelta(weeks=Y_WEEKS)
     idle_date_stamp = idle_date.strftime("%Y-%m-%dT%H:%M:%SZ")
     very_idle_date_stamp = very_idle_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    relevant_statuses = app.config.get("ASSOC_ED_NOTIFICATION_STATUSES")
+    term = "admin.application_status.exact"
+    status_filters = [{"term": {term: status}} for status in relevant_statuses]
 
     assoc_age_query = {
         "query": {
@@ -209,20 +190,7 @@ def associate_editor_notifications():
                                 }
                             }
                         },
-                        "should": [
-                            {
-                                "term": {"admin.application_status.exact": "submitted"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "pending"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "in progress"}
-                            },
-                            {
-                                "term": {"admin.application_status.exact": "on hold"}
-                            }
-                        ]
+                        "should": status_filters
                     }
                 },
                 "query": {
@@ -251,9 +219,6 @@ def associate_editor_notifications():
         }
     }
 
-    ASSOC_ED_TEMPLATE = 'You have {num_idle} application(s) assigned to you which haven\'t been updated in over {x_days} days,' \
-                        ' including {num_very_idle} which have been unchanged for over {y_weeks} weeks.' \
-                        ' View these at: \n{url}'
     url = app.config.get("BASE_URL") + "/editor/your_applications"
 
     es = models.Suggestion.query(q=assoc_age_query)
@@ -269,10 +234,10 @@ def associate_editor_notifications():
         try:
             assoc_email = assoc.email
         except AttributeError:
-            # There isn't an account for that id fixme: should we tell someone about this?
+            # There isn't an account for that id todo: should we tell someone about this?
             continue
 
-        text = ASSOC_ED_TEMPLATE.format(num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
+        text = render_template('email/workflow_reminder_fragments/assoc_ed_age_frag', num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
         _add_email_paragraph(assoc_email, assoc_id, text)
 
 
@@ -310,13 +275,18 @@ def _add_email_paragraph(addr, to_name, para_string):
 
 # Main function for running all notification types in sequence
 def run_async_notifications():
-    """ Run through each notification type, pausing the give the index a rest, then send emails """
+    """ Run through each notification type, then send emails """
+    # Create a request context to render templates
+    ctx = app.test_request_context()
+    ctx.push()
+
+    # Gather info and build the notifications
     managing_editor_notifications()
-    time.sleep(1)
     editor_notifications()
-    time.sleep(1)
     associate_editor_notifications()
-    time.sleep(1)
+
+    # Discard the context (the send mail function makes its own)
+    ctx.pop()
 
     send_emails()
 

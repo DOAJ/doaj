@@ -1,0 +1,3 @@
+You have {{ num_idle }} application(s) assigned to you which haven't been updated in over {{ x_days }} days,
+including {num_very_idle} which have been unchanged for over {{ y_weeks }} weeks. View these at:
+{{ url }}

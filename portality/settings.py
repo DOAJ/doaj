@@ -10,7 +10,7 @@ SCRIPTS_READ_ONLY_MODE = False
 
 DOAJ_VERSION = "2.10.3_SNAPSHOT-1"
 
-OFFLINE_MODE=False
+OFFLINE_MODE = False
 
 FEATURES = []
 
@@ -75,10 +75,16 @@ MAIL_PORT = 25              # default 25
 #MAIL_MAX_EMAILS            # default None
 #MAIL_SUPPRESS_SEND         # default app.testing
 
+# ========================
 # workflow email notification settings
 MAN_ED_IDLE_CUTOFF = 4      # weeks before an application is considered reminder-worthy
 ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 4
+
+# Which statuses the notification queries should be filtered to show
+MAN_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed', 'on hold']
+ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed']
+ASSOC_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress']
 
 # ========================
 # user login settings

@@ -644,6 +644,10 @@ class ManEdApplicationReview(ApplicationContext):
                 self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
+
+        # If this is the first time this application has been assigned to an editor, notify the publisher.
+        old_ed = self.source.editor
+        if (old_ed is None or old_ed == '') and self.target.editor is not None:
             try:
                 self._send_publisher_editor_assigned_email(self.target)
             except app_email.EmailException as e:
@@ -777,18 +781,22 @@ class EditorApplicationReview(ApplicationContext):
         super(EditorApplicationReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
         self.target.set_last_manual_update()
         self.target.save()
 
-        # if we need to email the associate, handle that here. Also tell the publisher we've assigned an editor.
-        if email_associate:
+        # if we need to email the associate, handle that here.
+        if new_associate_assigned:
             try:
                 self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to associate editor - probably address is invalid")
+
+        # If this is the first time this application has been assigned to an editor, notify the publisher.
+        old_ed = self.source.editor
+        if (old_ed is None or old_ed == '') and self.target.editor is not None:
             try:
                 self._send_publisher_editor_assigned_email(self.target)
             except app_email.EmailException as e:
@@ -1088,7 +1096,6 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_application_status('submitted')
 
         # Save the target
-        self.target.set_last_manual_update()
         self.target.set_last_manual_update()
         self.target.save()
 
