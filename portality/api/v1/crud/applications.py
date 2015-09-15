@@ -5,6 +5,7 @@ from portality.lib import dataobj
 from datetime import datetime
 from portality import models
 
+
 class ApplicationsCrudApi(CrudApi):
 
     @classmethod
@@ -109,7 +110,7 @@ class ApplicationsCrudApi(CrudApi):
 
         # finally save the new application, and return to the caller
         new_ap.save()
-        return ap
+        return new_ap
 
     @classmethod
     def delete(cls, id, account):
