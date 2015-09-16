@@ -1,7 +1,6 @@
 from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
-from flask.ext.cors import cross_origin
 import urllib
 
 from portality import dao
