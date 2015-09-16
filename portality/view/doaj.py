@@ -1,6 +1,7 @@
 from flask import Blueprint, request, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
+from flask.ext.cors import cross_origin
 import urllib
 
 from portality import dao
@@ -38,6 +39,15 @@ def home():
 def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
+
+@blueprint.route("/widgets")
+def widgets():
+    if app.config.get("DOAJENV") == "dev":
+        return render_template('doaj/widgets.html', env="dev")
+    elif app.config.get("DOAJENV") == "test":
+        return render_template('doaj/widgets.html', env="test")
+    elif app.config.get("DOAJENV") == "production":
+        return render_template('doaj/widgets.html', env="production")
 
 @blueprint.route("/search", methods=['GET'])
 def search():
