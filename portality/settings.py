@@ -350,6 +350,9 @@ BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a
 # legacy route to that file)
+# Changing this will not change the actual folder that Flask serves
+# static files from.
+# http://flask.pocoo.org/snippets/102/
 STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 
 

@@ -19,6 +19,8 @@ server {
     }
 
     location  /static/ {
+        include /home/cloo/repl/test/doaj/src/doaj/deploy/nginx/enable-cors;
+
         alias /home/cloo/repl/test/doaj/src/doaj/portality/static/;
         autoindex off;
         expires max;

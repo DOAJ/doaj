@@ -39,6 +39,15 @@ def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
 
+@blueprint.route("/widgets")
+def widgets():
+    if app.config.get("DOAJENV") == "dev":
+        return render_template('doaj/widgets.html', env="dev")
+    elif app.config.get("DOAJENV") == "test":
+        return render_template('doaj/widgets.html', env="test")
+    elif app.config.get("DOAJENV") == "production":
+        return render_template('doaj/widgets.html', env="production")
+
 @blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
