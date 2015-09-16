@@ -41,12 +41,7 @@ def news():
 
 @blueprint.route("/widgets")
 def widgets():
-    if app.config.get("DOAJENV") == "dev":
-        return render_template('doaj/widgets.html', env="dev")
-    elif app.config.get("DOAJENV") == "test":
-        return render_template('doaj/widgets.html', env="test")
-    elif app.config.get("DOAJENV") == "production":
-        return render_template('doaj/widgets.html', env="production")
+    return render_template('doaj/widgets.html', env=app.config.get("DOAJENV"))
 
 @blueprint.route("/search", methods=['GET'])
 def search():
