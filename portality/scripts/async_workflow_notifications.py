@@ -3,10 +3,10 @@
 
 from portality import models, app_email
 from portality.core import app
+from portality.dao import Facetview2
 
 from flask import render_template
 from datetime import datetime, timedelta
-import time
 
 # Store all of the emails: { email_addr : (name, [paragraphs]) }
 emails_dict = {}
@@ -24,7 +24,7 @@ def managing_editor_notifications():
 
     relevant_statuses = app.config.get("MAN_ED_NOTIFICATION_STATUSES")
     term = "admin.application_status.exact"
-    status_filters = [{"term": {term: status}} for status in relevant_statuses]
+    status_filters = [Facetview2.make_term_filter(term, status) for status in relevant_statuses]
 
     # First note - records not touched for so long
     X_WEEKS = app.config.get('MAN_ED_IDLE_CUTOFF', 2)
@@ -65,8 +65,9 @@ def managing_editor_notifications():
         }
     }
 
-    # todo: build URLS nicely
-    age_url = app.config.get('BASE_URL') + "/admin/applications?source={%22query%22%3A{%22match_all%22%3A{}}%2C%22sort%22%3A[{%22last_manual_update%22%3A{%22order%22%3A%22asc%22}}]%2C%22from%22%3A0%2C%22size%22%3A10}"
+    admin_fv_prefix = app.config.get('BASE_URL') + "/admin/applications?source="
+    fv_age = Facetview2.make_query(sort_parameter="last_manual_update")
+    age_url = admin_fv_prefix + Facetview2.url_encode_query(fv_age)
 
     idle_res = models.Suggestion.query(q=age_query)
     num_idle = idle_res.get('hits').get('total')
@@ -76,20 +77,22 @@ def managing_editor_notifications():
     _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
+    ready_filter = Facetview2.make_term_filter('admin.application_status.exact', 'ready')
+
     ready_query = {
         "query": {
             "filtered": {
-                "filter": {
-                    "term": {"admin.application_status.exact": "ready"}
-                },
+                "filter": ready_filter,
                 "query": {
                     "match_all": {}
                 }
             }
-        }
+        },
+        "size": 0
     }
 
-    ready_url = app.config.get("BASE_URL") + '/admin/applications?source={%22query%22%3A{%22filtered%22%3A{%22filter%22%3A{%22bool%22%3A{%22must%22%3A[{%22term%22%3A{%22admin.application_status.exact%22%3A%22ready%22}}]}}%2C%22query%22%3A{%22match_all%22%3A{}}}}%2C%22sort%22%3A[{%22last_updated%22%3A{%22order%22%3A%22asc%22}}]%2C%22from%22%3A0%2C%22size%22%3A10}'
+    fv_ready = Facetview2.make_query(filters=ready_filter, sort_parameter="last_manual_update")
+    ready_url = admin_fv_prefix + Facetview2.url_encode_query(fv_ready)
 
     ready_res = models.Suggestion.query(q=ready_query)
     num_ready = ready_res.get('hits').get('total')
@@ -106,7 +109,7 @@ def editor_notifications():
 
     relevant_statuses = app.config.get("ED_NOTIFICATION_STATUSES")
     term = "admin.application_status.exact"
-    status_filters = [{"term": {term: status}} for status in relevant_statuses]
+    status_filters = [Facetview2.make_term_filter(term, status) for status in relevant_statuses]
 
     ed_app_query = {
         "query": {
@@ -175,7 +178,7 @@ def associate_editor_notifications():
 
     relevant_statuses = app.config.get("ASSOC_ED_NOTIFICATION_STATUSES")
     term = "admin.application_status.exact"
-    status_filters = [{"term": {term: status}} for status in relevant_statuses]
+    status_filters = [Facetview2.make_term_filter(term, status) for status in relevant_statuses]
 
     assoc_age_query = {
         "query": {
