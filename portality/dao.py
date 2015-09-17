@@ -6,9 +6,11 @@ import time
 import traceback, sys
 
 from portality.core import app
+import urllib2
+import json
 
 '''
-All models in models.py should inherig this DomainObject to know how to save themselves in the index and so on.
+All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
 '''
     
@@ -475,21 +477,30 @@ class Facetview2(object):
     {"query":{"query_string":{"query":"richard","default_operator":"OR"}},"from":0,"size":10}
     """
 
-    @classmethod
-    def make_term_filter(self, term, value):
-        return {"term" : {term : value}}
+    @staticmethod
+    def make_term_filter(term, value):
+        return {"term": {term: value}}
 
-    @classmethod
-    def make_query(self, query_string=None, filters=None, default_operator="OR"):
-        query_part = {"match_all" : {}}
+    @staticmethod
+    def make_query(query_string=None, filters=None, default_operator="OR", sort_parameter=None, sort_order="asc"):
+        query_part = {"match_all": {}}
         if query_string is not None:
-            query_part = {"query_string" : {"query" : query_string, "default_operator" : default_operator}}
+            query_part = {"query_string": {"query": query_string, "default_operator": default_operator}}
+        query = {"query": query_part}
 
-        query = {"query" : query_part}
         if filters is not None:
             if not isinstance(filters, list):
                 filters = [filters]
-            bool_part = {"bool" : {"must" : filters}}
-            query = {"query" : {"filtered" : {"query" : query_part, "filter" : bool_part}}}
+            bool_part = {"bool": {"must": filters}}
+            query = {"query": {"filtered": {"query": query_part, "filter": bool_part}}}
+
+        if sort_parameter is not None:
+            # For facetview we can only have one sort parameter, but ES actually supports lists
+            sort_part = [{sort_parameter: {"order": sort_order}}]
+            query["sort"] = sort_part
 
         return query
+
+    @staticmethod
+    def url_encode_query(query):
+        return urllib2.quote(json.dumps(query).replace(' ', ''))
