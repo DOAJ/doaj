@@ -1,5 +1,4 @@
 """ Building emails to send asynchronously, via cron job or scheduler """
-# FIXME: Sort out status filters in all queries.
 
 from portality import models, app_email
 from portality.core import app
