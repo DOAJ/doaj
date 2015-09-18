@@ -4,7 +4,7 @@
 var jQuery;
 
 /******** Load jQuery if not present *********/
-if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.4.2') {
+if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.9.1') {
     var script_tag = document.createElement('script');
     script_tag.setAttribute("type","text/javascript");
     script_tag.setAttribute("src",
