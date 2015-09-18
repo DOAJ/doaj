@@ -33,6 +33,26 @@ fv_author_pays.mapping = {
     "NY": {"text": "No info available", "class": ""},
 };
 
+fv_application_status = (function(resultobj) {
+    var that = function(resultobj) {
+        return that.mapping[resultobj['admin']['application_status']];
+    };
+    return that;
+})();
+
+// This must be updated in line with the list in formcontext/choices.py
+fv_application_status.mapping = {
+    'reapplication' : 'Reapplication Pending',
+    'submitted' : 'Reapplication Submitted',
+    'pending' : 'Pending',
+    'in progress' : 'In Progress',
+    'completed' : 'Completed',
+    'on hold' : 'On Hold',
+    'ready' : 'Ready',
+    'rejected' : 'Rejected',
+    'accepted' : 'Accepted'
+};
+
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
         return iso_datetime2date(resultobj['created_date']);
@@ -50,6 +70,19 @@ fv_created_date_with_time = (function (resultobj) {
 fv_last_updated = (function (resultobj) {
     var that = function(resultobj) {
         return iso_datetime2date_and_time(resultobj['last_updated']);
+    };
+    return that;
+})();
+
+fv_last_manual_update = (function (resultobj) {
+    var that = function(resultobj) {
+        var man_update = resultobj['last_manual_update'];
+        if (man_update == '1970-01-01T00:00:00Z')
+        {
+            return 'Never'
+        } else {
+            return iso_datetime2date_and_time(man_update);
+        }
     };
     return that;
 })();

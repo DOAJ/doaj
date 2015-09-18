@@ -6,9 +6,12 @@ from portality.formcontext import forms, xwalk, render, choices
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
+from portality.dao import Facetview2
+
 
 class FormContextException(Exception):
     pass
+
 
 class FormContext(object):
     def __init__(self, form_data=None, source=None):
@@ -287,6 +290,65 @@ class PrivateContext(FormContext):
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
 
+    @staticmethod
+    def _send_editor_group_email(obj):
+        if type(obj) is models.Suggestion:
+            template = "email/editor_application_assigned_group.txt"
+            subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to your group"
+        elif type(obj) is models.Journal:
+            template = "email/editor_journal_assigned_group.txt"
+            subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to your group"
+        else:
+            app.logger.error("Attempted to send editor group email for something that's not an Application or Journal")
+            return
+        eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
+        if eg is None:
+            return
+        editor = models.Account.pull(eg.editor)
+
+        url_root = app.config.get("BASE_URL")
+        to = [editor.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name=template,
+                            editor=editor.id, #.encode('utf-8', 'replace'),
+                            journal_name=obj.bibjson().title, #.encode('utf-8', 'replace'),
+                            url_root=url_root
+                            )
+
+    @staticmethod
+    def _send_assoc_editor_email(obj):
+        if type(obj) is models.Suggestion:
+            template = "email/assoc_editor_application_assigned.txt"
+            subject = app.config.get("SERVICE_NAME", "") + " - new application assigned to you"
+        elif type(obj) is models.Journal:
+            template = "email/assoc_editor_journal_assigned.txt"
+            subject = app.config.get("SERVICE_NAME", "") + " - new journal assigned to you"
+        else:
+            app.logger.error("Attempted to send email to editors for something that's not an Application or Journal")
+            return
+
+        assoc_editor = models.Account.pull(obj.editor)
+        eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
+
+        url_root = app.config.get("BASE_URL")
+        to = [assoc_editor.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name=template,
+                            associate_editor=assoc_editor.id, #.encode('utf-8', 'replace'),
+                            journal_name=obj.bibjson().title, #.encode('utf-8', 'replace'),
+                            group_name=eg.name, #.encode("utf-8", "replace"),
+                            url_root=url_root
+                            )
+
+
 class ApplicationContext(PrivateContext):
     ERROR_MSG_TEMPLATE = \
         """Problem while creating account while turning suggestion into journal.
@@ -300,44 +362,22 @@ class ApplicationContext(PrivateContext):
             self.target.suggested_on = self.source.suggested_on
 
     @staticmethod
-    def _send_editor_group_email(suggestion):
-        eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
-        if eg is None:
-            return
-        editor = models.Account.pull(eg.editor)
+    def _send_publisher_editor_assigned_email(application):
 
-        url_root = app.config.get("BASE_URL")
-        to = [editor.email]
+        # This is to the publisher contact on the application
+        publisher_name = application.get_latest_contact_name()
+        publisher_email = application.get_latest_contact_email()
+
+        to = [publisher_email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to your group"
+        subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
 
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/suggestion_assigned_group.txt",
-                            editor=editor.id, #.encode('utf-8', 'replace'),
-                            journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
-                            url_root=url_root
-                            )
-
-    @staticmethod
-    def _send_editor_email(suggestion):
-        editor = models.Account.pull(suggestion.editor)
-        eg = models.EditorGroup.pull_by_key("name", suggestion.editor_group)
-
-        url_root = app.config.get("BASE_URL")
-        to = [editor.email]
-        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - new journal assigned to you"
-
-        app_email.send_mail(to=to,
-                            fro=fro,
-                            subject=subject,
-                            template_name="email/suggestion_assigned_editor.txt",
-                            editor=editor.id, #.encode('utf-8', 'replace'),
-                            journal_name=suggestion.bibjson().title, #.encode('utf-8', 'replace'),
-                            group_name=eg.name, #.encode("utf-8", "replace"),
-                            url_root=url_root
+                            template_name="email/publisher_application_editor_assigned.txt",
+                            application_title=application.bibjson().title, #.encode('utf-8', 'replace'),
+                            publisher_name=publisher_name
                             )
 
     def _create_account_on_suggestion_approval(self, suggestion, journal):
@@ -414,27 +454,28 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_suggestion_approved_email(self, journal_name, email, reapplication=False):
+    def _send_application_approved_email(self, journal_title, publisher_name, email, reapplication=False):
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
 
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - journal accepted"
+        subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                template = "email/suggestion_accepted.txt"
+                template = "email/publisher_application_accepted.txt"
                 if reapplication:
-                    template = "email/reapplication_accepted.txt"
-                jn = journal_name #.encode('utf-8', 'replace')
+                    template = "email/publisher_reapplication_accepted.txt"
+                jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
                                     template_name=template,
-                                    journal_name=jn,
+                                    journal_title=jn,
+                                    publisher_name=publisher_name,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -443,6 +484,35 @@ class ApplicationContext(PrivateContext):
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+    def _send_admin_ready_email(self, editor_id):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
+
+        # This is to the managing editor email list
+        to = [app.config.get('MANAGING_EDITOR_EMAIL', 'managing-editors@doaj.org')]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - application ready"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/admin_application_ready.txt",
+                                application_title=journal_name,
+                                editor=editor_id,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('A confirmation email has been sent to the Managing Editors.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to managing editors didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
@@ -462,6 +532,7 @@ class ApplicationFormFactory(object):
             return PublisherReApplication(source=source, form_data=form_data)
         elif role == "csv":
             return PublisherCsvReApplication(source=source, form_data=form_data)
+
 
 class JournalFormFactory(object):
     @classmethod
@@ -530,10 +601,12 @@ class ManEdApplicationReview(ApplicationContext):
         super(ManEdApplicationReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_editor = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        # If we have changed the editors assinged to this application, let them know.
+        is_editor_group_changed = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         # if this application is being accepted, then do the conversion to a journal
@@ -541,6 +614,7 @@ class ManEdApplicationReview(ApplicationContext):
             # this suggestion is just getting accepted
             j = self.target.make_journal()
             j.set_in_doaj(True)
+            j.set_last_manual_update()
             j.save()
 
             # record the url the journal is available at in the admin are and alert the user
@@ -555,21 +629,39 @@ class ManEdApplicationReview(ApplicationContext):
             # create the user account for the owner and send the notification email
             try:
                 owner = self._create_account_on_suggestion_approval(self.target, j)
-                self._send_suggestion_approved_email(j.bibjson().title, owner.email, self.source.current_journal is not None)
+                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to suggester - probably address is invald")
+                self.add_alert("Problem sending email to suggester - probably address is invalid")
 
         # if we need to email the editor and/or the associate, handle those here
-        if email_editor:
+        if is_editor_group_changed:
             try:
                 self._send_editor_group_email(self.target)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to editor - probably address is invald")
-        if email_associate:
+                self.add_alert("Problem sending email to editor - probably address is invalid")
+        if is_associate_editor_changed:
             try:
-                self._send_editor_email(self.target)
+                self._send_assoc_editor_email(self.target)
             except app_email.EmailException as e:
-                self.add_alert("Problem sending email to associate editor - probably address is invald")
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+
+        # If this is the first time this application has been assigned to an editor, notify the publisher.
+        old_ed = self.source.editor
+        if (old_ed is None or old_ed == '') and self.target.editor is not None:
+            try:
+                self._send_publisher_editor_assigned_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
+
+        # inform editor if this application was previously set to 'ready', but has been changed to 'in progress'
+        if self.source.application_status == 'ready' and self.target.application_status == 'in progress':
+            self._send_editor_inprogress_email()
+
+        # email other managing editors if this was newly set to 'ready'
+        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+            # this template requires who made the change, say it was an Admin
+            ed_id = 'an administrator'
+            self._send_admin_ready_email(editor_id=ed_id)
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -587,6 +679,48 @@ class ManEdApplicationReview(ApplicationContext):
             self.form.editor.choices = [(editor, editor)]
         else:
             self.form.editor.choices = [("", "")]
+
+    def _send_editor_inprogress_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+
+        # This is to the editor in charge of this AssEd's group
+        editor_group_name = self.target.editor_group
+        editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+
+        try:
+            editor_group = models.EditorGroup.pull(editor_group_id)
+            editor_acc = editor_group.get_editor_account()
+            editor_id = editor_acc.id
+            to = [editor_acc.email]
+        except AttributeError as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Couldn\'t find a recipient for this email - check editor groups are correct. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - 'Ready' application marked 'In Progress' by Managing Editor"
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/editor_application_inprogress.txt",
+                                editor=editor_id,
+                                application_title=journal_name,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('An email has been sent to notify the editor of the change in status.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 
 class EditorApplicationReview(ApplicationContext):
@@ -647,14 +781,37 @@ class EditorApplicationReview(ApplicationContext):
         super(EditorApplicationReview, self).finalise()
 
         # FIXME: may want to factor this out of the suggestionformxwalk
-        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
+        new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
-        # if we need to email the associate, handle that here
-        if email_associate:
-            self._send_editor_email(self.target)
+        # if we need to email the associate, handle that here.
+        if new_associate_assigned:
+            try:
+                self._send_assoc_editor_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
+
+        # If this is the first time this application has been assigned to an editor, notify the publisher.
+        old_ed = self.source.editor
+        if (old_ed is None or old_ed == '') and self.target.editor is not None:
+            try:
+                self._send_publisher_editor_assigned_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
+
+        # email managing editors if the application was newly set to 'ready'
+        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+            # Tell the ManEds who has made the status change - the editor in charge of the group
+            editor_group_name = self.target.editor_group
+            editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+            editor_group = models.EditorGroup.pull(editor_group_id)
+            editor_acc = editor_group.get_editor_account()
+
+            editor_id = editor_acc.id
+            self._send_admin_ready_email(editor_id=editor_id)
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -688,7 +845,6 @@ class EditorApplicationReview(ApplicationContext):
                 self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
             else:
                 self.form.editor.choices = [("", "")]
-
 
 
 class AssEdApplicationReview(ApplicationContext):
@@ -749,7 +905,17 @@ class AssEdApplicationReview(ApplicationContext):
         super(AssEdApplicationReview, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
+        self.target.set_last_manual_update()
         self.target.save()
+
+        # inform publisher if this was set to 'in progress' from 'pending'
+        if self.source.application_status == 'pending' and self.target.application_status == 'in progress':
+            self._send_publisher_inprogress_email()
+
+        # inform editor if this was newly set to 'completed'
+        if self.source.application_status != 'completed' and self.target.application_status == 'completed':
+            self._send_editor_completed_email()
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -766,6 +932,76 @@ class AssEdApplicationReview(ApplicationContext):
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             self.form.application_status.choices = choices.Choices.application_status()
+
+    def _send_editor_completed_email(self):
+
+        journal_name = self.target.bibjson().title #.encode('utf-8', 'replace')
+        url_root = app.config.get("BASE_URL")
+        query_for_id = Facetview2.make_query(query_string=self.target.id)
+        string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+        url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+
+        # This is to the editor in charge of this application's assigned editor group
+        editor_group_name = self.target.editor_group
+        editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
+        editor_group = models.EditorGroup.pull(editor_group_id)
+        editor_acc = editor_group.get_editor_account()
+
+        editor_id = editor_acc.id
+        to = [editor_acc.email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - application marked 'completed'"
+
+        # The status change will have come from the associate editor assigned to the journal
+        assoc_id = self.target.editor
+
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/editor_application_completed.txt",
+                                editor=editor_id,
+                                associate_editor=assoc_id,
+                                application_title=journal_name,
+                                url_for_application=url_for_application
+            )
+            self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
+    def _send_publisher_inprogress_email(self):
+
+        journal_title = self.target.bibjson().title #.encode('utf-8', 'replace')
+
+        # This is to the publisher contact on the application
+        publisher_name = self.target.get_latest_contact_name()
+        publisher_email = self.target.get_latest_contact_email()
+
+        to = [publisher_email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name="email/publisher_application_inprogress.txt",
+                                    publisher_name=publisher_name,
+                                    journal_title=journal_title,
+                )
+                self.add_alert('A confirmation email has been sent to notify the publisher of the change in status.')
+            else:
+                self.add_alert('Did not send email to ' + to[0] + ' to tell them about the status change, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the ready status to publisher email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
 
 class PublisherCsvReApplication(ApplicationContext):
     def __init__(self, form_data=None, source=None):
@@ -860,6 +1096,7 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_application_status('submitted')
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
     def render_template(self, **kwargs):
@@ -966,6 +1203,7 @@ class PublisherReApplication(ApplicationContext):
         self.target.set_application_status('submitted')
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         # email the publisher to tell them we received their reapplication
@@ -1014,7 +1252,7 @@ class PublisherReApplication(ApplicationContext):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/reapplication_received.txt",
+                                    template_name="email/publisher_reapplication_received.txt",
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
@@ -1082,6 +1320,7 @@ class PublicApplication(FormContext):
         self.target.set_application_status('pending')
 
         # Finally save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
         try:
@@ -1099,7 +1338,7 @@ class PublicApplication(FormContext):
         app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
-                            template_name="email/suggestion_received.txt",
+                            template_name="email/publisher_application_received.txt",
                             # suggestion=self.target,
                             title=self.target.bibjson().title,
                             url=self.target.bibjson().get_single_url(urltype="homepage")
@@ -1122,7 +1361,7 @@ class ManEdJournalReview(PrivateContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent journal")
 
-        return super(PrivateContext, self).render_template(
+        return super(ManEdJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
             **kwargs)
@@ -1172,10 +1411,28 @@ class ManEdJournalReview(PrivateContext):
             raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PrivateContext, self).finalise()
+        super(ManEdJournalReview, self).finalise()
+
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        # If we have changed the editors assinged to this application, let them know.
+        is_editor_group_changed = xwalk.JournalFormXWalk.is_new_editor_group(self.form, self.source)
+        is_associate_editor_changed = xwalk.JournalFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
+
+        # if we need to email the editor and/or the associate, handle those here
+        if is_editor_group_changed:
+            try:
+                self._send_editor_group_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to editor - probably address is invalid")
+        if is_associate_editor_changed:
+            try:
+                self._send_assoc_editor_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
 
     def validate(self):
         # make use of the ability to disable validation, otherwise, let it run
@@ -1203,7 +1460,7 @@ class EditorJournalReview(PrivateContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent journal")
 
-        return super(PrivateContext, self).render_template(
+        return super(EditorJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
             **kwargs)
@@ -1263,10 +1520,21 @@ class EditorJournalReview(PrivateContext):
             raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PrivateContext, self).finalise()
+        super(EditorJournalReview, self).finalise()
+
+        # FIXME: may want to factor this out of the suggestionformxwalk
+        email_associate = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
+
+        # if we need to email the associate, handle that here.
+        if email_associate:
+            try:
+                self._send_assoc_editor_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("Problem sending email to associate editor - probably address is invalid")
 
 
 class AssEdJournalReview(PrivateContext):
@@ -1318,6 +1586,7 @@ class AssEdJournalReview(PrivateContext):
         super(AssEdJournalReview, self).finalise()
 
         # Save the target
+        self.target.set_last_manual_update()
         self.target.save()
 
     def render_template(self, **kwargs):

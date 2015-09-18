@@ -14,7 +14,10 @@ jQuery(document).ready(function($) {
         default_operator : "AND",
 
         facets: [
-            {'field': 'admin.application_status.exact', 'display': 'Application Status'},
+            {   'field': 'admin.application_status.exact',
+                'display': 'Application Status',
+                'value_function': adminStatusMap
+            },
             {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
@@ -36,7 +39,7 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Date applied','field':'suggestion.suggested_on'},
-            {'display':'Last updated','field':'last_updated'},
+            {'display':'Last updated','field':'last_manual_update'},   // Note: last updated on UI points to when last updated by a person (via form)
             {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
@@ -58,6 +61,7 @@ jQuery(document).ready(function($) {
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
+            'admin.application_status': fv_application_status,
             'created_date': fv_created_date,
             'bibjson.abstract': fv_abstract,
             'journal_license' : fv_journal_license,
@@ -67,7 +71,7 @@ jQuery(document).ready(function($) {
             "issns" : fv_issns,
             "edit_suggestion" : fv_edit_suggestion,
             "country_name": fv_country_name,
-            'last_updated': fv_last_updated,
+            'last_manual_update': fv_last_manual_update,
             'suggested_on': fv_suggested_on,
             'readonly_journal': fv_readonly_journal
         },
@@ -93,7 +97,7 @@ jQuery(document).ready(function($) {
             [
                 {
                     "pre": "<strong>Last updated</strong>: ",
-                    "field": "last_updated"
+                    "field": "last_manual_update"   // Note: last updated on UI points to when last updated by a person (via form)
                 }
             ],
             [

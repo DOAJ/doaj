@@ -1,0 +1,6 @@
+Dear {{ editor }},
+
+A new application for the journal "{{ journal_name }}" has been
+assigned to your Group by a Managing Editor. Please assign this to an
+Associate Editor within 5 working days.
+{{ url_root }}/editor/ .

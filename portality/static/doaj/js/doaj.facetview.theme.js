@@ -327,6 +327,25 @@ function publisherStatusMap(value) {
     return value;
 }
 
+// This must be updated in line with the list in formcontext/choices.py
+var applicationStatusMapping = {
+    'reapplication' : 'Reapplication Pending',
+    'submitted' : 'Reapplication Submitted',
+    'pending' : 'Pending',
+    'in progress' : 'In Progress',
+    'completed' : 'Completed',
+    'on hold' : 'On Hold',
+    'ready' : 'Ready',
+    'rejected' : 'Rejected',
+    'accepted' : 'Accepted'
+};
+function adminStatusMap(value) {
+    if (applicationStatusMapping.hasOwnProperty(value)) {
+        return applicationStatusMapping[value];
+    }
+    return value;
+}
+
 //////////////////////////////////////////////////////
 // date formatting function
 /////////////////////////////////////////////////////

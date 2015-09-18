@@ -1,0 +1,2 @@
+There are {{ num }} applications currently assigned to your Editor Group, "{{ ed_group }}". You can view these in the Editor area:
+{{ url }}
