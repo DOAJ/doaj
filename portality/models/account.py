@@ -23,10 +23,6 @@ class Account(DomainObject, UserMixin):
         for role in roles:
             a.add_role(role)
 
-        # If the api role was added, generate a key
-        if "api" in roles:
-            a.generate_api_key()
-
         for jid in associated_journal_ids:
             a.add_journal(jid)
         reset_token = uuid.uuid4().hex
@@ -154,7 +150,11 @@ class Account(DomainObject, UserMixin):
     def api_key(self):
         if self.has_role('api'):
             # Return the stored api key if it's there, generate one if not (there should be one present if the role is)
-            return self.data.get('api_key', self.generate_api_key())
+            k = self.data.get('api_key', None)
+            if k is None:
+                return self.generate_api_key()
+            else:
+                return k
         else:
             return None
 
