@@ -259,3 +259,38 @@ class TestClient(DoajTestCase):
         journal_ids = list(set(journal_ids[:]))  # keep only unique ids
         assert len(journal_ids) == 99
 
+    def test_09_account(self):
+        # Make a new account
+        acc = models.Account.make_account(
+            username='mrs_user',
+            email='user@example.com',
+            roles=['api', 'associate_editor'],
+        )
+
+        # Check the new user has the right roles
+        assert acc.has_role('api')
+        assert acc.has_role('associate_editor')
+        assert not acc.has_role('admin')
+
+        # check the api key has been generated
+        assert acc.api_key is not None
+
+        # Make another account with no API access
+        acc2 = models.Account.make_account(
+            username='mrs_user2',
+            email='user@example.com',
+            roles=['editor'],
+        )
+        assert not acc2.has_role('api')
+
+        # Ensure we don't get an api key
+        assert not acc2.api_key
+        assert acc2.data.get('api_key', None) is None
+
+        # now add the api role and check we get a key generated
+        acc2.add_role('api')
+        assert acc2.api_key is not None
+
+        # remove the api_key from the object and ask for it again (a new one should be generated)
+        del acc2.data['api_key']
+        assert acc2.api_key is not None
