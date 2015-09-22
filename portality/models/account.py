@@ -149,12 +149,7 @@ class Account(DomainObject, UserMixin):
     @property
     def api_key(self):
         if self.has_role('api'):
-            # Return the stored api key if it's there, generate one if not (there should be one present if the role is)
-            k = self.data.get('api_key', None)
-            if k is None:
-                return self.generate_api_key()
-            else:
-                return k
+            return self.data.get('api_key', None)
         else:
             return None
 

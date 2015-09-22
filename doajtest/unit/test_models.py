@@ -291,6 +291,10 @@ class TestClient(DoajTestCase):
         acc2.add_role('api')
         assert acc2.api_key is not None
 
-        # remove the api_key from the object and ask for it again (a new one should be generated)
+        # remove the api_key from the object and ask for it again
         del acc2.data['api_key']
+        assert acc2.api_key is None
+
+        acc2.generate_api_key()
+        acc2.save()
         assert acc2.api_key is not None
