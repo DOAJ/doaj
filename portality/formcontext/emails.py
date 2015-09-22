@@ -195,8 +195,8 @@ def send_publisher_inprogress_email(application):
     )
 
 
-
 def send_received_email(application):
+    """ Email the publisher when an application is received """
     suggester = application.suggester
 
     to = [suggester.get("email")]

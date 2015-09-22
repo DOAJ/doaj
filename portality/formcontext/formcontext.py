@@ -6,7 +6,6 @@ from portality.formcontext import forms, xwalk, render, choices, emails
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
-from portality.dao import Facetview2
 
 
 class FormContextException(Exception):
@@ -378,6 +377,7 @@ class ApplicationContext(PrivateContext):
         return o
 
     def _send_application_approved_email(self, journal_title, publisher_name, email, reapplication=False):
+        """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         url_root = request.url_root
         if url_root.endswith("/"):
             url_root = url_root[:-1]
