@@ -41,8 +41,6 @@ class TestClient(DoajTestCase):
 
         # Check we can retrieve the account by its key
         a1_retrieved = models.Account.pull_by_api_key(a1_key)
-        print a1
-        print a1_retrieved
         assert a1 == a1_retrieved
 
         # Check that removing the API role means you don't get a key
