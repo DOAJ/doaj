@@ -18,7 +18,7 @@ class TestCrudJournal(DoajTestCase):
         oj = OutgoingJournal()
 
         # make one from an incoming journal model fixture
-        data = JournalFixtureFactory.make_journal_source()
+        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
         j = models.Journal(**data)
         oj = OutgoingJournal.from_model(j)
 
@@ -32,7 +32,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_02_retrieve_public_journal_success(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(in_doaj=True)
+        data = JournalFixtureFactory.make_journal_source(in_doaj=True, include_obsolete_fields=True)
         j = models.Journal(**data)
         j.save()
         time.sleep(2)
@@ -67,7 +67,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_04_retrieve_private_journal_success(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source()
+        data = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
         j = models.Journal(**data)
         j.save()
         time.sleep(2)
@@ -86,7 +86,7 @@ class TestCrudJournal(DoajTestCase):
 
     def test_05_retrieve_private_journal_fail(self):
         # set up all the bits we need
-        data = JournalFixtureFactory.make_journal_source(in_doaj=False)
+        data = JournalFixtureFactory.make_journal_source(in_doaj=False, include_obsolete_fields=True)
         j = models.Journal(**data)
         j.save()
         time.sleep(2)

@@ -43,10 +43,9 @@ class ApplicationsCrudApi(CrudApi):
         # set the owner to the current account
         ap.set_owner(account.id)
 
-        # they are not allowed to set "subject" and we don't want it just empty either, so remove it
+        # they are not allowed to set "subject"
         bj = ap.bibjson()
-        if "subject" in bj:
-            del bj['subject']
+        bj.remove_subjects()
 
         # finally save the new application, and return to the caller
         ap.save()

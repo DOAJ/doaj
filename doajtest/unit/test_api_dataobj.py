@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality.lib.dataobj import DataObj, merge_outside_construct
-from portality.api.v1.data_objects import JournalDO
+from portality.api.v1.data_objects import OutgoingJournal
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
@@ -31,7 +31,7 @@ class TestAPIDataObj(DoajTestCase):
 
     def test_03_create_from_model(self):
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
-        do = JournalDO.from_model(self.jm)
+        do = OutgoingJournal.from_model(self.jm)
         assert do._struct == expected_struct
         self.check_do(do, expected_struct)
 
