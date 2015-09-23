@@ -1,10 +1,12 @@
-# -*- coding: UTF-8 -*-
-
 from portality.lib import dataobj
 from portality import models
 from portality.formcontext import choices
 from copy import deepcopy
 
+from portality.api.v1.data_objects.common_journal_application import OutgoingCommonJournalApplication
+
+# both incoming and outgoing applications share this struct
+# "required" fields are only put on incoming applications
 BASE_APPLICATION_STRUCT = {
     "fields": {
         "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
@@ -15,6 +17,11 @@ BASE_APPLICATION_STRUCT = {
 
     "structs": {
         "admin" : {
+            "fields" : {
+                "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
+                "owner" : {"coerce" : "unicode"}
+            },
+
             "lists" : {
                 "contact" : {"contains" : "object"}
             },
@@ -51,6 +58,7 @@ BASE_APPLICATION_STRUCT = {
                 "license": {"contains": "object"},
                 "link": {"contains": "object"},
                 "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
+                "subject": {"contains": "object"}
             },
             "objects": [
                 "apc",
@@ -166,16 +174,25 @@ BASE_APPLICATION_STRUCT = {
                         "currency": {"coerce": "currency_code"},
                         "average_price": {"coerce": "integer"}
                     }
+                },
+                "subject": {
+                    "fields": {
+                        "scheme": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "code": {"coerce": "unicode"},
+                    }
                 }
             }
         },
 
         "suggestion" : {
             "fields" : {
-                "article_metadata" : {"coerce" : "bool"}
+                "article_metadata" : {"coerce" : "bool"},
+                "suggested_on" : {"coerce" : "utcdatetime"}
             },
             "objects" : [
-                "articles_last_year"
+                "articles_last_year",
+                "suggester"
             ],
 
             "structs" : {
@@ -184,9 +201,15 @@ BASE_APPLICATION_STRUCT = {
                         "count" : {"coerce" : "integer"},
                         "url" : {"coerce" : "url"}
                     }
+                },
+                "suggester" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"}
+                    }
                 }
             }
-        }
+        },
     }
 }
 
@@ -293,45 +316,12 @@ INCOMING_APPLICATION_REQUIREMENTS = {
     }
 }
 
-OUTGOING_APPLICATION_EXTRAS = {
-    "objects": ["admin", "suggestion"],
-
-    "structs": {
-        "admin" : {
-            "fields" : {
-                "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
-                "owner" : {"coerce" : "unicode"}
-            }
-        },
-
-        "suggestion" : {
-            "fields" : {
-                "suggested_on" : {"coerce" : "utcdatetime"}
-            },
-            "objects" : ["suggester"],
-
-            "structs" : {
-                "suggester" : {
-                    "fields" : {
-                        "name" : {"coerce" : "unicode"},
-                        "email" : {"coerce" : "unicode"}
-                    }
-                }
-            }
-        }
-    }
-}
-
-BASE_APPLICATION_COERCE = deepcopy(dataobj.DataObj.DEFAULT_COERCE)
-BASE_APPLICATION_COERCE["persistent_identifier_scheme"] = dataobj.string_canonicalise(["None", "DOI", "Handles", "ARK"], allow_fail=True)
-BASE_APPLICATION_COERCE["format"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
-BASE_APPLICATION_COERCE["deposit_policy"] = dataobj.string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True)
 
 class IncomingApplication(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
         self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
-        super(IncomingApplication, self).__init__(raw, construct_silent_prune=False, expose_data=True, coerce_map=BASE_APPLICATION_COERCE)
+        super(IncomingApplication, self).__init__(raw, construct_silent_prune=False, expose_data=True)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -459,32 +449,12 @@ class IncomingApplication(dataobj.DataObj):
             nnd = dataobj.merge_outside_construct(self._struct, nd, existing.data)
             return models.Suggestion(**nnd)
 
-class OutgoingApplication(dataobj.DataObj):
+class OutgoingApplication(OutgoingCommonJournalApplication):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
-        self._add_struct(OUTGOING_APPLICATION_EXTRAS)
-        super(OutgoingApplication, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_APPLICATION_COERCE)
+        super(OutgoingApplication, self).__init__(raw, construct_silent_prune=True, expose_data=True)
 
     @classmethod
     def from_model(cls, application):
         assert isinstance(application, models.Suggestion)
-        d = deepcopy(application.data)
-
-        # we need to re-write the archiving policy section
-        ap = d.get("bibjson", {}).get("archiving_policy")
-        if ap is not None:
-            nap = {}
-            if "url" in ap:
-                nap["url"] = ap["url"]
-            if "policy" in ap:
-                npol = []
-                for pol in ap["policy"]:
-                    if isinstance(pol, list):
-                        npol.append({"name" : pol[1], "domain" : pol[0]})
-                    else:
-                        npol.append({"name" : pol})
-                nap["policy"] = npol
-            d["bibjson"]["archiving_policy"] = nap
-
-        return cls(d)
-
+        return super(OutgoingApplication, cls).from_model(application)

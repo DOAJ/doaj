@@ -1018,3 +1018,13 @@ def update_article(aid):
 def delete_article(aid):
     ArticlesCrudApi.delete(aid, current_user)
     return no_content()
+
+
+@api_key_optional
+@blueprint.route('/journals/<jid>', methods=['GET'])
+def retrieve_journal(jid):
+    # TODO do this check on all these routes. Maybe an API decorator to check for format of IDs?
+    if not int(jid, 16):
+        return Api400Error()
+
+    return jsonify_data_object(JournalsCrudApi.retrieve(jid, current_user))

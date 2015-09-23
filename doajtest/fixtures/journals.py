@@ -84,7 +84,14 @@ JOURNAL_SOURCE = {
         ],
 
         "oa_start": {
-            "year": 1980,
+            "volume": "1",
+            "number": "1",
+            "year": "1980",
+        },
+        "oa_end": {
+            "volume": "10",
+            "number": "10",
+            "year": "1985",
         },
         "apc_url" : "http://apc.com",
         "apc": {
