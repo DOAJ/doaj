@@ -10,7 +10,7 @@ class TestAPIDataObj(DoajTestCase):
 
     # we aren't going to talk to ES so override setup and teardown of index
     def setUp(self):
-        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source())
+        self.jm = models.Journal(**JournalFixtureFactory.make_journal_source(include_obsolete_fields=True))
 
     def tearDown(self):
         pass
@@ -73,9 +73,9 @@ class TestAPIDataObj(DoajTestCase):
         assert do.bibjson.oa_start.volume == self.jm.bibjson().oa_start.get('volume')
         assert do.bibjson.oa_start.number == self.jm.bibjson().oa_start.get('number')
 
-        assert do.bibjson.oa_end.year == self.jm.bibjson().oa_end.get('year')
-        assert do.bibjson.oa_end.volume == self.jm.bibjson().oa_end.get('volume')
-        assert do.bibjson.oa_end.number == self.jm.bibjson().oa_end.get('number')
+        assert do.bibjson.oa_end.year == int(self.jm.bibjson().oa_end.get('year'))
+        assert do.bibjson.oa_end.volume == int(self.jm.bibjson().oa_end.get('volume'))
+        assert do.bibjson.oa_end.number == int(self.jm.bibjson().oa_end.get('number'))
 
         assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
         assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']
