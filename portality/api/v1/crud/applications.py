@@ -111,7 +111,7 @@ class ApplicationsCrudApi(CrudApi):
         new_ap.set_owner(ap.owner)
         new_ap.set_suggester(ap.suggester['name'], ap.suggester['email'])
         new_ap.suggested_on = ap.suggested_on
-        new_ap.bibjson().set_subjects(ap.bibjson().subjects)
+        new_ap.bibjson().set_subjects(ap.bibjson().subjects())
 
         # reset the status on the application
         new_ap.set_application_status('pending')
