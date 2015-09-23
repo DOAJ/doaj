@@ -87,7 +87,7 @@ JOURNAL_SOURCE = {
         ],
 
         "oa_start": {
-            "year": "1980",
+            "year": 1980,
         },
         "apc_url" : "http://apc.com",
         "apc": {
@@ -169,7 +169,8 @@ JOURNAL_OBSOLETE_OA_START = {
     "bibjson": {
         "oa_start": {
             "volume": "1",
-            "number": "1"
+            "number": "1",
+            "year": "1980",  # some journals do have those as strings in live
         }
     }
 }
