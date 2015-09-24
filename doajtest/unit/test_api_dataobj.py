@@ -1,10 +1,9 @@
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataObj, merge_outside_construct
+from portality.lib import dataobj
 from portality.api.v1.data_objects import OutgoingJournal
 from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
-import time
 
 class TestAPIDataObj(DoajTestCase):
 
@@ -17,33 +16,27 @@ class TestAPIDataObj(DoajTestCase):
 
     def test_01_create_empty(self):
         """Create an empty dataobject, mostly to check it doesn't die a recursive death"""
-        do = DataObj()
+        do = dataobj.DataObj()
         assert do.data == {}
         assert do._struct is None
         with self.assertRaises(AttributeError):
             do.nonexistent_attribute
 
-    def test_02_create_from_dict(self):
-        expected_struct = JournalFixtureFactory.make_journal_apido_struct()
-        do = DataObj(raw=self.jm.data, struct=expected_struct, construct_silent_prune=True, expose_data=True)
-        assert do._struct == expected_struct
-        self.check_do(do, expected_struct)
-
-    def test_03_create_from_model(self):
+    def test_02_create_from_model(self):
         expected_struct = JournalFixtureFactory.make_journal_apido_struct()
         do = OutgoingJournal.from_model(self.jm)
         assert do._struct == expected_struct
         self.check_do(do, expected_struct)
 
     def check_do(self, do, expected_struct):
-        assert isinstance(do.admin, DataObj), 'Declared as "object" but not a Data Object?'
+        assert isinstance(do.admin, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.id == self.jm.id
         assert do.created_date == self.jm.created_date
         assert do.last_updated == self.jm.last_updated
 
         assert isinstance(do.admin.contact, list), 'Declared as "list" but is not a list?'
         assert len(do.admin.contact) == 1
-        assert isinstance(do.admin.contact[0], DataObj), 'Declared as "object" but not a Data Object?'
+        assert isinstance(do.admin.contact[0], dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.admin.contact[0].name == self.jm.get_latest_contact_name()
         assert do.admin.contact[0].email == self.jm.get_latest_contact_email()
         assert do.admin.in_doaj is self.jm.is_in_doaj(), 'actual val {0} is of type {1}'.format(do.admin.in_doaj, type(do.admin.in_doaj))
@@ -51,7 +44,7 @@ class TestAPIDataObj(DoajTestCase):
         assert do.admin.seal is self.jm.has_seal()
         assert do.admin.owner == self.jm.owner
 
-        assert isinstance(do.bibjson, DataObj), 'Declared as "object" but not a Data Object?'
+        assert isinstance(do.bibjson, dataobj.DataObj), 'Declared as "object" but not a Data Object?'
         assert do.bibjson.title == self.jm.bibjson().title
         assert do.bibjson.alternative_title == self.jm.bibjson().alternative_title
         assert do.bibjson.country == self.jm.bibjson().country
@@ -64,19 +57,21 @@ class TestAPIDataObj(DoajTestCase):
         assert do.bibjson.publication_time == self.jm.bibjson().publication_time
 
         for o in expected_struct['structs']['bibjson']['objects']:
-            assert isinstance(getattr(do.bibjson, o), DataObj), '{0} declared as "object" but not a Data Object?'.format(o)
+            assert isinstance(getattr(do.bibjson, o), dataobj.DataObj), '{0} declared as "object" but not a Data Object?'.format(o)
 
         for l in expected_struct['structs']['bibjson']['lists']:
             assert isinstance(getattr(do.bibjson, l), list), '{0} declared as "list" but not a list?'.format(l)
 
-        assert do.bibjson.oa_start.year == self.jm.bibjson().oa_start.get('year')
-        assert do.bibjson.oa_start.volume == self.jm.bibjson().oa_start.get('volume')
-        assert do.bibjson.oa_start.number == self.jm.bibjson().oa_start.get('number')
+        assert do.bibjson.oa_start.year == int(self.jm.bibjson().oa_start.get('year'))
+        assert do.bibjson.oa_start.volume == int(self.jm.bibjson().oa_start.get('volume'))
+        assert do.bibjson.oa_start.number == int(self.jm.bibjson().oa_start.get('number'))
 
         assert do.bibjson.oa_end.year == int(self.jm.bibjson().oa_end.get('year'))
         assert do.bibjson.oa_end.volume == int(self.jm.bibjson().oa_end.get('volume'))
         assert do.bibjson.oa_end.number == int(self.jm.bibjson().oa_end.get('number'))
 
+        print do.bibjson.apc.currency
+        print self.jm.bibjson().bibjson
         assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
         assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']
         assert do.bibjson.submission_charges.currency == self.jm.bibjson().submission_charges['currency']
@@ -87,7 +82,7 @@ class TestAPIDataObj(DoajTestCase):
         # TODO the below line passes but journal struct needs enhancing here
         # assert do.bibjson.archiving_policy.policy == [u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]", u"['LOCKSS', 'CLOCKSS', ['A national library', 'Trinity'], ['Other', 'A safe place']]"], do.bibjson.archiving_policy.policy
 
-    def test_04_merge_outside_construct(self):
+    def test_03_merge_outside_construct(self):
         struct = {
             "fields" : {
                 "one" : {"coerce" : "unicode"}
@@ -136,9 +131,9 @@ class TestAPIDataObj(DoajTestCase):
             "six" : {"an" : "object"}
         }
 
-        merged = merge_outside_construct(struct, target, source)
+        merged = dataobj.merge_outside_construct(struct, target, source)
 
-        do = DataObj(raw=merged, expose_data=True)
+        do = dataobj.DataObj(raw=merged, expose_data=True)
         assert do.one == "first"
         assert do.two == ["second1", "second2"]
         assert do.three.alpha == "a"

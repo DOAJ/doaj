@@ -37,6 +37,10 @@ class ArticleFixtureFactory(object):
     def make_article_source():
         return deepcopy(ARTICLE_SOURCE)
 
+    @staticmethod
+    def make_article_apido_struct():
+        return deepcopy(ARTICLE_STRUCT)
+
 ARTICLE_SOURCE = {
     "id" : "abcdefghijk_article",
     "admin" : {
@@ -108,4 +112,76 @@ ARTICLE_SOURCE = {
         ],
     },
     "created_date": "2000-01-01T00:00:00Z"
+}
+
+ARTICLE_STRUCT = {
+    "fields": {
+        "id": {"coerce": "unicode"},                # Note that we'll leave these in for ease of use by the
+        "created_date": {"coerce": "utcdatetime"},  # caller, but we'll need to ignore them on the conversion
+        "last_updated": {"coerce": "utcdatetime"}   # to the real object
+    },
+    "objects": ["admin", "bibjson"],
+
+    "structs": {
+
+        "admin": {
+            "fields": {
+                "in_doaj": {"coerce": "bool", "get__default": False},
+                "publisher_record_id": {"coerce": "unicode"},
+                "upload_id": {"coerce": "unicode"}
+            }
+        },
+
+        "bibjson": {
+            "fields": {
+                "title": {"coerce": "unicode"},
+                "year": {"coerce": "unicode"},
+                "month": {"coerce": "unicode"},
+                "start_page": {"coerce": "unicode"},
+                "end_page": {"coerce": "unicode"},
+                "abstract": {"coerce": "unicode"}
+            },
+            "lists": {
+                "identifier": {"contains": "object"},
+                "link": {"contains": "object"},
+                "author": {"contains": "object"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
+            },
+            "objects": [
+                "journal",
+            ],
+            "structs": {
+
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"}
+                    }
+                },
+
+                "link": {
+                    "fields": {
+                        "type": {"coerce": "link_type"},
+                        "url": {"coerce": "url"},
+                        "content_type": {"coerce": "link_content_type"}
+                    }
+                },
+
+                "author": {
+                    "fields": {
+                        "name": {"coerce": "unicode"},
+                        "email": {"coerce": "unicode"},
+                        "affiliation": {"coerce": "unicode"}
+                    }
+                },
+
+                "journal": {
+                    "fields": {
+                        "volume": {"coerce": "unicode"},
+                        "number": {"coerce": "unicode"}
+                    },
+                }
+            }
+        }
+    }
 }

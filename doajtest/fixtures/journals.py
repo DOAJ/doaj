@@ -7,8 +7,8 @@ class JournalFixtureFactory(object):
     def make_journal_source(in_doaj=False, include_obsolete_fields=False):
         template = deepcopy(JOURNAL_SOURCE)
         if include_obsolete_fields:
-            template.update(JOURNAL_OBSOLETE_OA_START)
-            template.update(JOURNAL_OA_END)
+            template['bibjson']['oa_start'] = JOURNAL_OBSOLETE_OA_START
+            template['bibjson']['oa_end'] = JOURNAL_OBSOLETE_OA_END
         template['admin']['in_doaj'] = in_doaj
         return template
 
@@ -166,23 +166,15 @@ JOURNAL_SOURCE = {
 }
 
 JOURNAL_OBSOLETE_OA_START = {
-    "bibjson": {
-        "oa_start": {
-            "volume": "1",
-            "number": "1",
-            "year": "1980",  # some journals do have those as strings in live
-        }
-    }
+    "volume": "1",
+    "number": "1",
+    "year": "1980",  # some journals do have those as strings in live
 }
 
-JOURNAL_OA_END = {
-    "bibjson": {
-        "oa_end": {
-            "volume": "10",
-            "number": "10",
-            "year": "1985",
-        }
-    }
+JOURNAL_OBSOLETE_OA_END = {  # the entire oa_end is obsolete
+    "volume": "10",
+    "number": "10",
+    "year": "1985",
 }
 
 
