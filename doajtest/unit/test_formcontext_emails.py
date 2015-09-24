@@ -53,6 +53,58 @@ email_log_regex = 'template.*%s.*to:\[\'%s.*subject:.*%s'
 email_count_string = 'Email template'
 
 
+class TestPublicApplicationEmails(DoajTestCase):
+    def setUp(self):
+        super(TestPublicApplicationEmails, self).setUp()
+
+        # These tests produce a fair bit of output to stdout - disable the log handler which prints those
+        self.stdout_handler = app.logger.handlers[0]
+        app.logger.removeHandler(self.stdout_handler)
+
+        # Register a new log handler so we can inspect the info logs
+        self.info_stream = StringIO()
+        self.read_info = logging.StreamHandler(self.info_stream)
+        self.read_info.setLevel(logging.INFO)
+        app.logger.addHandler(self.read_info)
+
+    def tearDown(self):
+        super(TestPublicApplicationEmails, self).tearDown()
+
+        # Blank the info_stream and remove the error handler from the app
+        self.info_stream.truncate(0)
+        app.logger.removeHandler(self.read_info)
+
+        # Re-enable the old log handler
+        app.logger.addHandler(self.stdout_handler)
+
+    def test_01_public_application_email(self):
+        application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
+
+        # Construct an application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role=None,
+            source=application
+        )
+        assert isinstance(fc, formcontext.PublicApplication)
+
+        # Emails are sent during the finalise stage, and requires the app context to build URLs
+        with app.test_request_context():
+            fc.finalise()
+        # Use the captured info stream to get email send logs
+        info_stream_contents = self.info_stream.getvalue()
+
+        # We expect one email sent:
+        #   * to the applicant, informing them the application was received
+        public_template = re.escape('publisher_application_received.txt')
+        public_to = re.escape('suggester@email.com')
+        public_subject = "Directory of Open Access Journals - your application to DOAJ has been received"
+        public_email_matched = re.search(email_log_regex % (public_template, public_to, public_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(public_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+
+
 class TestApplicationReviewEmails(DoajTestCase):
 
     def setUp(self):
