@@ -51,7 +51,6 @@ class TestTick(DoajTestCase):
         super(TestTick, self).tearDown()
 
     def test_01_tick(self):
-        print self.j_correct.json
 
         assert self.j_correct.is_ticked()
         assert not self.j_not_in_doaj_excplicit.is_ticked()

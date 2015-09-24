@@ -49,8 +49,6 @@ class TestSnapshot(DoajTestCase):
         time.sleep(2)
         
         hist = models.ArticleHistory.get_history_for(a.id)
-        print hist
-        print len(hist)
         assert len(hist) == 1
         assert hist[0].data.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
 
