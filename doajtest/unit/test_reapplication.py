@@ -564,7 +564,6 @@ class TestReApplication(DoajTestCase):
         form = forms.PublisherReApplicationForm(data=forminfo)
         form.validate()
 
-        print form.errors
         error_fields = form.errors.keys()
         assert len(error_fields) == 4
         assert "waiver_policy" in error_fields

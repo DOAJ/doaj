@@ -337,7 +337,6 @@ class OpenURLRequest(object):
             try:
                 parsed_date = parse_date(val)
                 val = parsed_date.year
-                print val
             except ValueError:
                 val = None
         self._date = val

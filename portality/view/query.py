@@ -152,7 +152,6 @@ def query(path='Pages'):
         if associate_filter:
             terms.update(_associate_filter())
 
-        print terms
         resp = make_response( json.dumps(klass().query(q=qs, terms=terms, should_terms=shoulds)) )
 
     resp.mimetype = "application/json"
