@@ -14,7 +14,7 @@ class TestCrudReturnValues(DoajTestCase):
         account = models.Account.make_account(username="test",
                                               name="Tester",
                                               email="test@test.com",
-                                              roles=["publisher"],
+                                              roles=["publisher", "api"],
                                               associated_journal_ids=['abcdefghijk_journal'])
         account.set_password('password123')
         self.api_key = account.api_key
