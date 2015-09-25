@@ -22,12 +22,6 @@ class Account(DomainObject, UserMixin):
 
         for role in roles:
             a.add_role(role)
-        # If the api role was not added explicitly, add it now
-        if "api" not in roles:
-            a.add_role("api")
-
-        # generate a new API key for this user
-        a.generate_api_key()
 
         for jid in associated_journal_ids:
             a.add_journal(jid)
@@ -130,6 +124,9 @@ class Account(DomainObject, UserMixin):
             self.data["role"] = []
         if role not in self.data["role"]:
             self.data["role"].append(role)
+        # If we're adding the API role, ensure we also have a key to validate
+        if role == 'api' and not self.data.get('api_key', None):
+            self.generate_api_key()
 
     def remove_role(self, role):
         if "role" not in self.data:
@@ -157,7 +154,9 @@ class Account(DomainObject, UserMixin):
             return None
 
     def generate_api_key(self):
-        self.data['api_key'] = uuid.uuid4().hex
+        k = uuid.uuid4().hex
+        self.data['api_key'] = k
+        return k
 
     @classmethod
     def pull_by_api_key(cls, key):
