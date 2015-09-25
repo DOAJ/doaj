@@ -24,7 +24,7 @@ if __name__ == "__main__":
     for data in j:
         a = models.Article(**data)
         a.bibjson().remove_subjects()
-        article.XWalk().add_journal_info(a)
+        a.add_journal_metadata()
         a.save()
 
 

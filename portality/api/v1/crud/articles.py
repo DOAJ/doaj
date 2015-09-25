@@ -32,6 +32,10 @@ class ArticlesCrudApi(CrudApi):
         am.set_id()
         am.set_created()
 
+        # not allowed to set subjects
+        am.bibjson().remove_subjects()
+        am.bibjson().journal_title
+
         # finally save the new article, and return to the caller
         am.save()
         return am
@@ -86,6 +90,7 @@ class ArticlesCrudApi(CrudApi):
         # are copied over
         new_ar.set_id(id)
         new_ar.set_created(ar.created_date)
+        new_ar.bibjson().set_subjects(ar.bibjson().subjects())
 
         # finally save the new article, and return to the caller
         new_ar.save()

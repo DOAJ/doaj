@@ -35,6 +35,7 @@ BASE_ARTICLE_STRUCT = {
                 "link": {"contains": "object"},
                 "author": {"contains": "object"},
                 "keywords": {"coerce": "unicode", "contains": "field"},
+                "subject": {"contains": "object"},
             },
             "objects": [
                 "journal",
@@ -67,9 +68,36 @@ BASE_ARTICLE_STRUCT = {
                 "journal": {
                     "fields": {
                         "volume": {"coerce": "unicode"},
-                        "number": {"coerce": "unicode"}
+                        "number": {"coerce": "unicode"},
+                        "publisher": {"coerce": "unicode"},
+                        "title": {"coerce": "unicode"},
+                        "country": {"coerce": "unicode"}
                     },
-                }
+                    "lists": {
+                        "license": {"contains": "object"},
+                        "language": {"coerce": "unicode", "contains": "field"}
+                    },
+                    "structs": {
+
+                        "license": {
+                            "fields": {
+                                "title": {"coerce": "license"},
+                                "type": {"coerce": "license"},
+                                "url": {"coerce": "unicode"},
+                                "version": {"coerce": "unicode"},
+                                "open_access": {"coerce": "bool"},
+                            }
+                        }
+                    }
+                },
+
+                "subject": {
+                    "fields": {
+                        "scheme": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "code": {"coerce": "unicode"}
+                    }
+                },
             }
         }
     }
@@ -98,56 +126,6 @@ INCOMING_ARTICLE_REQUIRED = {
                 "author": {
                     "required": ["name"]
                 },
-            }
-        }
-    }
-}
-
-OUTGOING_ARTICLE_EXTRAS = {
-    "objects": ["bibjson"],
-
-    "structs": {
-
-        "bibjson": {
-            "lists": {
-                "subject": {"contains": "object"}
-            },
-            "structs": {
-                "subject": {
-                    "fields": {
-                        "scheme": {"coerce": "unicode"},
-                        "term": {"coerce": "unicode"},
-                        "code": {"coerce": "unicode"}
-                    }
-                },
-                "link": {
-                    "fields": {
-                        "type": {"coerce": "link_type_optional"}
-                    }
-                },
-                "journal": {
-                    "fields": {
-                        "publisher": {"coerce": "unicode"},
-                        "title": {"coerce": "unicode"},
-                        "country": {"coerce": "unicode"}
-                    },
-                    "lists": {
-                        "license": {"contains": "object"},
-                        "language": {"coerce": "unicode", "contains": "field"}
-                    },
-                    "structs": {
-
-                        "license": {
-                            "fields": {
-                                "title": {"coerce": "license"},
-                                "type": {"coerce": "license"},
-                                "url": {"coerce": "unicode"},
-                                "version": {"coerce": "unicode"},
-                                "open_access": {"coerce": "bool"},
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -221,7 +199,6 @@ class IncomingArticleDO(dataobj.DataObj):
 class OutgoingArticleDO(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
-        self._add_struct(OUTGOING_ARTICLE_EXTRAS)
         super(OutgoingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE)
 
     @classmethod
