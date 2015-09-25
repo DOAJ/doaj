@@ -77,6 +77,9 @@ class TestCrudArticle(DoajTestCase):
         assert a.created_date != "2000-01-01T00:00:00Z"
         assert a.last_updated != "2000-01-01T00:00:00Z"
 
+        # TODO add test that journal info is created as allowed (number, volume, start_page, end_page)
+        # but not overwritten by the user where not allowed - journal title, country, license, etc.
+
         time.sleep(1)
 
         am = models.Article.pull(a.id)
@@ -179,6 +182,7 @@ class TestCrudArticle(DoajTestCase):
         # check that we got back the object we expected
         assert isinstance(a, OutgoingArticleDO)
         assert a.id == ap.id
+        # TODO write test to check article's journal portion is correct
 
     def test_07_retrieve_article_fail(self):
         # set up all the bits we need
@@ -254,6 +258,8 @@ class TestCrudArticle(DoajTestCase):
         assert updated.created_date == created.created_date
         assert updated.last_updated != created.last_updated
         assert updated.data['admin']['upload_id'] == created.data['admin']['upload_id']
+        # TODO add test that journal info is updated where allowed (number, volume, start_page, end_page)
+        # but not updated where not allowed - journal title, country, license, etc.
 
     def test_09_update_article_fail(self):
         # set up all the bits we need

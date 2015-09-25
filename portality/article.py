@@ -14,9 +14,6 @@ import json
 
 class XWalk(object):
     @staticmethod
-
-
-    @staticmethod
     def is_legitimate_owner(article, owner):
         # get all the issns for the article
         b = article.bibjson()

@@ -26,8 +26,6 @@ BASE_ARTICLE_STRUCT = {
                 "title": {"coerce": "unicode"},
                 "year": {"coerce": "unicode"},
                 "month": {"coerce": "unicode"},
-                "start_page": {"coerce": "unicode"},
-                "end_page": {"coerce": "unicode"},
                 "abstract": {"coerce": "unicode"}
             },
             "lists": {
@@ -67,6 +65,8 @@ BASE_ARTICLE_STRUCT = {
 
                 "journal": {
                     "fields": {
+                        "start_page": {"coerce": "unicode"},
+                        "end_page": {"coerce": "unicode"},
                         "volume": {"coerce": "unicode"},
                         "number": {"coerce": "unicode"},
                         "publisher": {"coerce": "unicode"},

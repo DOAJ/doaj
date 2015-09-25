@@ -8,6 +8,23 @@ from portality.article import XWalk
 class ArticlesCrudApi(CrudApi):
 
     @classmethod
+    def __handle_journal_info(cls, am):
+        # handle journal info - first save fields users ARE allowed to update into temporary vars
+        number = am.bibjson().number
+        volume = am.bibjson().volume
+        start_page = am.bibjson().start_page
+        end_page = am.bibjson().end_page
+        am.bibjson().remove_journal_metadata()  # then destroy all journal metadata
+        if not am.add_journal_metadata():  # overwrite journal part of metadata and in_doaj setting
+            raise Api400Error("No journal found to attach article to. Each article in DOAJ must belong to a journal and the (E)ISSNs provided in the bibjson.identifiers section of this article record do not match any DOAJ journal.")
+        # restore the user's data
+        am.bibjson().number = number
+        am.bibjson().volume = volume
+        am.bibjson().start_page = start_page
+        am.bibjson().end_page = end_page
+        return am
+
+    @classmethod
     def create(cls, data, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -34,7 +51,7 @@ class ArticlesCrudApi(CrudApi):
 
         # not allowed to set subjects
         am.bibjson().remove_subjects()
-        am.bibjson().journal_title
+        am = cls.__handle_journal_info(am)
 
         # finally save the new article, and return to the caller
         am.save()
@@ -91,6 +108,7 @@ class ArticlesCrudApi(CrudApi):
         new_ar.set_id(id)
         new_ar.set_created(ar.created_date)
         new_ar.bibjson().set_subjects(ar.bibjson().subjects())
+        new_ar = cls.__handle_journal_info(new_ar)
 
         # finally save the new article, and return to the caller
         new_ar.save()
