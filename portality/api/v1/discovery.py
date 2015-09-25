@@ -290,7 +290,8 @@ class ApplicationQuery(object):
                     },
                     "query" : {
                         "query_string" : {
-                            "query" : self.qs
+                            "query" : self.qs,
+                            "default_operator": "AND"
                         }
                     }
                 }
