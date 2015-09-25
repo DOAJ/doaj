@@ -41,6 +41,9 @@ if __name__ == "__main__":
     email = args.email
     password = None
     roles = [r.strip() for r in args.role.split(",")] if args.role is not None else []
+
+    if 'api' not in roles:
+        print 'WARNING: \'api\' role omitted. New users are generally given an API Key'
     
     if args.password:
         password = args.password

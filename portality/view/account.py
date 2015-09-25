@@ -13,6 +13,7 @@ from portality import util, app_email
 
 blueprint = Blueprint('account', __name__)
 
+
 @blueprint.route('/')
 @login_required
 @ssl_required
@@ -88,6 +89,7 @@ def get_redirect_target(form=None):
             return target
     return url_for('doaj.home')
 
+
 class RedirectForm(Form):
     next = HiddenField()
 
@@ -102,9 +104,11 @@ class RedirectForm(Form):
         target = get_redirect_target()
         return redirect(target or url_for(endpoint, **values))
 
+
 class LoginForm(RedirectForm):
     username = StringField('Username', [validators.DataRequired()])
     password = PasswordField('Password', [validators.DataRequired()])
+
 
 @blueprint.route('/login', methods=['GET', 'POST'])
 @ssl_required
@@ -128,6 +132,7 @@ def login():
     if request.method == 'POST' and not form.validate():
         flash('Invalid credentials', 'error')
     return render_template('account/login.html', form=form)
+
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
@@ -183,6 +188,7 @@ def forgot():
 
     return render_template('account/forgot.html')
 
+
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
 @write_required
@@ -212,6 +218,7 @@ def reset(reset_token):
         login_user(account, remember=True)
         return redirect(url_for('doaj.home'))
 
+
 @blueprint.route('/logout')
 @ssl_required
 def logout():
@@ -224,6 +231,7 @@ def existscheck(form, field):
     test = models.Account.pull(form.w.data)
     if test:
         raise ValidationError('Taken! Please try another.')
+
 
 class RegisterForm(Form):
     w = StringField('Username', [validators.Length(min=3, max=25), existscheck])
@@ -238,6 +246,7 @@ class RegisterForm(Form):
     c = PasswordField('Repeat Password')
     roles = StringField('Roles')
 
+
 @blueprint.route('/register', methods=['GET', 'POST'])
 @login_required
 @ssl_required
@@ -250,6 +259,7 @@ def register():
         account = models.Account.make_account(
             username=form.w.data,
             email=form.n.data,
+            roles=[r.strip() for r in form.roles.data.split(',')]
         )
         account.set_password(form.s.data)
         account.save()
