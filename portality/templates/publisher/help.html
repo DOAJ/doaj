@@ -7,18 +7,20 @@
 
 {% if app.config.get("REAPPLICATION_ACTIVE", False) %}
     <h3 style="color: red">Reapplications</h3>
-    <p>If you have <b>10 or fewer</b> journals in DOAJ, you will need to log into your Publisher's Area and process your
-    reapplications online. We have created two documents that you must read before you start:
+    <p>If you have <b>10 or fewer</b> journals in DOAJ, you will need to log into your Publisher's Area and process 
+    your reapplications online. We have created two documents that you must read before you start:
         <ol>
-            <li>Here are some important notes on how to: fill in your reapplications online; submit them once you are finished; and come back to them if you need to make changes.</li>
+            <li><a href="http://bit.ly/1LE7RJP">Some important notes</a> on how to: fill in your reapplications online; 
+            submit them once you are finished; and come back to them if you need to make changes.</li>
             <li>We created a
             <a href="https://docs.google.com/spreadsheet/ccc?key=0AkfPCpIPjZlmdG9qajZCaGlLV2wtVmQwa2ZZYUxfVlE&usp=sharing">
-            version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
+            version of the Reapplication form as a spreadsheet</a> with some important help notes. You can't edit this 
+            online but you can download a copy to your desktop.</li>
         </ol>
     </p>
 
-    <p>If you have <b>more than 10 journals</b>, you will need to log into your Publishers Area and download a CSV file
-    that we have created for you. We have created two documents that you must read before you start:
+    <p>If you have <b>more than 10 journals</b>, you will need to log into your Publishers Area and download the CSV 
+    file that we have created for you. We have created two documents that you must read before you start:
         <ol>
             <li>Here are some important
             <a href="https://docs.google.com/document/d/1nh5fCgDdM6rP6ubwbvCOsUtzn-JJhUnDSF-E7sFnJpE/edit?usp=sharing">notes
@@ -38,16 +40,18 @@ filling in the form.</p>
 
 <h3>Creating DOAJ XML</h3>
 <p>For help with creating DOAJ XML and details on XML tags, read the 
-<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a> 
-on our Features pages.</p>
+<a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a>
+on our Features pages and the <a href="{{ url_for('doaj.publishers', _anchor='upload') }}">Uploading content</a> 
+section on our 'For Publishers' page.</p>
 
 <h3>Problems with XML files</h3>
-<p>For problems with XML file uploads that have failed or have errors, read the <a href="{{ url_for('doaj.publishers') }}">
-Failed XML Uploads section</a> on our 'For Publishers' page.
+<p>For problems with XML file uploads, read the <a href="{{ url_for('doaj.publishers', _anchor='failed') }}">
+What to do if your XML upload fails</a> and <a href="{{ url_for('doaj.publishers', _anchor='trouble') }}">
+Troubleshooting your XML upload</a> sections on our 'For Publishers' page.
 
 <h3>Correcting articles on DOAJ</h3>
-<p>If you need to correct an article on DOAJ, upload it to us again. Read <a href="{{ url_for('doaj.publishers') }}">
-How Do I Correct An Error in Article Metadata?</a> on our 'For Publishers' page for more details.
+<p>If you need to correct an article on DOAJ, upload it to us again. Read <a href="{{ url_for('doaj.publishers', _anchor='correct') }}">
+How to correct an error in Article Metadata?</a> on our 'For Publishers' page.
 
 <h3>Deleting articles from DOAJ</h3>
 <p>If an article or a range of articles needs to be deleted, please <a href="{{ url_for('doaj.contact') }}">Contact Us</a>. 

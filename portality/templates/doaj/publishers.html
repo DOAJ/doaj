@@ -362,7 +362,7 @@ will cause the upload to fail. If you need to update a journal record please con
 <p>Every article you upload to DOAJ must have a unique URL. If you use the same URL for all articles, the upload will
 fail. Each article uploaded will overwrite the last so you will end up with only the last article online.</p>
 
-<p>There are two ways to get your metadata in to DOAJ.</p>
+<p>There are three ways to get your metadata in to DOAJ.</p>
 <ul>
 <li><b>Manually enter the metadata, article by article</b>, using the 'Enter Article Metadata' tab. This method is 
 ideal for uploading the occasional article or for correcting an existing article. It will suit journals that do not publish 
@@ -376,7 +376,7 @@ old version.</li>
 
 <li><b>Upload DOAJ XML to us</b> via the 'Upload Article XML' tab. You can either upload the file manually by 
 selecting it from a location on your computer OR you can enter the URL where the DOAJ site should go to look for the 
-file. The location can be either http or ftp.<br>
+file. The location can be http or ftp.<br>
 Before you upload the file to us, <a href="http://www.freeformatter.com/xml-formatter.html">format it</a> and 
 <a href="http://www.freeformatter.com/xml-validator-xsd.html">validate it</a>. 
 (<a href="https://doaj.org/static/doaj/doajArticles.xsd">The xsd file for DOAJ is here</a>.) These two steps identify most 
@@ -387,7 +387,14 @@ All XML files are checked for errors and, if a problem is found, an error messag
 'History of uploads' section. Articles are processed every half hour so come back to your account after 30 minutes. As soon as 
 the XML has processed successfully, the articles are published to the site. The Table of Contents for a journal updates 
 overnight.</li>
+
+<li><b><i>Coming later this year!</i></b> Use the DOAJ  publisher API for publishers and others who are authorised to 
+submit applications automatically or modify article metadata directly. 
+<a href="https://groups.google.com/forum/#!forum/doaj-api-announcements">Sign up to the announcement group</a> or 
+follow us on <a href="#news">our news channels</a> to find out more about our full API offering, and release dates.</li>
 </ul>
+</p>
+
 <p>For help with creating DOAJ XML and details on XML tags, read the
 <a href="{{ url_for('doaj.features', _anchor='xml_upload') }}">File Upload Info section</a> on our Features pages.</p>
 <br><br>
@@ -549,6 +556,10 @@ something gone wrong?</a></li>
 <li><a href="#sealedJournals">Which journals have the DOAJ Seal?</a></li>
 <li><a href="#orange">What does the orange circle symbol next to some journals mean?</a></li>
 <li><a href="#thetick">What does the green tick next to some journals mean?</a></li>
+</ul>
+
+<ul>
+  <li><a href="#api">Does DOAJ have an API?</a></li>
 </ul>
 
 <ul>
@@ -723,6 +734,29 @@ of compliance to best practices and publishing standards. Journals that do not h
 reapplying under the new criteria.</p>
 <a href="#top">Back to top</a>
 <br><br>
+
+<h3><b><a name="api"></a>Does DOAJ have an API?</b></h3>
+<p>Yes! We will be launching a full API suite later in 2015. A <a href="{{ url_for('api_v1.docs')  }}">beta version of 
+our search API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
+
+<p>We also have 3 groups that you might like to join for API announcements or discussion:
+
+<ul>
+<li><a href="https://groups.google.com/forum/#!forum/doaj-api-announcements">an announcement-only group</a> (e.g. we 
+release an improved API version or we are retiring a version)</li>
+<li><a href="https://groups.google.com/forum/#!forum/doaj-public-api">a public discussion group</a> for the public api,
+so people can benefit from a public archive</li>
+<li><a href="https://groups.google.com/forum/#!forum/doaj-private-api">a private discussion group</a> for the 
+publishers api, for publishers and others who are authorised to submit applications automatically or modify article 
+metadata directly</li>
+</ul>
+</p>
+
+<p>Sign up to the announcement group or follow us on <a href="#news">our news channels</a> to find out more about our 
+full API offering, and release dates.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 
 <h3><b><a name="reapplication"></a>How long do I have to submit my Reapplication(s)?</b></h3>
 <p>The deadline for submissions for Reapplications in 31st December 2015.</p>
