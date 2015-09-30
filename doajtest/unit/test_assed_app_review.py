@@ -291,10 +291,10 @@ del APPLICATION_FORM["editor_group"]
 # Main test class
 ######################################################
 
-class TestEditorAppReview(DoajTestCase):
+class TestAssedAppReview(DoajTestCase):
 
     def setUp(self):
-        super(TestEditorAppReview, self).setUp()
+        super(TestAssedAppReview, self).setUp()
 
         self.editor_group_pull = models.EditorGroup.pull_by_key
         models.EditorGroup.pull_by_key = editor_group_pull
@@ -306,7 +306,7 @@ class TestEditorAppReview(DoajTestCase):
         lcc.lookup_code = mock_lookup_code
 
     def tearDown(self):
-        super(TestEditorAppReview, self).tearDown()
+        super(TestAssedAppReview, self).tearDown()
 
         models.EditorGroup.pull_by_key = self.editor_group_pull
         lcc.lcc_choices = self.old_lcc_choices
@@ -315,14 +315,14 @@ class TestEditorAppReview(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the editor's reapplication form
+    # Tests on the associate editor's reapplication form
     ###########################################################
 
     def test_01_editor_review_success(self):
         """Give the editor's reapplication form a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="editor", source=models.Suggestion(**APPLICATION_SOURCE))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", source=models.Suggestion(**APPLICATION_SOURCE))
         assert isinstance(fc, formcontext.EditorApplicationReview)
         assert fc.form is not None
         assert fc.source is not None
@@ -345,11 +345,11 @@ class TestEditorAppReview(DoajTestCase):
 
         # now construct it from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="editor",
+            role="associate_editor",
             form_data=MultiDict(APPLICATION_FORM) ,
             source=models.Suggestion(**APPLICATION_SOURCE))
 
-        assert isinstance(fc, formcontext.EditorApplicationReview)
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None
@@ -383,28 +383,28 @@ class TestEditorAppReview(DoajTestCase):
         assert True # gives us a place to drop a break point later if we need it
 
     def test_02_classification_required(self):
-        # Check we can mark an application 'ready' with a subject classification present
+        # Check we can mark an application 'completed' with a subject classification present
         in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         in_progress_application.set_application_status("in progress")
 
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=in_progress_application)
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='associate_editor', source=in_progress_application)
 
         # Make changes to the application status via the form, check it validates
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = "completed"
 
         assert fc.validate()
 
         # Without a subject classification, we should not be able to set the status to 'ready'
         no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         del no_class_application.data['bibjson']['subject']
-        fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=no_class_application)
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='associate_editor', source=no_class_application)
         # Make changes to the application status via the form
         assert fc.source.bibjson().subjects() == []
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = "completed"
 
         assert not fc.validate()
 
         # However, we should be able to set it to a different status rather than 'ready'
-        fc.form.application_status.data = "pending"
+        fc.form.application_status.data = "competed"
 
         assert fc.validate()

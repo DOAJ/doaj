@@ -1,7 +1,6 @@
 
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory
-# from flask.ext.testing import TestCase
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
 import re, time
 from copy import deepcopy
@@ -407,3 +406,30 @@ class TestManEdAppReview(DoajTestCase):
         h = models.JournalHistory.get_history_for("abcdefghijk_journal")
         assert h is not None
         assert len(h) == 2
+
+    def test_03_classification_required(self):
+        # Check we can accept an application with a subject classification present
+        ready_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        ready_application.set_application_status("ready")
+
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=ready_application)
+
+        # Make changes to the application status via the form, check it validates
+        fc.form.application_status.data = "accepted"
+
+        assert fc.validate()
+
+        # Without a subject classification, we should not be able to set the status to 'accepted'
+        no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        del no_class_application.data['bibjson']['subject']
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=no_class_application)
+        # Make changes to the application status via the form
+        assert fc.source.bibjson().subjects() == []
+        fc.form.application_status.data = "accepted"
+
+        assert not fc.validate()
+
+        # However, we should be able to set it to a different status rather than 'accepted'
+        fc.form.application_status.data = "in progress"
+
+        assert fc.validate()
