@@ -4,8 +4,11 @@ from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source(in_doaj=False):
+    def make_journal_source(in_doaj=False, include_obsolete_fields=False):
         template = deepcopy(JOURNAL_SOURCE)
+        if include_obsolete_fields:
+            template['bibjson']['oa_start'] = JOURNAL_OBSOLETE_OA_START
+            template['bibjson']['oa_end'] = JOURNAL_OBSOLETE_OA_END
         template['admin']['in_doaj'] = in_doaj
         return template
 
@@ -162,6 +165,19 @@ JOURNAL_SOURCE = {
     }
 }
 
+JOURNAL_OBSOLETE_OA_START = {
+    "volume": "1",
+    "number": "1",
+    "year": "1980",  # some journals do have those as strings in live
+}
+
+JOURNAL_OBSOLETE_OA_END = {  # the entire oa_end is obsolete
+    "volume": "10",
+    "number": "10",
+    "year": "1985",
+}
+
+
 JOURNAL_SOURCE_WITH_LEGACY_INFO = deepcopy(JOURNAL_SOURCE)
 JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays"] = "Y"
 JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays_url"] = "http://author.pays"
@@ -288,42 +304,125 @@ JOURNAL_APIDO_STRUCT = {
         },
         "bibjson": {
             "fields": {
-                "title": {"coerce": "unicode"},
-                "alternative_title": {"coerce": "unicode"},
-                "country": {"coerce": "unicode"},
-                "publisher": {"coerce": "unicode"},
-                "provider": {"coerce": "unicode"},
-                "institution": {"coerce": "unicode"},
-                "apc_url": {"coerce": "unicode"},
-                "submission_charges_url": {"coerce": "unicode"},
                 "allows_fulltext_indexing": {"coerce": "bool"},
+                "alternative_title": {"coerce": "unicode"},
+                "apc_url": {"coerce": "url"},
+                "country": {"coerce": "country_code"},
+                "institution": {"coerce": "unicode"},
+                "provider": {"coerce": "unicode"},
                 "publication_time": {"coerce": "integer"},
+                "publisher": {"coerce": "unicode"},
+                "submission_charges_url": {"coerce": "url"},
+                "title": {"coerce": "unicode"},
+            },
+            "lists": {
+                "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
+                "format": {"coerce": "format", "contains": "field"},
+                "identifier": {"contains": "object"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
+                "license": {"contains": "object"},
+                "link": {"contains": "object"},
+                "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
+                "subject": {"contains": "object"}
             },
             "objects": [
-                "oa_start",
-                "oa_end",
                 "apc",
-                "submission_charges",
                 "archiving_policy",
-                "editorial_review",
-                "plagiarism_detection",
                 "article_statistics",
                 "author_copyright",
                 "author_publishing_rights",
+                "editorial_review",
+                "oa_start",
+                "oa_end",
+                "plagiarism_detection",
+                "submission_charges",
             ],
-            "lists": {
-                "identifier": {"contains": "object"},
-                "keywords": {"coerce": "unicode", "contains": "field"},
-                "language": {"coerce": "unicode", "contains": "field"},
-                "link": {"contains": "object"},
-                "subject": {"contains": "object"},
-                "deposit_policy": {"coerce": "unicode", "contains": "field"},
-                "persistent_identifier_scheme": {"coerce": "unicode", "contains": "field"},
-                "format": {"coerce": "unicode", "contains": "field"},
-                "license": {"contains": "object"},
-            },
-            "required": [],
+
             "structs": {
+                "apc": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
+                    }
+                },
+
+                "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
+                    "fields": {
+                        "url": {"coerce": "url"},
+                    },
+                    "lists": {
+                        "policy": {"coerce": "unicode", "contains": "object"},
+                    },
+
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
+                            }
+                        }
+                    }
+                },
+
+                "article_statistics": {
+                    "fields": {
+                        "statistics": {"coerce": "bool"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "author_copyright": {
+                    "fields": {
+                        "copyright": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "author_publishing_rights": {
+                    "fields": {
+                        "publishing_rights": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "editorial_review": {
+                    "fields": {
+                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
+                    }
+                },
+
+                "license": {
+                    "fields": {
+                        "title": {"coerce": "license"},
+                        "type": {"coerce": "license"},
+                        "url": {"coerce": "url"},
+                        "version": {"coerce": "unicode"},
+                        "open_access": {"coerce": "bool"},
+                        "BY": {"coerce": "bool"},
+                        "NC": {"coerce": "bool"},
+                        "ND": {"coerce": "bool"},
+                        "SA": {"coerce": "bool"},
+                        "embedded": {"coerce": "bool"},
+                        "embedded_example_url": {"coerce": "url"},
+                    }
+                },
+
+                "link": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
                 "oa_start": {
                     "fields": {
                         "year": {"coerce": "integer"},
@@ -331,6 +430,7 @@ JOURNAL_APIDO_STRUCT = {
                         "number": {"coerce": "integer"},
                     }
                 },
+
                 "oa_end": {
                     "fields": {
                         "year": {"coerce": "integer"},
@@ -338,66 +438,18 @@ JOURNAL_APIDO_STRUCT = {
                         "number": {"coerce": "integer"},
                     }
                 },
-                "apc": {
-                    "fields": {
-                        "currency": {"coerce": "unicode"},
-                        "average_price": {"coerce": "integer"}
-                    }
-                },
-                "submission_charges": {
-                    "fields": {
-                        "currency": {"coerce": "unicode"},
-                        "average_price": {"coerce": "integer"}
-                    }
-                },
-                "archiving_policy": {
-                    "fields": {
-                        "url": {"coerce": "unicode"},
-                    },
-                    "lists": {
-                        "policy": {"coerce": "unicode", "contains": "field"},
-                    }
-                },
-                "editorial_review": {
-                    "fields": {
-                        "process": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                    }
-                },
+
                 "plagiarism_detection": {
                     "fields": {
                         "detection": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
                     }
                 },
-                "article_statistics": {
+
+                "submission_charges": {
                     "fields": {
-                        "detection": {"coerce": "bool"},
-                        "url": {"coerce": "unicode"},
-                    }
-                },
-                "author_copyright": {
-                    "fields": {
-                        "copyright": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                    }
-                },
-                "author_publishing_rights": {
-                    "fields": {
-                        "publishing_rights": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                    }
-                },
-                "identifier": {
-                    "fields": {
-                        "type": {"coerce": "unicode"},
-                        "id": {"coerce": "unicode"},
-                    }
-                },
-                "link": {
-                    "fields": {
-                        "type": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
                     }
                 },
                 "subject": {
@@ -406,22 +458,7 @@ JOURNAL_APIDO_STRUCT = {
                         "term": {"coerce": "unicode"},
                         "code": {"coerce": "unicode"},
                     }
-                },
-                "license": {
-                    "fields": {
-                        "title": {"coerce": "unicode"},
-                        "type": {"coerce": "unicode"},
-                        "url": {"coerce": "unicode"},
-                        "version": {"coerce": "unicode"},
-                        "open_access": {"coerce": "bool"},
-                        "BY": {"coerce": "bool"},
-                        "NC": {"coerce": "bool"},
-                        "ND": {"coerce": "bool"},
-                        "SA": {"coerce": "bool"},
-                        "embedded": {"coerce": "bool"},
-                        "embedded_example_url": {"coerce": "unicode"},
-                    }
-                },
+                }
             }
         }
     }

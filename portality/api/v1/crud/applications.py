@@ -43,6 +43,10 @@ class ApplicationsCrudApi(CrudApi):
         # set the owner to the current account
         ap.set_owner(account.id)
 
+        # they are not allowed to set "subject"
+        bj = ap.bibjson()
+        bj.remove_subjects()
+
         # finally save the new application, and return to the caller
         ap.save()
         return ap
@@ -104,6 +108,10 @@ class ApplicationsCrudApi(CrudApi):
         # are copied over
         new_ap.set_id(id)
         new_ap.set_created(ap.created_date)
+        new_ap.set_owner(ap.owner)
+        new_ap.set_suggester(ap.suggester['name'], ap.suggester['email'])
+        new_ap.suggested_on = ap.suggested_on
+        new_ap.bibjson().set_subjects(ap.bibjson().subjects())
 
         # reset the status on the application
         new_ap.set_application_status('pending')
