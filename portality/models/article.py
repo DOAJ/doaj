@@ -202,6 +202,9 @@ class Article(DomainObject):
         if jbib.country is not None:
             bibjson.journal_country = jbib.country
 
+        if jbib.publisher:
+            bibjson.publisher = jbib.publisher
+
         indoaj = journal.is_in_doaj()
         self.set_in_doaj(indoaj)
         return True

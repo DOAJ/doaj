@@ -56,7 +56,21 @@ class TestCrudArticle(DoajTestCase):
 
     def test_02_create_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.make_article_source()
+        data = ArticleFixtureFactory.make_incoming_api_article()
+        data['bibjson']['journal']['publisher'] = 'Wrong Publisher'
+        data['bibjson']['journal']['title'] = 'Wrong Journal Title'
+        data['bibjson']['journal']['license'] = [
+            {
+                "title" : "BAD LICENSE",
+                "type" : "GOOD DOG",
+                "url" : "Lala land",
+                "version" : "XI",
+                "open_access": False
+            }
+        ]
+        data['bibjson']['journal']['language'] = ["ES", "These aren't even", "lang codes"]
+        data['bibjson']['journal']['country'] = "This better not work"
+
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -65,6 +79,20 @@ class TestCrudArticle(DoajTestCase):
         # add a journal to the account
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
+        # make sure non-overwritable journal metadata matches the article
+        journal.bibjson().title = "The Title"
+        journal.bibjson().publisher = "The Publisher"
+        journal.bibjson().bibjson['license'] = [
+            {
+                "title" : "CC BY",
+                "type" : "CC BY",
+                "url" : "http://license.example.com",
+                "version" : "1.0",
+                "open_access": True,
+            }
+        ]
+        journal.bibjson().country = "US"
+        journal.bibjson().set_language(["EN", "FR"])
         journal.save()
         time.sleep(1)
 
@@ -76,9 +104,23 @@ class TestCrudArticle(DoajTestCase):
         assert a.id != "abcdefghijk_article"
         assert a.created_date != "2000-01-01T00:00:00Z"
         assert a.last_updated != "2000-01-01T00:00:00Z"
-
-        # TODO add test that journal info is created as allowed (number, volume, start_page, end_page)
-        # but not overwritten by the user where not allowed - journal title, country, license, etc.
+        # allowed to overwrite these
+        assert a.bibjson().start_page == '3'
+        assert a.bibjson().end_page == '21'
+        assert a.bibjson().volume == '1'
+        assert a.bibjson().number == '99'
+        # but none of these - these should all be the same as the original article in the index
+        assert a.bibjson().publisher == 'The Publisher', a.bibjson().publisher
+        assert a.bibjson().journal_title == 'The Title'
+        assert a.bibjson().get_journal_license() == {
+            "title" : "CC BY",
+            "type" : "CC BY",
+            "url" : "http://license.example.com",
+            "version" : "1.0",
+            "open_access": True,
+        }
+        assert a.bibjson().journal_language == ["EN", "FR"]
+        assert a.bibjson().journal_country == "US"
 
         time.sleep(1)
 
@@ -182,7 +224,19 @@ class TestCrudArticle(DoajTestCase):
         # check that we got back the object we expected
         assert isinstance(a, OutgoingArticleDO)
         assert a.id == ap.id
-        # TODO write test to check article's journal portion is correct
+        assert a.bibjson.journal.start_page == '3', a.bibjson.journal.start_page
+        assert a.bibjson.journal.end_page == '21'
+        assert a.bibjson.journal.volume == '1'
+        assert a.bibjson.journal.number == '99'
+        assert a.bibjson.journal.publisher == 'The Publisher', a.bibjson().publisher
+        assert a.bibjson.journal.title == 'The Title'
+        assert a.bibjson.journal.license[0].title == "CC BY"
+        assert a.bibjson.journal.license[0].type == "CC BY"
+        assert a.bibjson.journal.license[0].url == "http://license.example.com"
+        assert a.bibjson.journal.license[0].version == "1.0"
+        assert a.bibjson.journal.license[0].open_access == True
+        assert a.bibjson.journal.language == ["EN", "FR"]
+        assert a.bibjson.journal.country == "US"
 
     def test_07_retrieve_article_fail(self):
         # set up all the bits we need
@@ -225,10 +279,24 @@ class TestCrudArticle(DoajTestCase):
         account.set_email("test@test.com")
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_owner(account.id)
+        # make sure non-overwritable journal metadata matches the article
+        journal.bibjson().title = "The Title"
+        journal.bibjson().publisher = "The Publisher"
+        journal.bibjson().bibjson['license'] = [
+            {
+                "title" : "CC BY",
+                "type" : "CC BY",
+                "url" : "http://license.example.com",
+                "version" : "1.0",
+                "open_access": True,
+            }
+        ]
+        journal.bibjson().country = "US"
+        journal.bibjson().set_language(["EN", "FR"])
         journal.save()
         time.sleep(1)
 
-        data = ArticleFixtureFactory.make_article_source()
+        data = ArticleFixtureFactory.make_incoming_api_article()
 
         # call create on the object (which will save it to the index)
         a = ArticlesCrudApi.create(data, account)
@@ -240,8 +308,28 @@ class TestCrudArticle(DoajTestCase):
         created = models.Article.pull(a.id)
 
         # now make an updated version of the object
-        data = ArticleFixtureFactory.make_article_source()
+        data = ArticleFixtureFactory.make_incoming_api_article()
         data["bibjson"]["title"] = "An updated title"
+        # change things we are allowed to change
+        data['bibjson']['journal']['start_page'] = 4
+        data['bibjson']['journal']['end_page'] = 22
+        data['bibjson']['journal']['volume'] = 2
+        data['bibjson']['journal']['number'] = '100'
+
+        # change things we are not allowed to change
+        data['bibjson']['journal']['publisher'] = 'Wrong Publisher'
+        data['bibjson']['journal']['title'] = 'Wrong Journal Title'
+        data['bibjson']['journal']['license'] = [
+            {
+                "title" : "BAD LICENSE",
+                "type" : "GOOD DOG",
+                "url" : "Lala land",
+                "version" : "XI",
+                "open_access": False
+            }
+        ]
+        data['bibjson']['journal']['language'] = ["ES", "These aren't even", "lang codes"]
+        data['bibjson']['journal']['country'] = "This better not work"
 
         # call update on the object
         a2 = ArticlesCrudApi.update(a.id, data, account)
@@ -258,8 +346,23 @@ class TestCrudArticle(DoajTestCase):
         assert updated.created_date == created.created_date
         assert updated.last_updated != created.last_updated
         assert updated.data['admin']['upload_id'] == created.data['admin']['upload_id']
-        # TODO add test that journal info is updated where allowed (number, volume, start_page, end_page)
-        # but not updated where not allowed - journal title, country, license, etc.
+        # allowed to overwrite these
+        assert updated.bibjson().start_page == '4'
+        assert updated.bibjson().end_page == '22'
+        assert updated.bibjson().volume == '2'
+        assert updated.bibjson().number == '100'
+        # but none of these - these should all be the same as the original article in the index
+        assert updated.bibjson().publisher == 'The Publisher', updated.bibjson().publisher
+        assert updated.bibjson().journal_title == 'The Title'
+        assert updated.bibjson().get_journal_license() == {
+            "title" : "CC BY",
+            "type" : "CC BY",
+            "url" : "http://license.example.com",
+            "version" : "1.0",
+            "open_access": True,
+        }
+        assert updated.bibjson().journal_language == ["EN", "FR"]
+        assert updated.bibjson().journal_country == "US"
 
     def test_09_update_article_fail(self):
         # set up all the bits we need

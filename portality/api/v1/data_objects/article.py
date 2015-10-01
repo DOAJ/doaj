@@ -212,7 +212,7 @@ class OutgoingArticleDO(dataobj.DataObj):
         if "end_page" in dat["bibjson"]:
             dat["bibjson"].get("journal", {})["end_page"] = dat["bibjson"]["end_page"]
             del dat["bibjson"]["end_page"]
-        return cls(am.data)
+        return cls(dat)
     
     @classmethod
     def from_model_by_id(cls, id_):

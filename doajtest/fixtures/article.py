@@ -36,6 +36,15 @@ class ArticleFixtureFactory(object):
     @staticmethod
     def make_article_source():
         return deepcopy(ARTICLE_SOURCE)
+    
+    @staticmethod
+    def make_incoming_api_article():
+        template = deepcopy(ARTICLE_SOURCE)
+        template['bibjson']['journal']['start_page'] = template['bibjson']['start_page']
+        template['bibjson']['journal']['end_page'] = template['bibjson']['end_page']
+        del template['bibjson']['start_page']
+        del template['bibjson']['end_page']
+        return deepcopy(template)
 
     @staticmethod
     def make_article_apido_struct():
