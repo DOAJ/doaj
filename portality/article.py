@@ -13,55 +13,6 @@ from datetime import datetime
 import json
 
 class XWalk(object):
-    def add_journal_info(self, article):
-        """
-        this function takes an article and makes sure that it is populated
-        with all the relevant info from its owning parent object
-        """
-        bibjson = article.bibjson()
-        
-        # first, get the ISSNs associated with the record
-        pissns = bibjson.get_identifiers(bibjson.P_ISSN)
-        eissns = bibjson.get_identifiers(bibjson.E_ISSN)
-        allissns = list(set(pissns + eissns))
-        
-        # find a matching journal record from the index
-        journal = None
-        for issn in allissns:
-            journals = models.Journal.find_by_issn(issn)
-            if len(journals) > 0:
-                # there should only ever be one, so take the first one
-                journal = journals[0]
-                break
-        
-        # we were unable to find a journal
-        if journal is None:
-            return False
-        
-        # FIXME: use the journal model API
-        # if we get to here, we have a journal record we want to pull data from
-        jbib = journal.bibjson()
-        
-        for s in jbib.subjects():
-            bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
-        
-        if jbib.title is not None:
-            bibjson.journal_title = jbib.title
-        
-        if jbib.get_license() is not None:
-            lic = jbib.get_license()
-            bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
-        
-        if jbib.language is not None:
-            bibjson.journal_language = jbib.language
-        
-        if jbib.country is not None:
-            bibjson.journal_country = jbib.country
-        
-        indoaj = journal.is_in_doaj()
-        article.set_in_doaj(indoaj)
-        return True
-
     @staticmethod
     def is_legitimate_owner(article, owner):
         # get all the issns for the article
@@ -303,7 +254,7 @@ class FormXWalk(XWalk):
         
         # add the journal info if requested
         if add_journal_info:
-            self.add_journal_info(article)
+            article.add_journal_metadata()
         
         # before finalising, we need to determine whether this is a new article
         # or an update
@@ -538,7 +489,7 @@ class DOAJXWalk(XWalk):
         
         # add the journal info if requested
         if add_journal_info:
-            self.add_journal_info(article)
+            article.add_journal_metadata()
             
         return article
 
