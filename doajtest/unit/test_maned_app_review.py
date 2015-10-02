@@ -1,6 +1,6 @@
 
 from doajtest.helpers import DoajTestCase
-# from flask.ext.testing import TestCase
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
 import re, time
 from copy import deepcopy
@@ -8,7 +8,7 @@ from copy import deepcopy
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
-from portality.core import app
+from portality.app import app
 
 from werkzeug.datastructures import MultiDict
 
@@ -156,6 +156,8 @@ APPLICATION_SOURCE = {
         "editor" : "associate",
     }
 }
+
+JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
 
 ######################################################################
 # Complete, populated, form components
@@ -362,15 +364,23 @@ class TestManEdAppReview(DoajTestCase):
         fc.finalise()
         assert True # gives us a place to drop a break point later if we need it
 
-    """
-    FIXME: this test won't run because we need the flask application context, but you can enable
-    it and step through with a debugger if you want.  That confirms that the test is working, at least,
-    up until the flask context kills it.
-
     def test_02_reapplication(self):
+
+        # There needs to be an existing journal in the index for this test to work
+        extant_j = models.Journal(**JOURNAL_SOURCE)
+        assert extant_j.last_reapplication is None
+        extant_j_created_date = extant_j.created_date
+        extant_j.save()
+        time.sleep(1)
+
+        # We've added one journal, so there'll be one snapshot already
+        assert models.Journal.count() == 1
+        h = models.JournalHistory.get_history_for("abcdefghijk_journal")
+        assert len(h) == 1
+
         # set up an application which is a reapp on an existing journal
         s = models.Suggestion(**APPLICATION_SOURCE)
-        s.set_current_journal("1234567")
+        s.set_current_journal("abcdefghijk_journal")
         s.set_application_status("submitted")
 
         # set up the form which "accepts" this reapplication
@@ -380,18 +390,46 @@ class TestManEdAppReview(DoajTestCase):
 
         # create and finalise the form context
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=fd, source=s)
+
         with app.test_request_context():
             fc.finalise()
 
         # let the index catch up
-        time.sleep(2)
+        time.sleep(1)
 
-        j = models.Journal.pull("1234567")
+        j = models.Journal.pull("abcdefghijk_journal")
         assert j is not None
+        assert j.created_date == extant_j_created_date
         assert j.last_reapplication is not None
+        assert models.Journal.count() == 1
 
-        h = models.JournalHistory.get_history_for("1234567")
+        h = models.JournalHistory.get_history_for("abcdefghijk_journal")
         assert h is not None
-        assert len(h) == 1
-    """
+        assert len(h) == 2
 
+    def test_03_classification_required(self):
+        # Check we can accept an application with a subject classification present
+        ready_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        ready_application.set_application_status("ready")
+
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=ready_application)
+
+        # Make changes to the application status via the form, check it validates
+        fc.form.application_status.data = "accepted"
+
+        assert fc.validate()
+
+        # Without a subject classification, we should not be able to set the status to 'accepted'
+        no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        del no_class_application.data['bibjson']['subject']
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=no_class_application)
+        # Make changes to the application status via the form
+        assert fc.source.bibjson().subjects() == []
+        fc.form.application_status.data = "accepted"
+
+        assert not fc.validate()
+
+        # However, we should be able to set it to a different status rather than 'accepted'
+        fc.form.application_status.data = "in progress"
+
+        assert fc.validate()

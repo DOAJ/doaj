@@ -378,9 +378,9 @@ class Choices(object):
 
     @classmethod
     def application_status_optional(cls):
-        all = [v[0] for v in cls._application_status_admin]
-        all.remove("accepted")
-        return all
+        all_s = [v[0] for v in cls._application_status_admin]
+        all_s.remove("accepted")
+        return all_s
 
     @classmethod
     def application_status(cls, context=None):
@@ -392,3 +392,10 @@ class Choices(object):
             return [('accepted', 'Accepted')] # just the one status - Accepted
         else:
             return cls._application_status_base
+
+    @classmethod
+    def application_status_subject_optional(cls):
+        """ The set of permitted statuses we can save an application without a subject classification """
+        all_s = [v[0] for v in cls._application_status_admin]
+        disallowed_statuses = {'accepted', 'ready', 'completed'}
+        return list(set(all_s).difference(disallowed_statuses))
