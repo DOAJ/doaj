@@ -314,10 +314,16 @@ class Notes(Form):
     """ Multiple notes form for inclusion into admin forms """
     notes = FieldList(FormField(Note))
 
-class Subject(Form):
-    """ Subject classification entry """
+class ApplicationSubject(Form):
+    """ Subject classification entry - with workflow validation"""
+
+    subject = SelectMultipleField('Subjects', [OptionalIf('application_status', optvals=Choices.application_status_subject_optional())], choices=Choices.subjects())
+
+class JournalSubject(Form):
+    """ Subject classification entry - optional"""
 
     subject = SelectMultipleField('Subjects', [validators.Optional()], choices=Choices.subjects())
+
 
 class JournalLegacy(Form):
     """ Legacy information required by some journals that are already in the DOAJ """
@@ -389,7 +395,7 @@ class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
     pass
 
 
-class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes, Seal):
+class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes, Seal):
     """
     Managing Editor's Application Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -404,7 +410,7 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
     """
     pass
 
-class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
+class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
         * Editorial - ability to add associate editors (but not change editorial group)
@@ -417,7 +423,7 @@ class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymen
     """
     pass
 
-class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Suggestion, Subject, AdminSuggester, Notes):
+class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
         * Workflow - ability to change application status
@@ -437,7 +443,7 @@ class PublisherReApplicationForm(JournalInformation, Suggestion):
     """
     pass
 
-class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal):
+class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal):
     """
     Managing Editor's Journal Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -451,7 +457,7 @@ class ManEdJournalReviewForm(Editorial, RequiredOwner, Subject, JournalLegacy, J
     """
     pass
 
-class EditorJournalReviewForm(Editorial, Subject, JournalLegacy, JournalInformation, Notes):
+class EditorJournalReviewForm(Editorial, JournalSubject, JournalLegacy, JournalInformation, Notes):
     """
     Editor's Journal Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -462,7 +468,7 @@ class EditorJournalReviewForm(Editorial, Subject, JournalLegacy, JournalInformat
     """
     pass
 
-class AssEdJournalReviewForm(JournalInformation, Subject, JournalLegacy, Notes):
+class AssEdJournalReviewForm(JournalInformation, JournalSubject, JournalLegacy, Notes):
     """
     Associate Editor's Journal Review form.  It consists of:
         * JournalInformation - journal bibliographic data
@@ -472,7 +478,7 @@ class AssEdJournalReviewForm(JournalInformation, Subject, JournalLegacy, Notes):
     """
     pass
 
-class ReadOnlyJournalForm(JournalInformation, Subject, JournalLegacy, Notes):
+class ReadOnlyJournalForm(JournalInformation, JournalSubject, JournalLegacy, Notes):
     """
     Read-only journal form.  It consists of:
         * JournalInformation - journal bibliographic data
