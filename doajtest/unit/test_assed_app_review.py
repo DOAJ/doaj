@@ -397,6 +397,6 @@ class TestAssedAppReview(DoajTestCase):
         assert not fc.validate()
 
         # However, we should be able to set it to a different status rather than 'completed'
-        fc.form.application_status.data = "submitted"
+        fc.form.application_status.data = "pending"
 
         assert fc.validate()

@@ -1044,6 +1044,9 @@ class PublisherReApplication(ApplicationContext):
 
         return super(PublisherReApplication, self).render_template(**kwargs)
 
+    def _set_choices(self):
+        self.form.application_status.choices = choices.Choices.application_status("publisher")
+
     def _disable_fields(self):
         if self.source is None:
             raise FormContextException("You cannot disable fields on a not-existent application")
