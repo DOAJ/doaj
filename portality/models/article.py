@@ -836,7 +836,7 @@ def _sort_articles(articles):
     numbers = []
     imap = {}
     for art in articles:
-        sp = art.get("bibjson",{}).get("start_page",None)
+        sp = art.get("bibjson.start_page", [None])[0]
 
         # can't sort anything that doesn't have a start page
         if sp is None:
