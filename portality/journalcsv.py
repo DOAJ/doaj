@@ -63,7 +63,6 @@ def get_doaj_meta_kvs(journal):
     kvs.append( ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")) )
     kvs.append( ("Added on Date", journal.created_date) )
     kvs.append( ("Subjects", ', '.join(journal.data.get("index", {}).get("classification", []))) )
-    kvs.append( ("Content in DOAJ", YES_NO.get(journal.is_in_doaj(), "")) )
     return kvs
 
 #################################################################
