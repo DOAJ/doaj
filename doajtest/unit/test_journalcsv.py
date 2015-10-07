@@ -75,8 +75,7 @@ class TestJournalCSV(DoajTestCase):
             'DOAJ Seal',
             'Tick: Accepted after March 2014',
             'Added on Date',
-            'Subjects',
-            'Content in DOAJ']
+            'Subjects']
 
         csv_source_journal1 = models.Journal(**JournalFixtureFactory.make_journal_source())
         # Journal must be in_doaj to be included
@@ -141,8 +140,7 @@ class TestJournalCSV(DoajTestCase):
             'Yes',
             'No',
             '2000-01-01T00:00:00Z',
-            'Social Sciences, Economic theory. Demography',
-            'Yes']
+            'Social Sciences, Economic theory. Demography']
 
         # Wait a sec to let the index catch up
         time.sleep(1)
