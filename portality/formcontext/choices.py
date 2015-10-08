@@ -103,12 +103,6 @@ class Choices(object):
         ('ready', 'Ready'),
     ]
 
-    _application_status_publisher = [
-        ('', ' '),
-        ('reapplication', 'Reapplication Pending'),
-        ('submitted', 'Reapplication Submitted'),
-    ]
-
     ############################################################
     # General utility functions
     ############################################################
@@ -393,8 +387,6 @@ class Choices(object):
             return cls._application_status_admin
         elif context == "editor":
             return cls._application_status_editor
-        elif context == "publisher":
-            return cls._application_status_publisher
         elif context == "accepted":
             return [('accepted', 'Accepted')] # just the one status - Accepted
         else:
