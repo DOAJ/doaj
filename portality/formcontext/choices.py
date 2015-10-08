@@ -83,16 +83,16 @@ class Choices(object):
         ('NY', 'No information'),
     ]
 
-    _application_status_base = [
+    _application_status_base = [        # This is all the Associate Editor sees
         ('', ' '),
-        ('reapplication', 'Reapplication Pending'),
-        ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
         ('in progress', 'In Progress'),
         ('completed', 'Completed')
     ]
 
     _application_status_admin = _application_status_base + [
+        ('reapplication', 'Reapplication Pending'),
+        ('submitted', 'Reapplication Submitted'),
         ('on hold', 'On Hold'),
         ('ready', 'Ready'),
         ('rejected', 'Rejected'),
@@ -100,7 +100,6 @@ class Choices(object):
     ]
 
     _application_status_editor = _application_status_base + [
-        ('on hold', 'On Hold'),
         ('ready', 'Ready'),
     ]
 
