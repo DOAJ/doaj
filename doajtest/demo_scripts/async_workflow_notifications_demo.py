@@ -147,14 +147,14 @@ def editor_notifications():
     group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
-    for (group_name, group_count) in group_stats[:5]:
+    for (group_name, group_count) in group_stats:
         # get editor group object by name
         eg = models.EditorGroup.pull_by_key("name", group_name)
         if eg is None:
             continue
 
         # Get the email address to the editor account
-        editor = models.Account.pull(eg.editor)
+        editor = eg.get_editor_account()
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
