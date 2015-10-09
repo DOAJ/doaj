@@ -130,7 +130,7 @@ def editor_notifications():
         "aggregations": {
             "ed_group_counts": {
                 "terms": {
-                    "field": "admin.editor_group",
+                    "field": "admin.editor_group.exact",
                     "size": 0
                 }
             }
@@ -151,7 +151,7 @@ def editor_notifications():
             continue
 
         # Get the email address to the editor account
-        editor = models.Account.pull(eg.editor)
+        editor = eg.get_editor_account()
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
@@ -255,8 +255,7 @@ def send_emails():
         app_email.send_mail(to=[email],
                             fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                             subject="DOAJ editorial reminders",
-                            msg_body=full_body
-                            )
+                            msg_body=full_body)
 
 
 def _add_email_paragraph(addr, to_name, para_string):
