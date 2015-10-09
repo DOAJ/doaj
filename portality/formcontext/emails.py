@@ -43,7 +43,7 @@ def send_editor_group_email(obj):
     eg = models.EditorGroup.pull_by_key("name", obj.editor_group)
     if eg is None:
         return
-    editor = models.Account.pull(eg.editor)
+    editor = eg.get_editor_account()
 
     url_root = app.config.get("BASE_URL")
     to = [editor.email]
