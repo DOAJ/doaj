@@ -133,7 +133,7 @@ def editor_notifications():
         "aggregations": {
             "ed_group_counts": {
                 "terms": {
-                    "field": "admin.editor_group",
+                    "field": "admin.editor_group.exact",
                     "size": 0
                 }
             }
