@@ -25,7 +25,7 @@ class Api404Error(Exception):
 
 class DataObjectJsonEncoder(json.JSONEncoder):
     def default(self, o):
-        return o._data
+        return o.data
 
 
 class ModelJsonEncoder(json.JSONEncoder):
