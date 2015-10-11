@@ -5,6 +5,33 @@ from portality.api.v1 import Api401Error, Api404Error
 
 
 class JournalsCrudApi(CrudApi):
+
+    @staticmethod
+    def get_journal_swag():
+        template = {
+            "responses": {
+                "200": {
+                    "schema": {}
+                },
+                "400": {
+                    "description": "Bad Request"
+                }
+            },
+            "parameters": [
+                {
+                    "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+                    "required": True,
+                    "type": "string",
+                    "name": "journal_id",
+                    "in": "path"
+                }
+            ],
+            "tags": ['CRUD']
+        }
+        template['responses']['200']['schema']['title'] = 'Journal schema'
+        template['responses']['200']['schema']['properties'] = OutgoingJournal().struct_to_swag()
+        return template
+
     @classmethod
     def retrieve(cls, jid, account):
         # is the journal id valid

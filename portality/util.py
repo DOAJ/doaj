@@ -124,3 +124,8 @@ def normalise_issn(issn):
         else:
             issn = ("0" * (8 - len(issn))) + issn
             return issn[:4] + "-" + issn[4:]
+
+def load_file(filename):
+    with open(filename, 'rb') as f:
+        content = f.read()
+    return content
