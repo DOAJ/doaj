@@ -346,6 +346,7 @@ class DOAJXWalk(XWalk):
         new = 0
         
         # go through the records in the doc and crosswalk each one individually
+        last_success = None
         root = doc.getroot()
         for record in root.findall("record"):
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
@@ -377,8 +378,13 @@ class DOAJXWalk(XWalk):
             # (which can do something like save)
             if article_callback is not None:
                 article_callback(article)
+                last_success = article
             success += 1
-        
+
+        # run the block so we are sure the records have saved
+        if last_success is not None:
+            models.Article.block(last_success.id, last_success.last_updated)
+
         # return some stats on the import
         return {"success" : success, "fail" : fail, "update" : update, "new" : new}
     
@@ -582,11 +588,11 @@ xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 def article_upload_closure(upload_id):
     def article_callback(article):
         article.set_upload_id(upload_id)
-        article.save()
+        article.save(differentiate=True)
     return article_callback
 
 def article_save_callback(article):
-    article.save()
+    article.save(differentiate=True)
     
 def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fail_callback=None):
     try:

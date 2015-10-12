@@ -139,9 +139,10 @@ if upload_dir is None:
 
 # our first task is to dereference and validate any remote files
 to_download = models.FileUpload.list_remote()
-do_sleep = False
+# do_sleep = False
+last_valid = None
 for remote in to_download:
-    do_sleep = True
+    # do_sleep = True
     path = os.path.join(upload_dir, remote.local_filename)
     remote_filename = remote.filename
     if isinstance(remote_filename, unicode):
@@ -185,12 +186,18 @@ for remote in to_download:
     # document, so we can write it to the index
     remote.validated(actual_schema)
     remote.save()
+    last_valid = remote
     print "...success"
-    
+
+# block until the last upload has been surfaced
+if last_valid is not None:
+    models.FileUpload.block(last_valid.id, last_valid.last_updated)
+
+
 # in between, issue a refresh request and wait for the index to sort itself out
-if do_sleep:
-    models.FileUpload.refresh()
-    time.sleep(5)
+#if do_sleep:
+    # models.FileUpload.refresh()
+#    time.sleep(5)
 
 to_process = models.FileUpload.list_valid() # returns an iterator
 for upload in to_process:
@@ -233,5 +240,5 @@ for upload in to_process:
             pass
     
     # always refresh before moving on to the next file
-    models.Article.refresh()
-    time.sleep(5)
+    # models.Article.refresh()
+    #time.sleep(5)

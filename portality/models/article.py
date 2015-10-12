@@ -320,9 +320,9 @@ class Article(DomainObject):
         self._generate_index()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self._generate_index()
-        super(Article, self).save()
+        super(Article, self).save(*args, **kwargs)
 
 class ArticleBibJSON(GenericBibJSON):
 

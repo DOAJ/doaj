@@ -6,6 +6,10 @@ class FileUpload(DomainObject):
     __type__ = "upload"
 
     @property
+    def status(self):
+        return self.data.get("status")
+
+    @property
     def local_filename(self):
         return self.id + ".xml"
 
