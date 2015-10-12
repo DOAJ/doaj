@@ -39,7 +39,8 @@ jQuery(document).ready(function($) {
         // journal facets
         apc : {
             field : "index.has_apc.exact",
-            display: "Article processing charges (APCs)"
+            display: "Article processing charges (APCs)",
+            tooltip: 'Our current knowledge about APCs for journals in DOAJ.  For more information see this <a href="https://doajournals.wordpress.com/2015/05/11/historical-apc-data-from-before-the-april-upgrade/" target="_blank">blog post</a> (opens in new window).'
         },
         seal : {
             field : "index.has_seal.exact",

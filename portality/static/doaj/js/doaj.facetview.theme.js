@@ -39,18 +39,24 @@ function searchingNotification(options) {
     return '<div class="progress progress-danger progress-striped active notify_loading" id="search-progress-bar"><div class="bar">Loading, please wait...</div></div>'
 }
 
+// called when a request to open or close the facet is received
+// this should move the facet to the state dictated by facet.open
 function setFacetOpenness(options, context, facet) {
     var el = context.find("#facetview_filter_" + safeId(facet.field));
-    var open = facet["open"];
+    var open = facet["open"]
     if (open) {
         el.find(".facetview_filtershow").find("i").removeClass("icon-plus");
         el.find(".facetview_filtershow").find("i").addClass("icon-minus");
+        el.find(".facetview_tooltip").show();
+        el.find(".facetview_tooltip_value").hide();
         el.find(".facetview_filteroptions").show();
         el.find(".facetview_filtervalue").show();
         el.addClass("no-bottom");
     } else {
         el.find(".facetview_filtershow").find("i").removeClass("icon-minus");
         el.find(".facetview_filtershow").find("i").addClass("icon-plus");
+        el.find(".facetview_tooltip").hide();
+        el.find(".facetview_tooltip_value").hide();
         el.find(".facetview_filteroptions").hide();
         el.find(".facetview_filtervalue").hide();
         el.removeClass("no-bottom");
