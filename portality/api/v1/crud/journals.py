@@ -3,31 +3,24 @@ from portality.api.v1.crud.common import CrudApi
 from portality.api.v1.data_objects.journal import OutgoingJournal
 from portality.api.v1 import Api401Error, Api404Error
 
+from copy import deepcopy
+
 
 class JournalsCrudApi(CrudApi):
 
-    @staticmethod
-    def get_journal_swag():
-        template = {
-            "responses": {
-                "200": {
-                    "schema": {}
-                },
-                "400": {
-                    "description": "Bad Request"
-                }
-            },
-            "parameters": [
-                {
-                    "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
-                    "required": True,
-                    "type": "string",
-                    "name": "journal_id",
-                    "in": "path"
-                }
-            ],
-            "tags": ['CRUD']
-        }
+    @classmethod
+    def retrieve_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['tags'].append('CRUD')
+        template["parameters"].append(
+            {
+                "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+                "required": True,
+                "type": "string",
+                "name": "journal_id",
+                "in": "path"
+            }
+        )
         template['responses']['200']['schema']['title'] = 'Journal schema'
         template['responses']['200']['schema']['properties'] = OutgoingJournal().struct_to_swag()
         return template

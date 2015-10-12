@@ -5,8 +5,21 @@ from portality.lib import dataobj
 from datetime import datetime
 from portality import models
 
+from copy import deepcopy
 
 class ApplicationsCrudApi(CrudApi):
+
+    @classmethod
+    def _swag_with_full_body(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['tags'].append('CRUD')
+        template['responses']['200']['schema']['title'] = 'Application schema'
+        template['responses']['200']['schema']['properties'] = IncomingApplication().struct_to_swag()
+        return template
+
+    @classmethod
+    def create_swag(cls):
+        return cls._swag_with_full_body()
 
     @classmethod
     def create(cls, data, account):
@@ -51,6 +64,10 @@ class ApplicationsCrudApi(CrudApi):
         return ap
 
     @classmethod
+    def retrieve_swag(cls):
+        return cls._swag_with_full_body()
+
+    @classmethod
     def retrieve(cls, id, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -70,6 +87,10 @@ class ApplicationsCrudApi(CrudApi):
         # if we get to here we're going to give the user back the application
         oa = OutgoingApplication.from_model(ap)
         return oa
+
+    @classmethod
+    def update_swag(cls):
+        return cls._swag_with_full_body()
 
     @classmethod
     def update(cls, id, data, account):
@@ -118,6 +139,23 @@ class ApplicationsCrudApi(CrudApi):
         # finally save the new application, and return to the caller
         new_ap.save()
         return new_ap
+
+    @classmethod
+    def delete_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['tags'].append('CRUD')
+        template["parameters"].append(
+            {
+                "description": "<div class=\"search-query-docs\">DOAJ application ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+                "required": True,
+                "type": "string",
+                "name": "application_id",
+                "in": "path"
+            }
+        )
+        del template['responses']['200']
+        template['responses']['204'] = {"description": "OK (Request succeeded), No Content"}
+        return template
 
     @classmethod
     def delete(cls, id, account):

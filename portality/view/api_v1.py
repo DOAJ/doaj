@@ -64,7 +64,7 @@ def docs():
     return render_template('doaj/api_docs.html')
 
 
-
+@swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>', swag_spec=DiscoveryApi.get_application_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route("/search/applications/<path:search_query>")
 @api_key_required
 def search_applications(search_query):
@@ -92,11 +92,8 @@ def search_applications(search_query):
 
     return jsonify_models(results)
 
-search_applications.summary = 'Search your applications <span class="red">[Authenticated, not public]</span>'
-search_applications.swag = DiscoveryApi.get_application_swag()
 
-
-
+@swag(swag_summary='Search journals', swag_spec=DiscoveryApi.get_journal_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route('/search/journals/<path:search_query>')
 def search_journals(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
@@ -123,11 +120,8 @@ def search_journals(search_query):
 
     return jsonify_models(results)
 
-search_journals.summary = 'Search journals'
-search_journals.swag = DiscoveryApi.get_journal_swag()
 
-
-
+@swag(swag_summary='Search articles', swag_spec=DiscoveryApi.get_article_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @blueprint.route('/search/articles/<path:search_query>')
 def search_articles(search_query):
     # get the values for the 2 other bits of search info: the page number and the page size
@@ -155,15 +149,13 @@ def search_articles(search_query):
 
     return jsonify_models(results)
 
-search_articles.summary = 'Search articles'
-search_articles.swag = DiscoveryApi.get_article_swag()
-
 
 #########################################
 ## Application CRUD API
 
 @blueprint.route("/applications", methods=["POST"])
 @api_key_required
+@swag(swag_summary='Create an application', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def create_application():
     # get the data from the request
     try:
@@ -179,12 +171,14 @@ def create_application():
 
 @blueprint.route("/application/<aid>", methods=["GET"])
 @api_key_required
+@swag(swag_summary='Retrieve an application', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_application(aid):
     a = ApplicationsCrudApi.retrieve(aid, current_user)
     return jsonify_models(a)
 
 @blueprint.route("/application/<aid>", methods=["PUT"])
 @api_key_required
+@swag(swag_summary='Update an application', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(
 def update_application(aid):
     # get the data from the request
     try:
@@ -200,6 +194,7 @@ def update_application(aid):
 
 @blueprint.route("/application/<aid>", methods=["DELETE"])
 @api_key_required
+@swag(swag_summary='Delete an application', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(
 def delete_application(aid):
     ApplicationsCrudApi.delete(aid, current_user)
     return no_content()
@@ -253,9 +248,8 @@ def delete_article(aid):
     ArticlesCrudApi.delete(aid, current_user)
     return no_content()
 
-
-@api_key_optional
 @blueprint.route('/journals/<journal_id>', methods=['GET'])
-@swag(swag_summary='Retrieve a journal by ID', swag_spec=JournalsCrudApi.get_journal_swag())  # must be last decorator applied? TODO double check
+@api_key_optional
+@swag(swag_summary='Retrieve a journal by ID', swag_spec=JournalsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_journal(journal_id):
     return jsonify_data_object(JournalsCrudApi.retrieve(journal_id, current_user))
