@@ -283,7 +283,6 @@ class Journal2QuestionXwalk(object):
         article_identifiers = other_list("article_identifiers", "article_identifiers_other", choices.Choices.article_identifiers_val("other"))
         kvs.append((cls.q("article_identifiers"), article_identifiers))
 
-        kvs.append((cls.q("metadata_provision"), yes_or_blank(forminfo.get("metadata_provision"))))
         kvs.append((cls.q("download_statistics"), yes_or_blank(forminfo.get("download_statistics"))))
         kvs.append((cls.q("download_statistics_url"), forminfo.get("download_statistics_url")))
         kvs.append((cls.q("first_fulltext_oa_year"), forminfo.get("first_fulltext_oa_year")))
