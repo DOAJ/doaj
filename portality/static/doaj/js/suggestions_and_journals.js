@@ -199,7 +199,11 @@ function setup_subject_tree() {
         }, 750);
     });
 
-    $('#subject-container').hide();
+    // Previously the superseded container was completely hidden, but we want to show its errors, so hide its children.
+    //$('#subject-container').hide();
+    $('#subject-container').find("label").hide();
+    $('#subject-container').find("#subject").hide();
+    $('#subject-container').css('margin-bottom', 0);
 }
 
 function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
