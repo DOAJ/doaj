@@ -299,3 +299,28 @@ class TestArticleUpload(DoajTestCase):
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0
+
+    def test_09_duplication(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        bj.add_identifier(bj.E_ISSN, "9876-5432")
+        j.save()
+
+        time.sleep(2)
+
+        # make both handles, as we want as little gap as possible between requests in a moment
+        handle1 = ArticleFixtureFactory.upload_2_issns_correct()
+        handle2 = ArticleFixtureFactory.upload_2_issns_correct()
+
+        # pile both requests in as fast as possible
+        results1 = article.ingest_file(handle1, format_name="doaj", owner="testowner", upload_id=None)
+        results2 = article.ingest_file(handle2, format_name="doaj", owner="testowner", upload_id=None)
+
+        assert results1["success"] == 1
+        assert results2["success"] == 1
+
+        # now let's check that only one article got created
+        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
+        assert len(found) == 1
