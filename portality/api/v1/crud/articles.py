@@ -5,7 +5,26 @@ from portality.lib import dataobj
 from portality import models
 from portality.article import XWalk
 
+from copy import deepcopy
+
 class ArticlesCrudApi(CrudApi):
+
+    API_KEY_CAN_BE_OPTIONAL = False
+    SWAG_TAG = 'CRUD Articles'
+    SWAG_ID_PARAM = {
+        "description": "<div class=\"search-query-docs\">DOAJ article ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+        "required": True,
+        "type": "string",
+        "name": "article_id",
+        "in": "path"
+    }
+    SWAG_ARTICLE_BODY_PARAM = {
+        "description": "<div class=\"search-query-docs\">Article JSON that you would like to create or update. The contents should comply with the schema displayed in the <a href=\"/api/v1/docs#CRUD_Articles_get_api_v1_articles_article_id\"> GET (Retrieve) an article route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
+        "required": True,
+        "type": "string",
+        "name": "article_json",
+        "in": "body"
+    }
 
     @classmethod
     def __handle_journal_info(cls, am):
@@ -25,6 +44,16 @@ class ArticlesCrudApi(CrudApi):
         return am
 
     @classmethod
+    def create_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ARTICLE_BODY_PARAM)
+        template['responses']['201'] = cls.R201
+        template['responses']['400'] = cls.R400
+        template['responses']['401'] = cls.R401
+        template['responses']['403'] = cls.R403
+        return cls._build_swag_response(template)
+
+    @classmethod
     def create(cls, data, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -42,7 +71,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we are allowed to create an article for this journal
         if not XWalk.is_legitimate_owner(am, account.id):
-            raise Api404Error()                 # not found for this account
+            raise Api403Error()
 
         # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
         # own values (note that last_updated will get overwritten anyway)
@@ -58,6 +87,17 @@ class ArticlesCrudApi(CrudApi):
         return am
 
     @classmethod
+    def retrieve_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['responses']['200'] = cls.R200
+        template['responses']['200']['schema']['title'] = 'Article schema'
+        template['responses']['200']['schema']['properties'] = OutgoingArticleDO().struct_to_swag()
+        template['responses']['401'] = cls.R401
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
+
+    @classmethod
     def retrieve(cls, id, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -71,11 +111,22 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api404Error()                 # not found for this account
+            raise Api404Error()  # not found for this account
 
         # Return the article
         oa = OutgoingArticleDO.from_model(ar)
         return oa
+
+    @classmethod
+    def update_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['parameters'].append(cls.SWAG_ARTICLE_BODY_PARAM)
+        template['responses']['204'] = cls.R204
+        template['responses']['400'] = cls.R400
+        template['responses']['401'] = cls.R401
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
 
     @classmethod
     def update(cls, id, data, account):
@@ -91,7 +142,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to edit this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api404Error()                 # not found for this account
+            raise Api404Error()  # not found for this account
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
         try:
@@ -115,6 +166,16 @@ class ArticlesCrudApi(CrudApi):
         return new_ar
 
     @classmethod
+    def delete_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['responses']['204'] = cls.R204
+        template['responses']['401'] = cls.R401
+        template['responses']['403'] = cls.R403
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
+
+    @classmethod
     def delete(cls, id, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
@@ -128,7 +189,7 @@ class ArticlesCrudApi(CrudApi):
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account.id):
-            raise Api404Error()                 # not found for this account
+            raise Api404Error()  # not found for this account
 
         # issue the delete (no record of the delete required)
         ar.delete()

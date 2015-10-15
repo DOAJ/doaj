@@ -8,22 +8,26 @@ from copy import deepcopy
 
 class JournalsCrudApi(CrudApi):
 
+    API_KEY_CAN_BE_OPTIONAL = True
+    SWAG_TAG = 'CRUD Journals'
+    SWAG_ID_PARAM = {
+        "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+        "required": True,
+        "type": "string",
+        "name": "journal_id",
+        "in": "path"
+    }
+
     @classmethod
     def retrieve_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
-        template['tags'].append('CRUD')
-        template["parameters"].append(
-            {
-                "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
-                "required": True,
-                "type": "string",
-                "name": "journal_id",
-                "in": "path"
-            }
-        )
+        template["parameters"].append(cls.SWAG_ID_PARAM)
+        template['responses']['200'] = cls.R200
         template['responses']['200']['schema']['title'] = 'Journal schema'
         template['responses']['200']['schema']['properties'] = OutgoingJournal().struct_to_swag()
-        return template
+        template['responses']['401'] = cls.R401
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
 
     @classmethod
     def retrieve(cls, jid, account):

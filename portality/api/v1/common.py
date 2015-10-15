@@ -1,7 +1,10 @@
 import json, uuid
 from portality.core import app
 from flask import request
+from copy import deepcopy
 
+ERROR_TEMPLATE = {"status": {"type": "string"}, "error": {"type": "string"}}
+CREATED_TEMPLATE = {"status": {"type": "string"}, "id": {"type": "string"}, "location": {"type": "string"}}
 
 class Api(object):
     pass
@@ -35,7 +38,11 @@ class ModelJsonEncoder(json.JSONEncoder):
 
 def created(obj, location):
     app.logger.info("Sending 201 Created: {x}".format(x=location))
-    resp = respond(json.dumps({"status" : "created", "id" : obj.id, "location" : location }), 201)
+    t = deepcopy(CREATED_TEMPLATE)
+    t['status'] = "created"
+    t['id'] = obj.id
+    t['location'] = location
+    resp = respond(json.dumps(t), 201)
     resp.headers["Location"] = location
     resp.status_code = 201
     return resp
@@ -68,29 +75,37 @@ def respond(data, status):
 def bad_request(error):
     magic = uuid.uuid1()
     app.logger.info("Sending 400 Bad Request from client: {x} (ref: {y})".format(x=error.message, y=magic))
-    data = json.dumps({"status" : "error", "error" : error.message + " (ref: {y})".format(y=magic)})
-    return respond(data, 400)
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'bad_request'
+    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 400)
 
 
 @app.errorhandler(Api404Error)
 def not_found(error):
     magic = uuid.uuid1()
     app.logger.info("Sending 404 Not Found from client: {x} (ref: {y})".format(x=error.message, y=magic))
-    data = json.dumps({"status" : "not_found", "error" : error.message + " (ref: {y})".format(y=magic)})
-    return respond(data, 404)
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'not_found'
+    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 404)
 
 
 @app.errorhandler(Api401Error)
 def unauthorised(error):
     magic = uuid.uuid1()
     app.logger.info("Sending 401 Unauthorised from client: {x} (ref: {y})".format(x=error.message, y=magic))
-    data = json.dumps({"status" : "unauthorised", "error" : error.message + " (ref: {y})".format(y=magic)})
-    return respond(data, 401)
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'unauthorised'
+    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 401)
 
 
 @app.errorhandler(Api403Error)
 def forbidden(error):
     magic = uuid.uuid1()
     app.logger.info("Sending 403 Forbidden from client: {x} (ref: {y})".format(x=error.message, y=magic))
-    data = json.dumps({"status" : "forbidden", "error" : error.message + " (ref: {y})".format(y=magic)})
-    return respond(data, 403)
+    t = deepcopy(ERROR_TEMPLATE)
+    t['status'] = 'forbidden'
+    t['error'] = error.message + " (ref: {y})".format(y=magic)
+    return respond(json.dumps(t), 403)

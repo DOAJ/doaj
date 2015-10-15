@@ -9,17 +9,31 @@ from copy import deepcopy
 
 class ApplicationsCrudApi(CrudApi):
 
-    @classmethod
-    def _swag_with_full_body(cls):
-        template = deepcopy(cls.SWAG_TEMPLATE)
-        template['tags'].append('CRUD')
-        template['responses']['200']['schema']['title'] = 'Application schema'
-        template['responses']['200']['schema']['properties'] = IncomingApplication().struct_to_swag()
-        return template
+    API_KEY_CAN_BE_OPTIONAL = False
+    SWAG_TAG = 'CRUD Applications'
+    SWAG_ID_PARAM = {
+        "description": "<div class=\"search-query-docs\">DOAJ application ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
+        "required": True,
+        "type": "string",
+        "name": "application_id",
+        "in": "path"
+    }
+    SWAG_APPLICATION_BODY_PARAM = {
+        "description": "<div class=\"search-query-docs\">Application JSON that you would like to create or update. The contents should comply with the schema displayed in the <a href=\"/api/v1/docs#CRUD_Applications_get_api_v1_application_application_id\"> GET (Retrieve) an application route</a>. Partial updates are not allowed, you have to supply the full JSON.</div>",
+        "required": True,
+        "type": "string",
+        "name": "application_json",
+        "in": "body"
+    }
 
     @classmethod
     def create_swag(cls):
-        return cls._swag_with_full_body()
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_APPLICATION_BODY_PARAM)
+        template['responses']['201'] = cls.R201
+        template['responses']['400'] = cls.R400
+        template['responses']['401'] = cls.R401
+        return cls._build_swag_response(template)
 
     @classmethod
     def create(cls, data, account):
@@ -65,7 +79,14 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def retrieve_swag(cls):
-        return cls._swag_with_full_body()
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['responses']['200'] = cls.R200
+        template['responses']['200']['schema']['title'] = 'Application schema'
+        template['responses']['200']['schema']['properties'] = OutgoingApplication().struct_to_swag()
+        template['responses']['401'] = cls.R401
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
 
     @classmethod
     def retrieve(cls, id, account):
@@ -90,7 +111,15 @@ class ApplicationsCrudApi(CrudApi):
 
     @classmethod
     def update_swag(cls):
-        return cls._swag_with_full_body()
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['parameters'].append(cls.SWAG_APPLICATION_BODY_PARAM)
+        template['responses']['204'] = cls.R204
+        template['responses']['400'] = cls.R400
+        template['responses']['401'] = cls.R401
+        template['responses']['403'] = cls.R403
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
 
     @classmethod
     def update(cls, id, data, account):
@@ -143,19 +172,12 @@ class ApplicationsCrudApi(CrudApi):
     @classmethod
     def delete_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
-        template['tags'].append('CRUD')
-        template["parameters"].append(
-            {
-                "description": "<div class=\"search-query-docs\">DOAJ application ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
-                "required": True,
-                "type": "string",
-                "name": "application_id",
-                "in": "path"
-            }
-        )
-        del template['responses']['200']
-        template['responses']['204'] = {"description": "OK (Request succeeded), No Content"}
-        return template
+        template['parameters'].append(cls.SWAG_ID_PARAM)
+        template['responses']['204'] = cls.R204
+        template['responses']['401'] = cls.R401
+        template['responses']['403'] = cls.R403
+        template['responses']['404'] = cls.R404
+        return cls._build_swag_response(template)
 
     @classmethod
     def delete(cls, id, account):

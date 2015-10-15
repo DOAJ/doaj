@@ -167,19 +167,19 @@ def create_application():
     a = ApplicationsCrudApi.create(data, current_user)
 
     # respond with a suitable Created response
-    return created(a, url_for("api_v1.retrieve_application", aid=a.id))
+    return created(a, url_for("api_v1.retrieve_application", application_id=a.id))
 
-@blueprint.route("/application/<aid>", methods=["GET"])
+@blueprint.route("/application/<application_id>", methods=["GET"])
 @api_key_required
-@swag(swag_summary='Retrieve an application', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
-def retrieve_application(aid):
-    a = ApplicationsCrudApi.retrieve(aid, current_user)
+@swag(swag_summary='Retrieve an application', swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def retrieve_application(application_id):
+    a = ApplicationsCrudApi.retrieve(application_id, current_user)
     return jsonify_models(a)
 
-@blueprint.route("/application/<aid>", methods=["PUT"])
+@blueprint.route("/application/<application_id>", methods=["PUT"])
 @api_key_required
-@swag(swag_summary='Update an application', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(
-def update_application(aid):
+@swag(swag_summary='Update an application', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def update_application(application_id):
     # get the data from the request
     try:
         data = json.loads(request.data)
@@ -187,16 +187,16 @@ def update_application(aid):
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ApplicationsCrudApi.update(aid, data, current_user)
+    ApplicationsCrudApi.update(application_id, data, current_user)
 
     # respond with a suitable No Content successful response
     return no_content()
 
-@blueprint.route("/application/<aid>", methods=["DELETE"])
+@blueprint.route("/application/<application_id>", methods=["DELETE"])
 @api_key_required
-@swag(swag_summary='Delete an application', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(
-def delete_application(aid):
-    ApplicationsCrudApi.delete(aid, current_user)
+@swag(swag_summary='Delete an application', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def delete_application(application_id):
+    ApplicationsCrudApi.delete(application_id, current_user)
     return no_content()
 
 
@@ -205,6 +205,7 @@ def delete_application(aid):
 
 @blueprint.route("/articles", methods=["POST"])
 @api_key_required
+@swag(swag_summary='Create an article', swag_spec=ArticlesCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def create_article():
     # get the data from the request
     try:
@@ -216,19 +217,21 @@ def create_article():
     a = ArticlesCrudApi.create(data, current_user)
 
     # respond with a suitable Created response
-    return created(a, url_for("api_v1.retrieve_article", aid=a.id))
+    return created(a, url_for("api_v1.retrieve_article", article_id=a.id))
 
 
-@blueprint.route("/articles/<aid>", methods=["GET"])
+@blueprint.route("/articles/<article_id>", methods=["GET"])
 @api_key_required
-def retrieve_article(aid):
-    a = ArticlesCrudApi.retrieve(aid, current_user)
+@swag(swag_summary='Retrieve an article', swag_spec=ArticlesCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def retrieve_article(article_id):
+    a = ArticlesCrudApi.retrieve(article_id, current_user)
     return jsonify_models(a)
 
 
-@blueprint.route("/articles/<aid>", methods=["PUT"])
+@blueprint.route("/articles/<article_id>", methods=["PUT"])
 @api_key_required
-def update_article(aid):
+@swag(swag_summary='Update an article', swag_spec=ArticlesCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def update_article(article_id):
     # get the data from the request
     try:
         data = json.loads(request.data)
@@ -236,16 +239,17 @@ def update_article(aid):
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ArticlesCrudApi.update(aid, data, current_user)
+    ArticlesCrudApi.update(article_id, data, current_user)
 
     # respond with a suitable No Content successful response
     return no_content()
 
 
-@blueprint.route("/articles/<aid>", methods=["DELETE"])
+@blueprint.route("/articles/<article_id>", methods=["DELETE"])
 @api_key_required
-def delete_article(aid):
-    ArticlesCrudApi.delete(aid, current_user)
+@swag(swag_summary='Delete an article', swag_spec=ArticlesCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def delete_article(article_id):
+    ArticlesCrudApi.delete(article_id, current_user)
     return no_content()
 
 @blueprint.route('/journals/<journal_id>', methods=['GET'])
