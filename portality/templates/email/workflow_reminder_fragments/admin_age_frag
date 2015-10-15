@@ -1,3 +1,1 @@
-{{ num_idle }} applications in the pipeline have not been updated for {{ x_weeks }} weeks or more, of which {{ num_never }} have never been updated by an editor.
-These can be viewed at the following url:
-{{ url }}
+{{ num_idle }} application(s) are assigned to an Associate Editor or Editor but have not been updated for {{ x_weeks }} weeks or more.

@@ -18,7 +18,7 @@ emails_dict = {}
 def managing_editor_notifications():
     """
     Notify managing editors about two things:
-        * Summary of records not touched for X weeks
+        * Summary of records assigned to associate editors but not touched for X weeks
         * Records marked as ready
     Note: requires request context to render the email text from templates
     """
@@ -39,12 +39,21 @@ def managing_editor_notifications():
                 "filter": {
                     "bool": {
                         "must": {
-                            "range": {
-                                "last_manual_update": {
-                                    #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
-                                    "lte": newest_date_stamp                 # Older than X_WEEKS
+                            "and": [
+                                {
+                                    "range": {
+                                        "last_manual_update": {
+                                            #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
+                                            "lte": newest_date_stamp                 # Older than X_WEEKS
+                                        }
+                                    }
+                                },
+                                {
+                                    "exists": {
+                                        "field": "admin.editor"
+                                    }
                                 }
-                            }
+                            ]
                         },
                         "should": status_filters
                     }
@@ -67,15 +76,10 @@ def managing_editor_notifications():
         }
     }
 
-    admin_fv_prefix = app.config.get('BASE_URL') + "/admin/applications?source="
-    fv_age = Facetview2.make_query(sort_parameter="last_manual_update")
-    age_url = admin_fv_prefix + Facetview2.url_encode_query(fv_age)
-
     idle_res = models.Suggestion.query(q=age_query)
     num_idle = idle_res.get('hits').get('total')
-    num_never = idle_res.get('aggregations').get('never_updated').get('buckets')[0].get('doc_count')
 
-    text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, num_never=num_never, x_weeks=X_WEEKS, url=age_url)
+    text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, x_weeks=X_WEEKS)
     _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
@@ -93,6 +97,7 @@ def managing_editor_notifications():
         "size": 0
     }
 
+    admin_fv_prefix = app.config.get('BASE_URL') + "/admin/applications?source="
     fv_ready = Facetview2.make_query(filters=ready_filter, sort_parameter="last_manual_update")
     ready_url = admin_fv_prefix + Facetview2.url_encode_query(fv_ready)
 
@@ -107,7 +112,7 @@ def editor_notifications():
     """
     Notify editors about two things:
         * how many records are assigned to their group which have no associate assigned.
-        * how many records assigned to their group have been idle for X_WEEKS
+        * how many records assigned to an associate in their group but have been idle for X_WEEKS
     Note: requires request context to render the email text from templates
     """
 
@@ -178,12 +183,21 @@ def editor_notifications():
                 "filter": {
                     "bool": {
                         "must": {
-                            "range": {
-                                "last_manual_update": {
-                                    #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
-                                    "lte": newest_date_stamp                 # Older than X_WEEKS
+                            "and": [
+                                {
+                                    "range": {
+                                        "last_manual_update": {
+                                            #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
+                                            "lte": newest_date_stamp                 # Older than X_WEEKS
+                                        }
+                                    }
+                                },
+                                {
+                                    "exists": {
+                                        "field": "admin.editor"
+                                    }
                                 }
-                            }
+                            ]
                         },
                         "should": status_filters
                     }
