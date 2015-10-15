@@ -29,7 +29,7 @@ def managing_editor_notifications():
     status_filters = [Facetview2.make_term_filter(term, status) for status in relevant_statuses]
 
     # First note - records not touched for so long
-    X_WEEKS = app.config.get('MAN_ED_IDLE_CUTOFF', 2)
+    X_WEEKS = app.config.get('MAN_ED_IDLE_WEEKS', 2)
     newest_date = datetime.now() - timedelta(weeks=X_WEEKS)
     newest_date_stamp = newest_date.strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -105,7 +105,9 @@ def managing_editor_notifications():
 
 def editor_notifications():
     """
-    Notify editors how many records are assigned to their group.
+    Notify editors about two things:
+        * how many records are assigned to their group which have no associate assigned.
+        * how many records assigned to their group have been idle for X_WEEKS
     Note: requires request context to render the email text from templates
     """
 
@@ -120,6 +122,11 @@ def editor_notifications():
                     "bool": {
                         "must": {
                             "exists": {"field": "admin.editor_group"}
+                        },
+                        "must_not": {
+                            "exists": {
+                                "field": "admin.editor"
+                            }
                         },
                         "should": status_filters
                     }
@@ -158,6 +165,64 @@ def editor_notifications():
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
+        _add_email_paragraph(ed_email, eg.editor, text)
+
+    # Second note - records within editor group not touched for so long
+    X_WEEKS = app.config.get('ED_IDLE_WEEKS', 2)
+    newest_date = datetime.now() - timedelta(weeks=X_WEEKS)
+    newest_date_stamp = newest_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    ed_age_query = {
+        "query": {
+            "filtered": {
+                "filter": {
+                    "bool": {
+                        "must": {
+                            "range": {
+                                "last_manual_update": {
+                                    #"gte": "1970-01-01T00:00:00Z",          # Newer than 'Never' (implicit)
+                                    "lte": newest_date_stamp                 # Older than X_WEEKS
+                                }
+                            }
+                        },
+                        "should": status_filters
+                    }
+                },
+                "query": {
+                    "match_all": {}
+                }
+            }
+        },
+        "size": 0,
+        "aggregations": {
+            "ed_group_counts": {
+                "terms": {
+                    "field": "admin.editor_group.exact",
+                    "size": 0
+                }
+            }
+        }
+    }
+
+    ed_fv_prefix = app.config.get('BASE_URL') + "/editor/group_applications?source="
+    fv_age = Facetview2.make_query(sort_parameter="last_manual_update")
+    ed_age_url = ed_fv_prefix + Facetview2.url_encode_query(fv_age)
+
+    es = models.Suggestion.query(q=ed_age_query)
+    group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
+
+    # Get the email addresses for the editor in charge of each group, Add the template to their email
+    for (group_name, group_count) in group_stats:
+        # get editor group object by name
+        eg = models.EditorGroup.pull_by_key("name", group_name)
+        if eg is None:
+            continue
+
+        # Get the email address to the editor account
+        editor = eg.get_editor_account()
+        ed_email = editor.email
+
+        text = render_template('email/workflow_reminder_fragments/editor_age_frag', num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
         _add_email_paragraph(ed_email, eg.editor, text)
 
 
