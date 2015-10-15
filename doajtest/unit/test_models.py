@@ -298,3 +298,10 @@ class TestClient(DoajTestCase):
         acc2.generate_api_key()
         acc2.save()
         assert acc2.api_key is not None
+
+    def test_10_block(self):
+        a = models.Article()
+        a.save()
+        models.Article.block(a.id, a.last_updated)
+        a = models.Article.pull(a.id)
+        assert a is not None

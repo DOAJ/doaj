@@ -79,7 +79,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     def last_updated(self):
         return self.data.get("last_updated")
 
-    def save(self, retries=0, back_off_factor=1):
+    def save(self, retries=0, back_off_factor=1, differentiate=False):
 
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
@@ -90,7 +90,14 @@ class DomainObject(UserDict.IterableUserDict, object):
         else:
             id_ = self.makeid()
             self.data['id'] = id_
-        
+
+        # FIXME: ok, this is not the best, but it's the quickest fix to the differentiability problem
+        # if we want a differentiable record, we need to wait for the last_updated seconds to tick over
+        if "last_updated" in self.data and differentiate:
+            diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+            if diff.total_seconds() < 1:
+                time.sleep(1 - diff.total_seconds())
+        # now when we write this, it is either new, or at least 1 second later than the previous value
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
         if 'created_date' not in self.data:
@@ -455,6 +462,26 @@ class DomainObject(UserDict.IterableUserDict, object):
         res = cls.query(q=query, **kwargs)
         return res.get("hits", {}).get("total", 0)
 
+    @classmethod
+    def block(cls, id, last_updated, sleep=0.5):
+        threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
+        query = deepcopy(block_query)
+        query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        while True:
+            res = cls.query(q=query)
+            hits = res.get("hits", {}).get("hits", [])
+            if len(hits) > 0:
+                obj = hits[0].get("fields")
+                if "last_updated" in obj:
+                    lu = obj["last_updated"]
+                    if len(lu) > 0:
+                        lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
+                        if lud >= threshold:
+                            return
+            time.sleep(sleep)
+
+
+
 ########################################################################
 ## Some useful ES queries
 ########################################################################
@@ -465,6 +492,16 @@ all_query = {
     }
 }
 
+block_query = {
+    "query" : {
+        "bool" : {
+            "must" : [
+                {"term" : {"id.exact" : "<identifier>"}}
+            ]
+        }
+    },
+    "fields" : ["last_updated"]
+}
 
 #########################################################################
 # A query handler that knows how to speak facetview2
