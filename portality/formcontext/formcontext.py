@@ -792,14 +792,14 @@ class AssEdApplicationReview(ApplicationContext):
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 try:
                     emails.send_publisher_inprogress_email(self.target)
-                    self.add_alert('A confirmation email has been sent to notify the publisher of the change in status.')
+                    self.add_alert('An email has been sent to the Journal Contact alerting them that you are working on their application.')
                 except app_email.EmailException as e:
                     magic = str(uuid.uuid1())
                     self.add_alert('Hm, sending the ready status to publisher email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                     app.logger.error(magic + "\n" + repr(e))
                     raise e
             else:
-                self.add_alert('Did not send email to publisher about the status change, as publisher emails are disabled.')
+                self.add_alert('Did not send email to Journal Contact about the status change, as publisher emails are disabled.')
 
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != 'completed' and self.target.application_status == 'completed':

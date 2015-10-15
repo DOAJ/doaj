@@ -79,9 +79,10 @@ MAIL_PORT = 25              # default 25
 
 # ========================
 # workflow email notification settings
-MAN_ED_IDLE_CUTOFF = 4      # weeks before an application is considered reminder-worthy
+MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
+ED_IDLE_WEEKS = 3           # weeks before the editor is warned about idle applications in their group
 ASSOC_ED_IDLE_DAYS = 10
-ASSOC_ED_IDLE_WEEKS = 4
+ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
 MAN_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed', 'on hold']

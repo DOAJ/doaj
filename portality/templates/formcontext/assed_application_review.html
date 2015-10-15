@@ -45,6 +45,11 @@
             </div>
 
             <div class="span6 with-borders form-section" id="subjects_outer_container">
+                {# This will be hidden - placed here to get first_problem anchor in approximately the right place #}
+                {% autoescape off %}
+                    {{ form_context.render_field_group("subject") }}
+                {% endautoescape %}
+
                 <h3>Subject classification</h3>
 
                 <div class="control-group left-aligned">
@@ -56,9 +61,6 @@
 
                 <div id="subject_tree_container">
                     <div id="subject_tree"></div>
-                    {% autoescape off %}
-                    {{ form_context.render_field_group("subject") }}
-                    {% endautoescape %}
                 </div>
 
             </div>
