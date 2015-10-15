@@ -1,3 +1,3 @@
-There are {{ num }} applications currently assigned to your Editor Group, "{{ ed_group }}" which have been idle for {{ x_weeks }} weeks or more.
+Your Editor Group, "{{ ed_group }}", has {{ num }} applications currently assigned which have been idle for at least {{ x_weeks }}.
 These can be viewed at the following url:
 {{ url }}
