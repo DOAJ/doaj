@@ -23,6 +23,10 @@ class ApplicationFixtureFactory(object):
     def make_reapp_unicode_source():
         return deepcopy(REAPP2_UNICODE_SOURCE)
 
+    @classmethod
+    def incoming_application(cls):
+        return deepcopy(INCOMING_SOURCE)
+
 APPLICATION_SOURCE = {
     "id" : "abcdefghijk",
     "created_date" : "2000-01-01T00:00:00Z",
@@ -54,6 +58,41 @@ APPLICATION_SOURCE = {
         "editor_group" : "editorgroup",
         "editor" : "associate",
         "seal" : True,
+    }
+}
+
+_isbj = deepcopy(JOURNAL_SOURCE['bibjson'])
+_isbj["archiving_policy"] = {
+    "policy" : [
+        {"name" : "LOCKSS"},
+        {"name" : "CLOCKSS"},
+        {"name" : "Trinity", "domain" : "A national library"},
+        {"name" : "A safe place", "domain" : "Other"}
+    ],
+    "url": "http://digital.archiving.policy"
+}
+del _isbj["subject"]
+
+INCOMING_SOURCE = {
+    "id" : "ignore_me",
+    "created_date" : "2001-01-01T00:00:00Z",
+    "last_updated" : "2001-01-01T00:00:00Z",
+
+    "bibjson": _isbj,
+    "suggestion" : {
+        "articles_last_year" : {
+            "count" : 16,
+            "url" : "http://articles.last.year"
+        },
+        "article_metadata" : True
+    },
+    "admin" : {
+        "contact" : [
+            {
+                "email" : "contact@email.com",
+                "name" : "Contact Name"
+            }
+        ]
     }
 }
 

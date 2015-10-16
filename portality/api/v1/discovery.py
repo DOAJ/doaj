@@ -1,9 +1,11 @@
 from portality.api.v1.common import Api
 from portality import models
+from portality import util
 from portality.core import app
 from datetime import datetime
 import esprit
-import re, json, uuid
+import re, json, uuid, os
+from copy import deepcopy
 
 class DiscoveryException(Exception):
     pass
@@ -86,7 +88,24 @@ def escape(query):
 
     return query
 
+DISCOVERY_API_SWAG = {}
+DISCOVERY_API_SWAG['application'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_application_swag.json')))
+DISCOVERY_API_SWAG['journal'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_journal_swag.json')))
+DISCOVERY_API_SWAG['article'] = json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'discovery_api_article_swag.json')))
+
 class DiscoveryApi(Api):
+
+    @staticmethod
+    def get_application_swag():
+        return deepcopy(DISCOVERY_API_SWAG['application'])
+    
+    @staticmethod
+    def get_journal_swag():
+        return deepcopy(DISCOVERY_API_SWAG['journal'])
+    
+    @staticmethod
+    def get_article_swag():
+        return deepcopy(DISCOVERY_API_SWAG['article'])
 
     @classmethod
     def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs):

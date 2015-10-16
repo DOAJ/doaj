@@ -83,15 +83,16 @@ class Choices(object):
         ('NY', 'No information'),
     ]
 
-    _application_status_base = [
+    _application_status_base = [        # This is all the Associate Editor sees
         ('', ' '),
-        ('reapplication', 'Reapplication In Progress'),
-        ('submitted', 'Reapplication Submitted'),
         ('pending', 'Pending'),
-        ('in progress', 'In progress')
+        ('in progress', 'In Progress'),
+        ('completed', 'Completed')
     ]
 
     _application_status_admin = _application_status_base + [
+        ('reapplication', 'Reapplication Pending'),
+        ('submitted', 'Reapplication Submitted'),
         ('on hold', 'On Hold'),
         ('ready', 'Ready'),
         ('rejected', 'Rejected'),
@@ -99,7 +100,6 @@ class Choices(object):
     ]
 
     _application_status_editor = _application_status_base + [
-        ('on hold', 'On Hold'),
         ('ready', 'Ready'),
     ]
 
@@ -220,6 +220,8 @@ class Choices(object):
     def digital_archiving_policy_list(cls, type=None):
         if type is None:
             return [v[0] for v in cls._digital_archiving_policy]
+        elif type == "named":
+            return [v[0] for v in cls._digital_archiving_policy if v not in [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]]
         elif type == "optional":
             return [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]
 
@@ -375,9 +377,9 @@ class Choices(object):
 
     @classmethod
     def application_status_optional(cls):
-        all = [v[0] for v in cls._application_status_admin]
-        all.remove("accepted")
-        return all
+        all_s = [v[0] for v in cls._application_status_admin]
+        all_s.remove("accepted")
+        return all_s
 
     @classmethod
     def application_status(cls, context=None):
@@ -389,3 +391,10 @@ class Choices(object):
             return [('accepted', 'Accepted')] # just the one status - Accepted
         else:
             return cls._application_status_base
+
+    @classmethod
+    def application_status_subject_optional(cls):
+        """ The set of permitted statuses we can save an application without a subject classification """
+        all_s = [v[0] for v in cls._application_status_admin]
+        disallowed_statuses = {'accepted', 'ready', 'completed'}
+        return list(set(all_s).difference(disallowed_statuses))

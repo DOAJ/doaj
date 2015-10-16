@@ -15,7 +15,7 @@ from flask import Blueprint, request, abort, make_response, render_template, fla
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import Field, TextField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
+from wtforms import Field, TextField, StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
 from wtforms import widgets 
 from flask_wtf import RecaptchaField
 
@@ -904,25 +904,25 @@ class ThisOrThat(object):
             raise ValidationError("Either this field or " + other_field.label.text + " is required")
 
 class AuthorForm(Form):
-    name = TextField("Name", [validators.Optional()])
-    affiliation = TextField("Affiliation", [validators.Optional()])
+    name = StringField("Name", [validators.Optional()])
+    affiliation = StringField("Affiliation", [validators.Optional()])
     
 class ArticleForm(Form):
-    title = TextField("Article Title", [validators.Required()])
-    doi = TextField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
+    title = StringField("Article Title", [validators.DataRequired()])
+    doi = StringField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
     authors = FieldList(FormField(AuthorForm), min_entries=3) # We have to do the validation for this at a higher level
     abstract = TextAreaField("Abstract", [validators.Optional()])
-    keywords = TextField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
-    fulltext = TextField("Full-Text URL", [validators.Optional(), validators.URL()], description="(The URL for each article must be unique)")
+    keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
+    fulltext = StringField("Full-Text URL", [validators.Optional(), validators.URL()], description="(The URL for each article must be unique)")
     publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
     publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
     pissn = SelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
     eissn = SelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
  
-    volume = TextField("Volume Number", [validators.Optional()])
-    number = TextField("Issue Number", [validators.Optional()])
-    start = TextField("Start Page", [validators.Optional()])
-    end = TextField("End Page", [validators.Optional()])
+    volume = StringField("Volume Number", [validators.Optional()])
+    number = StringField("Issue Number", [validators.Optional()])
+    start = StringField("Start Page", [validators.Optional()])
+    end = StringField("End Page", [validators.Optional()])
 
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)

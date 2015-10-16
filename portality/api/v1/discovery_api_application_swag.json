@@ -1,0 +1,403 @@
+{
+    "responses": {
+        "200": {
+            "schema": {
+                "properties": {
+                    "pageSize": {
+                        "type": "integer"
+                    },
+                    "query": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "dateTime"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "results": {
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "created_date": {
+                                    "type": "string",
+                                    "format": "dateTime"
+                                },
+                                "last_updated": {
+                                    "type": "string",
+                                    "format": "dateTime"
+                                },
+                                "id": {
+                                    "type": "string"
+                                },
+                                "suggestion": {
+                                    "type": "object",
+                                    "properties": {
+                                        "articles_last_year": {
+                                            "type": "object",
+                                            "properties": {
+                                                "count": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "articles_last_year"
+                                        },
+                                        "suggested_on": {
+                                            "type": "string",
+                                            "format": "dateTime"
+                                        },
+                                        "suggester": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "email": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "suggester"
+                                        },
+                                        "article_metadata": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "title": "suggestion"
+                                },
+                                "bibjson": {
+                                    "type": "object",
+                                    "properties": {
+                                        "author_pays": {
+                                            "type": "string"
+                                        },
+                                        "format": {
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "plagiarism_detection": {
+                                            "type": "object",
+                                            "properties": {
+                                                "detection": {
+                                                    "type": "boolean"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "plagiarism_detection"
+                                        },
+                                        "allows_fulltext_indexing": {
+                                            "type": "boolean"
+                                        },
+                                        "apc_url": {
+                                            "type": "string"
+                                        },
+                                        "archiving_policy": {
+                                            "type": "object",
+                                            "properties": {
+                                                "policy": {
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": "array"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "archiving_policy"
+                                        },
+                                        "submission_charges": {
+                                            "type": "object",
+                                            "properties": {
+                                                "currency": {
+                                                    "type": "string"
+                                                },
+                                                "average_price": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "apc"
+                                        },
+                                        "author_publishing_rights": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "publishing_rights": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "author_publishing_rights"
+                                        },
+                                        "link": {
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "title": "link"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "oa_start": {
+                                            "type": "object",
+                                            "properties": {
+                                                "volume": {
+                                                    "type": "string"
+                                                },
+                                                "number": {
+                                                    "type": "string"
+                                                },
+                                                "year": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "oa_start"
+                                        },
+                                        "keywords": {
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "apc": {
+                                            "type": "object",
+                                            "properties": {
+                                                "currency": {
+                                                    "type": "string"
+                                                },
+                                                "average_price": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "apc"
+                                        },
+                                        "editorial_review": {
+                                            "type": "object",
+                                            "properties": {
+                                                "process": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "editorial_review"
+                                        },
+                                        "author_copyright": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "copyright": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "author_copyright"
+                                        },
+                                        "institution": {
+                                            "type": "string"
+                                        },
+                                        "subject": {
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "code": {
+                                                        "type": "string"
+                                                    },
+                                                    "term": {
+                                                        "type": "string"
+                                                    },
+                                                    "scheme": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "title": "subject"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "deposit_policy": {
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "license": {
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "url": {
+                                                        "type": "string"
+                                                    },
+                                                    "NC": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "ND": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "embedded_example_url": {
+                                                        "type": "string"
+                                                    },
+                                                    "SA": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "BY": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "title": "license"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "article_statistics": {
+                                            "type": "object",
+                                            "properties": {
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "statistics": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "title": "article_statistics"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "author_pays_url": {
+                                            "type": "string"
+                                        },
+                                        "country": {
+                                            "type": "string"
+                                        },
+                                        "publication_time": {
+                                            "type": "string"
+                                        },
+                                        "publisher": {
+                                            "type": "string"
+                                        },
+                                        "submission_charges_url": {
+                                            "type": "string"
+                                        },
+                                        "alternative_title": {
+                                            "type": "string"
+                                        },
+                                        "persistent_identifier_scheme": {
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "type": "array"
+                                        },
+                                        "oa_end": {
+                                            "type": "object",
+                                            "properties": {
+                                                "volume": {
+                                                    "type": "string"
+                                                },
+                                                "number": {
+                                                    "type": "string"
+                                                },
+                                                "year": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "title": "oa_end"
+                                        },
+                                        "provider": {
+                                            "type": "string"
+                                        },
+                                        "identifier": {
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "title": "identifier"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "title": "bibjson"
+                                }
+                            },
+                            "title": "Journal"
+                        },
+                        "type": "array"
+                    },
+                    "page": {
+                        "type": "integer"
+                    }
+                },
+                "title": "Journal search"
+            }
+        },
+        "400": {
+            "description": "Bad Request"
+        }
+    },
+    "parameters": [
+        {
+            "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>",
+            "required": true,
+            "type": "string",
+            "name": "api_key",
+            "in": "query"
+        },
+        {
+            "description": "<div class=\"search-query-docs\"> What you are searching for, e.g. computers <br> <br> You can search inside any field you see in the results or the schema. <a href=\"#specific_field_search\">More details</a> <br> For example, to search for all journals tagged with the keyword \"heritage\" <pre>bibjson.keywords:heritage</pre> <a href=\"#short_field_names\">Short-hand names are available</a> for some fields <pre>issn:1874-9496</pre> <pre>publisher:dove</pre> </div>",
+            "required": true,
+            "type": "string",
+            "name": "search_query",
+            "in": "path"
+        },
+        {
+            "description": "Which page of the results you wish to see.",
+            "required": false,
+            "type": "integer",
+            "name": "page",
+            "in": "query"
+        },
+        {
+            "description": "How many results per page you wish to see, the default is 10.",
+            "required": false,
+            "type": "integer",
+            "name": "pageSize",
+            "in": "query"
+        },
+        {
+            "required": false,
+            "type": "string",
+            "description": "<div> Substitutions are also available here for convenience <ul> <li>title - order by the normalised, unpunctuated version of the title</li> <li>issn - sort by issn</li> </ul> For example <pre>title:asc</pre> <pre>issn:desc</pre> </div>",
+            "in": "query",
+            "name": "sort"
+        }
+    ],
+    "tags": [
+        "Search"
+    ]
+}

@@ -78,6 +78,18 @@ MAIL_PORT = 25              # default 25
 #MAIL_SUPPRESS_SEND         # default app.testing
 
 # ========================
+# workflow email notification settings
+MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
+ED_IDLE_WEEKS = 3           # weeks before the editor is warned about idle applications in their group
+ASSOC_ED_IDLE_DAYS = 10
+ASSOC_ED_IDLE_WEEKS = 3
+
+# Which statuses the notification queries should be filtered to show
+MAN_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed', 'on hold']
+ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed']
+ASSOC_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress']
+
+# ========================
 # user login settings
 
 # amount of time a reset token is valid for (86400 is 24 hours)
@@ -350,6 +362,9 @@ BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a
 # legacy route to that file)
+# Changing this will not change the actual folder that Flask serves
+# static files from.
+# http://flask.pocoo.org/snippets/102/
 STATIC_DIR = os.path.join(ROOT_DIR, "portality", "static")
 
 
@@ -409,6 +424,10 @@ BITLY_SHORTENING_API_URL = "https://api-ssl.bitly.com/v3/shorten"
 BITLY_OAUTH_TOKEN = ""
 
 # =====================================
+# when dates.format is called without a format argument, what format to use?
+# FIXME: this is actually wrong - should really use the timezone correctly
+DEFAULT_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 # date formats that we know about, and should try, in order, when parsing
 DATE_FORMATS = [
     "%Y-%m-%dT%H:%M:%SZ",   # e.g. 2014-09-23T11:30:45Z

@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-# from flask.ext.testing import TestCase
+from doajtest.fixtures import ApplicationFixtureFactory
 
 import re
 from copy import deepcopy
@@ -315,7 +315,7 @@ class TestEditorAppReview(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the publisher's reapplication form
+    # Tests on the editor's reapplication form
     ###########################################################
 
     def test_01_editor_review_success(self):
@@ -381,3 +381,30 @@ class TestEditorAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert True # gives us a place to drop a break point later if we need it
+
+    def test_02_classification_required(self):
+        # Check we can mark an application 'ready' with a subject classification present
+        in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        in_progress_application.set_application_status("in progress")
+
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=in_progress_application)
+
+        # Make changes to the application status via the form, check it validates
+        fc.form.application_status.data = "ready"
+
+        assert fc.validate()
+
+        # Without a subject classification, we should not be able to set the status to 'ready'
+        no_class_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        del no_class_application.data['bibjson']['subject']
+        fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=no_class_application)
+        # Make changes to the application status via the form
+        assert fc.source.bibjson().subjects() == []
+        fc.form.application_status.data = "ready"
+
+        assert not fc.validate()
+
+        # However, we should be able to set it to a different status rather than 'ready'
+        fc.form.application_status.data = "pending"
+
+        assert fc.validate()

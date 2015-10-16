@@ -2,14 +2,6 @@
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
-## Deployment
-We're running supervisord on our server. Every time you push changes, do
-    
-    git pull  # or git clone https://github.com/DOAJ/doaj.git if deploying for the first time
-    git submodule init  # if this is the first time you're deploying the app, but won't hurt if it's not
-    git submodule update  # in case one of the repo's submodules are at a newer commit now
-    sudo supervisorctl restart doaj
-
 ## Setting up the software
 
 ### Elasticsearch
@@ -258,12 +250,13 @@ It is likely that history records will only be created upon request by the admin
     "id" : "<some opaque identifier>",
     "admin" : {
         "in_doaj" : true|false,
-        "publisher_record_id" : "<publisher identifier for item>"
+        "publisher_record_id" : "<publisher identifier for item>",
+        "upload_id" : "<opaque identifier>"
     },
     "bibjson" : {
         "title" : "<title of the article>",
         "identifier": [
-            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"},
+            {"type" : "doi", "id" : "<doi>"},
             {"type" : "pissn", "id" : "<print issn>"},
             {"type" : "eissn", "id" : "<electronic issn>"}
         ],
@@ -281,7 +274,7 @@ It is likely that history records will only be created upon request by the admin
                     "open_access": true|false,
                 }
             ],
-            "language" : "<language of journal as a whole>",
+            "language" : "[list of journal's languages]",
             "country" : "<country of publication>"
         },
         "year" : "<year of publication>",
@@ -292,7 +285,7 @@ It is likely that history records will only be created upon request by the admin
             {
                 "url" : "<fulltext url>",
                 "type" : "fulltext",
-                "content-type" : "<content type of resource>"
+                "content_type" : "<content type of resource>"
             }
         ],
         "abstract" : "<the abstract>",
@@ -306,10 +299,11 @@ It is likely that history records will only be created upon request by the admin
         "keywords" : [<list of free text keywords>],
         "subject" : [
             {
-                "scheme" : "<subject scheme>",
-                "term" : "<subject term>"
+                "scheme" : "<scheme>", 
+                "term" : "<term>",
+                "code" : "<code>"
             }
-        ]
+        ],
     },
     "history" : [
         {
@@ -332,7 +326,7 @@ It is likely that history records will only be created upon request by the admin
         "asciiunpunctitle" : "<ascii-folded title without puncuation>"
     },
     "created_date" : "<date created>",
-    "last_modified" : "<date record last modified>"
+    "last_updated" : "<date record last modified>"
 }
 ```
 

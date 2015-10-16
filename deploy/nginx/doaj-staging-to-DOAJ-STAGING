@@ -30,10 +30,12 @@ server {
     proxy_read_timeout 600s;
 
     location / {
-	proxy_pass https://95.85.48.213;
+	    proxy_pass https://95.85.48.213;
         proxy_redirect off;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        include /home/cloo/repl/staging/doaj/src/doaj/deploy/nginx/enable-cors;
     }
 }

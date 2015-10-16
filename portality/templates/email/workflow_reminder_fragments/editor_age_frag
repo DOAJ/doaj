@@ -1,0 +1,3 @@
+Your Editor Group, "{{ ed_group }}", has {{ num }} application(s) which have been assigned to an Associate Editor but have been idle for at least {{ x_weeks }} weeks.
+These can be viewed at the following url:
+{{ url }}

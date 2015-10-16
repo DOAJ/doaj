@@ -4,8 +4,11 @@ from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
 class JournalFixtureFactory(object):
     @staticmethod
-    def make_journal_source(in_doaj=False):
+    def make_journal_source(in_doaj=False, include_obsolete_fields=False):
         template = deepcopy(JOURNAL_SOURCE)
+        if include_obsolete_fields:
+            template['bibjson']['oa_start'] = JOURNAL_OBSOLETE_OA_START
+            template['bibjson']['oa_end'] = JOURNAL_OBSOLETE_OA_END
         template['admin']['in_doaj'] = in_doaj
         return template
 
@@ -45,6 +48,10 @@ class JournalFixtureFactory(object):
     @staticmethod
     def make_journal_form_info():
         return deepcopy(JOURNAL_FORMINFO)
+
+    @staticmethod
+    def make_journal_apido_struct():
+        return deepcopy(JOURNAL_APIDO_STRUCT)
 
 JOURNAL_SOURCE = {
     "id": "abcdefghijk_journal",
@@ -154,9 +161,22 @@ JOURNAL_SOURCE = {
         "owner": "Owner",
         "editor_group": "editorgroup",
         "editor": "associate",
-        "seal": True,
+        "seal": True
     }
 }
+
+JOURNAL_OBSOLETE_OA_START = {
+    "volume": "1",
+    "number": "1",
+    "year": "1980",  # some journals do have those as strings in live
+}
+
+JOURNAL_OBSOLETE_OA_END = {  # the entire oa_end is obsolete
+    "volume": "10",
+    "number": "10",
+    "year": "1985",
+}
+
 
 JOURNAL_SOURCE_WITH_LEGACY_INFO = deepcopy(JOURNAL_SOURCE)
 JOURNAL_SOURCE_WITH_LEGACY_INFO['bibjson']["author_pays"] = "Y"
@@ -254,3 +274,192 @@ for n in notes:
     JOURNAL_FORM[notekey] = n.get("note")
     JOURNAL_FORM[datekey] = n.get("date")
     i += 1
+
+JOURNAL_APIDO_STRUCT = {
+    "objects": ["bibjson", "admin"],
+    "fields": {
+        "id": {"coerce": "unicode"},
+        "created_date": {"coerce": "utcdatetime"},
+        "last_updated": {"coerce": "utcdatetime"}
+    },
+    "structs": {
+        "admin": {
+            "fields": {
+                "in_doaj": {"coerce": "bool", "get__default": False},
+                "ticked": {"coerce": "bool", "get__default": False},
+                "seal": {"coerce": "bool", "get__default": False},
+                "owner": {"coerce": "unicode"},
+            },
+            "lists": {
+                "contact": {"contains": "object"}
+            },
+            "structs": {
+                "contact": {
+                    "fields": {
+                        "email": {"coerce": "unicode"},
+                        "name": {"coerce": "unicode"},
+                    }
+                }
+            }
+        },
+        "bibjson": {
+            "fields": {
+                "allows_fulltext_indexing": {"coerce": "bool"},
+                "alternative_title": {"coerce": "unicode"},
+                "apc_url": {"coerce": "url"},
+                "country": {"coerce": "country_code"},
+                "institution": {"coerce": "unicode"},
+                "provider": {"coerce": "unicode"},
+                "publication_time": {"coerce": "integer"},
+                "publisher": {"coerce": "unicode"},
+                "submission_charges_url": {"coerce": "url"},
+                "title": {"coerce": "unicode"},
+            },
+            "lists": {
+                "deposit_policy": {"coerce": "deposit_policy", "contains": "field"},
+                "format": {"coerce": "format", "contains": "field"},
+                "identifier": {"contains": "object"},
+                "keywords": {"coerce": "unicode", "contains": "field"},
+                "language": {"coerce": "isolang_2letter", "contains": "field"},
+                "license": {"contains": "object"},
+                "link": {"contains": "object"},
+                "persistent_identifier_scheme": {"coerce": "persistent_identifier_scheme", "contains": "field"},
+                "subject": {"contains": "object"}
+            },
+            "objects": [
+                "apc",
+                "archiving_policy",
+                "article_statistics",
+                "author_copyright",
+                "author_publishing_rights",
+                "editorial_review",
+                "oa_start",
+                "oa_end",
+                "plagiarism_detection",
+                "submission_charges",
+            ],
+
+            "structs": {
+                "apc": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
+                    }
+                },
+
+                "archiving_policy": {               # NOTE: this is not the same as the storage model, so beware when working with this
+                    "fields": {
+                        "url": {"coerce": "url"},
+                    },
+                    "lists": {
+                        "policy": {"coerce": "unicode", "contains": "object"},
+                    },
+
+                    "structs" : {
+                        "policy" : {
+                            "fields" : {
+                                "name" : {"coerce": "unicode"},
+                                "domain" : {"coerce" : "unicode"}
+                            }
+                        }
+                    }
+                },
+
+                "article_statistics": {
+                    "fields": {
+                        "statistics": {"coerce": "bool"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "author_copyright": {
+                    "fields": {
+                        "copyright": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "author_publishing_rights": {
+                    "fields": {
+                        "publishing_rights": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "editorial_review": {
+                    "fields": {
+                        "process": {"coerce": "unicode", "allowed_values" : ["Editorial review", "Peer review", "Blind peer review", "Double blind peer review", "Open peer review", "None"]},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "identifier": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "id": {"coerce": "unicode"},
+                    }
+                },
+
+                "license": {
+                    "fields": {
+                        "title": {"coerce": "license"},
+                        "type": {"coerce": "license"},
+                        "url": {"coerce": "url"},
+                        "version": {"coerce": "unicode"},
+                        "open_access": {"coerce": "bool"},
+                        "BY": {"coerce": "bool"},
+                        "NC": {"coerce": "bool"},
+                        "ND": {"coerce": "bool"},
+                        "SA": {"coerce": "bool"},
+                        "embedded": {"coerce": "bool"},
+                        "embedded_example_url": {"coerce": "url"},
+                    }
+                },
+
+                "link": {
+                    "fields": {
+                        "type": {"coerce": "unicode"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "oa_start": {
+                    "fields": {
+                        "year": {"coerce": "integer"},
+                        "volume": {"coerce": "integer"},
+                        "number": {"coerce": "integer"},
+                    }
+                },
+
+                "oa_end": {
+                    "fields": {
+                        "year": {"coerce": "integer"},
+                        "volume": {"coerce": "integer"},
+                        "number": {"coerce": "integer"},
+                    }
+                },
+
+                "plagiarism_detection": {
+                    "fields": {
+                        "detection": {"coerce": "bool"},
+                        "url": {"coerce": "url"},
+                    }
+                },
+
+                "submission_charges": {
+                    "fields": {
+                        "currency": {"coerce": "currency_code"},
+                        "average_price": {"coerce": "integer"}
+                    }
+                },
+                "subject": {
+                    "fields": {
+                        "scheme": {"coerce": "unicode"},
+                        "term": {"coerce": "unicode"},
+                        "code": {"coerce": "unicode"},
+                    }
+                }
+            }
+        }
+    }
+}

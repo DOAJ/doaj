@@ -1,6 +1,0 @@
-Dear {{ editor }},
-
-A new application for the journal "{{ journal_name }}" has been assigned to your Editor Group by a Managing Editor.
-You may access the application in your Editor Area: {{ url_root }}/editor/ .
-
-The DOAJ Team

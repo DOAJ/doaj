@@ -23,7 +23,6 @@ class EditorGroup(DomainObject):
     @classmethod
     def groups_by_associate(cls, associate):
         q = EditorGroupMemberQuery(associate=associate)
-        print q.query()
         iter = cls.iterate(q.query(), page_size=100)
         return iter
 

@@ -6,6 +6,7 @@
 # not on PyPI)
 -e git+https://github.com/CottageLabs/esprit.git@f65e471ecdcd30ad970094a2e4d6789ea62424ae#egg=esprit
 -e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
+-e git+https://github.com/CottageLabs/flask-swagger.git@4b6cdc7f40617585a203c95166678dba228b72e8#egg=flask-swagger
 
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

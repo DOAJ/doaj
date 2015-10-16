@@ -4,8 +4,10 @@ from portality.core import app
 
 import uuid
 
+
 class EmailException(Exception):
     pass
+
 
 # Flask-Mail version of email service from util.py
 def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_body=None, **template_params):
@@ -14,6 +16,7 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
 
     # ensure that email isn't sent if it is disabled
     if not app.config.get("ENABLE_EMAIL", False):
+        app.logger.info("Email template {0} called to send, but email has been disabled.\nto:{1}\tsubject:{2}".format(template_name, to, subject))
         return
 
     assert type(to) == list
@@ -44,14 +47,12 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
     # Get the body text from the msg_body parameter (for a contact form),
     # or render from a template.
     # TODO: This could also find and render an HTML template if present
-    appcontext = True
     if msg_body:
         plaintext_body = msg_body
     else:
         try:
             plaintext_body = render_template(template_name, **unicode_params)
         except:
-            appcontext = False
             with app.test_request_context():
                 plaintext_body = render_template(template_name, **unicode_params)
 
@@ -68,21 +69,16 @@ def send_mail(to, fro, subject, template_name=None, bcc=None, files=None, msg_bo
                   date=None,
                   charset=None,
                   extra_headers=None
-    )
+                  )
 
-    if appcontext:
+    try:
         mail = Mail(app)
-        try:
+        with app.app_context():
             mail.send(msg)
-        except Exception as e:
-            raise EmailException(e)
-    else:
-        with app.test_request_context():
-            mail = Mail(app)
-            try:
-                mail.send(msg)
-            except Exception as e:
-                raise EmailException(e)
+            app.logger.info("Email template {0} sent.\nto:{1}\tsubject:{2}".format(template_name, to, subject))
+    except Exception as e:
+        raise EmailException(e)
+
 
 def to_unicode(val):
     if isinstance(val, unicode):
@@ -94,6 +90,7 @@ def to_unicode(val):
             raise ValueError("Could not decode string")
     else:
         return val
+
 
 def make_attachment(filename, content_type, data, disposition=None, headers=None):
     """

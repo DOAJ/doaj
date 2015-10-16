@@ -1,11 +1,12 @@
 from portality.dao import DomainObject
-from portality.models import GenericBibJSON
+from portality.models import GenericBibJSON, Journal
 from copy import deepcopy
 from datetime import datetime
 from portality import xwalk
 
 import string
 from unidecode import unidecode
+
 
 class Article(DomainObject):
     __type__ = "article"
@@ -155,6 +156,58 @@ class Article(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
+
+    def add_journal_metadata(self):
+        """
+        this function makes sure the article is populated
+        with all the relevant info from its owning parent object
+        """
+        bibjson = self.bibjson()
+
+        # first, get the ISSNs associated with the record
+        pissns = bibjson.get_identifiers(bibjson.P_ISSN)
+        eissns = bibjson.get_identifiers(bibjson.E_ISSN)
+        allissns = list(set(pissns + eissns))
+
+        # find a matching journal record from the index
+        journal = None
+        for issn in allissns:
+            journals = Journal.find_by_issn(issn)
+            if len(journals) > 0:
+                # there should only ever be one, so take the first one
+                journal = journals[0]
+                break
+
+        # we were unable to find a journal
+        if journal is None:
+            return False
+
+        # FIXME: use the journal model API
+        # if we get to here, we have a journal record we want to pull data from
+        jbib = journal.bibjson()
+
+        for s in jbib.subjects():
+            bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
+
+        if jbib.title is not None:
+            bibjson.journal_title = jbib.title
+
+        if jbib.get_license() is not None:
+            lic = jbib.get_license()
+            bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
+
+        if jbib.language is not None:
+            bibjson.journal_language = jbib.language
+
+        if jbib.country is not None:
+            bibjson.journal_country = jbib.country
+
+        if jbib.publisher:
+            bibjson.publisher = jbib.publisher
+
+        indoaj = journal.is_in_doaj()
+        self.set_in_doaj(indoaj)
+        return True
 
     def merge(self, old, take_id=True):
         # this takes an old version of the article and brings

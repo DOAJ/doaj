@@ -1,0 +1,1 @@
+{{ num_idle }} application(s) are assigned to an Associate Editor or Editor but have not been updated for {{ x_weeks }} weeks or more.

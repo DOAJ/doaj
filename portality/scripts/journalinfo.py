@@ -16,7 +16,7 @@ total=0
 article_iterator = models.Article.iterall(page_size=5000)
 batch = []
 for a in article_iterator:
-    xwalk.add_journal_info(a)
+    a.add_journal_metadata()
     a.prep()
     batch.append(a.data)
     

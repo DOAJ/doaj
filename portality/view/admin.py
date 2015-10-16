@@ -9,6 +9,7 @@ import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url, jsonp
+from portality.core import app
 
 from portality.view.forms import EditorGroupForm
 
@@ -48,7 +49,7 @@ def journals_list():
         try:
             query = json.loads(request.values.get("q"))
         except:
-            print request.values.get("q")
+            app.logger.warn("Bad Request at admin/journals: " + str(request.values.get("q")))
             abort(400)
 
         # get the total number of journals to be affected
@@ -69,7 +70,7 @@ def journals_list():
         try:
             query = json.loads(request.data)
         except:
-            print request.data
+            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part
@@ -103,7 +104,7 @@ def articles_list():
         try:
             query = json.loads(request.data)
         except:
-            print request.data
+            app.logger.warn("Bad Request at admin/journals: " + str(request.data))
             abort(400)
 
         # get only the query part

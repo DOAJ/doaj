@@ -1,0 +1,3 @@
+There are {{ num }} application(s) currently assigned to your Editor Group, "{{ ed_group }}", which have no Associate Editor assigned.
+You can view these in the Editor area:
+{{ url }}

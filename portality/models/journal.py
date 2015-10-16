@@ -546,6 +546,20 @@ class Journal(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["bulk_upload"] = bulk_upload_id
 
+    def set_last_manual_update(self, date=None):
+        if date is None:
+            self.data['last_manual_update'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+        else:
+            self.data['last_manual_update'] = date
+
+    @property
+    def last_manual_update(self):
+        return self.data.get('last_manual_update')
+
+    @property
+    def last_manual_update_timestamp(self):
+        return datetime.strptime(self.data.get('last_manual_update'), '%Y-%m-%dT%H:%M:%SZ')
+
     def _generate_index(self):
         # the index fields we are going to generate
         issns = []
@@ -984,6 +998,24 @@ class JournalBibJSON(GenericBibJSON):
     @property
     def submission_charges(self):
         return self.bibjson.get("submission_charges", {})
+
+    """
+    FIXME: when the models are updated, we want to change the storage structure to
+    {
+        "other" : "other value"
+        "nat_lib" : "library value",
+        "known" : ["known values"],
+        "url" : "url>
+    }
+    The below methods then need to receive and expose data in the original form
+    {
+        "policy" : [
+            "<known policy type (e.g. LOCKSS)>",
+            ["<policy category>", "<previously unknown policy type>"]
+        ],
+        "url" : "<url to policy information page>"
+    }
+    """
 
     def set_archiving_policy(self, policies, policy_url):
         if "archiving_policy" not in self.bibjson:
