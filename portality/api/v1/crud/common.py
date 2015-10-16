@@ -47,6 +47,6 @@ class CrudApi(Api):
     @classmethod
     def _build_swag_response(cls, template):
         cls._add_swag_tag(template)
-        if hasattr(cls, 'API_KEY_CAN_BE_OPTIONAL'):
-            cls._add_api_key(template, optional=cls.API_KEY_CAN_BE_OPTIONAL)
+        if hasattr(cls, 'API_KEY_OPTIONAL'):
+            cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
         return template

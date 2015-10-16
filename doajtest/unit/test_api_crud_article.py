@@ -143,6 +143,8 @@ class TestCrudArticle(DoajTestCase):
             data = {"some" : {"junk" : "data"}}
             a = ArticlesCrudApi.create(data, account)
 
+        # TODO add test for when you're trying to create an article for a journal not owned by you
+
     def test_04_coerce(self):
         data = ArticleFixtureFactory.make_article_source()
 

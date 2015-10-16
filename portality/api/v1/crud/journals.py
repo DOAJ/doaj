@@ -8,7 +8,7 @@ from copy import deepcopy
 
 class JournalsCrudApi(CrudApi):
 
-    API_KEY_CAN_BE_OPTIONAL = True
+    API_KEY_OPTIONAL = True
     SWAG_TAG = 'CRUD Journals'
     SWAG_ID_PARAM = {
         "description": "<div class=\"search-query-docs\">DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",

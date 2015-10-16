@@ -9,7 +9,7 @@ from copy import deepcopy
 
 class ApplicationsCrudApi(CrudApi):
 
-    API_KEY_CAN_BE_OPTIONAL = False
+    API_KEY_OPTIONAL = False
     SWAG_TAG = 'CRUD Applications'
     SWAG_ID_PARAM = {
         "description": "<div class=\"search-query-docs\">DOAJ application ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .</div>",
