@@ -5,4 +5,4 @@ Your application for "{{ application_title }}" has been assigned to an editor fo
 The DOAJ Team
 
 ***
-Please do not reply to this email.
+This is an automated message. Please do not reply to this email.

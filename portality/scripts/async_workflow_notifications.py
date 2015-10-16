@@ -319,7 +319,7 @@ def send_emails():
 
     for (email, (to_name, paragraphs)) in emails_dict.iteritems():
         pre = 'Dear ' + to_name + ',\n\n'
-        post = '\n\nThe DOAJ Team'
+        post = '\n\nThe DOAJ Team\n\n***\nThis is an automated message. Please do not reply to this email.'
         full_body = pre + '\n\n'.join(paragraphs) + post
 
         app_email.send_mail(to=[email],
