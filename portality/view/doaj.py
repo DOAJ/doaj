@@ -260,7 +260,7 @@ def article_page(identifier=None):
     # identifier must be the article id
     article = models.Article.pull(identifier)
 
-    if article is None:
+    if article is None or not article.is_in_doaj():
         abort(404)
 
     # find the related journal record
