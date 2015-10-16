@@ -9,6 +9,16 @@ from portality.core import app
 from portality.models import Account
 
 
+def swag(swag_summary, swag_spec):
+    """ Decorator for API functions, adding swagger info to the swagger spec."""
+    def decorator(f):
+        f.summary = swag_summary
+        f.swag = swag_spec
+        return f
+
+    return decorator
+
+
 def api_key_required(fn):
     """ Decorator for API functions, requiring a valid key to find a user """
     @wraps(fn)

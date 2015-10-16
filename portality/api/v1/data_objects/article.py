@@ -136,12 +136,17 @@ BASE_ARTICLE_COERCE["link_type"] = dataobj.string_canonicalise(["fulltext"], all
 BASE_ARTICLE_COERCE["link_type_optional"] = dataobj.string_canonicalise(["fulltext"], allow_fail=True)
 BASE_ARTICLE_COERCE["link_content_type"] = dataobj.string_canonicalise(["PDF", "HTML", "ePUB", "XML"], allow_fail=True)
 
+BASE_ARTICLE_SWAGGER_TRANS = deepcopy(dataobj.DataObj.DEFAULT_SWAGGER_TRANS)
+BASE_ARTICLE_SWAGGER_TRANS["link_type"] = {"type": "string", "format": "link_type"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+BASE_ARTICLE_SWAGGER_TRANS["link_type_optional"] = {"type": "string", "format": "link_type_optional"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+BASE_ARTICLE_SWAGGER_TRANS["link_content_type"] = {"type": "string", "format": "link_content_type"},  # TODO extend swagger-ui with support for this format and let it produce example values etc. on the front-end
+
 
 class IncomingArticleDO(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
         self._add_struct(INCOMING_ARTICLE_REQUIRED)
-        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE)
+        super(IncomingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     def custom_validate(self):
         # only attempt to validate if this is not a blank object
@@ -199,7 +204,7 @@ class IncomingArticleDO(dataobj.DataObj):
 class OutgoingArticleDO(dataobj.DataObj):
     def __init__(self, raw=None):
         self._add_struct(BASE_ARTICLE_STRUCT)
-        super(OutgoingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE)
+        super(OutgoingArticleDO, self).__init__(raw, construct_silent_prune=True, expose_data=True, coerce_map=BASE_ARTICLE_COERCE, swagger_trans=BASE_ARTICLE_SWAGGER_TRANS)
 
     @classmethod
     def from_model(cls, am):

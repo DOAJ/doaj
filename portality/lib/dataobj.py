@@ -218,6 +218,11 @@ class DataObj(object):
     SCHEMA = None
 
     DEFAULT_COERCE = {
+        # NOTE - if you add something to the default coerce, add it to the default swagger
+        # translation dict below as well. Furthermore if you're adding
+        # custom stuff to the coerce, you will likely need to add an entry
+        # to the swagger translation table as well, in the same way you
+        # extend the coerce map.
         "unicode": to_unicode(),
         "utcdatetime": date_str(),
         "integer": to_int(),
@@ -234,7 +239,34 @@ class DataObj(object):
         "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True),
     }
 
-    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False):
+    # Translation between our simple field types and swagger spec types.
+    # For all the ones that have a note to add support to the swagger-ui front-end,
+    # for now those fields will just display whatever is in the "type"
+    # section when viewing the interactive documentation. "type" must be
+    # a valid Swagger type ( https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#data-types )
+    # and "format" will just be ignored if it is not a default format in
+    # the Swagger spec *and* a format that the swagger-ui Javascript library understands.
+    # The spec says it's possible to define your own formats - we'll see.
+    DEFAULT_SWAGGER_TRANS = {
+        # The default translation from our coerce to swagger is {"type": "string"}
+        # if there is no matching entry in the trans dict here.
+        "unicode": {"type": "string"},
+        "utcdatetime": {"type": "string", "format": "date-time"},
+        "integer": {"type": "integer"},
+        "bool": {"type": "boolean"},
+        "float": {"type": "float"},
+        "isolang": {"type": "string", "format": "isolang"},  # TODO extend swagger-ui with isolang format support and let it produce example values etc. on the front-end
+        "url": {"type": "string", "format": "url"},  # TODO add suppport to swagger-ui doc frontend for URL or grab from somewhere we can't be the first!
+        "isolang_2letter": {"type": "string", "format": "isolang-alpha2"},  # TODO add support to swagger-ui front for this
+        "country_code": {"type": "string", "format": "country_code"},  # TODO add support to swagger-ui front for this
+        "currency_code": {"type": "string", "format": "currency_code"},  # TODO add support to swagger-ui front for this
+        "license": {"type": "string", "format": "license_type"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
+        "persistent_identifier_scheme": {"type": "string", "format": "persistent_identifier_scheme"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
+        "format": {"type": "string", "format": "format"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
+        "deposit_policy": {"type": "string", "format": "deposit_policy"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
+    }
+
+    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, swagger_trans=None, construct_silent_prune=False):
         # make a shortcut to the object.__getattribute__ function
         og = object.__getattribute__
 
@@ -243,6 +275,12 @@ class DataObj(object):
             og(self, "_coerce_map")
         except:
             self._coerce_map = coerce_map if coerce_map is not None else deepcopy(self.DEFAULT_COERCE)
+
+        # if no subclass has set the swagger translation dict, then set it from default
+        try:
+            og(self, "_swagger_trans")
+        except:
+            self._swagger_trans = swagger_trans if swagger_trans is not None else deepcopy(self.DEFAULT_SWAGGER_TRANS)
 
         # if no subclass has set the struct, initialise it
         try:
@@ -276,7 +314,7 @@ class DataObj(object):
 
         # restructure the object based on the struct if requried
         if self._struct is not None and raw is not None and construct_raw:
-            self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune)
+            self.data = construct(self.data, self._struct, self._coerce_map, self._swagger_trans, silent_prune=construct_silent_prune)
 
         # run against the old validation routine
         # (now deprecated)
@@ -316,7 +354,7 @@ class DataObj(object):
 
         # this could be an internal attribute from the constructor, so we need to make
         # a special case
-        if key in ["_coerce_map", "_struct", "data", "_properties", "_expose_data"]:
+        if key in ["_coerce_map", "_swagger_trans", "_struct", "data", "_properties", "_expose_data"]:
             return object.__setattr__(self, key, value)
 
         props, data_attrs = self._list_dynamic_properties()
@@ -356,6 +394,50 @@ class DataObj(object):
 
     def json(self):
         return json.dumps(self.data)
+
+    def struct_to_swag(self, struct=None, path=''):
+        '''A recursive function to translate the current DataObject's struct to Swagger Spec.'''
+        # If no struct is specified this is the first call, so set the
+        # operating struct to the entire current DO struct.
+        if not struct:
+            if not self._struct:
+                return
+            struct = self._struct
+
+        swag = {}
+
+        # convert simple fields
+        for simple_field, instructions in struct.get('fields', {}).iteritems():
+            path += simple_field
+            swag[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
+
+        # convert objects
+        for obj in struct.get('objects', []):
+            path += obj if not path else '.' + obj
+            instructions = struct.get('structs', {}).get(obj, {})
+
+            swag[obj] = {}
+            swag[obj]['title'] = obj
+            swag[obj]['type'] = 'object'
+            swag[obj]['properties'] = self.struct_to_swag(struct=instructions, path=path)  # recursive call, process sub-struct(s)
+
+        # convert lists
+        for l, instructions in struct.get('lists', {}).iteritems():
+            path += l if not path else '.' + l
+
+            swag[l] = {}
+            swag[l]['type'] = 'array'
+            swag[l]['items'] = {}
+            if instructions['contains'] == 'field':
+                swag[l]['items']['type'] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
+            elif instructions['contains'] == 'object':
+                swag[l]['items']['type'] = 'object'
+                swag[l]['items']['title'] = l
+                swag[l]['items']['properties'] = self.struct_to_swag(struct=struct.get('structs', {}).get(l, {}), path=path)  # recursive call, process sub-struct(s)
+            else:
+                raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=path))
+
+        return swag
 
     def _get_internal_property(self, path, wrapper=None):
         # pull the object from the structure, to find out what kind of retrieve it needs
@@ -796,7 +878,7 @@ def validate(obj, schema):
 class DataStructureException(Exception):
     pass
 
-def construct(obj, struct, coerce, context="", silent_prune=False):
+def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False):
     """
     {
         "fields" : {
@@ -881,7 +963,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                 raise DataStructureException(e.message)
         else:
             # we need to recurse further down
-            beneath = construct(val, instructions, coerce=coerce, context=context + field_name + ".", silent_prune=silent_prune)
+            beneath = construct(val, instructions, coerce=coerce, swagger_trans=swagger_trans, context=context + field_name + ".", silent_prune=silent_prune)
 
             # what we get back is the correct sub-data structure, which we can then store
             try:
@@ -930,7 +1012,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
                         raise DataStructureException(e.message)
                 else:
                     # we need to recurse further down
-                    beneath = construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
+                    beneath = construct(val, subinst, coerce=coerce, swagger_trans=swagger_trans, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
 
                     # what we get back is the correct sub-data structure, which we can then store
                     try:
