@@ -9,5 +9,3 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 1       5       cron.daily       nice run-parts --report /etc/cron.daily
 7       10      cron.weekly      nice run-parts --report /etc/cron.weekly
 @monthly        15      cron.monthly nice run-parts --report /etc/cron.monthly
-
-1       5     es-backups    su - cloo -c 'export NOW=`date +\%F_\%H\%M\%S` ; export SNAPSHOT="snapshot_"`date +\%F_\%H\%M`; echo -e "\n\nstart timestamp $NOW with snapshot name $SNAPSHOT" >> /home/cloo/cron-logs/es_backups.log && curl -XPUT "http://"`head -n 1 /home/cloo/repl/ips/index | tr -d '\n'`":9200/_snapshot/doaj_s3/$SNAPSHOT" -d '\''{"indices": "doaj"}'\'' >> /home/cloo/cron-logs/es_backups.log 2>&1'
