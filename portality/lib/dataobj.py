@@ -405,25 +405,26 @@ class DataObj(object):
             struct = self._struct
 
         swag = {}
+        newpath = path
 
         # convert simple fields
         for simple_field, instructions in struct.get('fields', {}).iteritems():
-            path += simple_field
+            # no point adding to the path here, it's not gonna recurse any further from this field
             swag[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
 
         # convert objects
         for obj in struct.get('objects', []):
-            path += obj if not path else '.' + obj
+            newpath = obj if not path else path + '.' + obj
             instructions = struct.get('structs', {}).get(obj, {})
 
             swag[obj] = {}
-            swag[obj]['title'] = obj
+            swag[obj]['title'] = newpath
             swag[obj]['type'] = 'object'
-            swag[obj]['properties'] = self.struct_to_swag(struct=instructions, path=path)  # recursive call, process sub-struct(s)
+            swag[obj]['properties'] = self.struct_to_swag(struct=instructions, path=newpath)  # recursive call, process sub-struct(s)
 
         # convert lists
         for l, instructions in struct.get('lists', {}).iteritems():
-            path += l if not path else '.' + l
+            newpath = l if not path else path + '.' + l
 
             swag[l] = {}
             swag[l]['type'] = 'array'
@@ -432,10 +433,10 @@ class DataObj(object):
                 swag[l]['items']['type'] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
             elif instructions['contains'] == 'object':
                 swag[l]['items']['type'] = 'object'
-                swag[l]['items']['title'] = l
-                swag[l]['items']['properties'] = self.struct_to_swag(struct=struct.get('structs', {}).get(l, {}), path=path)  # recursive call, process sub-struct(s)
+                swag[l]['items']['title'] = newpath
+                swag[l]['items']['properties'] = self.struct_to_swag(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
             else:
-                raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=path))
+                raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
 
         return swag
 
