@@ -155,7 +155,7 @@ def search_articles(search_query):
 
 @blueprint.route("/applications", methods=["POST"])
 @api_key_required
-@swag(swag_summary='Create an application', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Create an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def create_application():
     # get the data from the request
     try:
@@ -171,14 +171,14 @@ def create_application():
 
 @blueprint.route("/application/<application_id>", methods=["GET"])
 @api_key_required
-@swag(swag_summary='Retrieve an application', swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Retrieve an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_application(application_id):
     a = ApplicationsCrudApi.retrieve(application_id, current_user)
     return jsonify_models(a)
 
 @blueprint.route("/application/<application_id>", methods=["PUT"])
 @api_key_required
-@swag(swag_summary='Update an application', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Update an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def update_application(application_id):
     # get the data from the request
     try:
@@ -194,7 +194,7 @@ def update_application(application_id):
 
 @blueprint.route("/application/<application_id>", methods=["DELETE"])
 @api_key_required
-@swag(swag_summary='Delete an application', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Delete an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def delete_application(application_id):
     ApplicationsCrudApi.delete(application_id, current_user)
     return no_content()
@@ -205,7 +205,7 @@ def delete_application(application_id):
 
 @blueprint.route("/articles", methods=["POST"])
 @api_key_required
-@swag(swag_summary='Create an article', swag_spec=ArticlesCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Create an article <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesCrudApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def create_article():
     # get the data from the request
     try:
@@ -230,7 +230,7 @@ def retrieve_article(article_id):
 
 @blueprint.route("/articles/<article_id>", methods=["PUT"])
 @api_key_required
-@swag(swag_summary='Update an article', swag_spec=ArticlesCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Update an article <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def update_article(article_id):
     # get the data from the request
     try:
@@ -247,7 +247,7 @@ def update_article(article_id):
 
 @blueprint.route("/articles/<article_id>", methods=["DELETE"])
 @api_key_required
-@swag(swag_summary='Delete an article', swag_spec=ArticlesCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Delete an article <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def delete_article(article_id):
     ArticlesCrudApi.delete(article_id, current_user)
     return no_content()
