@@ -70,8 +70,6 @@ class TestAPIDataObj(DoajTestCase):
         assert do.bibjson.oa_end.volume == int(self.jm.bibjson().oa_end.get('volume'))
         assert do.bibjson.oa_end.number == int(self.jm.bibjson().oa_end.get('number'))
 
-        print do.bibjson.apc.currency
-        print self.jm.bibjson().bibjson
         assert do.bibjson.apc.currency == self.jm.bibjson().apc['currency']
         assert do.bibjson.apc.average_price == self.jm.bibjson().apc['average_price']
         assert do.bibjson.submission_charges.currency == self.jm.bibjson().submission_charges['currency']
