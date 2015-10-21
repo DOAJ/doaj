@@ -95,7 +95,7 @@ class ArticlesCrudApi(CrudApi):
         template['responses']['200']['schema']['properties'] = OutgoingArticleDO().struct_to_swag()
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
-        return cls._build_swag_response(template, api_key_required_override=True)
+        return cls._build_swag_response(template, api_key_optional_override=True)
 
     @classmethod
     def retrieve(cls, id, account):

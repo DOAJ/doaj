@@ -45,17 +45,17 @@ class CrudApi(Api):
         return template
     
     @classmethod
-    def _build_swag_response(cls, template,  api_key_required_override=None):
+    def _build_swag_response(cls, template,  api_key_optional_override=None):
         """
         Construct the swagger response structure upon a template
         :param template
-        :param api_key_required_override: override the class-level value of API_KEY_OPTIONAL
+        :param api_key_optional_override: override the class-level value of API_KEY_OPTIONAL
         :return: an updated template
         """
         template = deepcopy(template)
         cls._add_swag_tag(template)
-        if api_key_required_override is not None:
-            cls._add_api_key(template, optional=api_key_required_override)
+        if api_key_optional_override is not None:
+            cls._add_api_key(template, optional=api_key_optional_override)
         elif hasattr(cls, 'API_KEY_OPTIONAL'):
             cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
         return template
