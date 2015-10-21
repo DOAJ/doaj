@@ -136,7 +136,7 @@ class JournalInformation(Form):
         choices = Choices.download_statistics()
     )
     download_statistics_url = StringField('Enter the URL where this information can be found',
-        [validators.Optional()],
+        [validators.Optional(), URLOptionalScheme()],
     )
     first_fulltext_oa_year = IntegerField('What was the first calendar year in which a complete volume of the journal provided online Open Access content to the Full Text of all articles? (Full Text may be provided as PDFs. Does not apply for new journals.)',
         [validators.DataRequired(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
