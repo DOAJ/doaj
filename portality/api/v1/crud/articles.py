@@ -107,7 +107,7 @@ class ArticlesCrudApi(CrudApi):
 
         # at this point we're happy to return the article if it's
         # meant to be seen by the public
-        if ar.get('admin').get('in_doaj', False):
+        if ar.is_in_doaj():
             return OutgoingArticleDO.from_model(ar)
 
         # as long as authentication (in the layer above) has been successful, and the account exists, then
