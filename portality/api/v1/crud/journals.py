@@ -38,7 +38,7 @@ class JournalsCrudApi(CrudApi):
 
         # at this point we're happy to return the journal if it's
         # meant to be seen by the public
-        if j.get('admin').get('in_doaj', False):
+        if j.is_in_doaj():
             return OutgoingJournal.from_model(j)
 
         # as long as authentication (in the layer above) has been successful, and the account exists, then

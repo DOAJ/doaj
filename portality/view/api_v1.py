@@ -221,7 +221,7 @@ def create_article():
 
 
 @blueprint.route("/articles/<article_id>", methods=["GET"])
-@api_key_required
+@api_key_optional
 @swag(swag_summary='Retrieve an article', swag_spec=ArticlesCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_article(article_id):
     a = ArticlesCrudApi.retrieve(article_id, current_user)
@@ -251,6 +251,10 @@ def update_article(article_id):
 def delete_article(article_id):
     ArticlesCrudApi.delete(article_id, current_user)
     return no_content()
+
+
+#########################################
+## Journal R API
 
 @blueprint.route('/journals/<journal_id>', methods=['GET'])
 @api_key_optional
