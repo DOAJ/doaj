@@ -217,7 +217,7 @@ class JournalInformation(Form):
     license_url = URLField("Enter the URL on your site where your license terms are stated",
         [validators.Optional(), URLOptionalScheme()]
     )
-    open_access = RadioField("Does the journal allow readers to 'read, download, copy, distribute, print, search, or link to the full texts' of its articles?",
+    open_access = RadioField("Does the journal allow readers to <em>read, download, copy, distribute, print, search, or link to the full texts of its articles</em> and allow readers to <em>use them for any other lawful purpose</em>?",
         [validators.DataRequired()],
         choices = Choices.open_access(),
         description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>.',
