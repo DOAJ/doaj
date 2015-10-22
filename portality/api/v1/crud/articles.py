@@ -95,19 +95,25 @@ class ArticlesCrudApi(CrudApi):
         template['responses']['200']['schema']['properties'] = OutgoingArticleDO().struct_to_swag()
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
-        return cls._build_swag_response(template)
+        return cls._build_swag_response(template, api_key_optional_override=True)
 
     @classmethod
     def retrieve(cls, id, account):
+
+        # is the article id valid?
+        ar = models.Article.pull(id)
+        if ar is None:
+            raise Api404Error()
+
+        # at this point we're happy to return the article if it's
+        # meant to be seen by the public
+        if ar.is_in_doaj():
+            return OutgoingArticleDO.from_model(ar)
+
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
-
-        # is the article id valid
-        ar = models.Article.pull(id)
-        if ar is None:
-            raise Api404Error()
 
         # Check we're allowed to retrieve this article
         if not XWalk.is_legitimate_owner(ar, account.id):

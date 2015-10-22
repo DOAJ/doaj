@@ -220,8 +220,11 @@ class TestCrudArticle(DoajTestCase):
         ap.save()
         time.sleep(1)
 
-        # call retrieve on the object
+        # call retrieve on the object with a valid user
         a = ArticlesCrudApi.retrieve(ap.id, account)
+
+        # call retrieve with no user (will return if in_doaj is True)
+        a = ArticlesCrudApi.retrieve(ap.id, None)
 
         # check that we got back the object we expected
         assert isinstance(a, OutgoingArticleDO)
@@ -253,11 +256,12 @@ class TestCrudArticle(DoajTestCase):
         time.sleep(1)
 
         data = ArticleFixtureFactory.make_article_source()
+        data['admin']['in_doaj'] = False
         ap = models.Article(**data)
         ap.save()
         time.sleep(1)
 
-        # no user
+        # should fail when no user and in_doaj is False
         with self.assertRaises(Api401Error):
             a = ArticlesCrudApi.retrieve(ap.id, None)
 

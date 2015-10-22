@@ -43,11 +43,20 @@ class CrudApi(Api):
             api_key_param['description'] = "<div class=\"search-query-docs\"><em>Note this parameter is optional for this route - you could, but don't have to supply a key. Doing so grants you access to records of yours that are not public, in addition to all public records.</em> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>"
         template["parameters"].insert(0, api_key_param)
         return template
-
+    
     @classmethod
-    def _build_swag_response(cls, template):
+    def _build_swag_response(cls, template,  api_key_optional_override=None):
+        """
+        Construct the swagger response structure upon a template
+        :param template
+        :param api_key_optional_override: override the class-level value of API_KEY_OPTIONAL
+        :return: an updated template
+        """
         template = deepcopy(template)
         cls._add_swag_tag(template)
-        if hasattr(cls, 'API_KEY_OPTIONAL'):
+        if api_key_optional_override is not None:
+            cls._add_api_key(template, optional=api_key_optional_override)
+        elif hasattr(cls, 'API_KEY_OPTIONAL'):
             cls._add_api_key(template, optional=cls.API_KEY_OPTIONAL)
         return template
+
