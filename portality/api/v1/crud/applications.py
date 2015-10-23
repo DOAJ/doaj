@@ -82,8 +82,7 @@ class ApplicationsCrudApi(CrudApi):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(cls.SWAG_ID_PARAM)
         template['responses']['200'] = cls.R200
-        template['responses']['200']['schema']['title'] = 'Application schema'
-        template['responses']['200']['schema']['properties'] = OutgoingApplication().struct_to_swag()
+        template['responses']['200']['schema'] = IncomingApplication().struct_to_swag(schema_title='Application schema')
         template['responses']['401'] = cls.R401
         template['responses']['404'] = cls.R404
         return cls._build_swag_response(template)
