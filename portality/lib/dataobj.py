@@ -395,50 +395,65 @@ class DataObj(object):
     def json(self):
         return json.dumps(self.data)
 
-    def struct_to_swag(self, struct=None, path=''):
+    def struct_to_swag(self, struct=None, schema_title='', **kwargs):
+        if not struct:
+            if not self._struct:
+                raise DataSchemaException("No struct to translate to Swagger.")
+            struct = self._struct
+
+        swag = {
+            "properties": self.__struct_to_swag_properties(struct=struct, **kwargs),
+            "required": deepcopy(struct.get('required', []))
+        }
+        if schema_title:
+            swag['title'] = schema_title
+
+        return swag
+
+    def __struct_to_swag_properties(self, struct=None, path=''):
         '''A recursive function to translate the current DataObject's struct to Swagger Spec.'''
         # If no struct is specified this is the first call, so set the
         # operating struct to the entire current DO struct.
-        if not struct:
-            if not self._struct:
-                return
-            struct = self._struct
 
-        swag = {}
-        newpath = path
+        if not isinstance(struct, dict):
+            raise DataSchemaException("The struct whose properties we're translating to Swagger should always be a dict-like object.")
+
+        swag_properties = {}
 
         # convert simple fields
         for simple_field, instructions in struct.get('fields', {}).iteritems():
             # no point adding to the path here, it's not gonna recurse any further from this field
-            swag[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
+            swag_properties[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
 
         # convert objects
         for obj in struct.get('objects', []):
             newpath = obj if not path else path + '.' + obj
             instructions = struct.get('structs', {}).get(obj, {})
 
-            swag[obj] = {}
-            swag[obj]['title'] = newpath
-            swag[obj]['type'] = 'object'
-            swag[obj]['properties'] = self.struct_to_swag(struct=instructions, path=newpath)  # recursive call, process sub-struct(s)
+            swag_properties[obj] = {}
+            swag_properties[obj]['title'] = newpath
+            swag_properties[obj]['type'] = 'object'
+            swag_properties[obj]['properties'] = self.__struct_to_swag_properties(struct=instructions, path=newpath)  # recursive call, process sub-struct(s)
+            swag_properties[obj]['required'] = deepcopy(instructions.get('required', []))
 
         # convert lists
         for l, instructions in struct.get('lists', {}).iteritems():
             newpath = l if not path else path + '.' + l
 
-            swag[l] = {}
-            swag[l]['type'] = 'array'
-            swag[l]['items'] = {}
+            swag_properties[l] = {}
+            swag_properties[l]['type'] = 'array'
+            swag_properties[l]['items'] = {}
             if instructions['contains'] == 'field':
-                swag[l]['items']['type'] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
+                swag_properties[l]['items'] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
             elif instructions['contains'] == 'object':
-                swag[l]['items']['type'] = 'object'
-                swag[l]['items']['title'] = newpath
-                swag[l]['items']['properties'] = self.struct_to_swag(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
+                swag_properties[l]['items']['type'] = 'object'
+                swag_properties[l]['items']['title'] = newpath
+                swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
+                swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
             else:
                 raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
 
-        return swag
+        return swag_properties
 
     def _get_internal_property(self, path, wrapper=None):
         # pull the object from the structure, to find out what kind of retrieve it needs
