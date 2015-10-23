@@ -44,9 +44,13 @@ ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doa
 ln -sf $DIR/nginx/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV
 ln -sf /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-enabled/doaj-$ENV
 
-# prep sym links for gateway
-ln -sf /home/cloo/repl/$ENV/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
+# prep sym links for gateway - note $ENV not used, hardcoded to production repo instead
+ln -sf /home/cloo/repl/production/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-gate
+
+# gateway crons
+sudo ln -sf /home/cloo/repl/production/doaj/src/doaj/deploy/anacrontab-production-gate /etc/anacrontab
+crontab /home/cloo/repl/production/doaj/src/doaj/deploy/crontab-production-gate
 
 # replicate across servers
 /home/cloo/repl/replicate.sh
