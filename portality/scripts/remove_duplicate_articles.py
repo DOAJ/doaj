@@ -32,7 +32,7 @@ if __name__ == "__main__":
     print 'Starting {0} {snapshot} in 5 seconds, Ctrl+C to exit.'.format(start.isoformat(), snapshot=snapshot_report)
     time.sleep(5)
 
-    article_iterator = models.Article.iterall(page_size=5000)
+    article_iterator = models.Article.iterall(page_size=5000)  # FIXME this doesn't do a scroll search, just normal queries, so we're deleting from a list we're modifying! Currently either because of this or what get_duplicate does, this deletes the original article AND the duplicates when an article with duplicates is found.
     for a in article_iterator:
         duplicates = XWalk().get_duplicate(a, all_duplicates=True)
         for d in duplicates:
