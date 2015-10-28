@@ -41,7 +41,7 @@ class XWalk(object):
         # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
     
-    def get_duplicate(self, article, owner=None):
+    def get_duplicate(self, article, owner=None, all_duplicates=False):
         # get the owner's issns
         issns = []
         if owner is not None:
@@ -85,7 +85,7 @@ class XWalk(object):
             # there should only be the one
             doi = dois[0]
             articles = models.Article.duplicates(issns=issns, doi=doi)
-            if len(articles) == 1:
+            if len(articles) == 1 and not all_duplicates:
                 return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
@@ -96,14 +96,17 @@ class XWalk(object):
         if len(urls) > 0:
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
-            if len(articles) == 1:
+            if len(articles) == 1 and not all_duplicates:
                 return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
                 use_fulltext = True # we don't have a definitive answer, but we do have options
-        
-        # now we need to try to do something about multiple hits one one or more of the above
-        if len(possible_articles) > 0:
+
+        if all_duplicates:
+            return possible_articles
+
+        # now we need to try to do something about multiple hits one one or more of the above if needed
+        if not all_duplicates and len(possible_articles) > 0:
             latest = possible_articles[0]
             latest_date = datetime.strptime(latest.last_updated, "%Y-%m-%dT%H:%M:%SZ")
             for a in possible_articles:

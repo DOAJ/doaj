@@ -122,6 +122,16 @@ class TestArticleMatch(DoajTestCase):
         b2.title = "Example B article with a fulltext url"
         b2.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
         a2.save()
+
+        # wait for a bit to create good separation between last_updated times
+        time.sleep(2)
+
+        # create an article which should not be caught by the duplicate detection
+        not_duplicate = models.Article()
+        not_duplicate_bibjson = not_duplicate.bibjson()
+        not_duplicate_bibjson.title = "Example C article with a fulltext url"
+        not_duplicate_bibjson.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf_DIFFERENT", urltype="fulltext")
+        not_duplicate.save()
         
         # pause to allow the index time to catch up
         time.sleep(2)
@@ -138,6 +148,17 @@ class TestArticleMatch(DoajTestCase):
         
         assert d is not None
         assert d.bibjson().title == "Example B article with a fulltext url", d.bibjson().title
+
+        # get the xwalk to determine all duplicates
+        # sort both results and expectations here to avoid false alarm
+        # we don't care about the order of duplicates
+        expected = sorted([a, a2])
+        xwalk = article.XWalk()
+        l = xwalk.get_duplicate(z, all_duplicates=True)
+        assert isinstance(l, list)
+        assert l
+        l.sort()
+        assert expected == l
     
     def test_06(self):
         id1 = uuid.uuid4().hex
