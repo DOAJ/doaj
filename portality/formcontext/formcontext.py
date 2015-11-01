@@ -593,6 +593,19 @@ class ManEdApplicationReview(ApplicationContext):
         else:
             self.form.editor.choices = [("", "")]
 
+        # The first time this is rendered, it needs to populate the editor drop-down from saved group
+        egn = self.source.editor_group
+        if egn is None:
+            self.form.editor.choices = [("", "")]
+        else:
+            eg = models.EditorGroup.pull_by_key("name", egn)
+            if eg is not None:
+                editors = [eg.editor]
+                editors += eg.associates
+                editors = list(set(editors))
+                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+            else:
+                self.form.editor.choices = [("", "")]
 
 class EditorApplicationReview(ApplicationContext):
     """

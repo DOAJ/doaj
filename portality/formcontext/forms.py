@@ -5,7 +5,7 @@ from wtforms import Form, validators
 from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
 from wtforms import widgets
 
-from portality.formcontext.fields import URLField, TagListField, DisabledTextField
+from portality.formcontext.fields import URLField, TagListField, DisabledTextField, PermissiveSelectField
 from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen
 
 from portality.formcontext.choices import Choices
@@ -363,7 +363,7 @@ class Editorial(Form):
     """ Editorial group fields """
 
     editor_group = StringField("Editor Group", [validators.Optional()])
-    editor = SelectField("Assigned to", default="") # choices to be assigned at form render time
+    editor = PermissiveSelectField("Assigned to", default="") # choices to be assigned at form render time
 
 class Workflow(Form):
     """ Administrator workflow field """
