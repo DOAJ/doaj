@@ -467,6 +467,21 @@ class ManEdApplicationReview(ApplicationContext):
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
+    def pre_validate(self):
+        # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
+        editor = self.form.editor.data
+        if editor is not None and editor != "":
+            editor_group_name = self.form.editor_group.data
+            if editor_group_name is not None and editor_group_name != "":
+                eg = models.EditorGroup.pull_by_key("name", editor_group_name)
+                if eg is not None:
+                    all_eds = eg.associates + [eg.editor]
+                    if editor in all_eds:
+                        return  # success - an editor group was found and our editor was in it
+                raise FormContextException("Error: Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+            else:
+                raise FormContextException("An editor has been assigned without an editor group")
+
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
@@ -587,12 +602,6 @@ class ManEdApplicationReview(ApplicationContext):
 
     def _set_choices(self):
         self.form.application_status.choices = choices.Choices.application_status("admin")
-        editor = self.form.editor.data
-        if editor is not None:
-            self.form.editor.choices = [(editor, editor)]
-        else:
-            self.form.editor.choices = [("", "")]
-
         # The first time this is rendered, it needs to populate the editor drop-down from saved group
         egn = self.source.editor_group
         if egn is None:
@@ -1204,6 +1213,21 @@ class ManEdJournalReview(PrivateContext):
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
 
+    def pre_validate(self):
+        # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
+        editor = self.form.editor.data
+        if editor is not None and editor != "":
+            editor_group_name = self.form.editor_group.data
+            if editor_group_name is not None and editor_group_name != "":
+                eg = models.EditorGroup.pull_by_key("name", editor_group_name)
+                if eg is not None:
+                    all_eds = eg.associates + [eg.editor]
+                    if editor in all_eds:
+                        return  # success - an editor group was found and our editor was in it
+                raise FormContextException("Error: Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+            else:
+                raise FormContextException("An editor has been assigned without an editor group")
+
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
 
@@ -1221,11 +1245,19 @@ class ManEdJournalReview(PrivateContext):
 
 
     def _set_choices(self):
-        editor = self.form.editor.data
-        if editor is not None:
-            self.form.editor.choices = [(editor, editor)]
-        else:
+        # The first time this is rendered, it needs to populate the editor drop-down from saved group
+        egn = self.source.editor_group
+        if egn is None:
             self.form.editor.choices = [("", "")]
+        else:
+            eg = models.EditorGroup.pull_by_key("name", egn)
+            if eg is not None:
+                editors = [eg.editor]
+                editors += eg.associates
+                editors = list(set(editors))
+                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+            else:
+                self.form.editor.choices = [("", "")]
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

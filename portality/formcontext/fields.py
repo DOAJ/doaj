@@ -48,7 +48,7 @@ class DisabledTextField(TextField):
 
 
 class PermissiveSelectField(SelectField):
-    """ A SelectField with validation disabled, allowing us to change the choices in JS later without it complaining."""
+    """ A SelectField with validation disabled, allowing us to change the choices in JS and validate later."""
 
     def iter_choices(self):
         for value, label in self.choices:
