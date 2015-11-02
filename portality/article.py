@@ -41,7 +41,7 @@ class XWalk(object):
         # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
     
-    def get_duplicate(self, article, owner=None):
+    def get_duplicate(self, article, owner=None, all_duplicates=False):
         # get the owner's issns
         issns = []
         if owner is not None:
@@ -61,6 +61,7 @@ class XWalk(object):
         # (this isn't as bad as it sounds - the identifiers are pretty reliable, this catches
         # issues like where there are already duplicates in the data, and not matching one
         # of them propagates the issue)
+        # additionally if all_duplicates has been set to True we will return them all to the caller
         possible_articles = []
         
         # first test is the most definitive - does the publisher's record id match
@@ -86,7 +87,11 @@ class XWalk(object):
             doi = dois[0]
             articles = models.Article.duplicates(issns=issns, doi=doi)
             if len(articles) == 1:
-                return articles[0]
+                if all_duplicates:
+                    if articles[0] not in possible_articles:
+                        possible_articles.append(articles[0])
+                else:
+                    return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
                 use_doi = True # we don't have a definitive answer, but we do have options
@@ -97,13 +102,29 @@ class XWalk(object):
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
             if len(articles) == 1:
-                return articles[0]
+                if all_duplicates:
+                    if articles[0] not in possible_articles:
+                        possible_articles.append(articles[0])
+                else:
+                    return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
                 use_fulltext = True # we don't have a definitive answer, but we do have options
-        
-        # now we need to try to do something about multiple hits one one or more of the above
-        if len(possible_articles) > 0:
+
+        if all_duplicates:
+            if article in possible_articles:
+                possible_articles.remove(article)  # if the Elasticsearch ID is the same then
+                    # this is the actual record we are trying to get duplicates for - don't return it
+                    # note that when called with a single article, it will return the article itself
+                    # that seems to have been the behaviour from the beginning
+                    # TODO this needs refactoring.
+                    # It makes 0 sense that XWalk().get_duplicate(article) returns article if no
+                    # duplicates are found. Especially now with XWalk().get_duplicate(article, all_duplicates=True)
+                    # returning [] if there are no duplicates.
+            return possible_articles
+
+        # now we need to try to do something about multiple hits one one or more of the above if needed
+        if not all_duplicates and len(possible_articles) > 0:
             latest = possible_articles[0]
             latest_date = datetime.strptime(latest.last_updated, "%Y-%m-%dT%H:%M:%SZ")
             for a in possible_articles:
@@ -173,8 +194,8 @@ class XWalk(object):
         if len(articles) == 1:
             return articles[0]
         """
-        # else, we have failed to locate or have located too many matches
-        return None
+        # else, we have failed to locate
+        return [] if all_duplicates else None
 
 class FormXWalk(XWalk):
     format_name = "form"
