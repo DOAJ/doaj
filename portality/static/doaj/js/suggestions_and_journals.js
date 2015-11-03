@@ -414,7 +414,7 @@ function setup_remove_button_handler() {
 }
 
 /*
-Permits the Managing Editors to assign editors on the Application and Journal edit forms.
+Permits Managing Editors to assign editors on the Application and Journal edit forms.
  */
 function load_eds_in_group(ed_query_url) {
     var ed_group_name = $("#s2id_editor_group").find('span').text();
@@ -425,7 +425,7 @@ function load_eds_in_group(ed_query_url) {
         url: ed_query_url,
         success: function(resp)
         {
-            // Get the options for the dropdown fron our ajax request
+            // Get the options for the drop-down from our ajax request
             var assoc_options = [];
             if (resp != null)
             {
@@ -441,7 +441,7 @@ function load_eds_in_group(ed_query_url) {
                 assoc_options = [["", ""]];
             }
 
-            // Set the editor dropdown options to be the chosen group's associates
+            // Set the editor drop-down options to be the chosen group's associates
             var ed_field = $("#editor");
             ed_field.empty();
 
