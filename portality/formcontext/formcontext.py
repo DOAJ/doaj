@@ -289,13 +289,12 @@ class PrivateContext(FormContext):
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
 
-    def _populate_editor_field(self):
+    def _populate_editor_field(self, editor_group_name):
         """Set the editor field choices from a given editor group name"""
-        egn = self.source.editor_group
-        if egn is None:
+        if editor_group_name is None:
             self.form.editor.choices = [("", "")]
         else:
-            eg = models.EditorGroup.pull_by_key("name", egn)
+            eg = models.EditorGroup.pull_by_key("name", editor_group_name)
             if eg is not None:
                 editors = [eg.editor]
                 editors += eg.associates
@@ -623,7 +622,8 @@ class ManEdApplicationReview(ApplicationContext):
         self.form.application_status.choices = choices.Choices.application_status("admin")
 
         # The first time the form is rendered, it needs to populate the editor drop-down from saved group
-        self._populate_editor_field()
+        egn = self.form.editor_group.data
+        self._populate_editor_field(egn)
 
 class EditorApplicationReview(ApplicationContext):
     """
@@ -742,7 +742,8 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status("editor")
 
         # get the editor group from the source because it isn't in the form
-        self._populate_editor_field()
+        egn = self.source.editor_group
+        self._populate_editor_field(egn)
 
 
 class AssEdApplicationReview(ApplicationContext):
@@ -1233,7 +1234,8 @@ class ManEdJournalReview(PrivateContext):
 
     def _set_choices(self):
         # The first time this is rendered, it needs to populate the editor drop-down from saved group
-        self._populate_editor_field()
+        egn = self.form.editor_group.data
+        self._populate_editor_field(egn)
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -1332,7 +1334,8 @@ class EditorJournalReview(PrivateContext):
             raise FormContextException("You cannot set choices for a non-existent source")
 
         # get the editor group from the source because it isn't in the form
-        self._populate_editor_field()
+        egn = self.source.editor_group
+        self._populate_editor_field(egn)
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
