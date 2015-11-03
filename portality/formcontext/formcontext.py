@@ -289,6 +289,36 @@ class PrivateContext(FormContext):
         if apply_notes_by_value:
             self.target.set_notes(tnotes)
 
+    def _populate_editor_field(self):
+        """Set the editor field choices from a given editor group name"""
+        egn = self.source.editor_group
+        if egn is None:
+            self.form.editor.choices = [("", "")]
+        else:
+            eg = models.EditorGroup.pull_by_key("name", egn)
+            if eg is not None:
+                editors = [eg.editor]
+                editors += eg.associates
+                editors = list(set(editors))
+                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
+            else:
+                self.form.editor.choices = [("", "")]
+
+    def _validate_editor_field(self):
+        """ Validate the choice of editor, which could be out of sync with the group in exceptional circumstances """
+        editor = self.form.editor.data
+        if editor is not None and editor != "":
+            editor_group_name = self.form.editor_group.data
+            if editor_group_name is not None and editor_group_name != "":
+                eg = models.EditorGroup.pull_by_key("name", editor_group_name)
+                if eg is not None:
+                    all_eds = eg.associates + [eg.editor]
+                    if editor in all_eds:
+                        return  # success - an editor group was found and our editor was in it
+                raise FormContextException("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+            else:
+                raise FormContextException("An editor has been assigned without an editor group")
+
 
 class ApplicationContext(PrivateContext):
     ERROR_MSG_TEMPLATE = \
@@ -469,18 +499,7 @@ class ManEdApplicationReview(ApplicationContext):
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
-        editor = self.form.editor.data
-        if editor is not None and editor != "":
-            editor_group_name = self.form.editor_group.data
-            if editor_group_name is not None and editor_group_name != "":
-                eg = models.EditorGroup.pull_by_key("name", editor_group_name)
-                if eg is not None:
-                    all_eds = eg.associates + [eg.editor]
-                    if editor in all_eds:
-                        return  # success - an editor group was found and our editor was in it
-                raise FormContextException("Error: Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
-            else:
-                raise FormContextException("An editor has been assigned without an editor group")
+        self._validate_editor_field()
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -602,19 +621,9 @@ class ManEdApplicationReview(ApplicationContext):
 
     def _set_choices(self):
         self.form.application_status.choices = choices.Choices.application_status("admin")
-        # The first time this is rendered, it needs to populate the editor drop-down from saved group
-        egn = self.source.editor_group
-        if egn is None:
-            self.form.editor.choices = [("", "")]
-        else:
-            eg = models.EditorGroup.pull_by_key("name", egn)
-            if eg is not None:
-                editors = [eg.editor]
-                editors += eg.associates
-                editors = list(set(editors))
-                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
-            else:
-                self.form.editor.choices = [("", "")]
+
+        # The first time the form is rendered, it needs to populate the editor drop-down from saved group
+        self._populate_editor_field()
 
 class EditorApplicationReview(ApplicationContext):
     """
@@ -733,18 +742,7 @@ class EditorApplicationReview(ApplicationContext):
             self.form.application_status.choices = choices.Choices.application_status("editor")
 
         # get the editor group from the source because it isn't in the form
-        egn = self.source.editor_group
-        if egn is None:
-            self.form.editor.choices = [("", "")]
-        else:
-            eg = models.EditorGroup.pull_by_key("name", egn)
-            if eg is not None:
-                editors = [eg.editor]
-                editors += eg.associates
-                editors = list(set(editors))
-                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
-            else:
-                self.form.editor.choices = [("", "")]
+        self._populate_editor_field()
 
 
 class AssEdApplicationReview(ApplicationContext):
@@ -1215,18 +1213,7 @@ class ManEdJournalReview(PrivateContext):
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
-        editor = self.form.editor.data
-        if editor is not None and editor != "":
-            editor_group_name = self.form.editor_group.data
-            if editor_group_name is not None and editor_group_name != "":
-                eg = models.EditorGroup.pull_by_key("name", editor_group_name)
-                if eg is not None:
-                    all_eds = eg.associates + [eg.editor]
-                    if editor in all_eds:
-                        return  # success - an editor group was found and our editor was in it
-                raise FormContextException("Error: Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
-            else:
-                raise FormContextException("An editor has been assigned without an editor group")
+        self._validate_editor_field()
 
     def form2target(self):
         self.target = xwalk.JournalFormXWalk.form2obj(self.form)
@@ -1246,18 +1233,7 @@ class ManEdJournalReview(PrivateContext):
 
     def _set_choices(self):
         # The first time this is rendered, it needs to populate the editor drop-down from saved group
-        egn = self.source.editor_group
-        if egn is None:
-            self.form.editor.choices = [("", "")]
-        else:
-            eg = models.EditorGroup.pull_by_key("name", egn)
-            if eg is not None:
-                editors = [eg.editor]
-                editors += eg.associates
-                editors = list(set(editors))
-                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
-            else:
-                self.form.editor.choices = [("", "")]
+        self._populate_editor_field()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -1294,6 +1270,7 @@ class ManEdJournalReview(PrivateContext):
         # make use of the ability to disable validation, otherwise, let it run
         if self.form is not None:
             if self.form.make_all_fields_optional.data:
+                self.pre_validate()
                 return True
 
         return super(ManEdJournalReview, self).validate()
@@ -1355,18 +1332,7 @@ class EditorJournalReview(PrivateContext):
             raise FormContextException("You cannot set choices for a non-existent source")
 
         # get the editor group from the source because it isn't in the form
-        egn = self.source.editor_group
-        if egn is None:
-            self.form.editor.choices = [("", "")]
-        else:
-            eg = models.EditorGroup.pull_by_key("name", egn)
-            if eg is not None:
-                editors = [eg.editor]
-                editors += eg.associates
-                editors = list(set(editors))
-                self.form.editor.choices = [("", "Choose an editor")] + [(editor, editor) for editor in editors]
-            else:
-                self.form.editor.choices = [("", "")]
+        self._populate_editor_field()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this

@@ -126,46 +126,9 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var notes_deletable = true;
-</script>
 
-<script>
-// When the editor group field is changed, refresh the options for editor
-$("#editor_group").change(function() {
-    var ed_group_name = $("#s2id_editor_group").find('span').text();
-    $.ajax({
-        type : "GET",
-        data : {egn : ed_group_name},
-        dataType: "json",
-        url: "{{url_for('admin.eg_associates_dropdown')}}",
-        success: function(resp)
-        {
-            // Get the options for the dropdown fron our ajax request
-            var assoc_options = [];
-            if (resp != null)
-            {
-                assoc_options = [["", "Choose an editor"]];
-
-                for (var i=0; i<resp.length; i++)
-                {
-                    assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
-                }
-            }
-            else
-            {
-                assoc_options = [["", ""]];
-            }
-
-            // Set the editor dropdown options to be the chosen group's associates
-            var ed_field = $("#editor");
-            ed_field.empty();
-
-            for (var j=0; j < assoc_options.length; j++) {
-                ed_field.append(
-                    $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
-                );
-            }
-        }
-    })
-});
+    // When the editor group field is changed, refresh the options for editor
+    var ed_query_url = "{{url_for('admin.eg_associates_dropdown')}}";
+    $("#editor_group").change(function() {load_eds_in_group(ed_query_url);})
 </script>
 {% endblock extra_js_bottom %}

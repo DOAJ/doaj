@@ -412,3 +412,45 @@ function setup_remove_button_handler() {
         $('#' + toremove).remove();
     });
 }
+
+/*
+Permits the Managing Editors to assign editors on the Application and Journal edit forms.
+ */
+function load_eds_in_group(ed_query_url) {
+    var ed_group_name = $("#s2id_editor_group").find('span').text();
+    $.ajax({
+        type : "GET",
+        data : {egn : ed_group_name},
+        dataType: "json",
+        url: ed_query_url,
+        success: function(resp)
+        {
+            // Get the options for the dropdown fron our ajax request
+            var assoc_options = [];
+            if (resp != null)
+            {
+                assoc_options = [["", "Choose an editor"]];
+
+                for (var i=0; i<resp.length; i++)
+                {
+                    assoc_options = assoc_options.concat([[resp[i], resp[i]]]);
+                }
+            }
+            else
+            {
+                assoc_options = [["", ""]];
+            }
+
+            // Set the editor dropdown options to be the chosen group's associates
+            var ed_field = $("#editor");
+            ed_field.empty();
+
+            for (var j=0; j < assoc_options.length; j++) {
+                ed_field.append(
+                    $("<option></option>").attr("value", assoc_options[j][0]).text(assoc_options[j][1])
+                );
+            }
+        }
+    })
+}
+
