@@ -1,8 +1,9 @@
-from wtforms import Field, TextField
+from wtforms import Field, TextField, SelectField
 from wtforms import widgets
 import re
 
 URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
+
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -22,6 +23,7 @@ class TagListField(Field):
         else:
             self.data = []
 
+
 class URLField(TextField):
     widget = widgets.TextInput()
 
@@ -37,8 +39,21 @@ class URLField(TextField):
             else:
                 self.data = val
 
+
 class DisabledTextField(TextField):
 
     def __call__(self, *args, **kwargs):
         kwargs.setdefault('disabled', True)
         return super(DisabledTextField, self).__call__(*args, **kwargs)
+
+
+class PermissiveSelectField(SelectField):
+    """ A SelectField with validation disabled, allowing us to change the choices in JS and validate later."""
+
+    def iter_choices(self):
+        for value, label in self.choices:
+            yield (value, label, self.coerce(value) == self.data)
+
+    def pre_validate(self, form):
+        pass
+

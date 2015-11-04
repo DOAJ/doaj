@@ -140,5 +140,9 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var notes_deletable = true;
+
+    // When the editor group field is changed, refresh the options for editor
+    var ed_query_url = "{{url_for('admin.eg_associates_dropdown')}}";
+    $("#editor_group").change(function() {load_eds_in_group(ed_query_url);})
 </script>
 {% endblock extra_js_bottom %}

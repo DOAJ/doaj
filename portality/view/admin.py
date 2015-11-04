@@ -345,3 +345,24 @@ def user_autocomplete():
     resp = make_response(json.dumps(ac))
     resp.mimetype = "application/json"
     return resp
+
+
+# Route which returns the associate editor account names within a given editor group
+@blueprint.route("/dropdown/eg_associates")
+@login_required
+@ssl_required
+def eg_associates_dropdown():
+    egn = request.values.get("egn")
+    eg = models.EditorGroup.pull_by_key("name", egn)
+
+    if eg is not None:
+        editors = [eg.editor]
+        editors += eg.associates
+        editors = list(set(editors))
+    else:
+        editors = None
+
+    # return a json response
+    resp = make_response(json.dumps(editors))
+    resp.mimetype = "application/json"
+    return resp
