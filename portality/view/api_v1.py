@@ -23,29 +23,17 @@ def api_v1_root():
 def api_spec():
     swag = swagger(app)
     swag['info']['title'] = "DOAJ API documentation"
-    # TODO use a Jinja template for the description below, HTML works. Emails use jinja templates already.
-    auth_info = """
-<p>Note that some routes require authentication and are only available to publishers who submit data to DOAJ or other collaborators who integrate more closely with DOAJ. If you think you could benefit from integrating more closely with DOAJ by using these routes, please <a href="{contact_us_url}">contact us</a>. If you already have an account, please log in as usual and click on your username in the top right corner to manage API keys.</p>
-"""
+
+    # Generate the swagger description from the Jinja template
+    account_url = None
     if current_user.is_authenticated():
-        auth_info = """
-        <p>Note that some routes require authentication. You can generate an API key and view your key for later reference at {account_url}.</p>
-        """.format(account_url = url_for('account.username', username=current_user.id, _external=True))
+        account_url = url_for('account.username', username=current_user.id, _external=True)
 
-    swag['info']['description'] = """
-<p>This page documents the first version of the DOAJ API, v.{api_version}</p>
-<p>Base URL: <a href="{base_url}" target="_blank">{base_url}</a></p>
-<h2 id="intro">Using this live documentation page</h2>
-This page contains a list of all routes available via the DOAJ API. It also serves as a live demo page. You can fill in the parameters needed by the API and it will construct and send a request to the live API for you, letting you see all the details you might need for your integration. Please note that not all fields will be available on all records. Further information on advanced usage of the routes is available at the bottom below the route list.
-
-<h2 id="intro_auth">Authenticated routes</h2>
-{auth_info}
-""".format(
-        api_version=API_VERSION_NUMBER,
-        base_url=url_for('.api_v1_root', _external=True),
-        contact_us_url=url_for('doaj.contact'),
-        auth_info=auth_info
-    )
+    swag['info']['description'] = render_template('api/v1/swagger_description.html',
+                                                  api_version=API_VERSION_NUMBER,
+                                                  base_url=url_for('.api_v1_root', _external=True),
+                                                  contact_us_url=url_for('doaj.contact'),
+                                                  account_url=account_url)
     swag['info']['version'] = API_VERSION_NUMBER
 
     return make_response((jsonify(swag), 200, {'Access-Control-Allow-Origin': '*'}))
@@ -61,7 +49,7 @@ def missing_resource(invalid_path):
 
 @blueprint.route('/docs')
 def docs():
-    return render_template('doaj/api_docs.html')
+    return render_template('api/v1/api_docs.html')
 
 
 @swag(swag_summary='Search your applications <span class="red">[Authenticated, not public]</span>', swag_spec=DiscoveryApi.get_application_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
