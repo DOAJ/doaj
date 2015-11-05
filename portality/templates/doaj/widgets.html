@@ -20,8 +20,8 @@ Example:
 
 {% elif env=="test" %}
 <pre>
-    &lt;script src="https://testdoaj.cottagelabs.com/static/widget/simple_search_test.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
+&lt;script src="https://testdoaj.cottagelabs.com/static/widget/simple_search_test.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
 </pre>
 
 Example:
@@ -30,8 +30,8 @@ Example:
 
 {% elif env=="staging" %}
 <pre>
-    &lt;script src="https://stagingdoaj.cottagelabs.com/static/widget/simple_search_staging.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
+&lt;script src="https://stagingdoaj.cottagelabs.com/static/widget/simple_search_staging.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
 </pre>
 
 Example:
@@ -40,15 +40,16 @@ Example:
 
 
 {% elif env=="production" %}
- <pre>
-    &lt;script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"&gt;&lt;/script&gt;
-    &lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
+<pre>
+&lt;script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
 </pre>
 
 Example:
 <script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
 {% endif %}
+
 </div>
 <br>
 <div style="padding: 4px">
@@ -57,8 +58,16 @@ Example:
 This renders a set of results from the DOAJ based on a query fixed in JavaScript.
 Copy and paste the following on the page where you want the widget to displayed.
 
+{% if env=="dev" %}
+<pre>
+&lt;script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;div id="doaj-fixed-query-widget"&gt;&lt;/div&gt;
+</pre>
+
 Example:
-<script src="http://localhost:5004/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
+{% endif %}
+
 </div>
 {% endblock %}

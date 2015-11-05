@@ -38,7 +38,7 @@ function scriptLoadHandler() {
 /******** Our main function ********/
 function main() { 
     jQuery(document).ready(function($) { 
-        $('#doaj-fixed-query-widget').load("http://localhost:5004/static/widget/fixed_query_body.html");
+        $('#doaj-fixed-query-widget').load("http://localhost:5004/static/widget/fixed_query_body_dev.html");
     });
 }
 
