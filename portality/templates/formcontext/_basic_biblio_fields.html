@@ -32,7 +32,11 @@
 </div>
 
 <div class="span6 with-borders form-section">
-    <h3>Copyright and Permissions</h3>
+    <h3 class="heading-no-margin-bottom">Copyright and Permissions</h3>
+    <p style="margin-bottom: 1em">
+        <a href="{{ url_for('doaj.rights') }}" target="_blank">Copyright &amp; Licensing help</a>
+    </p>
+
     {% autoescape off %}
     {{ form_context.render_field_group("copyright") }}
     {% endautoescape %}
