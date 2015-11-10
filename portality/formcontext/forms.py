@@ -202,7 +202,7 @@ class JournalInformation(Form):
     license_embedded_url = URLField("Please provide a URL to an example page with embedded licensing information",
         [OptionalIf('license_embedded', optvals=Choices.licence_embedded_url_optional()), URLOptionalScheme()]
     )
-    license = RadioField('Does the journal allow reuse and remixing of its content, in accordance with a CC license?',
+    license = RadioField("Does the journal allow reuse and remixing of content in accordance with a Creative Commons license or <em>other</em> type of license with similar conditions (Select 'Other')?",
         [validators.DataRequired(), ExtraFieldRequiredIf('license_other', reqval=Choices.licence_val("other"))],
         choices = Choices._licence,
         description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
