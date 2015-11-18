@@ -37,7 +37,13 @@ function scriptLoadHandler() {
 
 /******** Our main function ********/
 function main() { 
-    jQuery(document).ready(function($) { 
+    jQuery(document).ready(function($) {
+        // Recognised values: 'journal', 'article', 'both'. Defaults to 'both'.
+        var DOAJ_WIDGET_DOCTYPE = null;
+
+        // This is free text
+        var DOAJ_WIDGET_QUERY = 'edinburgh';
+
         $('#doaj-fixed-query-widget').load("http://localhost:5004/static/widget/fixed_query_body_dev.html");
     });
 }

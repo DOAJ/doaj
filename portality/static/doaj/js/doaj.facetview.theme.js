@@ -87,6 +87,7 @@ function doajPager(options) {
      * options.page_size - number of results per page
      * options.data.found - the total number of records in the search result set
      */
+    console.log(options);
 
     // ensure our starting points are integers, then we can do maths on them
     var from = parseInt(options.from);

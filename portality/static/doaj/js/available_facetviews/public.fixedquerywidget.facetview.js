@@ -332,17 +332,21 @@ jQuery(document).ready(function($) {
 
     $('.facetview.journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
+        // Do not use the url state, this may interfere with the host website
+        pushstate : false,
 
         render_results_metadata: doajPager,
         render_result_record: publicSearchResult,
+        // The fixed query widget does not require the search box or its accoutrements
+        render_search_options: $.noop,
+        render_facet_list : $.noop,
 
         post_render_callback: doajPostRender,
 
         default_operator : "AND",
         page_size : 10,
-        from : 0
-    });
+        from : 0,
 
-    // The fixed query widget does not require the search box or its accoutrements
-    $('.facetview_search_options_container').hide()
+        q : 'edinburgh'
+    });
 });
