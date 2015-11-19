@@ -249,3 +249,18 @@ def delete_article(article_id):
 @swag(swag_summary='Retrieve a journal by ID', swag_spec=JournalsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_journal(journal_id):
     return jsonify_data_object(JournalsCrudApi.retrieve(journal_id, current_user))
+
+
+#########################################
+## Application Bulk API
+
+@blueprint.route("/bulk/applications", methods=["POST"])
+@api_key_required
+def bulk_application_create():
+    pass
+
+
+@blueprint.route("/bulk/applications", methods=["DELETE"])
+@api_key_required
+def bulk_application_delete():
+    pass
