@@ -156,23 +156,6 @@ class TestCrudApplication(DoajTestCase):
             data = {"some" : {"junk" : "data"}}
             a = ApplicationsCrudApi.create(data, account)
 
-    def test_03a_create_application_dryrun(self):
-        # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application()
-        account = models.Account()
-        account.set_id("test")
-        account.set_name("Tester")
-        account.set_email("test@test.com")
-
-        # call create on the object, with the dry_run flag set
-        a = ApplicationsCrudApi.create(data, account, dry_run=True)
-
-        time.sleep(2)
-
-        # now check that the application index remains empty
-        ss = [x for x in models.Suggestion.iterall()]
-        assert len(ss) == 0
-
     def test_04_coerce(self):
         data = ApplicationFixtureFactory.incoming_application()
 
@@ -449,26 +432,4 @@ class TestCrudApplication(DoajTestCase):
         with self.assertRaises(Api403Error):
             ApplicationsCrudApi.delete(a.id, account)
 
-    def test_12_delete_application_dryrun(self):
-        # set up all the bits we need
-        data = ApplicationFixtureFactory.incoming_application()
-        account = models.Account()
-        account.set_id("test")
-        account.set_name("Tester")
-        account.set_email("test@test.com")
-
-        # call create on the object (which will save it to the index)
-        a = ApplicationsCrudApi.create(data, account)
-
-        # let the index catch up
-        time.sleep(2)
-
-        # now delete it with the dry run flag
-        ApplicationsCrudApi.delete(a.id, account, dry_run=True)
-
-        # let the index catch up
-        time.sleep(2)
-
-        ap = models.Suggestion.pull(a.id)
-        assert ap is not None
 
