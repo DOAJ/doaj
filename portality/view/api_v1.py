@@ -4,8 +4,8 @@ from flask.ext.login import current_user
 from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
-from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
-from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content
+from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi
+from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content, bulk_created
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag
 
@@ -257,10 +257,32 @@ def retrieve_journal(journal_id):
 @blueprint.route("/bulk/applications", methods=["POST"])
 @api_key_required
 def bulk_application_create():
-    pass
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
 
+    # delegate to the API implementation
+    ids = ApplicationsBulkApi.create(data, current_user)
+
+    # get all the locations for the ids
+    inl = []
+    for id in ids:
+        inl.append((id, url_for("api_v1.retrieve_application", application_id=id)))
+
+    # respond with a suitable Created response
+    return bulk_created(inl)
 
 @blueprint.route("/bulk/applications", methods=["DELETE"])
 @api_key_required
 def bulk_application_delete():
-    pass
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    ApplicationsBulkApi.delete(data, current_user)
+
+    return no_content()

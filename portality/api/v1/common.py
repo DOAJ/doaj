@@ -47,6 +47,19 @@ def created(obj, location):
     resp.status_code = 201
     return resp
 
+def bulk_created(ids_and_locations):
+    app.logger.info("Sending 201 Created for bulk request")
+    out = []
+    for id, loc in ids_and_locations:
+        t = deepcopy(CREATED_TEMPLATE)
+        t['status'] = "created"
+        t['id'] = id
+        t['location'] = loc
+        out.append(t)
+
+    resp = respond(json.dumps(out), 201)
+    resp.status_code = 201
+    return resp
 
 def no_content():
     return respond("", 204)
