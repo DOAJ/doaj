@@ -41,7 +41,8 @@ class XWalk(object):
         # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
     
-    def get_duplicate(self, article, owner=None, all_duplicates=False):
+    @staticmethod
+    def get_duplicate(article, owner=None, all_duplicates=False):
         # get the owner's issns
         issns = []
         if owner is not None:

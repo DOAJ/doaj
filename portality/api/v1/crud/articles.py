@@ -73,6 +73,13 @@ class ArticlesCrudApi(CrudApi):
         if not XWalk.is_legitimate_owner(am, account.id):
             raise Api403Error()
 
+        # before finalising, we need to determine whether this is a new article
+        # or an update
+        duplicate = XWalk.get_duplicate(article, limit_to_owner)
+        # print duplicate
+        if duplicate is not None:
+            article.merge(duplicate) # merge will take the old id, so this will overwrite
+
         # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
         # own values (note that last_updated will get overwritten anyway)
         am.set_id()
