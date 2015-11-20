@@ -36,7 +36,7 @@ class ApplicationsCrudApi(CrudApi):
         return cls._build_swag_response(template)
 
     @classmethod
-    def create(cls, data, account):
+    def create(cls, data, account, dry_run=False):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
         if account is None:
@@ -74,7 +74,8 @@ class ApplicationsCrudApi(CrudApi):
         ap.bibjson().remove_subjects()
 
         # finally save the new application, and return to the caller
-        ap.save()
+        if not dry_run:
+            ap.save()
         return ap
 
     @classmethod
@@ -179,7 +180,7 @@ class ApplicationsCrudApi(CrudApi):
         return cls._build_swag_response(template)
 
     @classmethod
-    def delete(cls, id, account):
+    def delete(cls, id, account, dry_run=False):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
         if account is None:
@@ -201,4 +202,5 @@ class ApplicationsCrudApi(CrudApi):
             raise Api403Error()
 
         # issue the delete (no record of the delete required)
-        ap.delete()
+        if not dry_run:
+            ap.delete()
