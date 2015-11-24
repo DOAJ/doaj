@@ -121,6 +121,7 @@ jQuery(document).ready(function($) {
             }
         }
 
+        /*
         // set the tick if it is relevant
         if (resultobj.admin && resultobj.admin.ticked) {
             result += "<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
@@ -130,6 +131,7 @@ jQuery(document).ready(function($) {
         if (resultobj.admin && resultobj.admin.seal) {
             result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
         }
+        */
 
         // APC
         if (resultobj.bibjson.apc) {
@@ -329,24 +331,24 @@ jQuery(document).ready(function($) {
         return result;
     }
 
-
-    $('.facetview.journals_and_articles').facetview({
+    $('.facetview.journals_and_articles').facetview($.extend({
         search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
-        // Do not use the url state, this may interfere with the host website
-        pushstate : false,
-
+        pushstate: false,                      // Do not use the url state, this may interfere with the host website
         render_results_metadata: doajPager,
         render_result_record: publicSearchResult,
-        // The fixed query widget does not require the search box or its accoutrements
-        render_search_options: $.noop,
-        render_facet_list : $.noop,
-
+        render_search_options: $.noop,          // The fixed query widget does not require the search box or its accoutrements
+        render_facet_list: $.noop,
         post_render_callback: doajPostRender,
+        facets: [{field: "_type", hidden: true}]
 
-        default_operator : "AND",
-        page_size : 10,
-        from : 0,
-
-        q : 'edinburgh'
-    });
+        /* The following are the user-configurable settings for the widget, bundled in QUERY_OPTIONS
+             page_size
+             from
+             q
+             searchfield
+             sort
+             default_operator
+             predefined_filters
+        */
+    }, QUERY_OPTIONS));
 });

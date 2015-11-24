@@ -65,6 +65,17 @@ Copy and paste the following on the page where you want the widget to displayed.
 </pre>
 
 Example:
+<script type="text/javascript">
+var QUERY_OPTIONS = {
+    q : 'medicine',                                                   // The plain-text query string
+    page_size : 5,                                                 // How many results to show
+    from : 0,                                                       // Which result to start from
+    searchfield: 'bibjson.title',                                   // The field we are querying
+    sort: [{'index.unpunctitle.exact': {order: "asc"}}],           // Field to order on and direction
+    default_operator : "AND",                                       // Which sort operator to use
+    predefined_filters: {_type: ["journal"]}                        // Set which type to search upon
+    }
+</script>
 <script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget" style="width: 100%"></div>
 {% endif %}
