@@ -1,7 +1,36 @@
-from portality.api.v1.common import Api404Error, Api400Error, Api403Error
+from portality.api.v1.crud.common import CrudApi
+from portality.api.v1.common import Api404Error, Api400Error, Api403Error, CREATED_TEMPLATE
 from portality.api.v1.crud import ApplicationsCrudApi
+from copy import deepcopy
 
-class ApplicationsBulkApi(object):
+class ApplicationsBulkApi(CrudApi):
+
+    B201 = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array", "description": "Resources created successfully, response contains the new resource IDs and locations."}}
+
+    API_KEY_OPTIONAL = False
+    SWAG_TAG = 'Bulk Applications'
+    SWAG_DELETE_PARAM = {
+        "description": "<div class=\"search-query-docs\">List of DOAJ application IDs to be deleted. You must own all of the ids, and they must all not have entered the DOAJ workflow yet, or none of them will be processed.e.g. [4cf8b72139a749c88d043129f00e1b07, 8e896b60-35f1-4cd3-b3f9-07f7f29d8a98].</div>",
+        "required": True,
+        "type": "string",
+        "name": "application_ids",
+        "in": "body"
+    }
+    SWAG_APPLICATION_BODY_PARAM = {
+        "description": "<div class=\"search-query-docs\">List of Application JSON objects that you would like to create. Each element of the list should comply with the schema displayed in the <a href=\"/api/v1/docs#CRUD_Applications_get_api_v1_application_application_id\"> GET (Retrieve) an application route</a>.</div>",
+        "required": True,
+        "type": "string",
+        "name": "application_json",
+        "in": "body"
+    }
+
+    @classmethod
+    def create_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_APPLICATION_BODY_PARAM)
+        template['responses']['201'] = cls.B201
+        template['responses']['400'] = cls.R400
+        return cls._build_swag_response(template)
 
     @classmethod
     def create(cls, applications, account):
@@ -16,6 +45,14 @@ class ApplicationsBulkApi(object):
             ids.append(n.id)
 
         return ids
+
+    @classmethod
+    def delete_swag(cls):
+        template = deepcopy(cls.SWAG_TEMPLATE)
+        template['parameters'].append(cls.SWAG_DELETE_PARAM)
+        template['responses']['204'] = cls.R204
+        template['responses']['400'] = cls.R400
+        return cls._build_swag_response(template)
 
     @classmethod
     def delete(cls, application_ids, account):
