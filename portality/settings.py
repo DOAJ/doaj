@@ -469,7 +469,8 @@ DISCOVERY_JOURNAL_SEARCH_SUBS = {
     "title" : "index.title",
     "issn" :  "index.issn.exact",
     "publisher" : "bibjson.publisher",
-    "license" : "index.license.exact"
+    "license" : "index.license.exact",
+    "username" : "admin.owner.exact"
 }
 
 DISCOVERY_JOURNAL_SORT_SUBS = {
