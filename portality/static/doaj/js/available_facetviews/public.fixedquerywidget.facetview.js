@@ -341,7 +341,7 @@ jQuery(document).ready(function($) {
         post_render_callback: doajPostRender,
         facets: [{field: "_type", hidden: true}]
 
-        /* The following are the user-configurable settings for the widget, bundled in QUERY_OPTIONS
+        /* The following are the user-configurable settings for the widget, bundled in widget_fv_opts via QUERY_OPTIONS
              page_size
              from
              q
@@ -350,5 +350,5 @@ jQuery(document).ready(function($) {
              default_operator
              predefined_filters
         */
-    }, QUERY_OPTIONS));
+    }, widget_fv_opts));
 });

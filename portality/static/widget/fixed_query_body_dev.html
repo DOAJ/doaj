@@ -12,6 +12,33 @@
 <script type="text/javascript">
     var es_domain = document.location.host;
     var es_scheme = window.location.protocol;
+
+    var widget_fv_opts = {};
+    if (QUERY_OPTIONS) {
+        if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
+            widget_fv_opts['q'] = QUERY_OPTIONS.query_string
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('search_field')) {
+            widget_fv_opts['searchfield'] = QUERY_OPTIONS.search_field
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('sort_field') && QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
+            var sort_entry = {};
+            sort_entry[QUERY_OPTIONS.sort_field] = {order: QUERY_OPTIONS.sort_direction};
+            widget_fv_opts['sort'] = [sort_entry]
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('search_operator')) {
+            widget_fv_opts['default_operator'] = QUERY_OPTIONS.search_operator
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('search_type')) {
+            widget_fv_opts['predefined_filters'] = {_type: [QUERY_OPTIONS.search_type]};
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
+            widget_fv_opts['page_size'] = QUERY_OPTIONS.page_size
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
+            widget_fv_opts['from'] = QUERY_OPTIONS.page_from
+        }
+    }
 </script>
 
 <script type="text/javascript" src="http://localhost:5004/static/doaj/js/available_facetviews/public.fixedquerywidget.facetview.js?v={{config.get('DOAJ_VERSION')}}"></script>
