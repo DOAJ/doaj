@@ -56,7 +56,7 @@ class ApplicationsBulkApi(CrudApi):
 
     @classmethod
     def delete(cls, application_ids, account):
-        # we run through create twice, once as a dry-run and the second time
+        # we run through delete twice, once as a dry-run and the second time
         # as the real deal
         for id in application_ids:
             try:
