@@ -174,12 +174,15 @@ class IncomingArticleDO(dataobj.DataObj):
             raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
 
         # normalise the ids
-        pissn.id = normalise_issn(pissn.id)
-        eissn.id = normalise_issn(eissn.id)
+        if pissn is not None:
+            pissn.id = normalise_issn(pissn.id)
+        if eissn is not None:
+            eissn.id = normalise_issn(eissn.id)
 
         # check they are not the same
-        if pissn.id == eissn.id:
-            raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
+        if pissn is not None and eissn is not None:
+            if pissn.id == eissn.id:
+                raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
 
         # check the number of keywords is no more than 6
         if len(self.bibjson.keywords) > 6:
