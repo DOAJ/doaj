@@ -157,14 +157,14 @@ def create_application():
     # respond with a suitable Created response
     return created(a, url_for("api_v1.retrieve_application", application_id=a.id))
 
-@blueprint.route("/application/<application_id>", methods=["GET"])
+@blueprint.route("/applications/<application_id>", methods=["GET"])
 @api_key_required
 @swag(swag_summary='Retrieve an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.retrieve_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def retrieve_application(application_id):
     a = ApplicationsCrudApi.retrieve(application_id, current_user)
     return jsonify_models(a)
 
-@blueprint.route("/application/<application_id>", methods=["PUT"])
+@blueprint.route("/applications/<application_id>", methods=["PUT"])
 @api_key_required
 @swag(swag_summary='Update an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.update_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def update_application(application_id):
@@ -180,7 +180,7 @@ def update_application(application_id):
     # respond with a suitable No Content successful response
     return no_content()
 
-@blueprint.route("/application/<application_id>", methods=["DELETE"])
+@blueprint.route("/applications/<application_id>", methods=["DELETE"])
 @api_key_required
 @swag(swag_summary='Delete an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def delete_application(application_id):
