@@ -256,6 +256,7 @@ def retrieve_journal(journal_id):
 
 @blueprint.route("/bulk/applications", methods=["POST"])
 @api_key_required
+@swag(swag_summary='Create applications in bulk <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def bulk_application_create():
     # get the data from the request
     try:
@@ -276,6 +277,7 @@ def bulk_application_create():
 
 @blueprint.route("/bulk/applications", methods=["DELETE"])
 @api_key_required
+@swag(swag_summary='Delete applications in bulk <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def bulk_application_delete():
     # get the data from the request
     try:
