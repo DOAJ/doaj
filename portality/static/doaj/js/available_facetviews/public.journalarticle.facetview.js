@@ -59,7 +59,7 @@ jQuery(document).ready(function($) {
             interval: "year",
             display: "Date added to DOAJ",
             value_function : function(val) {
-                return (new Date(parseInt(val))).getFullYear();
+                return (new Date(parseInt(val))).getUTCFullYear();
             },
             size: false,
             sort: "desc",
@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
             interval: "year",
             display: "Year of publication",
             value_function : function(val) {
-                return (new Date(parseInt(val))).getFullYear();
+                return (new Date(parseInt(val))).getUTCFullYear();
             },
             size: false,
             short_display: 15,
