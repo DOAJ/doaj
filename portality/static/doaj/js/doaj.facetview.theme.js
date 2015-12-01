@@ -134,20 +134,24 @@ function doajScrollTop(options, context) {
     });
 }
 
-function doajPostRender(options, context) {
-    doajScrollTop(options, context);
-
+function doajToggleAbstract(options, context) {
     // toggle the abstracts
     $('.abstract_text', context).hide();
     $(".abstract_action", context).unbind("click").click(function(event) {
         event.preventDefault();
         var el = $(this);
-        //var text = el.html();
-        //var newText = text == "(expand)" ? "(collapse)" : "(expand)";
-        //el.html(newText);
         $('.abstract_text[rel="' + el.attr("rel") + '"]').slideToggle(300);
         return true;
     });
+}
+
+function doajPostRender(options, context) {
+    doajScrollTop(options, context);
+    doajToggleAbstract(options, context);
+}
+
+function doajFixedQueryWidgetPostRender(options, context) {
+    doajToggleAbstract(options, context);
 }
 
 function doajJAPostRender(options, context) {

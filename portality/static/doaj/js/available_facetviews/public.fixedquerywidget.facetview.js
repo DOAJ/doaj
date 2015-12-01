@@ -77,6 +77,7 @@ jQuery(document).ready(function($) {
             }
         }
 
+        /* TODO: REMOVE BLOCK IF DOAJ ARE HAPPY WITH STRIPPED-DOWN DESIGN
         // peer review type
         if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
             var proc = resultobj.bibjson.editorial_review.process;
@@ -121,7 +122,7 @@ jQuery(document).ready(function($) {
             }
         }
 
-        /*
+
         // set the tick if it is relevant
         if (resultobj.admin && resultobj.admin.ticked) {
             result += "<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
@@ -131,7 +132,7 @@ jQuery(document).ready(function($) {
         if (resultobj.admin && resultobj.admin.seal) {
             result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
         }
-        */
+
 
         // APC
         if (resultobj.bibjson.apc) {
@@ -155,6 +156,7 @@ jQuery(document).ready(function($) {
 
         // close the journal properties side-bar
         result += "</div>";
+        */
 
         // close off the result with the ending strings, and then return
         result += "</div></div>";
@@ -338,7 +340,7 @@ jQuery(document).ready(function($) {
         render_result_record: publicSearchResult,
         render_search_options: $.noop,          // The fixed query widget does not require the search box or its accoutrements
         render_facet_list: $.noop,
-        post_render_callback: doajPostRender,
+        post_render_callback: doajFixedQueryWidgetPostRender,
         facets: [{field: "_type", hidden: true}]
 
         /* The following are the user-configurable settings for the widget, bundled in widget_fv_opts via QUERY_OPTIONS

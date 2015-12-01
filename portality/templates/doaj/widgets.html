@@ -55,13 +55,14 @@ Example:
 <div style="padding: 4px">
 
 <h3>Fixed query widget</h3>
-<p>This renders a set of results from the DOAJ based on a query fixed in JavaScript.
-Copy and paste the following code on the page where you want the widget to displayed. The parameter QUERY_OPTIONS is used to
-define which results to retrieve. This example displays the journals containing the word 'medicine' in the title, in
-alphabetical order.</p>
+<p>This renders a set of results from the DOAJ based on a query fixed in JavaScript.</p>
 
-<p>We recommend configuring this via the <a href="{{ url_for('doaj.search')}}">Search page</a> -
-simply craft your query then click the 'share' button, choose 'embed this search', and copy the output provided.</p>
+<p>Copy and paste the following code on the page where you want the widget to displayed. The parameter QUERY_OPTIONS takes a subset of
+fields to define which results to retrieve. The example below example displays the journals containing the word 'medicine' in the title, in
+alphabetical order. Configuration via these QUERY_OPTIONS provides a simplified way to display results by keyword.</p>
+
+<p><b>For more control over which results to display, we recommend configuring your query via the <a href="{{ url_for('doaj.search')}}">Search page</a></b> -
+simply use the controls to find the results you want to show then click the 'share' button, choose 'embed this search', and copy the output provided to include on your page.</p>
 
 {% if env=="dev" %}
 <pre>
