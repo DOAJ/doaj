@@ -81,7 +81,7 @@ var QUERY_OPTIONS = {
 &lt;script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"&gt;&lt;/script&gt;
 &lt;div id="doaj-fixed-query-widget"&gt;&lt;/div&gt;
 </pre>
-
+<!--
 Example:
 <script type="text/javascript">
 var QUERY_OPTIONS = {
@@ -96,8 +96,13 @@ var QUERY_OPTIONS = {
     }
 </script>
 <script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
-<div id="doaj-fixed-query-widget"></div>
+<div id="doaj-fixed-query-widget"></div>-->
 {% endif %}
-
+Example2:
+<script type="text/javascript">
+var SEARCH_CONFIGURED_OPTIONS = {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"journal"}}]}},"query":{"query_string":{"query":"Europe","default_field":"bibjson.keywords","default_operator":"AND"}}}},"from":0,"size":10}
+</script>
+<script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
+<div id="doaj-fixed-query-widget"></div>
 </div>
 {% endblock %}

@@ -12,9 +12,12 @@
 <script type="text/javascript">
     var es_domain = document.location.host;
     var es_scheme = window.location.protocol;
-
     var widget_fv_opts = {};
-    if (QUERY_OPTIONS) {
+
+    if (SEARCH_CONFIGURED_OPTIONS) {
+        widget_fv_opts = optionsFromQuery(SEARCH_CONFIGURED_OPTIONS)
+    }
+    else if (QUERY_OPTIONS) {
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
             widget_fv_opts['q'] = QUERY_OPTIONS.query_string
         }

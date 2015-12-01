@@ -1,5 +1,83 @@
 jQuery(document).ready(function($) {
 
+    var all_facets = {
+        journal_article : {
+            field : "_type",
+            hidden: true
+        },
+        subject : {
+            field: 'index.classification.exact',
+            hidden: true
+        },
+        licence : {
+            field: "index.license.exact",
+            hidden: true
+        },
+        publisher : {
+            field: "index.publisher.exact",
+            hidden: true
+        },
+        country_publisher : {
+            field: "index.country.exact",
+            hidden: true
+        },
+        language : {
+            field : "index.language.exact",
+            hidden: true
+        },
+
+        // journal facets
+        apc : {
+            field : "index.has_apc.exact",
+            hidden: true
+        },
+        seal : {
+            field : "index.has_seal.exact",
+            hidden: true
+        },
+        peer_review : {
+            field : "bibjson.editorial_review.process.exact",
+            hidden: true
+        },
+        year_added : {
+            type: "date_histogram",
+            field: "created_date",
+            interval: "year",
+            hidden: true
+        },
+        archiving_policy : {
+            field : "bibjson.archiving_policy.policy.exact",
+            hidden: true
+        },
+
+        // article facets
+        journal_title : {
+            field : "bibjson.journal.title.exact",
+            hidden: true
+        },
+        year_published_histogram : {
+            type: "date_histogram",
+            field: "index.date",
+            interval: "year",
+            hidden: true
+        }
+    };
+
+    var facet_list = [];
+    facet_list.push(all_facets.journal_article);
+    facet_list.push(all_facets.subject);
+    facet_list.push(all_facets.journal_title);
+    facet_list.push(all_facets.apc);
+    facet_list.push(all_facets.seal);
+    facet_list.push(all_facets.licence);
+    facet_list.push(all_facets.publisher);
+    facet_list.push(all_facets.country_publisher);
+    facet_list.push(all_facets.language);
+    facet_list.push(all_facets.peer_review);
+    facet_list.push(all_facets.year_added);
+    facet_list.push(all_facets.year_published_histogram);
+    facet_list.push(all_facets.archiving_policy);
+
     function publicSearchResult(options, resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // it is an article
@@ -340,8 +418,9 @@ jQuery(document).ready(function($) {
         render_result_record: publicSearchResult,
         render_search_options: $.noop,          // The fixed query widget does not require the search box or its accoutrements
         render_facet_list: $.noop,
+        behaviour_set_selected_filters : $.noop,
         post_render_callback: doajFixedQueryWidgetPostRender,
-        facets: [{field: "_type", hidden: true}]
+        facets: facet_list
 
         /* The following are the user-configurable settings for the widget, bundled in widget_fv_opts via QUERY_OPTIONS
              page_size
