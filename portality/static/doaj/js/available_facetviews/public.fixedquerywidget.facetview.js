@@ -366,11 +366,12 @@ jQuery(document).ready(function($) {
         pushstate: false,                      // Do not use the url state, this may interfere with the host website
         render_results_metadata: doajPager,
         render_result_record: publicSearchResult,
-        render_search_options: $.noop,          // The fixed query widget does not require the search box or its accoutrements
+        render_search_options: $.noop,         // The fixed query widget does not require the search box or its accoutrements
         render_facet_list: $.noop,
         behaviour_set_selected_filters : $.noop,
         post_render_callback: doajFixedQueryWidgetPostRender,
-        facets: facet_list
+        facets: facet_list,
+        default_operator : "AND"              // This can be overridden by the properties we extend from widget_fv_opts
 
         /* The following are the user-configurable settings for the widget, bundled in widget_fv_opts via QUERY_OPTIONS
              page_size

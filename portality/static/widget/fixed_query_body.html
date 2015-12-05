@@ -23,8 +23,8 @@
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
             widget_fv_opts['q'] = QUERY_OPTIONS.query_string
         }
-        if (QUERY_OPTIONS.hasOwnProperty('search_field')) {
-            widget_fv_opts['searchfield'] = QUERY_OPTIONS.search_field
+        if (QUERY_OPTIONS.hasOwnProperty('query_field')) {
+            widget_fv_opts['searchfield'] = QUERY_OPTIONS.query_field
         }
         if (QUERY_OPTIONS.hasOwnProperty('sort_field') && QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
             var sort_entry = {};
