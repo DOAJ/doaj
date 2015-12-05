@@ -155,28 +155,6 @@ jQuery(document).ready(function($) {
             }
         }
 
-        /* TODO: REMOVE BLOCK IF DOAJ ARE HAPPY WITH STRIPPED-DOWN DESIGN
-        // peer review type
-        if (resultobj.bibjson.editorial_review && resultobj.bibjson.editorial_review.process) {
-            var proc = resultobj.bibjson.editorial_review.process;
-            if (proc === "None") {
-                proc = "No peer review"
-            }
-            result += proc + "<br>";
-        }
-
-        // add the subjects
-        if (resultobj.index && resultobj.index.classification_paths && resultobj.index.classification_paths.length > 0) {
-            result += "<strong>Subject:</strong>&nbsp;";
-            result += resultobj.index.classification_paths.join(" | ") + "<br>";
-        }
-
-        // add the date added to doaj
-        if (resultobj.created_date) {
-            result += "<strong>Date added to DOAJ</strong>:&nbsp;";
-            result += humanDate(resultobj.created_date);
-        }
-
         // close the main details box
         result += "</div>";
 
@@ -200,41 +178,13 @@ jQuery(document).ready(function($) {
             }
         }
 
-
-        // set the tick if it is relevant
-        if (resultobj.admin && resultobj.admin.ticked) {
-            result += "<img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014'>​​<br>";
-        }
-
         // show the seal if it's set
         if (resultobj.admin && resultobj.admin.seal) {
             result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
         }
 
-
-        // APC
-        if (resultobj.bibjson.apc) {
-            if (resultobj.bibjson.apc.currency || resultobj.bibjson.apc.average_price) {
-                result += "<strong>APC: ";
-                if (resultobj.bibjson.apc.average_price) {
-                    result += escapeHtml(resultobj.bibjson.apc.average_price);
-                } else {
-                    result += "price unknown ";
-                }
-                if (resultobj.bibjson.apc.currency) {
-                    result += escapeHtml(resultobj.bibjson.apc.currency);
-                } else {
-                    result += " currency unknown";
-                }
-                result += "</strong>";
-            } else {
-                result += "<strong>No APC</strong>";
-            }
-        }
-
         // close the journal properties side-bar
         result += "</div>";
-        */
 
         // close off the result with the ending strings, and then return
         result += "</div></div>";

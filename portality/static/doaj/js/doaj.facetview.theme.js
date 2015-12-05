@@ -373,3 +373,13 @@ function humanDate(datestr) {
 
     return String(dom) + " " + monthmap[monthnum] + " " + String(year);
 }
+
+//////////////////////////////////////////////////////
+// fixed query widget generation
+/////////////////////////////////////////////////////
+function doajGenFixedQueryWidget(widget_fv_opts){
+    // Put the html code here which will set the options and embed the widget
+    var frag = '<script type="text/javascript">var SEARCH_CONFIGURED_OPTIONS=' + JSON.dump(widget_fv_opts) + '</script>';
+    frag += '<script src="' + document.location.origin +'/static/widget/fixed_query.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
+    return frag
+}

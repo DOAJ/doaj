@@ -64,7 +64,6 @@ alphabetical order. Configuration via these QUERY_OPTIONS provides a simplified 
 <p><b>For more control over which results to display, we recommend configuring your query via the <a href="{{ url_for('doaj.search')}}">Search page</a></b> -
 simply use the controls to find the results you want to show then click the 'share' button, choose 'embed this search', and copy the output provided to include on your page.</p>
 
-{% if env=="dev" %}
 <pre>
 &lt;script type="text/javascript"&gt;
 var QUERY_OPTIONS = {
@@ -78,10 +77,10 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 &lt;/script&gt;
-&lt;script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script src="{{ config.get('BASE_URL') }}/static/widget/fixed_query.js" type="text/javascript"&gt;&lt;/script&gt;
 &lt;div id="doaj-fixed-query-widget"&gt;&lt;/div&gt;
 </pre>
-<!--
+
 Example:
 <script type="text/javascript">
 var QUERY_OPTIONS = {
@@ -95,14 +94,7 @@ var QUERY_OPTIONS = {
     page_from : 0                                  // Which result to initially start from
     }
 </script>
-<script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
-<div id="doaj-fixed-query-widget"></div>-->
-{% endif %}
-Example2:
-<script type="text/javascript">
-var SEARCH_CONFIGURED_OPTIONS = {"query":{"filtered":{"filter":{"bool":{"must":[{"term":{"_type":"journal"}}]}},"query":{"query_string":{"query":"Europe","default_field":"bibjson.keywords","default_operator":"AND"}}}},"from":0,"size":10}
-</script>
-<script src="http://localhost:5004/static/widget/fixed_query_dev.js" type="text/javascript"></script>
+<script src="/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 </div>
 {% endblock %}

@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="http://localhost:5004/static/widget/fixed_query_widget.css">
-<script type="text/javascript" src="http://localhost:5004/static/portality/vendor/facetview2/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="http://localhost:5004/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="http://localhost:5004/static/doaj/js/doaj.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="http://localhost:5004/static/portality/vendor/facetview2/jquery.facetview2.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<link rel="stylesheet" href="/static/widget/fixed_query_widget.css">
+<script type="text/javascript" src="/static/portality/vendor/facetview2/es.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/doaj.facetview.theme.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/portality/vendor/facetview2/jquery.facetview2.js?v={{config.get('DOAJ_VERSION')}}"></script>
 
 <div id="doaj_logo_container">
-    <a href="https://doaj.org/" target="_blank"><img id="doaj-fixed-query-logo" src="http://localhost:5004/static/doaj/images/logo_cropped.jpg" alt="Directory of Open Access Journals" title="Directory of Open Access Journals"></a>
+    <a href="https://doaj.org/" target="_blank"><img id="doaj-fixed-query-logo" src="/static/doaj/images/logo_cropped.jpg" alt="Directory of Open Access Journals" title="Directory of Open Access Journals"></a>
 </div>
 <div class="facetview journals_and_articles"></div>
 
@@ -14,10 +14,12 @@
     var es_scheme = window.location.protocol;
     var widget_fv_opts = {};
 
-    if (SEARCH_CONFIGURED_OPTIONS) {
+    // If options have been set using the Export method, use only those
+    if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
         widget_fv_opts = optionsFromQuery(SEARCH_CONFIGURED_OPTIONS)
     }
-    else if (QUERY_OPTIONS) {
+    // Otherwise, use options provided.
+    else if (typeof QUERY_OPTIONS != 'undefined') {
         if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
             widget_fv_opts['q'] = QUERY_OPTIONS.query_string
         }
@@ -44,6 +46,6 @@
     }
 </script>
 
-<script type="text/javascript" src="http://localhost:5004/static/doaj/js/available_facetviews/public.fixedquerywidget.facetview.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="http://localhost:5004/static/doaj/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
-<script type="text/javascript" src="http://localhost:5004/static/doaj/js/facetview_results_render_callbacks.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/available_facetviews/public.fixedquerywidget.facetview.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/doaj.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/facetview_results_render_callbacks.js?v={{config.get('DOAJ_VERSION')}}"></script>
