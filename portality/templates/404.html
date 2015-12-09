@@ -2,14 +2,12 @@
 
 {% block content %}
 
-<h2>Not found</h2>
+<h2>An error has occured</h2>
 
-<p>Sorry, the item you were looking for is not there.</p>
-<p>DOAJ has migrated to a new, open source platform. Due to the upgrade, certain old links may not work.</p>
-
-<h2>What next?</h2>
-<ul>
-<li>Use the <a href="{{ url_for('doaj.search') }}">Search</a> page to find Open Access articles and journals.</li>
-<li>Use the <a href="{{ url_for('doaj.suggestion') }}">Apply</a> page to apply for a journal's inclusion into DOAJ <strong>if you are the publisher</strong>.</li>
+<p>Uh-oh! An error has occured. It looks like something has gone wrong.</p>
+<p>If you are trying to reset your password, the link expires after 24 hours. Try resetting the password again and see if a new 
+link works.</p>
+<p>If you are looking for a piece of content, it looks like that item has either been removed from DOAJ or has moved. Send 
+feedback to us by using the Contact link at the bottom of the page. </p>
 
 {% endblock %}
