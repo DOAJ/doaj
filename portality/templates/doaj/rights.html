@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+
 {% block content %}
 
 <h2>Copyright & Licensing help</h2>
@@ -54,7 +56,10 @@ because the information needs to be embedded into the PDF when it is generated. 
 XMP. Creative Commons provide <a href="https://wiki.creativecommons.org/wiki/XMP">help on using XMP in PDFs</a> on their wiki. </p>
 
 <p><b>What does the machine-readable code look like?</b> It looks like this:<br>
-&lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;Creative Commons Attribution 4.0 International License&lt;/a&gt;</p>
+&lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;<br>
+&lt;img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /&gt;&lt;/a&gt;&lt;br /&gt;<br>
+This work is licensed under a &lt;a rel="license" href="http://creativecommons.org/licenses/by/4.0/"&gt;Creative Commons Attribution 4.0 
+International License&lt;/a&gt;</p>
 <p>The key piece of information is rel="license". That tells machines that they are reading a license.</p>
 
 <p><b>How can I tell if I already have machine-readable embedded licensing code in my pages?</b> Easily. Go to one of your articles and take a look at the "source code" for it, that is the HTML code behind the web page. To do this on a PC, press Ctrl + U. On a Mac, press Command + Alt + U. Then scan the code for rel="license". You can even do a search by using Ctrl + F on a PC, or Command + F on a Mac.</p>
