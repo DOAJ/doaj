@@ -38,7 +38,7 @@
     /******** Our main function ********/
     function main() {
         jQuery(document).ready(function($) {
-            $('#doaj-fixed-query-widget').load(document.location.origin + "/static/widget/fixed_query_body.html");
+            $('#doaj-fixed-query-widget').load("https://doaj.org/static/widget/fixed_query_body.html");
         });
     }
 })();

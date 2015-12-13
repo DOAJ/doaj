@@ -497,7 +497,7 @@ function humanDate(datestr) {
 function doajGenFixedQueryWidget(widget_fv_opts){
     // Put the html code here which will set the options and embed the widget
     var source = elasticSearchQuery({"options" : widget_fv_opts, "include_facets" : widget_fv_opts.include_facets_in_url, "include_fields" : widget_fv_opts.include_fields_in_url});
-    var frag = '<script type="text/javascript">var SEARCH_CONFIGURED_OPTIONS=' + JSON.stringify(source) + '</script>';
+    var frag = '<script type="text/javascript">var doaj_url="'+ document.location.origin + '"; var SEARCH_CONFIGURED_OPTIONS=' + JSON.stringify(source) + '</script>';
     frag += '<script src="' + document.location.origin +'/static/widget/fixed_query.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
     return frag
 }
