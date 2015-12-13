@@ -69,6 +69,117 @@ function renderNotFound() {
         "</tr>";
 }
 
+// addition of embeddable widget into share link box
+function searchOptions(options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_startagain - reset the search parameters
+     * class: facetview_pagesize - size of each result page
+     * class: facetview_order - ordering direction of results
+     * class: facetview_orderby - list of fields which can be ordered by
+     * class: facetview_searchfield - list of fields which can be searched on
+     * class: facetview_freetext - input field for freetext search
+     * class: facetview_force_search - button which triggers a search on the current page status
+     *
+     * should (not must) respect the following configs
+     *
+     * options.search_sortby - list of sort fields and directions
+     * options.searchbox_fieldselect - list of fields search can be focussed on
+     * options.sharesave_link - whether to provide a copy of a link which can be saved
+     * options.search_button - whether to provide a button to force a search
+     */
+
+    var thefacetview = "";
+
+    // share and save link + embed link
+    if (options.sharesave_link) {
+        thefacetview += '<a class="btn facetview_sharesave" title="share or embed this search" style="margin:0 5px 21px 0px;" href="">share | embed</a>';
+    }
+
+    // initial button group of search controls
+    thefacetview += '<div class="btn-group" style="display:inline-block; margin-right:5px;"> \
+        <a class="btn btn-small facetview_startagain" title="clear all search settings and start again" href=""><i class="icon-remove"></i></a> \
+        <a class="btn btn-small facetview_pagesize" title="change result set size" href="#"></a>';
+
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<a class="btn btn-small facetview_order" title="current order descending. Click to change to ascending" \
+            href="desc"><i class="icon-arrow-down"></i></a>';
+    }
+    thefacetview += '</div>';
+
+    // selection for search ordering
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<select class="facetview_orderby" style="border-radius:5px; \
+            -moz-border-radius:5px; -webkit-border-radius:5px; width:100px; background:#eee; margin:0 5px 21px 0;"> \
+            <option value="">order by ... relevance</option>';
+
+        for (var each = 0; each < options.search_sortby.length; each++) {
+            var obj = options.search_sortby[each];
+            var sortoption = '';
+            if ($.type(obj['field']) == 'array') {
+                sortoption = sortoption + '[';
+                sortoption = sortoption + "'" + obj['field'].join("','") + "'";
+                sortoption = sortoption + ']';
+            } else {
+                sortoption = obj['field'];
+            }
+            thefacetview += '<option value="' + sortoption + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    }
+
+    // select box for fields to search on
+    if ( options.searchbox_fieldselect.length > 0 ) {
+        thefacetview += '<select class="facetview_searchfield" style="border-radius:5px 0px 0px 5px; \
+            -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; width:100px; margin:0 -2px 21px 0; background:#ecf4ff;">';
+        thefacetview += '<option value="">search all</option>';
+
+        for (var each = 0; each < options.searchbox_fieldselect.length; each++) {
+            var obj = options.searchbox_fieldselect[each];
+            thefacetview += '<option value="' + obj['field'] + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    };
+
+    // text search box
+    var corners = "border-radius:0px 5px 5px 0px; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;"
+    if (options.search_button) {
+        corners = "border-radius:0px 0px 0px 0px; -moz-border-radius:0px 0px 0px 0px; -webkit-border-radius:0px 0px 0px 0px;"
+    }
+    thefacetview += '<input type="text" class="facetview_freetext span4" style="display:inline-block; margin:0 0 21px 0; background:#ecf4ff; ' + corners + '" name="q" \
+        value="" placeholder="search term" />';
+
+    // search button
+    if (options.search_button) {
+        thefacetview += "<a class='btn btn-info facetview_force_search' style='margin:0 0 21px 0px; border-radius:0px 5px 5px 0px; \
+            -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;'><i class='icon-white icon-search'></i></a>"
+    }
+
+    // share and save link box
+    if (options.sharesave_link) {
+        thefacetview += '<div class="facetview_sharesavebox alert alert-info" style="display:none;"> \
+            <button type="button" class="facetview_sharesave close">×</button> \
+            <p>Share a link to this search';
+
+        // if there is a url_shortener available, render a link
+        if (options.url_shortener) {
+            thefacetview += " <a href='#' class='facetview_shorten_url btn btn-mini' style='margin-left: 30px'><i class='icon-white icon-resize-small'></i> shorten url</a>";
+            thefacetview += " <a href='#' class='facetview_lengthen_url btn btn-mini' style='display: none; margin-left: 30px'><i class='icon-white icon-resize-full'></i> original url</a>";
+        }
+
+        thefacetview += '</p> \
+            <textarea class="facetview_sharesaveurl" style="width:100%">' + shareableUrl(options) + '</textarea>';
+
+        // The text area for the embeddable widget
+        thefacetview += '<p>Embed this search in your webpage</p>\
+        <textarea class="facetview_embedwidget" style="width:100%">' + doajGenFixedQueryWidget(options) + '</textarea> \
+            </div>';
+    }
+
+    return thefacetview
+}
+
 /////////////////////////////////////////////////////////////////
 // functions for use as plugins to be passed to facetview instances
 ////////////////////////////////////////////////////////////////
@@ -148,6 +259,12 @@ function doajToggleAbstract(options, context) {
 function doajPostRender(options, context) {
     doajScrollTop(options, context);
     doajToggleAbstract(options, context);
+
+    // Update the widget options & generated text
+    if (options.sharesave_link) {
+        var widget_text = doajGenFixedQueryWidget(options);
+        $('.facetview_embedwidget', context).val(widget_text);
+    }
 }
 
 function doajFixedQueryWidgetPostRender(options, context) {
@@ -379,7 +496,8 @@ function humanDate(datestr) {
 /////////////////////////////////////////////////////
 function doajGenFixedQueryWidget(widget_fv_opts){
     // Put the html code here which will set the options and embed the widget
-    var frag = '<script type="text/javascript">var SEARCH_CONFIGURED_OPTIONS=' + JSON.dump(widget_fv_opts) + '</script>';
+    var source = elasticSearchQuery({"options" : widget_fv_opts, "include_facets" : widget_fv_opts.include_facets_in_url, "include_fields" : widget_fv_opts.include_fields_in_url});
+    var frag = '<script type="text/javascript">var SEARCH_CONFIGURED_OPTIONS=' + JSON.stringify(source) + '</script>';
     frag += '<script src="' + document.location.origin +'/static/widget/fixed_query.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
     return frag
 }
