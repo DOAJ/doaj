@@ -1,4 +1,5 @@
 import requests, json, time
+from copy import deepcopy
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory
 
 # applications
@@ -30,7 +31,14 @@ assert resp.status_code == 204
 API = "http://localhost:5004/api/v1/bulk/articles"
 KEY = "d117ad1b35b94469b3dae09c29bfed55"
 
-dataset = [ArticleFixtureFactory.make_incoming_api_article()] * 10
+# make the dataset
+# if you use the dataset = [ArticleFixtureFactory.make_incoming_api_article()] * 10
+# syntax it'll just create 10 references to the same dict, so by changing one (later)
+# you'll change all of them
+dataset = []
+for i in range(0, 10):
+    dataset.append(deepcopy(ArticleFixtureFactory.make_incoming_api_article()))
+
 for i, d in enumerate(dataset):
     # This will fail if you already have articles with
     # fulltext URL http://www.example.org/article{var} or
