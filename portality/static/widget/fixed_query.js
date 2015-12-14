@@ -33,12 +33,29 @@
         jQuery = window.jQuery.noConflict(true);
         // Call our main function
         main();
+        //loadWidgetScripts(main);
     }
+
+
+/*    function loadWidgetScripts(callback){
+        // Load the scripts the widget requires
+        jQuery.when(
+            jQuery.getScript('http://localhost:5004/static/portality/vendor/facetview2/es.js'),
+            jQuery.getScript('http://localhost:5004/static/portality/vendor/facetview2/bootstrap2.facetview.theme.js'),
+            jQuery.getScript('http://localhost:5004/static/doaj/js/doaj.facetview.theme.js'),
+            jQuery.getScript('http://localhost:5004/static/portality/vendor/facetview2/jquery.facetview2.js'),
+
+            jQuery.getScript('http://localhost:5004/static/doaj/js/available_facetviews/public.fixedquerywidget.facetview.js'),
+            jQuery.getScript('http://localhost:5004/static/doaj/js/doaj.js'),
+            jQuery.getScript('http://localhost:5004/static/doaj/js/facetview_results_render_callbacks.js')
+        ).done(callback);
+    }*/
+
 
     /******** Our main function ********/
     function main() {
         jQuery(document).ready(function($) {
-            $('#doaj-fixed-query-widget').load("https://doaj.org/static/widget/fixed_query_body.html");
+            $('#doaj-fixed-query-widget').load("http://localhost:5004/static/widget/fixed_query_body.html");
         });
     }
 })();
