@@ -271,7 +271,7 @@ def article_page(identifier=None):
     journal = None
     issns = article.bibjson().issns()
     for issn in issns:
-        journals = models.Journal.find_by_issn(issns[0])
+        journals = models.Journal.find_by_issn(issn)
         if len(journals) > 0:
             journal = journals[0]
 
