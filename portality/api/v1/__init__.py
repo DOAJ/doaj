@@ -4,4 +4,4 @@ from portality.api.v1.discovery import DiscoveryApi, DiscoveryException
 
 from portality.api.v1.crud import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi
 
-from portality.api.v1.bulk import ApplicationsBulkApi
+from portality.api.v1.bulk import ApplicationsBulkApi, ArticlesBulkApi

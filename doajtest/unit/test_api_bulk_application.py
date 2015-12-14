@@ -33,7 +33,7 @@ class TestCrudApplication(DoajTestCase):
         time.sleep(2)
 
         # check that each id was actually created
-        if id in ids:
+        for id in ids:
             s = models.Suggestion.pull(id)
             assert s is not None
 

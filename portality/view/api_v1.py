@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 from flask_swagger import swagger
 
 from portality.api.v1 import DiscoveryApi, DiscoveryException
-from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi
+from portality.api.v1 import ApplicationsCrudApi, ArticlesCrudApi, JournalsCrudApi, ApplicationsBulkApi, ArticlesBulkApi
 from portality.api.v1 import jsonify_models, jsonify_data_object, Api400Error, Api401Error, Api404Error, created, no_content, bulk_created
 from portality.core import app
 from portality.decorators import api_key_required, api_key_optional, swag
@@ -286,5 +286,43 @@ def bulk_application_delete():
         raise Api400Error("Supplied data was not valid JSON")
 
     ApplicationsBulkApi.delete(data, current_user)
+
+    return no_content()
+
+#########################################
+## Article Bulk API
+
+@blueprint.route("/bulk/articles", methods=["POST"])
+@api_key_required
+@swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def bulk_article_create():
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    # delegate to the API implementation
+    ids = ArticlesBulkApi.create(data, current_user)
+
+    # get all the locations for the ids
+    inl = []
+    for id in ids:
+        inl.append((id, url_for("api_v1.retrieve_article", article_id=id)))
+
+    # respond with a suitable Created response
+    return bulk_created(inl)
+
+@blueprint.route("/bulk/articles", methods=["DELETE"])
+@api_key_required
+@swag(swag_summary='Bulk article delete <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+def bulk_article_delete():
+    # get the data from the request
+    try:
+        data = json.loads(request.data)
+    except:
+        raise Api400Error("Supplied data was not valid JSON")
+
+    ArticlesBulkApi.delete(data, current_user)
 
     return no_content()
