@@ -3,6 +3,7 @@ from portality.api.v1 import ArticlesBulkApi, Api401Error, Api400Error
 from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 import time
+from copy import deepcopy
 
 class TestCrudArticle(DoajTestCase):
 
@@ -13,6 +14,59 @@ class TestCrudArticle(DoajTestCase):
         super(TestCrudArticle, self).tearDown()
 
     def test_01_create_articles_success(self):
+        def find_dict_in_list(lst, key, value):
+            for i, dic in enumerate(lst):
+                if dic[key] == value:
+                    return i
+            return -1
+
+        # set up all the bits we need - 10 articles
+        dataset = []
+        for i in range(1, 11):
+            data = ArticleFixtureFactory.make_incoming_api_article()
+            # change the DOI and fulltext URLs to escape duplicate detection
+            # and try with multiple articles
+            doi_ix = find_dict_in_list(data['bibjson']['identifier'], 'type', 'doi')
+            if doi_ix == -1:
+                data['bibjson']['identifier'].append({"type" : "doi"})
+            data['bibjson']['identifier'][doi_ix]['id'] = '10.0000/SOME.IDENTIFIER.{0}'.format(i)
+            
+            fulltext_url_ix = find_dict_in_list(data['bibjson']['link'], 'type', 'fulltext')
+            if fulltext_url_ix == -1:
+                data['bibjson']['link'].append({"type" : "fulltext"})
+            data['bibjson']['link'][fulltext_url_ix]['url'] = 'http://www.example.com/article_{0}'.format(i)
+
+            dataset.append(deepcopy(data))
+
+        # create an account that we'll do the create as
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # add a journal to the account
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_owner(account.id)
+        journal.save()
+
+        time.sleep(2)
+
+        # call create on the object (which will save it to the index)
+        ids = ArticlesBulkApi.create(dataset, account)
+
+        # check that we got the right number of ids back
+        assert len(ids) == 10
+        assert len(list(set(ids))) == 10, len(list(set(ids)))  # are they actually 10 unique IDs?
+
+        # let the index catch up
+        time.sleep(2)
+
+        # check that each id was actually created
+        for id in ids:
+            s = models.Article.pull(id)
+            assert s is not None
+
+    def test_02_create_duplicate_articles_success(self):
         # set up all the bits we need - 10 articles
         data = ArticleFixtureFactory.make_incoming_api_article()
         dataset = [data] * 10
@@ -34,8 +88,7 @@ class TestCrudArticle(DoajTestCase):
         ids = ArticlesBulkApi.create(dataset, account)
 
         # check that we got the right number of ids back
-        assert len(ids) == 10
-        # assert len(list(set(ids))) == 10  # TODO need to fix this fails due to XML-style deduplication in CRUD API Article create
+        assert len(ids) == 1
 
         # let the index catch up
         time.sleep(2)
@@ -45,7 +98,7 @@ class TestCrudArticle(DoajTestCase):
             s = models.Article.pull(id)
             assert s is not None
 
-    def test_02_create_articles_fail(self):
+    def test_03_create_articles_fail(self):
         # if the account is dud
         with self.assertRaises(Api401Error):
             data = ArticleFixtureFactory.make_incoming_api_article()
@@ -74,7 +127,7 @@ class TestCrudArticle(DoajTestCase):
         all = [x for x in models.Article.iterall()]
         assert len(all) == 0
 
-    def test_03_delete_article_success(self):
+    def test_04_delete_article_success(self):
         # set up all the bits we need
         data = ArticleFixtureFactory.make_incoming_api_article()
         dataset = [data] * 10
@@ -110,7 +163,7 @@ class TestCrudArticle(DoajTestCase):
             ap = models.Article.pull(id)
             assert ap is not None
 
-    def test_04_delete_articles_fail(self):
+    def test_05_delete_articles_fail(self):
         # set up all the bits we need
         data = ArticleFixtureFactory.make_incoming_api_article()
         dataset = [data] * 10

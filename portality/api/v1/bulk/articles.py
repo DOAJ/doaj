@@ -33,9 +33,34 @@ class ArticlesBulkApi(Api):
         # as the real deal
         for a in articles:
             ArticlesCrudApi.create(a, account, dry_run=True)
+        # no formatting issues, the JSON of each article complies with required format at this point
 
         ids = []
+        dois_seen = set()
+        fulltext_urls_seen = set()
         for a in articles:
+            duplicate = False  # skip articles if their fulltext URL or DOI is the same
+
+            for i in a['bibjson']['identifier']:
+                if i['type'] == 'doi':
+                    if i['id'] in dois_seen:
+                        duplicate = True
+                        break
+                    dois_seen.add(i['id'])
+
+            if duplicate:
+                continue
+
+            for l in a['bibjson']['link']:
+                if l['type'] == 'fulltext':
+                    if l['url'] in fulltext_urls_seen:
+                        duplicate = True
+                        break
+                    fulltext_urls_seen.add(l['url'])
+
+            if duplicate:
+                continue
+
             n = ArticlesCrudApi.create(a, account)
             ids.append(n.id)
 
