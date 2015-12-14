@@ -294,7 +294,7 @@ def bulk_application_delete():
 
 @blueprint.route("/bulk/articles", methods=["POST"])
 @api_key_required
-@swag(swag_summary='Bulk article creation', swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Bulk article creation <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesBulkApi.create_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def bulk_article_create():
     # get the data from the request
     try:
@@ -315,7 +315,7 @@ def bulk_article_create():
 
 @blueprint.route("/bulk/articles", methods=["DELETE"])
 @api_key_required
-@swag(swag_summary='Bulk article delete', swag_spec=ArticlesBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
+@swag(swag_summary='Bulk article delete <span class="red">[Authenticated, not public]</span>', swag_spec=ArticlesBulkApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 def bulk_article_delete():
     # get the data from the request
     try:

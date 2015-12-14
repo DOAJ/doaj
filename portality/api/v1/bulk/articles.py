@@ -21,7 +21,7 @@ class ArticlesBulkApi(Api):
             }
         )
         template['parameters'].append(cls.SWAG_API_KEY_REQ_PARAM)
-        template['responses']['201'] = cls.R201
+        template['responses']['201'] = cls.R201_BULK
         template['responses']['400'] = cls.R400
         template['responses']['401'] = cls.R401
         template['responses']['403'] = cls.R403

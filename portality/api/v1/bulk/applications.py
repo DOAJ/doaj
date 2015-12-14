@@ -5,10 +5,8 @@ from copy import deepcopy
 
 class ApplicationsBulkApi(CrudApi):
 
-    B201 = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array", "description": "Resources created successfully, response contains the new resource IDs and locations."}}
-
     API_KEY_OPTIONAL = False
-    SWAG_TAG = 'Bulk Applications'
+    SWAG_TAG = 'Bulk API'
     SWAG_DELETE_PARAM = {
         "description": "<div class=\"search-query-docs\">List of DOAJ application IDs to be deleted. You must own all of the ids, and they must all not have entered the DOAJ workflow yet, or none of them will be processed.e.g. [4cf8b72139a749c88d043129f00e1b07, 8e896b60-35f1-4cd3-b3f9-07f7f29d8a98].</div>",
         "required": True,
@@ -28,7 +26,7 @@ class ApplicationsBulkApi(CrudApi):
     def create_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
         template['parameters'].append(cls.SWAG_APPLICATION_BODY_PARAM)
-        template['responses']['201'] = cls.B201
+        template['responses']['201'] = cls.R201_BULK
         template['responses']['400'] = cls.R400
         return cls._build_swag_response(template)
 

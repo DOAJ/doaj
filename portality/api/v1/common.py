@@ -15,7 +15,7 @@ class Api(object):
     }
     R200 = {"schema": {}}
     R201 = {"schema": {"properties": CREATED_TEMPLATE, "description": "Resource created successfully, response contains the new resource ID and location."}}
-    R201_BULK = {"schema": {"properties": CREATED_TEMPLATE, "description": "Resource created successfully, response contains the new resource ID and location."}}
+    R201_BULK = {"schema": {"items": {"properties" : CREATED_TEMPLATE, "type" : "object"}, "type" : "array", "description": "Resources created successfully, response contains the new resource IDs and locations."}}
     R204 = {"description": "OK (Request succeeded), No Content"}
     R400 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Bad Request. Your request body was missing a required field, or the data in one of the fields did not match the schema above (e.g. string of latin letters in an integer field). In the Bulk API it may mean that one of the records in the bulk operation failed. See the \"error\" part of the response for details."}
     R401 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Access to this route/resource requires authentication, but you did not provide any credentials."}
