@@ -90,20 +90,6 @@ Example:
 <div class="alert alert-danger"><b>Note: </b>The fixed query widget is always generated from the live site</div>
 {% endif %}
 
-<script type="text/javascript">
-var doaj_url = "{{ config.get('BASE_URL') }}";
-var QUERY_OPTIONS = {
-    query_string : 'medicine',                     // The plain-text query string
-    query_field: 'bibjson.title',                  // The field we are querying
-    sort_field: 'index.unpunctitle.exact',         // Field to order results by
-    sort_direction:  'asc',                        // Direction of sort "asc" | "desc"
-    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
-    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
-    page_size : 5,                                 // How many results to show per widget page
-    page_from : 0                                  // Which result to initially start from
-    }
-</script>
-<script src="http://localhost:5004/static/widget/fixed_query.js" type="text/javascript"></script>
 <div id="doaj-fixed-query-widget"></div>
 
 <br>
@@ -179,3 +165,20 @@ Note: the vertical size can fluctuate slightly depending on what is being showed
 </table>
 </div>
 {% endblock %}
+
+{% block extra_js_bottom %}
+<script type="text/javascript">
+var doaj_url = "{{ config.get('BASE_URL') }}";
+var QUERY_OPTIONS = {
+    query_string : 'medicine',                     // The plain-text query string
+    query_field: 'bibjson.title',                  // The field we are querying
+    sort_field: 'index.unpunctitle.exact',         // Field to order results by
+    sort_direction:  'asc',                        // Direction of sort "asc" | "desc"
+    search_operator : 'AND',                       // Which sort operator to use "AND" | "OR"
+    search_type: 'journal',                        // Which type to search upon (omit for both) "article" | "journal"
+    page_size : 5,                                 // How many results to show per widget page
+    page_from : 0                                  // Which result to initially start from
+    }
+</script>
+<script src="http://localhost:5004/static/widget/fixed_query.js" type="text/javascript"></script>
+{% endblock extra_js_bottom %}
