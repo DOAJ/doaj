@@ -24,6 +24,7 @@ setup(
         "nose",
         "unidecode",
         "Flask-Swagger==0.2.8",
+        "flask-cors==2.1.2",
         # for deployment
         "gunicorn",
         "newrelic",

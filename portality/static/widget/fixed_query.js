@@ -1,9 +1,10 @@
 (function() {
 
     // Localize jQuery variable
-    var jQuery;
+    //var jQuery;
 
     /******** Load jQuery if not present *********/
+    /*
     if (window.jQuery === undefined || window.jQuery.fn.jquery !== '1.9.1') {
         var script_tag = document.createElement('script');
         script_tag.setAttribute("type","text/javascript");
@@ -25,6 +26,8 @@
         jQuery = window.jQuery;
         main();
     }
+    */
+    main();
 
     /******** Called once jQuery has loaded ******/
     function scriptLoadHandler() {
