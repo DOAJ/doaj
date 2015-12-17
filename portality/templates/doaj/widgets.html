@@ -67,6 +67,10 @@ simply use the controls to find the results you want to show then click the <b>s
 
 <pre>
 &lt;script type="text/javascript"&gt;
+    !window.jQuery && document.write("&lt;scr" + "ipt type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\"&gt;&lt;/scr" + "ipt&gt;");
+&lt;/script&gt;
+
+&lt;script type="text/javascript"&gt;
 var doaj_url = "{{ config.get('BASE_URL') }}";
 var QUERY_OPTIONS = {
     query_string : 'medicine',                   // The plain-text query string
@@ -87,7 +91,7 @@ Example:
 
 {# The fixed query widget will only work in production, due to resource retrieval #}
 {% if env != 'production' %}
-<div class="alert alert-danger"><b>Note: </b>The fixed query widget is always generated from the live site</div>
+<div class="alert alert-danger"><b>Note: </b>The fixed query widget is always generated with queries to the live site</div>
 {% endif %}
 
 <div id="doaj-fixed-query-widget"></div>
