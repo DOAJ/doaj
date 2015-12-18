@@ -89,9 +89,9 @@ var QUERY_OPTIONS = {
 <br>
 Example:
 
-{# The fixed query widget will only work in production, due to resource retrieval #}
+{# The fixed query widget will only work in production, due to resource retrieval fixme: this can be changed by using doaj_url in the inner html#}
 {% if env != 'production' %}
-<div class="alert alert-danger"><b>Note: </b>The fixed query widget is always generated with queries to the live site</div>
+<div class="alert alert-danger"><b>Dev Note: </b>The fixed query widget is always generated with queries to the live site</div>
 {% endif %}
 
 <div id="doaj-fixed-query-widget"></div>
@@ -101,7 +101,8 @@ Example:
 vertical requirement by reducing the number of results per page.
 Note: the vertical size can fluctuate slightly depending on what is being showed on each page.</p>
 
-<p>You can only embed one fixed query widget per page.</p>
+<p>You can only embed one fixed query widget per page. If you see strange artifacts in the results, try declaring your page encoding in
+the <code>&lt;head&gt;</code>, i.e. add: <code>&lt;meta charset="utf-8"&gt;</code>.</p>
 
 <br>
 <h4>Configuring via QUERY_OPTIONS</h4>
@@ -184,5 +185,5 @@ var QUERY_OPTIONS = {
     page_from : 0                                  // Which result to initially start from
     }
 </script>
-<script src="http://localhost:5004/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="/static/widget/fixed_query.js" type="text/javascript"></script>
 {% endblock extra_js_bottom %}

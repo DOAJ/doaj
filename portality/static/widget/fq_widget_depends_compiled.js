@@ -1,3 +1,6 @@
+// The complete js for the fixed query widget
+// fixme: this could do with being generated properly from facetview components.
+
 /******************************************************************
  * ELASTICSEARCH INTEGRATION
  *****************************************************************/
@@ -1023,12 +1026,12 @@ function dateHistogramShowLess(options, context, facet) {
 }
 
 var licenceMap = {
-    "CC BY" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
-    "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
-    "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
-    "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
-    "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
-    "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
+    "CC BY" : ["https://doaj.org/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
+    "CC BY-NC" : ["https://doaj.org/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
+    "CC BY-NC-ND" : ["https://doaj.org/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
+    "CC BY-NC-SA" : ["https://doaj.org/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
+    "CC BY-ND" : ["https://doaj.org/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
+    "CC BY-SA" : ["https://doaj.org/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
 };
 
 
@@ -3024,7 +3027,7 @@ jQuery(document).ready(function($) {
 
         // show the seal if it's set
         if (resultobj.admin && resultobj.admin.seal) {
-            result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
+            result += "<img src='https://doaj.org/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
         }
 
         // close the journal properties side-bar
@@ -3438,12 +3441,12 @@ fv_journal_license = (function (resultobj) {
 })();
 
 CC_MAP = {
-    "CC BY" : ["/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
-    "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
-    "CC BY-NC-ND" : ["/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
-    "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
-    "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
-    "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
+    "CC BY" : ["https://doaj.org/static/doaj/images/cc/by.png", "http://creativecommons.org/licenses/by/3.0/"],
+    "CC BY-NC" : ["https://doaj.org/static/doaj/images/cc/by-nc.png", "http://creativecommons.org/licenses/by-nc/3.0/"],
+    "CC BY-NC-ND" : ["https://doaj.org/static/doaj/images/cc/by-nc-nd.png", "http://creativecommons.org/licenses/by-nc-nd/3.0/"],
+    "CC BY-NC-SA" : ["https://doaj.org/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
+    "CC BY-ND" : ["https://doaj.org/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
+    "CC BY-SA" : ["https://doaj.org/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
 }
 
 fv_title_field = (function (resultobj) {
@@ -3464,12 +3467,12 @@ fv_title_field = (function (resultobj) {
         }
         if (resultobj.bibjson.title) {
             if (isjournal) {
-                field += "&nbsp<a href='/toc/" + journal_toc_id(resultobj) + "'>" + escapeHtml(resultobj.bibjson.title) + "</a>";
+                field += "&nbsp;<a href='/toc/" + journal_toc_id(resultobj) + "'>" + escapeHtml(resultobj.bibjson.title) + "</a>";
             } else {
-                field += "&nbsp" + escapeHtml(resultobj.bibjson.title);
+                field += "&nbsp;" + escapeHtml(resultobj.bibjson.title);
             }
             if (resultobj.admin.ticked) {
-                field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
+                field += "&nbsp;<img src='https://doaj.org/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
             }
             return field + "</span>"
         } else {
