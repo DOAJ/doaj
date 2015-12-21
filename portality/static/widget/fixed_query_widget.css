@@ -1,0 +1,162 @@
+#doaj-fixed-query-widget img#doaj-fixed-query-logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* THE STYLES USUALLY INHERITED FROM DOAJ/FACETVIEW ETC todo: use these rather than multiple massive style sheets */
+/*
+#doaj-fixed-query-widget .pull-left {
+    float: left !important;
+}
+
+#doaj-fixed-query-widget .table th, .table td {
+    line-height: 18px;
+    text-align: left;
+}
+
+#doaj-fixed-query-widget table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#doaj-fixed-query-widget div {
+
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #333;
+
+}
+
+#doaj-fixed-query-widget a {
+
+    color: #08c;
+    text-decoration: none;
+
+}
+#doaj-fixed-query-widget #facetview_results .title {
+
+    font-size: 120%;
+
+}
+
+#doaj-fixed-query-widget .row-fluid {
+    width: 100%;
+    *zoom: 1;
+}
+
+#doaj-fixed-query-widget .row-fluid [class*="span"]:first-child {
+    margin-left: 0;
+}
+
+#doaj-fixed-query-widget .row-fluid [class*="span"] {
+    display: block;
+    float: left;
+    width: 100%;
+    min-height: 28px;
+    margin-left: 2.564102564%;
+    *margin-left: 2.510911074638298%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#doaj-fixed-query-widget .btn-toolbar {
+    margin-top: 9px;
+    margin-bottom: 9px;
+}
+
+#doaj-fixed-query-widget p {
+    margin: 0 0 9px;
+}
+
+#doaj-fixed-query-widget #facetview table {
+    border-top-color: #F68B1F;
+    border-bottom-color: #F68B1F;
+    border-left: 0;
+    border-right: 0;
+    border-collapse: collapse;
+}
+
+#doaj-fixed-query-widget #facetview_results {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+#doaj-fixed-query-widget .table-bordered {
+    border: 1px solid #ddd;
+    border-collapse: separate;
+    *border-collapse: collapsed;
+    border-left: 0;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+#doaj-fixed-query-widget .table {
+    width: 100%;
+    margin-bottom: 18px;
+}
+
+#doaj-fixed-query-widget table {
+    max-width: 100%;
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#doaj-fixed-query-widget #facetview .table-striped tbody tr:nth-child(2n+1) td, #facetview .table-striped tbody tr:nth-child(2n+1) th {
+    background-color: #ffeece;
+}
+
+#doaj-fixed-query-widget #facetview table th:last-child, #facetview table td:last-child {
+    border-radius: 0;
+    border-bottom: 0;
+}
+
+#doaj-fixed-query-widget .table th, .table td {
+    padding: 8px;
+    line-height: 18px;
+    text-align: left;
+    vertical-align: top;
+    border-top: 1px solid #ddd;
+}
+
+#doaj-fixed-query-widget #facetview table th, #facetview table td {
+    border-top-color: #F68B1F;
+    border-bottom-color: #F68B1F;
+    border-left: 0;
+}
+
+#doaj-fixed-query-widget #facetview table th, #facetview table td {
+    border-top-color: #F68B1F;
+    border-bottom-color: #F68B1F;
+    border-left: 0;
+}
+
+#doaj-fixed-query-widget .table-bordered caption + thead tr:first-child th, .table-bordered caption + tbody tr:first-child th, .table-bordered caption + tbody tr:first-child td, .table-bordered colgroup + thead tr:first-child th, .table-bordered colgroup + tbody tr:first-child th, .table-bordered colgroup + tbody tr:first-child td, .table-bordered thead:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child th, .table-bordered tbody:first-child tr:first-child td {
+    border-top: 0;
+}
+
+#doaj-fixed-query-widget [class^="icon-"]:last-child, [class*=" icon-"]:last-child {
+    *margin-left: 0;
+}
+
+#doaj-fixed-query-widget .icon-file {
+    background-position: -24px -24px;
+}
+
+#doaj-fixed-query-widget [class^="icon-"], [class*=" icon-"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    *margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("//maxcdn.bootstrapcdn.com/twitter-bootstrap/2.0.4/img/glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
+}
+*/
