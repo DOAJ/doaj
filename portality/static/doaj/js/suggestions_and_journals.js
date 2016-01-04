@@ -228,6 +228,7 @@ function toggle_optional_field(field_name, optional_field_selectors, values_to_s
         } else {
             for (var i = 0; i < optional_field_selectors.length; i++) {
                 $(optional_field_selectors[i]).parents('.control-group').hide();
+                $(optional_field_selectors[i]).val(undefined);
             }
         }
     });
