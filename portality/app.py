@@ -54,6 +54,7 @@ app.register_blueprint(openurl)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
+from datetime import datetime
 """
 FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
 with the 404 pages which requires them
@@ -169,7 +170,8 @@ def set_current_context():
         'settings': settings,
         'statistics' : models.JournalArticle.site_statistics(),
         "current_user": current_user,
-        "app" : app
+        "app" : app,
+        "current_year": datetime.now().strftime('%Y'),
         }
     # return dict(current_user=current_user, app=app)
 
