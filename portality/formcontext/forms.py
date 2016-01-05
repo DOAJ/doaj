@@ -18,6 +18,7 @@ EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not mat
 # Definition of the form components
 ###########################################################################
 
+
 class JournalInformation(Form):
     """All the bibliographic metadata associated with a journal in the DOAJ"""
 
@@ -241,7 +242,7 @@ class JournalInformation(Form):
         [OptionalIf('copyright', optvals=Choices.copyright_url_optional()), URLOptionalScheme()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?',
-        [validators.Required(), ExtraFieldRequiredIf('publishing_rights_other', reqval=Choices.publishing_rights_other_val("other"))],
+        [validators.DataRequired(), ExtraFieldRequiredIf('publishing_rights_other', reqval=Choices.publishing_rights_other_val("other"))],
         choices = Choices.publishing_rights()
     )
     publishing_rights_other = StringField('',
@@ -249,6 +250,7 @@ class JournalInformation(Form):
     publishing_rights_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('publishing_rights', optvals=Choices.publishing_rights_url_optional()), URLOptionalScheme()]
     )
+
 
 class JournalInfoOptionalPaymentURLs(JournalInformation):
     """Overrides fields in the JournalInfo form that are not required for ManEds """
@@ -260,6 +262,7 @@ class JournalInfoOptionalPaymentURLs(JournalInformation):
     submission_charges_url = URLField('Enter the URL where this information can be found',
         [validators.Optional()],
     )
+
 
 class Suggestion(Form):
     """ Additional bibliographic metadata required when suggesting a journal to the DOAJ """
@@ -277,6 +280,7 @@ class Suggestion(Form):
         choices=Choices.metadata_provision()
     )
 
+
 class PublicSuggester(Form):
     """ Suggester's contact details to be provided via the public application form """
 
@@ -289,6 +293,7 @@ class PublicSuggester(Form):
     suggester_email_confirm = StringField('Confirm your email address',
         [validators.DataRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
+
 
 class AdminSuggester(Form):
     """ Suggester's contact details as presented to administrators/editors in the DOAJ workflow"""
@@ -303,6 +308,7 @@ class AdminSuggester(Form):
         [validators.DataRequired(), validators.Email(message='Invalid email address.'), validators.EqualTo('suggester_email', EMAIL_CONFIRM_ERROR)]
     )
 
+
 class Note(Form):
     """ Note form for use in admin area - recommended to be included by the composing form as a FormField, so it can be
         represented as a multi-field.  Use Notes to achieve this """
@@ -310,14 +316,17 @@ class Note(Form):
     note = TextAreaField('Note')
     date = DisabledTextField('Date')
 
+
 class Notes(Form):
     """ Multiple notes form for inclusion into admin forms """
     notes = FieldList(FormField(Note))
+
 
 class ApplicationSubject(Form):
     """ Subject classification entry - with workflow validation"""
 
     subject = SelectMultipleField('Subjects', [OptionalIf('application_status', optvals=Choices.application_status_subject_optional())], choices=Choices.subjects())
+
 
 class JournalSubject(Form):
     """ Subject classification entry - optional"""
@@ -332,10 +341,12 @@ class JournalLegacy(Form):
     author_pays_url = StringField('Author pays - guide link', [validators.Optional(), validators.URL()])
     oa_end_year = IntegerField('Year in which the journal stopped publishing OA content', [validators.Optional(), validators.NumberRange(max=datetime.now().year)])
 
+
 class RequiredOwner(Form):
     """ An Owner field which is required - validation will fail if it is not provided.  For use in some admin forms """
 
     owner = StringField('Owner', [validators.DataRequired()])
+
 
 class ApplicationOwner(Form):
     """ An Owner field which is optional under certain conditions.  For use in some admin forms """
@@ -349,6 +360,7 @@ class ApplicationOwner(Form):
                     'Entering a non-existent account and setting the application status to Accepted will automatically create the account using the Contact information in Questions 9 & 10, and send an email containing the Contact\'s username + password.'
     )
 
+
 class OptionalValidation(Form):
     """ Make the form provide an option to bypass validation """
 
@@ -359,11 +371,13 @@ class OptionalValidation(Form):
                     '<br>c/ <strong>you understand that the system will put in default values like "No" and "None" into old records which are missing some information</strong>.'
     )
 
+
 class Editorial(Form):
     """ Editorial group fields """
 
     editor_group = StringField("Editor Group", [validators.Optional()])
     editor = PermissiveSelectField("Assigned to", default="") # choices to be assigned at form render time
+
 
 class Workflow(Form):
     """ Administrator workflow field """
@@ -376,6 +390,7 @@ class Workflow(Form):
                     ' completed your review.'
     )
 
+
 class Seal(Form):
     """ Field to set the DOAJ Seal """
 
@@ -384,6 +399,7 @@ class Seal(Form):
 #####################################################################
 # The context sensitive forms themselves
 #####################################################################
+
 
 class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
     """
@@ -410,6 +426,7 @@ class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalI
     """
     pass
 
+
 class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
@@ -423,6 +440,7 @@ class EditorApplicationReviewForm(Editorial, Workflow, JournalInfoOptionalPaymen
     """
     pass
 
+
 class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes):
     """
     Editor's Application Review form.  It consists of:
@@ -435,6 +453,7 @@ class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Sugge
     """
     pass
 
+
 class PublisherReApplicationForm(JournalInformation, Suggestion):
     """
     Publisher's reapplication form.  It consists of:
@@ -442,6 +461,7 @@ class PublisherReApplicationForm(JournalInformation, Suggestion):
         * Suggestion - additional application metadata
     """
     pass
+
 
 class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal):
     """
@@ -457,6 +477,7 @@ class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLe
     """
     pass
 
+
 class EditorJournalReviewForm(Editorial, JournalSubject, JournalLegacy, JournalInformation, Notes):
     """
     Editor's Journal Review form.  It consists of:
@@ -468,6 +489,7 @@ class EditorJournalReviewForm(Editorial, JournalSubject, JournalLegacy, JournalI
     """
     pass
 
+
 class AssEdJournalReviewForm(JournalInformation, JournalSubject, JournalLegacy, Notes):
     """
     Associate Editor's Journal Review form.  It consists of:
@@ -477,6 +499,7 @@ class AssEdJournalReviewForm(JournalInformation, JournalSubject, JournalLegacy, 
         * Notes - repeatable notes field
     """
     pass
+
 
 class ReadOnlyJournalForm(JournalInformation, JournalSubject, JournalLegacy, Notes):
     """
