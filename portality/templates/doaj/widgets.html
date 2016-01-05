@@ -8,47 +8,14 @@
 <h3>Simple search widget</h3>
 Just copy and paste this on the page on which you want the widget to displayed.
 
-{% if env=="dev" %}
 <pre>
-&lt;script src="http://localhost:5004/static/widget/simple_search_dev.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script src="{{ config.get('BASE_URL') }}/static/widget/simple_search{{ widget_filename_suffix }}.js" type="text/javascript"&gt;&lt;/script&gt;
 &lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
 </pre>
 
 Example:
-<script src="http://localhost:5004/static/widget/simple_search_dev.js" type="text/javascript"></script>
+<script src="{{ config.get('BASE_URL') }}/static/widget/simple_search{{ widget_filename_suffix }}.js" type="text/javascript"></script>
 <div id="doaj-simple-search-widget"></div>
-
-{% elif env=="test" %}
-<pre>
-&lt;script src="https://testdoaj.cottagelabs.com/static/widget/simple_search_test.js" type="text/javascript"&gt;&lt;/script&gt;
-&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
-</pre>
-
-Example:
-<script src="https://testdoaj.cottagelabs.com/static/widget/simple_search_test.js" type="text/javascript"></script>
-<div id="doaj-simple-search-widget"></div>
-
-{% elif env=="staging" %}
-<pre>
-&lt;script src="https://stagingdoaj.cottagelabs.com/static/widget/simple_search_staging.js" type="text/javascript"&gt;&lt;/script&gt;
-&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
-</pre>
-
-Example:
-<script src="https://stagingdoaj.cottagelabs.com/static/widget/simple_search_staging.js" type="text/javascript"></script>
-<div id="doaj-simple-search-widget"></div>
-
-
-{% elif env=="production" %}
-<pre>
-&lt;script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"&gt;&lt;/script&gt;
-&lt;div id="doaj-simple-search-widget"&gt;&lt;/div&gt;
-</pre>
-
-Example:
-<script src="https://doaj.org/static/widget/simple_search.js" type="text/javascript"></script>
-<div id="doaj-simple-search-widget"></div>
-{% endif %}
 
 </div>
 <br>
@@ -83,15 +50,14 @@ var QUERY_OPTIONS = {
     page_from : 0                                // Which result to start from
     }
 &lt;/script&gt;
-&lt;script src="{{ config.get('BASE_URL') }}/static/widget/fixed_query.js" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script src="{{ config.get('BASE_URL') }}/static/widget/fixed_query{{ widget_filename_suffix }}.js" type="text/javascript"&gt;&lt;/script&gt;
 &lt;div id="doaj-fixed-query-widget"&gt;&lt;/div&gt;
 </pre>
 <br>
 Example:
 
-{# The fixed query widget will only work in production, due to resource retrieval fixme: this can be changed by using doaj_url in the inner html#}
 {% if env != 'production' %}
-<div class="alert alert-danger"><b>Dev Note: </b>The fixed query widget is always generated with queries to the live site</div>
+<div class="alert alert-danger"><b>Dev Note: </b>Make sure BASE_URL is set correctly so that you are actually seeing the widget integration in the correct environment. Otherwise you might see the live widget integrated into your local development version of DOAJ, or other weird combinations like that. The current value of BASE_URL is {{ config.get('BASE_URL') }}. This should match whatever is in your browser address bar.</div>
 {% endif %}
 
 <div id="doaj-fixed-query-widget"></div>
@@ -185,5 +151,5 @@ var QUERY_OPTIONS = {
     page_from : 0                                  // Which result to initially start from
     }
 </script>
-<script src="/static/widget/fixed_query.js" type="text/javascript"></script>
+<script src="/static/widget/fixed_query{{ widget_filename_suffix }}.js" type="text/javascript"></script>
 {% endblock extra_js_bottom %}
