@@ -1,0 +1,237 @@
+<!-- fixme: we could make the widget work properly in all envs if we could set resource origin using doaj_url parameter -->
+
+<!-- get bootstrap css -->
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.0.4/css/bootstrap-combined.min.css">
+
+<!-- get fontawesome css -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+
+<!-- get facetview css -->
+<link rel="stylesheet" href="https://testdoaj.cottagelabs.com/static/portality/vendor/facetview2/css/facetview.css">
+
+<!-- get portality css -->
+<link rel="stylesheet" type="text/css" href="https://testdoaj.cottagelabs.com/static/portality/css/portality.css">
+
+<!-- get the table sorter css -->
+<link rel="stylesheet" type="text/css" href="https://testdoaj.cottagelabs.com/static/portality/vendor/tablesorter/css/blue/style.css">
+
+<!-- get the select2 css -->
+<link rel="stylesheet" type="text/css" href="https://testdoaj.cottagelabs.com/static/portality/vendor/select2-release-3.2/select2.css">
+
+<!-- get the app's css -->
+<link rel="stylesheet" type="text/css" href="https://testdoaj.cottagelabs.com/static/doaj/css/doaj.css">
+<link rel="stylesheet" type="text/css" href="https://testdoaj.cottagelabs.com/static/doaj/css/facetview-customisations.css">
+
+<!-- The widget CSS todo: incorporate all the above CSS into fixed_query_widget.css -->
+<link rel="stylesheet" href="https://testdoaj.cottagelabs.com/static/widget/fixed_query_widget.css">
+
+<div id="doaj_logo_container">
+    <a href="https://testdoaj.cottagelabs.com/" target="_blank"><img id="doaj-fixed-query-logo" src="https://testdoaj.cottagelabs.com/static/doaj/images/logo_cropped.jpg" alt="Directory of Open Access Journals" title="Directory of Open Access Journals"></a>
+</div>
+<div class="facetview journals_and_articles"></div>
+
+<script type="text/javascript">
+
+// The reserved characters in elasticsearch query strings
+// Note that the "\" has to go first, as when these are substituted, that character
+// will get introduced as an escape character
+var esSpecialChars = ["\\", "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", '"', "~", "*", "?", ":", "/"];
+
+// the reserved special character set with * and " removed, so that users can do quote searches and wildcards
+// if they want
+var esSpecialCharsSubSet = ["\\", "+", "-", "=", "&&", "||", ">", "<", "!", "(", ")", "{", "}", "[", "]", "^", "~", "?", ":", "/"];
+
+// values that have to be in even numbers in the query or they will be escaped
+var esPairs = ['"'];
+
+// FIXME: esSpecialChars is not currently used for encoding, but it would be worthwhile giving the facetview an option
+// to allow/disallow specific values, but that requires a much better (automated) understanding of the
+// query DSL
+
+var elasticsearch_distance_units = ["km", "mi", "miles", "in", "inch", "yd", "yards", "kilometers", "mm", "millimeters", "cm", "centimeters", "m", "meters"]
+
+function optionsFromQuery(query) {
+
+    function stripDistanceUnits(val) {
+        for (var i=0; i < elasticsearch_distance_units.length; i=i+1) {
+            var unit = elasticsearch_distance_units[i];
+            if (endsWith(val, unit)) {
+                return val.substring(0, val.length - unit.length)
+            }
+        }
+        return val
+    }
+
+    function unescapeQueryString(val) {
+        function escapeRegExp(string) {
+            return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        }
+
+        function unReplaceAll(string, find) {
+            return string.replace(new RegExp("\\\\(" + escapeRegExp(find) + ")", 'g'), "$1");
+        }
+
+        // Note we use the full list of special chars
+        for (var i = 0; i < esSpecialChars.length; i++) {
+            var char = esSpecialChars[i];
+            val = unReplaceAll(val, char)
+        }
+
+        return val;
+    }
+
+    var opts = {};
+
+    // FIXME: note that fields are not supported here
+
+    // from position
+    if (query.hasOwnProperty("from")) { opts["from"] = query.from }
+
+    // page size
+    if (query.size) { opts["page_size"] = query.size }
+
+    if (query["sort"]) { opts["sort"] = query["sort"] }
+
+    // get hold of the bool query if it is there
+    // and get hold of the query string and default operator if they have been provided
+    if (query.query) {
+        var sq = query.query;
+        var must = [];
+        var qs = undefined;
+
+        // if this is a filtered query, pull must and qs out of the filter
+        // otherwise the root of the query is the query_string object
+        if (sq.filtered) {
+            must = sq.filtered.filter.bool.must;
+            qs = sq.filtered.query
+        } else {
+            qs = sq
+        }
+
+        // go through each clause in the must and pull out the options
+        if (must.length > 0) {
+            opts["_active_filters"] = {};
+            opts["_selected_operators"] = {}
+        }
+        for (var i = 0; i < must.length; i++) {
+            var clause = must[i];
+
+            // could be a term query (implies AND on this field)
+            if ("term" in clause) {
+                for (var field in clause.term) {
+                    if (clause.term.hasOwnProperty(field)) {
+                        opts["_selected_operators"][field] = "AND";
+                        var value = clause.term[field];
+                        if (!(field in opts["_active_filters"])) {
+                            opts["_active_filters"][field] = []
+                        }
+                        opts["_active_filters"][field].push(value)
+                    }
+                }
+            }
+
+            // could be a terms query (implies OR on this field)
+            if ("terms" in clause) {
+                for (var field=0; field < clause.terms.length; field=field+1) {
+                    opts["_selected_operators"][field] = "OR";
+                    var values = clause.terms[field];
+                    if (!(field in opts["_active_filters"])) {
+                        opts["_active_filters"][field] = []
+                    }
+                    opts["_active_filters"][field] = opts["_active_filters"][field].concat(values)
+                }
+            }
+
+            // could be a range query (which may in turn be a range or a date histogram facet)
+            if ("range" in clause) {
+                // get the field that we're ranging on
+                var r = clause.range;
+                var fields = Object.keys(r);
+                var field = false;
+                if (fields.length > 0) {
+                    field = fields[0];
+                }
+
+                if (field) {
+                    var rparams = r[field];
+                    var range = {};
+                    if ("lt" in rparams) { range["to"] = rparams.lt }
+                    if ("gte" in rparams) { range["from"] = rparams.gte }
+                    opts["_active_filters"][field] = range;
+                }
+            }
+
+            // cound be a geo distance query
+            if ("geo_distance_range" in clause) {
+                var gdr = clause.geo_distance_range;
+
+                // the range is defined at the root of the range filter
+                var range = {};
+                if ("lt" in gdr) { range["to"] = stripDistanceUnits(gdr.lt) }
+                if ("gte" in gdr) { range["from"] = stripDistanceUnits(gdr.gte) }
+
+                // FIXME: at some point we may need to make this smarter, if we start including other data
+                // in the geo_distance_range filter definition
+                // then we have to go looking for the field name
+                for (var field=0; field < gdr.length; field=field+1) {
+                    if (field === "lt" || field === "gte") { continue }
+                    opts["_active_filters"][field] = range
+                    break
+                }
+            }
+
+            // FIXME: support for statistical facet and terms_stats facet
+        }
+
+        if (qs) {
+            if (qs.query_string) {
+                var string = unescapeQueryString(qs.query_string.query);
+                var field = qs.query_string.default_field;
+                var op = qs.query_string.default_operator;
+                if (string) { opts["q"] = string }
+                if (field) { opts["searchfield"] = field }
+                if (op) { opts["default_operator"] = op }
+            } else if (qs.match_all) {
+                opts["q"] = ""
+            }
+        }
+
+        return opts
+    }
+}
+
+    var widget_fv_opts = {};
+
+    // If options have been set using the Export method, use only those
+    if (typeof SEARCH_CONFIGURED_OPTIONS != 'undefined') {
+        widget_fv_opts = optionsFromQuery(SEARCH_CONFIGURED_OPTIONS)
+    }
+    // Otherwise, use options provided.
+    else if (typeof QUERY_OPTIONS != 'undefined') {
+        if (QUERY_OPTIONS.hasOwnProperty('query_string')) {
+            widget_fv_opts['q'] = QUERY_OPTIONS.query_string
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('query_field')) {
+            widget_fv_opts['searchfield'] = QUERY_OPTIONS.query_field
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('sort_field') && QUERY_OPTIONS.hasOwnProperty('sort_direction')) {
+            var sort_entry = {};
+            sort_entry[QUERY_OPTIONS.sort_field] = {order: QUERY_OPTIONS.sort_direction};
+            widget_fv_opts['sort'] = [sort_entry]
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('search_operator')) {
+            widget_fv_opts['default_operator'] = QUERY_OPTIONS.search_operator
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('search_type')) {
+            widget_fv_opts['predefined_filters'] = {_type: [QUERY_OPTIONS.search_type]};
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('page_size')) {
+            widget_fv_opts['page_size'] = QUERY_OPTIONS.page_size
+        }
+        if (QUERY_OPTIONS.hasOwnProperty('page_from')) {
+            widget_fv_opts['from'] = QUERY_OPTIONS.page_from
+        }
+    }
+</script>
+
+<script type="text/javascript" src="https://testdoaj.cottagelabs.com/static/widget/fq_widget_depends_compiled.js"></script>

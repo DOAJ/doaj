@@ -30,7 +30,7 @@
         <pre>bibjson.journal.title:"Journal of Science"</pre>
     </p>
 
-    <p>Note that all fields are analysed, which means that the above search does not look for the exact string "Journal of Science". To do that, add ".exact" to any string field (not date or number fields) to match the exact contents:</p>
+    <p>Note that all fields are analysed, which means that the above search does not look for the exact string "Journal of Science". To do that, add ".exact" to any string field (not date or number fields) to match the exact contents:
                 <pre>bibjson.journal.title.exact:"Journal of Science"</pre>
     </p>
 
@@ -58,6 +58,10 @@ doi:10.3389%5C/fpsyg.2013.00479
             <li>license - the exact licence</li>
         </ul>
     </p>
+
+    <p>In addition, if you have a publisher account with the DOAJ, you may use the field "username" to query for your own publicly available journal records.
+        Usernames are not available in the returned journal records, and no list of usernames is available to the public;
+        you need to know your own username to use this field.  You would include "username:myusername" in your search.</p>
 
     <p>The substitutions for articles are as follows:<br>
         <ul>
@@ -107,6 +111,10 @@ sort=bibjson.title:desc
         <li><p>Fuzzy Searches.  You may not use the ~ notation: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_fuzziness</a></p></li>
         <li><p>Proximity Searches. <a href="https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches">https://www.elastic.co/guide/en/elasticsearch/reference/1.4/query-dsl-query-string-query.html#_proximity_searches</a></p></li>
     </ol>
+
+    <h2 id="crud_api">CRUD API</h2>
+    <h3 id="creating_articles">Creating articles</h3>
+    <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account, then system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying via the CRUD Article Create endpoint. It works in the same way as submitting article metadata to DOAJ via XML upload or manual entry with your publisher user account.</p>
 
 </div>
 </div> <!-- swagger-section -->
