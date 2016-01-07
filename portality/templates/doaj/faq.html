@@ -48,6 +48,7 @@
 <ul>
 <li><a href="#search">How do I search in DOAJ and what information about a journal or article can I find?</a></li>
 <li><a href="#searchresults">What do the search results show?</a></li>
+<li><a href="#embed">Can I embed a search box or search results in my own site?</a></li>
 <li><a href="#browse">How do I browse by subject?</a></li>
 <li><a href="#tocs">How do I browse issues and Tables of Contents?</a></li>
 <li><a href="#licensedJournals">Which journals in DOAJ have a CC-license?</a></li>
@@ -72,6 +73,7 @@
 <li><a href="#metadata">How can I get journal metadata from DOAJ?</a></li>
 <li><a href="#metadataA">How can I get article metadata from DOAJ?</a></li>
 <li><a href="#alldata">Can I download all the DOAJ metadata?</a></li>
+<li><a href="#embed">Can I embed a search box or search results in my own site?</a></li>
 <li><a href="#oai">Do you support Open Archives Initiative, OAI, OAI-PMH?</a></li>
 <li><a href="#">Can I link to DOAJ using OpenURL?</a></li>
 <li><a href="#restrictionsA">Do you have any restrictions on the reuse of your metadata?</a></li>
@@ -365,6 +367,13 @@ Only displays when the journal qualifies.</p>
 
 <p><b>Article Processing Charges (APCs)</b><br>
 APCs with the amount and currency. Only displays if the journal charges APCs.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
+<h3><b><a name="embed"></a>Can I embed a search box or search results in my own site?</b></h3>
+<p>Yes! You can either create a set of search results on <a href="{{ url_for('doaj.search') }}">the DOAJ Advanced search page</a> and then 
+use the 'Share|Embed' button to get the code that embeds in your site OR you can <a href="{{ url_for('doaj.widgets') }}">embed a DOAJ simple
+search box</a> in your site. </p>
 <a href="#top">Back to top</a>
 <br><br>
 
