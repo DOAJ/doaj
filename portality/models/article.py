@@ -157,10 +157,10 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
 
-    def add_journal_metadata(self):
+    def get_journal(self):
         """
-        this function makes sure the article is populated
-        with all the relevant info from its owning parent object
+        Get this article's associated journal
+        :return: A Journal, or None if this is an orphan article
         """
         bibjson = self.bibjson()
 
@@ -178,6 +178,15 @@ class Article(DomainObject):
                 journal = journals[0]
                 break
 
+        return journal
+
+    def add_journal_metadata(self):
+        """
+        this function makes sure the article is populated
+        with all the relevant info from its owning parent object
+        """
+        journal = self.get_journal()
+
         # we were unable to find a journal
         if journal is None:
             return False
@@ -185,6 +194,7 @@ class Article(DomainObject):
         # FIXME: use the journal model API
         # if we get to here, we have a journal record we want to pull data from
         jbib = journal.bibjson()
+        bibjson = self.bibjson()
 
         for s in jbib.subjects():
             bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))

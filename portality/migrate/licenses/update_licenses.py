@@ -34,7 +34,7 @@ fa = []
 un = []
 nl = []
 
-# Process the previous set of journals
+# Process all journals in the index
 for j in tasks.scroll(conn, 'journal'):
     try:
         journal_model = models.Journal(_source=j)
@@ -88,7 +88,7 @@ fa_sug = []
 un_sug = []
 nl_sug = []
 
-# Scroll through all journals
+# Scroll through all applications
 for s in tasks.scroll(conn, 'suggestion'):
     try:
         suggestion_model = models.Suggestion(_source=s)

@@ -1,3 +1,7 @@
+"""
+Add journal metadata to each article in the DOAJ index
+"""
+
 from portality import models
 from portality import article
 from datetime import datetime
