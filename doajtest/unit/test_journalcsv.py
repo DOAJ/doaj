@@ -80,6 +80,7 @@ class TestJournalCSV(DoajTestCase):
         # Journal must be in_doaj to be included
         csv_source_journal1.set_in_doaj(True)
         csv_source_journal1.save()
+        print csv_source_journal1.bibjson().lcc_paths()
 
         expected_journalrow = [
             'The Title',
@@ -138,7 +139,7 @@ class TestJournalCSV(DoajTestCase):
             'Yes',
             'No',
             '2000-01-01T00:00:00Z',
-            'Social Sciences, Economic theory. Demography']
+            'Social Sciences: Economic theory. Demography']
 
         # Wait a sec to let the index catch up
         time.sleep(1)
