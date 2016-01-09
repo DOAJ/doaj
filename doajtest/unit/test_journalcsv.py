@@ -138,7 +138,7 @@ class TestJournalCSV(DoajTestCase):
             'Yes',
             'No',
             '2000-01-01T00:00:00Z',
-            'Social Sciences, Economic theory. Demography']
+            'Social Sciences: Economic theory. Demography']
 
         # Wait a sec to let the index catch up
         time.sleep(1)
