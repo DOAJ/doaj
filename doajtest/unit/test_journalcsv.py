@@ -80,7 +80,6 @@ class TestJournalCSV(DoajTestCase):
         # Journal must be in_doaj to be included
         csv_source_journal1.set_in_doaj(True)
         csv_source_journal1.save()
-        print csv_source_journal1.bibjson().lcc_paths()
 
         expected_journalrow = [
             'The Title',
