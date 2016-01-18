@@ -118,10 +118,7 @@ class Article(DomainObject):
 
         hist = ArticleHistory(**snap)
         hist.save()
-
-        # FIXME: make this use the article history class
-        #snap = deepcopy(self.data.get("bibjson"))
-        #self.add_history(snap)
+        return hist.id
 
     def add_history(self, bibjson, date=None):
         """Deprecated"""
