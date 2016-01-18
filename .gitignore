@@ -33,6 +33,12 @@ emails_rejected.csv
 # test detritous
 doajtest/unit/*.csv
 
+# history system for local development environments
+history/article/*
+!history/article/.gitkeep
+history/journal/*
+!history/journal/.gitkeep
+
 ### OSX template
 .DS_Store
 .AppleDouble
