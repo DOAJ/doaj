@@ -28,8 +28,8 @@ class TestSnapshot(DoajTestCase):
         # snapshot it
         a.snapshot()
 
-        assert len(self.list_today_history_files()) == 1
-        with open(self.list_today_history_files()[0], 'rb') as i:
+        assert len(self.list_today_article_history_files()) == 1
+        with open(self.list_today_article_history_files()[0], 'rb') as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example article with a fulltext url"
@@ -51,7 +51,7 @@ class TestSnapshot(DoajTestCase):
         # do a merge
         z.merge(a)
         
-        history_files = self.list_today_history_files()
+        history_files = self.list_today_article_history_files()
         assert len(history_files) == 1
 
         with open(history_files[0], 'rb') as i:
@@ -72,8 +72,8 @@ class TestSnapshot(DoajTestCase):
         # let the index catch up, then we can check this worked
         time.sleep(5)
 
-        hist = models.JournalHistory.get_history_for(j.id)
-        assert len(hist) == 1
-        assert hist[0].data.get("bibjson", {}).get("title") == "Example journal"
-
-        
+        history_files = self.list_today_journal_history_files()
+        assert len(history_files) == 1
+        with open(history_files[0], 'rb') as i:
+            hist = json.loads(i.read())
+        assert hist.get("bibjson", {}).get("title") == "Example journal"

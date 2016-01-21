@@ -16,12 +16,15 @@ class DoajTestCase(TestCase):
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
-        for f in self.list_today_history_files():
+        for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
         time.sleep(1)
 
-    def list_today_history_files(self):
+    def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+
+    def list_today_journal_history_files(self):
+        return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """

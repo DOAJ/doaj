@@ -14,7 +14,7 @@ class TestClient(DoajTestCase):
         from portality.models import GenericBibJSON
         from portality.models import Cache
         from portality.models import EditorGroupQuery, EditorGroup, EditorGroupMemberQuery
-        from portality.models import ArticleHistory, ArticleHistoryQuery, JournalHistory, JournalHistoryQuery
+        from portality.models import ArticleHistory, JournalHistory
         from portality.models import IssnQuery, Journal, JournalBibJSON, JournalQuery, PublisherQuery, TitleQuery
         from portality.models import LCC
         from portality.models import Lock
@@ -184,14 +184,14 @@ class TestClient(DoajTestCase):
         models.Article.delete_selected(query)
         time.sleep(2)
         assert len(models.Article.all()) == 4
-        assert len(self.list_today_history_files()) == 1
+        assert len(self.list_today_article_history_files()) == 1
 
         models.Article.delete_by_issns(["2000-0000", "3000-0000"])
         time.sleep(2)
         assert len(models.Article.all()) == 2
-        assert len(self.list_today_history_files()) == 3
+        assert len(self.list_today_article_history_files()) == 3
 
-    def test_08_journal_deletes(self):
+    def test_09_journal_deletes(self):
         # tests the various methods that are key to journal deletes
 
         # populate the index with some journals
@@ -242,12 +242,12 @@ class TestClient(DoajTestCase):
         time.sleep(2)
 
         assert len(models.Article.all()) == 4
-        assert len(self.list_today_history_files()) == 1
+        assert len(self.list_today_article_history_files()) == 1
 
         assert len(models.Journal.all()) == 4
-        assert len(models.JournalHistory.all()) == 6    # Because all journals are snapshot at create time
+        assert len(self.list_today_journal_history_files()) == 6    # Because all journals are snapshot at create time
 
-    def test_08_iterate(self):
+    def test_10_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
             j.save()
@@ -258,8 +258,9 @@ class TestClient(DoajTestCase):
             journal_ids.append(j.id)
         journal_ids = list(set(journal_ids[:]))  # keep only unique ids
         assert len(journal_ids) == 99
+        assert len(self.list_today_journal_history_files()) == 99
 
-    def test_09_account(self):
+    def test_11_account(self):
         # Make a new account
         acc = models.Account.make_account(
             username='mrs_user',
@@ -299,7 +300,7 @@ class TestClient(DoajTestCase):
         acc2.save()
         assert acc2.api_key is not None
 
-    def test_10_block(self):
+    def test_12_block(self):
         a = models.Article()
         a.save()
         models.Article.block(a.id, a.last_updated)
