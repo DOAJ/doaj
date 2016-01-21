@@ -184,12 +184,12 @@ class TestClient(DoajTestCase):
         models.Article.delete_selected(query)
         time.sleep(2)
         assert len(models.Article.all()) == 4
-        assert len(models.ArticleHistory.all()) == 1
+        assert len(self.list_today_history_files()) == 1
 
         models.Article.delete_by_issns(["2000-0000", "3000-0000"])
         time.sleep(2)
         assert len(models.Article.all()) == 2
-        assert len(models.ArticleHistory.all()) == 3
+        assert len(self.list_today_history_files()) == 3
 
     def test_08_journal_deletes(self):
         # tests the various methods that are key to journal deletes
@@ -242,7 +242,7 @@ class TestClient(DoajTestCase):
         time.sleep(2)
 
         assert len(models.Article.all()) == 4
-        assert len(models.ArticleHistory.all()) == 1
+        assert len(self.list_today_history_files()) == 1
 
         assert len(models.Journal.all()) == 4
         assert len(models.JournalHistory.all()) == 6    # Because all journals are snapshot at create time

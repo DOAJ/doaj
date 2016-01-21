@@ -5,18 +5,17 @@ from datetime import datetime
 import time
 import os
 import json
-from glob import glob
 
 class TestSnapshot(DoajTestCase):
 
     def setUp(self):
         super(TestSnapshot, self).setUp()
-        self.paths_to_delete = []
 
     def tearDown(self):    
         super(TestSnapshot, self).tearDown()
-        for f in self.paths_to_delete:
-            os.remove(f)
+        # snapshotting creates files in the history folder, but these
+        # are cleaned up in the parent DoajTestCase class so they
+        # don't have to be cleaned up in each test suite that causes .snapshot()
 
     def test_01_snapshot(self):
         # make ourselves an example article
@@ -27,14 +26,13 @@ class TestSnapshot(DoajTestCase):
         a.save()
         
         # snapshot it
-        history_record_id = a.snapshot()
-        history_record_path = os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '{0}.json'.format(history_record_id))
+        a.snapshot()
 
-        with open(history_record_path, 'rb') as i:
+        assert len(self.list_today_history_files()) == 1
+        with open(self.list_today_history_files()[0], 'rb') as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example article with a fulltext url"
-        self.paths_to_delete.append(history_record_path)
     
     def test_02_merge(self):
         # make ourselves an example article
@@ -53,14 +51,13 @@ class TestSnapshot(DoajTestCase):
         # do a merge
         z.merge(a)
         
-        history_files = glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+        history_files = self.list_today_history_files()
         assert len(history_files) == 1
 
         with open(history_files[0], 'rb') as i:
             hist = json.loads(i.read())
         assert hist
         assert hist.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
-        self.paths_to_delete.append(history_files[0])
 
     def test_03_snapshot_journal(self):
         # make ourselves an example journal

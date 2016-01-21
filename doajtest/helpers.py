@@ -1,8 +1,12 @@
 from unittest import TestCase
-from portality import core, dao, models
+from portality import core, dao
+from portality.core import app
 from doajtest.bootstrap import prepare_for_test
 import time
 import dictdiffer
+from datetime import datetime
+from glob import glob
+import os
 
 prepare_for_test()
 
@@ -12,7 +16,12 @@ class DoajTestCase(TestCase):
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
+        for f in self.list_today_history_files():
+            os.remove(f)
         time.sleep(1)
+
+    def list_today_history_files(self):
+        return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """
