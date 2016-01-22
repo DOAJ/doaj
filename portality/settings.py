@@ -359,6 +359,10 @@ CACHE_DIR = os.path.join(ROOT_DIR, "cache")
 # Publisher CSV storage
 BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
+# Article and Journal History directories - they should be different
+ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")
+JOURNAL_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "journal")
+
 # Where static files are served from - in case we need to serve a file
 # from there ourselves using Flask instead of nginx (e.g. to support a
 # legacy route to that file)
