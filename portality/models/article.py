@@ -180,12 +180,17 @@ class Article(DomainObject):
 
         return journal
 
-    def add_journal_metadata(self):
+    def add_journal_metadata(self, j=None):
         """
         this function makes sure the article is populated
         with all the relevant info from its owning parent object
+        :param j: Pass in a Journal to bypass the (slow) locating step. MAKE SURE IT'S THE RIGHT ONE!
         """
-        journal = self.get_journal()
+
+        if j is None:
+            journal = self.get_journal()
+        else:
+            journal = j
 
         # we were unable to find a journal
         if journal is None:
