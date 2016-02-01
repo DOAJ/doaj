@@ -15,7 +15,7 @@ batch_size = 1000
 journal_cache = {}
 
 
-def cleanup_articles(allow_deletes=False):
+def cleanup_articles(write_changes=False):
 
     # Connection to the ES index
     conn = esprit.raw.make_connection(None, 'localhost', 9200, 'doaj')
@@ -66,13 +66,16 @@ def cleanup_articles(allow_deletes=False):
                 if new == old:
                     same_count += 1
                 else:
-                    article_model.prep()
-                    write_batch.append(article_model.data)
                     updated_count += 1
+                    if write_changes:
+                        article_model.prep()
+                        write_batch.append(article_model.data)
+
             else:
                 # This article's Journal is no-more, or has evaded us; we delete the article.
-                delete_batch.add(article_model.id)
                 deleted_count += 1
+                if write_changes:
+                    delete_batch.add(article_model.id)
 
         except ValueError:
             # Failed to create model (this shouldn't happen!)
@@ -84,41 +87,40 @@ def cleanup_articles(allow_deletes=False):
             models.Article.bulk(write_batch)
             write_batch = []
 
-        if allow_deletes:
-            if len(delete_batch) >= batch_size:
-                print "deleting ", len(delete_batch)
-                esprit.raw.bulk_delete(conn, 'article', delete_batch)
-                delete_batch.clear()
+        if len(delete_batch) >= batch_size:
+            print "deleting ", len(delete_batch)
+            esprit.raw.bulk_delete(conn, 'article', delete_batch)
+            delete_batch.clear()
 
     # Finish the last part-batches of writes or deletes
     if len(write_batch) > 0:
         print "writing ", len(write_batch)
         models.Article.bulk(write_batch)
-    if allow_deletes:
-        if len(delete_batch) > 0:
-            print "deleting ", len(delete_batch)
-            esprit.raw.bulk_delete(conn, 'article', delete_batch)
-            delete_batch.clear()
+    if len(delete_batch) > 0:
+        print "deleting ", len(delete_batch)
+        esprit.raw.bulk_delete(conn, 'article', delete_batch)
+        delete_batch.clear()
 
     return updated_count, same_count, deleted_count
 
 if __name__ == "__main__":
     start = datetime.now()
-    if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
-        print "System is in READ-ONLY mode, script cannot run"
-        exit()
 
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("-d", "--delete", action='store_true', default=False, help="when set, the script will delete articles not in_doaj")
+    parser.add_argument("-w", "--write", action='store_true', default=False, help="when set, the script will write changes to the index")
     args = parser.parse_args()
 
-    (u, s, d) = cleanup_articles(args.delete)
+    if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
+        print "System is in READ-ONLY mode, enforcing read-only for this script"
+        args.write = False
 
-    del_text = "were deleted from the index"
-    if not args.delete:
-        del_text = "would have been deleted if -d was specified"
+    (u, s, d) = cleanup_articles(args.write)
 
-    print "done. {0} articles updated, {1} remain unchanged, and {2} {txt}.".format(u, s, d, txt=del_text)
+    if args.write:
+        print "Done. {0} articles updated, {1} remain unchanged, and {2} deleted.".format(u, s, d)
+    else:
+        print "Changes not written to index. {0} articles to be updated, {1} to remain unchanged, and {2} to be deleted. Set -w to write changes.".format(u, s, d)
+
     end = datetime.now()
     print start, "-", end
