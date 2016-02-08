@@ -220,8 +220,14 @@ class Article(DomainObject):
         if jbib.publisher:
             bibjson.publisher = jbib.publisher
 
-        indoaj = journal.is_in_doaj()
-        self.set_in_doaj(indoaj)
+        # Copy the in_doaj status and the journal's preferred ISSN
+        self.set_in_doaj(journal.is_in_doaj())
+        try:
+            bibjson.journal_issn = journal.data['index']['issn']
+        except KeyError:
+            # No issn, don't worry about it for now
+            pass
+
         return True
 
     def merge(self, old, take_id=True):
@@ -478,6 +484,14 @@ class ArticleBibJSON(GenericBibJSON):
     @journal_country.setter
     def journal_country(self, country):
         self._set_journal_property("country", country)
+
+    @property
+    def journal_issn(self):
+        return self.bibjson.get("journal", {}).get("issn")
+
+    @journal_issn.setter
+    def journal_issn(self, issn):
+        self._set_journal_property("issn", issn)
 
     @property
     def publisher(self):

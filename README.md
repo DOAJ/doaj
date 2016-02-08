@@ -275,7 +275,8 @@ It is likely that history records will only be created upon request by the admin
                 }
             ],
             "language" : "[list of journal's languages]",
-            "country" : "<country of publication>"
+            "country" : "<country of publication>",
+            "issn" : "<issn from journal.index (taken from journal record)>"
         },
         "year" : "<year of publication>",
         "month" : "<month of publicaiton>",

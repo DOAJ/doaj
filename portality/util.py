@@ -125,7 +125,18 @@ def normalise_issn(issn):
             issn = ("0" * (8 - len(issn))) + issn
             return issn[:4] + "-" + issn[4:]
 
+
 def load_file(filename):
     with open(filename, 'rb') as f:
         content = f.read()
     return content
+
+
+def unicode_dict(d):
+    """ Recursively convert dictionary keys to unicode """
+    if isinstance(d, dict):
+        return dict((unicode(k), unicode_dict(v)) for k, v in d.items())
+    elif isinstance(d, list):
+        return [unicode_dict(e) for e in d]
+    else:
+        return d

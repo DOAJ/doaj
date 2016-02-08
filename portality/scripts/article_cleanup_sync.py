@@ -6,6 +6,7 @@ For each article in the DOAJ index:
 """
 import esprit
 from portality import models
+from portality.util import unicode_dict
 from datetime import datetime
 from portality.core import app
 
@@ -58,11 +59,11 @@ def cleanup_articles(write_changes=False):
             # By the time we get to here, we still might not have a Journal, but we tried.
             if assoc_journal is not None:
                 # Track changes, write only if different
-                old = article_model.data.copy()
+                old = unicode_dict(article_model.data.copy())
 
                 # Update the article's metadata, including in_doaj status
                 article_model.add_journal_metadata(assoc_journal)
-                new = article_model.data
+                new = unicode_dict(article_model.data)
                 if new == old:
                     same_count += 1
                 else:
