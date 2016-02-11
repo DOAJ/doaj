@@ -2,7 +2,7 @@
 # TODO don't delete source code, just delete package info, move src dir out of the way, then put it back in
 # otherwise we can't check out a specific tag
 THIS_SCRIPT=`basename "$0"`
-[ $# -ne 1 ] && echo "Call this script as $THIS_SCRIPT <environment: [production, staging, test]>" && exit 1
+[ $# -ne 1 ] && echo "Call this script as $THIS_SCRIPT <environment: [production, staging, test, harvester]>" && exit 1
 
 ENV=$1
 
@@ -45,13 +45,19 @@ ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doa
 ln -sf $DIR/nginx/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV
 ln -sf /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-enabled/doaj-$ENV
 
-# prep sym links for gateway - note $ENV not used, hardcoded to production repo instead
-ln -sf /home/cloo/repl/production/doaj/src/doaj/deploy/nginx/doaj-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-gate
-ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-gate
+# prep sym links for gateway
+if [ "$ENV" = 'harvester' ]
+then
+    GATE_ENV=$ENV
+else
+    GATE_ENV=production
+fi
+ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate
+ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-$GATE_ENV-gate
 
 # gateway crons
-sudo ln -sf /home/cloo/repl/production/doaj/src/doaj/deploy/anacrontab-production-gate /etc/anacrontab
-crontab /home/cloo/repl/production/doaj/src/doaj/deploy/crontab-production-gate
+sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/anacrontab-$GATE_ENV-gate /etc/anacrontab
+crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 
 # replicate across servers
 /home/cloo/repl/replicate.sh
