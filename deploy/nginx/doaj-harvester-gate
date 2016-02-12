@@ -1,34 +1,34 @@
 # redirect to SSL version
+#server {
+#    listen          80;
+#    server_name     harvesterdoaj.cottagelabs.com;
+#
+#    # Serve some crucial XML schemas via plain HTTP as well
+#
+#    # Common misspelling of doajArticle**s**.xsd
+#    location =/static/doaj/doajArticle.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+#    }
+#
+#    location =/static/doaj/doajArticles.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+#    }
+#
+#    location =/static/doaj/iso_639-2b.xsd {
+#        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+#    }
+#
+#    location / {
+#        return 301 https://$host$request_uri;
+#    }
+#
+#    access_log /var/log/nginx/doaj-harvester.access.log;
+#    error_log /var/log/nginx/doaj-harvester.error.log;
+#}
+
 server {
+    #listen          443 ssl;
     listen          80;
-    server_name     harvesterdoaj.cottagelabs.com;
-
-    # Serve some crucial XML schemas via plain HTTP as well
-
-    # Common misspelling of doajArticle**s**.xsd
-    location =/static/doaj/doajArticle.xsd {
-        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
-    }
-
-    location =/static/doaj/doajArticles.xsd {
-        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
-    }
-
-    location =/static/doaj/iso_639-2b.xsd {
-        alias /home/cloo/repl/harvester/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
-    }
-
-    location / {
-        return 301 https://$host$request_uri;
-    }
-
-    access_log /var/log/nginx/doaj-harvester.access.log;
-    error_log /var/log/nginx/doaj-harvester.error.log;
-}
-
-# the test app
-server {
-    listen          443 ssl;
     server_name     harvesterdoaj.cottagelabs.com;
 
     access_log /var/log/nginx/doaj-harvester.access.log;
