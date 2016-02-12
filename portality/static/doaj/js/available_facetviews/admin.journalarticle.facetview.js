@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
                 $.ajax({
                     type: "DELETE",
                     url: "/admin/articles",
-                    data: JSON.stringify(query),
+                    data: serialiseQueryObject(query),
                     success : article_success_callback,
                     error: article_error_callback
                 });
@@ -62,7 +62,7 @@ jQuery(document).ready(function($) {
 
             var sure = confirm("Are you sure?  This operation cannot be undone!");
             if (sure) {
-                var obj = {q: JSON.stringify(query)};
+                var obj = {q: serialiseQueryObject(query)};
                 $.ajax({
                     type: "POST",
                     url: "/admin/articles",
@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
                 $.ajax({
                     type: "DELETE",
                     url: "/admin/journals",
-                    data: JSON.stringify(query),
+                    data: serialiseQueryObject(query),
                     success : journal_success_callback,
                     error: journal_error_callback
                 });
@@ -111,7 +111,7 @@ jQuery(document).ready(function($) {
 
             var sure = confirm("Are you sure?  This operation cannot be undone!");
             if (sure) {
-                var obj = {q: JSON.stringify(query)};
+                var obj = {q: serialiseQueryObject(query)};
                 $.ajax({
                     type: "POST",
                     url: "/admin/journals",
