@@ -12,6 +12,9 @@ mkdir -p /home/cloo/appdata/doaj/cache/sitemap
 mkdir -p /home/cloo/appdata/doaj/upload
 mkdir -p /home/cloo/appdata/doaj/upload_reapplication
 mkdir -p /home/cloo/appdata/doaj/reapp_csvs
+mkdir -p /home/cloo/appdata/doaj/history
+mkdir -p /home/cloo/appdata/doaj/history/article
+mkdir -p /home/cloo/appdata/doaj/history/journal
 
 sudo supervisorctl reread doaj-$ENV
 sudo supervisorctl update doaj-$ENV

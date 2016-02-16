@@ -1,6 +1,10 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
+from portality.core import app
+from datetime import datetime
 import time
+import os
+import json
 
 class TestSnapshot(DoajTestCase):
 
@@ -9,6 +13,9 @@ class TestSnapshot(DoajTestCase):
 
     def tearDown(self):    
         super(TestSnapshot, self).tearDown()
+        # snapshotting creates files in the history folder, but these
+        # are cleaned up in the parent DoajTestCase class so they
+        # don't have to be cleaned up in each test suite that causes .snapshot()
 
     def test_01_snapshot(self):
         # make ourselves an example article
@@ -20,13 +27,12 @@ class TestSnapshot(DoajTestCase):
         
         # snapshot it
         a.snapshot()
-        
-        # let the index catch up, then we can check this worked
-        time.sleep(2)
-        
-        hist = models.ArticleHistory.get_history_for(a.id)
-        assert len(hist) == 1
-        assert hist[0].data.get("bibjson", {}).get("title") == "Example article with a fulltext url"
+
+        assert len(self.list_today_article_history_files()) == 1
+        with open(self.list_today_article_history_files()[0], 'rb') as i:
+            hist = json.loads(i.read())
+        assert hist
+        assert hist.get("bibjson", {}).get("title") == "Example article with a fulltext url"
     
     def test_02_merge(self):
         # make ourselves an example article
@@ -45,12 +51,13 @@ class TestSnapshot(DoajTestCase):
         # do a merge
         z.merge(a)
         
-        # let the index catch up, then we can check this worked
-        time.sleep(2)
-        
-        hist = models.ArticleHistory.get_history_for(a.id)
-        assert len(hist) == 1
-        assert hist[0].data.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
+        history_files = self.list_today_article_history_files()
+        assert len(history_files) == 1
+
+        with open(history_files[0], 'rb') as i:
+            hist = json.loads(i.read())
+        assert hist
+        assert hist.get("bibjson", {}).get("title") == "Example 2 article with a fulltext url"
 
     def test_03_snapshot_journal(self):
         # make ourselves an example journal
@@ -65,8 +72,8 @@ class TestSnapshot(DoajTestCase):
         # let the index catch up, then we can check this worked
         time.sleep(5)
 
-        hist = models.JournalHistory.get_history_for(j.id)
-        assert len(hist) == 1
-        assert hist[0].data.get("bibjson", {}).get("title") == "Example journal"
-
-        
+        history_files = self.list_today_journal_history_files()
+        assert len(history_files) == 1
+        with open(history_files[0], 'rb') as i:
+            hist = json.loads(i.read())
+        assert hist.get("bibjson", {}).get("title") == "Example journal"

@@ -375,7 +375,7 @@ class TestManEdAppReview(DoajTestCase):
 
         # We've added one journal, so there'll be one snapshot already
         assert models.Journal.count() == 1
-        h = models.JournalHistory.get_history_for("abcdefghijk_journal")
+        h = self.list_today_journal_history_files()
         assert len(h) == 1
 
         # set up an application which is a reapp on an existing journal
@@ -403,7 +403,7 @@ class TestManEdAppReview(DoajTestCase):
         assert j.last_reapplication is not None
         assert models.Journal.count() == 1
 
-        h = models.JournalHistory.get_history_for("abcdefghijk_journal")
+        h = self.list_today_journal_history_files()
         assert h is not None
         assert len(h) == 2
 
