@@ -1,6 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
+from portality.api.v1.common import generate_link_headers
 import time
 
 class TestArticleMatch(DoajTestCase):
@@ -352,3 +353,47 @@ class TestArticleMatch(DoajTestCase):
 
         res = DiscoveryApi.search_applications(acc, '"http\:\/\/homepage.com\/1"', 1, 10)
         assert res.data.get("total") == 1
+
+    def test_04_paging_for_link_headers(self):
+        # calc_pagination takes total, page_size, requested_page
+        # and returns page_count, previous_page, next_page, last_page
+        # request 1 of 1 pages
+        assert DiscoveryApi._calc_pagination(0, 10, 1) == (1, None, None, 1)  # 0 results still means page 1
+        assert DiscoveryApi._calc_pagination(1, 10, 1) == (1, None, None, 1)
+        assert DiscoveryApi._calc_pagination(2, 10, 1) == (1, None, None, 1)
+        assert DiscoveryApi._calc_pagination(3, 10, 1) == (1, None, None, 1)
+        assert DiscoveryApi._calc_pagination(9, 10, 1) == (1, None, None, 1)
+        assert DiscoveryApi._calc_pagination(10, 10, 1) == (1, None, None, 1)
+
+        # request 1st of 2 pages
+        assert DiscoveryApi._calc_pagination(11, 10, 1) == (2, None, 2, 2)
+        assert DiscoveryApi._calc_pagination(12, 10, 1) == (2, None, 2, 2)
+        assert DiscoveryApi._calc_pagination(19, 10, 1) == (2, None, 2, 2)
+        assert DiscoveryApi._calc_pagination(20, 10, 1) == (2, None, 2, 2)
+
+        # request 2nd of 2 pages
+        assert DiscoveryApi._calc_pagination(11, 10, 2) == (2, 1, None, 2)
+        assert DiscoveryApi._calc_pagination(12, 10, 2) == (2, 1, None, 2)
+        assert DiscoveryApi._calc_pagination(19, 10, 2) == (2, 1, None, 2)
+        assert DiscoveryApi._calc_pagination(20, 10, 2) == (2, 1, None, 2)
+
+        # various requests for 10s of 1000s of results
+        assert DiscoveryApi._calc_pagination(9900 , 100, 1) == (99, None, 2, 99)
+        assert DiscoveryApi._calc_pagination(9900 , 100, 99) == (99, 98, None, 99)
+
+        assert DiscoveryApi._calc_pagination(9901 , 100, 1) == (100, None, 2, 100)
+        assert DiscoveryApi._calc_pagination(9902 , 100, 1) == (100, None, 2, 100)
+        assert DiscoveryApi._calc_pagination(10000, 100, 1) == (100, None, 2, 100)
+        assert DiscoveryApi._calc_pagination(10000, 100, 2) == (100, 1, 3, 100)
+        assert DiscoveryApi._calc_pagination(10000, 100, 98) == (100, 97, 99, 100)
+        assert DiscoveryApi._calc_pagination(10000, 100, 99) == (100, 98, 100, 100)
+        assert DiscoveryApi._calc_pagination(10000, 100, 100) == (100, 99, None, 100)
+
+    def test_05_http_link_headers(self):
+        metadata = {
+            'prev': 'https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10',
+            'next': 'https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10',
+            'last': 'https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10'
+        }
+
+        assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)

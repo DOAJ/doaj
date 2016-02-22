@@ -2,6 +2,10 @@ import json, uuid
 from portality.core import app
 from flask import request
 from copy import deepcopy
+from link_header import LinkHeader, Link
+
+LINK_HEADERS = ['next', 'prev', 'last']
+TOTAL_RESULTS_COUNT = ['total']
 
 ERROR_TEMPLATE = {"status": {"type": "string"}, "error": {"type": "string"}}
 CREATED_TEMPLATE = {"status": {"type": "string"}, "id": {"type": "string"}, "location": {"type": "string"}}
@@ -128,16 +132,48 @@ def jsonify_data_object(do):
 
 def jsonify_models(models):
     data = json.dumps(models, cls=ModelJsonEncoder)
-    return respond(data, 200)
 
+    metadata = {}
+    for k in LINK_HEADERS + TOTAL_RESULTS_COUNT:
+        if k in models.data:
+            metadata[k] = models.data[k]
 
-def respond(data, status):
+    return respond(data, 200, metadata=metadata)
+
+def generate_link_headers(metadata):
+    """
+    Generate Link: HTTP headers for API navigation.
+
+    :param metadata: Dictionary with none, some or all of the
+    keys 'next', 'prev' and 'last' defined. The values are the
+    corresponding pre-generated links.
+    """
+    link_metadata = {k: v for k, v in metadata.iteritems() if k in LINK_HEADERS}
+
+    links = []
+    for k, v in link_metadata.iteritems():
+        links.append(Link(v, rel=k))  # e.g. Link("http://example.com/foo", rel="next")
+
+    return str(LinkHeader(links))  # RFC compliant headers e.g.
+       # <http://example.com/foo>; rel=next, <http://example.com/bar>; rel=last
+
+def respond(data, status, metadata=None):
+    # avoid subtle bugs, don't use mutable objects as default vals in Python
+    # https://pythonconquerstheuniverse.wordpress.com/category/python-gotchas/
+    if metadata is None:
+        metadata = {}
+
+    headers = {'Access-Control-Allow-Origin': '*'}
+    link = generate_link_headers(metadata)
+    if link:
+        headers['Link'] = link
+
     callback = request.args.get('callback', False)
     if callback:
         content = str(callback) + '(' + str(data) + ')'
-        return app.response_class(content, status, {'Access-Control-Allow-Origin': '*'}, mimetype='application/javascript')
+        return app.response_class(content, status, headers, mimetype='application/javascript')
     else:
-        return app.response_class(data, status, {'Access-Control-Allow-Origin': '*'}, mimetype='application/json')
+        return app.response_class(data, status, headers, mimetype='application/json')
 
 
 @app.errorhandler(Api400Error)
