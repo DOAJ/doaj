@@ -223,7 +223,7 @@ class Article(DomainObject):
         # Copy the in_doaj status and the journal's preferred ISSN
         self.set_in_doaj(journal.is_in_doaj())
         try:
-            bibjson.journal_issn = journal.data['index']['issn']
+            bibjson.journal_issn = journal.bibjson().issns()
         except KeyError:
             # No issn, don't worry about it for now
             pass

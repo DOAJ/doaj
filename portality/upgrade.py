@@ -55,10 +55,7 @@ def do_upgrade(definition, verbose):
             tasks = tdef.get("tasks", None)
             if tasks:
                 for func_call, kwargs in tasks.iteritems():
-                    if args:
-                        getattr(obj, func_call)(**kwargs)
-                    else:
-                        getattr(obj, func_call)()
+                    getattr(obj, func_call)(**kwargs)
 
             # FIXME: do something with explicit upgrade tasks which can't easily be expressed as JSON strings
 
