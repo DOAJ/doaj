@@ -168,6 +168,9 @@ def respond(data, status, metadata=None):
     if link:
         headers['Link'] = link
 
+    if 'total' in metadata:
+        headers['X-Total-Count'] = metadata['total']
+
     callback = request.args.get('callback', False)
     if callback:
         content = str(callback) + '(' + str(data) + ')'
