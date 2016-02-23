@@ -499,7 +499,9 @@ class DOAJXWalk(XWalk):
         # abstract
         abstract = _element(record, "abstract")
         if abstract is not None:
-            bibjson.abstract = abstract
+            bibjson.abstract = abstract[:30000]  # avoids Elasticsearch
+            # exceptions about .exact analyser not being able to handle
+            # more than 32766 UTF8 characters
         
         # fulltext
         ftel = record.find("fullTextUrl")
