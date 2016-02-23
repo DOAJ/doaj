@@ -33,6 +33,14 @@ class ArticleFixtureFactory(object):
     def upload_1_issn_correct(cls):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct']")
 
+    @classmethod
+    def upload_1_issn_superlong_should_not_clip(cls):
+        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
+
+    @classmethod
+    def upload_1_issn_superlong_should_clip(cls):
+        return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
+
     @staticmethod
     def make_article_source():
         return deepcopy(ARTICLE_SOURCE)
