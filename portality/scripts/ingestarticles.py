@@ -205,12 +205,29 @@ for upload in to_process:
     print "importing ", path
     
     try:
-        with open(path) as handle:
-            result = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner, upload_id=upload.id)
-            success = result["success"]
-            fail = result["fail"]
-            update = result["update"]
-            new = result["new"]
+        try:
+            with open(path) as handle:
+                result = article.ingest_file(handle, format_name=upload.schema, owner=upload.owner, upload_id=upload.id)
+                success = result["success"]
+                fail = result["fail"]
+                update = result["update"]
+                new = result["new"]
+        except article.IngestException as e:
+            print "... ingest exception: ", e
+            upload.failed(e.message)
+            upload.save()
+            try:
+                os.remove(path)
+            except:
+                pass
+        except Exception as e:
+            print 'File system error while reading file'
+            upload.failed("File system error when reading file")
+            upload.save()
+            try:
+                os.remove(path)
+            except:
+                pass
         if success == 0 and fail > 0:
             upload.failed("All articles in file failed to import")
         if success > 0 and fail == 0:
@@ -218,26 +235,14 @@ for upload in to_process:
         if success > 0 and fail > 0:
             upload.partial(success, fail, update, new)
         upload.save()
-        os.remove(path)
         print "... success"
-    except article.IngestException as e:
-        print "...", e
-        upload.failed(e.message)
-        upload.save()
         try:
             os.remove(path)
-        except:
-            pass
+        except Exception as e:
+            print u"Error while deleting file {0}: {1}".format(path, e.message)
+
     except Exception as e:
-        # raise e
-        print "... filesystem error"
-        # there could be other sorts of errors, like filesystem ones
-        upload.failed("File system error when reading file")
-        upload.save()
-        try:
-            os.remove(path)
-        except:
-            pass
+        print "... unexpected exception, " + e.message
     
     # always refresh before moving on to the next file
     # models.Article.refresh()

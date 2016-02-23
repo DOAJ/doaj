@@ -126,6 +126,8 @@ class DomainObject(UserDict.IterableUserDict, object):
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
 
+        raise DAOSaveExceptionMaxRetriesReached(u"After the max {attempts} attempts the record with id {id} failed to save.".format(attempts=attempt, id=self.data['id']))
+
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
@@ -463,10 +465,11 @@ class DomainObject(UserDict.IterableUserDict, object):
         return res.get("hits", {}).get("total", 0)
 
     @classmethod
-    def block(cls, id, last_updated, sleep=0.5):
+    def block(cls, id, last_updated, sleep=0.5, max_retry_seconds=30):
         threshold = datetime.strptime(last_updated, "%Y-%m-%dT%H:%M:%SZ")
         query = deepcopy(block_query)
         query["query"]["bool"]["must"][0]["term"]["id.exact"] = id
+        start_time = datetime.now()
         while True:
             res = cls.query(q=query)
             hits = res.get("hits", {}).get("hits", [])
@@ -478,9 +481,19 @@ class DomainObject(UserDict.IterableUserDict, object):
                         lud = datetime.strptime(lu[0], "%Y-%m-%dT%H:%M:%SZ")
                         if lud >= threshold:
                             return
+            else:
+                if (datetime.now() - start_time).total_seconds() >= max_retry_seconds:
+                    raise BlockTimeOutException(u"Attempting to block until record with id {id} appears in Elasticsearch, but this has not happened after {limit}".format(id=id, limit=max_retry_seconds))
+
             time.sleep(sleep)
 
 
+class BlockTimeOutException(Exception):
+    pass
+
+
+class DAOSaveExceptionMaxRetriesReached(Exception):
+    pass
 
 ########################################################################
 ## Some useful ES queries
