@@ -276,7 +276,7 @@ It is likely that history records will only be created upon request by the admin
             ],
             "language" : "[list of journal's languages]",
             "country" : "<country of publication>",
-            "issn" : "<issn from journal.index (taken from journal record)>"
+            "issn" : "<issn from journal.bibjson().get_preferred_issn() (taken from journal record)>",
         },
         "year" : "<year of publication>",
         "month" : "<month of publicaiton>",
