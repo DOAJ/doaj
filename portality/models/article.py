@@ -293,7 +293,7 @@ class Article(DomainObject):
         issns += cbib.get_identifiers(cbib.E_ISSN)
 
         # get the issn from the journal bibjson
-        issns += cbib.journal_issn
+        issns.append(cbib.journal_issn)
 
         # now get the issns out of the historic records
         for date, hbib in hist:
