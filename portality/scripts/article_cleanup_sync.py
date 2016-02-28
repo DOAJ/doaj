@@ -16,7 +16,7 @@ batch_size = 1000
 journal_cache = {}
 
 
-def cleanup_articles(write_changes=False):
+def cleanup_articles(write_changes=False, prep_all=False):
 
     # Connection to the ES index
     conn = esprit.raw.make_connection(None, 'localhost', 9200, 'doaj')
@@ -66,6 +66,9 @@ def cleanup_articles(write_changes=False):
                 new = unicode_dict(article_model.data)
                 if new == old:
                     same_count += 1
+                    if prep_all:                    # This gets done below, but can override to prep unchanged ones here
+                        article_model.prep()
+                        write_batch.append(article_model.data)
                 else:
                     updated_count += 1
                     if write_changes:
@@ -110,13 +113,20 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-w", "--write", action='store_true', default=False, help="when set, the script will write changes to the index")
+    parser.add_argument("-p", "--prepall", action='store_true', default=False, help="prepare all articles, not just changed ones (i.e. update article's index)")
     args = parser.parse_args()
 
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         print "System is in READ-ONLY mode, enforcing read-only for this script"
         args.write = False
 
-    (u, s, d) = cleanup_articles(args.write)
+    if args.prepall and not args.write:
+        print "Prep all must be used with the -w flag set too (why prep but not save?). Exiting."
+        exit(1)
+    elif args.prepall:
+        print "Prep all arg set. 'unchanged' articles will also have their indexes refreshed."
+
+    (u, s, d) = cleanup_articles(args.write, args.prepall)
 
     if args.write:
         print "Done. {0} articles updated, {1} remain unchanged, and {2} deleted.".format(u, s, d)

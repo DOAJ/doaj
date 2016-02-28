@@ -220,10 +220,10 @@ class Article(DomainObject):
         if jbib.publisher:
             bibjson.publisher = jbib.publisher
 
-        # Copy the in_doaj status and the journal's preferred ISSN
+        # Copy the in_doaj status and the journal's ISSNs
         self.set_in_doaj(journal.is_in_doaj())
         try:
-            bibjson.journal_issn = journal.bibjson().issns()
+            bibjson.journal_issn = journal.bibjson().get_preferred_issn()
         except KeyError:
             # No issn, don't worry about it for now
             pass
@@ -291,6 +291,9 @@ class Article(DomainObject):
         # get the issns out of the current bibjson
         issns += cbib.get_identifiers(cbib.P_ISSN)
         issns += cbib.get_identifiers(cbib.E_ISSN)
+
+        # get the issn from the journal bibjson
+        issns += cbib.journal_issn
 
         # now get the issns out of the historic records
         for date, hbib in hist:
