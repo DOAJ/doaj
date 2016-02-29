@@ -129,7 +129,7 @@ if __name__ == "__main__":
         print "Prep all arg set. 'unchanged' articles will also have their indexes refreshed."
 
     # Connection to the ES index, rely on esprit sorting out the port from the host
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, 'doaj')
+    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
     (u, s, d) = cleanup_articles(conn, args.write, args.prepall)
 
