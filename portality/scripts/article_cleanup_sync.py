@@ -5,6 +5,7 @@ For each article in the DOAJ index:
     * Applies the journal's information to the article metadata as needed
 """
 import esprit
+import json
 from portality import models
 from portality.util import unicode_dict
 from datetime import datetime
@@ -15,11 +16,11 @@ batch_size = 1000
 # Cache the Journals here, so we don't keep searching for them in the index
 journal_cache = {}
 
+# A list of articles we have failed to create models for
+failed_articles = []
 
-def cleanup_articles(write_changes=False, prep_all=False):
 
-    # Connection to the ES index
-    conn = esprit.raw.make_connection(None, 'localhost', 9200, 'doaj')
+def cleanup_articles(conn, write_changes=False, prep_all=False):
 
     write_batch = []
     delete_batch = set()
@@ -83,6 +84,7 @@ def cleanup_articles(write_changes=False, prep_all=False):
 
         except ValueError:
             # Failed to create model (this shouldn't happen!)
+            failed_articles.append(json.dumps(a))
             continue
 
         # When we have reached the batch limit, do some writing or deleting
@@ -126,12 +128,20 @@ if __name__ == "__main__":
     elif args.prepall:
         print "Prep all arg set. 'unchanged' articles will also have their indexes refreshed."
 
-    (u, s, d) = cleanup_articles(args.write, args.prepall)
+    # Connection to the ES index, rely on esprit sorting out the port from the host
+    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, 'doaj')
+
+    (u, s, d) = cleanup_articles(conn, args.write, args.prepall)
 
     if args.write:
         print "Done. {0} articles updated, {1} remain unchanged, and {2} deleted.".format(u, s, d)
     else:
         print "Changes not written to index. {0} articles to be updated, {1} to remain unchanged, and {2} to be deleted. Set -w to write changes.".format(u, s, d)
+
+    if len(failed_articles) > 0:
+        print "Failed to create models for some articles in the index. Something is quite wrong."
+        for f in failed_articles:
+            print f
 
     end = datetime.now()
     print start, "-", end
