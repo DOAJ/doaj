@@ -223,9 +223,9 @@ class Article(DomainObject):
         # Copy the in_doaj status and the journal's ISSNs
         self.set_in_doaj(journal.is_in_doaj())
         try:
-            bibjson.journal_issn = journal.bibjson().get_preferred_issn()
+            bibjson.journal_issns = journal.bibjson().issns()
         except KeyError:
-            # No issn, don't worry about it for now
+            # No issns, don't worry about it for now
             pass
 
         return True
@@ -293,7 +293,11 @@ class Article(DomainObject):
         issns += cbib.get_identifiers(cbib.E_ISSN)
 
         # get the issn from the journal bibjson
-        issns.append(cbib.journal_issn)
+        if type(cbib.journal_issns) is list:
+            issns += cbib.journal_issns
+
+        # de-duplicate the issns
+        issns = list(set(issns))
 
         # now get the issns out of the historic records
         for date, hbib in hist:
@@ -489,12 +493,12 @@ class ArticleBibJSON(GenericBibJSON):
         self._set_journal_property("country", country)
 
     @property
-    def journal_issn(self):
-        return self.bibjson.get("journal", {}).get("issn")
+    def journal_issns(self):
+        return self.bibjson.get("journal", {}).get("issns")
 
-    @journal_issn.setter
-    def journal_issn(self, issn):
-        self._set_journal_property("issn", issn)
+    @journal_issns.setter
+    def journal_issns(self, issns):
+        self._set_journal_property("issns", issns)
 
     @property
     def publisher(self):
