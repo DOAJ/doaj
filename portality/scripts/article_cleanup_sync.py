@@ -54,7 +54,7 @@ def cleanup_articles(conn, write_changes=False, prep_all=False):
 
                 # Add the newly found journal to our cache
                 if assoc_journal is not None:
-                    for issn in allissns:
+                    for issn in assoc_journal.bibjson().issns():
                         journal_cache[issn] = assoc_journal
 
             # By the time we get to here, we still might not have a Journal, but we tried.
