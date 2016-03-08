@@ -293,7 +293,7 @@ class Article(DomainObject):
         issns += cbib.get_identifiers(cbib.E_ISSN)
 
         # get the issn from the journal bibjson
-        if type(cbib.journal_issns) is list:
+        if isinstance(cbib.journal_issns, list):
             issns += cbib.journal_issns
 
         # de-duplicate the issns
