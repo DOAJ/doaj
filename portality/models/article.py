@@ -154,10 +154,10 @@ class Article(DomainObject):
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
 
-    def add_journal_metadata(self):
+    def get_journal(self):
         """
-        this function makes sure the article is populated
-        with all the relevant info from its owning parent object
+        Get this article's associated journal
+        :return: A Journal, or None if this is an orphan article
         """
         bibjson = self.bibjson()
 
@@ -175,6 +175,20 @@ class Article(DomainObject):
                 journal = journals[0]
                 break
 
+        return journal
+
+    def add_journal_metadata(self, j=None):
+        """
+        this function makes sure the article is populated
+        with all the relevant info from its owning parent object
+        :param j: Pass in a Journal to bypass the (slow) locating step. MAKE SURE IT'S THE RIGHT ONE!
+        """
+
+        if j is None:
+            journal = self.get_journal()
+        else:
+            journal = j
+
         # we were unable to find a journal
         if journal is None:
             return False
@@ -182,6 +196,7 @@ class Article(DomainObject):
         # FIXME: use the journal model API
         # if we get to here, we have a journal record we want to pull data from
         jbib = journal.bibjson()
+        bibjson = self.bibjson()
 
         for s in jbib.subjects():
             bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
@@ -202,8 +217,14 @@ class Article(DomainObject):
         if jbib.publisher:
             bibjson.publisher = jbib.publisher
 
-        indoaj = journal.is_in_doaj()
-        self.set_in_doaj(indoaj)
+        # Copy the in_doaj status and the journal's ISSNs
+        self.set_in_doaj(journal.is_in_doaj())
+        try:
+            bibjson.journal_issns = journal.bibjson().issns()
+        except KeyError:
+            # No issns, don't worry about it for now
+            pass
+
         return True
 
     def merge(self, old, take_id=True):
@@ -267,6 +288,13 @@ class Article(DomainObject):
         # get the issns out of the current bibjson
         issns += cbib.get_identifiers(cbib.P_ISSN)
         issns += cbib.get_identifiers(cbib.E_ISSN)
+
+        # get the issn from the journal bibjson
+        if isinstance(cbib.journal_issns, list):
+            issns += cbib.journal_issns
+
+        # de-duplicate the issns
+        issns = list(set(issns))
 
         # now get the issns out of the historic records
         for date, hbib in hist:
@@ -460,6 +488,14 @@ class ArticleBibJSON(GenericBibJSON):
     @journal_country.setter
     def journal_country(self, country):
         self._set_journal_property("country", country)
+
+    @property
+    def journal_issns(self):
+        return self.bibjson.get("journal", {}).get("issns")
+
+    @journal_issns.setter
+    def journal_issns(self, issns):
+        self._set_journal_property("issns", issns)
 
     @property
     def publisher(self):

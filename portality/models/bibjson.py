@@ -184,7 +184,10 @@ class GenericBibJSON(object):
         sobj = {"scheme" : scheme, "term" : term}
         if code is not None:
             sobj["code"] = code
-        self.bibjson["subject"].append(sobj)
+
+        # append if the subject isn't already present
+        if sobj not in self.bibjson["subject"]:
+            self.bibjson["subject"].append(sobj)
 
     def subjects(self):
         return self.bibjson.get("subject", [])
