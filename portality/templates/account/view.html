@@ -33,6 +33,15 @@
     <div class="row-fluid">
         <div class="span6">
             <div class="grey_bordered_div">
+                <h4>Update your account name</h4>
+                <form action="" method="POST">
+                    {% if account.name %}
+                        <input type="text" name="name" value="{{account.name}}">
+                    {% else %}
+                        <input type="text" name="name" value="" placeholder="enter your account name">
+                    {% endif %}
+                    <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
+                </form>
                 <h4>Update your email address</h4>
                 <form action="" method="POST">
                     {% if account.email %}
