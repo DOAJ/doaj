@@ -104,6 +104,7 @@
                     <td>
                         {% if file.error %}
                             {{file.error}}
+                            <a href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(explain)</a>
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
                                 {{ file.imported }} articles imported 
@@ -112,6 +113,7 @@
                                 {% endif %}
                                 {% if file.failed_imports > 0 %}
                                     ; {{ file.failed_imports }} articles failed
+                                    <a href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(explain)</a>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
