@@ -26,6 +26,7 @@ setup(
         "Flask-Swagger==0.2.8",
         "flask-cors==2.1.2",
         "LinkHeader==0.4.3",
+        "universal-analytics-python==0.2.4",
         # for deployment
         "gunicorn",
         "newrelic",

@@ -23,6 +23,12 @@ VALID_FEATURES = ['api']
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 BASE_URL = "https://doaj.org"
+if BASE_URL.startswith('https://'):
+    BASE_DOMAIN = BASE_URL[8:]
+elif BASE_URL.startswith('http://'):
+    BASE_DOMAIN = BASE_URL[7:]
+else:
+    BASE_DOMAIN = BASE_URL
 API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 
 # make this something secret in your overriding app.cfg
