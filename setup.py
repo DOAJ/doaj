@@ -25,6 +25,7 @@ setup(
         "unidecode",
         "Flask-Swagger==0.2.8",
         "flask-cors==2.1.2",
+        "LinkHeader==0.4.3",
         # for deployment
         "gunicorn",
         "newrelic",

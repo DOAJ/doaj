@@ -6,6 +6,7 @@ from datetime import datetime
 import esprit
 import re, json, uuid, os
 from copy import deepcopy
+from flask import url_for
 
 class DiscoveryException(Exception):
     pass
@@ -174,9 +175,41 @@ class DiscoveryApi(Api):
 
         return query, page, page_size
 
+    @staticmethod
+    def _calc_pagination(total, page_size, requested_page):
+        """
+        Calculate pagination for API results like # of pages and the last page.
+
+        Modified from https://github.com/Pylons/paginate/blob/master/paginate/__init__.py#L260 ,
+        a pagination library. (__init__.py, Page.__init__)
+        """
+        FISRT_PAGE = 1
+
+        if total == 0:
+            return 1, None, None, 1
+
+        page_count = ((total - 1) // page_size) + 1
+        last_page = FISRT_PAGE + page_count - 1
+        
+        # Links to previous and next page
+        if requested_page > FISRT_PAGE:
+            previous_page = requested_page - 1
+        else:
+            previous_page = None
+
+        if requested_page < last_page:
+            next_page = requested_page + 1
+        else:
+            next_page = None
+
+        return page_count, previous_page, next_page, last_page
+
     @classmethod
-    def _make_response(cls, res, q, page, page_size, sort, obs):
+    def _make_response(cls, endpoint, res, q, page, page_size, sort,
+                       obs):
         total = res.get("hits", {}).get("total", 0)
+
+        page_count, previous_page, next_page, last_page = cls._calc_pagination(total, page_size, page)
 
         # build the response object
         result = {
@@ -187,6 +220,15 @@ class DiscoveryApi(Api):
             "query" : q,
             "results" : obs
         }
+
+        if previous_page is not None:
+            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size)
+
+        if next_page is not None:
+            result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size)
+
+        if last_page is not None:
+            result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size)
 
         if sort is not None:
             result["sort"] = sort
@@ -209,7 +251,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Article(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, sort, obs)
+        return cls._make_response('search_articles', res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_journals(cls, q, page, page_size, sort=None):
@@ -227,7 +269,7 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Journal(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, sort, obs)
+        return cls._make_response('search_journals', res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_applications(cls, account, q, page, page_size, sort=None):
@@ -245,7 +287,8 @@ class DiscoveryApi(Api):
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [models.Suggestion(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response(res, q, page, page_size, sort, obs)
+        return cls._make_response('search_applications', res, q, page, page_size, sort, obs)
+
 
 class SearchQuery(object):
     def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
