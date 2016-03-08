@@ -1,12 +1,16 @@
 """ Scroll through articles, removing duplicate subjects. No evidence of same in journals """
 
 import esprit
+import json
 from portality import models
 from datetime import datetime
 from portality.core import app
 from portality.util import unicode_dict
 
 batch_size = 1000
+
+# A list of articles we have failed to create models for
+failed_articles = []
 
 
 def rem_dup_sub(write_changes=False):
@@ -42,6 +46,7 @@ def rem_dup_sub(write_changes=False):
 
         except ValueError:
             # Failed to create model (this shouldn't happen!)
+            failed_articles.append(json.dumps(a))
             continue
 
         # When we have reached the batch limit, do some writing or deleting
@@ -80,6 +85,11 @@ if __name__ == "__main__":
         print "Done. {0} articles updated, {1} remain unchanged.".format(u, s)
     else:
         print "Not written. {0} articles to be updated, {1} to remain unchanged. Set -w to write changes.".format(u, s)
+
+    if len(failed_articles) > 0:
+        print "Failed to create models for some articles in the index. Something is quite wrong."
+        for f in failed_articles:
+            print f
 
     end = datetime.now()
     print start, "-", end

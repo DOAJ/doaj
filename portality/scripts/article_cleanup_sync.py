@@ -1,6 +1,6 @@
 """
 For each article in the DOAJ index:
-    * Checks that it has a corresponding journal, deletes it otherwise (if -d set)
+    * Checks that it has a corresponding journal, deletes it otherwise
     * Ensures that the article in_doaj status is the same as the journal's
     * Applies the journal's information to the article metadata as needed
 """
