@@ -500,3 +500,9 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "title" : "index.unpunctitle.exact",
     "issn" :  "index.issn.exact"
 }
+
+# ========================================
+# Google Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics
+# events from test and dev environments
+GOOGLE_ANALYTICS_ID = ''
