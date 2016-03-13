@@ -1,8 +1,8 @@
 from copy import deepcopy
 
-from portality.lib import dataobj
+from portality.lib import dataobj, swagger
 
-class OutgoingCommonJournalApplication(dataobj.DataObj):
+class OutgoingCommonJournalApplication(dataobj.DataObj, swagger.SwaggerSupport):
 
     @classmethod
     def from_model(cls, journal_or_app):

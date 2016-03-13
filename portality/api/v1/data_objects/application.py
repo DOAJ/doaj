@@ -1,4 +1,4 @@
-from portality.lib import dataobj
+from portality.lib import dataobj, swagger
 from portality import models
 from portality.formcontext import choices
 from copy import deepcopy
@@ -85,7 +85,7 @@ BASE_APPLICATION_STRUCT = {
                         "url": {"coerce": "url"},
                     },
                     "lists": {
-                        "policy": {"coerce": "unicode", "contains": "object"},
+                        "policy": {"contains": "object"},
                     },
 
                     "structs" : {
@@ -317,7 +317,7 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 }
 
 
-class IncomingApplication(dataobj.DataObj):
+class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
         self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
