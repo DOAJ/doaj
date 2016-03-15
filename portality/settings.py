@@ -23,6 +23,12 @@ VALID_FEATURES = ['api']
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 BASE_URL = "https://doaj.org"
+if BASE_URL.startswith('https://'):
+    BASE_DOMAIN = BASE_URL[8:]
+elif BASE_URL.startswith('http://'):
+    BASE_DOMAIN = BASE_URL[7:]
+else:
+    BASE_DOMAIN = BASE_URL
 API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 
 # make this something secret in your overriding app.cfg
@@ -494,3 +500,9 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "title" : "index.unpunctitle.exact",
     "issn" :  "index.issn.exact"
 }
+
+# ========================================
+# Google Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics
+# events from test and dev environments
+GOOGLE_ANALYTICS_ID = ''
