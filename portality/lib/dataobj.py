@@ -290,8 +290,13 @@ class DataObj(object):
         # run the object's native validation routine
         self.custom_validate()
 
+        # keep a reference to the current data record, in case something up the inheritance chain messes with it
+        # (I'm looking at you, UserDict).
+        remember_this = self.data
+
         # finally, kick the request up
         super(DataObj, self).__init__(*args, **kwargs)
+        self.data = remember_this
 
     def __getattr__(self, name):
         if hasattr(self.__class__, name):
