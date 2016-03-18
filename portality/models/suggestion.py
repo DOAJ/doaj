@@ -1,7 +1,7 @@
-from portality.models import Journal
+from portality.models.journal import JournalOld
 from copy import deepcopy
 
-class Suggestion(Journal):
+class Suggestion(JournalOld):
     __type__ = "suggestion"
 
     @classmethod
@@ -30,11 +30,11 @@ class Suggestion(Journal):
             journal_data["bibjson"] = {}
         journal_data['bibjson']['active'] = True
 
-        new_j = Journal(**journal_data)
+        new_j = JournalOld(**journal_data)
 
         # now deal with the fact that this could be a replacement of an existing journal
         if self.current_journal is not None:
-            cj = Journal.pull(self.current_journal)
+            cj = JournalOld.pull(self.current_journal)
 
             # carry the id and the created date
             new_j.set_id(self.current_journal)

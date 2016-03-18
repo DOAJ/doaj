@@ -208,7 +208,9 @@ class GenericBibJSON(object):
             scheme = subs.get("scheme")
             term = subs.get("term")
             if scheme == "LCC":
-                classification_paths.append(lcc.pathify(term))
+                p = lcc.pathify(term)
+                if p is not None:
+                    classification_paths.append(p)
 
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)

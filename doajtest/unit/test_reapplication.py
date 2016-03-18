@@ -52,13 +52,11 @@ APPLICATION_SOURCE = {
             "currency" : "USD",
             "average_price" : 4
         },
-        "archiving_policy" : {
-            "policy" : [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
-            "url" : "http://digital.archiving.policy"
+        "archiving_policy": {
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
+            "url": "http://digital.archiving.policy"
         },
         "editorial_review" : {
             "process" : "Open peer review",
@@ -350,7 +348,6 @@ class TestReApplication(DoajTestCase):
         j = models.Journal()
         bj = j.bibjson()
         bj.title = "Journal Title"                      # some bibjson
-        j.set_application_status("accepted")            # an application status of accepted
         j.add_note("An important note")                 # a note
         j.add_contact("Contact", "contact@email.com")   # contact details
         j.set_owner("theowner")                         # journal owner account

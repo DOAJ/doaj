@@ -434,13 +434,17 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
             if "url" in ap:
                 nap["url"] = ap["url"]
             if "policy" in ap:
-                npol = []
+                known = []
                 for pol in ap["policy"]:
                     if "domain" in pol:
-                        npol.append([pol.get("domain"), pol.get("name")])
+                        if pol.get("domain").lower() == "other":
+                            nap["other"] = pol.get("name")
+                        elif pol.get("domain").lower() == "a national library":
+                            nap["nat_lib"] = pol.get("name")
                     else:
-                        npol.append(pol.get("name"))
-                nap["policy"] = npol
+                        known.append(pol.get("name"))
+                if len(known) > 0:
+                    nap["known"] = known
             nd["bibjson"]["archiving_policy"] = nap
 
         if existing is None:

@@ -9,7 +9,7 @@ from unidecode import unidecode
 
 # NOTE: DomainObject interferes with new style @property getter/setter
 # so we can't use them here
-class Journal(DomainObject):
+class JournalOld(DomainObject):
     __type__ = "journal"
 
     @classmethod
@@ -38,14 +38,14 @@ class Journal(DomainObject):
     def find_by_publisher(cls, publisher, exact=True):
         q = PublisherQuery(publisher, exact)
         result = cls.query(q=q.query())
-        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        records = [JournalOld(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
     @classmethod
     def find_by_title(cls, title):
         q = TitleQuery(title)
         result = cls.query(q=q.query())
-        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        records = [JournalOld(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
 
     @classmethod
@@ -662,7 +662,7 @@ class Journal(DomainObject):
                 asciiunpunctitle = unidecode(unpunctitle)
             except:
                 asciiunpunctitle = unpunctitle
-        
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -767,7 +767,7 @@ class Journal(DomainObject):
         self.prep()
         if sync_owner:
             self._sync_owner_to_application()
-        super(Journal, self).save(**kwargs)
+        super(JournalOld, self).save(**kwargs)
         if snapshot:
             self.snapshot()
 
@@ -1022,21 +1022,62 @@ class JournalBibJSON(GenericBibJSON):
             self.bibjson["archiving_policy"] = {}
         if not isinstance(policies, list):
             policies = [policies]
-        self.bibjson["archiving_policy"]["policy"] = policies
-        self.bibjson["archiving_policy"]["url"] = policy_url
+
+        known = []
+        for p in policies:
+            if isinstance(p, list):
+                k, v = p
+                if k.lower() == "other":
+                    self.bibjson["archiving_policy"]["other"] = v
+                elif k.lower() == "a national library":
+                    self.bibjson["archiving_policy"]["nat_lib"] = v
+            else:
+                known.append(p)
+        if len(known) > 0:
+            self.bibjson["archiving_policy"]["known"] = known
+        if policy_url is not None:
+            self.bibjson["archiving_policy"]["url"] = policy_url
 
     def add_archiving_policy(self, policy_name):
         if "archiving_policy" not in self.bibjson:
             self.bibjson["archiving_policy"] = {}
-        self.bibjson["archiving_policy"]["policy"].append(policy_name)
+        if isinstance(policy_name, list):
+            k, v = policy_name
+            if k.lower() == "other":
+                self.bibjson["archiving_policy"]["other"] = v
+            elif k.lower() == "a national library":
+                self.bibjson["archiving_policy"]["nat_lib"] = v
+        else:
+            if "known" not in self.bibjson["archiving_policy"]:
+                self.bibjson["archiving_policy"]["known"] = []
+            self.bibjson["archiving_policy"]["known"].append(policy_name)
 
     @property
     def archiving_policy(self):
-        return self.bibjson.get("archiving_policy", {})
+        ap = self.bibjson.get("archiving_policy", {})
+        ret = {"policy" : []}
+        if "url" in ap:
+            ret["url"] = ap["url"]
+        if "known" in ap:
+            ret["policy"] += ap["known"]
+        if "nat_lib" in ap:
+            ret["policy"].append(["A national library", ap["nat_lib"]])
+        if "other" in ap:
+            ret["policy"].append(["Other", ap["other"]])
+        return ret
 
     @property
     def flattened_archiving_policies(self):
-        return [ap if not isinstance(ap, list) else ": ".join(ap) for ap in self.archiving_policy.get("policy", [])]
+        ap = self.bibjson.get("archiving_policy", {})
+        ret = []
+        if "known" in ap:
+            ret += ap["known"]
+        if "nat_lib" in ap:
+            ret.append("A national library: " + ap["nat_lib"])
+        if "other" in ap:
+            ret.append("Other: " + ap["other"])
+
+        return ret
 
     def set_editorial_review(self, process, review_url):
         if "editorial_review" not in self.bibjson:
@@ -1150,6 +1191,792 @@ class JournalBibJSON(GenericBibJSON):
         if not issn:
             issn = self.get_one_identifier(self.P_ISSN)
         return issn
+
+########################################################
+## Refactored data objects
+
+from portality.lib import dataobj
+
+class Journal(dataobj.DataObj, DomainObject):
+    __type__ = "journal"
+
+    def __init__(self, **kwargs):
+        # FIXME: hack, to deal with ES integration layer being improperly abstracted
+        if "_source" in kwargs:
+            kwargs = kwargs["_source"]
+        super(Journal, self).__init__(raw=kwargs, struct=JOURNAL_STRUCT)
+
+    #####################################################
+    ## data access methods
+
+    @classmethod
+    def find_by_issn(cls, issn, in_doaj=None):
+        q = JournalQuery()
+        q.find_by_issn(issn, in_doaj=in_doaj)
+        result = cls.query(q=q.query)
+        # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
+        records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def all_in_doaj(cls, page_size=5000, minified=False):
+        q = JournalQuery(minified=minified, sort_by_title=minified)
+        wrap = not minified
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=wrap)
+
+    @classmethod
+    def issns_by_owner(cls, owner):
+        q = IssnQuery(owner)
+        res = cls.query(q=q.query())
+        issns = [term.get("term") for term in res.get("facets", {}).get("issns", {}).get("terms", [])]
+        return issns
+
+    @classmethod
+    def find_by_publisher(cls, publisher, exact=True):
+        q = PublisherQuery(publisher, exact)
+        result = cls.query(q=q.query())
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def find_by_title(cls, title):
+        q = TitleQuery(title)
+        result = cls.query(q=q.query())
+        records = [Journal(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
+        return records
+
+    @classmethod
+    def issns_by_query(cls, query):
+        issns = []
+        for j in cls.iterate(query):
+            issns += j.known_issns()
+        return issns
+
+    @classmethod
+    def delete_selected(cls, query, articles=False, snapshot_journals=True, snapshot_articles=True):
+        if articles:
+            # list the issns of all the journals
+            issns = cls.issns_by_query(query)
+
+            # issue a delete request over all the articles by those issns
+            from portality.models import Article
+            Article.delete_by_issns(issns, snapshot=snapshot_articles)
+
+        # snapshot the journal record
+        if snapshot_journals:
+            js = cls.iterate(query, page_size=1000)
+            for j in js:
+                j.snapshot()
+
+        # finally issue a delete request against the journals
+        cls.delete_by_query(query)
+
+    def all_articles(self):
+        from portality.models import Article
+        return Article.find_by_issns(self.known_issns())
+
+    ############################################
+    ## base property methods
+
+    @property
+    def id(self):
+        return self._get_single("id")
+
+    def set_id(self, id=None):
+        if id is None:
+            id = self.makeid()
+        self._set_with_struct("id", id)
+
+    def set_created(self, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self._set_with_struct("created_date", date)
+
+    @property
+    def created_date(self):
+        return self._get_single("created_date")
+
+    @property
+    def created_timestamp(self):
+        return self._get_single("created_date", coerce=dataobj.to_datestamp())
+
+    def set_last_updated(self, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self._set_with_struct("last_updated", date)
+
+    @property
+    def last_updated(self):
+        return self._get_single("last_updated")
+
+    def bibjson(self):
+        bj = self._get_single("bibjson")
+        if bj is None:
+            self._set_single("bibjson", {})
+            bj = self._get_single("bibjson")
+        return JournalBibJSON(bj)
+
+    def set_bibjson(self, bibjson):
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        self._set_with_struct("bibjson", bibjson)
+
+    @property
+    def toc_id(self):
+        bibjson = self.bibjson()
+        id_ = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if not id_:
+            id_ = bibjson.get_one_identifier(bibjson.P_ISSN)
+        if not id_:
+            id_ = self.id
+        return id_
+
+    @property
+    def last_reapplication(self):
+        return self._get_single("last_reapplication")
+
+    def set_last_reapplication(self, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self._set_with_struct("last_reapplication", date)
+
+    def set_last_manual_update(self, date=None):
+        if date is None:
+            date = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+        self._set_with_struct("last_manual_update", date)
+
+    @property
+    def last_manual_update(self):
+        return self._get_single("last_manual_update")
+
+    @property
+    def last_manual_update_timestamp(self):
+        return self._get_single("last_manual_update", coerce=dataobj.to_datestamp())
+
+    ############################################################
+    ## revision history methods
+
+    def snapshot(self):
+        from portality.models import JournalHistory
+
+        snap = deepcopy(self.data)
+        if "id" in snap:
+            snap["about"] = snap["id"]
+            del snap["id"]
+        if "index" in snap:
+            del snap["index"]
+        if "last_updated" in snap:
+            del snap["last_updated"]
+        if "created_date" in snap:
+            del snap["created_date"]
+
+        hist = JournalHistory(**snap)
+        hist.save()
+
+    #######################################################################
+    ## Conversion methods (e.g. to a reapplication)
+
+    def make_reapplication(self):
+        from portality.models import Suggestion
+        raw_reapp = deepcopy(self.data)
+
+        # remove all the properties that won't be carried
+        if "id" in raw_reapp:
+            del raw_reapp["id"]
+        if "index" in raw_reapp:
+            del raw_reapp["index"]
+        if "created_date" in raw_reapp:
+            del raw_reapp["created_date"]
+        if "last_updated" in raw_reapp:
+            del raw_reapp["last_updated"]
+        # there should not be an old suggestion record, but just to be safe
+        if "suggestion" in raw_reapp:
+            del raw_reapp["suggestion"]
+
+        # construct the new admin object from the ground up
+        admin = raw_reapp.get("admin")
+        if admin is not None:
+            na = {}
+            na["application_status"] = "reapplication"
+            na["current_journal"] = self.id
+            if "notes" in admin:
+                na["notes"] = admin["notes"]
+            if "contact" in admin:
+                na["contact"] = admin["contact"]
+            if "owner" in admin:
+                na["owner"] = admin["owner"]
+            if "editor_group" in admin:
+                na["editor_group"] = admin["editor_group"]
+            if "editor" in admin:
+                na["editor"] = admin["editor"]
+            raw_reapp["admin"] = na
+
+        # make the new suggestion
+        reapp = Suggestion(**raw_reapp)
+        reapp.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        # there is no suggester, so we copy the journal contact details into the
+        # suggester fields
+        contacts = reapp.contacts()
+        if len(contacts) > 0:
+            reapp.set_suggester(contacts[0].get("name"), contacts[0].get("email"))
+
+        reapp.save()
+
+        # update this record to include the reapplication id
+        self.set_current_application(reapp.id)
+        self.save()
+
+        # finally, return the reapplication in case the caller needs it
+        return reapp
+
+    ####################################################
+    ## admin data methods
+
+    def is_in_doaj(self):
+        return self._get_single("admin.in_doaj", default=False)
+
+    def set_in_doaj(self, value):
+        self._set_with_struct("admin.in_doaj", value)
+
+    def contacts(self):
+        return self._get_list("admin.contact")
+
+    def get_latest_contact_name(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("name", "")
+
+    def get_latest_contact_email(self):
+        try:
+            contact = self.contacts()[-1]
+        except IndexError as e:
+            return ""
+        return contact.get("email", "")
+
+    def add_contact(self, name, email):
+        self._add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
+
+    def add_note(self, note, date=None):
+        if date is None:
+            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        self._add_to_list_with_struct("admin.notes", {"date" : date, "note" : note})
+
+    def remove_note(self, note):
+        self._delete_from_list("admin.notes", matchsub=note)
+
+    def set_notes(self, notes):
+        self._set_with_struct("admin.notes", notes)
+
+    def notes(self):
+        return self._get_list("admin.notes")
+
+    @property
+    def owner(self):
+        return self._get_single("admin.owner")
+
+    def set_owner(self, owner):
+        self._set_with_struct("admin.owner", owner)
+
+    @property
+    def editor_group(self):
+        return self._get_single("admin.editor_group")
+
+    def set_editor_group(self, eg):
+        self._set_with_struct("admin.editor_group", eg)
+
+    @property
+    def editor(self):
+        return self._get_single("admin.editor")
+
+    def set_editor(self, ed):
+        self._set_with_struct("admin.editor", ed)
+
+    @property
+    def current_application(self):
+        return self._get_single("admin.current_application")
+
+    def set_current_application(self, application_id):
+        self._set_with_struct("admin.current_application", application_id)
+
+    def remove_current_application(self):
+        self._delete("admin.current_application")
+
+    # FIXME: not sure what to do about this yet - resolve when we do the continuation model
+    def known_issns(self):
+        """ all issns this journal has ever been known by """
+        issns = []
+
+        # the places we're going to get those fields from
+        cbib = self.bibjson()
+        hist = self.history()
+
+        # get the issns out of the current bibjson
+        issns += cbib.get_identifiers(cbib.P_ISSN)
+        issns += cbib.get_identifiers(cbib.E_ISSN)
+
+        # now get the issns
+        for date, r, irb, hbib in hist:
+            issns += hbib.get_identifiers(hbib.P_ISSN)
+            issns += hbib.get_identifiers(hbib.E_ISSN)
+
+        return issns
+
+    def is_ticked(self):
+        return self._get_single("admin.ticked", default=False)
+
+    def set_ticked(self, ticked):
+        self._set_with_struct("admin.ticked", ticked)
+
+    def has_seal(self):
+        return self._get_single("admin.seal", default=False)
+
+    def set_seal(self, value):
+        self._set_with_struct("admin.seal", value)
+
+    @property
+    def bulk_upload_id(self):
+        return self._get_single("admin.bulk_upload")
+
+    def set_bulk_upload_id(self, bulk_upload_id):
+        self._set_with_struct("admin.bulk_upload", bulk_upload_id)
+
+
+    #####################################################
+    ## operations we can do to the journal
+
+    def calculate_tick(self):
+        created_date = self.created_date
+        last_reapplied = self.last_reapplication
+
+        tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
+        threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
+
+        if created_date is None:    # don't worry about the last_reapplied date - you can't reapply unless you've been created!
+            # we haven't even saved the record yet.  All we need to do is check that the tick
+            # threshold is in the past (which I suppose theoretically it could not be), then
+            # set it
+            if datetime.now() >= threshold:
+                self.set_ticked(True)
+            else:
+                self.set_ticked(False)
+            return
+
+        # otherwise, this is an existing record, and we just need to update it
+
+        # convert the strings to datetime objects
+        created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
+        reappd = None
+        if last_reapplied is not None:
+            reappd = datetime.strptime(last_reapplied, "%Y-%m-%dT%H:%M:%SZ")
+
+        if created >= threshold and self.is_in_doaj():
+            self.set_ticked(True)
+            return
+
+        if reappd is not None and reappd >= threshold and self.is_in_doaj():
+            self.set_ticked(True)
+            return
+
+        self.set_ticked(False)
+
+    def propagate_in_doaj_status_to_articles(self):
+        for article in self.all_articles():
+            article.set_in_doaj(self.is_in_doaj())
+            article.save()
+
+    def prep(self):
+        self._ensure_in_doaj()
+        self._generate_index()
+        self.calculate_tick()
+        self.set_last_updated()
+
+    def save(self, snapshot=True, sync_owner=True, **kwargs):
+        self.prep()
+        if sync_owner:
+            self._sync_owner_to_application()
+        super(Journal, self).save(**kwargs)
+        if snapshot:
+            self.snapshot()
+
+    ######################################################
+    ## internal utility methods
+
+    def _generate_index(self):
+        # the index fields we are going to generate
+        issns = []
+        titles = []
+        subjects = []
+        schema_subjects = []
+        schema_codes = []
+        classification = []
+        langs = []
+        country = None
+        license = []
+        publisher = []
+        urls = {}
+        has_apc = None
+        has_seal = None
+        classification_paths = []
+        unpunctitle = None
+        asciiunpunctitle = None
+
+        # the places we're going to get those fields from
+        cbib = self.bibjson()
+        # hist = self.history()   # FIXME: have to look at this once we've sorted out the continuations
+
+        # get the issns out of the current bibjson
+        issns += cbib.get_identifiers(cbib.P_ISSN)
+        issns += cbib.get_identifiers(cbib.E_ISSN)
+
+        # get the title out of the current bibjson
+        if cbib.title is not None:
+            titles.append(cbib.title)
+
+        # get the subjects and concatenate them with their schemes from the current bibjson
+        for subs in cbib.subjects():
+            scheme = subs.get("scheme")
+            term = subs.get("term")
+            subjects.append(term)
+            schema_subjects.append(scheme + ":" + term)
+            classification.append(term)
+            if "code" in subs:
+                schema_codes.append(scheme + ":" + subs.get("code"))
+
+        # add the keywords to the non-schema subjects (but not the classification)
+        subjects += cbib.keywords
+
+        # now get the issns and titles out of the historic records
+        """
+        for date, r, irb, hbib in hist:
+            issns += hbib.get_identifiers(hbib.P_ISSN)
+            issns += hbib.get_identifiers(hbib.E_ISSN)
+            if hbib.title is not None:
+                titles.append(hbib.title)
+        """
+
+        # get the bibjson object to conver the language to the english form
+        langs = cbib.language_name()
+
+        # get the english name of the country
+        country = cbib.country_name()
+
+        # get the title of the license
+        lic = cbib.get_license()
+        if lic is not None:
+            license.append(lic.get("title"))
+
+        # copy the publisher/institution
+        if cbib.publisher:
+            publisher.append(cbib.publisher)
+        if cbib.institution:
+            publisher.append(cbib.institution)
+
+        # extract and convert all of the urls by their type
+        links = cbib.get_urls()
+        for link in links:
+            lt = link.get("type")
+            if lt is not None:
+                urls[lt + "_url"] = link.get("url")
+
+        # deduplicate the lists
+        issns = list(set(issns))
+        titles = list(set(titles))
+        subjects = list(set(subjects))
+        schema_subjects = list(set(schema_subjects))
+        classification = list(set(classification))
+        license = list(set(license))
+        publisher = list(set(publisher))
+        schema_codes = list(set(schema_codes))
+
+        # work out of the journal has an apc
+        has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
+
+        # determine if the seal is applied
+        has_seal = "Yes" if self.has_seal() else "No"
+
+        # get the full classification paths for the subjects
+        classification_paths = cbib.lcc_paths()
+
+        # create an unpunctitle
+        if cbib.title is not None:
+            throwlist = string.punctuation + '\n\t'
+            unpunctitle = "".join(c for c in cbib.title if c not in throwlist).strip()
+            try:
+                asciiunpunctitle = unidecode(unpunctitle)
+            except:
+                asciiunpunctitle = unpunctitle
+
+        # build the index part of the object
+        self.data["index"] = {}
+        if len(issns) > 0:
+            self.data["index"]["issn"] = issns
+        if len(titles) > 0:
+            self.data["index"]["title"] = titles
+        if len(subjects) > 0:
+            self.data["index"]["subject"] = subjects
+        if len(schema_subjects) > 0:
+            self.data["index"]["schema_subject"] = schema_subjects
+        if len(classification) > 0:
+            self.data["index"]["classification"] = classification
+        if len(publisher) > 0:
+            self.data["index"]["publisher"] = publisher
+        if len(license) > 0:
+            self.data["index"]["license"] = license
+        if len(langs) > 0:
+            self.data["index"]["language"] = langs
+        if country is not None:
+            self.data["index"]["country"] = country
+        if len(schema_codes) > 0:
+            self.data["index"]["schema_code"] = schema_codes
+        if len(urls.keys()) > 0:
+            self.data["index"].update(urls)
+        if has_apc:
+            self.data["index"]["has_apc"] = has_apc
+        if has_seal:
+            self.data["index"]["has_seal"] = has_seal
+        if len(classification_paths) > 0:
+            self.data["index"]["classification_paths"] = classification_paths
+        if unpunctitle is not None:
+            self.data["index"]["unpunctitle"] = unpunctitle
+        if asciiunpunctitle is not None:
+            self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
+
+    def _ensure_in_doaj(self):
+        # switching active to false takes the item out of the DOAJ
+        # though note that switching active to True does not put something IN the DOAJ
+        if not self.bibjson().active:
+            self.set_in_doaj(False)
+
+    def _sync_owner_to_application(self):
+        if self.current_application is None:
+            return
+        from portality.models import Suggestion
+        ca = Suggestion.pull(self.current_application)
+        if ca is not None and ca.owner != self.owner:
+            ca.set_owner(self.owner)
+            ca.save(sync_owner=False)
+
+
+JOURNAL_STRUCT = {
+    "fields" : {
+        "id" : {"coerce" : "unicode"},
+        "created_date" : {"coerce" : "utcdatetime"},
+        "last_updated" : {"coerce" : "utcdatetime"},
+        "last_reapplication" : {"coerce" : "utcdatetime"},
+        "last_manual_update" : {"coerce" : "utcdatetime"}
+    },
+    "objects" : [
+        "bibjson", "admin", "index"
+    ],
+
+    "structs" : {
+        "bibjson" : {
+            "fields" : {
+                "active" : {"coerce" : "bool"},
+                "title" : {"coerce" : "unicode"},
+                "alternative_title" : {"coerce" : "unicode"},
+                "country" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"},
+                "provider" : {"coerce" : "unicode"},
+                "institution" : {"coerce" : "unicode"},
+                "apc_url" : {"coerce" : "unicode"},
+                "submission_charges_url" : {"coerce" : "unicode"},
+                "allows_fulltext_indexing" : {"coerce" : "bool"},
+                "publication_time" : {"coerce" : "integer"},
+                "author_pays" : {"coerce" : "unicode"},
+                "author_pays_url" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "identifier" : {"contains" : "object"},
+                "keywords" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "link" : {"contains" : "object"},
+                "subject" : {"contains" : "object"},
+                "deposit_policy" : {"contains" : "field", "coerce" : "unicode"},
+                "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "unicode"},
+                "format" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "object"}
+            },
+            "objects" : [
+                "oa_start",
+                "oa_end",
+                "apc",
+                "submission_charges",
+                "archiving_policy",
+                "editorial_review",
+                "plagiarism_detection",
+                "article_statistics",
+                "author_copyright",
+                "author_publishing_rights"
+            ],
+
+            "structs" : {
+                "identifier" : {
+                    "fields" : {
+                        "type" : {"coerce" : "unicode"},
+                        "id" : {"coerce" : "unicode"}
+                    }
+                },
+                "link" : {
+                    "fields" : {
+                        "type" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "subject" : {
+                    "fields" : {
+                        "scheme" : {"coerce" : "unicode"},
+                        "term" : {"coerce" : "unicode"},
+                        "code" : {"coerce" : "unicode"}
+                    }
+                },
+                "oa_start" : {
+                    "fields" : {
+                        "year" : {"coerce" : "integer"},
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"}
+                    }
+                },
+                "oa_end" : {
+                    "fields" : {
+                        "year" : {"coerce" : "integer"},
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"}
+                    }
+                },
+                "apc" : {
+                    "fields" : {
+                        "currency" : {"coerce" : "unicode"},
+                        "average_price" : {"coerce" : "integer"}
+                    }
+                },
+                "submission_charges" : {
+                    "fields" : {
+                        "currency" : {"coerce" : "unicode"},
+                        "average_price" : {"coerce" : "integer"}
+                    }
+                },
+                "archiving_policy" : {
+                    "fields" : {
+                        "other" : {"coerce" : "unicode"},
+                        "nat_lib" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "known" : {"contains" : "field", "coerce" : "unicode"}
+                    }
+                },
+                "editorial_review" : {
+                    "fields" : {
+                        "process" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "plagiarism_detection" : {
+                    "fields" : {
+                        "detection" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "article_statistics" : {
+                    "fields" : {
+                        "statistics" : {"coerce" : "bool"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "author_copyright" : {
+                    "fields" : {
+                        "copyright" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "author_publishing_rights" : {
+                    "fields" : {
+                        "publishing_rights" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                },
+                "license" : {
+                    "fields" : {
+                        "title" : {"coerce" : "unicode"},
+                        "type" : {"coerce" : "unicode"},
+                        "url" : {"coerce" : "unicode"},
+                        "version" : {"coerce" : "unicode"},
+                        "open_access" : {"coerce" : "bool"},
+                        "BY" : {"coerce" : "bool"},
+                        "NC" : {"coerce" : "bool"},
+                        "ND" : {"coerce" : "bool"},
+                        "SA" : {"coerce" : "bool"},
+                        "embedded" : {"coerce" : "bool"},
+                        "embedded_example_url" : {"coerce" : "unicode"}
+                    }
+                }
+            }
+        },
+        "admin" : {
+            "fields" : {
+                "in_doaj" : {"coerce" : "bool"},
+                "ticked" : {"coerce" : "bool"},
+                "seal" : {"coerce" : "bool"},
+                "bulk_upload" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+                "current_application" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "contact" : {"contains" : "object"},
+                "notes" : {"contains" : "object"}
+            },
+            "structs" : {
+                "contact" : {
+                    "fields" : {
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
+                    }
+                },
+                "notes" : {
+                    "fields" : {
+                        "note" : {"coerce" : "unicode"},
+                        "date" : {"coerce" : "utcdatetime"}
+                    }
+                }
+            }
+        },
+        "index" : {
+            "fields" : {
+                "country" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"},
+                "homepage_url" : {"coerce" : "unicode"},
+                "waiver_policy_url" : {"coerce" : "unicode"},
+                "editorial_board_url" : {"coerce" : "unicode"},
+                "aims_scope_url" : {"coerce" : "unicode"},
+                "author_instructions_url" : {"coerce" : "unicode"},
+                "oa_statement_url" : {"coerce" : "unicode"},
+                "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "unpunctitle" : {"coerce" : "unicode"},
+                "asciiunpunctitle" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        }
+    }
+}
+
+########################################################
+## Data Access Queries
 
 class JournalQuery(object):
     """

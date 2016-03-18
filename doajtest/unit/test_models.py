@@ -3,8 +3,13 @@ from portality import models
 from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
 import time
+from portality.lib import dataobj
 
 class TestClient(DoajTestCase):
+
+    def test_00_structs(self):
+        journal = models.Journal()
+        dataobj.construct_validate(journal._struct)
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""
@@ -35,18 +40,68 @@ class TestClient(DoajTestCase):
     def test_02_journal_model_rw(self):
         """Read and write properties into the journal model"""
         j = models.Journal()
-        j.set_current_application("1234567")
-        j.set_last_reapplication("2001-04-19T01:01:01Z")
+        j.set_id("abcd")
+        j.set_created("2001-01-01T00:00:00Z")
+        j.set_last_updated("2002-01-01T00:00:00Z")
+        j.set_bibjson({"title" : "test"})
+        j.set_last_reapplication("2003-01-01T00:00:00Z")
+        j.set_last_manual_update("2004-01-01T00:00:00Z")
+        j.set_in_doaj(True)
+        j.add_contact("richard", "richard@email.com")
+        j.add_note("testing", "2005-01-01T00:00:00Z")
+        j.set_owner("richard")
+        j.set_editor_group("worldwide")
+        j.set_editor("eddie")
+        j.set_current_application("0987654321")
+        j.set_ticked(True)
         j.set_bulk_upload_id("abcdef")
+        j.set_seal(True)
 
-        assert j.data.get("admin", {}).get("current_application") == "1234567"
-        assert j.current_application == "1234567"
-        assert j.last_reapplication == "2001-04-19T01:01:01Z"
+        assert j.id == "abcd"
+        assert j.created_date == "2001-01-01T00:00:00Z"
+        assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
+        assert j.last_updated == "2002-01-01T00:00:00Z"
+        # assert len(j.bibjson().data.keys()) == 1
+        #assert j.bibjson().data["title"] == "test"
+        assert j.last_reapplication == "2003-01-01T00:00:00Z"
+        assert j.last_manual_update == "2004-01-01T00:00:00Z"
+        assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
+        assert j.is_in_doaj() is True
+        assert len(j.contacts()) == 1
+        assert j.get_latest_contact_name() == "richard"
+        assert j.get_latest_contact_email() == "richard@email.com"
+        assert len(j.notes()) == 1
+        assert j.owner == "richard"
+        assert j.editor_group == "worldwide"
+        assert j.editor == "eddie"
+        assert j.current_application == "0987654321"
+        assert j.is_ticked() is True
+        assert j.has_seal() is True
         assert j.bulk_upload_id == "abcdef"
+
+        notes = j.notes()
+        j.remove_note(notes[0])
+        assert len(j.notes()) == 0
+
+        j.set_notes([{"note" : "testing", "date" : "2005-01-01T00:00:00Z"}])
+        assert len(j.notes()) == 1
+
+        j.remove_current_application()
+        assert j.current_application is None
 
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         j.set_last_reapplication()
         assert j.last_reapplication == now # should work, since this ought to take less than a second, but it might sometimes fail
+
+        # now construct from a fixture
+        source = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
+        j = models.Journal(**source)
+        assert j is not None
+
+        # run the remaining methods just to make sure there are no errors
+        j.calculate_tick()
+        j.prep()
+        j.save()
 
     def test_03_suggestion_model_rw(self):
         """Read and write properties into the suggestion model"""
@@ -306,3 +361,17 @@ class TestClient(DoajTestCase):
         models.Article.block(a.id, a.last_updated)
         a = models.Article.pull(a.id)
         assert a is not None
+
+    def test_13_archiving_policy(self):
+        # a recent change to how we store archiving policy means we need the object api to continue
+        # to respect the old model, while transparently converting it in and out of the object
+        j = models.Journal()
+        b = j.bibjson()
+
+        b.set_archiving_policy(["LOCKSS", "CLOCKSS", ["A national library", "Trinity"], ["Other", "Somewhere else"]], "http://url")
+        assert b.archiving_policy == {"url" : "http://url", "policy" : ["LOCKSS", "CLOCKSS", ["A national library", "Trinity"], ["Other", "Somewhere else"]]}
+
+        b.add_archiving_policy("SAFE")
+        assert b.archiving_policy == {"url" : "http://url", "policy" : ["LOCKSS", "CLOCKSS", "SAFE", ["A national library", "Trinity"], ["Other", "Somewhere else"]]}
+
+        assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', 'SAFE', 'A national library: Trinity', 'Other: Somewhere else']

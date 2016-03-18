@@ -9,11 +9,13 @@ class OutgoingCommonJournalApplication(dataobj.DataObj, swagger.SwaggerSupport):
         d = deepcopy(journal_or_app.data)
 
         # we need to re-write the archiving policy section
-        joa = d.get("bibjson", {}).get("archiving_policy")
+        # joa = d.get("bibjson", {}).get("archiving_policy")
+        joa = journal_or_app.bibjson().archiving_policy
         if joa is not None:
             njoa = {}
             if "url" in joa:
                 njoa["url"] = joa["url"]
+
             if "policy" in joa:
                 npol = []
                 for pol in joa["policy"]:
@@ -22,6 +24,7 @@ class OutgoingCommonJournalApplication(dataobj.DataObj, swagger.SwaggerSupport):
                     else:
                         npol.append({"name" : pol})
                 njoa["policy"] = npol
+
             d["bibjson"]["archiving_policy"] = njoa
 
         return cls(d)

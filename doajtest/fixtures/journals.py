@@ -25,7 +25,7 @@ class JournalFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template['identifier'] = [
+            template["bibjson"]['identifier'] = [
                 # not really proper ISSN format, but then 1234-5678 is not
                 # a correct checksummed ISSN either. Need to write a nicer
                 # faker module and just ask it for fake ISSNs, IDs, names, publishers, etc.
@@ -100,11 +100,9 @@ JOURNAL_SOURCE = {
             "average_price": 4
         },
         "archiving_policy": {
-            "policy": [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
             "url": "http://digital.archiving.policy"
         },
         "editorial_review": {
