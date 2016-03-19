@@ -239,7 +239,7 @@ class DataObj(object):
         "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True),
     }
 
-    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False, *args, **kwargs):
+    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False, construct_maintain_reference=False, *args, **kwargs):
         # make a shortcut to the object.__getattribute__ function
         og = object.__getattribute__
 
@@ -281,7 +281,7 @@ class DataObj(object):
 
         # restructure the object based on the struct if requried
         if self._struct is not None and raw is not None and construct_raw:
-            self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune)
+            self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune, maintain_reference=construct_maintain_reference)
 
         # run against the old validation routine
         # (now deprecated)
@@ -558,7 +558,17 @@ class DataObj(object):
             else:
                 context[p] = val
 
-    def _delete_from_list(self, path, val=None, matchsub=None, prune=True):
+    def _delete_from_list(self, path, val=None, matchsub=None, prune=True, apply_struct_on_matchsub=True):
+        """
+        Note that matchsub will be coerced with the struct if it exists, to ensure
+        that the match is done correctly
+
+        :param path:
+        :param val:
+        :param matchsub:
+        :param prune:
+        :return:
+        """
         l = self._get_list(path)
 
         removes = []
@@ -568,6 +578,16 @@ class DataObj(object):
                 if entry == val:
                     removes.append(i)
             elif matchsub is not None:
+                # attempt to coerce the sub
+                if apply_struct_on_matchsub:
+                    try:
+                        object.__getattribute__(self, "_struct")
+                        type, struct, instructions = construct_lookup(path, self._struct)
+                        if struct is not None:
+                            matchsub = construct(matchsub, struct, self._coerce_map)
+                    except:
+                        pass
+
                 matches = 0
                 for k, v in matchsub.iteritems():
                     if entry.get(k) == v:
@@ -943,7 +963,7 @@ def construct_validate(struct, context=""):
     return True
 
 
-def construct(obj, struct, coerce, context="", silent_prune=False):
+def construct(obj, struct, coerce, context="", silent_prune=False, maintain_reference=False):
     """
     {
         "fields" : {
@@ -1093,7 +1113,12 @@ def construct(obj, struct, coerce, context="", silent_prune=False):
         else:
             raise DataStructureException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
 
-    return constructed.data
+    if maintain_reference:
+        obj.clear()
+        obj.update(constructed.data)
+        return obj
+    else:
+        return constructed.data
 
 
 def construct_merge(target, source):

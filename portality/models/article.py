@@ -1,5 +1,6 @@
 from portality.dao import DomainObject
-from portality.models import GenericBibJSON, Journal
+from portality.models import Journal
+from portality.models.bibjson import GenericBibJSONOld
 from copy import deepcopy
 from datetime import datetime
 from portality import xwalk
@@ -402,7 +403,7 @@ class Article(DomainObject):
         self._generate_index()
         super(Article, self).save(*args, **kwargs)
 
-class ArticleBibJSON(GenericBibJSON):
+class ArticleBibJSON(GenericBibJSONOld):
 
     # article-specific simple getters and setters
     @property

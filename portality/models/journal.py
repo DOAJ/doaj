@@ -3,6 +3,7 @@ from copy import deepcopy
 from datetime import datetime
 from portality.core import app
 from portality.models import GenericBibJSON
+from portality.models.bibjson import GenericBibJSONOld
 
 import string
 from unidecode import unidecode
@@ -77,10 +78,10 @@ class JournalOld(DomainObject):
     def bibjson(self):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
-        return JournalBibJSON(self.data.get("bibjson"))
+        return JournalBibJSONOld(self.data.get("bibjson"))
 
     def set_bibjson(self, bibjson):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSONOld) else bibjson
         self.data["bibjson"] = bibjson
 
     def snapshot(self):
@@ -125,9 +126,9 @@ class JournalOld(DomainObject):
         register = []
         for h in histories:
             # get the issns for the current bibjson record
-            bj = JournalBibJSON(h.get("bibjson"))
-            eissns = bj.get_identifiers(JournalBibJSON.E_ISSN)
-            pissns = bj.get_identifiers(JournalBibJSON.P_ISSN)
+            bj = JournalBibJSONOld(h.get("bibjson"))
+            eissns = bj.get_identifiers(JournalBibJSONOld.E_ISSN)
+            pissns = bj.get_identifiers(JournalBibJSONOld.P_ISSN)
 
             # store the bibjson record in the register for use later
             register.append(
@@ -191,9 +192,9 @@ class JournalOld(DomainObject):
             bibjson = h.get("bibjson")
             if bibjson is None:
                 continue
-            jbj = JournalBibJSON(bibjson)
-            eissns = jbj.get_identifiers(JournalBibJSON.E_ISSN)
-            pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
+            jbj = JournalBibJSONOld(bibjson)
+            eissns = jbj.get_identifiers(JournalBibJSONOld.E_ISSN)
+            pissns = jbj.get_identifiers(JournalBibJSONOld.P_ISSN)
             if issn in eissns or issn in pissns:
                 return jbj
 
@@ -201,8 +202,8 @@ class JournalOld(DomainObject):
 
     def get_history_around(self, issn):
         cbj = self.bibjson()
-        eissns = cbj.get_identifiers(JournalBibJSON.E_ISSN)
-        pissns = cbj.get_identifiers(JournalBibJSON.P_ISSN)
+        eissns = cbj.get_identifiers(JournalBibJSONOld.E_ISSN)
+        pissns = cbj.get_identifiers(JournalBibJSONOld.P_ISSN)
 
         # if the supplied issn is one for the current version of the journal, return no
         # future continuations, and all of the past ones in order
@@ -219,8 +220,8 @@ class JournalOld(DomainObject):
         # while putting all others in the past/future bins, depending on whether we've
         # passed the target or not
         for h in self.history():
-            eissns = h[3].get_identifiers(JournalBibJSON.E_ISSN)
-            pissns = h[3].get_identifiers(JournalBibJSON.P_ISSN)
+            eissns = h[3].get_identifiers(JournalBibJSONOld.E_ISSN)
+            pissns = h[3].get_identifiers(JournalBibJSONOld.P_ISSN)
             if issn in eissns or issn in pissns:
                 trip = True
                 continue
@@ -237,7 +238,7 @@ class JournalOld(DomainObject):
         self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
 
     def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSONOld) else bibjson
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         snobj = {"date" : date, "bibjson" : bibjson}
@@ -268,9 +269,9 @@ class JournalOld(DomainObject):
             bibjson = h.get("bibjson")
             if bibjson is None:
                 continue
-            jbj = JournalBibJSON(bibjson)
-            eissns = jbj.get_identifiers(JournalBibJSON.E_ISSN)
-            pissns = jbj.get_identifiers(JournalBibJSON.P_ISSN)
+            jbj = JournalBibJSONOld(bibjson)
+            eissns = jbj.get_identifiers(JournalBibJSONOld.E_ISSN)
+            pissns = jbj.get_identifiers(JournalBibJSONOld.P_ISSN)
             if issn in eissns or issn in pissns:
                 remove = i
                 break
@@ -772,7 +773,7 @@ class JournalOld(DomainObject):
             self.snapshot()
 
 
-class JournalBibJSON(GenericBibJSON):
+class JournalBibJSONOld(GenericBibJSONOld):
 
     # journal-specific simple property getter and setters
     @property
@@ -1196,6 +1197,7 @@ class JournalBibJSON(GenericBibJSON):
 ## Refactored data objects
 
 from portality.lib import dataobj
+from portality.models import shared_structs
 
 class Journal(dataobj.DataObj, DomainObject):
     __type__ = "journal"
@@ -1204,7 +1206,10 @@ class Journal(dataobj.DataObj, DomainObject):
         # FIXME: hack, to deal with ES integration layer being improperly abstracted
         if "_source" in kwargs:
             kwargs = kwargs["_source"]
-        super(Journal, self).__init__(raw=kwargs, struct=JOURNAL_STRUCT)
+        self._add_struct(shared_structs.SHARED_BIBJSON)
+        self._add_struct(shared_structs.JOURNAL_BIBJSON_EXTENSION)
+        self._add_struct(JOURNAL_STRUCT)
+        super(Journal, self).__init__(raw=kwargs)
 
     #####################################################
     ## data access methods
@@ -1759,6 +1764,396 @@ class Journal(dataobj.DataObj, DomainObject):
             ca.save(sync_owner=False)
 
 
+class JournalBibJSON(GenericBibJSON):
+    def __init__(self, bibjson=None):
+        self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
+        self._add_struct(shared_structs.JOURNAL_BIBJSON_EXTENSION.get("structs", {}).get("bibjson"))
+        super(JournalBibJSON, self).__init__(bibjson)
+
+    ############################################################
+    # journal-specific simple property getter and setters
+
+    @property
+    def alternative_title(self):
+        return self._get_single("alternative_title")
+
+    @alternative_title.setter
+    def alternative_title(self, val):
+        self._set_with_struct("alternative_title", val)
+
+    @property
+    def author_pays_url(self):
+        return self._get_single("author_pays_url")
+
+    @author_pays_url.setter
+    def author_pays_url(self, val):
+        self._set_with_struct("author_pays_url", val)
+
+    @property
+    def author_pays(self):
+        return self._get_single("author_pays")
+
+    @author_pays.setter
+    def author_pays(self, val):
+        self._set_with_struct("author_pays", val)
+
+    @author_pays.deleter
+    def author_pays(self):
+        self._delete("author_pays")
+
+    @property
+    def country(self):
+        return self._get_single("country")
+
+    @country.setter
+    def country(self, val):
+        self._set_with_struct("country", val)
+
+    def country_name(self):
+        if self.country is not None:
+            from portality import datasets  # delayed import because of files to be loaded
+            return datasets.get_country_name(self.country)
+        return None
+
+    @property
+    def publisher(self):
+        return self._get_single("publisher")
+
+    @publisher.setter
+    def publisher(self, val):
+        self._set_with_struct("publisher", val)
+
+    @property
+    def provider(self):
+        return self._get_single("provider")
+
+    @provider.setter
+    def provider(self, val):
+        self._set_with_struct("provider", val)
+
+    @property
+    def institution(self):
+        return self._get_single("institution")
+
+    @institution.setter
+    def institution(self, val):
+        self._set_with_struct("institution", val)
+
+    @property
+    def active(self):
+        return self._get_single("active", default=True)
+
+    @active.setter
+    def active(self, val):
+        self._set_with_struct("active", val)
+
+    ########################################################
+    # journal-specific complex part getters and setters
+
+    @property
+    def language(self):
+        return self._get_list("language")
+
+    def language_name(self):
+        # copy the languages and convert them to their english forms
+        from portality import datasets  # delayed import, as it loads some stuff from file
+        if self.language is not None:
+            langs = self.language
+        langs = [datasets.name_for_lang(l) for l in langs]
+        uc = dataobj.to_unicode()
+        langs = [uc(l) for l in langs]
+        return list(set(langs))
+
+    def set_language(self, language):
+        self._set_with_struct("language", language)
+
+    def add_language(self, language):
+        self._add_to_list_with_struct("language", language)
+
+    def set_license(self, license_title, license_type, url=None, version=None, open_access=None,
+                    by=None, sa=None, nc=None, nd=None,
+                    embedded=None, embedded_example_url=None):
+
+        # FIXME: why is there not a "remove license" function
+        if not license_title and not license_type:  # something wants to delete the license
+            self._delete("license")
+            return
+
+        lobj = {"title" : license_title, "type" : license_type}
+        if url is not None:
+            lobj["url"] = url
+        if version is not None:
+            lobj["version"] = version
+        if open_access is not None:
+            lobj["open_access"] = open_access
+        if by is not None:
+            lobj["BY"] = by
+        if sa is not None:
+            lobj["SA"] = sa
+        if nc is not None:
+            lobj["NC"] = nc
+        if nd is not None:
+            lobj["ND"] = nd
+        if embedded is not None:
+            lobj["embedded"] = embedded
+        if embedded_example_url is not None:
+            lobj["embedded_example_url"] = embedded_example_url
+
+        self._set_with_struct("license", [lobj])
+
+
+    def get_license(self):
+        ll = self._get_list("license")
+        if len(ll) > 0:
+            return ll[0]
+        return None
+
+    def get_license_type(self):
+        lobj = self.get_license()
+        if lobj is not None:
+            return lobj['type']
+        return None
+
+    @property
+    def open_access(self):
+        return self.get_license().get("open_access", False)
+
+    def set_open_access(self, open_access):
+        existing = self.get_license()
+        if existing is None:
+            existing = {}
+        existing["open_access"] = open_access
+        self._set_with_struct("license", existing)
+
+    def set_oa_start(self, year=None, *args, **kwargs):
+        """
+        Volume and Number are deprecated
+        """
+        oaobj = {}
+        if year is not None:
+            oaobj["year"] = year
+        self._set_with_struct("oa_start", oaobj)
+
+    @property
+    def oa_start(self):
+        return self._get_single("oa_start", default={})
+
+    def set_oa_end(self, year=None, *args, **kwargs):
+        """
+        Volume and Number are deprecated
+        """
+        oaobj = {}
+        if year is not None:
+            oaobj["year"] = year
+        self._set_with_struct("oa_end", oaobj)
+
+    @property
+    def oa_end(self):
+        return self._get_single("oa_end", default={})
+
+    def set_apc(self, currency, average_price):
+        self._set_with_struct("apc.currency", currency)
+        self._set_with_struct("apc.average_price", average_price)
+
+    @property
+    def apc_url(self):
+        return self._get_single("apc_url")
+
+    @apc_url.setter
+    def apc_url(self, val):
+        self._set_with_struct("apc_url", val)
+
+    @property
+    def apc(self):
+        return self._get_single("apc", default={})
+
+    def set_submission_charges(self, currency, average_price):
+        self._set_with_struct("submission_charges.currency", currency)
+        self._set_with_struct("submission_charges.average_price", average_price)
+
+    @property
+    def submission_charges_url(self):
+        return self._get_single("submission_charges_url")
+
+    @submission_charges_url.setter
+    def submission_charges_url(self, val):
+        self._set_with_struct("submission_charges_url", val)
+
+    @property
+    def submission_charges(self):
+        return self._get_single("submission_charges", default={})
+
+    """
+    The below methods work with data stored in this format:
+    {
+        "other" : "other value"
+        "nat_lib" : "library value",
+        "known" : ["known values"],
+        "url" : "url>
+    }
+    But they need to receive and expose data in the original external form:
+    {
+        "policy" : [
+            "<known policy type (e.g. LOCKSS)>",
+            ["<policy category>", "<previously unknown policy type>"]
+        ],
+        "url" : "<url to policy information page>"
+    }
+    """
+
+    def set_archiving_policy(self, policies, policy_url):
+        obj = {}
+        known = []
+        for p in policies:
+            if isinstance(p, list):
+                k, v = p
+                if k.lower() == "other":
+                    obj["other"] = v
+                elif k.lower() == "a national library":
+                    obj["nat_lib"] = v
+            else:
+                known.append(p)
+        if len(known) > 0:
+            obj["known"] = known
+        if policy_url is not None:
+            obj["url"] = policy_url
+
+        self._set_with_struct("archiving_policy", obj)
+
+    def add_archiving_policy(self, policy_name):
+        if isinstance(policy_name, list):
+            k, v = policy_name
+            if k.lower() == "other":
+                self._set_with_struct("archiving_policy.other", v)
+            elif k.lower() == "a national library":
+                self._set_with_struct("nat_lib", v)
+        else:
+            self._add_to_list_with_struct("archiving_policy.known", policy_name)
+
+    @property
+    def archiving_policy(self):
+        ap = self._get_single("archiving_policy", default={})
+        ret = {"policy" : []}
+        if "url" in ap:
+            ret["url"] = ap["url"]
+        if "known" in ap:
+            ret["policy"] += ap["known"]
+        if "nat_lib" in ap:
+            ret["policy"].append(["A national library", ap["nat_lib"]])
+        if "other" in ap:
+            ret["policy"].append(["Other", ap["other"]])
+        return ret
+
+    @property
+    def flattened_archiving_policies(self):
+        ap = self._get_single("archiving_policy", default={})
+        ret = []
+        if "known" in ap:
+            ret += ap["known"]
+        if "nat_lib" in ap:
+            ret.append("A national library: " + ap["nat_lib"])
+        if "other" in ap:
+            ret.append("Other: " + ap["other"])
+
+        return ret
+
+    def set_editorial_review(self, process, review_url):
+        self._set_with_struct("editorial_review.process", process)
+        self._set_with_struct("editorial_review.url", review_url)
+
+    @property
+    def editorial_review(self):
+        return self._get_single("editorial_review", default={})
+
+    def set_plagiarism_detection(self, url, has_detection=True):
+        self._set_with_struct("plagiarism_detection.detection", has_detection)
+        self._set_with_struct("plagiarism_detection.url", url)
+
+    @property
+    def plagiarism_detection(self):
+        return self._get_single("plagiarism_detection", {})
+
+    def set_article_statistics(self, url, has_statistics=True):
+        self._set_with_struct("article_statistics.statistics", has_statistics)
+        self._set_with_struct("article_statistics.url", url)
+
+    @property
+    def article_statistics(self):
+        return self._get_single("article_statistics", default={})
+
+    @property
+    def deposit_policy(self):
+        return self._get_list("deposit_policy")
+
+    @deposit_policy.setter
+    def deposit_policy(self, policies):
+        self._set_with_struct("deposit_policy", policies)
+
+    def add_deposit_policy(self, policy):
+        self._add_to_list_with_struct("deposit_policy", policy)
+
+    def set_author_copyright(self, url, holds_copyright=True):
+        self._set_with_struct("author_copyright.copyright", holds_copyright)
+        self._set_with_struct("author_copyright.url", url)
+
+    @property
+    def author_copyright(self):
+        return self._get_single("author_copyright", default={})
+
+    def set_author_publishing_rights(self, url, holds_rights=True):
+        self._set_with_struct("author_publishing_rights.publishing_rights", holds_rights)
+        self._set_with_struct("author_publishing_rights.url", url)
+
+    @property
+    def author_publishing_rights(self):
+        return self._get_single("author_publishing_rights", default={})
+
+    @property
+    def allows_fulltext_indexing(self):
+        return self._get_single("allows_fulltext_indexing")
+
+    @allows_fulltext_indexing.setter
+    def allows_fulltext_indexing(self, allows):
+        self._set_with_struct("allows_fulltext_indexing", allows)
+
+    @property
+    def persistent_identifier_scheme(self):
+        return self._get_list("persistent_identifier_scheme")
+
+    @persistent_identifier_scheme.setter
+    def persistent_identifier_scheme(self, schemes):
+        self._set_with_struct("persistent_identifier_scheme", schemes)
+
+    def add_persistent_identifier_scheme(self, scheme):
+        self._add_to_list_with_struct("persistent_identifier_scheme", scheme)
+
+    @property
+    def format(self):
+        return self._get_list("format")
+
+    @format.setter
+    def format(self, form):
+        self._set_with_struct("format", form)
+
+    def add_format(self, form):
+        self._add_to_list_with_struct("format", form)
+
+    @property
+    def publication_time(self):
+        return self._get_single("publication_time")
+
+    @publication_time.setter
+    def publication_time(self, weeks):
+        self._set_with_struct("publication_time", weeks)
+
+    # to help with ToC - we prefer to refer to a journal by E-ISSN, or
+    # if not, then P-ISSN
+    def get_preferred_issn(self):
+        issn = self.get_one_identifier(self.E_ISSN)
+        if not issn:
+            issn = self.get_one_identifier(self.P_ISSN)
+        return issn
+
 JOURNAL_STRUCT = {
     "fields" : {
         "id" : {"coerce" : "unicode"},
@@ -1768,153 +2163,10 @@ JOURNAL_STRUCT = {
         "last_manual_update" : {"coerce" : "utcdatetime"}
     },
     "objects" : [
-        "bibjson", "admin", "index"
+        "admin", "index"
     ],
 
     "structs" : {
-        "bibjson" : {
-            "fields" : {
-                "active" : {"coerce" : "bool"},
-                "title" : {"coerce" : "unicode"},
-                "alternative_title" : {"coerce" : "unicode"},
-                "country" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode"},
-                "provider" : {"coerce" : "unicode"},
-                "institution" : {"coerce" : "unicode"},
-                "apc_url" : {"coerce" : "unicode"},
-                "submission_charges_url" : {"coerce" : "unicode"},
-                "allows_fulltext_indexing" : {"coerce" : "bool"},
-                "publication_time" : {"coerce" : "integer"},
-                "author_pays" : {"coerce" : "unicode"},
-                "author_pays_url" : {"coerce" : "unicode"}
-            },
-            "lists" : {
-                "identifier" : {"contains" : "object"},
-                "keywords" : {"contains" : "field", "coerce" : "unicode"},
-                "language" : {"contains" : "field", "coerce" : "unicode"},
-                "link" : {"contains" : "object"},
-                "subject" : {"contains" : "object"},
-                "deposit_policy" : {"contains" : "field", "coerce" : "unicode"},
-                "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "unicode"},
-                "format" : {"contains" : "field", "coerce" : "unicode"},
-                "license" : {"contains" : "object"}
-            },
-            "objects" : [
-                "oa_start",
-                "oa_end",
-                "apc",
-                "submission_charges",
-                "archiving_policy",
-                "editorial_review",
-                "plagiarism_detection",
-                "article_statistics",
-                "author_copyright",
-                "author_publishing_rights"
-            ],
-
-            "structs" : {
-                "identifier" : {
-                    "fields" : {
-                        "type" : {"coerce" : "unicode"},
-                        "id" : {"coerce" : "unicode"}
-                    }
-                },
-                "link" : {
-                    "fields" : {
-                        "type" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "subject" : {
-                    "fields" : {
-                        "scheme" : {"coerce" : "unicode"},
-                        "term" : {"coerce" : "unicode"},
-                        "code" : {"coerce" : "unicode"}
-                    }
-                },
-                "oa_start" : {
-                    "fields" : {
-                        "year" : {"coerce" : "integer"},
-                        "volume" : {"coerce" : "unicode"},
-                        "number" : {"coerce" : "unicode"}
-                    }
-                },
-                "oa_end" : {
-                    "fields" : {
-                        "year" : {"coerce" : "integer"},
-                        "volume" : {"coerce" : "unicode"},
-                        "number" : {"coerce" : "unicode"}
-                    }
-                },
-                "apc" : {
-                    "fields" : {
-                        "currency" : {"coerce" : "unicode"},
-                        "average_price" : {"coerce" : "integer"}
-                    }
-                },
-                "submission_charges" : {
-                    "fields" : {
-                        "currency" : {"coerce" : "unicode"},
-                        "average_price" : {"coerce" : "integer"}
-                    }
-                },
-                "archiving_policy" : {
-                    "fields" : {
-                        "other" : {"coerce" : "unicode"},
-                        "nat_lib" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"}
-                    },
-                    "lists" : {
-                        "known" : {"contains" : "field", "coerce" : "unicode"}
-                    }
-                },
-                "editorial_review" : {
-                    "fields" : {
-                        "process" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "plagiarism_detection" : {
-                    "fields" : {
-                        "detection" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "article_statistics" : {
-                    "fields" : {
-                        "statistics" : {"coerce" : "bool"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "author_copyright" : {
-                    "fields" : {
-                        "copyright" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "author_publishing_rights" : {
-                    "fields" : {
-                        "publishing_rights" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"}
-                    }
-                },
-                "license" : {
-                    "fields" : {
-                        "title" : {"coerce" : "unicode"},
-                        "type" : {"coerce" : "unicode"},
-                        "url" : {"coerce" : "unicode"},
-                        "version" : {"coerce" : "unicode"},
-                        "open_access" : {"coerce" : "bool"},
-                        "BY" : {"coerce" : "bool"},
-                        "NC" : {"coerce" : "bool"},
-                        "ND" : {"coerce" : "bool"},
-                        "SA" : {"coerce" : "bool"},
-                        "embedded" : {"coerce" : "bool"},
-                        "embedded_example_url" : {"coerce" : "unicode"}
-                    }
-                }
-            }
-        },
         "admin" : {
             "fields" : {
                 "in_doaj" : {"coerce" : "bool"},
