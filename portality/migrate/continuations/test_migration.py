@@ -1,5 +1,31 @@
-from portality.migrate.continuations.restructure_archiving_policy import migrate
+from doajtest.helpers import DoajTestCase
+from portality.migrate.continuations import restructure_archiving_policy
+from portality.migrate.continuations import extract_continuations
 from portality import models
+from copy import deepcopy
+import time
+
+class TestMigration(DoajTestCase):
+
+    def test_01_archiving_policy(self):
+        njf = restructure_archiving_policy.migrate(OLD_JOURNAL_FORMAT)
+
+        assert isinstance(njf, models.Journal)
+        ap = njf.data.get("bibjson").get("archiving_policy")
+        assert ap.get("known") == ["LOCKSS", "CLOCKSS"]
+        assert ap.get("other") == "A safe place"
+        assert ap.get("nat_lib") == "Trinity"
+
+    def test_02_continuations(self):
+        result = extract_continuations.migrate(WITH_HISTORY)
+        assert result.get("bibjson", {}).get("replaces") == ["9999-9999", "8888-8888"]
+
+        time.sleep(2)
+        nine = models.Journal.find_by_issn("9999-9999")
+        assert len(nine) == 1
+        one = models.Journal.find_by_issn("1111-1111")
+        assert len(one) == 1
+
 
 OLD_JOURNAL_FORMAT = {
     "id": "abcdefghijk_journal",
@@ -113,11 +139,29 @@ OLD_JOURNAL_FORMAT = {
     }
 }
 
-
-njf = migrate(OLD_JOURNAL_FORMAT)
-
-assert isinstance(njf, models.Journal)
-ap = njf.data.get("bibjson").get("archiving_policy")
-assert ap.get("known") == ["LOCKSS", "CLOCKSS"]
-assert ap.get("other") == "A safe place"
-assert ap.get("nat_lib") == "Trinity"
+WITH_HISTORY = deepcopy(OLD_JOURNAL_FORMAT)
+WITH_HISTORY["history"] = [
+    {
+        "date" : "2001-01-01T00:00:00Z",
+        "replaces" : ["1111-1111", "2222-2222"],
+        "isreplacedby" : ["1234-5678", "9876-5432"],
+        "bibjson" : {
+            "identifier": [
+                {"type": "pissn", "id": "9999-9999"},
+                {"type": "eissn", "id": "8888-8888"},
+            ],
+            "title" : "Last One"
+        }
+    },
+    {
+        "date" : "2000-01-01T00:00:00Z",
+        "isreplacedby" : ["9999-9999", "8888-8888"],
+        "bibjson" : {
+            "identifier": [
+                {"type": "pissn", "id": "1111-1111"},
+                {"type": "eissn", "id": "2222-2222"},
+            ],
+            "title" : "First One"
+        }
+    }
+]

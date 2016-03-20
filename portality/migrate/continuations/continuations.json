@@ -4,7 +4,10 @@
         "type": "journal",
         "init_with_model" : false,
         "keepalive": "1m",
-        "functions" : ["portality.migrate.continuations.restructure_archiving_policy.migrate"]
+        "functions" : [
+          "portality.migrate.continuations.extract_continuations.migrate",
+          "portality.migrate.continuations.restructure_archiving_policy.migrate"
+        ]
       }
   ]
 }
