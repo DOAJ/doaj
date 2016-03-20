@@ -57,14 +57,17 @@ JOURNAL_BIBJSON_EXTENSION = {
                 "allows_fulltext_indexing" : {"coerce" : "bool"},
                 "publication_time" : {"coerce" : "integer"},
                 "author_pays" : {"coerce" : "unicode"},
-                "author_pays_url" : {"coerce" : "unicode"}
+                "author_pays_url" : {"coerce" : "unicode"},
+                "discontinued_date" : {"coerce" : "utcdatetime"}
             },
             "lists" : {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "deposit_policy" : {"contains" : "field", "coerce" : "unicode"},
                 "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "unicode"},
                 "format" : {"contains" : "field", "coerce" : "unicode"},
-                "license" : {"contains" : "object"}
+                "license" : {"contains" : "object"},
+                "is_replaced_by" : {"contains" : "field", "coerce" : "unicode"},
+                "replaces" : {"contains" : "field", "coerce" : "unicode"}
             },
             "objects" : [
                 "oa_start",
