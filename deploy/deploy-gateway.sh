@@ -39,6 +39,10 @@ pip install -r requirements.txt
 pip install flask-swagger==0.2.8
 pip install flask==0.9  # we need to bump flask to 10.1 and retest the app .. soon
 pip install flask-cors==2.1.2 # for some reason this is not being picked up from setup.py?!
+# none of these newly introduced requirements are being picked up by pip
+# something's wrong with the virtualenv
+pip install LinkHeader==0.4.3
+pip install universal-analytics-python==0.2.4
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
