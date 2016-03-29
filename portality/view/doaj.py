@@ -160,6 +160,43 @@ def list_journals():
 @blueprint.route("/toc/<identifier>/<volume>")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>")
 def toc(identifier=None, volume=None, issue=None):
+    # identifier may be the journal id or an issn
+    issn_ref = False
+    if len(identifier) == 9:
+        js = models.Journal.find_by_issn(identifier, in_doaj=True)
+        if len(js) > 1:
+            abort(400)                             # really this is a 500 - we have more than one journal with this issn
+        if len(js) == 0:
+            abort(404)
+        journal = js[0]
+
+        issn_ref = True                            # just a flag so we can check if we were requested via issn
+    else:
+        journal = models.Journal.pull(identifier)  # Returns None on fail
+
+    if journal is None:
+        abort(404)
+
+    # get the bibjson that we will render the ToC around
+    bibjson = journal.bibjson()
+
+    # The issn we are using to build the TOC
+    issn = bibjson.get_preferred_issn()
+    print issn
+
+    return render_template('doaj/fv_toc.html',
+                           journal=journal,
+                           bibjson=bibjson,
+                           search_page=True,
+                           toc_issn=issn,
+                           facetviews=['public.journaltocarticles.facetview'])
+
+"""
+@blueprint.route("/toc/<identifier>")
+@blueprint.route("/toc/<identifier>/<volume>")
+@blueprint.route("/toc/<identifier>/<volume>/<issue>")
+
+def toc(identifier=None, volume=None, issue=None):
     # check for a browser js request for more volume/issue data
     bjsr = request.args.get('bjsr', False)
     bjsri = request.args.get('bjsri', False)
@@ -273,7 +310,7 @@ def toc(identifier=None, volume=None, issue=None):
         return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
                                articles=articles, volumes=all_volumes, current_volume=volume,
                                issues=all_issues, current_issue=issue)
-
+"""
 
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
