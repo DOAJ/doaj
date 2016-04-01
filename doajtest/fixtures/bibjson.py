@@ -63,6 +63,8 @@ JOURNAL = {
          "code": "HB1-3840"},
         {"scheme": "LCC", "term": "Social Sciences", "code": "H"}
     ],
+    "replaces" : ["0000-0000"],
+    "is_replaced_by" : ["9999-9999"],
 
     "oa_start": {
         "year": 1980,

@@ -690,11 +690,9 @@ class TestReApplication(DoajTestCase):
         assert sheetqs == qs
 
     def test_14_make_journal_from_reapp(self):
-        # with history
         j = models.Journal()
         j.set_id("1234567")
         j.set_created("2001-01-01T00:00:00Z")
-        j.add_history({"title" : "old title"})
         j.save()
 
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -711,7 +709,6 @@ class TestReApplication(DoajTestCase):
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert j.get_history_raw()[0].get("bibjson", {}).get("title") == "old title"
 
         # without history
         j = models.Journal()
@@ -733,7 +730,6 @@ class TestReApplication(DoajTestCase):
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert len(j.history()) == 0
 
     def test_15_error_report_cell_refs_rows(self):
         sheet = reapplication.open_csv("invalid.csv")

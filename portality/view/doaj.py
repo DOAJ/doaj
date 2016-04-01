@@ -151,7 +151,7 @@ def toc(identifier=None, volume=None, issue=None):
     # check for a browser js request for more volume/issue data
     bjsr = request.args.get('bjsr',False)
     bjsri = request.args.get('bjsri',False)
-    
+
     # identifier may be the journal id or an issn
     journal = None
     issn_ref = False
@@ -170,78 +170,65 @@ def toc(identifier=None, volume=None, issue=None):
     if journal is None:
         abort(404)
 
-    # get the bibjson that we will render the ToC around - default to the most recent version's
-    # bibjson, and then if we were passed an issn get the historical version if one exists (if
-    # one doesn't it is the current version we want)
+    # get the bibjson record that we're going to render
     bibjson = journal.bibjson()
-    if issn_ref:
-        histbibjson = journal.get_history_for(identifier)
-        if histbibjson is None:
-            continuation = False
-        else:
-            bibjson = histbibjson
-            continuation = True
-    else:
-        # it can't be a continuation if it's not being referred to by ISSN
-        continuation = False
 
-    # before we proceed, check to see if this is a continuation or not
-    # if it is a current journal, we want people to use the E-ISSN to
-    # refer to the toc page, and must issue some redirects for this
-    if not continuation:
+    # now redirect to the canonical E-ISSN if one is available
 
-        if issn_ref:  # the journal is referred to by an ISSN
+    if issn_ref:  # the journal is referred to by an ISSN
+        # if there is an E-ISSN (and it's not the one in the request), redirect to it
+        eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if eissn and identifier != eissn:
+            return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
 
-            # if there is an E-ISSN (and it's not the one in the request), redirect to it
-            eissn = bibjson.get_one_identifier(bibjson.E_ISSN)
-            if eissn and identifier != eissn:
-                    return redirect(url_for('doaj.toc', identifier=eissn, volume=volume, issue=issue), 301)
+        # if there's no E-ISSN, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
+        if not eissn:
+            pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
+            if pissn and identifier != pissn:
+                return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
 
-            # if there's no E-ISSN, but there is a P-ISSN (and it's not the one in the request), redirect to the P-ISSN
-            if not eissn:
-                pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
-                if pissn and identifier != pissn:
-                    return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
+        # The journal has neither a PISSN or an EISSN. Yet somehow
+        # issn_ref is True, the request was referring to the journal
+        # by its ISSN. Not sure how this could ever happen, but just
+        # continue loading the data and do nothing else in such a
+        # case.
 
-            # The journal has neither a PISSN or an EISSN. Yet somehow
-            # issn_ref is True, the request was referring to the journal
-            # by its ISSN. Not sure how this could ever happen, but just
-            # continue loading the data and do nothing else in such a
-            # case.
+    else:  # the journal is NOT referred to by any ISSN
 
-        else:  # the journal is NOT referred to by any ISSN
+        # if there is an E-ISSN, redirect to it
+        # if not, but there is a P-ISSN, redirect to it
+        # if neither ISSN is present, continue loading the page
+        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
+        if not issn:
+            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
+        if issn:
+            return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
 
-            # if there is an E-ISSN, redirect to it
-            # if not, but there is a P-ISSN, redirect to it
-            # if neither ISSN is present, continue loading the page
-            issn = bibjson.get_one_identifier(bibjson.E_ISSN)
-            if not issn:
-                issn = bibjson.get_one_identifier(bibjson.P_ISSN)
-            if issn:
-                return redirect(url_for('doaj.toc', identifier=issn, volume=volume, issue=issue), 301)
+        # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
+        # and the user is referring to the toc page via that ID
 
-            # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
-            # and the user is referring to the toc page via that ID
-
-    # get the issns for this specific continuation
+    # get the issns for this journal
     issns = bibjson.issns()
 
     # build the volumes and issues
     all_issues = None
     all_volumes = None
-    
+
+    # if no volume has been requested, get the full list
     if volume is None or not bjsr:
         all_volumes = models.Article.list_volumes(issns)
         if volume is None and not bjsr and len(all_volumes) > 0: volume = all_volumes[0]
 
+    # if no issue has been requested, but a volume has been, get the full list
     if (issue is None or (not bjsr and not bjsri)) and volume is not None:
         all_issues = models.Article.list_volume_issues(issns, volume)
         if len(all_issues) == 0: all_issues = ["unknown"]
         if issue is None: issue = all_issues[0]
 
+    # if there are no articles for this volume/issue combination, the page doesn't exist
     articles = None
     if volume is not None and issue is not None:
-        articles = models.Article.get_by_volume_issue(issns, volume, issue) 
+        articles = models.Article.get_by_volume_issue(issns, volume, issue)
         if (articles is None or len(articles) == 0):
             abort(404)
 
@@ -252,12 +239,15 @@ def toc(identifier=None, volume=None, issue=None):
         resp.mimetype = "application/json"
         return resp
     else:
-        # get the continuations for this bibjson record, future and past
-        issn = bibjson.get_one_identifier(bibjson.E_ISSN)
-        if issn is None:
-            issn = bibjson.get_one_identifier(bibjson.P_ISSN)
-        future, past = journal.get_history_around(issn)
+        # get the continuations for this journal, future and past
+        future_journals = journal.get_future_continuations()
+        past_journals = journal.get_past_continuations()
 
+        # extract the bibjson, which is what the template is after
+        future = [j.bibjson() for j in future_journals]
+        past = [j.bibjson() for j in past_journals]
+
+        # now render all that information
         return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
                                articles=articles, volumes=all_volumes, current_volume=volume,
                                issues=all_issues, current_issue=issue)

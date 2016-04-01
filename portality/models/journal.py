@@ -494,23 +494,17 @@ class JournalOld(DomainObject):
             del self.data["admin"]["current_application"]
 
     def known_issns(self):
-        """ all issns this journal has ever been known by """
-        issns = []
+        """
+        DEPRECATED
 
-        # the places we're going to get those fields from
-        cbib = self.bibjson()
-        hist = self.history()
+        all issns this journal is known by
 
-        # get the issns out of the current bibjson
-        issns += cbib.get_identifiers(cbib.P_ISSN)
-        issns += cbib.get_identifiers(cbib.E_ISSN)
+        This used to mean "all issns the journal has ever been known by", but that definition has changed since
+        continuations have been separated from the single journal object model.
 
-        # now get the issns
-        for date, r, irb, hbib in hist:
-            issns += hbib.get_identifiers(hbib.P_ISSN)
-            issns += hbib.get_identifiers(hbib.E_ISSN)
-
-        return issns
+        Now this is just a proxy for self.bibjson().issns()
+        """
+        return self.bibjson().issns()
 
     def is_ticked(self):
         return self.data.get("admin", {}).get("ticked", False)
@@ -1508,25 +1502,18 @@ class Journal(dataobj.DataObj, DomainObject):
     def remove_current_application(self):
         self._delete("admin.current_application")
 
-    # FIXME: not sure what to do about this yet - resolve when we do the continuation model
     def known_issns(self):
-        """ all issns this journal has ever been known by """
-        issns = []
+        """
+        DEPRECATED
 
-        # the places we're going to get those fields from
-        cbib = self.bibjson()
-        hist = self.history()
+        all issns this journal is known by
 
-        # get the issns out of the current bibjson
-        issns += cbib.get_identifiers(cbib.P_ISSN)
-        issns += cbib.get_identifiers(cbib.E_ISSN)
+        This used to mean "all issns the journal has ever been known by", but that definition has changed since
+        continuations have been separated from the single journal object model.
 
-        # now get the issns
-        for date, r, irb, hbib in hist:
-            issns += hbib.get_identifiers(hbib.P_ISSN)
-            issns += hbib.get_identifiers(hbib.E_ISSN)
-
-        return issns
+        Now this is just a proxy for self.bibjson().issns()
+        """
+        return self.bibjson().issns()
 
     def is_ticked(self):
         return self._get_single("admin.ticked", default=False)
@@ -1560,213 +1547,31 @@ class Journal(dataobj.DataObj, DomainObject):
     ########################################################################
     ## Functions for handling continuations
 
+    def get_future_continuations(self):
+        irb = self.bibjson().is_replaced_by
+        q = ContinuationQuery(irb)
 
-    def history(self):
-        """
-        returns a list of ordered history objects with their date, replaces, replacedby and bibjson object
-        as a tuple
+        future = []
+        journals = self.q2obj(q=q.query())
+        subjournals = []
+        for j in journals:
+            subjournals += j.get_future_continuations()
 
-        [(date, replaces, isreplacedby, bibjson)]
-        """
-        # get the raw history object from the data.  It constists of a date, an optional replaces/isreplacedby,
-        # and the bibjson of the old version of the journal
-        histories = self.data.get("history", [])
-        if histories is None:
-            histories = []
+        future = journals + subjournals
+        return future
 
-        # convert the histories into a lookup structure that we can use for ordering
-        # of the form ([issns of replaces], [issns of record], [issns of isreplacedby])
-        # also we record a mapping of a record's issns to the return value, which is a tuple of date, replaces, isreplacedby, and the bibjson object
+    def get_past_continuations(self):
+        replaces = self.bibjson().replaces
+        q = ContinuationQuery(replaces)
 
-        lookup = []
-        register = []
-        for h in histories:
-            # get the issns for the current bibjson record
-            bj = JournalBibJSONOld(h.get("bibjson"))
-            eissns = bj.get_identifiers(JournalBibJSONOld.E_ISSN)
-            pissns = bj.get_identifiers(JournalBibJSONOld.P_ISSN)
-
-            # store the bibjson record in the register for use later
-            register.append(
-                (
-                    eissns + pissns,
-                    (h.get("date"), h.get("replaces"), h.get("isreplacedby"), bj)
-                )
-            )
-
-            # put all the information we have into the lookup structure
-            lookup.append((h.get("replaces"), eissns + pissns, h.get("isreplacedby")))
-
-        # now construct an ordered list of issns based on inspeection of the lookup structure.
-        # we loop through the lookup, and pull out the isreplacedby issns.  For each of those issns,
-        # we look at all the other entries in the lookup to determine if one of them is the one that
-        # replaces the current one (by comparing the irb issns to the record issns).  If we don't find
-        # a match, then the entry in the lookup we are inspecting is the latest history record, and
-        # we record the issn, and delete the record from the lookup.  That way, the lookup structure
-        # reduces in size until there is nothing left.
-        #
-        # There are various things that can throw the ordering - basically, if there isn't a clean
-        # replaces/isreplacedby chain, then the ordering will be unpredictable.  So ... manage your data
-        # properly!
-        ordered = []
-        while len(lookup) > 0:
-            i = 0                       # counter that we will use to refer to the current lookup row when we want to delete it
-            for entry in lookup:
-                found = False
-                irbs = entry[2]         # is an array, so there could be multiple values here
-                if irbs is not None:    # it could be none - the history API allows for it
-                    for irb in irbs:
-                        for other in lookup:
-                            if irb in other[1] and irb not in other[2]: # make sure we don't inspect the same record as where our irb comes from
-                                found = True
-                                break
-                        if found:               # propagate the break
-                            break
-                if not found:
-                    if len(entry[1]) > 0:               # check there is an ISSN.  If there is not, this is a data fail - there's not a lot we can do about it
-                        ordered.append(entry[1][0])     # add just one issn to the ordered list - we don't need any more info
-                    del lookup[i]                   # remove this record from the lookup
-                    break                           # and start again from scratch, since the array has now been modified
-                i += 1
-
-        # finally, take the ordered list of issns, and map them to the return values held in the
-        # register.
-        output = []
-        for o in ordered:
-            for r in register:
-                if o in r[0]:
-                    output.append(r[1])
-
-        return output
-
-    def get_history_raw(self):
-        return self.data.get("history")
-
-    def get_history_for(self, issn):
-        histories = self.data.get("history", [])
-        for h in histories:
-            bibjson = h.get("bibjson")
-            if bibjson is None:
-                continue
-            jbj = JournalBibJSONOld(bibjson)
-            eissns = jbj.get_identifiers(JournalBibJSONOld.E_ISSN)
-            pissns = jbj.get_identifiers(JournalBibJSONOld.P_ISSN)
-            if issn in eissns or issn in pissns:
-                return jbj
-
-        return None
-
-    def get_history_around(self, issn):
-        cbj = self.bibjson()
-        eissns = cbj.get_identifiers(JournalBibJSONOld.E_ISSN)
-        pissns = cbj.get_identifiers(JournalBibJSONOld.P_ISSN)
-
-        # if the supplied issn is one for the current version of the journal, return no
-        # future continuations, and all of the past ones in order
-        if issn in eissns or issn in pissns:
-            return [], [h[3] for h in self.history()]
-
-        # otherwise this is an old issn, so the current version is the most recent
-        # future continuation
-        future = [cbj]
         past = []
-        trip = False
+        journals = self.q2obj(q=q.query())
+        subjournals = []
+        for j in journals:
+            subjournals += j.get_past_continuations()
 
-        # for each historical version, look to see if the supplied ISSN is the one
-        # while putting all others in the past/future bins, depending on whether we've
-        # passed the target or not
-        for h in self.history():
-            eissns = h[3].get_identifiers(JournalBibJSONOld.E_ISSN)
-            pissns = h[3].get_identifiers(JournalBibJSONOld.P_ISSN)
-            if issn in eissns or issn in pissns:
-                trip = True
-                continue
-            else:
-                if not trip:
-                    future.append(h[3])
-                else:
-                    past.append(h[3])
-
-        return future, past
-
-    def make_continuation(self, replaces=None, isreplacedby=None):
-        snap = deepcopy(self.data.get("bibjson"))
-        self.add_history(snap, replaces=replaces, isreplacedby=isreplacedby)
-
-    def add_history(self, bibjson, date=None, replaces=None, isreplacedby=None):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSONOld) else bibjson
-        if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        snobj = {"date" : date, "bibjson" : bibjson}
-        if replaces is not None:
-            if isinstance(replaces, list):
-                snobj["replaces"] = replaces
-            else:
-                snobj["replaces"] = [replaces]
-        if isreplacedby is not None:
-            if isinstance(isreplacedby, list):
-                snobj["isreplacedby"] = isreplacedby
-            else:
-                snobj["isreplacedby"] = [isreplacedby]
-        if "history" not in self.data:
-            self.data["history"] = []
-        self.data["history"].append(snobj)
-
-    def set_history(self, history):
-        self.data["history"] = history
-
-    def remove_history(self, issn):
-        histories = self.data.get("history")
-        if histories is None:
-            return
-        remove = -1
-        for i in range(len(histories)):
-            h = histories[i]
-            bibjson = h.get("bibjson")
-            if bibjson is None:
-                continue
-            jbj = JournalBibJSONOld(bibjson)
-            eissns = jbj.get_identifiers(JournalBibJSONOld.E_ISSN)
-            pissns = jbj.get_identifiers(JournalBibJSONOld.P_ISSN)
-            if issn in eissns or issn in pissns:
-                remove = i
-                break
-        if remove >= 0:
-            del histories[i]
-        if len(histories) == 0:
-            del self.data["history"]
-
-    def issns_for_title(self, title):
-        """locate the issns associated with the supplied title"""
-        if title is None:
-            return None
-
-        incoming_title = title.strip().lower()
-
-        # first check the main title / alt_title on the journal
-        current_title = self.bibjson().title
-        current_alt_title = self.bibjson().alternative_title
-        if current_title is not None:
-            if incoming_title == current_title.strip().lower():
-                return self.bibjson().issns()
-        if current_alt_title is not None:
-            if incoming_title == current_alt_title.strip().lower():
-                return self.bibjson().issns()
-
-        # now check all of the historical records
-        for d, r, irb, bj in self.history():
-            history_title = bj.title
-            history_alt_title = bj.alternative_title
-            if history_title is not None:
-                if incoming_title == history_title.strip().lower():
-                    return bj.issns()
-            if history_alt_title is not None:
-                if incoming_title == history_alt_title.strip().lower():
-                    return bj.issns()
-
-        # return None if we didn't find anything
-        return None
-
+        past = journals + subjournals
+        return past
 
     #######################################################################
 
@@ -2068,6 +1873,28 @@ class JournalBibJSON(GenericBibJSON):
     @active.setter
     def active(self, val):
         self._set_with_struct("active", val)
+
+    @property
+    def replaces(self):
+        return self._get_single("replaces")
+
+    @replaces.setter
+    def replaces(self, val):
+        self._set_with_struct("replaces", val)
+
+    def add_replaces(self, val):
+        self._add_to_list_with_struct("replaces", val)
+
+    @property
+    def is_replaced_by(self):
+        return self._get_single("is_replaced_by")
+
+    @is_replaced_by.setter
+    def is_replaced_by(self, val):
+        self._set_with_struct("is_replaced_by", val)
+
+    def add_is_replaced_by(self, val):
+        self._add_to_list_with_struct("is_replaced_by", val)
 
     ########################################################
     # journal-specific complex part getters and setters
@@ -2567,3 +2394,19 @@ class TitleQuery(object):
         q = deepcopy(self.base_query)
         q["query"]["term"]["index.title.exact"] = self.title
         return q
+
+class ContinuationQuery(object):
+    def __init__(self, issns):
+        self.issns = issns
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"terms" : {"index.issn.exact" : self.issns}}
+                    ]
+                }
+            },
+            "size" : 10000
+        }

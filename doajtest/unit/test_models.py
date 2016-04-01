@@ -474,6 +474,8 @@ class TestClient(DoajTestCase):
         assert bj.persistent_identifier_scheme == ["DOI", "ARK", "PURL"]
         assert bj.format == ["HTML", "XML", "Wordperfect"]
         assert bj.publication_time == 8
+        assert bj.replaces == ["0000-0000"]
+        assert bj.is_replaced_by == ["9999-9999"]
 
         bj.alternative_title = "New alternate"
         bj.country = "UK"
@@ -499,6 +501,8 @@ class TestClient(DoajTestCase):
         bj.persistent_identifier_scheme = "DOI"
         bj.format = "PDF"
         bj.publication_time = 4
+        bj.replaces = ["1111-1111"]
+        bj.is_replaced_by = ["2222-2222"]
 
         assert bj.alternative_title == "New alternate"
         assert bj.country == "UK"
@@ -531,13 +535,66 @@ class TestClient(DoajTestCase):
         assert bj.persistent_identifier_scheme == ["DOI"]
         assert bj.format == ["PDF"]
         assert bj.publication_time == 4
+        assert bj.replaces == ["1111-1111"]
+        assert bj.is_replaced_by == ["2222-2222"]
 
         bj.add_language("CZ")
         bj.add_deposit_policy("OK")
         bj.add_persistent_identifier_scheme("Handle")
         bj.add_format("CSV")
+        bj.add_replaces("3333-3333")
+        bj.add_is_replaced_by("4444-4444")
 
         assert bj.language == ["DE", "CZ"]
         assert bj.deposit_policy == ["Never", "OK"]
         assert bj.persistent_identifier_scheme == ["DOI", "Handle"]
         assert bj.format == ["PDF", "CSV"]
+        assert bj.replaces == ["1111-1111", "3333-3333"]
+        assert bj.is_replaced_by == ["2222-2222", "4444-4444"]
+
+    def test_16_continuations(self):
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.replaces = ["1111-1111"]
+        bj.is_replaced_by = ["2222-2222"]
+        bj.add_identifier(bj.E_ISSN, "0000-0000")
+        journal.save()
+
+        future1 = models.Journal()
+        bjf1 = future1.bibjson()
+        bjf1.replaces = ["0000-0000"]
+        bjf1.is_replaced_by = ["3333-3333"]
+        bjf1.add_identifier(bj.E_ISSN, "2222-2222")
+        future1.save()
+
+        future2 = models.Journal()
+        bjf2 = future2.bibjson()
+        bjf2.replaces = ["2222-2222"]
+        bjf2.add_identifier(bj.E_ISSN, "3333-3333")
+        future2.save()
+
+        past1 = models.Journal()
+        bjp1 = past1.bibjson()
+        bjp1.replaces = ["4444-4444"]
+        bjp1.is_replaced_by = ["0000-0000"]
+        bjp1.add_identifier(bj.E_ISSN, "1111-1111")
+        past1.save()
+
+        past2 = models.Journal()
+        bjp2 = past2.bibjson()
+        bjp2.is_replaced_by = ["1111-1111"]
+        bjp2.add_identifier(bj.E_ISSN, "4444-4444")
+        past2.save()
+
+        time.sleep(2)
+
+        past = journal.get_past_continuations()
+        future = journal.get_future_continuations()
+
+        assert len(past) == 2
+        assert past[0].bibjson().get_one_identifier(bj.E_ISSN) == "1111-1111"
+        assert past[1].bibjson().get_one_identifier(bj.E_ISSN) == "4444-4444"
+
+        assert len(future) == 2
+        assert future[0].bibjson().get_one_identifier(bj.E_ISSN) == "2222-2222"
+        assert future[1].bibjson().get_one_identifier(bj.E_ISSN) == "3333-3333"
