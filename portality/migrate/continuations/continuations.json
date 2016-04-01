@@ -6,6 +6,7 @@
         "keepalive": "1m",
         "functions" : [
           "portality.migrate.continuations.extract_continuations.migrate",
+          "portality.migrate.continuations.clean_struct.migrate",
           "portality.migrate.continuations.restructure_archiving_policy.migrate"
         ]
       }
