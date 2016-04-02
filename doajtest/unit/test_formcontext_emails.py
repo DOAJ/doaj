@@ -47,7 +47,7 @@ def editor_account_pull(self, _id):
         return models.Account(**ASSED3_SOURCE)
 
 # A regex string for searching the log entries
-email_log_regex = 'template.*%s.*to:\[\'%s.*subject:.*%s'
+email_log_regex = 'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
 
 # A string present in each email log entry (for counting them)
 email_count_string = 'Email template'
@@ -513,7 +513,7 @@ class TestJournalReviewEmails(DoajTestCase):
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's journal review form sends the right emails"""
-        journal = models.Suggestion(**JOURNAL_SOURCE_TEST_1)
+        journal = models.Journal(**JOURNAL_SOURCE_TEST_1)
 
         # Construct an journal form
         fc = formcontext.JournalFormFactory.get_form_context(
@@ -557,7 +557,7 @@ class TestJournalReviewEmails(DoajTestCase):
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's journal review form sends the right emails"""
-        journal = models.Suggestion(**JOURNAL_SOURCE_TEST_2)
+        journal = models.Journal(**JOURNAL_SOURCE_TEST_2)
 
         # Construct an journal form
         fc = formcontext.JournalFormFactory.get_form_context(
@@ -567,7 +567,7 @@ class TestJournalReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.EditorJournalReview)
 
         # Editors can reassign journals to associate editors.
-        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Suggestion(**JOURNAL_SOURCE_TEST_2))
+        fc = formcontext.JournalFormFactory.get_form_context(role="editor", source=models.Journal(**JOURNAL_SOURCE_TEST_2))
         assert isinstance(fc, formcontext.EditorJournalReview)
 
         fc.form.editor.data = "associate_2"

@@ -77,13 +77,11 @@ APPLICATION_SOURCE = {
             "currency" : "USD",
             "average_price" : 4
         },
-        "archiving_policy" : {
-            "policy" : [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
-            "url" : "http://digital.archiving.policy"
+        "archiving_policy": {
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
+            "url": "http://digital.archiving.policy"
         },
         "editorial_review" : {
             "process" : "Open peer review",

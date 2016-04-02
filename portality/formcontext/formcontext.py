@@ -219,11 +219,19 @@ class PrivateContext(FormContext):
         self.target.set_created(created_date)
         self.target.data['id'] = self.source.data['id']
 
-        if self.source.current_application:
-            self.target.set_current_application(self.source.current_application)
+        try:
+            if self.source.current_application:
+                self.target.set_current_application(self.source.current_application)
+        except AttributeError:
+            # this means that the source doesn't know about current_applications, which is fine
+            pass
 
-        if self.source.last_reapplication:
-            self.target.set_last_reapplication(self.source.last_reapplication)
+        try:
+            if self.source.last_reapplication:
+                self.target.set_last_reapplication(self.source.last_reapplication)
+        except AttributeError:
+            # this means that the source doesn't know about last_reapplication, which is fine
+            pass
 
         try:
             if self.source.current_journal:

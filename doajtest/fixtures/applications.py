@@ -204,7 +204,6 @@ REAPP1_SOURCE = {
         "current_journal":"abcdefghijk_journal",
         "editor":"associate"
     },
-    "ticked":False,
     "suggestion":{
         "suggested_on":"2014-10-29T12:23:47Z"
     },
@@ -253,18 +252,9 @@ REAPP1_SOURCE = {
             "Wordperfect"
         ],
         "archiving_policy":{
-            "policy":[
-                "LOCKSS",
-                "CLOCKSS",
-                [
-                    "A national library",
-                    "Trinity"
-                ],
-                [
-                    "Other",
-                    "A safe place"
-                ]
-            ],
+            "known":["LOCKSS", "CLOCKSS"],
+            "nat_lib" : "Trinity",
+            "other" : "A safe place",
             "url":"http://digital.archiving.policy"
         },
         "plagiarism_detection":{
@@ -422,7 +412,6 @@ REAPP2_UNICODE_SOURCE = {
         u"current_journal":u"abcdefghijk_journal",
         u"editor":u"associate"
     },
-    u"ticked":False,
     u"suggestion":{
         u"suggested_on":u"2014-10-29T12:23:47Z"
     },
@@ -471,18 +460,9 @@ REAPP2_UNICODE_SOURCE = {
             u"Wordperfect"
         ],
         u"archiving_policy":{
-            u"policy":[
-                u"LOCKSS",
-                u"CLOCKSS",
-                [
-                    u"A national library",
-                    u"Trinity"
-                ],
-                [
-                    u"Other",
-                    u"A safe place"
-                ]
-            ],
+            u"known" : [u"LOCKSS", u"CLOCKSS"],
+            u"other" : u"A safe place",
+            u"nat_lib" : u"Trinity",
             u"url":u"http://digital.archiving.policy"
         },
         u"plagiarism_detection":{

@@ -125,10 +125,29 @@ class TestClient(DoajTestCase):
         s = models.Suggestion()
         s.set_current_journal("9876543")
         s.set_bulk_upload_id("abcdef")
+        s.set_application_status("rejected")
+        s.suggested_on = "2001-01-01T00:00:00Z"
+        s.set_articles_last_year(12, "http://aly.com")
+        s.article_metadata = True
+        s.set_suggester("test", "test@test.com")
 
         assert s.data.get("admin", {}).get("current_journal") == "9876543"
         assert s.current_journal == "9876543"
         assert s.bulk_upload_id == "abcdef"
+        assert s.application_status == "rejected"
+        assert s.suggested_on == "2001-01-01T00:00:00Z"
+        assert s.articles_last_year.get("count") == 12
+        assert s.articles_last_year.get("url") == "http://aly.com"
+        assert s.article_metadata is True
+        assert s.suggester.get("name") == "test"
+        assert s.suggester.get("email") == "test@test.com"
+
+        s.remove_current_journal()
+
+        assert s.current_journal is None
+
+        s.prep()
+        s.save()
 
     def test_04_bulk_reapplication_rw(self):
         """Read and write properties into the BulkReapplication Model"""

@@ -1,8 +1,20 @@
-from portality.models.journal import JournalOld
+from portality.models.journal import Journal, JournalInterface
+from portality.models import shared_structs
 from copy import deepcopy
+from portality.lib import dataobj
+from portality.dao import DomainObject
 
-class Suggestion(JournalOld):
+class Suggestion(dataobj.DataObj, DomainObject, JournalInterface):
     __type__ = "suggestion"
+
+    def __init__(self, **kwargs):
+        # FIXME: hack, to deal with ES integration layer being improperly abstracted
+        if "_source" in kwargs:
+            kwargs = kwargs["_source"]
+        self._add_struct(shared_structs.SHARED_BIBJSON)
+        self._add_struct(shared_structs.JOURNAL_BIBJSON_EXTENSION)
+        self._add_struct(APPLICATION_STRUCT)
+        super(Suggestion, self).__init__(raw=kwargs)
 
     @classmethod
     def get_by_owner(cls, owner):
@@ -10,6 +22,11 @@ class Suggestion(JournalOld):
         result = cls.query(q=q.query())
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
         return records
+
+    @classmethod
+    def delete_selected(cls, email=None, statuses=None):
+        q = SuggestionQuery(email=email, statuses=statuses)
+        r = cls.delete_by_query(q.query())
 
     def make_journal(self):
         # first make a raw copy of the content into a journal
@@ -20,6 +37,8 @@ class Suggestion(JournalOld):
             del journal_data['index']
         if "admin" in journal_data and "application_status" in journal_data["admin"]:
             del journal_data['admin']['application_status']
+        if "admin" in journal_data and "current_journal" in journal_data["admin"]:
+            del journal_data["admin"]["current_journal"]
         if "id" in journal_data:
             del journal_data['id']
         if "created_date" in journal_data:
@@ -30,11 +49,11 @@ class Suggestion(JournalOld):
             journal_data["bibjson"] = {}
         journal_data['bibjson']['active'] = True
 
-        new_j = JournalOld(**journal_data)
+        new_j = Journal(**journal_data)
 
         # now deal with the fact that this could be a replacement of an existing journal
         if self.current_journal is not None:
-            cj = JournalOld.pull(self.current_journal)
+            cj = Journal.pull(self.current_journal)
 
             # carry the id and the created date
             new_j.set_id(self.current_journal)
@@ -43,112 +62,59 @@ class Suggestion(JournalOld):
             # set a reapplication date
             new_j.set_last_reapplication()
 
-            # remove the reference to the current_journal
-            del new_j.data["admin"]["current_journal"]
-
         return new_j
 
-    ###############################################################
-    # Overrides on Journal methods
-    ###############################################################
-
-    # We don't want to calculate the tick on applications, only Journals
-    def calculate_tick(self):
-        pass
-
-    @property
-    def current_application(self):
-        return None
-
-    def set_current_application(self, application_id):
-        pass
 
     @property
     def current_journal(self):
-        return self.data.get("admin", {}).get("current_journal")
+        return self._get_single("admin.current_journal")
 
     def set_current_journal(self, journal_id):
-        if "admin" not in self.data:
-            self.data["admin"] = {}
-        self.data["admin"]["current_journal"] = journal_id
+        self._set_with_struct("admin.current_journal", journal_id)
 
     def remove_current_journal(self):
-        if "admin" in self.data and "current_journal" in self.data["admin"]:
-            del self.data["admin"]["current_journal"]
+        self._delete("admin.current_journal")
 
-    @classmethod
-    def delete_selected(cls, email=None, statuses=None):
-        q = SuggestionQuery(email=email, statuses=statuses)
-        r = cls.delete_by_query(q.query())
+    @property
+    def application_status(self):
+        return self._get_single("admin.application_status")
 
-    def _set_suggestion_property(self, name, value):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        self.data["suggestion"][name] = value
+    def set_application_status(self, val):
+        self._set_with_struct("admin.application_status", val)
 
     ### suggestion properties (as in, the Suggestion model's "suggestion" object ###
 
     @property
-    def suggested_by_owner(self):
-        """
-        Deprecated - DO NOT USE
-        """
-        return self.data.get("suggestion", {}).get("suggested_by_owner")
+    def suggested_on(self):
+        return self._get_single("suggestion.suggested_on")
 
-    @suggested_by_owner.setter
-    def suggested_by_owner(self, val):
-        """
-        Deprecated - DO NOT USE
-        """
-        self._set_suggestion_property("suggested_by_owner", val)
-
-    @property
-    def suggested_on(self): return self.data.get("suggestion", {}).get("suggested_on")
     @suggested_on.setter
-    def suggested_on(self, val): self._set_suggestion_property("suggested_on", val)
+    def suggested_on(self, val):
+        self._set_with_struct("suggestion.suggested_on", val)
 
     @property
     def articles_last_year(self):
-        return self.data.get("suggestion", {}).get("articles_last_year")
+        return self._get_single("suggestion.articles_last_year")
 
     def set_articles_last_year(self, count, url):
-        if "suggestion" not in self.data:
-            self.data["suggestion"] = {}
-        if "articles_last_year" not in self.data["suggestion"]:
-            self.data["suggestion"]["articles_last_year"] = {}
-        self.data["suggestion"]["articles_last_year"]["count"] = count
-        self.data["suggestion"]["articles_last_year"]["url"] = url
+        self._set_with_struct("suggestion.articles_last_year.count", count)
+        self._set_with_struct("suggestion.articles_last_year.url", url)
 
     @property
-    def article_metadata(self): return self.data.get("suggestion", {}).get("article_metadata")
+    def article_metadata(self):
+        return self._get_single("suggestion.article_metadata")
+
     @article_metadata.setter
-    def article_metadata(self, val): self._set_suggestion_property("article_metadata", val)
+    def article_metadata(self, val):
+        self._set_with_struct("suggestion.article_metadata", val)
 
     @property
-    def description(self):
-        """
-        Deprecated - DO NOT USE
-        """
-        return self.data.get("suggestion", {}).get("description")
+    def suggester(self):
+        return self._get_single("suggestion.suggester", default={})
 
-    @description.setter
-    def description(self, val):
-        """
-        Deprecated - DO NOT USE
-        """
-        self._set_suggestion_property("description", val)
-
-    @property
-    def suggester(self): return self.data.get("suggestion", {}).get("suggester", {})
     def set_suggester(self, name, email):
-        sugg = {}
-        if name is not None:
-            sugg["name"] = name
-        if email is not None:
-            sugg["email"] = email
-        if name is None and email is None:
-            return
-        self._set_suggestion_property("suggester", sugg)
+        self._set_with_struct("suggestion.suggester.name", name)
+        self._set_with_struct("suggestion.suggester.email", email)
 
     def _sync_owner_to_journal(self):
         if self.current_journal is None:
@@ -159,16 +125,115 @@ class Suggestion(JournalOld):
             cj.set_owner(self.owner)
             cj.save(sync_owner=False)
 
+    def prep(self):
+        self._generate_index()
+        self.set_last_updated()
+
     def save(self, sync_owner=True, **kwargs):
         self.prep()
         if sync_owner:
             self._sync_owner_to_journal()
-        super(Suggestion, self).save(snapshot=False, **kwargs)
+        super(Suggestion, self).save(**kwargs)
+
+APPLICATION_STRUCT = {
+    "fields" : {
+        "id" : {"coerce" : "unicode"},
+        "created_date" : {"coerce" : "utcdatetime"},
+        "last_updated" : {"coerce" : "utcdatetime"},
+        "last_manual_update" : {"coerce" : "utcdatetime"}
+    },
+    "objects" : [
+        "admin", "index", "suggestion"
+    ],
+
+    "structs" : {
+        "admin" : {
+            "fields" : {
+                "seal" : {"coerce" : "bool"},
+                "bulk_upload" : {"coerce" : "unicode"},
+                "owner" : {"coerce" : "unicode"},
+                "editor_group" : {"coerce" : "unicode"},
+                "editor" : {"coerce" : "unicode"},
+                "current_journal" : {"coerce" : "unicode"},
+                "application_status" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "contact" : {"contains" : "object"},
+                "notes" : {"contains" : "object"}
+            },
+            "structs" : {
+                "contact" : {
+                    "fields" : {
+                        "email" : {"coerce" : "unicode"},
+                        "name" : {"coerce" : "unicode"}
+                    }
+                },
+                "notes" : {
+                    "fields" : {
+                        "note" : {"coerce" : "unicode"},
+                        "date" : {"coerce" : "utcdatetime"}
+                    }
+                }
+            }
+        },
+        "index" : {
+            "fields" : {
+                "country" : {"coerce" : "unicode"},
+                "publisher" : {"coerce" : "unicode"},
+                "homepage_url" : {"coerce" : "unicode"},
+                "waiver_policy_url" : {"coerce" : "unicode"},
+                "editorial_board_url" : {"coerce" : "unicode"},
+                "aims_scope_url" : {"coerce" : "unicode"},
+                "author_instructions_url" : {"coerce" : "unicode"},
+                "oa_statement_url" : {"coerce" : "unicode"},
+                "has_apc" : {"coerce" : "unicode"},
+                "has_seal" : {"coerce" : "unicode"},
+                "unpunctitle" : {"coerce" : "unicode"},
+                "asciiunpunctitle" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "issn" : {"contains" : "field", "coerce" : "unicode"},
+                "title" : {"contains" : "field", "coerce" : "unicode"},
+                "subject" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_subject" : {"contains" : "field", "coerce" : "unicode"},
+                "classification" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "license" : {"contains" : "field", "coerce" : "unicode"},
+                "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+            }
+        },
+        "suggestion" : {
+            "fields" : {
+                "article_metadata" : {"coerce" : "bool"},
+                "suggested_on" : {"coerce" : "utcdatetime"}
+            },
+            "objects" : [
+                "articles_last_year",
+                "suggester"
+            ],
+            "structs" : {
+                "suggester" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"}
+                    }
+                },
+                "articles_last_year" : {
+                    "fields" : {
+                        "count" : {"coerce" : "integer"},
+                        "url" : {"coerce" : "unicode"}
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
     _email_term = {"term" : {"suggestion.suggester.email.exact" : "<email address>"}}
-    _owner_term = {"term" : {"admin.owner.exact" : "<owner>"}}
     _status_terms = {"terms" : {"admin.application_status.exact" : ["<list of statuses>"]}}
     _owner_term = {"term" : {"admin.owner.exact" : "<the owner id>"}}
 

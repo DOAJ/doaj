@@ -26,7 +26,6 @@ class TestTick(DoajTestCase):
         self.j_too_old_not_in.save()
 
         self.sugg = models.Suggestion(created_date="2014-06-28T11:26:42Z")
-        self.sugg.set_in_doaj(True)
         self.sugg.save()
 
         # reapplication tests
@@ -57,7 +56,6 @@ class TestTick(DoajTestCase):
         assert not self.j_not_in_doaj_implicit.is_ticked()
         assert not self.j_too_old.is_ticked()
         assert not self.j_too_old_not_in.is_ticked()
-        assert not self.sugg.is_ticked()
         assert not self.j_old_cd_old_reapp.is_ticked()
         assert self.j_old_cd_new_reapp.is_ticked()
         assert not self.j_old_cd_new_reapp_out.is_ticked()

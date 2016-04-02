@@ -78,8 +78,7 @@ APPLICATION_SOURCE = {
         "owner": "15624730",
         "notes": [{"date": "2014-05-21T14:02:45Z", "note": "ok/RZ"}],
         "contact": [{"name": "Murat Akser", "email": "m.akser@ulster.ac.uk"}],
-        "application_status": "accepted",
-        "in_doaj": False
+        "application_status": "accepted"
     },
     "suggestion": {
         "articles_last_year": {"count": 19, "url": "http://cinej.pitt.edu/ojs/index.php/cinej/issue/archive"},
@@ -91,7 +90,10 @@ APPLICATION_SOURCE = {
     "id": "248c57960a3940e59bdca3f7296c89b2",
     "bibjson": {
         "allows_fulltext_indexing": True,
-        "archiving_policy": {"policy": ["LOCKSS"], "url": "http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#archiving"},
+        "archiving_policy": {
+            "known": ["LOCKSS"],
+            "url": "http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#archiving"
+        },
         "persistent_identifier_scheme": ["DOI"],
         "keywords": ["cinema studies", "film", "media", "television", "communication"],
         "subject": [

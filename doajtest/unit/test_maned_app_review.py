@@ -80,11 +80,9 @@ APPLICATION_SOURCE = {
             "average_price" : 4
         },
         "archiving_policy" : {
-            "policy" : [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "nat_lib" : "Trinity",
+            "other" : "A safe place",
             "url" : "http://digital.archiving.policy"
         },
         "editorial_review" : {
