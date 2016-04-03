@@ -1,20 +1,15 @@
 from portality.dao import DomainObject
+from portality.core import app
+from portality.models import GenericBibJSON, shared_structs
+from portality.lib import dataobj
+
 from copy import deepcopy
 from datetime import datetime
-from portality.core import app
-from portality.models import GenericBibJSON
-from portality.models.bibjson import GenericBibJSONOld
 
 import string
 from unidecode import unidecode
 
-########################################################
-## Refactored data objects
-
-from portality.lib import dataobj
-from portality.models import shared_structs
-
-class JournalInterface(object):
+class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     @classmethod
     def find_by_issn(cls, issn, in_doaj=None):
@@ -312,7 +307,7 @@ class JournalInterface(object):
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
 
-class Journal(dataobj.DataObj, DomainObject, JournalInterface):
+class Journal(JournalLikeObject):
     __type__ = "journal"
 
     def __init__(self, **kwargs):

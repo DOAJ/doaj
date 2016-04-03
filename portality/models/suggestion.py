@@ -1,10 +1,11 @@
-from portality.models.journal import Journal, JournalInterface
+from portality.models.journal import Journal, JournalLikeObject
 from portality.models import shared_structs
-from copy import deepcopy
 from portality.lib import dataobj
 from portality.dao import DomainObject
 
-class Suggestion(dataobj.DataObj, DomainObject, JournalInterface):
+from copy import deepcopy
+
+class Suggestion(JournalLikeObject):
     __type__ = "suggestion"
 
     def __init__(self, **kwargs):
