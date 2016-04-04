@@ -64,24 +64,9 @@ class XWalk(object):
         # of them propagates the issue)
         # additionally if all_duplicates has been set to True we will return them all to the caller
         possible_articles = []
-        
-        # first test is the most definitive - does the publisher's record id match
-        """
-        NOTE: turns out that publishers aren't that good at managing their record ids, and this is
-        a terrible way of determining when two things are the same ...
-        
-        Deactivated for the time being
-        
-        if article.publisher_record_id() is not None:
-            articles = models.Article.duplicates(issns=issns, publisher_record_id=article.publisher_record_id())
-            if len(articles) == 1:
-                return articles[0]
-            if len(articles) > 1:
-                possible_articles += articles
-                use_prid = True # we don't have a definitive answer, but we do have options
-        """
-        # second test is to look by doi
-        
+        possible_article_ids = []
+
+        # look by doi
         dois = b.get_identifiers(b.DOI)
         if len(dois) > 0:
             # there should only be the one
@@ -89,12 +74,14 @@ class XWalk(object):
             articles = models.Article.duplicates(issns=issns, doi=doi)
             if len(articles) == 1:
                 if all_duplicates:
-                    if articles[0] not in possible_articles:
+                    if articles[0].id not in possible_article_ids:
                         possible_articles.append(articles[0])
+                        possible_article_ids.append(articles[0].id)
                 else:
                     return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
+                possible_article_ids += [a.id for a in articles]
                 use_doi = True # we don't have a definitive answer, but we do have options
         
         # third test is to look by fulltext url
@@ -104,17 +91,25 @@ class XWalk(object):
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
             if len(articles) == 1:
                 if all_duplicates:
-                    if articles[0] not in possible_articles:
+                    if articles[0].id not in possible_article_ids:
                         possible_articles.append(articles[0])
+                        possible_article_ids.append(articles[0].id)
                 else:
                     return articles[0]
             if len(articles) > 1:
                 possible_articles += articles
+                possible_article_ids += [a.id for a in articles]
                 use_fulltext = True # we don't have a definitive answer, but we do have options
 
         if all_duplicates:
-            if article in possible_articles:
-                possible_articles.remove(article)  # if the Elasticsearch ID is the same then
+            if article.id in possible_article_ids:
+                idx = None
+                for i in range(len(possible_articles)):
+                    if possible_articles[i].id == article.id:
+                        idx = i
+                        break
+                del possible_articles[idx]
+                    # if the Elasticsearch ID is the same then
                     # this is the actual record we are trying to get duplicates for - don't return it
                     # note that when called with a single article, it will return the article itself
                     # that seems to have been the behaviour from the beginning

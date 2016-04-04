@@ -9,6 +9,10 @@ class BibJSONFixtureFactory(object):
     def journal_bibjson(cls):
         return deepcopy(JOURNAL)
 
+    @classmethod
+    def article_bibjson(cls):
+        return deepcopy(ARTICLE)
+
 
 GENERIC = {
     "title": "The Title",
@@ -122,6 +126,60 @@ JOURNAL = {
             "SA": False,
             "embedded": True,
             "embedded_example_url": "http://licence.embedded"
+        }
+    ]
+}
+
+ARTICLE = {
+    "title" : "Article Title",
+    "identifier" : [
+        {"type": "pissn", "id": "1234-5678"},
+        {"type": "eissn", "id": "9876-5432"},
+        {"type" : "doi", "id" : "10.1234/article"}
+    ],
+    "journal" : {
+        "volume" : "No 10",
+        "number" : "Iss. 4",
+        "publisher" : "IEEE",
+        "title" : "Journal of Things",
+        "license" : [
+            {
+                "title" : "CC-BY",
+                "type" : "CC-BY",
+                "url" : "http://creativecommons.org/by/",
+                "version" : "3.0",
+                "open_access" : True
+            }
+        ],
+        "language" : ["eng"],
+        "country" : "GB",
+        "issns" : ["1234-5678", "9876-5432"]
+    },
+    "year" : "1987",
+    "month" : "4",
+    "start_page" : "14",
+    "end_page" : "15",
+    "link" : [
+        {
+            "url" : "http://example.com/file",
+            "type" : "fulltext",
+            "content_type" : "application/pdf"
+        }
+    ],
+    "abstract" : "Some text here",
+    "author" : [
+        {
+            "name" : "Test",
+            "email" : "test@test.com",
+            "affiliation" : "University of Life"
+        }
+    ],
+    "keywords" : ["key", "word"],
+    "subject" : [
+        {
+            "scheme" : "LCC",
+            "term" : "Medicine",
+            "code" : "M"
         }
     ]
 }

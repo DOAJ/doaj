@@ -617,3 +617,62 @@ class TestClient(DoajTestCase):
         assert len(future) == 2
         assert future[0].bibjson().get_one_identifier(bj.E_ISSN) == "2222-2222"
         assert future[1].bibjson().get_one_identifier(bj.E_ISSN) == "3333-3333"
+
+    def test_17_article_bibjson(self):
+        source = BibJSONFixtureFactory.article_bibjson()
+        bj = models.ArticleBibJSON(source)
+
+        assert bj.year == "1987"
+        assert bj.month == "4"
+        assert bj.start_page == "14"
+        assert bj.end_page == "15"
+        assert bj.abstract == "Some text here"
+        assert bj.volume == "No 10"
+        assert bj.number == "Iss. 4"
+        assert bj.journal_title == "Journal of Things"
+        assert bj.journal_language == ["eng"]
+        assert bj.journal_country == "GB"
+        assert bj.journal_issns == ["1234-5678", "9876-5432"]
+        assert bj.publisher == "IEEE"
+        assert bj.author[0].get("name") == "Test"
+        assert bj.get_journal_license().get("title") == "CC-BY"
+
+        bj.year = "2000"
+        bj.month = "5"
+        bj.start_page = "100"
+        bj.end_page = "110"
+        bj.abstract = "New abstract"
+        bj.volume = "Four"
+        bj.number = "Q1"
+        bj.journal_title = "Journal of Stuff"
+        bj.journal_language = "fra"
+        bj.journal_country = "FR"
+        bj.journal_issns = ["1111-1111", "9999-9999"]
+        bj.publisher = "Elsevier"
+        bj.add_author("Testing", "email@email.com", "School of Hard Knocks")
+        bj.set_journal_license("CC NC", "CC NC", "http://cc.nc", False)
+        assert bj.get_publication_date() is not None
+        assert bj.vancouver_citation() is not None
+
+        assert bj.year == "2000"
+        assert bj.month == "5"
+        assert bj.start_page == "100"
+        assert bj.end_page == "110"
+        assert bj.abstract == "New abstract"
+        assert bj.volume == "Four"
+        assert bj.number == "Q1"
+        assert bj.journal_title == "Journal of Stuff"
+        assert bj.journal_language == ["fra"]
+        assert bj.journal_country == "FR"
+        assert bj.journal_issns == ["1111-1111", "9999-9999"]
+        assert bj.publisher == "Elsevier"
+        assert bj.author[1].get("name") == "Testing"
+        assert bj.get_journal_license().get("title") == "CC NC"
+
+        del bj.year
+        del bj.month
+        bj.remove_journal_metadata()
+
+        assert bj.year is None
+        assert bj.month is None
+        assert bj.journal_title is None
