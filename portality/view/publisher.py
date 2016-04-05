@@ -34,7 +34,7 @@ def index():
 @write_required
 def reapplication_page(reapplication_id):
     if not app.config.get("REAPPLICATION_ACTIVE", False):
-        abort(404)
+        return render_template("publisher/reapps_shutdown.html")
 
     ap = models.Suggestion.pull(reapplication_id)
 
@@ -69,7 +69,7 @@ def reapplication_page(reapplication_id):
 @ssl_required
 def updates_in_progress():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
-        abort(404)
+        return render_template("publisher/reapps_shutdown.html")
     return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.reapplications.facetview"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
@@ -324,7 +324,10 @@ def help():
 @write_required
 def bulk_reapply():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
-        abort(404)
+        if request.method == "GET":
+            return render_template("publisher/reapps_shutdown.html")
+        else:
+            abort(404)
 
     # User must have bulk reapplications to access this tab
     if not pub_filter_bulk(current_user.id):

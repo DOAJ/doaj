@@ -315,7 +315,7 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # Settings for reapplication process
 
 # Whether reactivation is ongoing; when False, reapplication pages will be hidden.
-REAPPLICATION_ACTIVE = True
+REAPPLICATION_ACTIVE = False
 
 # The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
 CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
