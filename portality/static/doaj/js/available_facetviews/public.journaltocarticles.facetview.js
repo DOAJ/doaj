@@ -5,52 +5,56 @@ jQuery(document).ready(function($) {
             field: 'index.issn.exact',
             hidden: true
         },
-        subject : {
-            field: 'index.classification.exact',
-            display: 'Subject'
-        },
-        licence : {
-            field: "index.license.exact",
-            display: "Journal license"
-        },
-        publisher : {
-            field: "index.publisher.exact",
-            display: "Publisher"
-        },
-        country_publisher : {
-            field: "index.country.exact",
-            display: "Country of publisher",
-            disabled: true
-        },
-        language : {
-            field : "index.language.exact",
-            display: "Full Text language"
+
+        volume : {
+            field: 'bibjson.journal.volume.exact',
+            display: 'Volume',
+            disabled: false
         },
 
-        // article facets
+        issue : {
+            field: 'bibjson.journal.issue.exact',
+            display: 'Issue',
+            disabled: true
+        },
+
         year_published_histogram : {
-            type: "date_histogram",
-            field: "index.date",
-            interval: "year",
-            display: "Year of publication",
+            type: 'date_histogram',
+            field: 'index.date',
+            interval: 'year',
+            display: 'Year',
             value_function : function(val) {
                 return (new Date(parseInt(val))).getUTCFullYear();
             },
             size: false,
             short_display: 15,
+            sort: 'desc',
+            disabled: false
+        },
+
+        month_published_histogram : {
+            type: "date_histogram",
+            field: "index.date_toc_fv_month",
+            interval: "month",
+            display: "Month",
+            value_function : function(val) {
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var mi = (new Date(parseInt(val))).getUTCMonth();
+                return months[mi]
+            },
+            size: false,
+            short_display: 12,
             sort: "desc",
-            disabled: true
+            disabled: false
         }
     };
 
     var natural = [];
     natural.push(all_facets.issn);
-    natural.push(all_facets.subject);
-    natural.push(all_facets.licence);
-    natural.push(all_facets.publisher);
-    natural.push(all_facets.country_publisher);
-    natural.push(all_facets.language);
+    natural.push(all_facets.volume);
+    natural.push(all_facets.issue);
     natural.push(all_facets.year_published_histogram);
+    natural.push(all_facets.month_published_histogram);
 
     function dynamicFacets(options, context) {
         function disableFacet(options, field, disable) {
@@ -63,43 +67,20 @@ jQuery(document).ready(function($) {
             }
         }
 
-
-        if ("volume" in options.active_filters) {
-            // On selection of "Volume" an "Issue" facet will appear.
-            var vol = options.active_filters["volume"];
-
+        // On selection of "Volume" an "Issue" facet will appear.
+        if ('bibjson.journal.volume.exact' in options.active_filters) {
+            disableFacet(options, 'bibjson.journal.issue.exact', false);
         } else {
-            // Hide the sub-facets
+            disableFacet(options, 'bibjson.journal.issue.exact', true);
+        }
 
-            disableFacet(options, "issue", true);
-            disableFacet(options, "month", true);
+        // On selection of "Year" an "Month" facet will appear.
+        if ('index.date' in options.active_filters) {
+            disableFacet(options, 'index.date_toc_fv_month', false)
+        } else {
+            disableFacet(options, 'index.date_toc_fv_month', true);
         }
     }
-
-    function bitlyShortener(query, callback) {
-
-        function callbackWrapper(data) {
-            callback(data.url);
-        }
-
-        function errorHandler() {
-            alert("Sorry, we're unable to generate short urls at this time");
-            callback();
-        }
-
-        var postdata = JSON.stringify(query);
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            dataType: "jsonp",
-            url: "/service/shorten",
-            data : postdata,
-            success: callbackWrapper,
-            error: errorHandler
-        });
-    }
-
 
     function renderPublicArticle(options, resultobj) {
 
@@ -275,13 +256,14 @@ jQuery(document).ready(function($) {
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
+        render_active_date_histogram_filter: doajRenderActiveDateHistogramFilter,
         render_result_record: renderPublicArticle,
 
         pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
-        sharesave_link: true,
-        url_shortener : bitlyShortener,
+        sharesave_link: false,
+        //url_shortener : bitlyShortener,
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
@@ -294,19 +276,11 @@ jQuery(document).ready(function($) {
 
         search_sortby: [
             {'display':'Title','field':'index.unpunctitle.exact'},
-
-            // check that this works in fv2
             {'display':'Publication date','field':['bibjson.year.exact', 'bibjson.month.exact']}
         ],
 
         searchbox_fieldselect: [
             {'display':'Title','field':'bibjson.title'},
-            {'display':'Keywords','field':'bibjson.keywords'},
-            {'display':'Subject','field':'index.classification'},
-            {'display':'Country of publisher','field':'index.country'},
-            {'display':'Journal Language','field':'index.language'},
-            {'display':'Publisher','field':'index.publisher'},
-
             {'display':'Abstract','field':'bibjson.abstract'},
             {'display':'Year','field':'bibjson.year'}
         ],
