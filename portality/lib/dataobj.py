@@ -4,6 +4,7 @@ from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
 import locale, json, urlparse
+from datetime import date, datetime
 
 #########################################################
 ## Data coerce functions
@@ -100,7 +101,10 @@ def to_float():
 
 def date_str(in_format=None, out_format=None):
     def datify(val):
-        return dates.reformat(val, in_format=in_format, out_format=out_format)
+        if isinstance(val, date) or isinstance(val, datetime):
+            return dates.format(val, format=out_format)
+        else:
+            return dates.reformat(val, in_format=in_format, out_format=out_format)
 
     return datify
 
@@ -225,6 +229,7 @@ class DataObj(object):
         # extend the coerce map.
         "unicode": to_unicode(),
         "utcdatetime": date_str(),
+        "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),
         "isolang": to_isolang(),
