@@ -711,6 +711,18 @@ class JournalBibJSON(GenericBibJSON):
     def add_is_replaced_by(self, val):
         self._add_to_list_with_struct("is_replaced_by", val)
 
+    @property
+    def discontinued_date(self):
+        return self._get_single("discontinued_date")
+
+    @discontinued_date.setter
+    def discontinued_date(self, val):
+        self._set_with_struct("discontinued_date", val)
+
+    @property
+    def discontinued_datestamp(self):
+        return self._get_single("discontinued_date", coerce=dataobj.to_datestamp())
+
     ########################################################
     # journal-specific complex part getters and setters
 
