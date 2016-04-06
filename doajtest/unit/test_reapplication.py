@@ -26,6 +26,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -485,6 +488,9 @@ class TestReApplication(DoajTestCase):
         del forminfo_obj["suggester_name"]
         del forminfo_obj["owner"]
         del forminfo_obj["doaj_seal"]
+        del forminfo_obj["replaces"]
+        del forminfo_obj["is_replaced_by"]
+        del forminfo_obj["discontinued_date"]
 
         # these two objects should be the same
         assert forminfo_col == forminfo_obj

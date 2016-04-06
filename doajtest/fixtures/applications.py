@@ -72,6 +72,9 @@ _isbj["archiving_policy"] = {
     "url": "http://digital.archiving.policy"
 }
 del _isbj["subject"]
+del _isbj["replaces"]
+del _isbj["is_replaced_by"]
+del _isbj["discontinued_date"]
 
 INCOMING_SOURCE = {
     "id" : "ignore_me",
@@ -210,6 +213,9 @@ REAPP1_SOURCE = {
     "created_date":"2014-10-29T12:23:47Z",
     "id":"ba7c9b024ede4528bd65cd9b7a2dba20",
     "bibjson":{
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "allows_fulltext_indexing":True,
         "submission_charges":{
             "currency":"USD",
@@ -418,6 +424,9 @@ REAPP2_UNICODE_SOURCE = {
     u"created_date":u"2014-10-29T12:23:47Z",
     u"id":u"ba7c9b024ede4528bd65cd9b7a2dba20",
     u"bibjson":{
+        u"replaces" : [u"1111-1111"],
+        u"is_replaced_by" : [u"2222-2222"],
+        u"discontinued_date" : u"2001-01-01",
         u"allows_fulltext_indexing":True,
         u"submission_charges":{
             u"currency":u"USD",

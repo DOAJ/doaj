@@ -51,7 +51,10 @@ JOURNAL_SOURCE = {
         "subject": [
             {"code": "HB1-3840", "term": "Economic theory. Demography", "scheme": "LCC"},
             {"code": "H", "term": "Social Sciences", "scheme": "LCC"}
-        ]
+        ],
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01"
     }
 }
 
@@ -139,7 +142,10 @@ APPLICATION_SOURCE = {
         "identifier": [
             {"type": "pissn", "id": "2159-2411"},
             {"type": "eissn", "id": "2158-8724"}
-        ]
+        ],
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01"
     }
 }
 

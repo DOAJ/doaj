@@ -31,6 +31,9 @@ REAPPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -342,6 +345,9 @@ class TestPublisherReApplication(DoajTestCase):
         assert fc.target.application_status == "reapplication" # because it hasn't been finalised yet
         assert fc.target.suggester['name'] == fc.form.contact_name.data
         assert fc.target.suggester['email'] == fc.form.contact_email.data
+        assert fc.target.bibjson().replaces == ["1111-1111"]
+        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+        assert fc.target.bibjson().discontinued_date == "2001-01-01"
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()

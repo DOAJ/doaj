@@ -19,6 +19,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
