@@ -206,3 +206,27 @@ class TestManEdJournalReview(DoajTestCase):
         fc.data2form()
 
         assert fc.form.doaj_seal.data is True
+
+    def test_05_maned_review_continuations(self):
+        # construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(JOURNAL_FORM),
+            source=models.Journal(**JOURNAL_SOURCE)
+        )
+
+        # check the form has the continuations data
+        assert fc.form.replaces.data == ["1111-1111"]
+        assert fc.form.is_replaced_by.data == ["2222-2222"]
+        assert fc.form.discontinued_date.data == "2001-01-01"
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # ensure the model has the continuations data
+        assert fc.target.bibjson().replaces == ["1111-1111"]
+        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+        assert fc.target.bibjson().discontinued_date == "2001-01-01"
+

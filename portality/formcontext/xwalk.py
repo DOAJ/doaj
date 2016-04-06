@@ -394,6 +394,14 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         if getattr(form, "doaj_seal", None):
             suggestion.set_seal(form.doaj_seal.data)
 
+        # continuations information
+        if getattr(form, "replaces", None):
+            bibjson.replaces = form.replaces.data
+        if getattr(form, "is_replaced_by", None):
+            bibjson.is_replaced_by = form.is_replaced_by.data
+        if getattr(form, "discontinued_date", None):
+            bibjson.discontinued_date = form.discontinued_date.data
+
         return suggestion
 
 
@@ -414,6 +422,9 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         forminfo['contact_email'] = listpop(obj.contacts(), {}).get('email')
         forminfo['confirm_contact_email'] = forminfo['contact_email']
         forminfo['country'] = bibjson.country
+        forminfo["replaces"] = bibjson.replaces
+        forminfo["is_replaced_by"] = bibjson.is_replaced_by
+        forminfo["discontinued_date"] = bibjson.discontinued_date
 
         apc = bibjson.apc
         if apc:
@@ -754,6 +765,14 @@ class JournalFormXWalk(JournalGenericXWalk):
         if getattr(form, "doaj_seal", None):
             journal.set_seal(form.doaj_seal.data)
 
+        # continuations information
+        if getattr(form, "replaces", None):
+            bibjson.replaces = form.replaces.data
+        if getattr(form, "is_replaced_by", None):
+            bibjson.is_replaced_by = form.is_replaced_by.data
+        if getattr(form, "discontinued_date", None):
+            bibjson.discontinued_date = form.discontinued_date.data
+
         # old fields - only create them in the journal record if the values actually exist
         # need to use interpret_special in the test condition in case 'None' comes back from the form
         if getattr(form, 'author_pays', None):
@@ -786,6 +805,9 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo['contact_email'] = listpop(obj.contacts(), {}).get('email')
         forminfo['confirm_contact_email'] = forminfo['contact_email']
         forminfo['country'] = bibjson.country
+        forminfo["replaces"] = bibjson.replaces
+        forminfo["is_replaced_by"] = bibjson.is_replaced_by
+        forminfo["discontinued_date"] = bibjson.discontinued_date
 
         apc = bibjson.apc
         if apc:

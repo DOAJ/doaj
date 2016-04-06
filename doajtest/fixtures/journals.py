@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime
 
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
@@ -70,6 +71,9 @@ JOURNAL_SOURCE = {
         "publisher": "The Publisher",
         "provider": "Platform Host Aggregator",
         "institution": "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type": "homepage", "url": "http://journal.url"},
             {"type": "waiver_policy", "url": "http://waiver.policy"},
@@ -243,7 +247,10 @@ JOURNAL_INFO = {
     "copyright_url": "http://copyright.com",
     "publishing_rights": "Other",
     "publishing_rights_other": "Occasionally",
-    "publishing_rights_url": "http://publishing.rights"
+    "publishing_rights_url": "http://publishing.rights",
+    "replaces" : ["1111-1111"],
+    "is_replaced_by" : ["2222-2222"],
+    "discontinued_date" : "2001-01-01"
 }
 
 JOURNAL_LEGACY = {

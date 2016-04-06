@@ -55,6 +55,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -221,7 +224,10 @@ JOURNAL_INFO = {
     "copyright_url" : "http://copyright.com",
     "publishing_rights" : "Other",
     "publishing_rights_other" : "Occasionally",
-    "publishing_rights_url" : "http://publishing.rights"
+    "publishing_rights_url" : "http://publishing.rights",
+    "replaces" : ["1111-1111"],
+    "is_replaced_by" : ["2222-2222"],
+    "discontinued_date" : "2001-01-01"
 }
 
 SUGGESTION = {
@@ -431,3 +437,25 @@ class TestManEdAppReview(DoajTestCase):
         fc.form.application_status.data = "in progress"
 
         assert fc.validate()
+
+    def test_04_maned_review_continuations(self):
+        # construct it from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role='admin',
+            form_data=MultiDict(APPLICATION_FORM),
+            source=models.Suggestion(**ApplicationFixtureFactory.make_application_source()))
+
+        # check the form has the continuations data
+        assert fc.form.replaces.data == ["1111-1111"]
+        assert fc.form.is_replaced_by.data == ["2222-2222"]
+        assert fc.form.discontinued_date.data == "2001-01-01"
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # ensure the model has the continuations data
+        assert fc.target.bibjson().replaces == ["1111-1111"]
+        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+        assert fc.target.bibjson().discontinued_date == "2001-01-01"

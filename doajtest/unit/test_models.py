@@ -495,6 +495,8 @@ class TestClient(DoajTestCase):
         assert bj.publication_time == 8
         assert bj.replaces == ["0000-0000"]
         assert bj.is_replaced_by == ["9999-9999"]
+        assert bj.discontinued_date == "2001-01-01"
+        assert bj.discontinued_datestamp == datetime.strptime("2001-01-01", "%Y-%m-%d")
 
         bj.alternative_title = "New alternate"
         bj.country = "UK"
@@ -522,6 +524,7 @@ class TestClient(DoajTestCase):
         bj.publication_time = 4
         bj.replaces = ["1111-1111"]
         bj.is_replaced_by = ["2222-2222"]
+        bj.discontinued_date = "2002-01-01"
 
         assert bj.alternative_title == "New alternate"
         assert bj.country == "UK"
@@ -556,6 +559,8 @@ class TestClient(DoajTestCase):
         assert bj.publication_time == 4
         assert bj.replaces == ["1111-1111"]
         assert bj.is_replaced_by == ["2222-2222"]
+        assert bj.discontinued_date == "2002-01-01"
+        assert bj.discontinued_datestamp == datetime.strptime("2002-01-01", "%Y-%m-%d")
 
         bj.add_language("CZ")
         bj.add_deposit_policy("OK")

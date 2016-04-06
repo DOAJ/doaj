@@ -69,6 +69,7 @@ JOURNAL = {
     ],
     "replaces" : ["0000-0000"],
     "is_replaced_by" : ["9999-9999"],
+    "discontinued_date" : "2001-01-01",
 
     "oa_start": {
         "year": 1980,

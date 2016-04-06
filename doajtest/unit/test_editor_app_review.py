@@ -53,6 +53,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -217,7 +220,10 @@ JOURNAL_INFO = {
     "copyright_url" : "http://copyright.com",
     "publishing_rights" : "Other",
     "publishing_rights_other" : "Occasionally",
-    "publishing_rights_url" : "http://publishing.rights"
+    "publishing_rights_url" : "http://publishing.rights",
+    "replaces" : ["1111-1111"],
+    "is_replaced_by" : ["2222-2222"],
+    "discontinued_date" : "2001-01-01"
 }
 
 SUGGESTION = {
@@ -375,6 +381,9 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
         assert fc.target.application_status == "pending", fc.target.application_status # is updated by the form
+        assert fc.target.bibjson().replaces == ["1111-1111"]
+        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+        assert fc.target.bibjson().discontinued_date == "2001-01-01"
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()

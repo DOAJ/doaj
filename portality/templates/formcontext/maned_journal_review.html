@@ -62,6 +62,13 @@
                         {% endautoescape %}
                     </div>
 
+                    <div class="span12 with-borders form-section" style="margin-left: 0;">
+                        <h3 class="heading-aligned-with-fields">Continuation information</h3>
+                        {% autoescape off %}
+                        {{ form_context.render_field_group("continuations") }}
+                        {% endautoescape %}
+                    </div>
+
                     {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}
                     {% if old_journal_field_html %}
                         <div class="span12 with-borders form-section" style="margin-left: 0;">
@@ -138,6 +145,10 @@
 {% endblock %}
 
 {% block extra_js_bottom %}
+<link rel="stylesheet" href="/static/portality/vendor/jquery-ui-1.11.1/jquery-ui.min.css?v={{config.get('DOAJ_VERSION')}}">
+<script type="text/javascript" src="/static/portality/vendor/jquery-ui-1.11.1/jquery-ui.min.js?v={{config.get('DOAJ_VERSION')}}"></script>
+<script type="text/javascript" src="/static/doaj/js/continuations.js?v={{config.get('DOAJ_VERSION')}}"></script>
+
 <script type="text/javascript">
     var notes_deletable = true;
 
