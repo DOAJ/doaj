@@ -304,7 +304,7 @@ class Article(DomainObject):
         if cbib.publisher:
             publisher.append(cbib.publisher)
 
-        # deduplicate the list
+        # deduplicate the lists
         issns = list(set(issns))
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
