@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
         },
 
         issue : {
-            field: 'bibjson.journal.issue.exact',
+            field: 'bibjson.journal.number.exact',
             display: 'Issue',
             disabled: true
         },
@@ -33,10 +33,10 @@ jQuery(document).ready(function($) {
         },
 
         month_published_histogram : {
-            type: "date_histogram",
-            field: "index.date_toc_fv_month",
-            interval: "month",
-            display: "Month",
+            type: 'date_histogram',
+            field: 'index.date_toc_fv_month',
+            interval: 'month',
+            display: 'Month',
             value_function : function(val) {
                 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
                 var mi = (new Date(parseInt(val))).getUTCMonth();
@@ -44,8 +44,8 @@ jQuery(document).ready(function($) {
             },
             size: false,
             short_display: 12,
-            sort: "desc",
-            disabled: false
+            sort: 'asc',
+            disabled: true
         }
     };
 
@@ -69,9 +69,9 @@ jQuery(document).ready(function($) {
 
         // On selection of "Volume" an "Issue" facet will appear.
         if ('bibjson.journal.volume.exact' in options.active_filters) {
-            disableFacet(options, 'bibjson.journal.issue.exact', false);
+            disableFacet(options, 'bibjson.journal.number.exact', false);
         } else {
-            disableFacet(options, 'bibjson.journal.issue.exact', true);
+            disableFacet(options, 'bibjson.journal.number.exact', true);
         }
 
         // On selection of "Year" an "Month" facet will appear.
