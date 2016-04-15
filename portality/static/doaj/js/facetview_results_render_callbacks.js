@@ -333,6 +333,33 @@ fv_edit_journal = (function (resultobj) {
     return that;
 })();
 
+fv_make_continuation = (function (resultobj) {
+    var that = function(resultobj) {
+        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+            // if it's not a suggestion or an article .. (it's a
+            // journal!)
+            // we really need to expose _type ...
+            var result = '<a class="edit_journal_link pull-right" href="';
+            result += journal_edit_url;
+            result += resultobj['id'];
+            result += '/continue?type=is_replaced_by" target="_blank"';
+            result += '>Make a succeeding continuation</a>';
+
+            result += "<span class='pull-right'>&nbsp;|&nbsp;</span>";
+
+            result += '<a class="edit_journal_link pull-right" href="';
+            result += journal_edit_url;
+            result += resultobj['id'];
+            result += '/continue?type=replaces" target="_blank"';
+            result += '>Make a preceeding continuation</a>';
+
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+
 fv_edit_user = (function (resultobj) {
     var that = function(resultobj) {
         var result = '<a class="edit_user_link pull-right" href="';

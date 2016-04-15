@@ -67,6 +67,7 @@ jQuery(document).ready(function($) {
             "links" : fv_links,
             "issns" : fv_issns,
             "edit_journal": fv_edit_journal,
+            "make_continuation" : fv_make_continuation,
             "in_doaj": fv_in_doaj,
             "country_name": fv_country_name,
             "owner" : fv_owner
@@ -188,9 +189,14 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
+                    "field" : "make_continuation"
+                }
+            ],
+            [
+                {
                     "field": "edit_journal"
                 }
             ]
-        ],
+        ]
     });
 });
