@@ -9,6 +9,9 @@ from datetime import datetime
 import string
 from unidecode import unidecode
 
+class ContinuationException(Exception):
+    pass
+
 class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     @classmethod
@@ -464,6 +467,74 @@ class Journal(JournalLikeObject):
         # finally, return the reapplication in case the caller needs it
         return reapp
 
+    def make_continuation(self, type, eissn=None, pissn=None, title=None):
+        # check that the type is one we know.  Must be either 'replaces' or 'is_replaced_by'
+        if type not in ["replaces", "is_replaced_by"]:
+            raise ContinuationException("type must be one of 'replaces' or 'is_replaced_by'")
+
+        if eissn is None and pissn is None:
+            raise ContinuationException("You must create a continuation with at least one issn")
+
+        # take a copy of the raw data for this journal, and the issns for this journal
+        raw_cont = deepcopy(self.data)
+        bibjson = self.bibjson()
+        issns = bibjson.issns()
+        cissns = []
+
+        # make a new instance of the journal - this will be our continuation
+        del raw_cont["id"]
+        del raw_cont["created_date"]
+        del raw_cont["last_updated"]
+        j = Journal(**raw_cont)
+
+        # ensure that the journal is NOT in doaj.  That will be for the admin to decide
+        j.set_in_doaj(False)
+
+        # get a copy of the continuation's bibjson, then remove the existing issns
+        cbj = j.bibjson()
+        cbj.remove_identifiers(cbj.E_ISSN)
+        cbj.remove_identifiers(cbj.P_ISSN)
+
+        # also remove any existing continuation information
+        del cbj.replaces
+        del cbj.is_replaced_by
+        del cbj.discontinued_date
+
+        # now write the new identifiers
+        if eissn is not None:
+            cissns.append(eissn)
+            cbj.add_identifier(cbj.E_ISSN, eissn)
+        if pissn is not None:
+            cissns.append(pissn)
+            cbj.add_identifier(cbj.P_ISSN, pissn)
+
+        # update the title so it's clear the the editor that this needs to be changed
+        if title is not None:
+            cbj.title = title
+
+        # now add the issns of the original journal in the appropriate field
+        #
+        # This is a bit confusing - because we're asking this of a Journal object, the relationship type we're asking
+        # for relates to this journal, not to the continuation we are creating.  This means that when setting the
+        # new continuations properties, we have to do the opposite to what we do to the journal's properties
+        #
+        # "replaces" means that the current journal replaces the new continuation
+        if type == "replaces":
+            bibjson.replaces = cissns
+            cbj.is_replaced_by = issns
+
+        # "is_replaced_by" means that the current journal is replaced by the new continuation
+        elif type == "is_replaced_by":
+            bibjson.is_replaced_by = cissns
+            cbj.replaces = issns
+
+        # save this journal
+        self.save()
+
+        # save the continuation, and return a copy to the caller
+        j.save()
+        return j
+
     ####################################################
     ## admin data methods
 
@@ -697,6 +768,10 @@ class JournalBibJSON(GenericBibJSON):
     def replaces(self, val):
         self._set_with_struct("replaces", val)
 
+    @replaces.deleter
+    def replaces(self):
+        self._delete("replaces")
+
     def add_replaces(self, val):
         self._add_to_list_with_struct("replaces", val)
 
@@ -708,6 +783,10 @@ class JournalBibJSON(GenericBibJSON):
     def is_replaced_by(self, val):
         self._set_with_struct("is_replaced_by", val)
 
+    @is_replaced_by.deleter
+    def is_replaced_by(self):
+        self._delete("is_replaced_by")
+
     def add_is_replaced_by(self, val):
         self._add_to_list_with_struct("is_replaced_by", val)
 
@@ -718,6 +797,10 @@ class JournalBibJSON(GenericBibJSON):
     @discontinued_date.setter
     def discontinued_date(self, val):
         self._set_with_struct("discontinued_date", val)
+
+    @discontinued_date.deleter
+    def discontinued_date(self):
+        self._delete("discontinued_date")
 
     @property
     def discontinued_datestamp(self):

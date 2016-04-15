@@ -681,3 +681,75 @@ class TestClient(DoajTestCase):
         assert bj.year is None
         assert bj.month is None
         assert bj.journal_title is None
+
+    def test_18_make_continuation_replaces(self):
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.add_identifier(bj.E_ISSN, "0000-0000")
+        bj.add_identifier(bj.P_ISSN, "1111-1111")
+        bj.title = "First Journal"
+        journal.save()
+
+        time.sleep(2)
+
+        cont = journal.make_continuation("replaces", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
+
+        rep = bj.replaces
+        rep.sort()
+        assert rep == ["2222-2222", "3333-3333"]
+
+        cbj = cont.bibjson()
+
+        irb = cbj.is_replaced_by
+        irb.sort()
+
+        assert irb == ["0000-0000", "1111-1111"]
+        assert cbj.title == "Second Journal"
+        assert cbj.get_one_identifier(cbj.E_ISSN) == "2222-2222"
+        assert cbj.get_one_identifier(cbj.P_ISSN) == "3333-3333"
+
+        assert cont.id != journal.id
+
+    def test_19_make_continuation_is_replaced_by(self):
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.add_identifier(bj.E_ISSN, "0000-0000")
+        bj.add_identifier(bj.P_ISSN, "1111-1111")
+        bj.title = "First Journal"
+        journal.save()
+
+        time.sleep(2)
+
+        cont = journal.make_continuation("is_replaced_by", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
+
+        irb = bj.is_replaced_by
+        irb.sort()
+        assert irb == ["2222-2222", "3333-3333"]
+
+        cbj = cont.bibjson()
+
+        rep = cbj.replaces
+        rep.sort()
+
+        assert rep == ["0000-0000", "1111-1111"]
+        assert cbj.title == "Second Journal"
+        assert cbj.get_one_identifier(cbj.E_ISSN) == "2222-2222"
+        assert cbj.get_one_identifier(cbj.P_ISSN) == "3333-3333"
+
+        assert cont.id != journal.id
+
+    def test_20_make_continuation_errors(self):
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.add_identifier(bj.E_ISSN, "0000-0000")
+        bj.add_identifier(bj.P_ISSN, "1111-1111")
+        bj.title = "First Journal"
+        journal.save()
+
+        time.sleep(2)
+
+        with self.assertRaises(models.ContinuationException):
+            cont = journal.make_continuation("sideways", eissn="2222-2222", pissn="3333-3333", title="Second Journal")
+
+        with self.assertRaises(models.ContinuationException):
+            cont = journal.make_continuation("replaces", title="Second Journal")
