@@ -197,10 +197,10 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
+        continued = "No"
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
-        # hist = self.history()   # FIXME: have to look at this once we've sorted out the continuations
 
         # get the issns out of the current bibjson
         issns += cbib.get_identifiers(cbib.P_ISSN)
@@ -275,6 +275,10 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             except:
                 asciiunpunctitle = unpunctitle
 
+        # record if this journal object is a continuation
+        if len(cbib.replaces) > 0 or len(cbib.is_replaced_by) > 0:
+            continued = "Yes"
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -309,6 +313,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             self.data["index"]["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
+        self.data["index"]["continued"] = continued
 
 class Journal(JournalLikeObject):
     __type__ = "journal"
@@ -762,7 +767,7 @@ class JournalBibJSON(GenericBibJSON):
 
     @property
     def replaces(self):
-        return self._get_single("replaces")
+        return self._get_list("replaces")
 
     @replaces.setter
     def replaces(self, val):
@@ -777,7 +782,7 @@ class JournalBibJSON(GenericBibJSON):
 
     @property
     def is_replaced_by(self):
-        return self._get_single("is_replaced_by")
+        return self._get_list("is_replaced_by")
 
     @is_replaced_by.setter
     def is_replaced_by(self, val):
@@ -1169,7 +1174,8 @@ JOURNAL_STRUCT = {
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
-                "asciiunpunctitle" : {"coerce" : "unicode"}
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "continued" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
