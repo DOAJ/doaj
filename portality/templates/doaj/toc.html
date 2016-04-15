@@ -42,12 +42,17 @@
         {% for identifier in bibjson.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in bibjson.get_identifiers(idtype='eissn') %}{% if bibjson.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
         </p>
 
+        {% if bibjson.discontinued_date %}
+            <p><strong>Ceased publication: </strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</p>
+        {% endif %}
+
         {% if future %}
             <p><strong>Subsequent title(s): </strong>
             {% for f in future %}
                 {% if f.issns()|length > 0 %}
                 <a href="{{ url_for('doaj.toc', identifier=f.issns()[0]) }}">{{ f.title }}</a>
                 {% endif %}
+                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
             </p>
         {% endif %}
@@ -58,6 +63,7 @@
                 {% if p.issns()|length > 0 %}
                 <a href="{{ url_for('doaj.toc', identifier=p.issns()[0]) }}">{{ p.title }}</a>
                 {% endif %}
+                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
             </p>
         {% endif %}
