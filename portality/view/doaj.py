@@ -182,13 +182,14 @@ def toc(identifier=None, volume=None, issue=None):
 
     # The issn we are using to build the TOC
     issn = bibjson.get_preferred_issn()
-    print issn
 
     return render_template('doaj/fv_toc.html',
                            journal=journal,
                            bibjson=bibjson,
                            search_page=True,
                            toc_issn=issn,
+                           toc_volume=volume,
+                           toc_isue=issue,
                            facetviews=['public.journaltocarticles.facetview'])
 
 """
