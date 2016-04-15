@@ -171,7 +171,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 return None
             else:
                 return cls(**out.json())
-        except:
+        except Exception as e:
             return None
 
     @classmethod

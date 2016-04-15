@@ -190,7 +190,8 @@ APPLICATION_STRUCT = {
                 "has_apc" : {"coerce" : "unicode"},
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
-                "asciiunpunctitle" : {"coerce" : "unicode"}
+                "asciiunpunctitle" : {"coerce" : "unicode"},
+                "continued" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
