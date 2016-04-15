@@ -7,19 +7,27 @@
 {% include 'formcontext/_lockable_header.html' %}
 
 <div class="row-fluid">
-  <div class="span3">&nbsp;</div>
-  <div class="span6 with-borders form-section centre-text-container" style="margin-left: 0;">
-    {% if form_context.source.is_in_doaj() %}
-      <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
-        <fieldset><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></fieldset>
-      </form>
-    {% else %}
-      <form method="post" action="{{ url_for('admin.journal_activate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_activate_form">
-        <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
-      </form>
-    {% endif %}
+  <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 
-    <p class="centre-text-container">This button will not save any other changes on this page!</p>
+    <div class="row-fluid">
+        <div class="span6">
+            <p class="centre-text-container">This button will not save any other changes on this page!</p>
+            {% if form_context.source.is_in_doaj() %}
+              <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
+                <fieldset><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></fieldset>
+              </form>
+            {% else %}
+              <form method="post" action="{{ url_for('admin.journal_activate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_activate_form">
+                <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
+              </form>
+            {% endif %}
+        </div>
+        <div class="span6">
+            <p class="centre-text-container">Ensure you've saved any changes here before using these links!</p>
+            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=replaces">Create a preceeding continuation</a><br>
+            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=is_replaced_by">Create a succeeding continuation</a>
+        </div>
+    </div>
   </div>
 </div>
 
