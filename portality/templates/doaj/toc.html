@@ -139,7 +139,6 @@
 
 </div>
 
-
 <div class="row-fluid" style="margin-top: 30px">
     <div class="span1">&nbsp;</div>
     <div class="span5">
@@ -364,6 +363,15 @@
 
 </div>
 
+<div class="row-fluid">
+    <div class="span10">&nbsp;</div>
+    <div class="span2">
+        <form method="post" action="{{ url_for('doaj.contact') }}?ref=toc">
+            <input type="hidden" name="message" value="More information on journal '{{ bibjson.title }}' (ISSN: {{ bibjson.get_preferred_issn() }})"/>
+            <button class="btn btn-success">Tell us more about this Journal</button>
+        </form>
+    </div>
+</div>
 
 {% if volumes|length > 0 %}
 
