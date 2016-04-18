@@ -23,7 +23,6 @@ from portality.view.admin import blueprint as admin
 from portality.view.publisher import blueprint as publisher
 from portality.view.query import blueprint as query
 from portality.view.stream import blueprint as stream
-from portality.view.forms import blueprint as forms
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
 from portality.view.openurl import blueprint as openurl
@@ -43,7 +42,6 @@ app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
 app.register_blueprint(query, url_prefix="/publisher_reapp_query")
 app.register_blueprint(stream, url_prefix='/stream')
-app.register_blueprint(forms, url_prefix='/forms')
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 if 'api' in app.config['FEATURES']:
