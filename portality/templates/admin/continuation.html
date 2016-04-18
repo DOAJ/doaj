@@ -15,10 +15,6 @@
         <p>Please provide the new Journal Title and new ISSN(s) for the continuation.  Once you have submitted
         this information the continuation record will be created and you may edit the other associated metadata fields.</p>
 
-        {% if there_were_errors %}
-            <h4 class="red">There is a problem with the submitted form.</h4>
-        {% endif %}
-
         {% from "_formhelpers.html" import render_field_horizontal %}
         {% from "_formhelpers.html" import render_field %}
 
