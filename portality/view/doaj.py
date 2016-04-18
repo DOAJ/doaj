@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response
+from flask import Blueprint, request, make_response, flash
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
@@ -10,6 +10,8 @@ from portality.decorators import ssl_required, write_required, api_key_required
 from portality import blog
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
+from portality.view.forms import ContactUs
+from portality.app_email import send_contact_form
 
 import json
 import os
@@ -271,6 +273,31 @@ def article_page(identifier=None):
 
     return render_template('doaj/article.html', article=article, journal=journal)
 
+@blueprint.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "GET":
+        form = ContactUs()
+        if current_user.is_authenticated():
+            form.email.data = current_user.email
+        return render_template("doaj/contact.html", form=form)
+    elif request.method == "POST":
+        prepop = request.values.get("ref")
+        form = ContactUs(request.form)
+
+        if current_user.is_authenticated() and (form.email.data is None or form.email.data == ""):
+            form.email.data = current_user.email
+
+        if prepop is not None:
+            return render_template("doaj/contact.html", form=form)
+
+        if not form.validate():
+            return render_template("doaj/contact.html", form=form)
+
+        send_contact_form(form)
+        flash("<strong>Thank you!</strong>  Your message has been sent, we'll get back to you as soon as we can.")
+        form = ContactUs()
+        return render_template("doaj/contact.html", form=form)
+
 ###############################################################
 ## The various static endpoints
 ###############################################################
@@ -278,10 +305,6 @@ def article_page(identifier=None):
 @blueprint.route("/about")
 def about():
     return render_template('doaj/about.html')
-
-@blueprint.route("/contact")
-def contact():
-    return render_template("doaj/contact.html")
 
 @blueprint.route("/publishers")
 def publishers():
