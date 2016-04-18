@@ -11,8 +11,7 @@ from portality import lock
 from portality.util import flash_with_url, jsonp
 from portality.core import app
 
-from portality.view.forms import EditorGroupForm
-from portality.continuations import MakeContinuation
+from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
