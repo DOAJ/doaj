@@ -344,6 +344,13 @@ jQuery(document).ready(function($) {
             } else {
                 result += "<strong>No APC</strong>";
             }
+            result += "<br>";
+        }
+
+        // discontinued date
+        var isreplaced = resultobj.bibjson.is_replaced_by && resultobj.bibjson.is_replaced_by.length > 0;
+        if (resultobj.bibjson.discontinued_date || isreplaced) {
+            result += "<strong>Discontinued</strong>";
         }
 
         // close the journal properties side-bar
