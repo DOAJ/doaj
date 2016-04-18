@@ -257,3 +257,16 @@ class RegexpOnTagList(object):
                         message = self.message
 
                 raise validators.ValidationError(message)
+
+class ThisOrThat(object):
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        this = bool(field.data)
+        that = bool(other_field.data)
+        if not this and not that:
+            raise validators.ValidationError("Either this field or " + other_field.label.text + " is required")
