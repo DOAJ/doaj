@@ -251,21 +251,6 @@ jQuery(document).ready(function($) {
         return result;
     }
 
-    function setTocFilters(){
-        console.log(toc_volume);
-        console.log(toc_issue);
-        var filt = {'index.issn.exact': [toc_issn] };
-        if (toc_volume !== 'None') {
-            $.extend(filt, {'bibjson.journal.volume.exact' : [toc_volume]});
-
-            if (toc_issue !== 'None') {
-                $.extend(filt, {'bibjson.journal.number.exact': [toc_issue]})
-            }
-        }
-        return filt
-    }
-    var toc_filters = setTocFilters();
-
     $('.facetview.journal_toc_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/article/_search?',
 
@@ -287,12 +272,8 @@ jQuery(document).ready(function($) {
         facets: natural,
 
         // Each ToC is fixed to the correct journal ISSN.
-        predefined_filters: toc_filters,
-        //predefined_filters: {'index.issn.exact': [toc_issn] },
-        //exclude_predefined_filters_from_facets : true,
-
-        // If we have a volume and issue from the path, set these filters.
-        //active_filters : setTocFilters(),
+        predefined_filters: {'index.issn.exact': [toc_issn] },
+        exclude_predefined_filters_from_facets : true,
 
         search_sortby: [
             {'display':'Title','field':'index.unpunctitle.exact'},
