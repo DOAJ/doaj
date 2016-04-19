@@ -379,6 +379,9 @@ class DataObj(object):
     def json(self):
         return json.dumps(self.data)
 
+    def get_struct(self):
+        return self._struct
+
     def _get_internal_property(self, path, wrapper=None):
         # pull the object from the structure, to find out what kind of retrieve it needs
         # (if there is a struct)
