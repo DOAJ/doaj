@@ -1,7 +1,5 @@
 from portality.models.journal import Journal, JournalLikeObject
 from portality.models import shared_structs
-from portality.lib import dataobj
-from portality.dao import DomainObject
 
 from copy import deepcopy
 

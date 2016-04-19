@@ -372,6 +372,7 @@ class Article(DomainObject):
             self.data["index"]["issn"] = issns
         if date != "":
             self.data["index"]["date"] = date
+            self.data["index"]["date_toc_fv_month"] = date        # Duplicated so we can have year/month facets in fv2
         if len(subjects) > 0:
             self.data["index"]["subject"] = subjects
         if len(schema_subjects) > 0:
