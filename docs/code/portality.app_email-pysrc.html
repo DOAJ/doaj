@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.app_email</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        Module&nbsp;app_email
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.app_email-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.app_email-module.html">Module portality.app_email</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Method portality.formcontext.formcontext.AssEdApplicationReview.render_template()=portality.formcontext.formcontext.AssEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.AssEdJournalReview.render_template()=portality.formcontext.formcontext.AssEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.EditorApplicationReview.render_template()=portality.formcontext.formcontext.EditorApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.EditorJournalReview.render_template()=portality.formcontext.formcontext.EditorJournalReview-class.html#render_template,Method portality.formcontext.formcontext.FormContext.render_template()=portality.formcontext.formcontext.FormContext-class.html#render_template,Method portality.formcontext.formcontext.ManEdApplicationReview.render_template()=portality.formcontext.formcontext.ManEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.ManEdJournalReview.render_template()=portality.formcontext.formcontext.ManEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.PublisherCsvReApplication.render_template()=portality.formcontext.formcontext.PublisherCsvReApplication-class.html#render_template,Method portality.formcontext.formcontext.PublisherReApplication.render_template()=portality.formcontext.formcontext.PublisherReApplication-class.html#render_template,Method portality.formcontext.formcontext.ReadOnlyJournal.render_template()=portality.formcontext.formcontext.ReadOnlyJournal-class.html#render_template"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherCsvReApplication.render_template
+portality.formcontext.formcontext.PublisherReApplication.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-0', 'render_template', 'link-0');">render_template</a></tt><tt class="py-op">,</tt> <tt class="py-name">request</tt><tt class="py-op">,</tt> <tt class="py-name">flash</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask_mail</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Mail</tt><tt class="py-op">,</tt> <tt class="py-name">Message</tt><tt class="py-op">,</tt> <tt class="py-name">Attachment</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-1', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-2', 'core', 'link-2');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-3', 'app', 'link-3');">app</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">uuid</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="EmailException"></a><div id="EmailException-def"><a name="L8"></a><tt class="py-lineno">  8</tt> <a class="py-toggle" href="#" id="EmailException-toggle" onclick="return toggle('EmailException');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.app_email.EmailException-class.html">EmailException</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="EmailException-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="EmailException-expanded"><a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="send_contact_form"></a><div id="send_contact_form-def"><a name="L11"></a><tt class="py-lineno"> 11</tt> <a class="py-toggle" href="#" id="send_contact_form-toggle" onclick="return toggle('send_contact_form');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.app_email-module.html#send_contact_form">send_contact_form</a><tt class="py-op">(</tt><tt class="py-param">form</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="send_contact_form-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="send_contact_form-expanded"><a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">    <tt id="link-4" class="py-name" targets="Variable portality.formcontext.forms.ApplicationSubject.subject=portality.formcontext.forms.ApplicationSubject-class.html#subject,Variable portality.formcontext.forms.JournalSubject.subject=portality.formcontext.forms.JournalSubject-class.html#subject,Variable portality.view.forms.ContactUs.subject=portality.view.forms.ContactUs-class.html#subject"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-4', 'subject', 'link-4');">subject</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"Message from contact form - "</tt> <tt class="py-op">+</tt> <tt id="link-5" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.form()=portality.formcontext.formcontext.FormContext-class.html#form,Function portality.lib.modeldoc.form()=portality.lib.modeldoc-module.html#form"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-5', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-6', 'email', 'link-6');">email</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-7" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-7', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-8', 'subject', 'link-4');">subject</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt id="link-9" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-9', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-10', 'subject', 'link-4');">subject</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">!=</tt> <tt class="py-string">""</tt><tt class="py-op">:</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-11', 'subject', 'link-4');">subject</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"[spam?] "</tt> <tt class="py-op">+</tt> <tt id="link-12" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-12', 'subject', 'link-4');">subject</a></tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-string">"Message from contact form - "</tt> <tt class="py-op">+</tt> <tt id="link-13" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-13', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-14', 'email', 'link-6');">email</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">+</tt> <tt class="py-string">"\n\n"</tt> <tt class="py-op">+</tt> <tt id="link-15" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-15', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Variable portality.view.forms.ContactUs.message=portality.view.forms.ContactUs-class.html#message"><a title="portality.view.forms.ContactUs.message" class="py-name" href="#" onclick="return doclink('link-16', 'message', 'link-16');">message</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">    <tt class="py-name">to</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt id="link-17" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-17', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-18', 'config', 'link-18');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"CONTACT_FORM_ADDRESS"</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">    <tt class="py-name">fro</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-19', 'form', 'link-5');">form</a></tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-20', 'email', 'link-6');">email</a></tt><tt class="py-op">.</tt><tt class="py-name">data</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt id="link-21" class="py-name" targets="Function portality.app_email.send_mail()=portality.app_email-module.html#send_mail"><a title="portality.app_email.send_mail" class="py-name" href="#" onclick="return doclink('link-21', 'send_mail', 'link-21');">send_mail</a></tt><tt class="py-op">(</tt><tt class="py-name">to</tt><tt class="py-op">,</tt> <tt class="py-name">fro</tt><tt class="py-op">,</tt> <tt id="link-22" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-22', 'subject', 'link-4');">subject</a></tt><tt class="py-op">,</tt> <tt class="py-name">msg_body</tt><tt class="py-op">=</tt><tt class="py-name">msg</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment"># Flask-Mail version of email service from util.py</tt> </tt>
+<a name="send_mail"></a><div id="send_mail-def"><a name="L22"></a><tt class="py-lineno"> 22</tt> <a class="py-toggle" href="#" id="send_mail-toggle" onclick="return toggle('send_mail');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.app_email-module.html#send_mail">send_mail</a><tt class="py-op">(</tt><tt class="py-param">to</tt><tt class="py-op">,</tt> <tt class="py-param">fro</tt><tt class="py-op">,</tt> <tt class="py-param">subject</tt><tt class="py-op">,</tt> <tt class="py-param">template_name</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">bcc</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">files</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">msg_body</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">template_params</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="send_mail-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="send_mail-expanded"><a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">    <tt class="py-name">bcc</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt class="py-name">bcc</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">else</tt> <tt class="py-name">bcc</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-name">files</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt class="py-name">files</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">else</tt> <tt class="py-name">files</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-comment"># ensure that email isn't sent if it is disabled</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-23" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-23', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-24', 'config', 'link-18');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"ENABLE_EMAIL"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt id="link-25" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-25', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt class="py-name">info</tt><tt class="py-op">(</tt><tt class="py-string">"Email template {0} called to send, but email has been disabled.\nto:{1}\tsubject:{2}"</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-26', 'format', 'link-26');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">template_name</tt><tt class="py-op">,</tt> <tt class="py-name">to</tt><tt class="py-op">,</tt> <tt id="link-27" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-27', 'subject', 'link-4');">subject</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">assert</tt> <tt id="link-28" class="py-name" targets="Method portality.models.lock.Lock.type()=portality.models.lock.Lock-class.html#type,Variable portality.view.forms.MakeContinuation.type=portality.view.forms.MakeContinuation-class.html#type"><a title="portality.models.lock.Lock.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-28', 'type', 'link-28');">type</a></tt><tt class="py-op">(</tt><tt class="py-name">to</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">list</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt class="py-keyword">assert</tt> <tt id="link-29" class="py-name"><a title="portality.models.lock.Lock.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-29', 'type', 'link-28');">type</a></tt><tt class="py-op">(</tt><tt class="py-name">files</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">list</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">bcc</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">bcc</tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">bcc</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">bcc</tt><tt class="py-op">]</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-name">to_is_invalid</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">t</tt> <tt class="py-keyword">in</tt> <tt class="py-name">to</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">t</tt><tt class="py-op">:</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">            <tt class="py-name">to_is_invalid</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-comment"># a list of None, None, None or even just a [None] is no good!</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">to_is_invalid</tt><tt class="py-op">:</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">magic</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">uuid</tt><tt class="py-op">.</tt><tt class="py-name">uuid1</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt id="link-30" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-30', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Method portality.models.reapplication.BulkUpload.error()=portality.models.reapplication.BulkUpload-class.html#error"><a title="portality.models.reapplication.BulkUpload.error" class="py-name" href="#" onclick="return doclink('link-31', 'error', 'link-31');">error</a></tt><tt class="py-op">(</tt><tt class="py-string">'Bad To list while trying to send email with subject \"{0}\". Magic num for log grep {1}'</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-32', 'format', 'link-26');">format</a></tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-33', 'subject', 'link-4');">subject</a></tt><tt class="py-op">,</tt> <tt class="py-name">magic</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">flash</tt><tt class="py-op">(</tt><tt class="py-string">"Invalid email address - no email specified at all. Trying to send email with subject \"{0}\". Magic number to help identify error: {1}"</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-34', 'format', 'link-26');">format</a></tt><tt class="py-op">(</tt><tt id="link-35" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-35', 'subject', 'link-4');">subject</a></tt><tt class="py-op">,</tt> <tt class="py-name">magic</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'error'</tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-36" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-36', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-37', 'config', 'link-18');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'CC_ALL_EMAILS_TO'</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">bcc</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-38" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-38', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-39', 'config', 'link-18');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'CC_ALL_EMAILS_TO'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-comment"># ensure everything is unicode</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">    <tt class="py-name">unicode_params</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">k</tt><tt class="py-op">,</tt> <tt class="py-name">v</tt> <tt class="py-keyword">in</tt> <tt class="py-name">template_params</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name" targets="Method portality.ordereddict.OrderedDict.iteritems()=portality.ordereddict.OrderedDict-class.html#iteritems"><a title="portality.ordereddict.OrderedDict.iteritems" class="py-name" href="#" onclick="return doclink('link-40', 'iteritems', 'link-40');">iteritems</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">unicode_params</tt><tt class="py-op">[</tt><tt class="py-name">k</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name" targets="Function portality.app_email.to_unicode()=portality.app_email-module.html#to_unicode,Function portality.lib.dataobj.to_unicode()=portality.lib.dataobj-module.html#to_unicode"><a title="portality.app_email.to_unicode
+portality.lib.dataobj.to_unicode" class="py-name" href="#" onclick="return doclink('link-41', 'to_unicode', 'link-41');">to_unicode</a></tt><tt class="py-op">(</tt><tt class="py-name">v</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">    <tt class="py-comment"># Get the body text from the msg_body parameter (for a contact form),</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">    <tt class="py-comment"># or render from a template.</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-comment"># TODO: This could also find and render an HTML template if present</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">msg_body</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-name">plaintext_body</tt> <tt class="py-op">=</tt> <tt class="py-name">msg_body</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">plaintext_body</tt> <tt class="py-op">=</tt> <tt id="link-42" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherCsvReApplication.render_template
+portality.formcontext.formcontext.PublisherReApplication.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-42', 'render_template', 'link-0');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">template_name</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">unicode_params</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">            <tt class="py-keyword">with</tt> <tt id="link-43" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-43', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">test_request_context</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                <tt class="py-name">plaintext_body</tt> <tt class="py-op">=</tt> <tt id="link-44" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherCsvReApplication.render_template
+portality.formcontext.formcontext.PublisherReApplication.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-44', 'render_template', 'link-0');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">template_name</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">unicode_params</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line"> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">    <tt class="py-comment"># create a message</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">    <tt class="py-name">msg</tt> <tt class="py-op">=</tt> <tt class="py-name">Message</tt><tt class="py-op">(</tt><tt id="link-45" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-45', 'subject', 'link-4');">subject</a></tt><tt class="py-op">=</tt><tt id="link-46" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-46', 'subject', 'link-4');">subject</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                  <tt class="py-name">recipients</tt><tt class="py-op">=</tt><tt class="py-name">to</tt><tt class="py-op">,</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                  <tt class="py-name">body</tt><tt class="py-op">=</tt><tt class="py-name">plaintext_body</tt><tt class="py-op">,</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                  <tt class="py-name">html</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                  <tt class="py-name">sender</tt><tt class="py-op">=</tt><tt class="py-name">fro</tt><tt class="py-op">,</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                  <tt class="py-name">cc</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                  <tt class="py-name">bcc</tt><tt class="py-op">=</tt><tt class="py-name">bcc</tt><tt class="py-op">,</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                  <tt class="py-name">attachments</tt><tt class="py-op">=</tt><tt class="py-name">files</tt><tt class="py-op">,</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                  <tt class="py-name">reply_to</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                  <tt id="link-47" class="py-name" targets="Variable portality.formcontext.forms.Note.date=portality.formcontext.forms.Note-class.html#date,Method portality.models.openurl.OpenURLRequest.date()=portality.models.openurl.OpenURLRequest-class.html#date"><a title="portality.formcontext.forms.Note.date
+portality.models.openurl.OpenURLRequest.date" class="py-name" href="#" onclick="return doclink('link-47', 'date', 'link-47');">date</a></tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                  <tt class="py-name">charset</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                  <tt class="py-name">extra_headers</tt><tt class="py-op">=</tt><tt class="py-name">None</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                  <tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">mail</tt> <tt class="py-op">=</tt> <tt class="py-name">Mail</tt><tt class="py-op">(</tt><tt id="link-48" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-48', 'app', 'link-3');">app</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-keyword">with</tt> <tt id="link-49" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-49', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">app_context</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">            <tt class="py-name">mail</tt><tt class="py-op">.</tt><tt class="py-name">send</tt><tt class="py-op">(</tt><tt class="py-name">msg</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt id="link-50" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-50', 'app', 'link-3');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt class="py-name">info</tt><tt class="py-op">(</tt><tt class="py-string">"Email template {0} sent.\nto:{1}\tsubject:{2}"</tt><tt class="py-op">.</tt><tt id="link-51" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-51', 'format', 'link-26');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">template_name</tt><tt class="py-op">,</tt> <tt class="py-name">to</tt><tt class="py-op">,</tt> <tt id="link-52" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-52', 'subject', 'link-4');">subject</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt id="link-53" class="py-name" targets="Class portality.app_email.EmailException=portality.app_email.EmailException-class.html"><a title="portality.app_email.EmailException" class="py-name" href="#" onclick="return doclink('link-53', 'EmailException', 'link-53');">EmailException</a></tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="to_unicode"></a><div id="to_unicode-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle" href="#" id="to_unicode-toggle" onclick="return toggle('to_unicode');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.app_email-module.html#to_unicode">to_unicode</a><tt class="py-op">(</tt><tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="to_unicode-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="to_unicode-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">,</tt> <tt class="py-name">unicode</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">val</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">,</tt> <tt class="py-name">basestring</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">val</tt><tt class="py-op">.</tt><tt class="py-name">decode</tt><tt class="py-op">(</tt><tt class="py-string">"utf8"</tt><tt class="py-op">,</tt> <tt class="py-string">"replace"</tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">UnicodeDecodeError</tt><tt class="py-op">:</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt class="py-name">ValueError</tt><tt class="py-op">(</tt><tt class="py-string">"Could not decode string"</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">val</tt> </tt>
+</div><a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="make_attachment"></a><div id="make_attachment-def"><a name="L104"></a><tt class="py-lineno">104</tt> <a class="py-toggle" href="#" id="make_attachment-toggle" onclick="return toggle('make_attachment');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.app_email-module.html#make_attachment">make_attachment</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">,</tt> <tt class="py-param">content_type</tt><tt class="py-op">,</tt> <tt class="py-param">data</tt><tt class="py-op">,</tt> <tt class="py-param">disposition</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">headers</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="make_attachment-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="make_attachment-expanded"><a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-docstring">    Provide a function which can make attachments, insulating the caller from the flask-mail</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-docstring">    underlying implementation.</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">    :param filename:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">    :param content_type:</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">    :param data:</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-docstring">    :param disposition:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"><tt class="py-docstring">    :param headers:</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"><tt class="py-docstring">    :return:</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">Attachment</tt><tt class="py-op">(</tt><tt id="link-54" class="py-name" targets="Method portality.models.reapplication.BulkUpload.filename()=portality.models.reapplication.BulkUpload-class.html#filename,Method portality.models.uploads.FileUpload.filename()=portality.models.uploads.FileUpload-class.html#filename"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-54', 'filename', 'link-54');">filename</a></tt><tt class="py-op">,</tt> <tt class="py-name">content_type</tt><tt class="py-op">,</tt> <tt class="py-name">data</tt><tt class="py-op">,</tt> <tt class="py-name">disposition</tt><tt class="py-op">,</tt> <tt id="link-55" class="py-name" targets="Method portality.clcsv.ClCsv.headers()=portality.clcsv.ClCsv-class.html#headers"><a title="portality.clcsv.ClCsv.headers" class="py-name" href="#" onclick="return doclink('link-55', 'headers', 'link-55');">headers</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:06 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

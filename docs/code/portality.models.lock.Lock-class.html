@@ -1,0 +1,1323 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.models.lock.Lock</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.models-module.html">Package&nbsp;models</a> ::
+        <a href="portality.models.lock-module.html">Module&nbsp;lock</a> ::
+        Class&nbsp;Lock
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.models.lock.Lock-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Lock</h1><p class="nomargin-top"><span class="codelink"><a href="portality.models.lock-pysrc.html#Lock">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit_151" name="uml_class_diagram_for_portalit_151">
+<area shape="rect" id="node1_42" href="portality.models.lock.Lock-class.html#__type__" title="&quot;id&quot; : &quot;&lt;opaque id for this lock&gt;&quot;, &quot;about&quot; : &quot;&lt;opaque id for the journal/suggestion to which it applies&gt;&quot;, &quot;type&quot; : &quot;&lt;journal/suggestion&gt;&quot;, &quot;created_date&quot; : &quot;&lt;timestamp this lock record was created&gt;&quot;, &quot;expires&quot; : &quot;&lt;timestamp for when this lock record expires&gt;&quot;, &quot;username&quot; : &quot;&lt;user name of the user who holds the lock&gt;&quot;" alt="" coords="81,844,327,864"/>
+<area shape="rect" id="node1_43" href="portality.models.lock.Lock-class.html#about" title="portality.models.lock.Lock.about" alt="" coords="81,867,327,887"/>
+<area shape="rect" id="node1_44" href="portality.models.lock.Lock-class.html#set_about" title="portality.models.lock.Lock.set_about" alt="" coords="81,887,327,907"/>
+<area shape="rect" id="node1_45" href="portality.models.lock.Lock-class.html#type" title="portality.models.lock.Lock.type" alt="" coords="81,907,327,927"/>
+<area shape="rect" id="node1_46" href="portality.models.lock.Lock-class.html#set_type" title="portality.models.lock.Lock.set_type" alt="" coords="81,927,327,947"/>
+<area shape="rect" id="node1_47" href="portality.models.lock.Lock-class.html#username" title="portality.models.lock.Lock.username" alt="" coords="81,947,327,967"/>
+<area shape="rect" id="node1_48" href="portality.models.lock.Lock-class.html#set_username" title="portality.models.lock.Lock.set_username" alt="" coords="81,967,327,987"/>
+<area shape="rect" id="node1_49" href="portality.models.lock.Lock-class.html#expires" title="portality.models.lock.Lock.expires" alt="" coords="81,987,327,1007"/>
+<area shape="rect" id="node1_50" href="portality.models.lock.Lock-class.html#expires_in" title="portality.models.lock.Lock.expires_in" alt="" coords="81,1007,327,1027"/>
+<area shape="rect" id="node1_51" href="portality.models.lock.Lock-class.html#is_expired" title="portality.models.lock.Lock.is_expired" alt="" coords="81,1027,327,1047"/>
+<area shape="rect" id="node1_52" href="portality.models.lock.Lock-class.html#utc_expires" title="portality.models.lock.Lock.utc_expires" alt="" coords="81,1047,327,1067"/>
+<area shape="rect" id="node1_53" href="portality.models.lock.Lock-class.html#expire_formatted" title="portality.models.lock.Lock.expire_formatted" alt="" coords="81,1067,327,1087"/>
+<area shape="rect" id="node1" href="portality.models.lock.Lock-class.html" title="portality.models.lock.Lock" alt="" coords="69,819,339,1093"/>
+<area shape="rect" id="node2_54" href="portality.dao.DomainObject-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,493,389,513"/>
+<area shape="rect" id="node2_55" href="portality.dao.DomainObject-class.html#target_whole_index" title="portality.dao.DomainObject.target_whole_index" alt="" coords="17,513,389,533"/>
+<area shape="rect" id="node2_56" href="portality.dao.DomainObject-class.html#target" title="portality.dao.DomainObject.target" alt="" coords="17,533,389,553"/>
+<area shape="rect" id="node2_57" href="portality.dao.DomainObject-class.html#makeid" title="Create a new id for data object overwrite this in specific model types if required" alt="" coords="17,553,389,573"/>
+<area shape="rect" id="node2_58" href="portality.dao.DomainObject-class.html#id" title="portality.dao.DomainObject.id" alt="" coords="17,573,389,593"/>
+<area shape="rect" id="node2_59" href="portality.dao.DomainObject-class.html#set_id" title="portality.dao.DomainObject.set_id" alt="" coords="17,593,389,613"/>
+<area shape="rect" id="node2_60" href="portality.dao.DomainObject-class.html#version" title="portality.dao.DomainObject.version" alt="" coords="17,613,389,633"/>
+<area shape="rect" id="node2_61" href="portality.dao.DomainObject-class.html#json" title="portality.dao.DomainObject.json" alt="" coords="17,633,389,653"/>
+<area shape="rect" id="node2_62" href="portality.dao.DomainObject-class.html#set_created" title="portality.dao.DomainObject.set_created" alt="" coords="17,653,389,673"/>
+<area shape="rect" id="node2_63" href="portality.dao.DomainObject-class.html#created_date" title="portality.dao.DomainObject.created_date" alt="" coords="17,673,389,693"/>
+<area shape="rect" id="node2_64" href="portality.dao.DomainObject-class.html#created_timestamp" title="portality.dao.DomainObject.created_timestamp" alt="" coords="17,693,389,713"/>
+<area shape="rect" id="node2_65" href="portality.dao.DomainObject-class.html#last_updated" title="portality.dao.DomainObject.last_updated" alt="" coords="17,713,389,733"/>
+<area shape="rect" id="node2_66" href="portality.dao.DomainObject-class.html#save" title="portality.dao.DomainObject.save" alt="" coords="17,733,389,753"/>
+<area shape="rect" id="node2_67" href="portality.dao.DomainObject-class.html#block" title="portality.dao.DomainObject.block" alt="" coords="17,773,389,793"/>
+<area shape="rect" id="node2" href="portality.dao.DomainObject-class.html" title="portality.dao.DomainObject" alt="" coords="5,459,401,799"/>
+<area shape="rect" id="node3_68" href="javascript:void(0);" title="hash(x)" alt="" coords="96,31,311,51"/>
+<area shape="rect" id="node3_69" href="javascript:void(0);" title="UserDict.UserDict.__repr__" alt="" coords="96,53,311,73"/>
+<area shape="rect" id="node3_70" href="javascript:void(0);" title="UserDict.UserDict.__cmp__" alt="" coords="96,73,311,93"/>
+<area shape="rect" id="node3_71" href="javascript:void(0);" title="UserDict.UserDict.__len__" alt="" coords="96,93,311,113"/>
+<area shape="rect" id="node3_72" href="javascript:void(0);" title="UserDict.UserDict.__getitem__" alt="" coords="96,113,311,133"/>
+<area shape="rect" id="node3_73" href="javascript:void(0);" title="UserDict.UserDict.__setitem__" alt="" coords="96,133,311,153"/>
+<area shape="rect" id="node3_74" href="javascript:void(0);" title="UserDict.UserDict.__delitem__" alt="" coords="96,153,311,173"/>
+<area shape="rect" id="node3_75" href="javascript:void(0);" title="UserDict.UserDict.clear" alt="" coords="96,173,311,193"/>
+<area shape="rect" id="node3_76" href="javascript:void(0);" title="UserDict.UserDict.copy" alt="" coords="96,193,311,213"/>
+<area shape="rect" id="node3_77" href="javascript:void(0);" title="UserDict.UserDict.keys" alt="" coords="96,213,311,233"/>
+<area shape="rect" id="node3_78" href="javascript:void(0);" title="UserDict.UserDict.items" alt="" coords="96,233,311,253"/>
+<area shape="rect" id="node3_79" href="javascript:void(0);" title="UserDict.UserDict.iteritems" alt="" coords="96,253,311,273"/>
+<area shape="rect" id="node3_80" href="javascript:void(0);" title="UserDict.UserDict.iterkeys" alt="" coords="96,273,311,293"/>
+<area shape="rect" id="node3_81" href="javascript:void(0);" title="UserDict.UserDict.itervalues" alt="" coords="96,293,311,313"/>
+<area shape="rect" id="node3_82" href="javascript:void(0);" title="UserDict.UserDict.fromkeys" alt="" coords="96,333,311,353"/>
+<area shape="rect" id="node3" href="javascript:void(0);" title="UserDict.UserDict" alt="" coords="83,5,322,360"/>
+<area shape="rect" id="node4_83" href="javascript:void(0);" title="UserDict.IterableUserDict.__iter__" alt="" coords="127,413,280,433"/>
+<area shape="rect" id="node4" href="javascript:void(0);" title="UserDict.IterableUserDict" alt="" coords="114,379,291,439"/>
+</map>
+  <img src="uml_class_diagram_for_portalit_151.gif" alt='' usemap="#uml_class_diagram_for_portalit_151" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.models.lock.Lock-class.html#about" class="summary-sig-name">about</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.about">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_about"></a><span class="summary-sig-name">set_about</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.set_about">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.models.lock.Lock-class.html#type" class="summary-sig-name">type</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.type">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_type"></a><span class="summary-sig-name">set_type</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.set_type">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.models.lock.Lock-class.html#username" class="summary-sig-name">username</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.username">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_username"></a><span class="summary-sig-name">set_username</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.set_username">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.models.lock.Lock-class.html#expires" class="summary-sig-name">expires</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.expires">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="expires_in"></a><span class="summary-sig-name">expires_in</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">timeout</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.expires_in">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_expired"></a><span class="summary-sig-name">is_expired</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.is_expired">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="utc_expires"></a><span class="summary-sig-name">utc_expires</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.utc_expires">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="expire_formatted"></a><span class="summary-sig-name">expire_formatted</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">format</span>=<span class="summary-sig-default">&quot;%H:%M&quot;</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.expire_formatted">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>UserDict.IterableUserDict</code></b>:
+      <code>__iter__</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>UserDict.UserDict</code></b>:
+      <code>__cmp__</code>,
+      <code>__contains__</code>,
+      <code>__delitem__</code>,
+      <code>__getitem__</code>,
+      <code>__len__</code>,
+      <code>__repr__</code>,
+      <code>__setitem__</code>,
+      <code>clear</code>,
+      <code>copy</code>,
+      <code>get</code>,
+      <code>has_key</code>,
+      <code>items</code>,
+      <code>iteritems</code>,
+      <code>iterkeys</code>,
+      <code>itervalues</code>,
+      <code>keys</code>,
+      <code>pop</code>,
+      <code>popitem</code>,
+      <code>setdefault</code>,
+      <code>values</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.dao.DomainObject-class.html">dao.DomainObject</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#created_date" class="summary-sig-name">created_date</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.created_date">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#created_timestamp" class="summary-sig-name">created_timestamp</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.created_timestamp">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="delete"></a><span class="summary-sig-name">delete</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.delete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#id" class="summary-sig-name">id</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#json" class="summary-sig-name">json</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.json">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#last_updated" class="summary-sig-name">last_updated</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.last_updated">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="save"></a><span class="summary-sig-name">save</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">retries</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">back_off_factor</span>=<span class="summary-sig-default">1</span>,
+        <span class="summary-sig-arg">differentiate</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.save">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_created"></a><span class="summary-sig-name">set_created</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">date</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.set_created">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="set_id"></a><span class="summary-sig-name">set_id</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">id</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.set_id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#update" class="summary-sig-name">update</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">doc</span>)</span><br />
+      add the provided doc to the existing object</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.update">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#version" class="summary-sig-name">version</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.version">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>UserDict.UserDict</code></b>:
+      <code>fromkeys</code>
+      </p>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.dao.DomainObject-class.html">dao.DomainObject</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="all"></a><span class="summary-sig-name">all</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">10000000</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.all">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="autocomplete"></a><span class="summary-sig-name">autocomplete</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">field</span>,
+        <span class="summary-sig-arg">prefix</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">5</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.autocomplete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="block"></a><span class="summary-sig-name">block</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">id</span>,
+        <span class="summary-sig-arg">last_updated</span>,
+        <span class="summary-sig-arg">sleep</span>=<span class="summary-sig-default">0.5</span>,
+        <span class="summary-sig-arg">max_retry_seconds</span>=<span class="summary-sig-default">30</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.block">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="bulk"></a><span class="summary-sig-name">bulk</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">bibjson_list</span>,
+        <span class="summary-sig-arg">idkey</span>=<span class="summary-sig-default">'id'</span>,
+        <span class="summary-sig-arg">refresh</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.bulk">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="count"></a><span class="summary-sig-name">count</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.count">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="delete_all"></a><span class="summary-sig-name">delete_all</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.delete_all">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="delete_by_query"></a><span class="summary-sig-name">delete_by_query</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">query</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.delete_by_query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="destroy_index"></a><span class="summary-sig-name">destroy_index</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.destroy_index">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="es_keys"></a><span class="summary-sig-name">es_keys</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">mapping</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">prefix</span>=<span class="summary-sig-default">''</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.es_keys">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="hit_count"></a><span class="summary-sig-name">hit_count</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">query</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.hit_count">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="iterall"></a><span class="summary-sig-name">iterall</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">1000</span>,
+        <span class="summary-sig-arg">limit</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.iterall">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="iterate"></a><span class="summary-sig-name">iterate</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">q</span>,
+        <span class="summary-sig-arg">page_size</span>=<span class="summary-sig-default">1000</span>,
+        <span class="summary-sig-arg">limit</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">wrap</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.iterate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="makeid"></a><span class="summary-sig-name">makeid</span>(<span class="summary-sig-arg">cls</span>)</span><br />
+      Create a new id for data object
+overwrite this in specific model types if required</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.makeid">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="prefix_query"></a><span class="summary-sig-name">prefix_query</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">field</span>,
+        <span class="summary-sig-arg">prefix</span>,
+        <span class="summary-sig-arg">size</span>=<span class="summary-sig-default">5</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.prefix_query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pull"></a><span class="summary-sig-name">pull</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">id_</span>)</span><br />
+      Retrieve object by id.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.pull">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="pull_by_key"></a><span class="summary-sig-name">pull_by_key</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">value</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.pull_by_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="q2obj"></a><span class="summary-sig-name">q2obj</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.q2obj">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.dao.DomainObject-class.html#query" class="summary-sig-name">query</a>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">recid</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">endpoint</span>=<span class="summary-sig-default">'_search'</span>,
+        <span class="summary-sig-arg">q</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">terms</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">facets</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Perform a query on backend.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="refresh"></a><span class="summary-sig-name">refresh</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.refresh">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="remove_by_id"></a><span class="summary-sig-name">remove_by_id</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">id</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.remove_by_id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="send_query"></a><span class="summary-sig-name">send_query</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">qobj</span>,
+        <span class="summary-sig-arg">endpoint</span>=<span class="summary-sig-default">'_search'</span>,
+        <span class="summary-sig-arg">recid</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">retry</span>=<span class="summary-sig-default">50</span>)</span><br />
+      Actually send a query object to the backend.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.send_query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="target"></a><span class="summary-sig-name">target</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.target">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="target_whole_index"></a><span class="summary-sig-name">target_whole_index</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.target_whole_index">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.dao.DomainObject-class.html">dao.DomainObject</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="make_query"></a><span class="summary-sig-name">make_query</span>(<span class="summary-sig-arg">recid</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">endpoint</span>=<span class="summary-sig-default">'_search'</span>,
+        <span class="summary-sig-arg">theq</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">terms</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">facets</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">should_terms</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">consistent_order</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Generate a query object based on parameters but don't sent to
+backend - return it instead. Must always have the same
+parameters as the query method. See query method for explanation
+of parameters.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.dao-pysrc.html#DomainObject.make_query">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.models.lock.Lock-class.html#__type__" class="summary-name">__type__</a> = <code title="&quot;lock&quot;">&quot;lock&quot;</code><br />
+      &quot;id&quot; : &quot;&lt;opaque id for this lock&gt;&quot;,
+&quot;about&quot; : &quot;&lt;opaque id for the journal/suggestion to which it applies&gt;&quot;,
+&quot;type&quot; : &quot;&lt;journal/suggestion&gt;&quot;,
+&quot;created_date&quot; : &quot;&lt;timestamp this lock record was created&gt;&quot;,
+&quot;expires&quot; : &quot;&lt;timestamp for when this lock record expires&gt;&quot;,
+&quot;username&quot; : &quot;&lt;user name of the user who holds the lock&gt;&quot;
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>UserDict.UserDict</code></b>:
+      <code>__hash__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="about"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">about</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.about">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="type"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">type</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.type">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="username"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">username</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.username">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="expires"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">expires</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.models.lock-pysrc.html#Lock.expires">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Decorators:</dt>
+    <dd><ul class="nomargin-top">
+        <li><code>@property</code></li>
+    </ul></dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__type__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">__type__</h3>
+  <dl class="rst-docutils">
+<dt>{</dt>
+<dd>&quot;id&quot; : &quot;&lt;opaque id for this lock&gt;&quot;,
+&quot;about&quot; : &quot;&lt;opaque id for the journal/suggestion to which it applies&gt;&quot;,
+&quot;type&quot; : &quot;&lt;journal/suggestion&gt;&quot;,
+&quot;created_date&quot; : &quot;&lt;timestamp this lock record was created&gt;&quot;,
+&quot;expires&quot; : &quot;&lt;timestamp for when this lock record expires&gt;&quot;,
+&quot;username&quot; : &quot;&lt;user name of the user who holds the lock&gt;&quot;</dd>
+</dl>
+<p>}</p>
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+&quot;lock&quot;
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:04 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

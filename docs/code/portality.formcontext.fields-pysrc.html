@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.formcontext.fields</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.formcontext-module.html">Package&nbsp;formcontext</a> ::
+        Module&nbsp;fields
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.formcontext.fields-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.formcontext.fields-module.html">Module portality.formcontext.fields</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wtforms</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Field</tt><tt class="py-op">,</tt> <tt class="py-name">TextField</tt><tt class="py-op">,</tt> <tt class="py-name">SelectField</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wtforms</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Function portality.view.doaj.widgets()=portality.view.doaj-module.html#widgets"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-0', 'widgets', 'link-0');">widgets</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX=portality.formcontext.fields-module.html#URL_REQUIRED_SCHEME_REGEX"><a title="portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX" class="py-name" href="#" onclick="return doclink('link-1', 'URL_REQUIRED_SCHEME_REGEX', 'link-1');">URL_REQUIRED_SCHEME_REGEX</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt><tt class="py-op">)</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="TagListField"></a><div id="TagListField-def"><a name="L8"></a><tt class="py-lineno"> 8</tt> <a class="py-toggle" href="#" id="TagListField-toggle" onclick="return toggle('TagListField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html">TagListField</a><tt class="py-op">(</tt><tt class="py-base-class">Field</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="TagListField-expanded"><a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt id="link-2" class="py-name" targets="Variable portality.formcontext.fields.TagListField.widget=portality.formcontext.fields.TagListField-class.html#widget,Variable portality.formcontext.fields.URLField.widget=portality.formcontext.fields.URLField-class.html#widget"><a title="portality.formcontext.fields.TagListField.widget
+portality.formcontext.fields.URLField.widget" class="py-name" href="#" onclick="return doclink('link-2', 'widget', 'link-2');">widget</a></tt> <tt class="py-op">=</tt> <tt id="link-3" class="py-name"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-3', 'widgets', 'link-0');">widgets</a></tt><tt class="py-op">.</tt><tt class="py-name">TextInput</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="TagListField._value"></a><div id="TagListField._value-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="TagListField._value-toggle" onclick="return toggle('TagListField._value');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#_value">_value</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField._value-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField._value-expanded"><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">u', '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">u''</tt> </tt>
+</div><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"> </tt>
+<a name="TagListField.get_list"></a><div id="TagListField.get_list-def"><a name="L17"></a><tt class="py-lineno">17</tt> <a class="py-toggle" href="#" id="TagListField.get_list-toggle" onclick="return toggle('TagListField.get_list');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#get_list">get_list</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField.get_list-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField.get_list-expanded"><a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> </tt>
+</div><a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"> </tt>
+<a name="TagListField.process_formdata"></a><div id="TagListField.process_formdata-def"><a name="L20"></a><tt class="py-lineno">20</tt> <a class="py-toggle" href="#" id="TagListField.process_formdata-toggle" onclick="return toggle('TagListField.process_formdata');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#process_formdata">process_formdata</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">valuelist</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField.process_formdata-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField.process_formdata-expanded"><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">valuelist</tt><tt class="py-op">:</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">clean_x</tt> <tt class="py-keyword">for</tt> <tt class="py-name">clean_x</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-name">x</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">x</tt> <tt class="py-keyword">in</tt> <tt class="py-name">valuelist</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">','</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt class="py-name">clean_x</tt><tt class="py-op">]</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt>
+<a name="URLField"></a><div id="URLField-def"><a name="L27"></a><tt class="py-lineno">27</tt> <a class="py-toggle" href="#" id="URLField-toggle" onclick="return toggle('URLField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.URLField-class.html">URLField</a><tt class="py-op">(</tt><tt class="py-base-class">TextField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="URLField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="URLField-expanded"><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt id="link-4" class="py-name"><a title="portality.formcontext.fields.TagListField.widget
+portality.formcontext.fields.URLField.widget" class="py-name" href="#" onclick="return doclink('link-4', 'widget', 'link-2');">widget</a></tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-5', 'widgets', 'link-0');">widgets</a></tt><tt class="py-op">.</tt><tt class="py-name">TextInput</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="URLField.process_formdata"></a><div id="URLField.process_formdata-def"><a name="L30"></a><tt class="py-lineno">30</tt> <a class="py-toggle" href="#" id="URLField.process_formdata-toggle" onclick="return toggle('URLField.process_formdata');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.URLField-class.html#process_formdata">process_formdata</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">valuelist</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="URLField.process_formdata-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="URLField.process_formdata-expanded"><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">valuelist</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">assumed_scheme</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://'</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">val</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">val</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-name">assumed_scheme</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt id="link-6" class="py-name"><a title="portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX" class="py-name" href="#" onclick="return doclink('link-6', 'URL_REQUIRED_SCHEME_REGEX', 'link-1');">URL_REQUIRED_SCHEME_REGEX</a></tt><tt class="py-op">.</tt><tt class="py-name">match</tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">assumed_scheme</tt> <tt class="py-op">+</tt> <tt class="py-name">val</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">val</tt> <tt class="py-op">==</tt> <tt class="py-name">assumed_scheme</tt><tt class="py-op">:</tt>  <tt class="py-comment"># just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-string">u''</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">val</tt> </tt>
+</div></div><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="DisabledTextField"></a><div id="DisabledTextField-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="DisabledTextField-toggle" onclick="return toggle('DisabledTextField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.DisabledTextField-class.html">DisabledTextField</a><tt class="py-op">(</tt><tt class="py-base-class">TextField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DisabledTextField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="DisabledTextField-expanded"><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="DisabledTextField.__call__"></a><div id="DisabledTextField.__call__-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="DisabledTextField.__call__-toggle" onclick="return toggle('DisabledTextField.__call__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.DisabledTextField-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DisabledTextField.__call__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DisabledTextField.__call__-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method portality.ordereddict.OrderedDict.setdefault()=portality.ordereddict.OrderedDict-class.html#setdefault"><a title="portality.ordereddict.OrderedDict.setdefault" class="py-name" href="#" onclick="return doclink('link-7', 'setdefault', 'link-7');">setdefault</a></tt><tt class="py-op">(</tt><tt class="py-string">'disabled'</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name" targets="Class portality.formcontext.fields.DisabledTextField=portality.formcontext.fields.DisabledTextField-class.html"><a title="portality.formcontext.fields.DisabledTextField" class="py-name" href="#" onclick="return doclink('link-8', 'DisabledTextField', 'link-8');">DisabledTextField</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method portality.formcontext.fields.DisabledTextField.__call__()=portality.formcontext.fields.DisabledTextField-class.html#__call__,Method portality.formcontext.validate.DataOptional.__call__()=portality.formcontext.validate.DataOptional-class.html#__call__,Method portality.formcontext.validate.ExclusiveCheckbox.__call__()=portality.formcontext.validate.ExclusiveCheckbox-class.html#__call__,Method portality.formcontext.validate.ExtraFieldRequiredIf.__call__()=portality.formcontext.validate.ExtraFieldRequiredIf-class.html#__call__,Method portality.formcontext.validate.MaxLen.__call__()=portality.formcontext.validate.MaxLen-class.html#__call__,Method portality.formcontext.validate.OptionalIf.__call__()=portality.formcontext.validate.OptionalIf-class.html#__call__,Method portality.formcontext.validate.RegexpOnTagList.__call__()=portality.formcontext.validate.RegexpOnTagList-class.html#__call__,Method portality.formcontext.validate.RequiredIfRole.__call__()=portality.formcontext.validate.RequiredIfRole-class.html#__call__,Method portality.formcontext.validate.ThisOrThat.__call__()=portality.formcontext.validate.ThisOrThat-class.html#__call__,Method portality.formcontext.validate.URLOptionalScheme.__call__()=portality.formcontext.validate.URLOptionalScheme-class.html#__call__,Method portality.view.forms.NotRole.__call__()=portality.view.forms.NotRole-class.html#__call__,Method portality.view.forms.UniqueGroupName.__call__()=portality.view.forms.UniqueGroupName-class.html#__call__"><a title="portality.formcontext.fields.DisabledTextField.__call__
+portality.formcontext.validate.DataOptional.__call__
+portality.formcontext.validate.ExclusiveCheckbox.__call__
+portality.formcontext.validate.ExtraFieldRequiredIf.__call__
+portality.formcontext.validate.MaxLen.__call__
+portality.formcontext.validate.OptionalIf.__call__
+portality.formcontext.validate.RegexpOnTagList.__call__
+portality.formcontext.validate.RequiredIfRole.__call__
+portality.formcontext.validate.ThisOrThat.__call__
+portality.formcontext.validate.URLOptionalScheme.__call__
+portality.view.forms.NotRole.__call__
+portality.view.forms.UniqueGroupName.__call__" class="py-name" href="#" onclick="return doclink('link-9', '__call__', 'link-9');">__call__</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField"></a><div id="PermissiveSelectField-def"><a name="L50"></a><tt class="py-lineno">50</tt> <a class="py-toggle" href="#" id="PermissiveSelectField-toggle" onclick="return toggle('PermissiveSelectField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html">PermissiveSelectField</a><tt class="py-op">(</tt><tt class="py-base-class">SelectField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="PermissiveSelectField-expanded"><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-docstring">""" A SelectField with validation disabled, allowing us to change the choices in JS and validate later."""</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField.iter_choices"></a><div id="PermissiveSelectField.iter_choices-def"><a name="L53"></a><tt class="py-lineno">53</tt> <a class="py-toggle" href="#" id="PermissiveSelectField.iter_choices-toggle" onclick="return toggle('PermissiveSelectField.iter_choices');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html#iter_choices">iter_choices</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField.iter_choices-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissiveSelectField.iter_choices-expanded"><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module portality.formcontext.choices=portality.formcontext.choices-module.html"><a title="portality.formcontext.choices" class="py-name" href="#" onclick="return doclink('link-10', 'choices', 'link-10');">choices</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">            <tt class="py-keyword">yield</tt> <tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">coerce</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField.pre_validate"></a><div id="PermissiveSelectField.pre_validate-def"><a name="L57"></a><tt class="py-lineno">57</tt> <a class="py-toggle" href="#" id="PermissiveSelectField.pre_validate-toggle" onclick="return toggle('PermissiveSelectField.pre_validate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html#pre_validate">pre_validate</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">form</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField.pre_validate-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissiveSelectField.pre_validate-expanded"><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:06 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

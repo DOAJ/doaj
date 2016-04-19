@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.scripts.applicationrm</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.scripts-module.html">Package&nbsp;scripts</a> ::
+        Module&nbsp;applicationrm
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.scripts.applicationrm-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.scripts.applicationrm-module.html">Module portality.scripts.applicationrm</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-2', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-3', 'core', 'link-3');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-4', 'app', 'link-4');">app</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">:</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-5" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-5', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-6', 'config', 'link-6');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"SCRIPTS_READ_ONLY_MODE"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"System is in READ-ONLY mode, script cannot run"</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">        <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">argparse</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt class="py-name">parser</tt> <tt class="py-op">=</tt> <tt class="py-name">argparse</tt><tt class="py-op">.</tt><tt class="py-name">ArgumentParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-e"</tt><tt class="py-op">,</tt> <tt class="py-string">"--email"</tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Function portality.view.openurl.help()=portality.view.openurl-module.html#help,Function portality.view.publisher.help()=portality.view.publisher-module.html#help"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-7', 'help', 'link-7');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"email of the suggester whose applications to remove"</tt><tt class="py-op">)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-s"</tt><tt class="py-op">,</tt> <tt class="py-string">"--status"</tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-8', 'help', 'link-7');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"comma separated list of statuses to remove; if none provided all applications will be removed"</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">    <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">parse_args</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-9', 'email', 'link-9');">email</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Please specify an username with the -e option"</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-name">statuses</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.models.reapplication.BulkUpload.status()=portality.models.reapplication.BulkUpload-class.html#status,Method portality.models.uploads.FileUpload.status()=portality.models.uploads.FileUpload-class.html#status"><a title="portality.models.reapplication.BulkUpload.status
+portality.models.uploads.FileUpload.status" class="py-name" href="#" onclick="return doclink('link-10', 'status', 'link-10');">status</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">statuses</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt id="link-11" class="py-name" targets="Variable portality.view.account.RegisterForm.s=portality.view.account.RegisterForm-class.html#s"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-11', 's', 'link-11');">s</a></tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-12" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-12', 's', 'link-11');">s</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="portality.models.reapplication.BulkUpload.status
+portality.models.uploads.FileUpload.status" class="py-name" href="#" onclick="return doclink('link-13', 'status', 'link-10');">status</a></tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">","</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt id="link-14" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.reapplication.OwnerBulkQuery.query()=portality.models.reapplication.OwnerBulkQuery-class.html#query,Method portality.models.reapplication.StatusBulkQuery.query()=portality.models.reapplication.StatusBulkQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.reapplication.OwnerBulkQuery.query
+portality.models.reapplication.StatusBulkQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-14', 'query', 'link-14');">query</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt id="link-15" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-15', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Class portality.formcontext.forms.Suggestion=portality.formcontext.forms.Suggestion-class.html,Class portality.models.suggestion.Suggestion=portality.models.suggestion.Suggestion-class.html"><a title="portality.formcontext.forms.Suggestion
+portality.models.suggestion.Suggestion" class="py-name" href="#" onclick="return doclink('link-16', 'Suggestion', 'link-16');">Suggestion</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Class Method portality.models.article.Article.delete_selected()=portality.models.article.Article-class.html#delete_selected,Class Method portality.models.journal.Journal.delete_selected()=portality.models.journal.Journal-class.html#delete_selected,Class Method portality.models.suggestion.Suggestion.delete_selected()=portality.models.suggestion.Suggestion-class.html#delete_selected"><a title="portality.models.article.Article.delete_selected
+portality.models.journal.Journal.delete_selected
+portality.models.suggestion.Suggestion.delete_selected" class="py-name" href="#" onclick="return doclink('link-17', 'delete_selected', 'link-17');">delete_selected</a></tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-18', 'email', 'link-9');">email</a></tt><tt class="py-op">=</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-19', 'email', 'link-9');">email</a></tt><tt class="py-op">,</tt> <tt class="py-name">statuses</tt><tt class="py-op">=</tt><tt class="py-name">statuses</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:07 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

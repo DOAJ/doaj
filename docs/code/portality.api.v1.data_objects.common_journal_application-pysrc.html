@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.api.v1.data_objects.common_journal_application</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.api-module.html">Package&nbsp;api</a> ::
+        <a href="portality.api.v1-module.html">Package&nbsp;v1</a> ::
+        <a href="portality.api.v1.data_objects-module.html">Package&nbsp;data_objects</a> ::
+        Module&nbsp;common_journal_application
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.api.v1.data_objects.common_journal_application-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.api.v1.data_objects.common_journal_application-module.html">Module portality.api.v1.data_objects.common_journal_application</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Method portality.ordereddict.OrderedDict.copy()=portality.ordereddict.OrderedDict-class.html#copy"><a title="portality.ordereddict.OrderedDict.copy" class="py-name" href="#" onclick="return doclink('link-0', 'copy', 'link-0');">copy</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">deepcopy</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-1', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Package portality.lib=portality.lib-module.html"><a title="portality.lib" class="py-name" href="#" onclick="return doclink('link-2', 'lib', 'link-2');">lib</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Module portality.lib.dataobj=portality.lib.dataobj-module.html"><a title="portality.lib.dataobj" class="py-name" href="#" onclick="return doclink('link-3', 'dataobj', 'link-3');">dataobj</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Module portality.lib.swagger=portality.lib.swagger-module.html"><a title="portality.lib.swagger" class="py-name" href="#" onclick="return doclink('link-4', 'swagger', 'link-4');">swagger</a></tt> </tt>
+<a name="OutgoingCommonJournalApplication"></a><div id="OutgoingCommonJournalApplication-def"><a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt> <a class="py-toggle" href="#" id="OutgoingCommonJournalApplication-toggle" onclick="return toggle('OutgoingCommonJournalApplication');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html">OutgoingCommonJournalApplication</a><tt class="py-op">(</tt><tt class="py-base-class">dataobj</tt><tt class="py-op">.</tt><tt class="py-base-class">DataObj</tt><tt class="py-op">,</tt> <tt class="py-base-class">swagger</tt><tt class="py-op">.</tt><tt class="py-base-class">SwaggerSupport</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OutgoingCommonJournalApplication-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="OutgoingCommonJournalApplication-expanded"><a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="OutgoingCommonJournalApplication.from_model"></a><div id="OutgoingCommonJournalApplication.from_model-def"><a name="L8"></a><tt class="py-lineno"> 8</tt> <a class="py-toggle" href="#" id="OutgoingCommonJournalApplication.from_model-toggle" onclick="return toggle('OutgoingCommonJournalApplication.from_model');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html#from_model">from_model</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">journal_or_app</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OutgoingCommonJournalApplication.from_model-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="OutgoingCommonJournalApplication.from_model-expanded"><a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">        <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-name">deepcopy</tt><tt class="py-op">(</tt><tt class="py-name">journal_or_app</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">        <tt class="py-comment"># we need to re-write the archiving policy section</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-comment"># joa = d.get("bibjson", {}).get("archiving_policy")</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt class="py-name">joa</tt> <tt class="py-op">=</tt> <tt class="py-name">journal_or_app</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Method portality.models.article.Article.bibjson()=portality.models.article.Article-class.html#bibjson,Module portality.models.bibjson=portality.models.bibjson-module.html,Method portality.models.journal.JournalLikeObject.bibjson()=portality.models.journal.JournalLikeObject-class.html#bibjson"><a title="portality.models.article.Article.bibjson
+portality.models.bibjson
+portality.models.journal.JournalLikeObject.bibjson" class="py-name" href="#" onclick="return doclink('link-5', 'bibjson', 'link-5');">bibjson</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method portality.models.journal.JournalBibJSON.archiving_policy()=portality.models.journal.JournalBibJSON-class.html#archiving_policy"><a title="portality.models.journal.JournalBibJSON.archiving_policy" class="py-name" href="#" onclick="return doclink('link-6', 'archiving_policy', 'link-6');">archiving_policy</a></tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">joa</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">            <tt class="py-name">njoa</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-string">"url"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">joa</tt><tt class="py-op">:</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">                <tt class="py-name">njoa</tt><tt class="py-op">[</tt><tt class="py-string">"url"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">joa</tt><tt class="py-op">[</tt><tt class="py-string">"url"</tt><tt class="py-op">]</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-string">"policy"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">joa</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">                <tt class="py-name">npol</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">pol</tt> <tt class="py-keyword">in</tt> <tt class="py-name">joa</tt><tt class="py-op">[</tt><tt class="py-string">"policy"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">pol</tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">                        <tt class="py-name">npol</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-string">"name"</tt> <tt class="py-op">:</tt> <tt class="py-name">pol</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">"domain"</tt> <tt class="py-op">:</tt> <tt class="py-name">pol</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">                    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">                        <tt class="py-name">npol</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-string">"name"</tt> <tt class="py-op">:</tt> <tt class="py-name">pol</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">                <tt class="py-name">njoa</tt><tt class="py-op">[</tt><tt class="py-string">"policy"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">npol</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">            <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"archiving_policy"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">njoa</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:08 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

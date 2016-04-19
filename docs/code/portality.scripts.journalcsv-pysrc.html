@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.scripts.journalcsv</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.scripts-module.html">Package&nbsp;scripts</a> ::
+        Module&nbsp;journalcsv
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.scripts.journalcsv-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.scripts.journalcsv-module.html">Module portality.scripts.journalcsv</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">codecs</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-2', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-3', 'core', 'link-3');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-4', 'app', 'link-4');">app</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-5', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module portality.journalcsv=portality.journalcsv-module.html,Module portality.scripts.journalcsv=portality.scripts.journalcsv-module.html"><a title="portality.journalcsv
+portality.scripts.journalcsv" class="py-name" href="#" onclick="return doclink('link-6', 'journalcsv', 'link-6');">journalcsv</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Function portality.journalcsv.make_journals_csv()=portality.journalcsv-module.html#make_journals_csv"><a title="portality.journalcsv.make_journals_csv" class="py-name" href="#" onclick="return doclink('link-7', 'make_journals_csv', 'link-7');">make_journals_csv</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">datetime</tt> <tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">operator</tt> <tt class="py-keyword">import</tt> <tt class="py-name">itemgetter</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt id="link-8" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-8', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-9', 'config', 'link-9');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"SCRIPTS_READ_ONLY_MODE"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"System is in READ-ONLY mode, script cannot run"</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt id="link-10" class="py-name" targets="Variable portality.scripts.journalcsv.cdir=portality.scripts.journalcsv-module.html#cdir,Variable portality.scripts.sitemap.cdir=portality.scripts.sitemap-module.html#cdir"><a title="portality.scripts.journalcsv.cdir
+portality.scripts.sitemap.cdir" class="py-name" href="#" onclick="return doclink('link-10', 'cdir', 'link-10');">cdir</a></tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-11', 'app', 'link-4');">app</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-12', 'config', 'link-9');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"CACHE_DIR"</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt id="link-13" class="py-name"><a title="portality.scripts.journalcsv.cdir
+portality.scripts.sitemap.cdir" class="py-name" href="#" onclick="return doclink('link-13', 'cdir', 'link-10');">cdir</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"You must set CACHE_DIR in the config"</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">    <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt id="link-14" class="py-name" targets="Variable portality.scripts.journalcsv.csvdir=portality.scripts.journalcsv-module.html#csvdir"><a title="portality.scripts.journalcsv.csvdir" class="py-name" href="#" onclick="return doclink('link-14', 'csvdir', 'link-14');">csvdir</a></tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="portality.scripts.journalcsv.cdir
+portality.scripts.sitemap.cdir" class="py-name" href="#" onclick="return doclink('link-15', 'cdir', 'link-10');">cdir</a></tt><tt class="py-op">,</tt> <tt class="py-string">"csv"</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-comment"># save it into the cache directory</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable portality.scripts.journalcsv.attachment_name=portality.scripts.journalcsv-module.html#attachment_name,Variable portality.scripts.sitemap.attachment_name=portality.scripts.sitemap-module.html#attachment_name"><a title="portality.scripts.journalcsv.attachment_name
+portality.scripts.sitemap.attachment_name" class="py-name" href="#" onclick="return doclink('link-16', 'attachment_name', 'link-16');">attachment_name</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'doaj_'</tt> <tt class="py-op">+</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strftime</tt><tt class="py-op">(</tt><tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Function portality.lib.dates.now()=portality.lib.dates-module.html#now,Class Method portality.view.oaipmh.DateFormat.now()=portality.view.oaipmh.DateFormat-class.html#now"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-17', 'now', 'link-17');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-string">'%Y%m%d_%H%M'</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'_utf8.csv'</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable portality.migrate.st2cl.cluster.out=portality.migrate.st2cl.cluster-module.html#out,Variable portality.scripts.journalcsv.out=portality.scripts.journalcsv-module.html#out,Variable portality.scripts.sitemap.out=portality.scripts.sitemap-module.html#out"><a title="portality.migrate.st2cl.cluster.out
+portality.scripts.journalcsv.out
+portality.scripts.sitemap.out" class="py-name" href="#" onclick="return doclink('link-18', 'out', 'link-18');">out</a></tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-19" class="py-name"><a title="portality.scripts.journalcsv.csvdir" class="py-name" href="#" onclick="return doclink('link-19', 'csvdir', 'link-14');">csvdir</a></tt><tt class="py-op">,</tt> <tt id="link-20" class="py-name"><a title="portality.scripts.journalcsv.attachment_name
+portality.scripts.sitemap.attachment_name" class="py-name" href="#" onclick="return doclink('link-20', 'attachment_name', 'link-16');">attachment_name</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-comment"># Avoid unicode issues by forcing the whole system to use unicode. fixme: is this a hack? :)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-name">reload</tt><tt class="py-op">(</tt><tt class="py-name">sys</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">setdefaultencoding</tt><tt class="py-op">(</tt><tt class="py-string">'utf8'</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-comment"># write the csv file</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-keyword">with</tt> <tt class="py-name">codecs</tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-21" class="py-name"><a title="portality.migrate.st2cl.cluster.out
+portality.scripts.journalcsv.out
+portality.scripts.sitemap.out" class="py-name" href="#" onclick="return doclink('link-21', 'out', 'link-18');">out</a></tt><tt class="py-op">,</tt> <tt class="py-string">'wb'</tt><tt class="py-op">,</tt> <tt class="py-name">encoding</tt><tt class="py-op">=</tt><tt class="py-string">'utf8'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">csvfile</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">    <tt id="link-22" class="py-name"><a title="portality.journalcsv.make_journals_csv" class="py-name" href="#" onclick="return doclink('link-22', 'make_journals_csv', 'link-7');">make_journals_csv</a></tt><tt class="py-op">(</tt><tt class="py-name">csvfile</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"><tt class="py-comment"># update the ES record to point to the new file</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"><tt id="link-23" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-23', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Class portality.models.cache.Cache=portality.models.cache.Cache-class.html"><a title="portality.models.cache.Cache" class="py-name" href="#" onclick="return doclink('link-24', 'Cache', 'link-24');">Cache</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Class Method portality.models.cache.Cache.cache_csv()=portality.models.cache.Cache-class.html#cache_csv"><a title="portality.models.cache.Cache.cache_csv" class="py-name" href="#" onclick="return doclink('link-25', 'cache_csv', 'link-25');">cache_csv</a></tt><tt class="py-op">(</tt><tt id="link-26" class="py-name"><a title="portality.scripts.journalcsv.attachment_name
+portality.scripts.sitemap.attachment_name" class="py-name" href="#" onclick="return doclink('link-26', 'attachment_name', 'link-16');">attachment_name</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"><tt class="py-comment"># remove all but the two latest csvs</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"><tt id="link-27" class="py-name" targets="Variable portality.scripts.journalcsv.csvs=portality.scripts.journalcsv-module.html#csvs"><a title="portality.scripts.journalcsv.csvs" class="py-name" href="#" onclick="return doclink('link-27', 'csvs', 'link-27');">csvs</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt id="link-28" class="py-name" targets="Variable portality.view.account.RegisterForm.c=portality.view.account.RegisterForm-class.html#c"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-28', 'c', 'link-28');">c</a></tt><tt class="py-op">,</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">getmtime</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="portality.scripts.journalcsv.csvdir" class="py-name" href="#" onclick="return doclink('link-29', 'csvdir', 'link-14');">csvdir</a></tt><tt class="py-op">,</tt> <tt id="link-30" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-30', 'c', 'link-28');">c</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt id="link-31" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-31', 'c', 'link-28');">c</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">listdir</tt><tt class="py-op">(</tt><tt id="link-32" class="py-name"><a title="portality.scripts.journalcsv.csvdir" class="py-name" href="#" onclick="return doclink('link-32', 'csvdir', 'link-14');">csvdir</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt id="link-33" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-33', 'c', 'link-28');">c</a></tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-string">".csv"</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt id="link-34" class="py-name" targets="Variable portality.scripts.journalcsv.sorted_csvs=portality.scripts.journalcsv-module.html#sorted_csvs"><a title="portality.scripts.journalcsv.sorted_csvs" class="py-name" href="#" onclick="return doclink('link-34', 'sorted_csvs', 'link-34');">sorted_csvs</a></tt> <tt class="py-op">=</tt> <tt class="py-name">sorted</tt><tt class="py-op">(</tt><tt id="link-35" class="py-name"><a title="portality.scripts.journalcsv.csvs" class="py-name" href="#" onclick="return doclink('link-35', 'csvs', 'link-27');">csvs</a></tt><tt class="py-op">,</tt> <tt class="py-name">key</tt><tt class="py-op">=</tt><tt class="py-name">itemgetter</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">reverse</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-36" class="py-name"><a title="portality.scripts.journalcsv.sorted_csvs" class="py-name" href="#" onclick="return doclink('link-36', 'sorted_csvs', 'link-34');">sorted_csvs</a></tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-37" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-37', 'c', 'link-28');">c</a></tt><tt class="py-op">,</tt> <tt class="py-name">lm</tt> <tt class="py-keyword">in</tt> <tt id="link-38" class="py-name"><a title="portality.scripts.journalcsv.sorted_csvs" class="py-name" href="#" onclick="return doclink('link-38', 'sorted_csvs', 'link-34');">sorted_csvs</a></tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">remove</tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-39" class="py-name"><a title="portality.scripts.journalcsv.csvdir" class="py-name" href="#" onclick="return doclink('link-39', 'csvdir', 'link-14');">csvdir</a></tt><tt class="py-op">,</tt> <tt id="link-40" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-40', 'c', 'link-28');">c</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:07 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

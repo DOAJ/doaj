@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.models.cache</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.models-module.html">Package&nbsp;models</a> ::
+        Module&nbsp;cache
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.models.cache-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.models.cache-module.html">Module portality.models.cache</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module portality.dao=portality.dao-module.html"><a title="portality.dao" class="py-name" href="#" onclick="return doclink('link-1', 'dao', 'link-1');">dao</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class portality.dao.DomainObject=portality.dao.DomainObject-class.html"><a title="portality.dao.DomainObject" class="py-name" href="#" onclick="return doclink('link-2', 'DomainObject', 'link-2');">DomainObject</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">datetime</tt> <tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-4', 'core', 'link-4');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-5', 'app', 'link-5');">app</a></tt> </tt>
+<a name="Cache"></a><div id="Cache-def"><a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt> <a class="py-toggle" href="#" id="Cache-toggle" onclick="return toggle('Cache');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html">Cache</a><tt class="py-op">(</tt><tt class="py-base-class">DomainObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="Cache-expanded"><a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line">    <tt id="link-6" class="py-name" targets="Variable portality.blog.News.__type__=portality.blog.News-class.html#__type__,Variable portality.dao.DomainObject.__type__=portality.dao.DomainObject-class.html#__type__,Variable portality.models.account.Account.__type__=portality.models.account.Account-class.html#__type__,Variable portality.models.article.Article.__type__=portality.models.article.Article-class.html#__type__,Variable portality.models.cache.Cache.__type__=portality.models.cache.Cache-class.html#__type__,Variable portality.models.editors.EditorGroup.__type__=portality.models.editors.EditorGroup-class.html#__type__,Variable portality.models.history.ArticleHistory.__type__=portality.models.history.ArticleHistory-class.html#__type__,Variable portality.models.history.JournalHistory.__type__=portality.models.history.JournalHistory-class.html#__type__,Variable portality.models.journal.Journal.__type__=portality.models.journal.Journal-class.html#__type__,Variable portality.models.lcc.LCC.__type__=portality.models.lcc.LCC-class.html#__type__,Variable portality.models.lock.Lock.__type__=portality.models.lock.Lock-class.html#__type__,Variable portality.models.reapplication.BulkReApplication.__type__=portality.models.reapplication.BulkReApplication-class.html#__type__,Variable portality.models.reapplication.BulkUpload.__type__=portality.models.reapplication.BulkUpload-class.html#__type__,Variable portality.models.search.JournalArticle.__type__=portality.models.search.JournalArticle-class.html#__type__,Variable portality.models.suggestion.Suggestion.__type__=portality.models.suggestion.Suggestion-class.html#__type__,Variable portality.models.toc.JournalVolumeToC.__type__=portality.models.toc.JournalVolumeToC-class.html#__type__,Variable portality.models.uploads.FileUpload.__type__=portality.models.uploads.FileUpload-class.html#__type__"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.reapplication.BulkReApplication.__type__
+portality.models.reapplication.BulkUpload.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-6', '__type__', 'link-6');">__type__</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"cache"</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.get_site_statistics"></a><div id="Cache.get_site_statistics-def"><a name="L9"></a><tt class="py-lineno"> 9</tt> <a class="py-toggle" href="#" id="Cache.get_site_statistics-toggle" onclick="return toggle('Cache.get_site_statistics');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#get_site_statistics">get_site_statistics</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.get_site_statistics-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.get_site_statistics-expanded"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">        <tt class="py-name">rec</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-7', 'pull', 'link-7');">pull</a></tt><tt class="py-op">(</tt><tt class="py-string">"site_statistics"</tt><tt class="py-op">)</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">        <tt class="py-name">returnable</tt> <tt class="py-op">=</tt> <tt class="py-name">rec</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">rec</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method portality.models.cache.Cache.is_stale()=portality.models.cache.Cache-class.html#is_stale"><a title="portality.models.cache.Cache.is_stale" class="py-name" href="#" onclick="return doclink('link-8', 'is_stale', 'link-8');">is_stale</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">                <tt class="py-name">returnable</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-comment"># if the cache exists and is in date (or is otherwise returnable), then explicilty build the</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-comment"># cache object and return it.  If we are read-only mode, then we always return the current stats</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-comment"># since the cache won't be allowed to store the regenerated ones</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">returnable</tt> <tt class="py-keyword">or</tt> <tt id="link-9" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-9', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-10', 'config', 'link-10');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"READ_ONLY_MODE"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-op">{</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">                <tt class="py-string">"articles"</tt> <tt class="py-op">:</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"articles"</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">                <tt class="py-string">"journals"</tt> <tt class="py-op">:</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"journals"</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">                <tt class="py-string">"countries"</tt> <tt class="py-op">:</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"countries"</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">                <tt class="py-string">"searchable"</tt> <tt class="py-op">:</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"searchable"</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">            <tt class="py-op">}</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-comment"># if we get to here, then we don't return the cache</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.cache_site_statistics"></a><div id="Cache.cache_site_statistics-def"><a name="L31"></a><tt class="py-lineno">31</tt> <a class="py-toggle" href="#" id="Cache.cache_site_statistics-toggle" onclick="return toggle('Cache.cache_site_statistics');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#cache_site_statistics">cache_site_statistics</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">stats</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.cache_site_statistics-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.cache_site_statistics-expanded"><a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt id="link-11" class="py-name" targets="Variable portality.models.search.JournalArticleQuery.stats=portality.models.search.JournalArticleQuery-class.html#stats"><a title="portality.models.search.JournalArticleQuery.stats" class="py-name" href="#" onclick="return doclink('link-11', 'stats', 'link-11');">stats</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method portality.dao.DomainObject.set_id()=portality.dao.DomainObject-class.html#set_id,Method portality.models.journal.JournalLikeObject.set_id()=portality.models.journal.JournalLikeObject-class.html#set_id"><a title="portality.dao.DomainObject.set_id
+portality.models.journal.JournalLikeObject.set_id" class="py-name" href="#" onclick="return doclink('link-12', 'set_id', 'link-12');">set_id</a></tt><tt class="py-op">(</tt><tt class="py-string">"site_statistics"</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method portality.clcsv.ClCsv.save()=portality.clcsv.ClCsv-class.html#save,Method portality.dao.DomainObject.save()=portality.dao.DomainObject-class.html#save,Method portality.models.article.Article.save()=portality.models.article.Article-class.html#save,Method portality.models.history.History.save()=portality.models.history.History-class.html#save,Method portality.models.journal.Journal.save()=portality.models.journal.Journal-class.html#save,Method portality.models.lcc.LCC.save()=portality.models.lcc.LCC-class.html#save,Method portality.models.suggestion.Suggestion.save()=portality.models.suggestion.Suggestion-class.html#save,Function portality.scripts.prepare_delete_request.save()=portality.scripts.prepare_delete_request-module.html#save"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-13', 'save', 'link-13');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.cache_csv"></a><div id="Cache.cache_csv-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="Cache.cache_csv-toggle" onclick="return toggle('Cache.cache_csv');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#cache_csv">cache_csv</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.cache_csv-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.cache_csv-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-op">{</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-string">"filename"</tt> <tt class="py-op">:</tt> <tt id="link-14" class="py-name" targets="Method portality.models.reapplication.BulkUpload.filename()=portality.models.reapplication.BulkUpload-class.html#filename,Method portality.models.uploads.FileUpload.filename()=portality.models.uploads.FileUpload-class.html#filename"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-14', 'filename', 'link-14');">filename</a></tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="portality.dao.DomainObject.set_id
+portality.models.journal.JournalLikeObject.set_id" class="py-name" href="#" onclick="return doclink('link-15', 'set_id', 'link-12');">set_id</a></tt><tt class="py-op">(</tt><tt class="py-string">"csv"</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-16', 'save', 'link-13');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.get_latest_csv"></a><div id="Cache.get_latest_csv-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="Cache.get_latest_csv-toggle" onclick="return toggle('Cache.get_latest_csv');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#get_latest_csv">get_latest_csv</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.get_latest_csv-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.get_latest_csv-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-name">rec</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-17', 'pull', 'link-7');">pull</a></tt><tt class="py-op">(</tt><tt class="py-string">"csv"</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">rec</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"filename"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.cache_sitemap"></a><div id="Cache.cache_sitemap-def"><a name="L52"></a><tt class="py-lineno">52</tt> <a class="py-toggle" href="#" id="Cache.cache_sitemap-toggle" onclick="return toggle('Cache.cache_sitemap');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#cache_sitemap">cache_sitemap</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.cache_sitemap-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.cache_sitemap-expanded"><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-op">{</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">            <tt class="py-string">"filename"</tt> <tt class="py-op">:</tt> <tt id="link-18" class="py-name"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-18', 'filename', 'link-14');">filename</a></tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">        <tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.dao.DomainObject.set_id
+portality.models.journal.JournalLikeObject.set_id" class="py-name" href="#" onclick="return doclink('link-19', 'set_id', 'link-12');">set_id</a></tt><tt class="py-op">(</tt><tt class="py-string">"sitemap"</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">        <tt class="py-name">cobj</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-20', 'save', 'link-13');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Cache.get_latest_sitemap"></a><div id="Cache.get_latest_sitemap-def"><a name="L60"></a><tt class="py-lineno">60</tt> <a class="py-toggle" href="#" id="Cache.get_latest_sitemap-toggle" onclick="return toggle('Cache.get_latest_sitemap');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#get_latest_sitemap">get_latest_sitemap</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.get_latest_sitemap-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.get_latest_sitemap-expanded"><a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">rec</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-21', 'pull', 'link-7');">pull</a></tt><tt class="py-op">(</tt><tt class="py-string">"sitemap"</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">rec</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">rec</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"filename"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"> </tt>
+<a name="Cache.mark_for_regen"></a><div id="Cache.mark_for_regen-def"><a name="L66"></a><tt class="py-lineno">66</tt> <a class="py-toggle" href="#" id="Cache.mark_for_regen-toggle" onclick="return toggle('Cache.mark_for_regen');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#mark_for_regen">mark_for_regen</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.mark_for_regen-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.mark_for_regen-expanded"><a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Class Method portality.api.v1.crud.applications.ApplicationsCrudApi.update()=portality.api.v1.crud.applications.ApplicationsCrudApi-class.html#update,Class Method portality.api.v1.crud.articles.ArticlesCrudApi.update()=portality.api.v1.crud.articles.ArticlesCrudApi-class.html#update,Method portality.dao.DomainObject.update()=portality.dao.DomainObject-class.html#update,Method portality.ordereddict.OrderedDict.update()=portality.ordereddict.OrderedDict-class.html#update"><a title="portality.api.v1.crud.applications.ApplicationsCrudApi.update
+portality.api.v1.crud.articles.ArticlesCrudApi.update
+portality.dao.DomainObject.update
+portality.ordereddict.OrderedDict.update" class="py-name" href="#" onclick="return doclink('link-22', 'update', 'link-22');">update</a></tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-string">"regen"</tt> <tt class="py-op">:</tt> <tt class="py-name">True</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="Cache.is_stale"></a><div id="Cache.is_stale-def"><a name="L69"></a><tt class="py-lineno">69</tt> <a class="py-toggle" href="#" id="Cache.is_stale-toggle" onclick="return toggle('Cache.is_stale');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#is_stale">is_stale</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.is_stale-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.is_stale-expanded"><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method portality.dao.DomainObject.last_updated()=portality.dao.DomainObject-class.html#last_updated,Method portality.models.journal.JournalLikeObject.last_updated()=portality.models.journal.JournalLikeObject-class.html#last_updated"><a title="portality.dao.DomainObject.last_updated
+portality.models.journal.JournalLikeObject.last_updated" class="py-name" href="#" onclick="return doclink('link-23', 'last_updated', 'link-23');">last_updated</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">            <tt class="py-name">lu</tt> <tt class="py-op">=</tt> <tt class="py-string">'1970-01-01T00:00:00Z'</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">            <tt class="py-name">lu</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="portality.dao.DomainObject.last_updated
+portality.models.journal.JournalLikeObject.last_updated" class="py-name" href="#" onclick="return doclink('link-24', 'last_updated', 'link-23');">last_updated</a></tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line"> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-name">lu</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strptime</tt><tt class="py-op">(</tt><tt class="py-name">lu</tt><tt class="py-op">,</tt> <tt class="py-string">"%Y-%m-%dT%H:%M:%SZ"</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt id="link-25" class="py-name" targets="Function portality.lib.dates.now()=portality.lib.dates-module.html#now,Class Method portality.view.oaipmh.DateFormat.now()=portality.view.oaipmh.DateFormat-class.html#now"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-25', 'now', 'link-25');">now</a></tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-26', 'now', 'link-25');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">        <tt class="py-name">dt</tt> <tt class="py-op">=</tt> <tt id="link-27" class="py-name"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-27', 'now', 'link-25');">now</a></tt> <tt class="py-op">-</tt> <tt class="py-name">lu</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-comment"># compatibility with Python 2.6</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">hasattr</tt><tt class="py-op">(</tt><tt class="py-name">dt</tt><tt class="py-op">,</tt> <tt class="py-string">'total_seconds'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">            <tt class="py-name">total_seconds</tt> <tt class="py-op">=</tt> <tt class="py-name">dt</tt><tt class="py-op">.</tt><tt class="py-name">total_seconds</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">            <tt class="py-name">total_seconds</tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-name">dt</tt><tt class="py-op">.</tt><tt class="py-name">microseconds</tt> <tt class="py-op">+</tt> <tt class="py-op">(</tt><tt class="py-name">dt</tt><tt class="py-op">.</tt><tt class="py-name">seconds</tt> <tt class="py-op">+</tt> <tt class="py-name">dt</tt><tt class="py-op">.</tt><tt class="py-name">days</tt> <tt class="py-op">*</tt> <tt class="py-number">24</tt> <tt class="py-op">*</tt> <tt class="py-number">3600</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-number">10</tt><tt class="py-op">**</tt><tt class="py-number">6</tt><tt class="py-op">)</tt> <tt class="py-op">/</tt> <tt class="py-number">10</tt><tt class="py-op">**</tt><tt class="py-number">6</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">total_seconds</tt> <tt class="py-op">&gt;</tt> <tt id="link-28" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-28', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-29', 'config', 'link-10');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"SITE_STATISTICS_TIMEOUT"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line"> </tt>
+<a name="Cache.marked_regen"></a><div id="Cache.marked_regen-def"><a name="L87"></a><tt class="py-lineno">87</tt> <a class="py-toggle" href="#" id="Cache.marked_regen-toggle" onclick="return toggle('Cache.marked_regen');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.cache.Cache-class.html#marked_regen">marked_regen</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Cache.marked_regen-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="Cache.marked_regen-expanded"><a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"regen"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:06 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

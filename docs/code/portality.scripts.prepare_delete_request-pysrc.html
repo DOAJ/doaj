@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.scripts.prepare_delete_request</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.scripts-module.html">Package&nbsp;scripts</a> ::
+        Module&nbsp;prepare_delete_request
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.scripts.prepare_delete_request-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.scripts.prepare_delete_request-module.html">Module portality.scripts.prepare_delete_request</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">sys</tt><tt class="py-op">,</tt> <tt class="py-name">os</tt><tt class="py-op">,</tt> <tt id="link-0" class="py-name" targets="Method portality.dao.DomainObject.json()=portality.dao.DomainObject-class.html#json,Method portality.lib.dataobj.DataObj.json()=portality.lib.dataobj.DataObj-class.html#json"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-0', 'json', 'link-0');">json</a></tt><tt class="py-op">,</tt> <tt class="py-name">urllib</tt><tt class="py-op">,</tt> <tt class="py-name">argparse</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable portality.scripts.prepare_delete_request.TEST_SOURCE=portality.scripts.prepare_delete_request-module.html#TEST_SOURCE"><a title="portality.scripts.prepare_delete_request.TEST_SOURCE" class="py-name" href="#" onclick="return doclink('link-1', 'TEST_SOURCE', 'link-1');">TEST_SOURCE</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"{%22query%22:{%22filtered%22:{%22query%22:{%22query_string%22:{%22query%22:%221893-3211%22,%22default_field%22:%22index.issn.exact%22,%22default_operator%22:%22AND%22}},%22filter%22:{%22bool%22:{%22must%22:%5B{%22term%22:{%22_type%22:%22article%22}}%5D}}}}}"</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="clean_list"></a><div id="clean_list-def"><a name="L6"></a><tt class="py-lineno"> 6</tt> <a class="py-toggle" href="#" id="clean_list-toggle" onclick="return toggle('clean_list');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#clean_list">clean_list</a><tt class="py-op">(</tt><tt class="py-param">l</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="clean_list-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="clean_list-expanded"><a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt class="py-docstring">'''Clean up a list coming from an HTML form. Returns a list.</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-docstring">    Returns an empty list if given an empty list.</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"><tt class="py-docstring">    Example: you have a list of tags. This is coming in from the form</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-docstring">    as a single string: e.g. "tag1, tag2, ".</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"><tt class="py-docstring">    You do tag_list = request.values.get("tags",'').split(",")</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-docstring">    Now you have the following list: ["tag1"," tag2", ""]</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-docstring">    You want to both trim the whitespace from list[1] and remove the empty</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-docstring">    element - list[2]. This func will do it.</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">    What it does:</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">    1. Trim whitespace on both ends of individual strings</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">    2. Remove empty strings</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">    3. Only check for empty strings AFTER splitting and trimming the</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">    individual strings (in order to remove empty list elements).</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">    '''</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-name">clean_item</tt> <tt class="py-keyword">for</tt> <tt class="py-name">clean_item</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-name">item</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt id="link-2" class="py-name" targets="Variable portality.datasets.l=portality.datasets-module.html#l"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-2', 'l', 'link-2');">l</a></tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt class="py-name">clean_item</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="load"></a><div id="load-def"><a name="L26"></a><tt class="py-lineno">26</tt> <a class="py-toggle" href="#" id="load-toggle" onclick="return toggle('load');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#load">load</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="load-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="load-expanded"><a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-3" class="py-name" targets="Method portality.models.reapplication.BulkUpload.filename()=portality.models.reapplication.BulkUpload-class.html#filename,Method portality.models.uploads.FileUpload.filename()=portality.models.uploads.FileUpload-class.html#filename"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-3', 'filename', 'link-3');">filename</a></tt><tt class="py-op">,</tt> <tt class="py-string">'rb'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt id="link-4" class="py-name" targets="Variable portality.migrate.st2cl.cluster2.i=portality.migrate.st2cl.cluster2-module.html#i"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-4', 'i', 'link-4');">i</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-5', 'i', 'link-4');">i</a></tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">content</tt> </tt>
+</div><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
+<a name="save"></a><div id="save-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="save-toggle" onclick="return toggle('save');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#save">save</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">,</tt> <tt class="py-param">content</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="save-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="save-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-6" class="py-name"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-6', 'filename', 'link-3');">filename</a></tt><tt class="py-op">,</tt> <tt class="py-string">'wb'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">o</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">o</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="load_lines"></a><div id="load_lines-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="load_lines-toggle" onclick="return toggle('load_lines');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#load_lines">load_lines</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="load_lines-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="load_lines-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">    <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt id="link-7" class="py-name" targets="Function portality.scripts.prepare_delete_request.load()=portality.scripts.prepare_delete_request-module.html#load"><a title="portality.scripts.prepare_delete_request.load" class="py-name" href="#" onclick="return doclink('link-7', 'load', 'link-7');">load</a></tt><tt class="py-op">(</tt><tt id="link-8" class="py-name"><a title="portality.models.reapplication.BulkUpload.filename
+portality.models.uploads.FileUpload.filename" class="py-name" href="#" onclick="return doclink('link-8', 'filename', 'link-3');">filename</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">    <tt class="py-name">lines</tt> <tt class="py-op">=</tt> <tt class="py-name">content</tt><tt class="py-op">.</tt><tt class="py-name">splitlines</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-9" class="py-name" targets="Function portality.scripts.prepare_delete_request.clean_list()=portality.scripts.prepare_delete_request-module.html#clean_list"><a title="portality.scripts.prepare_delete_request.clean_list" class="py-name" href="#" onclick="return doclink('link-9', 'clean_list', 'link-9');">clean_list</a></tt><tt class="py-op">(</tt><tt class="py-name">lines</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="convert_from_file_to_dir"></a><div id="convert_from_file_to_dir-def"><a name="L43"></a><tt class="py-lineno">43</tt> <a class="py-toggle" href="#" id="convert_from_file_to_dir-toggle" onclick="return toggle('convert_from_file_to_dir');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#convert_from_file_to_dir">convert_from_file_to_dir</a><tt class="py-op">(</tt><tt class="py-param">i</tt><tt class="py-op">,</tt> <tt class="py-param">o</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="convert_from_file_to_dir-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="convert_from_file_to_dir-expanded"><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt class="py-docstring">"""Read in sources from a file and output a query as .json for each source into a directory."""</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">    <tt class="py-name">sources</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name" targets="Function portality.scripts.prepare_delete_request.load_lines()=portality.scripts.prepare_delete_request-module.html#load_lines"><a title="portality.scripts.prepare_delete_request.load_lines" class="py-name" href="#" onclick="return doclink('link-10', 'load_lines', 'link-10');">load_lines</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-11', 'i', 'link-4');">i</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-12" class="py-name" targets="Function portality.view.account.index()=portality.view.account-module.html#index,Function portality.view.admin.index()=portality.view.admin-module.html#index,Function portality.view.editor.index()=portality.view.editor-module.html#index,Function portality.view.publisher.index()=portality.view.publisher-module.html#index"><a title="portality.view.account.index
+portality.view.admin.index
+portality.view.editor.index
+portality.view.publisher.index" class="py-name" href="#" onclick="return doclink('link-12', 'index', 'link-12');">index</a></tt><tt class="py-op">,</tt> <tt id="link-13" class="py-name" targets="Variable portality.view.account.RegisterForm.s=portality.view.account.RegisterForm-class.html#s"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-13', 's', 'link-13');">s</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">enumerate</tt><tt class="py-op">(</tt><tt class="py-name">sources</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt id="link-14" class="py-name" targets="Method portality.clcsv.ClCsv.save()=portality.clcsv.ClCsv-class.html#save,Method portality.dao.DomainObject.save()=portality.dao.DomainObject-class.html#save,Method portality.models.article.Article.save()=portality.models.article.Article-class.html#save,Method portality.models.history.History.save()=portality.models.history.History-class.html#save,Method portality.models.journal.Journal.save()=portality.models.journal.Journal-class.html#save,Method portality.models.lcc.LCC.save()=portality.models.lcc.LCC-class.html#save,Method portality.models.suggestion.Suggestion.save()=portality.models.suggestion.Suggestion-class.html#save,Function portality.scripts.prepare_delete_request.save()=portality.scripts.prepare_delete_request-module.html#save"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-14', 'save', 'link-14');">save</a></tt><tt class="py-op">(</tt><tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">o</tt><tt class="py-op">,</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="portality.view.account.index
+portality.view.admin.index
+portality.view.editor.index
+portality.view.publisher.index" class="py-name" href="#" onclick="return doclink('link-15', 'index', 'link-12');">index</a></tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'.json'</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt id="link-16" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-16', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name" targets="Function portality.scripts.prepare_delete_request.source2json()=portality.scripts.prepare_delete_request-module.html#source2json"><a title="portality.scripts.prepare_delete_request.source2json" class="py-name" href="#" onclick="return doclink('link-17', 'source2json', 'link-17');">source2json</a></tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-18', 's', 'link-13');">s</a></tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">indent</tt><tt class="py-op">=</tt><tt class="py-number">3</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"> </tt>
+<a name="source2json"></a><div id="source2json-def"><a name="L50"></a><tt class="py-lineno">50</tt> <a class="py-toggle" href="#" id="source2json-toggle" onclick="return toggle('source2json');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#source2json">source2json</a><tt class="py-op">(</tt><tt class="py-param">s</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="source2json-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="source2json-expanded"><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-name">parsed</tt> <tt class="py-op">=</tt> <tt class="py-name">urllib</tt><tt class="py-op">.</tt><tt class="py-name">unquote</tt><tt class="py-op">(</tt><tt id="link-19" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-19', 's', 'link-13');">s</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-20" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-20', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">parsed</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="main"></a><div id="main-def"><a name="L55"></a><tt class="py-lineno">55</tt> <a class="py-toggle" href="#" id="main-toggle" onclick="return toggle('main');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.prepare_delete_request-module.html#main">main</a><tt class="py-op">(</tt><tt class="py-param">argv</tt><tt class="py-op">=</tt><tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">argv</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="main-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="main-expanded"><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">    <tt class="py-name">parser</tt> <tt class="py-op">=</tt> <tt class="py-name">argparse</tt><tt class="py-op">.</tt><tt class="py-name">ArgumentParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"querystring"</tt><tt class="py-op">,</tt> <tt class="py-name">nargs</tt><tt class="py-op">=</tt><tt class="py-string">'?'</tt><tt class="py-op">,</tt> <tt id="link-21" class="py-name" targets="Function portality.view.openurl.help()=portality.view.openurl-module.html#help,Function portality.view.publisher.help()=portality.view.publisher-module.html#help"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-21', 'help', 'link-21');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"Pass just one query string to the script to get the result immediately on STDOUT, no files needed. Or you can pass an input file and output dir only."</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-t"</tt><tt class="py-op">,</tt> <tt class="py-string">"--test"</tt><tt class="py-op">,</tt> <tt id="link-22" class="py-name"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-22', 'help', 'link-21');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"Runs and shows you a built-in test for what this script does."</tt><tt class="py-op">,</tt> <tt class="py-name">action</tt><tt class="py-op">=</tt><tt class="py-string">"store_true"</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-i"</tt><tt class="py-op">,</tt> <tt class="py-string">"--input"</tt><tt class="py-op">,</tt> <tt id="link-23" class="py-name"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-23', 'help', 'link-21');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"Input file containing all the query strings you want to decode separated by newlines."</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-o"</tt><tt class="py-op">,</tt> <tt class="py-string">"--outputdir"</tt><tt class="py-op">,</tt> <tt id="link-24" class="py-name"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-24', 'help', 'link-21');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"If you've specified an input file, you must specify an output directory where the .json files will be stored. 1 for each query found in your input file."</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">    <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">parse_args</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">querystring</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt id="link-25" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-25', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt id="link-26" class="py-name"><a title="portality.scripts.prepare_delete_request.source2json" class="py-name" href="#" onclick="return doclink('link-26', 'source2json', 'link-17');">source2json</a></tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">querystring</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">indent</tt><tt class="py-op">=</tt><tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">test</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">'Test encoded source (e.g. from a url with a source= argument in it)'</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt id="link-27" class="py-name"><a title="portality.scripts.prepare_delete_request.TEST_SOURCE" class="py-name" href="#" onclick="return doclink('link-27', 'TEST_SOURCE', 'link-1');">TEST_SOURCE</a></tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">'  Result:'</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt id="link-28" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-28', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="portality.scripts.prepare_delete_request.source2json" class="py-name" href="#" onclick="return doclink('link-29', 'source2json', 'link-17');">source2json</a></tt><tt class="py-op">(</tt><tt id="link-30" class="py-name"><a title="portality.scripts.prepare_delete_request.TEST_SOURCE" class="py-name" href="#" onclick="return doclink('link-30', 'TEST_SOURCE', 'link-1');">TEST_SOURCE</a></tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">indent</tt><tt class="py-op">=</tt><tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">input</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">outputdir</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">        <tt class="py-comment"># no args at all</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">        <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">print_help</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">     </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">input</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">outputdir</tt><tt class="py-op">)</tt> <tt class="py-keyword">or</tt> <tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">outputdir</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">input</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">'If you specify an input file, you must also specify the output dir. And vice versa.'</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">        <tt class="py-name">sys</tt><tt class="py-op">.</tt><tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">    <tt id="link-31" class="py-name" targets="Function portality.scripts.prepare_delete_request.convert_from_file_to_dir()=portality.scripts.prepare_delete_request-module.html#convert_from_file_to_dir"><a title="portality.scripts.prepare_delete_request.convert_from_file_to_dir" class="py-name" href="#" onclick="return doclink('link-31', 'convert_from_file_to_dir', 'link-31');">convert_from_file_to_dir</a></tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">input</tt><tt class="py-op">,</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">outputdir</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line">    <tt id="link-32" class="py-name" targets="Function portality.scripts.prepare_delete_request.main()=portality.scripts.prepare_delete_request-module.html#main,Function portality.scripts.sync_doaj_records.main()=portality.scripts.sync_doaj_records-module.html#main"><a title="portality.scripts.prepare_delete_request.main
+portality.scripts.sync_doaj_records.main" class="py-name" href="#" onclick="return doclink('link-32', 'main', 'link-32');">main</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L90"></a><tt class="py-lineno">90</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:08 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

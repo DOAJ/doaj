@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.scripts.reappreport</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.scripts-module.html">Package&nbsp;scripts</a> ::
+        Module&nbsp;reappreport
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.scripts.reappreport-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.scripts.reappreport-module.html">Module portality.scripts.reappreport</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Module portality.clcsv=portality.clcsv-module.html"><a title="portality.clcsv" class="py-name" href="#" onclick="return doclink('link-2', 'clcsv', 'link-2');">clcsv</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">codecs</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-4', 'core', 'link-4');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-5', 'app', 'link-5');">app</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-comment"># list the accounts which meet the criteria of having one or more journals in doaj</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt id="link-6" class="py-name" targets="Variable portality.scripts.reappreport.journal_accounts=portality.scripts.reappreport-module.html#journal_accounts"><a title="portality.scripts.reappreport.journal_accounts" class="py-name" href="#" onclick="return doclink('link-6', 'journal_accounts', 'link-6');">journal_accounts</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt class="py-string">"query"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">        <tt class="py-string">"bool"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">            <tt class="py-string">"must"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">                <tt class="py-op">{</tt><tt class="py-string">"term"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"admin.in_doaj"</tt> <tt class="py-op">:</tt> <tt class="py-name">True</tt><tt class="py-op">}</tt><tt class="py-op">}</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">            <tt class="py-op">]</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">    <tt class="py-string">"size"</tt> <tt class="py-op">:</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">    <tt class="py-string">"aggs"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-string">"accs"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">            <tt class="py-string">"terms"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">                <tt class="py-string">"field"</tt> <tt class="py-op">:</tt> <tt class="py-string">"admin.owner.exact"</tt><tt class="py-op">,</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">                <tt class="py-string">"size"</tt> <tt class="py-op">:</tt> <tt class="py-number">0</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">            <tt class="py-op">}</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-op">}</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-op">}</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-comment"># list the accounts which meet the criteria of having one ore more applications in the status "reapplication"</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt id="link-7" class="py-name" targets="Variable portality.scripts.reappreport.reapp_accounts=portality.scripts.reappreport-module.html#reapp_accounts"><a title="portality.scripts.reappreport.reapp_accounts" class="py-name" href="#" onclick="return doclink('link-7', 'reapp_accounts', 'link-7');">reapp_accounts</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt class="py-string">"query"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-string">"bool"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">            <tt class="py-string">"must"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">                <tt class="py-op">{</tt><tt class="py-string">"term"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"admin.application_status.exact"</tt> <tt class="py-op">:</tt> <tt class="py-string">"reapplication"</tt><tt class="py-op">}</tt><tt class="py-op">}</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">            <tt class="py-op">]</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">    <tt class="py-string">"size"</tt> <tt class="py-op">:</tt> <tt class="py-number">0</tt><tt class="py-op">,</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">    <tt class="py-string">"aggs"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">        <tt class="py-string">"accs"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt class="py-string">"terms"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">                <tt class="py-string">"field"</tt> <tt class="py-op">:</tt> <tt class="py-string">"admin.owner.exact"</tt><tt class="py-op">,</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">                <tt class="py-string">"size"</tt> <tt class="py-op">:</tt> <tt class="py-number">0</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">            <tt class="py-op">}</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">    <tt class="py-op">}</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"><tt class="py-op">}</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="do_report"></a><div id="do_report-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="do_report-toggle" onclick="return toggle('do_report');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.scripts.reappreport-module.html#do_report">do_report</a><tt class="py-op">(</tt><tt class="py-param">out</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="do_report-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="do_report-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">    <tt class="py-comment"># list the accounts which meet the criteria of having one or more journals in doaj</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt class="py-name">jresp</tt> <tt class="py-op">=</tt> <tt id="link-8" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-8', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Class portality.models.journal.Journal=portality.models.journal.Journal-class.html"><a title="portality.models.journal.Journal" class="py-name" href="#" onclick="return doclink('link-9', 'Journal', 'link-9');">Journal</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.reapplication.OwnerBulkQuery.query()=portality.models.reapplication.OwnerBulkQuery-class.html#query,Method portality.models.reapplication.StatusBulkQuery.query()=portality.models.reapplication.StatusBulkQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.reapplication.OwnerBulkQuery.query
+portality.models.reapplication.StatusBulkQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-10', 'query', 'link-10');">query</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.q()=portality.journalcsv.Journal2QuestionXwalk-class.html#q,Class Method portality.reapplication.Suggestion2QuestionXwalk.q()=portality.reapplication.Suggestion2QuestionXwalk-class.html#q"><a title="portality.journalcsv.Journal2QuestionXwalk.q
+portality.reapplication.Suggestion2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-11', 'q', 'link-11');">q</a></tt><tt class="py-op">=</tt><tt id="link-12" class="py-name"><a title="portality.scripts.reappreport.journal_accounts" class="py-name" href="#" onclick="return doclink('link-12', 'journal_accounts', 'link-6');">journal_accounts</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">    <tt class="py-name">jaccs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">agg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"key"</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">agg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">jresp</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"aggregations"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"accs"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"buckets"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt class="py-name">agg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"doc_count"</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">11</tt><tt class="py-op">]</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"{x} accounts with between 1 and 10 journals in the DOAJ"</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-13', 'format', 'link-13');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">jaccs</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">    <tt class="py-comment"># list the accounts which meet the criteria of having one ore more applications in the status "reapplication"</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">    <tt class="py-name">rresp</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-14', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Class portality.formcontext.forms.Suggestion=portality.formcontext.forms.Suggestion-class.html,Class portality.models.suggestion.Suggestion=portality.models.suggestion.Suggestion-class.html"><a title="portality.formcontext.forms.Suggestion
+portality.models.suggestion.Suggestion" class="py-name" href="#" onclick="return doclink('link-15', 'Suggestion', 'link-15');">Suggestion</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.reapplication.OwnerBulkQuery.query
+portality.models.reapplication.StatusBulkQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-16', 'query', 'link-10');">query</a></tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q
+portality.reapplication.Suggestion2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-17', 'q', 'link-11');">q</a></tt><tt class="py-op">=</tt><tt id="link-18" class="py-name"><a title="portality.scripts.reappreport.reapp_accounts" class="py-name" href="#" onclick="return doclink('link-18', 'reapp_accounts', 'link-7');">reapp_accounts</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">    <tt class="py-name">raccs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">agg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"key"</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">agg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">rresp</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"aggregations"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"accs"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"buckets"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"{x} accounts with at least one outstanding reapplication"</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-19', 'format', 'link-13');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">raccs</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">    <tt class="py-comment"># get the intersection of those lists, and pull the email address from the index to make the final list</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">    <tt class="py-keyword">with</tt> <tt class="py-name">codecs</tt><tt class="py-op">.</tt><tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-20" class="py-name" targets="Variable portality.migrate.st2cl.cluster.out=portality.migrate.st2cl.cluster-module.html#out,Variable portality.scripts.journalcsv.out=portality.scripts.journalcsv-module.html#out,Variable portality.scripts.sitemap.out=portality.scripts.sitemap-module.html#out"><a title="portality.migrate.st2cl.cluster.out
+portality.scripts.journalcsv.out
+portality.scripts.sitemap.out" class="py-name" href="#" onclick="return doclink('link-20', 'out', 'link-20');">out</a></tt><tt class="py-op">,</tt> <tt class="py-string">"wb"</tt><tt class="py-op">,</tt> <tt class="py-string">"utf-8"</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt id="link-21" class="py-name" targets="Variable portality.datasets.f=portality.datasets-module.html#f,Variable portality.migrate.st2cl.cluster.f=portality.migrate.st2cl.cluster-module.html#f,Variable portality.migrate.st2cl.cluster2.f=portality.migrate.st2cl.cluster2-module.html#f,Variable portality.migrate.st2cl.emails.f=portality.migrate.st2cl.emails-module.html#f"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-21', 'f', 'link-21');">f</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line">        <tt id="link-22" class="py-name" targets="Variable portality.migrate.st2cl.cluster2.writer=portality.migrate.st2cl.cluster2-module.html#writer,Variable portality.migrate.st2cl.emails.writer=portality.migrate.st2cl.emails-module.html#writer"><a title="portality.migrate.st2cl.cluster2.writer
+portality.migrate.st2cl.emails.writer" class="py-name" href="#" onclick="return doclink('link-22', 'writer', 'link-22');">writer</a></tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="portality.clcsv" class="py-name" href="#" onclick="return doclink('link-23', 'clcsv', 'link-2');">clcsv</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Class portality.clcsv.UnicodeWriter=portality.clcsv.UnicodeWriter-class.html"><a title="portality.clcsv.UnicodeWriter" class="py-name" href="#" onclick="return doclink('link-24', 'UnicodeWriter', 'link-24');">UnicodeWriter</a></tt><tt class="py-op">(</tt><tt id="link-25" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-25', 'f', 'link-21');">f</a></tt><tt class="py-op">,</tt> <tt class="py-name">encoding</tt><tt class="py-op">=</tt><tt class="py-string">"utf-8"</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt id="link-26" class="py-name"><a title="portality.migrate.st2cl.cluster2.writer
+portality.migrate.st2cl.emails.writer" class="py-name" href="#" onclick="return doclink('link-26', 'writer', 'link-22');">writer</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method portality.clcsv.UnicodeWriter.writerow()=portality.clcsv.UnicodeWriter-class.html#writerow"><a title="portality.clcsv.UnicodeWriter.writerow" class="py-name" href="#" onclick="return doclink('link-27', 'writerow', 'link-27');">writerow</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-string">"Account ID"</tt><tt class="py-op">,</tt> <tt class="py-string">"Email"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt id="link-28" class="py-name" targets="Variable portality.migrate.st2cl.cluster2.counter=portality.migrate.st2cl.cluster2-module.html#counter,Variable portality.scripts.sitemap.counter=portality.scripts.sitemap-module.html#counter"><a title="portality.migrate.st2cl.cluster2.counter
+portality.scripts.sitemap.counter" class="py-name" href="#" onclick="return doclink('link-28', 'counter', 'link-28');">counter</a></tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">acc</tt> <tt class="py-keyword">in</tt> <tt class="py-name">raccs</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">acc</tt> <tt class="py-keyword">in</tt> <tt class="py-name">jaccs</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">                <tt id="link-29" class="py-name"><a title="portality.migrate.st2cl.cluster2.counter
+portality.scripts.sitemap.counter" class="py-name" href="#" onclick="return doclink('link-29', 'counter', 'link-28');">counter</a></tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">                <tt class="py-name">am</tt> <tt class="py-op">=</tt> <tt id="link-30" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-30', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Class portality.models.account.Account=portality.models.account.Account-class.html"><a title="portality.models.account.Account" class="py-name" href="#" onclick="return doclink('link-31', 'Account', 'link-31');">Account</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-32', 'pull', 'link-32');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">acc</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">am</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">                    <tt id="link-33" class="py-name"><a title="portality.migrate.st2cl.cluster2.writer
+portality.migrate.st2cl.emails.writer" class="py-name" href="#" onclick="return doclink('link-33', 'writer', 'link-22');">writer</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="portality.clcsv.UnicodeWriter.writerow" class="py-name" href="#" onclick="return doclink('link-34', 'writerow', 'link-27');">writerow</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">acc</tt><tt class="py-op">,</tt> <tt class="py-name">am</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-35', 'email', 'link-35');">email</a></tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">                    <tt id="link-36" class="py-name"><a title="portality.migrate.st2cl.cluster2.writer
+portality.migrate.st2cl.emails.writer" class="py-name" href="#" onclick="return doclink('link-36', 'writer', 'link-22');">writer</a></tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="portality.clcsv.UnicodeWriter.writerow" class="py-name" href="#" onclick="return doclink('link-37', 'writerow', 'link-27');">writerow</a></tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-name">acc</tt><tt class="py-op">,</tt> <tt class="py-string">u"No corresponding account record found"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">    <tt class="py-keyword">print</tt> <tt class="py-string">"{x} accounts appear in both lists"</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-38', 'format', 'link-13');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt id="link-39" class="py-name"><a title="portality.migrate.st2cl.cluster2.counter
+portality.scripts.sitemap.counter" class="py-name" href="#" onclick="return doclink('link-39', 'counter', 'link-28');">counter</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">"__main__"</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-40" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-40', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt id="link-41" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-41', 'config', 'link-41');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"SCRIPTS_READ_ONLY_MODE"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"System is in READ-ONLY mode, script cannot run"</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">argparse</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line">    <tt class="py-name">parser</tt> <tt class="py-op">=</tt> <tt class="py-name">argparse</tt><tt class="py-op">.</tt><tt class="py-name">ArgumentParser</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">    <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">add_argument</tt><tt class="py-op">(</tt><tt class="py-string">"-o"</tt><tt class="py-op">,</tt> <tt class="py-string">"--out"</tt><tt class="py-op">,</tt> <tt id="link-42" class="py-name" targets="Function portality.view.openurl.help()=portality.view.openurl-module.html#help,Function portality.view.publisher.help()=portality.view.publisher-module.html#help"><a title="portality.view.openurl.help
+portality.view.publisher.help" class="py-name" href="#" onclick="return doclink('link-42', 'help', 'link-42');">help</a></tt><tt class="py-op">=</tt><tt class="py-string">"output file path"</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line">    <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-name">parser</tt><tt class="py-op">.</tt><tt class="py-name">parse_args</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name"><a title="portality.migrate.st2cl.cluster.out
+portality.scripts.journalcsv.out
+portality.scripts.sitemap.out" class="py-name" href="#" onclick="return doclink('link-43', 'out', 'link-20');">out</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"Please specify an output file path with -o"</tt> </tt>
+<a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line">        <tt class="py-name">exit</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">    <tt id="link-44" class="py-name" targets="Function portality.scripts.reappreport.do_report()=portality.scripts.reappreport-module.html#do_report"><a title="portality.scripts.reappreport.do_report" class="py-name" href="#" onclick="return doclink('link-44', 'do_report', 'link-44');">do_report</a></tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="portality.migrate.st2cl.cluster.out
+portality.scripts.journalcsv.out
+portality.scripts.sitemap.out" class="py-name" href="#" onclick="return doclink('link-45', 'out', 'link-20');">out</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:08 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

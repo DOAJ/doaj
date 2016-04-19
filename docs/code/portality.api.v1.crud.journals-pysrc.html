@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.api.v1.crud.journals</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.api-module.html">Package&nbsp;api</a> ::
+        <a href="portality.api.v1-module.html">Package&nbsp;v1</a> ::
+        <a href="portality.api.v1.crud-module.html">Package&nbsp;crud</a> ::
+        Module&nbsp;journals
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.api.v1.crud.journals-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.api.v1.crud.journals-module.html">Module portality.api.v1.crud.journals</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-2" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-2', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Package portality.api=portality.api-module.html"><a title="portality.api" class="py-name" href="#" onclick="return doclink('link-3', 'api', 'link-3');">api</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Package portality.api.v1=portality.api.v1-module.html"><a title="portality.api.v1" class="py-name" href="#" onclick="return doclink('link-4', 'v1', 'link-4');">v1</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Package portality.api.v1.crud=portality.api.v1.crud-module.html"><a title="portality.api.v1.crud" class="py-name" href="#" onclick="return doclink('link-5', 'crud', 'link-5');">crud</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module portality.api.v1.common=portality.api.v1.common-module.html,Module portality.api.v1.crud.common=portality.api.v1.crud.common-module.html"><a title="portality.api.v1.common
+portality.api.v1.crud.common" class="py-name" href="#" onclick="return doclink('link-6', 'common', 'link-6');">common</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Class portality.api.v1.crud.common.CrudApi=portality.api.v1.crud.common.CrudApi-class.html"><a title="portality.api.v1.crud.common.CrudApi" class="py-name" href="#" onclick="return doclink('link-7', 'CrudApi', 'link-7');">CrudApi</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-8', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name"><a title="portality.api" class="py-name" href="#" onclick="return doclink('link-9', 'api', 'link-3');">api</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="portality.api.v1" class="py-name" href="#" onclick="return doclink('link-10', 'v1', 'link-4');">v1</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Package portality.api.v1.data_objects=portality.api.v1.data_objects-module.html"><a title="portality.api.v1.data_objects" class="py-name" href="#" onclick="return doclink('link-11', 'data_objects', 'link-11');">data_objects</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Module portality.api.v1.data_objects.journal=portality.api.v1.data_objects.journal-module.html,Method portality.models.account.Account.journal()=portality.models.account.Account-class.html#journal,Module portality.models.journal=portality.models.journal-module.html"><a title="portality.api.v1.data_objects.journal
+portality.models.account.Account.journal
+portality.models.journal" class="py-name" href="#" onclick="return doclink('link-12', 'journal', 'link-12');">journal</a></tt> <tt class="py-keyword">import</tt> <tt id="link-13" class="py-name" targets="Class portality.api.v1.data_objects.journal.OutgoingJournal=portality.api.v1.data_objects.journal.OutgoingJournal-class.html"><a title="portality.api.v1.data_objects.journal.OutgoingJournal" class="py-name" href="#" onclick="return doclink('link-13', 'OutgoingJournal', 'link-13');">OutgoingJournal</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-14" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-14', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="portality.api" class="py-name" href="#" onclick="return doclink('link-15', 'api', 'link-3');">api</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="portality.api.v1" class="py-name" href="#" onclick="return doclink('link-16', 'v1', 'link-4');">v1</a></tt> <tt class="py-keyword">import</tt> <tt id="link-17" class="py-name" targets="Class portality.api.v1.common.Api401Error=portality.api.v1.common.Api401Error-class.html"><a title="portality.api.v1.common.Api401Error" class="py-name" href="#" onclick="return doclink('link-17', 'Api401Error', 'link-17');">Api401Error</a></tt><tt class="py-op">,</tt> <tt id="link-18" class="py-name" targets="Class portality.api.v1.common.Api404Error=portality.api.v1.common.Api404Error-class.html"><a title="portality.api.v1.common.Api404Error" class="py-name" href="#" onclick="return doclink('link-18', 'Api404Error', 'link-18');">Api404Error</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-19" class="py-name" targets="Method portality.ordereddict.OrderedDict.copy()=portality.ordereddict.OrderedDict-class.html#copy"><a title="portality.ordereddict.OrderedDict.copy" class="py-name" href="#" onclick="return doclink('link-19', 'copy', 'link-19');">copy</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">deepcopy</tt> </tt>
+<a name="JournalsCrudApi"></a><div id="JournalsCrudApi-def"><a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt> <a class="py-toggle" href="#" id="JournalsCrudApi-toggle" onclick="return toggle('JournalsCrudApi');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.api.v1.crud.journals.JournalsCrudApi-class.html">JournalsCrudApi</a><tt class="py-op">(</tt><tt class="py-base-class">CrudApi</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JournalsCrudApi-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="JournalsCrudApi-expanded"><a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt id="link-20" class="py-name" targets="Variable portality.api.v1.bulk.applications.ApplicationsBulkApi.API_KEY_OPTIONAL=portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#API_KEY_OPTIONAL,Variable portality.api.v1.crud.applications.ApplicationsCrudApi.API_KEY_OPTIONAL=portality.api.v1.crud.applications.ApplicationsCrudApi-class.html#API_KEY_OPTIONAL,Variable portality.api.v1.crud.articles.ArticlesCrudApi.API_KEY_OPTIONAL=portality.api.v1.crud.articles.ArticlesCrudApi-class.html#API_KEY_OPTIONAL,Variable portality.api.v1.crud.journals.JournalsCrudApi.API_KEY_OPTIONAL=portality.api.v1.crud.journals.JournalsCrudApi-class.html#API_KEY_OPTIONAL"><a title="portality.api.v1.bulk.applications.ApplicationsBulkApi.API_KEY_OPTIONAL
+portality.api.v1.crud.applications.ApplicationsCrudApi.API_KEY_OPTIONAL
+portality.api.v1.crud.articles.ArticlesCrudApi.API_KEY_OPTIONAL
+portality.api.v1.crud.journals.JournalsCrudApi.API_KEY_OPTIONAL" class="py-name" href="#" onclick="return doclink('link-20', 'API_KEY_OPTIONAL', 'link-20');">API_KEY_OPTIONAL</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt id="link-21" class="py-name" targets="Variable portality.api.v1.bulk.applications.ApplicationsBulkApi.SWAG_TAG=portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_TAG,Variable portality.api.v1.bulk.articles.ArticlesBulkApi.SWAG_TAG=portality.api.v1.bulk.articles.ArticlesBulkApi-class.html#SWAG_TAG,Class Method portality.api.v1.common.Api.SWAG_TAG()=portality.api.v1.common.Api-class.html#SWAG_TAG,Variable portality.api.v1.crud.applications.ApplicationsCrudApi.SWAG_TAG=portality.api.v1.crud.applications.ApplicationsCrudApi-class.html#SWAG_TAG,Variable portality.api.v1.crud.articles.ArticlesCrudApi.SWAG_TAG=portality.api.v1.crud.articles.ArticlesCrudApi-class.html#SWAG_TAG,Variable portality.api.v1.crud.journals.JournalsCrudApi.SWAG_TAG=portality.api.v1.crud.journals.JournalsCrudApi-class.html#SWAG_TAG"><a title="portality.api.v1.bulk.applications.ApplicationsBulkApi.SWAG_TAG
+portality.api.v1.bulk.articles.ArticlesBulkApi.SWAG_TAG
+portality.api.v1.common.Api.SWAG_TAG
+portality.api.v1.crud.applications.ApplicationsCrudApi.SWAG_TAG
+portality.api.v1.crud.articles.ArticlesCrudApi.SWAG_TAG
+portality.api.v1.crud.journals.JournalsCrudApi.SWAG_TAG" class="py-name" href="#" onclick="return doclink('link-21', 'SWAG_TAG', 'link-21');">SWAG_TAG</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'CRUD Journals'</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">    <tt id="link-22" class="py-name" targets="Variable portality.api.v1.crud.applications.ApplicationsCrudApi.SWAG_ID_PARAM=portality.api.v1.crud.applications.ApplicationsCrudApi-class.html#SWAG_ID_PARAM,Variable portality.api.v1.crud.articles.ArticlesCrudApi.SWAG_ID_PARAM=portality.api.v1.crud.articles.ArticlesCrudApi-class.html#SWAG_ID_PARAM,Variable portality.api.v1.crud.journals.JournalsCrudApi.SWAG_ID_PARAM=portality.api.v1.crud.journals.JournalsCrudApi-class.html#SWAG_ID_PARAM"><a title="portality.api.v1.crud.applications.ApplicationsCrudApi.SWAG_ID_PARAM
+portality.api.v1.crud.articles.ArticlesCrudApi.SWAG_ID_PARAM
+portality.api.v1.crud.journals.JournalsCrudApi.SWAG_ID_PARAM" class="py-name" href="#" onclick="return doclink('link-22', 'SWAG_ID_PARAM', 'link-22');">SWAG_ID_PARAM</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-string">"description"</tt><tt class="py-op">:</tt> <tt class="py-string">"&lt;div class=\"search-query-docs\"&gt;DOAJ journal ID. E.g. 4cf8b72139a749c88d043129f00e1b07 .&lt;/div&gt;"</tt><tt class="py-op">,</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-string">"required"</tt><tt class="py-op">:</tt> <tt class="py-name">True</tt><tt class="py-op">,</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-string">"type"</tt><tt class="py-op">:</tt> <tt class="py-string">"string"</tt><tt class="py-op">,</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">        <tt class="py-string">"name"</tt><tt class="py-op">:</tt> <tt class="py-string">"journal_id"</tt><tt class="py-op">,</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">        <tt class="py-string">"in"</tt><tt class="py-op">:</tt> <tt class="py-string">"path"</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">    <tt class="py-op">}</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="JournalsCrudApi.retrieve_swag"></a><div id="JournalsCrudApi.retrieve_swag-def"><a name="L22"></a><tt class="py-lineno">22</tt> <a class="py-toggle" href="#" id="JournalsCrudApi.retrieve_swag-toggle" onclick="return toggle('JournalsCrudApi.retrieve_swag');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.api.v1.crud.journals.JournalsCrudApi-class.html#retrieve_swag">retrieve_swag</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JournalsCrudApi.retrieve_swag-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="JournalsCrudApi.retrieve_swag-expanded"><a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt id="link-23" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.template()=portality.formcontext.formcontext.FormContext-class.html#template"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-23', 'template', 'link-23');">template</a></tt> <tt class="py-op">=</tt> <tt class="py-name">deepcopy</tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Variable portality.api.v1.common.Api.SWAG_TEMPLATE=portality.api.v1.common.Api-class.html#SWAG_TEMPLATE"><a title="portality.api.v1.common.Api.SWAG_TEMPLATE" class="py-name" href="#" onclick="return doclink('link-24', 'SWAG_TEMPLATE', 'link-24');">SWAG_TEMPLATE</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt id="link-25" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-25', 'template', 'link-23');">template</a></tt><tt class="py-op">[</tt><tt class="py-string">"parameters"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="portality.api.v1.crud.applications.ApplicationsCrudApi.SWAG_ID_PARAM
+portality.api.v1.crud.articles.ArticlesCrudApi.SWAG_ID_PARAM
+portality.api.v1.crud.journals.JournalsCrudApi.SWAG_ID_PARAM" class="py-name" href="#" onclick="return doclink('link-26', 'SWAG_ID_PARAM', 'link-22');">SWAG_ID_PARAM</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt id="link-27" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-27', 'template', 'link-23');">template</a></tt><tt class="py-op">[</tt><tt class="py-string">'responses'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'200'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Variable portality.api.v1.common.Api.R200=portality.api.v1.common.Api-class.html#R200"><a title="portality.api.v1.common.Api.R200" class="py-name" href="#" onclick="return doclink('link-28', 'R200', 'link-28');">R200</a></tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt id="link-29" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-29', 'template', 'link-23');">template</a></tt><tt class="py-op">[</tt><tt class="py-string">'responses'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'200'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'schema'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-30" class="py-name"><a title="portality.api.v1.data_objects.journal.OutgoingJournal" class="py-name" href="#" onclick="return doclink('link-30', 'OutgoingJournal', 'link-13');">OutgoingJournal</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Method portality.lib.swagger.SwaggerSupport.struct_to_swag()=portality.lib.swagger.SwaggerSupport-class.html#struct_to_swag"><a title="portality.lib.swagger.SwaggerSupport.struct_to_swag" class="py-name" href="#" onclick="return doclink('link-31', 'struct_to_swag', 'link-31');">struct_to_swag</a></tt><tt class="py-op">(</tt><tt class="py-name">schema_title</tt><tt class="py-op">=</tt><tt class="py-string">'Journal schema'</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt id="link-32" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-32', 'template', 'link-23');">template</a></tt><tt class="py-op">[</tt><tt class="py-string">'responses'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'401'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Variable portality.api.v1.common.Api.R401=portality.api.v1.common.Api-class.html#R401"><a title="portality.api.v1.common.Api.R401" class="py-name" href="#" onclick="return doclink('link-33', 'R401', 'link-33');">R401</a></tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt id="link-34" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-34', 'template', 'link-23');">template</a></tt><tt class="py-op">[</tt><tt class="py-string">'responses'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'404'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Variable portality.api.v1.common.Api.R404=portality.api.v1.common.Api-class.html#R404"><a title="portality.api.v1.common.Api.R404" class="py-name" href="#" onclick="return doclink('link-35', 'R404', 'link-35');">R404</a></tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Class Method portality.api.v1.common.Api._build_swag_response()=portality.api.v1.common.Api-class.html#_build_swag_response"><a title="portality.api.v1.common.Api._build_swag_response" class="py-name" href="#" onclick="return doclink('link-36', '_build_swag_response', 'link-36');">_build_swag_response</a></tt><tt class="py-op">(</tt><tt id="link-37" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-37', 'template', 'link-23');">template</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="JournalsCrudApi.retrieve"></a><div id="JournalsCrudApi.retrieve-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="JournalsCrudApi.retrieve-toggle" onclick="return toggle('JournalsCrudApi.retrieve');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.api.v1.crud.journals.JournalsCrudApi-class.html#retrieve">retrieve</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">jid</tt><tt class="py-op">,</tt> <tt class="py-param">account</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JournalsCrudApi.retrieve-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="JournalsCrudApi.retrieve-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-comment"># is the journal id valid</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">j</tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-38', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Class portality.models.journal.Journal=portality.models.journal.Journal-class.html"><a title="portality.models.journal.Journal" class="py-name" href="#" onclick="return doclink('link-39', 'Journal', 'link-39');">Journal</a></tt><tt class="py-op">.</tt><tt id="link-40" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-40', 'pull', 'link-40');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">jid</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">j</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-41" class="py-name"><a title="portality.api.v1.common.Api404Error" class="py-name" href="#" onclick="return doclink('link-41', 'Api404Error', 'link-18');">Api404Error</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-comment"># at this point we're happy to return the journal if it's</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-comment"># meant to be seen by the public</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method portality.models.article.Article.is_in_doaj()=portality.models.article.Article-class.html#is_in_doaj,Method portality.models.journal.Journal.is_in_doaj()=portality.models.journal.Journal-class.html#is_in_doaj"><a title="portality.models.article.Article.is_in_doaj
+portality.models.journal.Journal.is_in_doaj" class="py-name" href="#" onclick="return doclink('link-42', 'is_in_doaj', 'link-42');">is_in_doaj</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-43" class="py-name"><a title="portality.api.v1.data_objects.journal.OutgoingJournal" class="py-name" href="#" onclick="return doclink('link-43', 'OutgoingJournal', 'link-13');">OutgoingJournal</a></tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Class Method portality.api.v1.data_objects.application.OutgoingApplication.from_model()=portality.api.v1.data_objects.application.OutgoingApplication-class.html#from_model,Class Method portality.api.v1.data_objects.article.OutgoingArticleDO.from_model()=portality.api.v1.data_objects.article.OutgoingArticleDO-class.html#from_model,Class Method portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication.from_model()=portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html#from_model,Class Method portality.api.v1.data_objects.journal.OutgoingJournal.from_model()=portality.api.v1.data_objects.journal.OutgoingJournal-class.html#from_model"><a title="portality.api.v1.data_objects.application.OutgoingApplication.from_model
+portality.api.v1.data_objects.article.OutgoingArticleDO.from_model
+portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication.from_model
+portality.api.v1.data_objects.journal.OutgoingJournal.from_model" class="py-name" href="#" onclick="return doclink('link-44', 'from_model', 'link-44');">from_model</a></tt><tt class="py-op">(</tt><tt class="py-name">j</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-comment"># as long as authentication (in the layer above) has been successful, and the account exists, then</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-comment"># we are good to proceed</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-45" class="py-name" targets="Module portality.models.account=portality.models.account-module.html,Module portality.view.account=portality.view.account-module.html"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-45', 'account', 'link-45');">account</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-46" class="py-name"><a title="portality.api.v1.common.Api401Error" class="py-name" href="#" onclick="return doclink('link-46', 'Api401Error', 'link-17');">Api401Error</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-comment"># this journal's metadata is not currently published in DOAJ, so</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">        <tt class="py-comment"># we need to check ownership</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-comment"># is the current account the owner of the journal</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt class="py-comment"># if not we raise a 404 because that id does not exist for that user account.</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Variable portality.formcontext.forms.ApplicationOwner.owner=portality.formcontext.forms.ApplicationOwner-class.html#owner,Variable portality.formcontext.forms.RequiredOwner.owner=portality.formcontext.forms.RequiredOwner-class.html#owner,Method portality.models.journal.JournalLikeObject.owner()=portality.models.journal.JournalLikeObject-class.html#owner,Method portality.models.reapplication.BulkReApplication.owner()=portality.models.reapplication.BulkReApplication-class.html#owner,Method portality.models.reapplication.BulkUpload.owner()=portality.models.reapplication.BulkUpload-class.html#owner,Method portality.models.uploads.FileUpload.owner()=portality.models.uploads.FileUpload-class.html#owner"><a title="portality.formcontext.forms.ApplicationOwner.owner
+portality.formcontext.forms.RequiredOwner.owner
+portality.models.journal.JournalLikeObject.owner
+portality.models.reapplication.BulkReApplication.owner
+portality.models.reapplication.BulkUpload.owner
+portality.models.uploads.FileUpload.owner" class="py-name" href="#" onclick="return doclink('link-47', 'owner', 'link-47');">owner</a></tt> <tt class="py-op">!=</tt> <tt id="link-48" class="py-name"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-48', 'account', 'link-45');">account</a></tt><tt class="py-op">.</tt><tt id="link-49" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-49', 'id', 'link-49');">id</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-50" class="py-name"><a title="portality.api.v1.common.Api404Error" class="py-name" href="#" onclick="return doclink('link-50', 'Api404Error', 'link-18');">Api404Error</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-51" class="py-name"><a title="portality.api.v1.data_objects.journal.OutgoingJournal" class="py-name" href="#" onclick="return doclink('link-51', 'OutgoingJournal', 'link-13');">OutgoingJournal</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="portality.api.v1.data_objects.application.OutgoingApplication.from_model
+portality.api.v1.data_objects.article.OutgoingArticleDO.from_model
+portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication.from_model
+portality.api.v1.data_objects.journal.OutgoingJournal.from_model" class="py-name" href="#" onclick="return doclink('link-52', 'from_model', 'link-44');">from_model</a></tt><tt class="py-op">(</tt><tt class="py-name">j</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:07 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

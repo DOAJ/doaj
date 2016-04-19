@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.models.history</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.models-module.html">Package&nbsp;models</a> ::
+        Module&nbsp;history
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.models.history-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.models.history-module.html">Module portality.models.history</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-1', 'core', 'link-1');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-2', 'app', 'link-2');">app</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module portality.dao=portality.dao-module.html"><a title="portality.dao" class="py-name" href="#" onclick="return doclink('link-4', 'dao', 'link-4');">dao</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class portality.dao.DomainObject=portality.dao.DomainObject-class.html"><a title="portality.dao.DomainObject" class="py-name" href="#" onclick="return doclink('link-5', 'DomainObject', 'link-5');">DomainObject</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">datetime</tt> <tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Method portality.dao.DomainObject.json()=portality.dao.DomainObject-class.html#json,Method portality.lib.dataobj.DataObj.json()=portality.lib.dataobj.DataObj-class.html#json"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-6', 'json', 'link-6');">json</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="History"></a><div id="History-def"><a name="L8"></a><tt class="py-lineno"> 8</tt> <a class="py-toggle" href="#" id="History-toggle" onclick="return toggle('History');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.history.History-class.html">History</a><tt class="py-op">(</tt><tt class="py-base-class">DomainObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="History-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="History-expanded"><a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt id="link-7" class="py-name" targets="Variable portality.models.history.ArticleHistory.SAVE_BASE_DIRECTORY=portality.models.history.ArticleHistory-class.html#SAVE_BASE_DIRECTORY,Variable portality.models.history.History.SAVE_BASE_DIRECTORY=portality.models.history.History-class.html#SAVE_BASE_DIRECTORY,Variable portality.models.history.JournalHistory.SAVE_BASE_DIRECTORY=portality.models.history.JournalHistory-class.html#SAVE_BASE_DIRECTORY"><a title="portality.models.history.ArticleHistory.SAVE_BASE_DIRECTORY
+portality.models.history.History.SAVE_BASE_DIRECTORY
+portality.models.history.JournalHistory.SAVE_BASE_DIRECTORY" class="py-name" href="#" onclick="return doclink('link-7', 'SAVE_BASE_DIRECTORY', 'link-7');">SAVE_BASE_DIRECTORY</a></tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt id="link-8" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-8', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-9', 'config', 'link-9');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'ARTICLE_HISTORY_DIR'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-string">'..'</tt><tt class="py-op">)</tt>  <tt class="py-comment"># sensible default, but always override this in children</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="History.save"></a><div id="History.save-def"><a name="L11"></a><tt class="py-lineno">11</tt> <a class="py-toggle" href="#" id="History.save-toggle" onclick="return toggle('History.save');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.history.History-class.html#save">save</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>  <tt class="py-comment"># method signature intentionally kept different from base class to indicate you can't do the usual things on .save()</tt> </tt>
+</div><a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.models.history.History.__save_to_file()=portality.models.history.History-class.html#__save_to_file"><a title="portality.models.history.History.__save_to_file" class="py-name" href="#" onclick="return doclink('link-10', '__save_to_file', 'link-10');">__save_to_file</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"> </tt>
+<a name="History.__save_to_file"></a><div id="History.__save_to_file-def"><a name="L14"></a><tt class="py-lineno">14</tt> <a class="py-toggle" href="#" id="History.__save_to_file-toggle" onclick="return toggle('History.__save_to_file');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.history.History-class.html#__save_to_file">__save_to_file</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="History.__save_to_file-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="History.__save_to_file-expanded"><a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-docstring">        Override usual DomainObject.save method so instead of sending</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-docstring">        to Elasticsearch, this will save objects in files on a daily</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-docstring">        directory basis. A new history object should be created every time</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-docstring">        when a new snapshot of an article or journal is needed - i.e.</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-docstring">        they are never changed and re-saved.</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">        With this implementation if a history object is changed and saved</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">        a 2nd time (after the initial save to put it on disk):</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">          - the file will be overwritten (if it saved 2+ times on the same</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">           day)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">          OR</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"><tt class="py-docstring">          - a new file will be created in a new directory (if the 2nd+ time</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"><tt class="py-docstring">           it's saved is on a different day).</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Method portality.dao.DomainObject.set_id()=portality.dao.DomainObject-class.html#set_id,Method portality.models.journal.JournalLikeObject.set_id()=portality.models.journal.JournalLikeObject-class.html#set_id"><a title="portality.dao.DomainObject.set_id
+portality.models.journal.JournalLikeObject.set_id" class="py-name" href="#" onclick="return doclink('link-11', 'set_id', 'link-11');">set_id</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Class Method portality.dao.DomainObject.makeid()=portality.dao.DomainObject-class.html#makeid"><a title="portality.dao.DomainObject.makeid" class="py-name" href="#" onclick="return doclink('link-12', 'makeid', 'link-12');">makeid</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-name">directory_name</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Function portality.lib.dates.now()=portality.lib.dates-module.html#now,Class Method portality.view.oaipmh.DateFormat.now()=portality.view.oaipmh.DateFormat-class.html#now"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-13', 'now', 'link-13');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">strftime</tt><tt class="py-op">(</tt><tt class="py-string">'%Y-%m-%d'</tt><tt class="py-op">)</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-name">full_dir</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="portality.models.history.ArticleHistory.SAVE_BASE_DIRECTORY
+portality.models.history.History.SAVE_BASE_DIRECTORY
+portality.models.history.JournalHistory.SAVE_BASE_DIRECTORY" class="py-name" href="#" onclick="return doclink('link-14', 'SAVE_BASE_DIRECTORY', 'link-7');">SAVE_BASE_DIRECTORY</a></tt><tt class="py-op">,</tt> <tt class="py-name">directory_name</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">full_path</tt> <tt class="py-op">=</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">full_dir</tt><tt class="py-op">,</tt> <tt class="py-string">"{0}.json"</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-15', 'format', 'link-15');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-16', 'id', 'link-16');">id</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">isdir</tt><tt class="py-op">(</tt><tt class="py-name">full_dir</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">os</tt><tt class="py-op">.</tt><tt class="py-name">makedirs</tt><tt class="py-op">(</tt><tt class="py-name">full_dir</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt class="py-name">full_path</tt><tt class="py-op">,</tt> <tt class="py-string">'wb'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">o</tt><tt class="py-op">:</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">            <tt class="py-name">o</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-17', 'json', 'link-6');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">,</tt> <tt class="py-name">indent</tt><tt class="py-op">=</tt><tt class="py-number">4</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"> </tt>
+<a name="ArticleHistory"></a><div id="ArticleHistory-def"><a name="L42"></a><tt class="py-lineno">42</tt> <a class="py-toggle" href="#" id="ArticleHistory-toggle" onclick="return toggle('ArticleHistory');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.history.ArticleHistory-class.html">ArticleHistory</a><tt class="py-op">(</tt><tt class="py-base-class">History</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ArticleHistory-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="ArticleHistory-expanded"><a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">    <tt id="link-18" class="py-name" targets="Variable portality.blog.News.__type__=portality.blog.News-class.html#__type__,Variable portality.dao.DomainObject.__type__=portality.dao.DomainObject-class.html#__type__,Variable portality.models.account.Account.__type__=portality.models.account.Account-class.html#__type__,Variable portality.models.article.Article.__type__=portality.models.article.Article-class.html#__type__,Variable portality.models.cache.Cache.__type__=portality.models.cache.Cache-class.html#__type__,Variable portality.models.editors.EditorGroup.__type__=portality.models.editors.EditorGroup-class.html#__type__,Variable portality.models.history.ArticleHistory.__type__=portality.models.history.ArticleHistory-class.html#__type__,Variable portality.models.history.JournalHistory.__type__=portality.models.history.JournalHistory-class.html#__type__,Variable portality.models.journal.Journal.__type__=portality.models.journal.Journal-class.html#__type__,Variable portality.models.lcc.LCC.__type__=portality.models.lcc.LCC-class.html#__type__,Variable portality.models.lock.Lock.__type__=portality.models.lock.Lock-class.html#__type__,Variable portality.models.reapplication.BulkReApplication.__type__=portality.models.reapplication.BulkReApplication-class.html#__type__,Variable portality.models.reapplication.BulkUpload.__type__=portality.models.reapplication.BulkUpload-class.html#__type__,Variable portality.models.search.JournalArticle.__type__=portality.models.search.JournalArticle-class.html#__type__,Variable portality.models.suggestion.Suggestion.__type__=portality.models.suggestion.Suggestion-class.html#__type__,Variable portality.models.toc.JournalVolumeToC.__type__=portality.models.toc.JournalVolumeToC-class.html#__type__,Variable portality.models.uploads.FileUpload.__type__=portality.models.uploads.FileUpload-class.html#__type__"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.reapplication.BulkReApplication.__type__
+portality.models.reapplication.BulkUpload.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-18', '__type__', 'link-18');">__type__</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"article_history"</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt id="link-19" class="py-name"><a title="portality.models.history.ArticleHistory.SAVE_BASE_DIRECTORY
+portality.models.history.History.SAVE_BASE_DIRECTORY
+portality.models.history.JournalHistory.SAVE_BASE_DIRECTORY" class="py-name" href="#" onclick="return doclink('link-19', 'SAVE_BASE_DIRECTORY', 'link-7');">SAVE_BASE_DIRECTORY</a></tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-20', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-21', 'config', 'link-9');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'ARTICLE_HISTORY_DIR'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
+<a name="JournalHistory"></a><div id="JournalHistory-def"><a name="L46"></a><tt class="py-lineno">46</tt> <a class="py-toggle" href="#" id="JournalHistory-toggle" onclick="return toggle('JournalHistory');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.history.JournalHistory-class.html">JournalHistory</a><tt class="py-op">(</tt><tt class="py-base-class">History</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="JournalHistory-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="JournalHistory-expanded"><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt id="link-22" class="py-name"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.reapplication.BulkReApplication.__type__
+portality.models.reapplication.BulkUpload.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-22', '__type__', 'link-18');">__type__</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"journal_history"</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">    <tt id="link-23" class="py-name"><a title="portality.models.history.ArticleHistory.SAVE_BASE_DIRECTORY
+portality.models.history.History.SAVE_BASE_DIRECTORY
+portality.models.history.JournalHistory.SAVE_BASE_DIRECTORY" class="py-name" href="#" onclick="return doclink('link-23', 'SAVE_BASE_DIRECTORY', 'link-7');">SAVE_BASE_DIRECTORY</a></tt> <tt class="py-op">=</tt> <tt id="link-24" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-24', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-25', 'config', 'link-9');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">'JOURNAL_HISTORY_DIR'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:08 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

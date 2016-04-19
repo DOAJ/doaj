@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.error_handler.TlsSMTPHandler</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.error_handler-module.html">Module&nbsp;error_handler</a> ::
+        Class&nbsp;TlsSMTPHandler
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.error_handler.TlsSMTPHandler-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class TlsSMTPHandler</h1><p class="nomargin-top"><span class="codelink"><a href="portality.error_handler-pysrc.html#TlsSMTPHandler">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit_38" name="uml_class_diagram_for_portalit_38">
+<area shape="rect" id="node1_19" href="portality.error_handler.TlsSMTPHandler-class.html#emit" title="Emit a record." alt="" coords="212,573,317,593"/>
+<area shape="rect" id="node1" href="portality.error_handler.TlsSMTPHandler-class.html" title="portality.error_handler.TlsSMTPHandler" alt="" coords="199,539,329,599"/>
+<area shape="rect" id="node2_20" href="javascript:void(0);" title="Initialize the handler." alt="" coords="17,473,512,493"/>
+<area shape="rect" id="node2_21" href="javascript:void(0);" title="Determine the subject for the email." alt="" coords="17,493,512,513"/>
+<area shape="rect" id="node2" href="javascript:void(0);" title="A handler class which sends an SMTP email for each logging event." alt="" coords="5,440,523,520"/>
+<area shape="rect" id="node3_22" href="javascript:void(0);" title="logging.Handler.name" alt="" coords="192,152,339,172"/>
+<area shape="rect" id="node3_23" href="javascript:void(0);" title="logging.Handler.get_name" alt="" coords="192,175,339,195"/>
+<area shape="rect" id="node3_24" href="javascript:void(0);" title="logging.Handler.set_name" alt="" coords="192,195,339,215"/>
+<area shape="rect" id="node3_25" href="javascript:void(0);" title="Acquire a thread lock for serializing access to the underlying I/O." alt="" coords="192,215,339,235"/>
+<area shape="rect" id="node3_26" href="javascript:void(0);" title="Acquire the I/O thread lock." alt="" coords="192,235,339,255"/>
+<area shape="rect" id="node3_27" href="javascript:void(0);" title="Release the I/O thread lock." alt="" coords="192,255,339,275"/>
+<area shape="rect" id="node3_28" href="javascript:void(0);" title="Set the logging level of this handler." alt="" coords="192,275,339,295"/>
+<area shape="rect" id="node3_29" href="javascript:void(0);" title="Format the specified record." alt="" coords="192,295,339,315"/>
+<area shape="rect" id="node3_30" href="javascript:void(0);" title="Conditionally emit the specified logging record." alt="" coords="192,315,339,335"/>
+<area shape="rect" id="node3_31" href="javascript:void(0);" title="Set the formatter for this handler." alt="" coords="192,335,339,355"/>
+<area shape="rect" id="node3_32" href="javascript:void(0);" title="Ensure all logging output has been flushed." alt="" coords="192,355,339,375"/>
+<area shape="rect" id="node3_33" href="javascript:void(0);" title="Tidy up any resources used by the handler." alt="" coords="192,375,339,395"/>
+<area shape="rect" id="node3_34" href="javascript:void(0);" title="Handle errors which occur during an emit() call." alt="" coords="192,395,339,415"/>
+<area shape="rect" id="node3" href="javascript:void(0);" title="Handler instances dispatch logging events to specific destinations." alt="" coords="180,126,351,421"/>
+<area shape="rect" id="node4_35" href="javascript:void(0);" title="Add the specified filter to this handler." alt="" coords="195,40,336,60"/>
+<area shape="rect" id="node4_36" href="javascript:void(0);" title="Remove the specified filter from this handler." alt="" coords="195,60,336,80"/>
+<area shape="rect" id="node4_37" href="javascript:void(0);" title="Determine if a record is loggable by consulting all the filters." alt="" coords="195,80,336,100"/>
+<area shape="rect" id="node4" href="javascript:void(0);" title="A base class for loggers and handlers which allows them to share common code." alt="" coords="183,6,348,106"/>
+</map>
+  <img src="uml_class_diagram_for_portalit_38.gif" alt='' usemap="#uml_class_diagram_for_portalit_38" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.error_handler.TlsSMTPHandler-class.html#emit" class="summary-sig-name">emit</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">record</span>)</span><br />
+      Emit a record.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.error_handler-pysrc.html#TlsSMTPHandler.emit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>logging.handlers.SMTPHandler</code></b>:
+      <code>__init__</code>,
+      <code>getSubject</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>logging.Handler</code></b>:
+      <code>acquire</code>,
+      <code>close</code>,
+      <code>createLock</code>,
+      <code>flush</code>,
+      <code>format</code>,
+      <code>get_name</code>,
+      <code>handle</code>,
+      <code>handleError</code>,
+      <code>release</code>,
+      <code>setFormatter</code>,
+      <code>setLevel</code>,
+      <code>set_name</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>logging.Filterer</code></b>:
+      <code>addFilter</code>,
+      <code>filter</code>,
+      <code>removeFilter</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>logging.Handler</code></b>:
+      <code>name</code>
+      </p>
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="emit"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">emit</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">record</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.error_handler-pysrc.html#TlsSMTPHandler.emit">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Emit a record.</p>
+<p>Format the record and send it to the specified addressees.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        logging.Handler.emit
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Tue Apr 19 14:14:01 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
