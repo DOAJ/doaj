@@ -120,7 +120,20 @@ class TestClient(DoajTestCase):
         j.prep()
         j.save()
 
-    def test_03_suggestion_model_rw(self):
+    def test_03_article_model_rw(self):
+            """Read and write properties into the article model"""
+            a = models.Article()
+            assert not a.is_in_doaj()
+
+            a.set_in_doaj(True)
+            a.set_publisher_record_id("abcdef")
+            a.set_upload_id("zyxwvu")
+
+            assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
+            assert a.is_in_doaj()
+            assert a.upload_id() == "zyxwvu"
+
+    def test_04_suggestion_model_rw(self):
         """Read and write properties into the suggestion model"""
         s = models.Suggestion()
         s.set_current_journal("9876543")
@@ -149,7 +162,7 @@ class TestClient(DoajTestCase):
         s.prep()
         s.save()
 
-    def test_04_bulk_reapplication_rw(self):
+    def test_05_bulk_reapplication_rw(self):
         """Read and write properties into the BulkReapplication Model"""
         br = models.BulkReApplication()
         br.set_owner("richard")
@@ -158,7 +171,7 @@ class TestClient(DoajTestCase):
         assert br.owner == "richard"
         assert br.spreadsheet_name == "richard.csv"
 
-    def test_05_bulk_upload(self):
+    def test_06_bulk_upload(self):
         """Read and write properties into the BulkUpload model"""
         br = models.BulkUpload()
         br.upload("richard", "reapplication.csv")
@@ -182,7 +195,7 @@ class TestClient(DoajTestCase):
         assert br.processed_date is not None
         assert br.processed_timestamp is not None
 
-    def test_06_make_journal(self):
+    def test_07_make_journal(self):
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         j = s.make_journal()
 
@@ -190,7 +203,7 @@ class TestClient(DoajTestCase):
         assert "suggestion" not in j.data
         assert j.data.get("bibjson", {}).get("active")
 
-    def test_07_sync_owners(self):
+    def test_08_sync_owners(self):
         # suggestion with no current_journal
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
         s.save()
@@ -241,7 +254,7 @@ class TestClient(DoajTestCase):
         s = models.Suggestion.pull(s.id)
         assert s.owner == "another_new_owner"
 
-    def test_08_article_deletes(self):
+    def test_09_article_deletes(self):
         # populate the index with some articles
         for i in range(5):
             a = models.Article()
@@ -282,7 +295,7 @@ class TestClient(DoajTestCase):
         assert len(models.Article.all()) == 2
         assert len(self.list_today_article_history_files()) == 3
 
-    def test_09_journal_deletes(self):
+    def test_10_journal_deletes(self):
         # tests the various methods that are key to journal deletes
 
         # populate the index with some journals
@@ -338,7 +351,7 @@ class TestClient(DoajTestCase):
         assert len(models.Journal.all()) == 4
         assert len(self.list_today_journal_history_files()) == 6    # Because all journals are snapshot at create time
 
-    def test_10_iterate(self):
+    def test_11_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
             j.save()
@@ -351,7 +364,7 @@ class TestClient(DoajTestCase):
         assert len(journal_ids) == 99
         assert len(self.list_today_journal_history_files()) == 99
 
-    def test_11_account(self):
+    def test_12_account(self):
         # Make a new account
         acc = models.Account.make_account(
             username='mrs_user',
@@ -391,14 +404,23 @@ class TestClient(DoajTestCase):
         acc2.save()
         assert acc2.api_key is not None
 
-    def test_12_block(self):
+    def test_13_block(self):
         a = models.Article()
         a.save()
         models.Article.block(a.id, a.last_updated)
         a = models.Article.pull(a.id)
         assert a is not None
 
-    def test_13_archiving_policy(self):
+    def test_14_article_model_index(self):
+        """Check article indexes generate"""
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+        assert a.data.get('index', None) is None
+
+        # Generate the index
+        a.prep()
+        assert a.data.get('index', None) is not None
+
+    def test_15_archiving_policy(self):
         # a recent change to how we store archiving policy means we need the object api to continue
         # to respect the old model, while transparently converting it in and out of the object
         j = models.Journal()
@@ -412,7 +434,7 @@ class TestClient(DoajTestCase):
 
         assert b.flattened_archiving_policies == ['LOCKSS', 'CLOCKSS', 'SAFE', 'A national library: Trinity', 'Other: Somewhere else']
 
-    def test_14_generic_bibjson(self):
+    def test_16_generic_bibjson(self):
         source = BibJSONFixtureFactory.generic_bibjson()
         gbj = models.GenericBibJSON(source)
 
@@ -457,7 +479,7 @@ class TestClient(DoajTestCase):
         assert len(gbj.get_identifiers()) == 0
         assert len(gbj.subjects()) == 0
 
-    def test_15_journal_bibjson(self):
+    def test_17_journal_bibjson(self):
         source = BibJSONFixtureFactory.journal_bibjson()
         bj = models.JournalBibJSON(source)
 
@@ -576,7 +598,7 @@ class TestClient(DoajTestCase):
         assert bj.replaces == ["1111-1111", "3333-3333"]
         assert bj.is_replaced_by == ["2222-2222", "4444-4444"]
 
-    def test_16_continuations(self):
+    def test_18_continuations(self):
         journal = models.Journal()
         bj = journal.bibjson()
         bj.replaces = ["1111-1111"]
@@ -623,7 +645,7 @@ class TestClient(DoajTestCase):
         assert future[0].bibjson().get_one_identifier(bj.E_ISSN) == "2222-2222"
         assert future[1].bibjson().get_one_identifier(bj.E_ISSN) == "3333-3333"
 
-    def test_17_article_bibjson(self):
+    def test_19_article_bibjson(self):
         source = BibJSONFixtureFactory.article_bibjson()
         bj = models.ArticleBibJSON(source)
 
@@ -682,7 +704,7 @@ class TestClient(DoajTestCase):
         assert bj.month is None
         assert bj.journal_title is None
 
-    def test_18_make_continuation_replaces(self):
+    def test_20_make_continuation_replaces(self):
         journal = models.Journal()
         bj = journal.bibjson()
         bj.add_identifier(bj.E_ISSN, "0000-0000")
@@ -710,7 +732,7 @@ class TestClient(DoajTestCase):
 
         assert cont.id != journal.id
 
-    def test_19_make_continuation_is_replaced_by(self):
+    def test_21_make_continuation_is_replaced_by(self):
         journal = models.Journal()
         bj = journal.bibjson()
         bj.add_identifier(bj.E_ISSN, "0000-0000")
@@ -738,7 +760,7 @@ class TestClient(DoajTestCase):
 
         assert cont.id != journal.id
 
-    def test_20_make_continuation_errors(self):
+    def test_22_make_continuation_errors(self):
         journal = models.Journal()
         bj = journal.bibjson()
         bj.add_identifier(bj.E_ISSN, "0000-0000")

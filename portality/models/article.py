@@ -551,35 +551,41 @@ class ArticleBibJSON(GenericBibJSON):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
-            # fix 2 digit years
-            if len(self.year) == 2:
-                try:
-                    intyear = int(self.year)
-                except ValueError:
-                    # if it's 2 chars long and the 2 chars don't make an integer,
-                    # forget it
+            if type(self.year is str):          # It should be, if the mappings are correct. but len() needs a sequence.
+                # fix 2 digit years
+                if len(self.year) == 2:
+                    try:
+                        intyear = int(self.year)
+                    except ValueError:
+                        # if it's 2 chars long and the 2 chars don't make an integer,
+                        # forget it
+                        return date
+
+                    # In the case of truncated years, assume it's this century if before the current year
+                    if intyear <= int(str(datetime.utcnow().year)[:-2]):
+                        self.year = "20" + self.year             # For readability over long-lasting code, I have refrained
+                    else:                                        # from using str(datetime.utcnow().year)[:2] here.
+                        self.year = "19" + self.year             # But don't come crying to me 90-ish years from now.
+
+                # if we still don't have a 4 digit year, forget it
+                if len(self.year) != 4:
                     return date
-
-                if intyear <= 13:
-                    self.year = "20" + self.year
-                else:
-                    self.year = "19" + self.year
-
-            # if we still don't have a 4 digit year, forget it
-            if len(self.year) != 4:
-                return date
 
             # build up our proposed datestamp
             date += str(self.year)
             if self.month is not None:
                 try:
-                    if len(self.month) == 1:
-                        date += "-0" + str(self.month)
+                    if type(self.month) is int or len(self.month) <= 2:
+                        month_number = self.month
+                    elif len(self.month) == 3:                                     # 'May' works with either case, obvz.
+                        month_number = datetime.strptime(self.month, '%b').month
                     else:
-                        date += "-" + str(self.month)
+                        month_number = datetime.strptime(self.month, '%B').month
+
+                    # pad the month number to two digits. This accepts int or string
+                    date += '-{:0>2}'.format(month_number)
                 except:
-                    # FIXME: months are in all sorts of forms, we can only handle
-                    # numeric ones right now
+                    # If something goes wrong, just assume it's January
                     date += "-01"
             else:
                 date += "-01"

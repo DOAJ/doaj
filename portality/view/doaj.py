@@ -6,7 +6,7 @@ import urllib
 from portality import dao
 from portality import models
 from portality.core import app
-from portality.decorators import ssl_required, write_required, api_key_required
+from portality.decorators import ssl_required, write_required
 from portality import blog
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
@@ -150,30 +150,29 @@ def list_journals():
 @blueprint.route("/toc/<identifier>/<volume>")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>")
 def toc(identifier=None, volume=None, issue=None):
-    # check for a browser js request for more volume/issue data
-    bjsr = request.args.get('bjsr',False)
-    bjsri = request.args.get('bjsri',False)
-
     # identifier may be the journal id or an issn
     journal = None
     issn_ref = False
     if len(identifier) == 9:
         js = models.Journal.find_by_issn(identifier, in_doaj=True)
         if len(js) > 1:
-            abort(400) # really this is a 500 - we have more than one journal with this issn
+            abort(400)                             # really this is a 500 - we have more than one journal with this issn
         if len(js) == 0:
             abort(404)
         journal = js[0]
 
         issn_ref = True     # just a flag so we can check if we were requested via issn
     else:
-        journal = models.Journal.pull(identifier)
+        journal = models.Journal.pull(identifier)  # Returns None on fail
 
     if journal is None:
         abort(404)
 
     # get the bibjson record that we're going to render
     bibjson = journal.bibjson()
+
+    # The issn we are using to build the TOC
+    issn = bibjson.get_preferred_issn()
 
     # now redirect to the canonical E-ISSN if one is available
 
@@ -188,6 +187,15 @@ def toc(identifier=None, volume=None, issue=None):
             pissn = bibjson.get_one_identifier(bibjson.P_ISSN)
             if pissn and identifier != pissn:
                 return redirect(url_for('doaj.toc', identifier=pissn, volume=volume, issue=issue), 301)
+
+        # Add the volume and issue to query if present in path
+        if volume:
+            filters = [dao.Facetview2.make_term_filter('bibjson.journal.volume.exact', volume)]
+            if issue:
+                filters += [dao.Facetview2.make_term_filter('bibjson.journal.number.exact', issue)]
+            q = dao.Facetview2.make_query(filters=filters)
+
+            return redirect(url_for('doaj.toc', identifier=issn) + '?source=' + dao.Facetview2.url_encode_query(q))
 
         # The journal has neither a PISSN or an EISSN. Yet somehow
         # issn_ref is True, the request was referring to the journal
@@ -209,50 +217,17 @@ def toc(identifier=None, volume=None, issue=None):
         # let it continue loading if we only have the hex UUID for the journal (no ISSNs)
         # and the user is referring to the toc page via that ID
 
-    # get the issns for this journal
-    issns = bibjson.issns()
+    # get the continuations for this journal, future and past
+    future_journals = journal.get_future_continuations()
+    past_journals = journal.get_past_continuations()
 
-    # build the volumes and issues
-    all_issues = None
-    all_volumes = None
+    # extract the bibjson, which is what the template is after
+    future = [j.bibjson() for j in future_journals]
+    past = [j.bibjson() for j in past_journals]
 
-    # if no volume has been requested, get the full list
-    if volume is None or not bjsr:
-        all_volumes = models.Article.list_volumes(issns)
-        if volume is None and not bjsr and len(all_volumes) > 0: volume = all_volumes[0]
-
-    # if no issue has been requested, but a volume has been, get the full list
-    if (issue is None or (not bjsr and not bjsri)) and volume is not None:
-        all_issues = models.Article.list_volume_issues(issns, volume)
-        if len(all_issues) == 0: all_issues = ["unknown"]
-        if issue is None: issue = all_issues[0]
-
-    # if there are no articles for this volume/issue combination, the page doesn't exist
-    articles = None
-    if volume is not None and issue is not None:
-        articles = models.Article.get_by_volume_issue(issns, volume, issue)
-        if (articles is None or len(articles) == 0):
-            abort(404)
-
-    if bjsr:
-        res = {"articles": articles}
-        if bjsri: res["issues"] = all_issues
-        resp = make_response(json.dumps(res))
-        resp.mimetype = "application/json"
-        return resp
-    else:
-        # get the continuations for this journal, future and past
-        future_journals = journal.get_future_continuations()
-        past_journals = journal.get_past_continuations()
-
-        # extract the bibjson, which is what the template is after
-        future = [j.bibjson() for j in future_journals]
-        past = [j.bibjson() for j in past_journals]
-
-        # now render all that information
-        return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
-                               articles=articles, volumes=all_volumes, current_volume=volume,
-                               issues=all_issues, current_issue=issue)
+    # now render all that information
+    return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
+                           search_page=True, toc_issn=issn, facetviews=['public.journaltocarticles.facetview'])
 
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
