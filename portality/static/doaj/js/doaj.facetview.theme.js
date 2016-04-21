@@ -385,6 +385,50 @@ function doajRenderActiveTermsFilter(options, facet, field, filter_list) {
     return frag
 }
 
+function doajRenderActiveDateHistogramFilter(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    // DOAJ note: we are overriding this (99.9% the same as facetview2's bootstrap2 theme)
+    // because we need to change the class of the cross icon used to close active filters.
+    // We use FontAwesome at the DOAJ because the colours are overridable unlike Bootstrap's glyphicons.
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    var valdisp = value.from;
+    if (facet.value_function) {
+        valdisp = facet.value_function(valdisp);
+    }
+
+    frag += '<span class="facetview_filterselected_text">' + valdisp + '</span>&nbsp;';
+    frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" ' + data_from +
+            ' alt="remove" title="Remove" href="#">';
+    frag += '<i class="fa fa-remove" style="margin-top:1px;"></i>';
+    frag += "</a>";
+
+    frag += "</div>";
+
+    return frag
+}
+
 function editorGroupJournalNotFound() {
     return "<tr class='facetview_not_found'>" +
         "<td><p>There are no journals for your editor group(s) that meet the search criteria</p>" +

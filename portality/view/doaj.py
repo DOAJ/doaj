@@ -273,7 +273,8 @@ def article_page(identifier=None):
     # find the related journal record
     journal = None
     issns = article.bibjson().issns()
-    for issn in issns:
+    more_issns = article.bibjson().journal_issns
+    for issn in issns + more_issns:
         journals = models.Journal.find_by_issn(issn)
         if len(journals) > 0:
             journal = journals[0]
