@@ -23,6 +23,12 @@ VALID_FEATURES = ['api']
 BASE_FILE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 BASE_URL = "https://doaj.org"
+if BASE_URL.startswith('https://'):
+    BASE_DOMAIN = BASE_URL[8:]
+elif BASE_URL.startswith('http://'):
+    BASE_DOMAIN = BASE_URL[7:]
+else:
+    BASE_DOMAIN = BASE_URL
 API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 
 # make this something secret in your overriding app.cfg
@@ -310,7 +316,7 @@ OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 # Settings for reapplication process
 
 # Whether reactivation is ongoing; when False, reapplication pages will be hidden.
-REAPPLICATION_ACTIVE = True
+REAPPLICATION_ACTIVE = False
 
 # The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
 CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
@@ -495,3 +501,9 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "title" : "index.unpunctitle.exact",
     "issn" :  "index.issn.exact"
 }
+
+# ========================================
+# Google Analytics configuration
+# specify in environment .cfg file - avoids sending live analytics
+# events from test and dev environments
+GOOGLE_ANALYTICS_ID = ''

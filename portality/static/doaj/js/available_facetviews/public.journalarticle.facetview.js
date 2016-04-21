@@ -539,6 +539,7 @@ jQuery(document).ready(function($) {
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
+        render_active_date_histogram_filter: doajRenderActiveDateHistogramFilter,
         render_result_record: publicSearchResult,
 
         pre_search_callback: dynamicFacets,

@@ -36,10 +36,12 @@ def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
 
+
 @blueprint.route("/news")
 def news():
     news = blog.News.latest(app.config.get("NEWS_PAGE_NEWS_ITEMS", 20))
     return render_template('doaj/news.html', news=news, blog_url=app.config.get("BLOG_URL"))
+
 
 @blueprint.route("/widgets")
 def widgets():
@@ -48,9 +50,11 @@ def widgets():
                            widget_filename_suffix='' if app.config.get('DOAJENV') == 'production' else '_' + app.config.get('DOAJENV', '')
                            )
 
+
 @blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
+
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
@@ -68,9 +72,11 @@ def search_post():
     query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
     return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
 
+
 @blueprint.route("/subjects")
 def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
+
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
 @write_required
@@ -85,6 +91,7 @@ def suggestion():
             return redirect(url_for('doaj.suggestion_thanks', _anchor='thanks'))
         else:
             return fc.render_template(edit_suggestion_page=True)
+
 
 @blueprint.route("/journal/readonly/<journal_id>", methods=["GET"])
 @login_required
@@ -104,6 +111,7 @@ def journal_readonly(journal_id):
     fc = formcontext.JournalFormFactory.get_form_context(role='readonly', source=j)
     return fc.render_template(edit_journal_page=True)
 
+
 @blueprint.route("/application/thanks", methods=["GET"])
 def suggestion_thanks():
     return render_template('doaj/suggest_thanks.html')
@@ -120,31 +128,35 @@ def csv_data():
     csv_path = os.path.join(app.config.get("CACHE_DIR"), "csv", csv_file)
     return send_file(csv_path, mimetype="text/csv", as_attachment=True, attachment_filename=csv_file)
 
+
 @blueprint.route("/sitemap.xml")
 def sitemap():
     sitemap_file = models.Cache.get_latest_sitemap()
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
+
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
-    prefix = request.args.get('q','').lower()
+    prefix = request.args.get('q', '').lower()
     if not prefix:
-        return jsonify({'suggestions':[{"id":"", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
     m = models.lookup_model(doc_type)
     if not m:
-        return jsonify({'suggestions':[{"id":"", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
+        return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
     return jsonify({'suggestions': m.autocomplete(field_name, prefix, size=size)})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
+
 @blueprint.route("/toc")
 def list_journals():
     js = models.Journal.all_in_doaj(page_size=1000, minified=True)
     return render_template("doaj/journals.html", journals=js)
+
 
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
@@ -229,6 +241,7 @@ def toc(identifier=None, volume=None, issue=None):
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
                            search_page=True, toc_issn=issn, facetviews=['public.journaltocarticles.facetview'])
 
+
 @blueprint.route("/article/<identifier>")
 def article_page(identifier=None):
     # identifier must be the article id
@@ -274,8 +287,9 @@ def contact():
         return render_template("doaj/contact.html", form=form)
 
 ###############################################################
-## The various static endpoints
+# The various static endpoints
 ###############################################################
+
 
 @blueprint.route("/about")
 def about():
@@ -285,69 +299,86 @@ def about():
 def publishers():
     return render_template('doaj/publishers.html')
 
+
 @blueprint.route("/faq")
 def faq():
     return render_template("doaj/faq.html")
+
 
 @blueprint.route("/features")
 def features():
     return render_template("doaj/features.html")
 
+
 @blueprint.route("/features/oai_doaj/1.0/")
 def doajArticles_oai_namespace_page():
     return render_template("doaj/doajArticles_oai_namespace.html")
+
 
 @blueprint.route("/oainfo")
 def oainfo():
     return render_template("doaj/oainfo.html")
 
+
 @blueprint.route("/bestpractice")
 def bestpractice():
     return render_template("doaj/bestpractice.html")
+
 
 @blueprint.route("/members")
 def members():
     return render_template("doaj/members.html")
 
+
 @blueprint.route("/membership")
 def membership():
     return render_template("doaj/membership.html")
+
 
 @blueprint.route("/sponsors")
 def sponsors():
     return render_template("doaj/our_sponsors.html")
 
+
 @blueprint.route("/volunteers")
 def volunteers():
     return render_template("doaj/volunteers.html")
+
 
 @blueprint.route("/support")
 def support():
     return render_template("doaj/support.html")
 
+
 @blueprint.route("/publishermembers")
 def publishermembers():
     return render_template("doaj/publishermembers.html")
+
 
 @blueprint.route("/suggest", methods=['GET'])
 def suggest():
     return redirect(url_for('.suggestion'), code=301)
 
+
 @blueprint.route("/supportDoaj")
 def support_doaj():
     return render_template("doaj/supportDoaj.html")
+
 
 @blueprint.route("/support_thanks")
 def support_doaj_thanks():
     return render_template("doaj/support_thanks.html")
 
+
 @blueprint.route("/translated")
 def translated():
     return render_template("doaj/translated.html")
 
+
 @blueprint.route("/googlebdb21861de30fe30.html")
 def google_webmaster_tools():
     return 'google-site-verification: googlebdb21861de30fe30.html'
+
 
 # an informational page about content licensing rights
 @blueprint.route('/rights')

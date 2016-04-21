@@ -775,3 +775,4 @@ class TestClient(DoajTestCase):
 
         with self.assertRaises(models.ContinuationException):
             cont = journal.make_continuation("replaces", title="Second Journal")
+

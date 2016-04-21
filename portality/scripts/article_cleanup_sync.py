@@ -30,7 +30,7 @@ def cleanup_articles(conn, write_changes=False, prep_all=False):
     deleted_count = 0
 
     # Scroll though all articles in the index
-    for a in esprit.tasks.scroll(conn, 'article'):
+    for a in esprit.tasks.scroll(conn, 'article', page_size=100, keepalive='5m'):
         try:
             article_model = models.Article(_source=a)
 

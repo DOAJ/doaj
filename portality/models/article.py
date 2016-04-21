@@ -404,6 +404,7 @@ class Article(DomainObject):
         self._generate_index()
         super(Article, self).save(*args, **kwargs)
 
+
 class ArticleBibJSON(GenericBibJSON):
 
     def __init__(self, bibjson=None):
@@ -693,7 +694,6 @@ ARTICLE_BIBJSON_EXTENSION = {
 
 ##################################################
 
-
 class ArticleQuery(object):
     base_query = {
         "query" : {
@@ -728,6 +728,7 @@ class ArticleQuery(object):
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
+
 
 class ArticleIssueQuery(object):
     base_query = {
@@ -820,6 +821,7 @@ class ArticleVolumesQuery(object):
         q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
+
 class ArticleVolumesIssuesQuery(object):
     base_query = {
         "query" : {
@@ -855,6 +857,7 @@ class ArticleVolumesIssuesQuery(object):
         q["query"]["filtered"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
         q["query"]["filtered"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
         return q
+
 
 class DuplicateArticleQuery(object):
     base_query = {
@@ -967,9 +970,7 @@ class DuplicateArticleQuery(object):
 
         return q
 
-    
 
-    
 def _human_sort(things,reverse=True):
     numeric = []
     non_numeric = []
