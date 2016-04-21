@@ -13,10 +13,7 @@ batch_size = 1000
 failed_articles = []
 
 
-def rem_dup_sub(write_changes=False):
-
-    # Connection to the ES index
-    conn = esprit.raw.make_connection(None, 'localhost', 9200, 'doaj')
+def rem_dup_sub(conn, write_changes=False):
 
     write_batch = []
     updated_count = 0
@@ -79,7 +76,10 @@ if __name__ == "__main__":
         print "System is in READ-ONLY mode, enforcing read-only for this script"
         args.write = False
 
-    (u, s) = rem_dup_sub(args.write)
+    # Connection to the ES index, rely on esprit sorting out the port from the host
+    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+
+    (u, s) = rem_dup_sub(conn, args.write)
 
     if args.write:
         print "Done. {0} articles updated, {1} remain unchanged.".format(u, s)
