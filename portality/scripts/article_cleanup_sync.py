@@ -81,6 +81,7 @@ def cleanup_articles(conn, write_changes=False, prep_all=False):
                 deleted_count += 1
                 if write_changes:
                     delete_batch.add(article_model.id)
+                    print article_model.id
 
         except ValueError:
             # Failed to create model (this shouldn't happen!)
