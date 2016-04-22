@@ -220,6 +220,7 @@ It is likely that history records will only be created upon request by the admin
         "title" : [<list of all titles the journal has been known by>],
         "subject" : [<all possible subject keywords>],
         "schema_subject" : [<all subject keywords with schema prefixes>],
+        "schema_code" : [<list of schema codes>]
         "classification" : [<list of classification terms without prefixes>],
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
@@ -314,9 +315,11 @@ It is likely that history records will only be created upon request by the admin
     ]
     "index" : {
         "date" : "<date of publication>"
+        "date_toc_fv_month" : "<date of publication (duplicated for ToC facetview)>"
         "issn" : [<list of all issns that this item pertains to>],
         "subject" : [<all possible subject keywords>],
         "schema_subject" : [<all subject keywords with schema prefixes>],
+        "schema_code" : [<list of schema codes>]
         "classification" : [<list of classification terms without prefixes>],
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
@@ -356,56 +359,6 @@ NOTE: there's an argument for putting the issn identifiers inside the journal pa
     "schema": "<metadata scheme used>",
     "filename": "<filename of upload>",
     "error" : "<any error associated with the upload>"
-}
-```
-### Journal ToC Data Model
-
-The Journal ToC data model stores a cache of the Table of Contents on a per-volume basis
-
-```python
-{
-    "id" : "<opaque identifier for this volume>",
-    "about" : "<the journal's opaque identifier>",
-    "issn" : ["<list of issns for this journal>"],
-    "volume" : "<the volume number represented here>",
-    "issues" : [
-        {
-            "number" : "<issue number>",
-            "year" : "<year of publication>",
-            "month" : "<month of publication>",
-            "articles" : [
-                {
-                    "id" : "<the article's opaque id>",
-                    "bibjson" : {
-                        "title" : "<title of the article>",
-                        "identifier": [
-                            {"type" : "doi", "id" : "<doi>", "url" : "<doi url>"}
-                        ],
-                        "start_page" : "<start page>",
-                        "end_page" : "<end page>",
-                        "link" : [
-                            {
-                                "url" : "<fulltext url>",
-                                "type" : "fulltext",
-                                "content-type" : "<content type of resource>"
-                            }
-                        ],
-                        "abstract" : "<the abstract>",
-                        "author" : [
-                            {
-                                "name" : "<author name>",
-                                "email" : "<author email>",
-                                "affiliation" : "<author affiliation>"
-                            },
-                        ],
-                        "keywords" : [<list of free text keywords>],
-                    }
-                }
-            ]
-        }
-    ]
-    "created_date" : "<date created>",
-    "last_updated" : "<date record last modified>"
 }
 ```
 
