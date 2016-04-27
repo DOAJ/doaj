@@ -78,9 +78,11 @@
     ]
     "index" : {
         "date" : "<date of publication>"
+        "date_toc_fv_month" : "<date of publication (duplicated for ToC facetview)>"
         "issn" : [<list of all issns that this item pertains to>],
         "subject" : [<all possible subject keywords>],
         "schema_subject" : [<all subject keywords with schema prefixes>],
+        "schema_code" : [<list of subject codes with schema prefixes>]
         "classification" : [<list of classification terms without prefixes>],
         "language" : [<list of languages of the journal>],
         "country" : "<country of journal publication>",
