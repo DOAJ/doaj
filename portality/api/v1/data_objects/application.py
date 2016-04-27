@@ -1,4 +1,4 @@
-from portality.lib import dataobj
+from portality.lib import dataobj, swagger
 from portality import models
 from portality.formcontext import choices
 from copy import deepcopy
@@ -85,7 +85,7 @@ BASE_APPLICATION_STRUCT = {
                         "url": {"coerce": "url"},
                     },
                     "lists": {
-                        "policy": {"coerce": "unicode", "contains": "object"},
+                        "policy": {"contains": "object"},
                     },
 
                     "structs" : {
@@ -317,7 +317,7 @@ INCOMING_APPLICATION_REQUIREMENTS = {
 }
 
 
-class IncomingApplication(dataobj.DataObj):
+class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
     def __init__(self, raw=None):
         self._add_struct(BASE_APPLICATION_STRUCT)
         self._add_struct(INCOMING_APPLICATION_REQUIREMENTS)
@@ -434,13 +434,17 @@ class IncomingApplication(dataobj.DataObj):
             if "url" in ap:
                 nap["url"] = ap["url"]
             if "policy" in ap:
-                npol = []
+                known = []
                 for pol in ap["policy"]:
                     if "domain" in pol:
-                        npol.append([pol.get("domain"), pol.get("name")])
+                        if pol.get("domain").lower() == "other":
+                            nap["other"] = pol.get("name")
+                        elif pol.get("domain").lower() == "a national library":
+                            nap["nat_lib"] = pol.get("name")
                     else:
-                        npol.append(pol.get("name"))
-                nap["policy"] = npol
+                        known.append(pol.get("name"))
+                if len(known) > 0:
+                    nap["known"] = known
             nd["bibjson"]["archiving_policy"] = nap
 
         if existing is None:

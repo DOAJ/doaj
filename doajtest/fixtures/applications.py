@@ -72,6 +72,9 @@ _isbj["archiving_policy"] = {
     "url": "http://digital.archiving.policy"
 }
 del _isbj["subject"]
+del _isbj["replaces"]
+del _isbj["is_replaced_by"]
+del _isbj["discontinued_date"]
 
 INCOMING_SOURCE = {
     "id" : "ignore_me",
@@ -204,13 +207,15 @@ REAPP1_SOURCE = {
         "current_journal":"abcdefghijk_journal",
         "editor":"associate"
     },
-    "ticked":False,
     "suggestion":{
         "suggested_on":"2014-10-29T12:23:47Z"
     },
     "created_date":"2014-10-29T12:23:47Z",
     "id":"ba7c9b024ede4528bd65cd9b7a2dba20",
     "bibjson":{
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "allows_fulltext_indexing":True,
         "submission_charges":{
             "currency":"USD",
@@ -253,18 +258,9 @@ REAPP1_SOURCE = {
             "Wordperfect"
         ],
         "archiving_policy":{
-            "policy":[
-                "LOCKSS",
-                "CLOCKSS",
-                [
-                    "A national library",
-                    "Trinity"
-                ],
-                [
-                    "Other",
-                    "A safe place"
-                ]
-            ],
+            "known":["LOCKSS", "CLOCKSS"],
+            "nat_lib" : "Trinity",
+            "other" : "A safe place",
             "url":"http://digital.archiving.policy"
         },
         "plagiarism_detection":{
@@ -422,13 +418,15 @@ REAPP2_UNICODE_SOURCE = {
         u"current_journal":u"abcdefghijk_journal",
         u"editor":u"associate"
     },
-    u"ticked":False,
     u"suggestion":{
         u"suggested_on":u"2014-10-29T12:23:47Z"
     },
     u"created_date":u"2014-10-29T12:23:47Z",
     u"id":u"ba7c9b024ede4528bd65cd9b7a2dba20",
     u"bibjson":{
+        u"replaces" : [u"1111-1111"],
+        u"is_replaced_by" : [u"2222-2222"],
+        u"discontinued_date" : u"2001-01-01",
         u"allows_fulltext_indexing":True,
         u"submission_charges":{
             u"currency":u"USD",
@@ -471,18 +469,9 @@ REAPP2_UNICODE_SOURCE = {
             u"Wordperfect"
         ],
         u"archiving_policy":{
-            u"policy":[
-                u"LOCKSS",
-                u"CLOCKSS",
-                [
-                    u"A national library",
-                    u"Trinity"
-                ],
-                [
-                    u"Other",
-                    u"A safe place"
-                ]
-            ],
+            u"known" : [u"LOCKSS", u"CLOCKSS"],
+            u"other" : u"A safe place",
+            u"nat_lib" : u"Trinity",
             u"url":u"http://digital.archiving.policy"
         },
         u"plagiarism_detection":{

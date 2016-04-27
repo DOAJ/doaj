@@ -51,7 +51,10 @@ JOURNAL_SOURCE = {
         "subject": [
             {"code": "HB1-3840", "term": "Economic theory. Demography", "scheme": "LCC"},
             {"code": "H", "term": "Social Sciences", "scheme": "LCC"}
-        ]
+        ],
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01"
     }
 }
 
@@ -78,8 +81,7 @@ APPLICATION_SOURCE = {
         "owner": "15624730",
         "notes": [{"date": "2014-05-21T14:02:45Z", "note": "ok/RZ"}],
         "contact": [{"name": "Murat Akser", "email": "m.akser@ulster.ac.uk"}],
-        "application_status": "accepted",
-        "in_doaj": False
+        "application_status": "accepted"
     },
     "suggestion": {
         "articles_last_year": {"count": 19, "url": "http://cinej.pitt.edu/ojs/index.php/cinej/issue/archive"},
@@ -91,7 +93,10 @@ APPLICATION_SOURCE = {
     "id": "248c57960a3940e59bdca3f7296c89b2",
     "bibjson": {
         "allows_fulltext_indexing": True,
-        "archiving_policy": {"policy": ["LOCKSS"], "url": "http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#archiving"},
+        "archiving_policy": {
+            "known": ["LOCKSS"],
+            "url": "http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#archiving"
+        },
         "persistent_identifier_scheme": ["DOI"],
         "keywords": ["cinema studies", "film", "media", "television", "communication"],
         "subject": [
@@ -137,7 +142,10 @@ APPLICATION_SOURCE = {
         "identifier": [
             {"type": "pissn", "id": "2159-2411"},
             {"type": "eissn", "id": "2158-8724"}
-        ]
+        ],
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01"
     }
 }
 

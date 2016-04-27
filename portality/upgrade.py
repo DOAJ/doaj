@@ -2,6 +2,7 @@ import json, os, esprit
 from collections import OrderedDict
 from portality.core import app
 from portality import models
+from portality.lib import plugin
 
 MODELS = {
     "journal" : models.Journal,
@@ -47,30 +48,41 @@ def do_upgrade(definition, verbose):
         print "Upgrading", tdef.get("type")
         batch = []
         for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m")):
-            # instantiate an object with the data
-            m = MODELS.get(tdef.get("type"))
-            obj = m(**result)
+            # learn what kind of model we've got
+            model_class = MODELS.get(tdef.get("type"))
 
-            # run the tasks specified with this object type
-            tasks = tdef.get("tasks", None)
-            if tasks:
-                for func_call, kwargs in tasks.iteritems():
-                    getattr(obj, func_call)(**kwargs)
+            if tdef.get("init_with_model", True):
+                # instantiate an object with the data
+                result = model_class(**result)
 
-            # FIXME: do something with explicit upgrade tasks which can't easily be expressed as JSON strings
+            for function_path in tdef.get("functions", []):
+                fn = plugin.load_function(function_path)
+                result = fn(result)
 
-            # run the prep routine for the record
-            try:
-                obj.prep()
-            except AttributeError:
-                if verbose:
-                    print tdef.get("type"), obj.id, "has no prep method - no, pre-save preparation being done"
-                pass
+            data = result
+            id = result.get("id", "id not specified")
+            if isinstance(result, model_class):
+                # run the tasks specified with this object type
+                tasks = tdef.get("tasks", None)
+                if tasks:
+                    for func_call, kwargs in tasks.iteritems():
+                        getattr(result, func_call)(**kwargs)
+
+                # run the prep routine for the record
+                try:
+                    result.prep()
+                except AttributeError:
+                    if verbose:
+                        print tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done"
+                    pass
+
+                data = result.data
+                id = result.id
 
             # add the data to the batch
-            batch.append(obj.data)
+            batch.append(data)
             if verbose:
-                print "added", tdef.get("type"), obj.id, "to batch update"
+                print "added", tdef.get("type"), id, "to batch update"
 
             # When we have enough, do some writing
             if len(batch) >= batch_size:

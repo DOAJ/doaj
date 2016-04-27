@@ -25,11 +25,13 @@ function journal_toc_id(journal) {
     var ids = journal.bibjson.identifier;
     var pissns = [];
     var eissns = [];
-    for (var i = 0; i < ids.length; i++) {
-        if (ids[i].type === "pissn") {
-            pissns.push(ids[i].id)
-        } else if (ids[i].type === "eissn") {
-            eissns.push(ids[i].id)
+    if (ids) {
+        for (var i = 0; i < ids.length; i++) {
+            if (ids[i].type === "pissn") {
+                pissns.push(ids[i].id)
+            } else if (ids[i].type === "eissn") {
+                eissns.push(ids[i].id)
+            }
         }
     }
 

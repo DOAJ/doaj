@@ -55,7 +55,6 @@ class TestApiErrors(DoajTestCase):
 
         # populate the index with an application owned by this owner
         a = models.Suggestion()
-        a.set_in_doaj(True)
         a.set_owner("a1_user")
         bj = a.bibjson()
         bj.title = "Test Suggestion Title"

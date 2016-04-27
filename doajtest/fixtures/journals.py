@@ -1,4 +1,5 @@
 from copy import deepcopy
+from datetime import datetime
 
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 
@@ -25,7 +26,7 @@ class JournalFixtureFactory(object):
             if fakemonth > 9:
                 fakemonth = 9
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
-            template['identifier'] = [
+            template["bibjson"]['identifier'] = [
                 # not really proper ISSN format, but then 1234-5678 is not
                 # a correct checksummed ISSN either. Need to write a nicer
                 # faker module and just ask it for fake ISSNs, IDs, names, publishers, etc.
@@ -70,6 +71,9 @@ JOURNAL_SOURCE = {
         "publisher": "The Publisher",
         "provider": "Platform Host Aggregator",
         "institution": "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type": "homepage", "url": "http://journal.url"},
             {"type": "waiver_policy", "url": "http://waiver.policy"},
@@ -100,11 +104,9 @@ JOURNAL_SOURCE = {
             "average_price": 4
         },
         "archiving_policy": {
-            "policy": [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
             "url": "http://digital.archiving.policy"
         },
         "editorial_review": {
@@ -245,7 +247,10 @@ JOURNAL_INFO = {
     "copyright_url": "http://copyright.com",
     "publishing_rights": "Other",
     "publishing_rights_other": "Occasionally",
-    "publishing_rights_url": "http://publishing.rights"
+    "publishing_rights_url": "http://publishing.rights",
+    "replaces" : ["1111-1111"],
+    "is_replaced_by" : ["2222-2222"],
+    "discontinued_date" : "2001-01-01"
 }
 
 JOURNAL_LEGACY = {

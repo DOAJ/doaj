@@ -118,6 +118,9 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
+        assert fc.target.bibjson().replaces == ["1111-1111"]
+        assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
+        assert fc.target.bibjson().discontinued_date == "2001-01-01"
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()

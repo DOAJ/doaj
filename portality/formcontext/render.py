@@ -355,8 +355,13 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
         self.FIELD_GROUPS["seal"] = [
             {"doaj_seal" : {}}
         ]
+        self.FIELD_GROUPS["continuations"] = [
+            {"replaces" : {"class": "input-xlarge"}},
+            {"is_replaced_by" : {"class": "input-xlarge"}},
+            {"discontinued_date" : {}}
+        ]
 
-        self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]  # but do NOT include the new groups in self.NUMBERING_ORDER, don"t want them numbered
+        self.ERROR_CHECK_ORDER = ["status", "account", "editorial", "continuations", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]  # but do NOT include the new groups in self.NUMBERING_ORDER, don"t want them numbered
 
         self.number_questions()
 
@@ -482,8 +487,13 @@ class ManEdJournalReviewRenderer(JournalRenderer):
         self.FIELD_GROUPS["seal"] = [
             {"doaj_seal" : {}}
         ]
+        self.FIELD_GROUPS["continuations"] = [
+            {"replaces" : {"class": "input-xlarge"}},
+            {"is_replaced_by" : {"class": "input-xlarge"}},
+            {"discontinued_date" : {}}
+        ]
 
-        self.ERROR_CHECK_ORDER = ["make_all_fields_optional", "account", "editorial", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
+        self.ERROR_CHECK_ORDER = ["make_all_fields_optional", "account", "editorial", "continuations", "subject"] + self.ERROR_CHECK_ORDER + ["notes"]
 
         self.number_questions()
 

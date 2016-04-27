@@ -42,12 +42,17 @@
         {% for identifier in bibjson.get_identifiers(idtype='pissn') %}{{identifier}} (Print){% endfor %}{% for identifier in bibjson.get_identifiers(idtype='eissn') %}{% if bibjson.get_identifiers(idtype='pissn') %};&nbsp;{% endif %}{{identifier}} (Online){% endfor %}
         </p>
 
+        {% if bibjson.discontinued_date %}
+            <p><strong>Ceased publication: </strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</p>
+        {% endif %}
+
         {% if future %}
             <p><strong>Subsequent title(s): </strong>
             {% for f in future %}
                 {% if f.issns()|length > 0 %}
                 <a href="{{ url_for('doaj.toc', identifier=f.issns()[0]) }}">{{ f.title }}</a>
                 {% endif %}
+                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
             </p>
         {% endif %}
@@ -58,6 +63,7 @@
                 {% if p.issns()|length > 0 %}
                 <a href="{{ url_for('doaj.toc', identifier=p.issns()[0]) }}">{{ p.title }}</a>
                 {% endif %}
+                {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
             </p>
         {% endif %}
@@ -132,7 +138,6 @@
     </div>
 
 </div>
-
 
 <div class="row-fluid" style="margin-top: 30px">
     <div class="span1">&nbsp;</div>
@@ -358,150 +363,56 @@
 
 </div>
 
-
-{% if volumes|length > 0 %}
-
-<div class="row-fluid" style="margin-top: 50px"><div class="span12"><h3>Volumes</h3></div></div>
-
 <div class="row-fluid">
-  <div class="span12" style="margin-bottom:10px;padding-bottom:5px;">
-    {% for v in volumes %}
-        <a class="bjsr volume btn{% if current_volume == v %} btn-info{% else %} btn-doaj{% endif %}" id="vol_{{v}}" href="{{url_for('doaj.toc', identifier=bibjson.get_preferred_issn(), volume=v)}}">{{v}}</a>
-    {% endfor %}
-  </div>
-</div>
-
-<div class="row-fluid"><div class="span12"><h3>Issues in Volume <span id="volumeid">{{current_volume}}</span></h3></div></div>
-
-<div class="row-fluid">
-  <div class="span12" style="margin-bottom:10px;padding-bottom:5px;" id="issuelist">
-    {% for i in issues %}
-        <a class="bjsr issue btn{% if current_issue == i %} btn-info{% else %} btn-doaj{% endif %}" id="issue_{{i}}" href="{{url_for('doaj.toc', identifier=bibjson.get_preferred_issn(), volume=current_volume)}}/{{i}}">{{i}}</a>
-    {% endfor %}
-  </div>
-</div>
-
-
-<div class="row-fluid" style="border-bottom: 1px solid #cccccc; margin-bottom: 40px">
-    <div class="span12" id="articlelist">
-        
+    <div class="span10">&nbsp;</div>
+    <div class="span2">
+        <form method="post" action="{{ url_for('doaj.contact') }}?ref=toc">
+            <input type="hidden" name="message" value="More information on journal '{{ bibjson.title }}' (ISSN: {{ bibjson.get_preferred_issn() }})"/>
+            <button class="btn btn-success">Tell us more about this Journal</button>
+        </form>
     </div>
 </div>
 
-{% else %}
+<div class="row-fluid" style="margin-top: 50px; margin-bottom: 20px">
+    <div class="span12">
+        <h2>Table of Contents</h2>
+    </div>
+</div>
 
-    <p style="margin-top: 40px">No Table of Contents available for this journal</p>
 
-{% endif %} {# if volumes| length > 0 #}
+<div class="facetview journal_toc_articles"></div>
+
+<noscript>
+
+    <p>You are currently browsing with JavaScript turned off, which means the TOC will not appear.</p>
+
+    <p>If you are seeing this, but believe you have JavaScript enabled, please <a href="/contact">contact us</a> and let us know.</p>
+
+</noscript>
+
 
 {% endblock %}
 
 {% block extra_js_bottom %}
 
 <script type="text/javascript">
+    var toc_issn = "{{ toc_issn }}";
+</script>
+
+<script type="text/javascript">
 $(document).ready(function() {
 
     $("#journal_details").hide();
-    $("#journal_details_toggle").click(function(event) {
+    $("#journal_details_toggle").click(function (event) {
         event.preventDefault();
-        $("#journal_details").toggle()
-        if ($("#journal_details_toggle").html() == "More") {
-            $("#journal_details_toggle").html("Less")
+        $("#journal_details").toggle();
+        var jd = $("#journal_details_toggle");
+        if (jd.html() == "More") {
+            jd.html("Less")
         } else {
-            $("#journal_details_toggle").html("More")
+            jd.html("More")
         }
     });
-
-    var abstract_toggle = function(event) {
-        event.preventDefault();
-        var article_id = $(this).attr("data-article");
-        $("#article_" + article_id).toggle();
-    }
-    
-    var tidymonth = function(mth) {
-        var mths = {
-            "1" : "January", "2" : "February", "3" : "March", "4" : "April", "5" : "May", "6" : "June", "7" : "July", "8" : "August", "9" : "September", "10" : "October", "11" : "November", "12" : "December","01" : "January", "02" : "February", "03" : "March", "04" : "April", "05" : "May", "06" : "June", "07" : "July", "08" : "August", "09" : "September"
-        }
-        return mths[mth];
-    }
-    var updatearticles = function(data) {
-        var content= '';
-        var issuelist = data.issues;
-        if (issuelist !== undefined ) {
-            var isscontent = '';
-            for ( var i in issuelist ) {
-                isscontent += '<a class="bjsr issue btn btn-doaj" id="issue_' + issuelist[i] + '" href="/toc/{{bibjson.get_preferred_issn()}}/' + $('#volumeid').html() + '/' + issuelist[i] + '">' + issuelist[i] + '</a> ';
-            }
-            $('#issuelist').html(isscontent);
-            $('.bjsr.issue').first().removeClass('btn-doaj').addClass('btn-info');
-            $('.bjsr.issue').bind('click',bjsr);
-        }
-
-        // put the articles on the page
-        for (var a in data.articles) {
-            var artcl = data.articles[a];
-            if ( a == 0 ) {
-                if ( "bibjson.month" in artcl || "bibjson.year" in artcl ) {
-                    content += '<h4 style="margin-bottom: 10px">';
-                    if ( "bibjson.month" in artcl ) {
-                        content += tidymonth(artcl["bibjson.month"][0]);
-                    }
-                    if ( "bibjson.year" in artcl ) {
-                        if ( "bibjson.month" in artcl ) { content += ' '; }
-                        content += artcl["bibjson.year"][0];
-                    }
-                    content += '</h4>';
-                }
-            }
-            content += '<div class="row-fluid">';
-            content += '<div class="span12" style="padding-left: 20px; padding-bottom: 5px">';
-            content += '<strong>' + artcl["bibjson.title"][0] + '</strong><br>';
-            for ( var ar in artcl["bibjson.author.name"] ) {
-                if ( ar != 0 ) { content += ', '; }
-                content += '<em>' + artcl["bibjson.author.name"][ar] + '</em>';
-            }
-            content += '<br>';
-            for ( var ln in artcl["bibjson.link.url"] ) {
-                if ( ln != 0 ) { content += ', '; }
-                content += '<a href="' + artcl["bibjson.link.url"][ln] + '">' + artcl["bibjson.link.url"][ln] + '</a><br>';
-            }
-            if ( "bibjson.start_page" in artcl ) {
-                content += 'pages: ' + artcl["bibjson.start_page"][0];
-                if ( "bibjson.end_page" in artcl ) { content += ' - ' + artcl["bibjson.end_page"][0]; }
-                content += '<br>'
-            }
-            if ( "bibjson.abstract" in artcl ) {
-                content += '<a href="#" class="abstract_toggle" data-article="' + artcl["id"][0] + '">(abstract)</a>';
-                content += '<div class="abstract_box" id="article_' + artcl["id"][0] + '" style="display:none;">' + artcl["bibjson.abstract"][0] + '</div>';
-            }
-            content += '</div>';
-            content += '</div>';
-        }
-        $('#articlelist').html(content);
-        $(".abstract_toggle").bind('click',abstract_toggle);
-    }
-    var bjsr = function(event) {
-        event.preventDefault();
-        var url = $(this).attr('href');
-        var jurl = url + '?bjsr=yes';
-        if ( $(this).hasClass('volume') ) { jurl += '&bjsri=yes'; }
-        $.getJSON(jurl, updatearticles);
-        var vol = url.split('/')[3];
-        var iss = url.split('/')[4];
-        $('.bjsr').removeClass('btn-info').addClass('btn-doaj');
-        $('#vol_' + vol).removeClass('btn-doaj').addClass('btn-info');
-        $('#volumeid').html(vol);
-        if ( iss !== undefined ) {
-            $('#issue_' + iss).removeClass('btn-doaj').addClass('btn-info');
-        }
-        if ('pushState' in window.history) {
-            window.history.pushState("", "search", url);
-        }
-    }
-    $('.bjsr').bind('click',bjsr);
-
-    updatearticles({"articles": {{articles|tojson|safe}}});
-
 });
 </script>
 

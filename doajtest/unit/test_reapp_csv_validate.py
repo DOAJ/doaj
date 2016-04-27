@@ -19,6 +19,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -43,13 +46,11 @@ APPLICATION_SOURCE = {
             "currency" : "USD",
             "average_price" : 4
         },
-        "archiving_policy" : {
-            "policy" : [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
-            "url" : "http://digital.archiving.policy"
+        "archiving_policy": {
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
+            "url": "http://digital.archiving.policy"
         },
         "editorial_review" : {
             "process" : "Open peer review",
