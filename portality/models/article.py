@@ -492,7 +492,7 @@ class ArticleBibJSON(GenericBibJSON):
 
     @property
     def journal_issns(self):
-        return self.bibjson.get("journal", {}).get("issns")
+        return self.bibjson.get("journal", {}).get("issns", [])
 
     @journal_issns.setter
     def journal_issns(self, issns):
