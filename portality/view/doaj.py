@@ -233,12 +233,12 @@ def toc(identifier=None, volume=None, issue=None):
     future_journals = journal.get_future_continuations()
     past_journals = journal.get_past_continuations()
 
-    # extract the bibjson, which is what the template is after
-    future = [j.bibjson() for j in future_journals]
-    past = [j.bibjson() for j in past_journals]
+    # extract the bibjson, which is what the template is after, and whether the record is in doaj
+    #future = [j.bibjson() j for j in future_journals]
+    #past = [j.bibjson() for j in past_journals]
 
     # now render all that information
-    return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future, past=past,
+    return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
                            search_page=True, toc_issn=issn, facetviews=['public.journaltocarticles.facetview'])
 
 

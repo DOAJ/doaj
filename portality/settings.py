@@ -61,6 +61,7 @@ ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
+ELASTIC_SEARCH_VERSION = "1.7.5"
 
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default

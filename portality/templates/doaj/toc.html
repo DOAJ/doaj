@@ -49,8 +49,13 @@
         {% if future %}
             <p><strong>Subsequent title(s): </strong>
             {% for f in future %}
-                {% if f.issns()|length > 0 %}
-                <a href="{{ url_for('doaj.toc', identifier=f.issns()[0]) }}">{{ f.title }}</a>
+                {% set bibjson = f.bibjson() %}
+                {% if bibjson.issns()|length > 0 %}
+                    {% if f.is_in_doaj() %}
+                        <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
+                    {% else %}
+                        {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
+                    {% endif %}
                 {% endif %}
                 {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
@@ -60,8 +65,13 @@
         {% if past %}
             <p><strong>Previous title(s): </strong>
             {% for p in past %}
-                {% if p.issns()|length > 0 %}
-                <a href="{{ url_for('doaj.toc', identifier=p.issns()[0]) }}">{{ p.title }}</a>
+                {% set bibjson = p.bibjson() %}
+                {% if bibjson.issns()|length > 0 %}
+                    {% if p.is_in_doaj() %}
+                        <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
+                    {% else %}
+                        {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
+                    {% endif %}
                 {% endif %}
                 {% if not loop.last %}&nbsp;|&nbsp;{% endif %}
             {% endfor %}
