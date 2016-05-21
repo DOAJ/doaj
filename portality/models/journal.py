@@ -192,7 +192,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         license = []
         publisher = []
         urls = {}
-        has_apc = None
         has_seal = None
         classification_paths = []
         unpunctitle = None
@@ -257,14 +256,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         publisher = list(set(publisher))
         schema_codes = list(set(schema_codes))
 
-        # work out of the journal has an apc
-        has_apc = "No Information"
-        apc_field_present = len(self.bibjson().apc.keys()) > 0
-        if apc_field_present:
-            has_apc = "Yes"
-        elif self.is_ticked():
-            has_apc = "No"
-
         # determine if the seal is applied
         has_seal = "Yes" if self.has_seal() else "No"
 
@@ -308,8 +299,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             self.data["index"]["schema_code"] = schema_codes
         if len(urls.keys()) > 0:
             self.data["index"].update(urls)
-        if has_apc:
-            self.data["index"]["has_apc"] = has_apc
         if has_seal:
             self.data["index"]["has_seal"] = has_seal
         if len(classification_paths) > 0:
@@ -658,6 +647,7 @@ class Journal(JournalLikeObject):
         self._ensure_in_doaj()
         self.calculate_tick()
         self._generate_index()
+        self._calculate_has_apc()
         self.set_last_updated()
 
     def save(self, snapshot=True, sync_owner=True, **kwargs):
@@ -670,6 +660,19 @@ class Journal(JournalLikeObject):
 
     ######################################################
     ## internal utility methods
+
+    def _calculate_has_apc(self):
+        # work out of the journal has an apc
+        has_apc = "No Information"
+        apc_field_present = len(self.bibjson().apc.keys()) > 0
+        if apc_field_present:
+            has_apc = "Yes"
+        elif self.is_ticked():
+            has_apc = "No"
+
+        if "index" not in self.data:
+            self.data["index"] = {}
+        self.data["index"]["has_apc"] = has_apc
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
