@@ -358,6 +358,12 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
+                    "pre": "<strong>Discontinued Date</strong>: ",
+                    "field": "bibjson.discontinued_date"
+                }
+            ],
+            [
+                {
                     "pre": "<strong>Date added to DOAJ</strong>: ",
                     "field": "created_date"
                 }
