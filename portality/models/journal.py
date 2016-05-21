@@ -646,7 +646,12 @@ class Journal(DomainObject):
         schema_codes = list(set(schema_codes))
 
         # work out of the journal has an apc
-        has_apc = "Yes" if len(self.bibjson().apc.keys()) > 0 else "No"
+        has_apc = "No Information"
+        apc_field_present = len(self.bibjson().apc.keys()) > 0
+        if apc_field_present:
+            has_apc = "Yes"
+        elif self.is_ticked():
+            has_apc = "No"
 
         # determine if the seal is applied
         has_seal = "Yes" if self.has_seal() else "No"
@@ -750,8 +755,8 @@ class Journal(DomainObject):
 
     def prep(self):
         self._ensure_in_doaj()
-        self._generate_index()
         self.calculate_tick()
+        self._generate_index()
         self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def _sync_owner_to_application(self):

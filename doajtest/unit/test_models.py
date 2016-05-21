@@ -306,3 +306,30 @@ class TestClient(DoajTestCase):
         models.Article.block(a.id, a.last_updated)
         a = models.Article.pull(a.id)
         assert a is not None
+
+    def test_13_index_has_apc(self):
+        # no apc record, not ticked
+        j = models.Journal()
+        j.set_created("1970-01-01T00:00:00Z")   # so it's before the tick
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "No Information"
+
+        # no apc record, ticked
+        j = models.Journal()
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "No"
+
+        # apc record, not ticked
+        j = models.Journal()
+        j.set_created("1970-01-01T00:00:00Z")   # so it's before the tick
+        b = j.bibjson()
+        b.set_apc("GBP", 100)
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "Yes"
+
+        # apc record, ticked
+        j = models.Journal()
+        b = j.bibjson()
+        b.set_apc("GBP", 100)
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "Yes"
