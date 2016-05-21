@@ -48,6 +48,7 @@ def query(path='Pages'):
     editor_filter = False # don't apply the editor group filter unless expressly requested
     reapp_filter = False # don't apply the reapplication status filter unless expressly requested
     associate_filter = False # don't limit to associates unless expressly requested
+    public_result_filter = False
     role = None
     qr = app.config.get("QUERY_ROUTE", {})
     frag = request.path
@@ -59,6 +60,7 @@ def query(path='Pages'):
             editor_filter = qr[qroute].get("editor_filter", False)
             associate_filter = qr[qroute].get("associate_filter", False)
             reapp_filter = qr[qroute].get("reapp_filter", False)
+            public_result_filter = qr[qroute].get("public_result_filter", False)
             break
     
     # if there is a role, then check that the user is not anonymous and
@@ -152,7 +154,10 @@ def query(path='Pages'):
         if associate_filter:
             terms.update(_associate_filter())
 
-        resp = make_response( json.dumps(klass().query(q=qs, terms=terms, should_terms=shoulds)) )
+        results = klass().query(q=qs, terms=terms, should_terms=shoulds)
+        if public_result_filter:
+            results = _result_filter(results)
+        resp = make_response( json.dumps(results) )
 
     resp.mimetype = "application/json"
     return resp
@@ -181,3 +186,18 @@ def _default_filter(subpaths):
         if s == 'journal' or s == 'article':
             return {'in_doaj':True}
     return None
+
+def _result_filter(results):
+    if "hits" not in results:
+        return results
+    if "hits" not in results["hits"]:
+        return results
+
+    for hit in results["hits"]["hits"]:
+        if "_source" in hit:
+            if "admin" in hit["_source"]:
+                for k in hit["_source"]["admin"].keys():
+                    if k not in ["ticked", "seal"]:
+                        del hit["_source"]["admin"][k]
+
+    return results
