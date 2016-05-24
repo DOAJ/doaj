@@ -7,6 +7,7 @@ def migrate(data):
     admin = data.get("admin", {})
     issns = _get_issns(data.get("bibjson", {}))
     replaces = None
+    created = data.get("created_date")      # created date defaults to the parent record's created date - will be overridden later if possible
 
     for h in data["history"]:
         obj = {"bibjson" : h.get("bibjson")}
@@ -17,6 +18,8 @@ def migrate(data):
             for irb in h["isreplacedby"]:
                 if irb in issns:
                     replaces = _get_issns(obj["bibjson"])
+        #if "date" in h:
+        #    created = h["date"]
 
         j = models.Journal(**obj)
         j.set_in_doaj(admin.get("in_doaj", False))
@@ -27,6 +30,9 @@ def migrate(data):
         j.set_editor(admin.get("editor"))
         for c in admin.get("contact", []):
             j.add_contact(c.get("name"), c.get("email"))
+        # FIXME: note that the date on the history records appears to be the date of import from the last version of DOAJ, so not much value in it.  Defaulting to the parent's created date
+        if created is not None:
+            j.set_created(created)
 
         j.add_note(u"Continuation automatically extracted from journal {x} during migration".format(x=data.get("id")))
         j.save()

@@ -9,3 +9,9 @@ that list into a first-class journal object
 You will also need to update the ES mappings so that the new search interface changes work:
 
     python portality/migrate/continuations/mappings.py
+
+    
+Once the migration here has been completed, it is necessary to run the article_cleanup_sync script to ensure that the ToCs are correct from the start
+
+    python portality/scripts/article_cleanup_sync.py -w
+    

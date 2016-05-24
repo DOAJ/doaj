@@ -500,14 +500,14 @@ class Journal(JournalLikeObject):
         del cbj.discontinued_date
 
         # now write the new identifiers
-        if eissn is not None:
+        if eissn is not None and eissn != "":
             cissns.append(eissn)
             cbj.add_identifier(cbj.E_ISSN, eissn)
-        if pissn is not None:
+        if pissn is not None and pissn != "":
             cissns.append(pissn)
             cbj.add_identifier(cbj.P_ISSN, pissn)
 
-        # update the title so it's clear the the editor that this needs to be changed
+        # update the title
         if title is not None:
             cbj.title = title
 

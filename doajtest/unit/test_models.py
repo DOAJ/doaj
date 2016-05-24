@@ -776,7 +776,55 @@ class TestClient(DoajTestCase):
         with self.assertRaises(models.ContinuationException):
             cont = journal.make_continuation("replaces", title="Second Journal")
 
-    def test_23_index_has_apc(self):
+    def test_23_make_continuation_single_issn(self):
+        # this is to cover a case where a single issn is provided during the continuations create process,
+        # to make sure the behaviour is still correct
+        journal = models.Journal()
+        bj = journal.bibjson()
+        bj.add_identifier(bj.E_ISSN, "0000-0000")
+        bj.add_identifier(bj.P_ISSN, "1111-1111")
+        bj.title = "First Journal"
+        journal.save()
+
+        time.sleep(2)
+
+        # first do it with an eissn
+        cont = journal.make_continuation("replaces", eissn="2222-2222", title="Second Journal")
+
+        rep = bj.replaces
+        rep.sort()
+        assert rep == ["2222-2222"]
+
+        cbj = cont.bibjson()
+
+        irb = cbj.is_replaced_by
+        irb.sort()
+
+        assert irb == ["0000-0000", "1111-1111"]
+        assert cbj.title == "Second Journal"
+        assert cbj.get_one_identifier(cbj.E_ISSN) == "2222-2222"
+
+        assert cont.id != journal.id
+
+        # then do it with a pissn and give it a dud eissn
+        cont = journal.make_continuation("replaces", pissn="3333-3333", eissn="", title="Second Journal")
+
+        rep = bj.replaces
+        rep.sort()
+        assert rep == ["3333-3333"]
+
+        cbj = cont.bibjson()
+
+        irb = cbj.is_replaced_by
+        irb.sort()
+
+        assert irb == ["0000-0000", "1111-1111"]
+        assert cbj.title == "Second Journal"
+        assert cbj.get_one_identifier(cbj.P_ISSN) == "3333-3333"
+
+        assert cont.id != journal.id
+
+    def test_24_index_has_apc(self):
         # no apc record, not ticked
         j = models.Journal()
         j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
@@ -802,3 +850,4 @@ class TestClient(DoajTestCase):
         b.set_apc("GBP", 100)
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "Yes"
+
