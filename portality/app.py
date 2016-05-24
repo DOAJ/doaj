@@ -72,7 +72,6 @@ SPONSORS = {
         # the key should correspond to the sponsor logo name in
         # /static/doaj/images/sponsors without the extension for
         # consistency - no code should rely on this though
-        'biomed-central': {'name':'BioMed Central', 'logo': 'biomed-central.gif', 'url': 'http://www.biomedcentral.com/'},
         'coaction': {'name': 'Co-Action Publishing', 'logo': 'coaction.jpg', 'url': 'http://www.co-action.net/'},
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
@@ -80,7 +79,6 @@ SPONSORS = {
         'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.jpg', 'url': 'http://www.hindawi.com/'},
         'lund-university': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'http://www.lunduniversity.lu.se/'},
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.gif', 'url': 'http://www.mdpi.com/'},
-        'springer': {'name': 'Springer Science+Business Media', 'logo': 'springer.gif', 'url': 'http://www.springer.com/'},
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.gif', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.jpg', 'url': 'http://www.karger.com/OpenAccess'},
         'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.gif', 'url': 'http://cottagelabs.com'},
@@ -93,7 +91,6 @@ SPONSORS = {
         'brill': {'name': 'Brill', 'logo': 'brill.jpg', 'url': 'http://www.brill.com/'},
         'proquest': {'name': 'ProQuest', 'logo': 'proquest.gif', 'url': 'http://www.proquest.com/'},
         'exlibris': {'name': 'ExLibris', 'logo': 'exlibris.gif', 'url': 'http://www.exlibrisgroup.com/'},
-        'nature': {'name': 'Nature Publishing Group', 'logo': 'nature.gif', 'url': 'http://www.nature.com/npg_/index_npg.html'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
         'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.jpg', 'url': 'http://www.elsevier.com'},
         'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
@@ -105,6 +102,7 @@ SPONSORS = {
         'aaas': {'name': 'AAAS (American Association for the Advancement of Science)', 'logo': 'aaas.png', 'url': 'http://www.aaas.org/'},
         'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
         'iop': {'name': 'IOP Publishing', 'logo': 'iop.jpg', 'url': 'http://ioppublishing.org/'},
+        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.jpg', 'url': 'http://www.springernature.com/gp/group/aboutus'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 

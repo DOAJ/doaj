@@ -824,4 +824,30 @@ class TestClient(DoajTestCase):
 
         assert cont.id != journal.id
 
+    def test_24_index_has_apc(self):
+        # no apc record, not ticked
+        j = models.Journal()
+        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "No Information"
+
+        # no apc record, ticked
+        j = models.Journal()
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "No"
+
+        # apc record, not ticked
+        j = models.Journal()
+        j.set_created("1970-01-01T00:00:00Z")  # so it's before the tick
+        b = j.bibjson()
+        b.set_apc("GBP", 100)
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "Yes"
+
+        # apc record, ticked
+        j = models.Journal()
+        b = j.bibjson()
+        b.set_apc("GBP", 100)
+        j.prep()
+        assert j.data.get("index", {}).get("has_apc") == "Yes"
 
