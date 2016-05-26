@@ -415,7 +415,7 @@ class Continuations(Form):
     # data gets confusing, as DateField produces datetime.date objects, but apparently won't read them.
     # Simpler just to do it this way.
     discontinued_date = StringField("Discontinued Date", [validators.Optional(), validators.Regexp(regex=BIG_END_DATE_REGEX, message=DATE_ERROR)],
-                                    description="Date this Journal was discontinued, in the form YYYY-MM-DD")
+                                    description="Date this Journal was discontinued or ceased publication, YYYY-MM-DD")
 
 #####################################################################
 # The context sensitive forms themselves
