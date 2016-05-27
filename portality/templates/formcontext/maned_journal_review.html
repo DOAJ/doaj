@@ -10,7 +10,7 @@
   <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 
     <div class="row-fluid">
-        <div class="span6">
+        <div class="span12">
             <p class="centre-text-container">This button will not save any other changes on this page!</p>
             {% if form_context.source.is_in_doaj() %}
               <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
@@ -21,11 +21,6 @@
                 <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
               </form>
             {% endif %}
-        </div>
-        <div class="span6">
-            <p class="centre-text-container">Ensure you've saved any changes here before using these links!</p>
-            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=replaces">Create a preceeding continuation</a><br>
-            <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=is_replaced_by">Create a succeeding continuation</a>
         </div>
     </div>
   </div>
@@ -72,9 +67,18 @@
 
                     <div class="span12 with-borders form-section" style="margin-left: 0;">
                         <h3 class="heading-aligned-with-fields">Continuation information</h3>
+
+                        <p><strong>To link journals already in DOAJ.</strong></p>
+
                         {% autoescape off %}
                         {{ form_context.render_field_group("continuations") }}
                         {% endautoescape %}
+
+                        <p><strong>To link a journal in DOAJ with a new journal record.</strong></p>
+                        <p class="centre-text-container">Ensure you've saved any changes here before using these links!</p>
+                        <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=replaces">Create a new preceeding continuation</a><br>
+                        <a href="{{ url_for('admin.journal_continue', journal_id=form_context.source.id) }}?type=is_replaced_by">Create a new succeeding continuation</a>
+
                     </div>
 
                     {% set old_journal_field_html = form_context.render_field_group("old_journal_fields") %}

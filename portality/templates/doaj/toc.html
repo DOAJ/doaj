@@ -46,12 +46,12 @@
             <p><strong>Ceased publication: </strong>{{ bibjson.discontinued_datestamp.strftime("%d %B %Y") }}</p>
         {% endif %}
 
-        {% if future %}
-            <p><strong>Subsequent title(s): </strong>
-            {% for f in future %}
-                {% set bibjson = f.bibjson() %}
+        {% if past %}
+            <p><strong>Continues: </strong>
+            {% for p in past %}
+                {% set bibjson = p.bibjson() %}
                 {% if bibjson.issns()|length > 0 %}
-                    {% if f.is_in_doaj() %}
+                    {% if p.is_in_doaj() %}
                         <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
                     {% else %}
                         {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
@@ -62,12 +62,12 @@
             </p>
         {% endif %}
 
-        {% if past %}
-            <p><strong>Previous title(s): </strong>
-            {% for p in past %}
-                {% set bibjson = p.bibjson() %}
+        {% if future %}
+            <p><strong>Continued by: </strong>
+            {% for f in future %}
+                {% set bibjson = f.bibjson() %}
                 {% if bibjson.issns()|length > 0 %}
-                    {% if p.is_in_doaj() %}
+                    {% if f.is_in_doaj() %}
                         <a href="{{ url_for('doaj.toc', identifier=bibjson.issns()[0]) }}">{{ bibjson.title }}</a>
                     {% else %}
                         {{ bibjson.title }}, ISSN: {{ bibjson.issns()[0] }} (not available in DOAJ)
