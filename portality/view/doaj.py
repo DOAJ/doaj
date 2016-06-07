@@ -282,7 +282,7 @@ def contact():
             return render_template("doaj/contact.html", form=form)
 
         send_contact_form(form)
-        flash("<strong>Thank you!</strong>  Your message has been sent, we'll get back to you as soon as we can.")
+        flash("Thank you for your feedback which has been received by the DOAJ Team.", "success")
         form = ContactUs()
         return render_template("doaj/contact.html", form=form)
 
