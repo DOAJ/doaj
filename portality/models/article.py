@@ -3,6 +3,7 @@ from portality.models import GenericBibJSON, Journal
 from copy import deepcopy
 from datetime import datetime
 from portality import xwalk
+from portality.core import app
 
 import string
 from unidecode import unidecode
@@ -17,20 +18,47 @@ class Article(DomainObject):
         issns = issns if isinstance(issns, list) else []
         urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
 
-        q = DuplicateArticleQuery(issns=issns,
-                                    publisher_record_id=publisher_record_id,
-                                    doi=doi,
-                                    urls=urls,
-                                    title=title,
-                                    volume=volume,
-                                    number=number,
-                                    start=start,
-                                    should_match=should_match)
-        # print json.dumps(q.query())
+        # in order to make sure we don't send too many terms to the ES query, break the issn list down into chunks
+        terms_limit = app.config.get("ES_TERMS_LIMIT", 1024)
+        issn_groups = []
+        lower = 0
+        upper = terms_limit
+        while lower < len(issns):
+            issn_groups.append(issns[lower:upper])
+            lower = upper
+            upper = lower + terms_limit
 
-        res = cls.query(q=q.query())
-        articles = [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
-        return articles
+        if issns is not None and len(issns) > 0:
+            duplicate_articles = []
+            for g in issn_groups:
+                q = DuplicateArticleQuery(issns=g,
+                                            publisher_record_id=publisher_record_id,
+                                            doi=doi,
+                                            urls=urls,
+                                            title=title,
+                                            volume=volume,
+                                            number=number,
+                                            start=start,
+                                            should_match=should_match)
+                # print json.dumps(q.query())
+
+                res = cls.query(q=q.query())
+                duplicate_articles += [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+
+            return duplicate_articles
+        else:
+            q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
+                                        doi=doi,
+                                        urls=urls,
+                                        title=title,
+                                        volume=volume,
+                                        number=number,
+                                        start=start,
+                                        should_match=should_match)
+            # print json.dumps(q.query())
+
+            res = cls.query(q=q.query())
+            return [cls(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
 
     @classmethod
     def list_volumes(cls, issns):

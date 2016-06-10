@@ -61,6 +61,8 @@ ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 
+ES_TERMS_LIMIT = 1024
+
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
 DEBUG_PYCHARM_SERVER = 'localhost'
