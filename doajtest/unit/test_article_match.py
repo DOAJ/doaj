@@ -1,6 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality import article, models
 import uuid, time
+from random import randint
 
 class TestArticleMatch(DoajTestCase):
 
@@ -298,3 +299,25 @@ class TestArticleMatch(DoajTestCase):
         l = xwalk.get_duplicate(a, all_duplicates=True)
         assert isinstance(l, list)
         assert l == []
+
+    def test_09_many_issns(self):
+        # This tests that a query with a LOT of issns is still successful
+        a = models.Article()
+        b = a.bibjson()
+        b.journal_issns = ["0000-0000"]
+        b.title = "Example A article with a fulltext url"
+        b.add_identifier(b.DOI, "10.1234/duplicate")
+        a.save()
+
+        time.sleep(2)
+
+        def random_issn():
+            bits = []
+            for i in range(8):
+                bits.append(str(randint(1, 9)))
+            return "".join(bits[:4]) + "-" + "".join(bits[4:])
+
+        issns = [random_issn() for i in range(2000)] + ["0000-0000"]
+
+        dupes = models.Article.duplicates(issns=issns, doi="10.1234/duplicate")
+        assert len(dupes) == 1
