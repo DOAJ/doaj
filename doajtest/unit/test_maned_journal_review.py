@@ -8,6 +8,8 @@ from werkzeug.datastructures import MultiDict
 
 from doajtest.fixtures import JournalFixtureFactory
 
+from copy import deepcopy
+
 JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source()
 JOURNAL_FORM = JournalFixtureFactory.make_journal_form()
 
@@ -229,4 +231,39 @@ class TestManEdJournalReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
+
+    def test_06_maned_review_no_continuation(self):
+        source = deepcopy(JOURNAL_SOURCE)
+        source["bibjson"]["replaces"] = []
+        source["bibjson"]["is_replaced_by"] = []
+        source["bibjson"]["discontinued_date"] = ""
+        j = models.Journal(**source)
+        bj = j.bibjson()    # just checking this works, as it uses an inner DataObj
+
+        form = deepcopy(JOURNAL_FORM)
+        form["replaces"] = ""
+        form["is_replaced_by"] = ""
+        form["discontinued_date"] = ""
+
+        # construct it from form data (with a known source)
+        fc = formcontext.JournalFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(form),
+            source=j
+        )
+
+        # check the form has the continuations data
+        assert fc.form.replaces.data == []
+        assert fc.form.is_replaced_by.data == []
+        assert fc.form.discontinued_date.data == ""
+
+        # run the crosswalk, don't test it at all in this test
+        fc.form2target()
+        # patch the target with data from the source
+        fc.patch_target()
+
+        # ensure the model has the continuations data
+        assert fc.target.bibjson().replaces == []
+        assert fc.target.bibjson().is_replaced_by == []
+        assert fc.target.bibjson().discontinued_date is None
 

@@ -101,6 +101,8 @@ def to_float():
 
 def date_str(in_format=None, out_format=None):
     def datify(val):
+        if val is None or val == "":
+            return None
         if isinstance(val, date) or isinstance(val, datetime):
             return dates.format(val, format=out_format)
         else:
@@ -1040,7 +1042,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException(e.message)
+            raise DataStructureException(u"Schema exception at {a}, {b}".format(a=field_name, b=e.message))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):

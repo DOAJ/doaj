@@ -401,12 +401,12 @@ class Seal(Form):
 class Continuations(Form):
     """ Fields to manage continuation of journals, and discontinuations """
 
-    replaces = TagListField('ISSN(s) this Journal replaces',
+    replaces = TagListField('This journal continues (add ISSN(s))',
         [validators.Optional(), RegexpOnTagList(regex=ISSN_REGEX, message=ISSN_ERROR)],
         description="Enter the ISSN(s) of the Journal which this Journal immediately replaces (i.e. don't include even older Journals here)"
     )
 
-    is_replaced_by = TagListField('ISSN(s) this Journal is replaced by',
+    is_replaced_by = TagListField('This journal is continued by (add ISSN(s))',
         [validators.Optional(), RegexpOnTagList(regex=ISSN_REGEX, message=ISSN_ERROR)],
         description="Enter the ISSN(s) of the Journal which this Journal is immediately replaced by (i.e. don't include even newer Journals here)"
     )
@@ -415,7 +415,7 @@ class Continuations(Form):
     # data gets confusing, as DateField produces datetime.date objects, but apparently won't read them.
     # Simpler just to do it this way.
     discontinued_date = StringField("Discontinued Date", [validators.Optional(), validators.Regexp(regex=BIG_END_DATE_REGEX, message=DATE_ERROR)],
-                                    description="Date this Journal was discontinued, in the form YYYY-MM-DD")
+                                    description="Date this Journal was discontinued or ceased publication, YYYY-MM-DD.  If the day of the month is not know, please use '01'")
 
 #####################################################################
 # The context sensitive forms themselves
