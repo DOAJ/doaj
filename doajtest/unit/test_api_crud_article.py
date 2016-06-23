@@ -82,15 +82,15 @@ class TestCrudArticle(DoajTestCase):
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
         journal.bibjson().publisher = "The Publisher"
-        journal.bibjson().bibjson['license'] = [
-            {
-                "title" : "CC BY",
-                "type" : "CC BY",
+        journal.bibjson().set_license(
+            **{
+                "license_title" : "CC BY",
+                "license_type" : "CC BY",
                 "url" : "http://license.example.com",
                 "version" : "1.0",
                 "open_access": True,
             }
-        ]
+        )
         journal.bibjson().country = "US"
         journal.bibjson().set_language(["EN", "FR"])
         journal.save()
@@ -288,15 +288,15 @@ class TestCrudArticle(DoajTestCase):
         # make sure non-overwritable journal metadata matches the article
         journal.bibjson().title = "The Title"
         journal.bibjson().publisher = "The Publisher"
-        journal.bibjson().bibjson['license'] = [
-            {
-                "title" : "CC BY",
-                "type" : "CC BY",
+        journal.bibjson().set_license(
+            **{
+                "license_title" : "CC BY",
+                "license_type" : "CC BY",
                 "url" : "http://license.example.com",
                 "version" : "1.0",
                 "open_access": True,
             }
-        ]
+        )
         journal.bibjson().country = "US"
         journal.bibjson().set_language(["EN", "FR"])
         journal.save()

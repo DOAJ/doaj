@@ -237,7 +237,6 @@ class TestArticleMatch(DoajTestCase):
         # populate the index with some suggestions owned by this owner
         for i in range(5):
             a = models.Suggestion()
-            a.set_in_doaj(True)
             a.set_owner("owner")
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)
@@ -252,7 +251,6 @@ class TestArticleMatch(DoajTestCase):
         # populte the index with some which are not owned by this owner
         for i in range(5):
             a = models.Suggestion()
-            a.set_in_doaj(True)
             a.set_owner("stranger")
             bj = a.bibjson()
             bj.title = "Test Suggestion {x}".format(x=i)

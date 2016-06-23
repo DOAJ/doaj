@@ -30,7 +30,19 @@ jQuery(document).ready(function($) {
             {'field': 'index.subject.exact', 'display': 'Subject'},
             {'field': 'index.language.exact', 'display': 'Journal Language'},
             {'field': 'index.country.exact', 'display': 'Country of publisher'},
-            {'field': 'index.title.exact', 'display': 'Journal Title'}
+            {'field': 'index.title.exact', 'display': 'Journal Title'},
+            {'field': 'index.continued.exact', 'display': 'Continued'},
+            {
+                type: "date_histogram",
+                field: "bibjson.discontinued_date",
+                interval: "year",
+                display: "Discontinued Year",
+                value_function : function(val) {
+                    return (new Date(parseInt(val))).getUTCFullYear();
+                },
+                size: false,
+                sort: "desc"
+            }
         ],
 
         search_sortby: [
@@ -49,7 +61,7 @@ jQuery(document).ready(function($) {
             {'display':'Country of publisher','field':'index.country'},
             {'display':'Journal Language','field':'index.language'},
             {'display':'Publisher','field':'index.publisher'},
-            {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'},
+            {'display':'Journal: Platform, Host, Aggregator','field':'bibjson.provider'}
         ],
 
         page_size : 10,
@@ -67,6 +79,7 @@ jQuery(document).ready(function($) {
             "links" : fv_links,
             "issns" : fv_issns,
             "edit_journal": fv_edit_journal,
+            "make_continuation" : fv_make_continuation,
             "in_doaj": fv_in_doaj,
             "country_name": fv_country_name,
             "owner" : fv_owner
@@ -107,6 +120,12 @@ jQuery(document).ready(function($) {
                 {
                     "pre" : "<strong>ISSN(s)</strong>: ",
                     "field" : "issns"
+                }
+            ],
+            [
+                {
+                    "pre": "<strong>Discontinued Date</strong>: ",
+                    "field": "bibjson.discontinued_date"
                 }
             ],
             [
@@ -188,9 +207,14 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
+                    "field" : "make_continuation"
+                }
+            ],
+            [
+                {
                     "field": "edit_journal"
                 }
             ]
-        ],
+        ]
     });
 });

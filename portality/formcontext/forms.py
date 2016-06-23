@@ -2,17 +2,19 @@ import re
 from datetime import datetime
 
 from wtforms import Form, validators
-from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField
+from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField, DateField
 from wtforms import widgets
 
 from portality.formcontext.fields import URLField, TagListField, DisabledTextField, PermissiveSelectField
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen
+from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList
 
 from portality.formcontext.choices import Choices
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 EMAIL_CONFIRM_ERROR = 'Please double check the email addresses - they do not match.'
+BIG_END_DATE_REGEX = "^\d{4}-\d{2}-\d{2}$"
+DATE_ERROR  = "Date must be supplied in the form YYYY-MM-DD"
 
 ###########################################################################
 # Definition of the form components
@@ -396,6 +398,25 @@ class Seal(Form):
 
     doaj_seal = BooleanField('<b>Qualifies for Seal</b>', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
 
+class Continuations(Form):
+    """ Fields to manage continuation of journals, and discontinuations """
+
+    replaces = TagListField('This journal continues (add ISSN(s))',
+        [validators.Optional(), RegexpOnTagList(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description="Enter the ISSN(s) of the Journal which this Journal immediately replaces (i.e. don't include even older Journals here)"
+    )
+
+    is_replaced_by = TagListField('This journal is continued by (add ISSN(s))',
+        [validators.Optional(), RegexpOnTagList(regex=ISSN_REGEX, message=ISSN_ERROR)],
+        description="Enter the ISSN(s) of the Journal which this Journal is immediately replaced by (i.e. don't include even newer Journals here)"
+    )
+
+    # note that although this is a date field, we use a string field with a regex as the conversion to/from form
+    # data gets confusing, as DateField produces datetime.date objects, but apparently won't read them.
+    # Simpler just to do it this way.
+    discontinued_date = StringField("Discontinued Date", [validators.Optional(), validators.Regexp(regex=BIG_END_DATE_REGEX, message=DATE_ERROR)],
+                                    description="Date this Journal was discontinued or ceased publication, YYYY-MM-DD.  If the day of the month is not know, please use '01'")
+
 #####################################################################
 # The context sensitive forms themselves
 #####################################################################
@@ -411,7 +432,7 @@ class PublicApplicationForm(JournalInformation, Suggestion, PublicSuggester):
     pass
 
 
-class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes, Seal):
+class ManEdApplicationReviewForm(Editorial, Workflow, ApplicationOwner, JournalInfoOptionalPaymentURLs, Suggestion, ApplicationSubject, AdminSuggester, Notes, Seal, Continuations):
     """
     Managing Editor's Application Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -463,7 +484,7 @@ class PublisherReApplicationForm(JournalInformation, Suggestion):
     pass
 
 
-class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal):
+class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLegacy, JournalInformation, Notes, OptionalValidation, Seal, Continuations):
     """
     Managing Editor's Journal Review form.  It consists of:
         * Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)
@@ -474,6 +495,7 @@ class ManEdJournalReviewForm(Editorial, RequiredOwner, JournalSubject, JournalLe
         * RequiredOwner - adds an Owner field which is required - validation will fail if it is not provided
         * OptionalValidation - Make the form provide an option to bypass validation
         * Seal - checkbox for DOAJ seal
+        * Continuations - allows specification of replaces/is_replaced_by and discontinued date
     """
     pass
 

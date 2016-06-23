@@ -26,6 +26,9 @@ APPLICATION_SOURCE = {
         "publisher" : "The Publisher",
         "provider" : "Platform Host Aggregator",
         "institution" : "Society Institution",
+        "replaces" : ["1111-1111"],
+        "is_replaced_by" : ["2222-2222"],
+        "discontinued_date" : "2001-01-01",
         "link": [
             {"type" : "homepage", "url" : "http://journal.url"},
             {"type" : "waiver_policy", "url" : "http://waiver.policy"},
@@ -52,13 +55,11 @@ APPLICATION_SOURCE = {
             "currency" : "USD",
             "average_price" : 4
         },
-        "archiving_policy" : {
-            "policy" : [
-                "LOCKSS", "CLOCKSS",
-                ["A national library", "Trinity"],
-                ["Other", "A safe place"]
-            ],
-            "url" : "http://digital.archiving.policy"
+        "archiving_policy": {
+            "known" : ["LOCKSS", "CLOCKSS"],
+            "other" : "A safe place",
+            "nat_lib" : "Trinity",
+            "url": "http://digital.archiving.policy"
         },
         "editorial_review" : {
             "process" : "Open peer review",
@@ -350,7 +351,6 @@ class TestReApplication(DoajTestCase):
         j = models.Journal()
         bj = j.bibjson()
         bj.title = "Journal Title"                      # some bibjson
-        j.set_application_status("accepted")            # an application status of accepted
         j.add_note("An important note")                 # a note
         j.add_contact("Contact", "contact@email.com")   # contact details
         j.set_owner("theowner")                         # journal owner account
@@ -488,6 +488,9 @@ class TestReApplication(DoajTestCase):
         del forminfo_obj["suggester_name"]
         del forminfo_obj["owner"]
         del forminfo_obj["doaj_seal"]
+        del forminfo_obj["replaces"]
+        del forminfo_obj["is_replaced_by"]
+        del forminfo_obj["discontinued_date"]
 
         # these two objects should be the same
         assert forminfo_col == forminfo_obj
@@ -693,11 +696,9 @@ class TestReApplication(DoajTestCase):
         assert sheetqs == qs
 
     def test_14_make_journal_from_reapp(self):
-        # with history
         j = models.Journal()
         j.set_id("1234567")
         j.set_created("2001-01-01T00:00:00Z")
-        j.add_history({"title" : "old title"})
         j.save()
 
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -714,7 +715,6 @@ class TestReApplication(DoajTestCase):
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert j.get_history_raw()[0].get("bibjson", {}).get("title") == "old title"
 
         # without history
         j = models.Journal()
@@ -736,7 +736,6 @@ class TestReApplication(DoajTestCase):
         assert j.current_application is None
         assert j.data.get("admin", {}).get("current_journal") is None
         assert j.created_date == "2001-01-01T00:00:00Z"
-        assert len(j.history()) == 0
 
     def test_15_error_report_cell_refs_rows(self):
         sheet = reapplication.open_csv("invalid.csv")

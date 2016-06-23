@@ -115,6 +115,7 @@ class OpenURLRequest(object):
             # construct a journal object around the result
             journal = Journal(**results['hits']['hits'][0])
 
+            """
             # since we might be looking for a specific continuation of a journal, do a bit of work
             # to point the user to the correct ToC, which should be by ISSN if possible.  If they have
             # given us the journal title, then we should try to identify the ISSN associated with it
@@ -131,6 +132,12 @@ class OpenURLRequest(object):
                         ident = issns[0]
                 if ident is None:
                     ident = journal.id
+            """
+
+            # we no longer have to look for the right continuation - the continuation is a first-class journal
+            # object, so if we have a journal we have the right continuation (assuming that the user gave us
+            # specific enough information
+            ident = journal.id
 
             # If there request has a volume parameter, query for presence of an article with that volume
             if self.volume:
@@ -154,6 +161,7 @@ class OpenURLRequest(object):
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
     def query_for_vol(self, journalobj):
+        """
         # find which continuation the searched issn/title belongs to so we can find accurate volume/issue results
         issns = None
         if self.issn is None:                                               # if query was by title, find the issns
@@ -168,6 +176,11 @@ class OpenURLRequest(object):
                 history_bibjson = journalobj.get_history_for(self.issn)
                 if history_bibjson is not None:                             # issn is from previous version
                     issns = history_bibjson.issns()
+        """
+
+        # we no longer need to dig through the continuations to look for the right issn.  The journal object
+        # will already be the correct continuation, if the user provided sufficient detail for us to identify it
+        issns = journalobj.bibjson().issns()
 
         # If there's no way to get the wanted issns, give up, else run the query
         if issns == None:

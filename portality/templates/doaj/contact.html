@@ -13,7 +13,7 @@ DOAJ is not a journal or a publisher; do not submit papers to us. We are a direc
 Have a look at our <a href="{{ url_for('doaj.publishers') }}">Information for Publishers</a> page. If your journal fills our
 criteria please <a href="{{ url_for('doaj.suggestion') }}">fill in an application</a>.</li><br>
 <li><b>I have filled in an application or a reapplication. How long do I have to wait?</b><br>
-We process applications as fast as possible. We recently completed a large reapplication project and have a backlog of 
+We process applications as fast as possible. We recently completed a large reapplication project and have a backlog of
 applications to process. If you have not received an answer within 6 months, contact us using the form below. Please check your
 Spam folder first to make sure you have no messages from us.</li><br>
 <li><b>Please send me articles about subject X.</b><br>
@@ -25,34 +25,30 @@ We do not supply that service. You can either <a href="{{ url_for('doaj.subjects
 </ol>
 </p>
 
-<p>To contact us please send us email to feedback[at]doaj[.]org</a></p>
-
-{#
-<div class="alert alert-danger">THIS FORM DOES NOT CURRENTLY WORK</div>
-
 <p>For all other inquiries please use the form below.</p>
 
-<form action="/doaj" method="post">
-<input name="func" value="contact" type="hidden">
-<input name="uiLanguage" value="en" type="hidden">
+    {% from "_formhelpers.html" import render_field_horizontal %}
+    {% from "_formhelpers.html" import render_field %}
 
-<label for="subject">Subject</label> <br>
+<form action="{{ url_for('doaj.contact') }}" method="post" class="form-horizontal wide" id="contact_form">
 
-<input name="subject" id="subject" size="30" type="text"><br>
-<label for="message">Message *</label><br>
-<textarea id="message" name="message" cols="45" rows="8"></textarea><br>
-<label for="name">Your name * </label><br>
-<input name="name" id="name" size="30" type="text"><br>
-<input name="already" value="1" type="hidden">
-<input name="cKey" value="68181384620959" type="hidden">
-<label for="email">Your email address *</label><br>
-<input name="email" id="email" size="30" type="text"><br>
-Type in the word displayed in the image *
-<img src="contact_us_files/captcha68181384620959.gif" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
-<br>
-<input name="cWord" size="7">
-<p>
-<input value="Submit" border="0" type="submit"></p></form>
-#}
+    {{ render_field_horizontal(form.email, style="width: 400px", placeholder="Please enter your email address") }}
+    <div style="display: none">{{ render_field_horizontal(form.subject, style="width: 400px; height: 50px", placeholder="Please do not modify this field", autocomplete="off") }}</div>
+    {{ render_field_horizontal(form.message, style="width: 400px; min-height: 200px", placeholder="Enter your message here") }}
+
+    <div class="control-group">
+        <div class="controls">
+            <button class="btn btn-success" id="send">Send</button>
+        </div>
+    </div>
+
+</form>
+
 
 {% endblock %}
+
+{% block extra_js_bottom %}
+     <script type="text/javascript" src="/static/doaj/js/contact.js?v={{config.get('DOAJ_VERSION')}}"></script>
+{% endblock extra_js_bottom %}
+
+

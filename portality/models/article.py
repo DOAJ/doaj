@@ -1,5 +1,6 @@
 from portality.dao import DomainObject
-from portality.models import GenericBibJSON, Journal
+from portality.models import Journal, shared_structs
+from portality.models.bibjson import GenericBibJSON
 from copy import deepcopy
 from datetime import datetime
 from portality import xwalk
@@ -431,122 +432,132 @@ class Article(DomainObject):
         self._generate_index()
         super(Article, self).save(*args, **kwargs)
 
+
 class ArticleBibJSON(GenericBibJSON):
+
+    def __init__(self, bibjson=None):
+        self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
+        self._add_struct(ARTICLE_BIBJSON_EXTENSION.get("structs", {}).get("bibjson"))
+        super(ArticleBibJSON, self).__init__(bibjson)
 
     # article-specific simple getters and setters
     @property
-    def year(self): return self.bibjson.get("year")
+    def year(self):
+        return self._get_single("year")
+
     @year.setter
-    def year(self, val) : self.bibjson["year"] = str(val)
+    def year(self, val):
+        self._set_with_struct("year", val)
+
     @year.deleter
     def year(self):
-        if "year" in self.bibjson:
-            del self.bibjson["year"]
+        self._delete("year")
 
     @property
-    def month(self): return self.bibjson.get("month")
+    def month(self):
+        return self._get_single("month")
+
     @month.setter
-    def month(self, val) : self.bibjson["month"] = str(val)
+    def month(self, val):
+        self._set_with_struct("month", val)
+
     @month.deleter
     def month(self):
-        if "month" in self.bibjson:
-            del self.bibjson["month"]
+        self._delete("month")
 
     @property
-    def start_page(self): return self.bibjson.get("start_page")
+    def start_page(self):
+        return self._get_single("start_page")
+
     @start_page.setter
-    def start_page(self, val) : self.bibjson["start_page"] = val
+    def start_page(self, val):
+        self._set_with_struct("start_page", val)
 
     @property
-    def end_page(self): return self.bibjson.get("end_page")
+    def end_page(self):
+        return self._get_single("end_page")
+
     @end_page.setter
-    def end_page(self, val) : self.bibjson["end_page"] = val
+    def end_page(self, val):
+        self._set_with_struct("end_page", val)
 
     @property
-    def abstract(self): return self.bibjson.get("abstract")
+    def abstract(self):
+        return self._get_single("abstract")
+
     @abstract.setter
-    def abstract(self, val) : self.bibjson["abstract"] = val
+    def abstract(self, val):
+        self._set_with_struct("abstract", val)
 
     # article-specific complex part getters and setters
 
-    def _set_journal_property(self, prop, value):
-        if "journal" not in self.bibjson:
-            self.bibjson["journal"] = {}
-        self.bibjson["journal"][prop] = value
-
     @property
     def volume(self):
-        return self.bibjson.get("journal", {}).get("volume")
+        return self._get_single("journal.volume")
 
     @volume.setter
     def volume(self, value):
-        self._set_journal_property("volume", value)
+        self._set_with_struct("journal.volume", value)
 
     @property
     def number(self):
-        return self.bibjson.get("journal", {}).get("number")
+        return self._get_single("journal.number")
 
     @number.setter
     def number(self, value):
-        self._set_journal_property("number", value)
+        self._set_with_struct("journal.number", value)
 
     @property
     def journal_title(self):
-        return self.bibjson.get("journal", {}).get("title")
+        return self._get_single("journal.title")
 
     @journal_title.setter
     def journal_title(self, title):
-        self._set_journal_property("title", title)
+        self._set_with_struct("journal.title", title)
 
     @property
     def journal_language(self):
-        return self.bibjson.get("journal", {}).get("language")
+        return self._get_single("journal.language")
 
     @journal_language.setter
     def journal_language(self, lang):
-        self._set_journal_property("language", lang)
+        self._set_with_struct("journal.language", lang)
 
-    # beware, the index part of an article will contain the same as the
-    # index part of a journal, not the same as the bibjson part of a
-    # journal!
-    # the method below is referring to the bibjson part of a journal
     @property
     def journal_country(self):
-        return self.bibjson.get("journal", {}).get("country")
+        return self._get_single("journal.country")
 
     @journal_country.setter
     def journal_country(self, country):
-        self._set_journal_property("country", country)
+        self._set_single("journal.country", country)
 
     @property
     def journal_issns(self):
-        return self.bibjson.get("journal", {}).get("issns", [])
+        return self._get_list("journal.issns")
 
     @journal_issns.setter
     def journal_issns(self, issns):
-        self._set_journal_property("issns", issns)
+        self._set_with_struct("journal.issns", issns)
 
     @property
     def publisher(self):
-        return self.bibjson.get("journal", {}).get("publisher")
+        return self._get_single("journal.publisher")
 
     @publisher.setter
     def publisher(self, value):
-        self._set_journal_property("publisher", value)
+        self._set_with_struct("journal.publisher", value)
 
     def add_author(self, name, email=None, affiliation=None):
-        if "author" not in self.bibjson:
-            self.bibjson["author"] = []
         aobj = {"name" : name}
         if email is not None:
             aobj["email"] = email
         if affiliation is not None:
             aobj["affiliation"] = affiliation
-        self.bibjson["author"].append(aobj)
+        self._add_to_list_with_struct("author", aobj)
 
     @property
     def author(self):
-        return self.bibjson.get("author", [])
+        return self._get_list("author")
 
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         lobj = {"title" : licence_title, "type" : licence_type}
@@ -557,44 +568,53 @@ class ArticleBibJSON(GenericBibJSON):
         if open_access is not None:
             lobj["open_access"] = open_access
 
-        self._set_journal_property("license", [lobj])
+        self._set_with_struct("journal.license", lobj)
 
     def get_journal_license(self):
-        return self.bibjson.get("journal", {}).get("license", [None])[0]
+        lics = self._get_list("journal.license")
+        if len(lics) == 0:
+            return None
+        return lics[0]
 
     def get_publication_date(self, date_format='%Y-%m-%dT%H:%M:%SZ'):
         # work out what the date of publication is
         date = ""
         if self.year is not None:
-            # fix 2 digit years
-            if len(self.year) == 2:
-                try:
-                    intyear = int(self.year)
-                except ValueError:
-                    # if it's 2 chars long and the 2 chars don't make an integer,
-                    # forget it
+            if type(self.year is str):          # It should be, if the mappings are correct. but len() needs a sequence.
+                # fix 2 digit years
+                if len(self.year) == 2:
+                    try:
+                        intyear = int(self.year)
+                    except ValueError:
+                        # if it's 2 chars long and the 2 chars don't make an integer,
+                        # forget it
+                        return date
+
+                    # In the case of truncated years, assume it's this century if before the current year
+                    if intyear <= int(str(datetime.utcnow().year)[:-2]):
+                        self.year = "20" + self.year             # For readability over long-lasting code, I have refrained
+                    else:                                        # from using str(datetime.utcnow().year)[:2] here.
+                        self.year = "19" + self.year             # But don't come crying to me 90-ish years from now.
+
+                # if we still don't have a 4 digit year, forget it
+                if len(self.year) != 4:
                     return date
-
-                if intyear <= 13:
-                    self.year = "20" + self.year
-                else:
-                    self.year = "19" + self.year
-
-            # if we still don't have a 4 digit year, forget it
-            if len(self.year) != 4:
-                return date
 
             # build up our proposed datestamp
             date += str(self.year)
             if self.month is not None:
                 try:
-                    if len(self.month) == 1:
-                        date += "-0" + str(self.month)
+                    if type(self.month) is int or len(self.month) <= 2:
+                        month_number = self.month
+                    elif len(self.month) == 3:                                     # 'May' works with either case, obvz.
+                        month_number = datetime.strptime(self.month, '%b').month
                     else:
-                        date += "-" + str(self.month)
+                        month_number = datetime.strptime(self.month, '%B').month
+
+                    # pad the month number to two digits. This accepts int or string
+                    date += '-{:0>2}'.format(month_number)
                 except:
-                    # FIXME: months are in all sorts of forms, we can only handle
-                    # numeric ones right now
+                    # If something goes wrong, just assume it's January
                     date += "-01"
             else:
                 date += "-01"
@@ -609,8 +629,7 @@ class ArticleBibJSON(GenericBibJSON):
         return date
 
     def remove_journal_metadata(self):
-        if "journal" in self.bibjson:
-            del self.bibjson["journal"]
+        self._delete("journal")
 
     def vancouver_citation(self):
         jtitle = self.journal_title
@@ -642,6 +661,66 @@ class ArticleBibJSON(GenericBibJSON):
                 citation += end
 
         return jtitle.strip(), citation
+
+ARTICLE_BIBJSON_EXTENSION = {
+    "objects" : ["bibjson"],
+    "structs" : {
+        "bibjson" : {
+            "fields" : {
+                "year" : {"coerce" : "unicode"},
+                "month" : {"coerce" : "unicode"},
+                "start_page" : {"coerce" : "unicode"},
+                "end_page" : {"coerce" : "unicode"},
+                "abstract" : {"coerce" : "unicode"}
+            },
+            "lists" : {
+                "author" : {"contains" : "object"}
+            },
+            "objects" : [
+                "journal"
+            ],
+
+            "structs" : {
+                "author" : {
+                    "fields" : {
+                        "name" : {"coerce" : "unicode"},
+                        "email" : {"coerce" : "unicode"},
+                        "affiliation" : {"coerce" : "unicode"}
+                    }
+                },
+
+                "journal" : {
+                    "fields" : {
+                        "volume" : {"coerce" : "unicode"},
+                        "number" : {"coerce" : "unicode"},
+                        "publisher" : {"coerce" : "unicode"},
+                        "title" : {"coerce" : "unicode"},
+                        "country" : {"coerce" : "unicode"}
+                    },
+                    "lists" : {
+                        "license" : {"contains" : "object"},
+                        "language" : {"contains" : "field", "coerce" : "unicode"},
+                        "issns" : {"contains" : "field", "coerce" : "unicode"}
+                    },
+                    "structs" : {
+                        "license" : {
+                            "fields" : {
+                                "title" : {"coerce" : "unicode"},
+                                "type" : {"coerce" : "unicode"},
+                                "url" : {"coerce" : "unicode"},
+                                "version" : {"coerce" : "unicode"},
+                                "open_access" : {"coerce" : "bool"}
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+##################################################
 
 class ArticleQuery(object):
     base_query = {
@@ -677,6 +756,7 @@ class ArticleQuery(object):
             q["query"]["filtered"]["filter"]["bool"]["must"].append(vq)
 
         return q
+
 
 class ArticleIssueQuery(object):
     base_query = {
@@ -769,6 +849,7 @@ class ArticleVolumesQuery(object):
         q["query"]["filtered"]["filter"]["terms"]["index.issn.exact"] = self.issns
         return q
 
+
 class ArticleVolumesIssuesQuery(object):
     base_query = {
         "query" : {
@@ -804,6 +885,7 @@ class ArticleVolumesIssuesQuery(object):
         q["query"]["filtered"]["filter"]["bool"]["must"][0]["terms"]["index.issn.exact"] = self.issns
         q["query"]["filtered"]["filter"]["bool"]["must"][1]["term"]["bibjson.journal.volume.exact"] = self.volume
         return q
+
 
 class DuplicateArticleQuery(object):
     base_query = {
@@ -916,9 +998,7 @@ class DuplicateArticleQuery(object):
 
         return q
 
-    
 
-    
 def _human_sort(things,reverse=True):
     numeric = []
     non_numeric = []

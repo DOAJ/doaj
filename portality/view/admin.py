@@ -11,7 +11,7 @@ from portality import lock
 from portality.util import flash_with_url, jsonp
 from portality.core import app
 
-from portality.view.forms import EditorGroupForm
+from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
@@ -187,6 +187,7 @@ def journal_activate(journal_id):
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
+@write_required
 def journal_deactivate(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -196,6 +197,40 @@ def journal_deactivate(journal_id):
     j.save()
     j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
     return redirect(url_for('.journal_page', journal_id=journal_id))
+
+@blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required
+def journal_continue(journal_id):
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+
+    if request.method == "GET":
+        type = request.values.get("type")
+        form = MakeContinuation()
+        form.type.data = type
+        return render_template("admin/continuation.html", form=form, current=j)
+
+    elif request.method == "POST":
+        form = MakeContinuation(request.form)
+        if not form.validate():
+            return render_template('admin/continuation.html', form=form, current=j)
+
+        if form.type.data is None:
+            abort(400)
+
+        if form.type.data not in ["replaces", "is_replaced_by"]:
+            abort(400)
+
+        try:
+            cont = j.make_continuation(form.type.data, eissn=form.eissn.data, pissn=form.pissn.data, title=form.title.data)
+        except:
+            abort(400)
+
+        flash("The continuation has been created (see below).  You may now edit the other metadata associated with it.  The original journal has also been updated with this continuation's ISSN(s).  Once you are happy with this record, you can publish it to the DOAJ", "success")
+        return redirect(url_for('.journal_page', journal_id=cont.id))
 
 @blueprint.route("/applications")
 @login_required

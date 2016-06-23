@@ -19,12 +19,19 @@ class DomainObject(UserDict.IterableUserDict, object):
     __type__ = None # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
-        if '_source' in kwargs:
-            self.data = dict(kwargs['_source'])
-            self.meta = dict(kwargs)
-            del self.meta['_source']
-        else:
-            self.data = dict(kwargs)
+        # if self.data is already set, don't do anything here
+        try:
+            object.__getattribute__(self, "data")
+        except:
+            if '_source' in kwargs:
+                self.data = dict(kwargs['_source'])
+                self.meta = dict(kwargs)
+                del self.meta['_source']
+            else:
+                self.data = dict(kwargs)
+        # FIXME: calling super() breaks everything, even thought this is the correct thing to do
+        # this is because the DomainObject incorrectly overrides properties of the super class
+        # super(DomainObject, self).__init__()
 
     @classmethod
     def target_whole_index(cls):
@@ -164,7 +171,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 return None
             else:
                 return cls(**out.json())
-        except:
+        except Exception as e:
             return None
 
     @classmethod

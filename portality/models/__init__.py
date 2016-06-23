@@ -4,7 +4,7 @@ from portality.models.account import Account
 from portality.models.editors import EditorGroup, EditorGroupMemberQuery, EditorGroupQuery
 from portality.models.uploads import FileUpload, ExistsFileQuery, OwnerFileQuery, ValidFileQuery
 from portality.models.lock import Lock
-from portality.models.journal import Journal, JournalBibJSON, JournalQuery, IssnQuery, PublisherQuery, TitleQuery
+from portality.models.journal import Journal, JournalBibJSON, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
 from portality.models.suggestion import Suggestion, SuggestionQuery, OwnerStatusQuery
 from portality.models.history import ArticleHistory, JournalHistory
 from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery

@@ -4,6 +4,7 @@ from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
 import locale, json, urlparse
+from datetime import date, datetime
 
 #########################################################
 ## Data coerce functions
@@ -100,7 +101,12 @@ def to_float():
 
 def date_str(in_format=None, out_format=None):
     def datify(val):
-        return dates.reformat(val, in_format=in_format, out_format=out_format)
+        if val is None or val == "":
+            return None
+        if isinstance(val, date) or isinstance(val, datetime):
+            return dates.format(val, format=out_format)
+        else:
+            return dates.reformat(val, in_format=in_format, out_format=out_format)
 
     return datify
 
@@ -225,6 +231,7 @@ class DataObj(object):
         # extend the coerce map.
         "unicode": to_unicode(),
         "utcdatetime": date_str(),
+        "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),
         "isolang": to_isolang(),
@@ -239,34 +246,7 @@ class DataObj(object):
         "deposit_policy": string_canonicalise(["None", "Sherpa/Romeo", "Dulcinea", "OAKlist", "Héloïse", "Diadorim"], allow_fail=True),
     }
 
-    # Translation between our simple field types and swagger spec types.
-    # For all the ones that have a note to add support to the swagger-ui front-end,
-    # for now those fields will just display whatever is in the "type"
-    # section when viewing the interactive documentation. "type" must be
-    # a valid Swagger type ( https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#data-types )
-    # and "format" will just be ignored if it is not a default format in
-    # the Swagger spec *and* a format that the swagger-ui Javascript library understands.
-    # The spec says it's possible to define your own formats - we'll see.
-    DEFAULT_SWAGGER_TRANS = {
-        # The default translation from our coerce to swagger is {"type": "string"}
-        # if there is no matching entry in the trans dict here.
-        "unicode": {"type": "string"},
-        "utcdatetime": {"type": "string", "format": "date-time"},
-        "integer": {"type": "integer"},
-        "bool": {"type": "boolean"},
-        "float": {"type": "float"},
-        "isolang": {"type": "string", "format": "isolang"},  # TODO extend swagger-ui with isolang format support and let it produce example values etc. on the front-end
-        "url": {"type": "string", "format": "url"},  # TODO add suppport to swagger-ui doc frontend for URL or grab from somewhere we can't be the first!
-        "isolang_2letter": {"type": "string", "format": "isolang-alpha2"},  # TODO add support to swagger-ui front for this
-        "country_code": {"type": "string", "format": "country_code"},  # TODO add support to swagger-ui front for this
-        "currency_code": {"type": "string", "format": "currency_code"},  # TODO add support to swagger-ui front for this
-        "license": {"type": "string", "format": "license_type"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
-        "persistent_identifier_scheme": {"type": "string", "format": "persistent_identifier_scheme"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
-        "format": {"type": "string", "format": "format"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
-        "deposit_policy": {"type": "string", "format": "deposit_policy"},  # TODO add support to swagger-ui front for this. Ideal if we could display the list of allowed values from the coerce map.
-    }
-
-    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, swagger_trans=None, construct_silent_prune=False):
+    def __init__(self, raw=None, struct=None, construct_raw=True, expose_data=False, properties=None, coerce_map=None, construct_silent_prune=False, construct_maintain_reference=False, *args, **kwargs):
         # make a shortcut to the object.__getattribute__ function
         og = object.__getattribute__
 
@@ -275,12 +255,6 @@ class DataObj(object):
             og(self, "_coerce_map")
         except:
             self._coerce_map = coerce_map if coerce_map is not None else deepcopy(self.DEFAULT_COERCE)
-
-        # if no subclass has set the swagger translation dict, then set it from default
-        try:
-            og(self, "_swagger_trans")
-        except:
-            self._swagger_trans = swagger_trans if swagger_trans is not None else deepcopy(self.DEFAULT_SWAGGER_TRANS)
 
         # if no subclass has set the struct, initialise it
         try:
@@ -314,7 +288,7 @@ class DataObj(object):
 
         # restructure the object based on the struct if requried
         if self._struct is not None and raw is not None and construct_raw:
-            self.data = construct(self.data, self._struct, self._coerce_map, self._swagger_trans, silent_prune=construct_silent_prune)
+            self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune, maintain_reference=construct_maintain_reference)
 
         # run against the old validation routine
         # (now deprecated)
@@ -323,7 +297,18 @@ class DataObj(object):
         # run the object's native validation routine
         self.custom_validate()
 
+        # keep a reference to the current data record, in case something up the inheritance chain messes with it
+        # (I'm looking at you, UserDict).
+        remember_this = self.data
+
+        # finally, kick the request up
+        super(DataObj, self).__init__(*args, **kwargs)
+        self.data = remember_this
+
     def __getattr__(self, name):
+        if hasattr(self.__class__, name):
+            return object.__getattribute__(self, name)
+
         props, data_attrs = self._list_dynamic_properties()
 
         # if the name is not in the dynamic properties, raise an attribute error
@@ -347,14 +332,15 @@ class DataObj(object):
     def __setattr__(self, key, value):
         # first set the attribute on any explicitly defined property
         try:
-            att = object.__getattribute__(self, key)
-            return object.__setattr__(self, key, value)
+            if hasattr(self.__class__, key):
+                # att = object.__getattribute__(self, key)
+                return object.__setattr__(self, key, value)
         except AttributeError:
             pass
 
         # this could be an internal attribute from the constructor, so we need to make
         # a special case
-        if key in ["_coerce_map", "_swagger_trans", "_struct", "data", "_properties", "_expose_data"]:
+        if key in ["_coerce_map", "_struct", "data", "_properties", "_expose_data"]:
             return object.__setattr__(self, key, value)
 
         props, data_attrs = self._list_dynamic_properties()
@@ -395,65 +381,8 @@ class DataObj(object):
     def json(self):
         return json.dumps(self.data)
 
-    def struct_to_swag(self, struct=None, schema_title='', **kwargs):
-        if not struct:
-            if not self._struct:
-                raise DataSchemaException("No struct to translate to Swagger.")
-            struct = self._struct
-
-        swag = {
-            "properties": self.__struct_to_swag_properties(struct=struct, **kwargs),
-            "required": deepcopy(struct.get('required', []))
-        }
-        if schema_title:
-            swag['title'] = schema_title
-
-        return swag
-
-    def __struct_to_swag_properties(self, struct=None, path=''):
-        '''A recursive function to translate the current DataObject's struct to Swagger Spec.'''
-        # If no struct is specified this is the first call, so set the
-        # operating struct to the entire current DO struct.
-
-        if not isinstance(struct, dict):
-            raise DataSchemaException("The struct whose properties we're translating to Swagger should always be a dict-like object.")
-
-        swag_properties = {}
-
-        # convert simple fields
-        for simple_field, instructions in struct.get('fields', {}).iteritems():
-            # no point adding to the path here, it's not gonna recurse any further from this field
-            swag_properties[simple_field] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
-
-        # convert objects
-        for obj in struct.get('objects', []):
-            newpath = obj if not path else path + '.' + obj
-            instructions = struct.get('structs', {}).get(obj, {})
-
-            swag_properties[obj] = {}
-            swag_properties[obj]['title'] = newpath
-            swag_properties[obj]['type'] = 'object'
-            swag_properties[obj]['properties'] = self.__struct_to_swag_properties(struct=instructions, path=newpath)  # recursive call, process sub-struct(s)
-            swag_properties[obj]['required'] = deepcopy(instructions.get('required', []))
-
-        # convert lists
-        for l, instructions in struct.get('lists', {}).iteritems():
-            newpath = l if not path else path + '.' + l
-
-            swag_properties[l] = {}
-            swag_properties[l]['type'] = 'array'
-            swag_properties[l]['items'] = {}
-            if instructions['contains'] == 'field':
-                swag_properties[l]['items'] = self._swagger_trans.get(instructions['coerce'], {"type": "string"})
-            elif instructions['contains'] == 'object':
-                swag_properties[l]['items']['type'] = 'object'
-                swag_properties[l]['items']['title'] = newpath
-                swag_properties[l]['items']['properties'] = self.__struct_to_swag_properties(struct=struct.get('structs', {}).get(l, {}), path=newpath)  # recursive call, process sub-struct(s)
-                swag_properties[l]['items']['required'] = deepcopy(struct.get('structs', {}).get(l, {}).get('required', []))
-            else:
-                raise DataSchemaException(u"Instructions for list {x} unclear. Conversion to Swagger Spec only supports lists containing \"field\" and \"object\" items.".format(x=newpath))
-
-        return swag_properties
+    def get_struct(self):
+        return self._struct
 
     def _get_internal_property(self, path, wrapper=None):
         # pull the object from the structure, to find out what kind of retrieve it needs
@@ -467,7 +396,7 @@ class DataObj(object):
             # as a single node (may be a field, list or dict, we'll find out in a mo)
             val = self._get_single(path)
 
-            # if this is a dict or a list of dicts and a wrapper is supplied, wrap it
+            # if this is a dict or a list and a wrapper is supplied, wrap it
             if wrapper is not None:
                 if isinstance(val, dict):
                     return wrapper(val, expose_data=self._expose_data)
@@ -481,8 +410,15 @@ class DataObj(object):
 
             return val
 
+        if instructions is None:
+            instructions = {}
+
         # if the struct contains a reference to the path, always return something, even if it is None - don't raise an AttributeError
         kwargs = construct_kwargs(type, "get", instructions)
+        coerce_fn = self._coerce_map.get(instructions.get("coerce"))
+        if coerce_fn is not None:
+            kwargs["coerce"] = coerce_fn
+
         if type == "field":
             return self._get_single(path, **kwargs)
         elif type == "object":
@@ -550,7 +486,14 @@ class DataObj(object):
             else:
                 return False
 
+        if instructions is None:
+            instructions = {}
+
         kwargs = construct_kwargs(type, "set", instructions)
+        coerce_fn = self._coerce_map.get(instructions.get("coerce"))
+        if coerce_fn is not None:
+            kwargs["coerce"] = coerce_fn
+
         if type == "field":
             self._set_single(path, value, **kwargs)
             return True
@@ -625,7 +568,17 @@ class DataObj(object):
             else:
                 context[p] = val
 
-    def _delete_from_list(self, path, val=None, matchsub=None, prune=True):
+    def _delete_from_list(self, path, val=None, matchsub=None, prune=True, apply_struct_on_matchsub=True):
+        """
+        Note that matchsub will be coerced with the struct if it exists, to ensure
+        that the match is done correctly
+
+        :param path:
+        :param val:
+        :param matchsub:
+        :param prune:
+        :return:
+        """
         l = self._get_list(path)
 
         removes = []
@@ -635,6 +588,16 @@ class DataObj(object):
                 if entry == val:
                     removes.append(i)
             elif matchsub is not None:
+                # attempt to coerce the sub
+                if apply_struct_on_matchsub:
+                    try:
+                        object.__getattribute__(self, "_struct")
+                        type, struct, instructions = construct_lookup(path, self._struct)
+                        if struct is not None:
+                            matchsub = construct(matchsub, struct, self._coerce_map)
+                    except:
+                        pass
+
                 matches = 0
                 for k, v in matchsub.iteritems():
                     if entry.get(k) == v:
@@ -801,6 +764,33 @@ class DataObj(object):
         # otherwise, append
         current.append(val)
 
+    def _set_with_struct(self, path, val):
+        type, struct, instructions = construct_lookup(path, self._struct)
+        if type == "field":
+            kwargs = construct_kwargs(type, "set", instructions)
+            self._set_single(path, val, **kwargs)
+        elif type == "list":
+            if not isinstance(val, list):
+                val = [val]
+            if struct is not None:
+                val = [construct(x, struct, self._coerce_map) for x in val]
+            kwargs = construct_kwargs(type, "set", instructions)
+            self._set_list(path, val, **kwargs)
+        elif type == "object":
+            if struct is not None:
+                val = construct(val, struct, self._coerce_map)
+            self._set_single(path, val)
+
+    def _add_to_list_with_struct(self, path, val):
+        type, struct, instructions = construct_lookup(path, self._struct)
+        if type != "list":
+            raise DataStructureException(u"Attempt to add to list {x} failed - it is not a list element".format(x=path))
+        if struct is not None:
+            val = construct(val, struct, self._coerce_map)
+        kwargs = construct_kwargs(type, "set", instructions)
+        self._add_to_list(path, val, **kwargs)
+
+
     def _utf8_unicode(self):
         """
         DEPRECATED - use dataobj.to_unicode() instead
@@ -894,7 +884,96 @@ def validate(obj, schema):
 class DataStructureException(Exception):
     pass
 
-def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False):
+class ConstructException(Exception):
+    pass
+
+def construct_validate(struct, context=""):
+    """
+    Is the provided struct of the correct form
+    {
+        "fields" : {
+            "field_name" : {"coerce" :"coerce_function", **kwargs}
+        },
+        "objects" : [
+            "field_name"
+        ],
+        "lists" : {
+            "field_name" : {"contains" : "object|field", "coerce" : "field_coerce_function, **kwargs}
+        },
+        "required" : ["field_name"],
+        "structs" : {
+            "field_name" : {
+                <construct>
+            }
+        }
+    }
+    """
+    # check that only the allowed keys are present
+    keys = struct.keys()
+    for k in keys:
+        if k not in ["fields", "objects", "lists", "required", "structs"]:
+            c = context if context != "" else "root"
+            raise ConstructException(u"Key '{x}' present in struct at '{y}', but is not permitted".format(x=k, y=c))
+
+    # now go through and make sure the fields are the right shape:
+    for field_name, instructions in struct.get("fields", {}).iteritems():
+        if "coerce" not in instructions:
+            c = context if context != "" else "root"
+            raise ConstructException(u"Coerce function not listed in field '{x}' at '{y}'".format(x=field_name, y=c))
+        for k,v in instructions.iteritems():
+            if not isinstance(v, list) and not isinstance(v, basestring):
+                c = context if context != "" else "root"
+                raise ConstructException(u"Argument '{a}' in field '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=c))
+
+    # then make sure the objects are ok
+    for o in struct.get("objects", []):
+        if not isinstance(o, basestring):
+            c = context if context != "" else "root"
+            raise ConstructException(u"There is a non-string value in the object list at '{y}'".format(y=c))
+
+    # make sure the lists are correct
+    for field_name, instructions in struct.get("lists", {}).iteritems():
+        contains = instructions.get("contains")
+        if contains is None:
+            c = context if context != "" else "root"
+            raise ConstructException(u"No 'contains' argument in list definition for field '{x}' at '{y}'".format(x=field_name, y=c))
+        if contains not in ["object", "field"]:
+            c = context if context != "" else "root"
+            raise ConstructException(u"'contains' argument in list '{x}' at '{y}' contains illegal value '{z}'".format(x=field_name, y=c, z=contains))
+        for k,v in instructions.iteritems():
+            if not isinstance(v, list) and not isinstance(v, basestring):
+                c = context if context != "" else "root"
+                raise ConstructException(u"Argument '{a}' in list '{b}' at '{c}' is not a string or list".format(a=k, b=field_name, c=c))
+
+    # make sure the requireds are correct
+    for o in struct.get("required", []):
+        if not isinstance(o, basestring):
+            c = context if context != "" else "root"
+            raise ConstructException(u"There is a non-string value in the required list at '{y}'".format(y=c))
+
+    # now do the structs, which will involve some recursion
+    substructs = struct.get("structs", {})
+
+    # first check that there are no previously unknown keys in there
+    possibles = struct.get("objects", []) + struct.get("lists", {}).keys()
+    for s in substructs:
+        if s not in possibles:
+            c = context if context != "" else "root"
+            raise ConstructException(u"struct contains key '{a}' which is not listed in object or list definitions at '{x}'".format(a=s, x=c))
+
+    # now recurse into each struct
+    for k,v in substructs.iteritems():
+        nc = context
+        if nc == "":
+            nc = k
+        else:
+            nc += "." + k
+        construct_validate(v, context=nc)
+
+    return True
+
+
+def construct(obj, struct, coerce, context="", silent_prune=False, maintain_reference=False):
     """
     {
         "fields" : {
@@ -924,7 +1003,12 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
         return None
 
     # check that all the required fields are there
-    keys = obj.keys()
+    try:
+        keys = obj.keys()
+    except:
+        c = context if context != "" else "root"
+        raise DataStructureException(u"Expected an object at {c} but found something else instead".format(c=c))
+
     for r in struct.get("required", []):
         if r not in keys:
             c = context if context != "" else "root"
@@ -958,7 +1042,7 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException(e.message)
+            raise DataStructureException(u"Schema exception at {a}, {b}".format(a=field_name, b=e.message))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):
@@ -979,7 +1063,7 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
                 raise DataStructureException(e.message)
         else:
             # we need to recurse further down
-            beneath = construct(val, instructions, coerce=coerce, swagger_trans=swagger_trans, context=context + field_name + ".", silent_prune=silent_prune)
+            beneath = construct(val, instructions, coerce=coerce, context=context + field_name + ".", silent_prune=silent_prune)
 
             # what we get back is the correct sub-data structure, which we can then store
             try:
@@ -993,7 +1077,7 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
         if vals is None:
             continue
         if not isinstance(vals, list):
-            vals = [vals]
+            raise DataStructureException(u"Expecting list at {x} but found something else".format(x=context + field_name))
 
         # prep the keyword arguments for the setters
         kwargs = construct_kwargs("list", "set", instructions)
@@ -1028,7 +1112,7 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
                         raise DataStructureException(e.message)
                 else:
                     # we need to recurse further down
-                    beneath = construct(val, subinst, coerce=coerce, swagger_trans=swagger_trans, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
+                    beneath = construct(val, subinst, coerce=coerce, context=context + field_name + "[" + str(i) + "].", silent_prune=silent_prune)
 
                     # what we get back is the correct sub-data structure, which we can then store
                     try:
@@ -1039,7 +1123,12 @@ def construct(obj, struct, coerce, swagger_trans, context="", silent_prune=False
         else:
             raise DataStructureException("Cannot understand structure where list '{x}' elements contain '{y}'".format(x=context + field_name, y=contains))
 
-    return constructed.data
+    if maintain_reference:
+        obj.clear()
+        obj.update(constructed.data)
+        return obj
+    else:
+        return constructed.data
 
 
 def construct_merge(target, source):

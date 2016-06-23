@@ -45,6 +45,7 @@ CC_ALL_EMAILS_TO = SYSTEM_EMAIL_FROM  # DOAJ may get a dedicated inbox in the fu
 ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
+CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
@@ -60,6 +61,7 @@ ELASTIC_SEARCH_HOST = "http://localhost:9200" # remember the http:// or https://
 ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
+ELASTIC_SEARCH_VERSION = "1.7.5"
 
 ES_TERMS_LIMIT = 1024
 

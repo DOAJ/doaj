@@ -219,11 +219,19 @@ class PrivateContext(FormContext):
         self.target.set_created(created_date)
         self.target.data['id'] = self.source.data['id']
 
-        if self.source.current_application:
-            self.target.set_current_application(self.source.current_application)
+        try:
+            if self.source.current_application:
+                self.target.set_current_application(self.source.current_application)
+        except AttributeError:
+            # this means that the source doesn't know about current_applications, which is fine
+            pass
 
-        if self.source.last_reapplication:
-            self.target.set_last_reapplication(self.source.last_reapplication)
+        try:
+            if self.source.last_reapplication:
+                self.target.set_last_reapplication(self.source.last_reapplication)
+        except AttributeError:
+            # this means that the source doesn't know about last_reapplication, which is fine
+            pass
 
         try:
             if self.source.current_journal:
@@ -317,6 +325,24 @@ class PrivateContext(FormContext):
                 raise FormContextException("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
             else:
                 raise FormContextException("An editor has been assigned without an editor group")
+
+    def _carry_continuations(self):
+        if self.source is None:
+            raise FormContextException("Cannot carry data from a non-existent source")
+
+        try:
+            sbj = self.source.bibjson()
+            tbj = self.target.bibjson()
+            if sbj.replaces:
+                tbj.replaces = sbj.replaces
+            if sbj.is_replaced_by:
+                tbj.is_replaced_by = sbj.is_replaced_by
+            if sbj.discontinued_date:
+                tbj.discontinued_date = sbj.discontinued_date
+        except AttributeError:
+            # this means that the source doesn't know about current_applications, which is fine
+            pass
+
 
 
 class ApplicationContext(PrivateContext):
@@ -625,6 +651,7 @@ class ManEdApplicationReview(ApplicationContext):
         egn = self.form.editor_group.data
         self._populate_editor_field(egn)
 
+
 class EditorApplicationReview(ApplicationContext):
     """
     Editors Application Review form.  This should be used in a context where an editor who owns an editorial group
@@ -669,6 +696,7 @@ class EditorApplicationReview(ApplicationContext):
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
+        self._carry_continuations()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -790,6 +818,7 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
         self.target.set_seal(self.source.has_seal())
+        self._carry_continuations()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
@@ -917,6 +946,7 @@ class PublisherCsvReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self._carry_continuations()
 
         # If the source object has the suggester set, it must have been edited via the UI
         # - do not override that information.
@@ -1024,6 +1054,7 @@ class PublisherReApplication(ApplicationContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self._carry_continuations()
 
         # If the source object has the suggester set, it must have been edited via the UI
         # - do not override that information.
@@ -1231,7 +1262,6 @@ class ManEdJournalReview(PrivateContext):
 
         self._merge_notes_forward(allow_delete=True)
 
-
     def _set_choices(self):
         # The first time this is rendered, it needs to populate the editor drop-down from saved group
         egn = self.form.editor_group.data
@@ -1325,6 +1355,7 @@ class EditorJournalReview(PrivateContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self._merge_notes_forward()
+        self._carry_continuations()
 
     def pre_validate(self):
         self.form.editor_group.data = self.source.editor_group
@@ -1400,6 +1431,7 @@ class AssEdJournalReview(PrivateContext):
         self.target.set_owner(self.source.owner)
         self.target.set_editor_group(self.source.editor_group)
         self.target.set_editor(self.source.editor)
+        self._carry_continuations()
 
     def finalise(self):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
