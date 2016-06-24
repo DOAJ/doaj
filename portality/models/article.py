@@ -228,7 +228,8 @@ class Article(DomainObject):
         bibjson = self.bibjson()
 
         for s in jbib.subjects():
-            bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
+            if s not in bibjson.subjects():
+                bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
 
         if jbib.title is not None:
             bibjson.journal_title = jbib.title
@@ -237,7 +238,7 @@ class Article(DomainObject):
             lic = jbib.get_license()
             bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
 
-        if jbib.language is not None:
+        if len(jbib.language) > 0:
             bibjson.journal_language = jbib.language
 
         if jbib.country is not None:
@@ -342,9 +343,8 @@ class Article(DomainObject):
 
         # copy the languages
         from portality import datasets  # delayed import, as it loads some stuff from file
-        if cbib.journal_language is not None:
-            langs = cbib.journal_language
-        langs = [datasets.name_for_lang(l) for l in langs]
+        if len(cbib.journal_language) > 0:
+            langs = [datasets.name_for_lang(l) for l in cbib.journal_language]
 
         # copy the country
         if jindex.get('country'):
@@ -517,7 +517,7 @@ class ArticleBibJSON(GenericBibJSON):
 
     @property
     def journal_language(self):
-        return self._get_single("journal.language")
+        return self._get_list("journal.language")
 
     @journal_language.setter
     def journal_language(self, lang):
