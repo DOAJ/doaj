@@ -1,6 +1,13 @@
 jQuery(document).ready(function($) {
 
     var all_facets = {
+
+        // This is set permanently to articles so the share | embed buton can be configured to only show articles
+        journal_article : {
+            field : "_type",
+            hidden: true
+        },
+
         issn : {
             field: 'index.issn.exact',
             hidden: true
@@ -50,6 +57,7 @@ jQuery(document).ready(function($) {
     };
 
     var natural = [];
+    natural.push(all_facets.journal_article);
     natural.push(all_facets.issn);
     natural.push(all_facets.volume);
     natural.push(all_facets.issue);
@@ -251,6 +259,30 @@ jQuery(document).ready(function($) {
         return result;
     }
 
+    function bitlyShortener(query, callback) {
+
+        function callbackWrapper(data) {
+            callback(data.url);
+        }
+
+        function errorHandler() {
+            alert("Sorry, we're unable to generate short urls at this time");
+            callback();
+        }
+
+        var postdata = JSON.stringify(query);
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "jsonp",
+            url: "/service/shorten",
+            data : postdata,
+            success: callbackWrapper,
+            error: errorHandler
+        });
+    }
+
     $('.facetview.journal_toc_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/article/_search?',
 
@@ -262,8 +294,8 @@ jQuery(document).ready(function($) {
         pre_search_callback: dynamicFacets,
         post_render_callback: doajPostRender,
 
-        sharesave_link: false,
-        //url_shortener : bitlyShortener,
+        sharesave_link: true,
+        url_shortener : bitlyShortener,
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
@@ -272,7 +304,7 @@ jQuery(document).ready(function($) {
         facets: natural,
 
         // Each ToC is fixed to the correct journal ISSN.
-        predefined_filters: {'index.issn.exact': [toc_issn] },
+        predefined_filters: {'index.issn.exact': [toc_issn], '_type' : ['article'] },
         exclude_predefined_filters_from_facets : true,
 
         search_sortby: [
