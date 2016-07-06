@@ -259,30 +259,6 @@ jQuery(document).ready(function($) {
         return result;
     }
 
-    function bitlyShortener(query, callback) {
-
-        function callbackWrapper(data) {
-            callback(data.url);
-        }
-
-        function errorHandler() {
-            alert("Sorry, we're unable to generate short urls at this time");
-            callback();
-        }
-
-        var postdata = JSON.stringify(query);
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            dataType: "jsonp",
-            url: "/service/shorten",
-            data : postdata,
-            success: callbackWrapper,
-            error: errorHandler
-        });
-    }
-
     $('.facetview.journal_toc_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/query/article/_search?',
 
@@ -295,7 +271,6 @@ jQuery(document).ready(function($) {
         post_render_callback: doajPostRender,
 
         sharesave_link: true,
-        url_shortener : bitlyShortener,
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
