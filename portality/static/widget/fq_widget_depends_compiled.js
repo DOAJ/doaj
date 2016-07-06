@@ -1115,7 +1115,6 @@ function doajPager(options) {
      * options.page_size - number of results per page
      * options.data.found - the total number of records in the search result set
      */
-    console.log(options);
 
     // ensure our starting points are integers, then we can do maths on them
     var from = parseInt(options.from);
@@ -2907,7 +2906,29 @@ jQuery(document).ready(function($) {
             field: "index.date",
             interval: "year",
             hidden: true
-        }
+        },
+
+        // toc facets
+        issn : {
+            field: 'index.issn.exact',
+            hidden: true
+        },
+
+        volume : {
+            field: 'bibjson.journal.volume.exact',
+            hidden: true
+        },
+
+        issue : {
+            field: 'bibjson.journal.number.exact',
+            hidden: true
+        },
+
+        month_published_histogram : {
+            type: 'date_histogram',
+            field: 'index.date_toc_fv_month',
+            interval: 'month',
+            hidden: true}
     };
 
     var facet_list = [];
@@ -2924,6 +2945,10 @@ jQuery(document).ready(function($) {
     facet_list.push(all_facets.year_added);
     facet_list.push(all_facets.year_published_histogram);
     facet_list.push(all_facets.archiving_policy);
+    facet_list.push(all_facets.issn);
+    facet_list.push(all_facets.volume);
+    facet_list.push(all_facets.issue);
+    facet_list.push(all_facets.month_published_histogram);
 
     function publicSearchResult(options, resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.journal) {
