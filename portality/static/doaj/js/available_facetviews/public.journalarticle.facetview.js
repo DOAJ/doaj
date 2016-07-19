@@ -41,7 +41,7 @@ jQuery(document).ready(function($) {
             field : "index.has_apc.exact",
             display: "Article processing charges (APCs)",
             tooltip_text: "What do these figures mean?",
-            tooltip: 'The data here may not be complete. For more information see this <a href="https://doajournals.wordpress.com/2015/05/11/historical-apc-data-from-before-the-april-upgrade/" target="_blank">blog post</a> (opens in new window).'
+            tooltip: 'For more information see this <a href="https://doajournals.wordpress.com/2015/05/11/historical-apc-data-from-before-the-april-upgrade/" target="_blank">blog post</a> (opens in new window).'
         },
         seal : {
             field : "index.has_seal.exact",
