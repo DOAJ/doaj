@@ -157,7 +157,7 @@ def _file_upload(f, schema, previous):
         record.validated(actual_schema)
         record.save()
         previous = [record] + previous # add the new record to the previous records
-        flash("File successfully uploaded - it will be processed shortly", "success")
+        flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
     else:
         record.failed("File could not be validated against a known schema")
@@ -391,7 +391,7 @@ def _bulk_upload(f):
         record.save()
 
         sleep(2)  # let ES catch up so people can see their file is "in submission" on redirect/refresh
-        flash("File successfully uploaded - it will be processed shortly", "success")
+        flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return redirect(url_for('publisher.bulk_reapply'))
     except:
         # if we can't record either of these things, we need to back right off

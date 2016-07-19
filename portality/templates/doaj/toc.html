@@ -282,7 +282,7 @@
 
                 {% if bibjson.author_copyright %}
                     {% if bibjson.author_copyright.get("copyright") or bibjson.author_copyright.get("url") %}
-                    <p>Does the author retain copyright?
+                    <p>Does the author retain unrestricted copyright?
                         {% set c = bibjson.author_copyright.get("copyright", "uncertain") %}
                         {% if bibjson.author_copyright.get("url") %}
                             <a href="{{bibjson.author_copyright.get('url')}}">{{TYN.get(c, c)}}</a>
