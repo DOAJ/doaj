@@ -124,6 +124,13 @@ class Suggestion(JournalLikeObject):
             cj.set_owner(self.owner)
             cj.save(sync_owner=False)
 
+    def _generate_index(self):
+        super(Suggestion, self)._generate_index()
+        if self.current_journal:
+            self.data["index"]['application_type'] = 'reapplication'
+        else:
+            self.data["index"]['application_type'] = 'new application'
+
     def prep(self):
         self._generate_index()
         self.set_last_updated()
@@ -189,7 +196,8 @@ APPLICATION_STRUCT = {
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
-                "continued" : {"coerce" : "unicode"}
+                "continued" : {"coerce" : "unicode"},
+                "application_type": {"coerce": "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
