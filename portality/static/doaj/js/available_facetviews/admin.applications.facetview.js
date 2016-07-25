@@ -18,6 +18,7 @@ jQuery(document).ready(function($) {
                 'display': 'Application Status',
                 'value_function': adminStatusMap
             },
+            {'field': 'index.application_type.exact', 'display': 'Application type'},
             {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
