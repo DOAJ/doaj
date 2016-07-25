@@ -187,10 +187,10 @@ fv_title_field = (function (resultobj) {
         }
         else if (resultobj.suggestion) {
             // this is a suggestion
-            field += "<i class='icon icon-signin' style=\"margin-right: 0.5em;\"></i>";
+            field += "<i class='fa fa-sign-in' style=\"margin-right: 0.5em;\"></i>";
         } else {
             // this is a journal
-            field += "<i class='icon icon-book'></i>";
+            field += "<i class='fa fa-book'></i>";
             isjournal = true;
         }
         if (resultobj.bibjson.title) {
