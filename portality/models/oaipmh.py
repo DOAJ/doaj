@@ -11,15 +11,10 @@ class OAIPMHRecord(object):
                 ]
             }
         },
-        "size": 0,
-        "facets": {
-            "earliest": {
-                "terms": {
-                    "field": "last_updated",
-                    "order": "term"
-                }
-            }
-        }
+        "size": 1,
+        "sort" : [
+            {"last_updated": {"order": "asc"}}
+        ]
     }
 
     sets = {
@@ -60,11 +55,7 @@ class OAIPMHRecord(object):
 
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
-        dates = [t.get("term") for t in result.get("facets", {}).get("earliest", {}).get("terms", [])]
-        for d in dates:
-            if d > 0:
-                return datetime.fromtimestamp(d / 1000.0).strftime("%Y-%m-%dT%H:%M:%SZ")
-        return None
+        return result.get("hits", {}).get("hits", [{}])[0].get("_source", {}).get("last_updated")
 
     def identifier_exists(self, identifier):
         obj = self.pull(identifier)
