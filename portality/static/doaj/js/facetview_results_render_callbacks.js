@@ -183,7 +183,7 @@ fv_title_field = (function (resultobj) {
         var isjournal = false;
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // this is an article
-            field += "<i class='icon icon-file'></i>";
+            field += "<i class='fa fa-file'></i>";
         }
         else if (resultobj.suggestion) {
             // this is a suggestion
