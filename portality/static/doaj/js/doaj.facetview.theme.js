@@ -164,8 +164,8 @@ function searchOptions(options) {
 
         // if there is a url_shortener available, render a link
         if (options.url_shortener) {
-            thefacetview += " <a href='#' class='facetview_shorten_url btn btn-mini' style='margin-left: 30px'><i class='icon-white icon-resize-small'></i> shorten url</a>";
-            thefacetview += " <a href='#' class='facetview_lengthen_url btn btn-mini' style='display: none; margin-left: 30px'><i class='icon-white icon-resize-full'></i> original url</a>";
+            thefacetview += " <a href='#' class='facetview_shorten_url btn btn-mini' style='margin-left: 30px'><i class='icon-black icon-resize-small'></i> shorten url</a>";
+            thefacetview += " <a href='#' class='facetview_lengthen_url btn btn-mini' style='display: none; margin-left: 30px'><i class='icon-black icon-resize-full'></i> original url</a>";
         }
 
         thefacetview += '</p> \

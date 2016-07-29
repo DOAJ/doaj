@@ -155,11 +155,18 @@ class TestClient(DoajTestCase):
         assert s.suggester.get("name") == "test"
         assert s.suggester.get("email") == "test@test.com"
 
-        s.remove_current_journal()
-
-        assert s.current_journal is None
-
         s.prep()
+        assert 'index' in s, s
+        assert 'application_type' in s['index'], s['index']
+        assert s['index']['application_type'] == 'reapplication'
+
+        s.remove_current_journal()
+        assert s.current_journal is None
+        s.prep()
+        assert 'index' in s, s
+        assert 'application_type' in s['index'], s['index']
+        assert s['index']['application_type'] == 'new application'
+
         s.save()
 
     def test_05_bulk_reapplication_rw(self):

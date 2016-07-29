@@ -216,7 +216,7 @@ jQuery(document).ready(function($) {
 
         // add the journal icon
         result += "<div class='pull-left' style='width: 4%'>";
-        result += "<i style='font-size: 24px' class='icon icon-book'></i>";
+        result += "<i style='font-size: 24px' class='fa fa-book'></i>";
         result += "</div>";
 
         result += "<div class='pull-left' style='width: 93%'>";
@@ -447,7 +447,7 @@ jQuery(document).ready(function($) {
 
         // add the article icon
         result += "<div class='pull-left' style='width: 4%'>";
-        result += "<i style='font-size: 24px' class='icon icon-file'></i>";
+        result += "<i style='font-size: 24px' class='fa fa-file'></i>";
         result += "</div>";
 
         result += "<div class='pull-left' style='width: 90%'>";
