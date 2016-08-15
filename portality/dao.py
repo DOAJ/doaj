@@ -407,7 +407,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return cls.iterate(deepcopy(all_query), page_size, limit)
 
     @classmethod
-    def prefix_query(cls, field, prefix, size=5):
+    def prefix_query(cls, field, prefix, size=5, facet_field=None, analyzed_field=True):
         # example of a prefix query
         # {
         #     "query": {"prefix" : { "bibjson.publisher" : "ope" } },
@@ -416,15 +416,23 @@ class DomainObject(UserDict.IterableUserDict, object):
         #       "publisher" : { "terms" : {"field" : "bibjson.publisher.exact", "size": 5} }
         #     }
         # }
-        if field.endswith(app.config['FACET_FIELD']):
-            # strip .exact (or whatever it's configured as) off the end
-            query_field = field[:field.rfind(app.config['FACET_FIELD'])]
+
+        suffix = app.config['FACET_FIELD']
+        query_field = field
+        if analyzed_field:
+            if field.endswith(suffix):
+                # strip .exact (or whatever it's configured as) off the end
+                query_field = field[:field.rfind(suffix)]
         else:
-            query_field = field
+            if not field.endswith(suffix):
+                query_field = field + suffix
 
         # the actual terms should come from the .exact version of the
         # field - we are suggesting whole values, not fragments
-        facet_field = query_field + app.config['FACET_FIELD']
+        if facet_field is None:
+            facet_field = query_field + suffix
+        if not facet_field.endswith(suffix):
+            facet_field = facet_field + suffix
 
         q = {
             "query": {"prefix" : { query_field : prefix.lower() } },
@@ -437,9 +445,10 @@ class DomainObject(UserDict.IterableUserDict, object):
         return cls.send_query(q)
 
     @classmethod
-    def wildcard_autocomplete_query(cls, field, substring, before=False, after=True, facet_size=5):
+    def wildcard_autocomplete_query(cls, field, substring, before=True, after=True, facet_size=5, facet_field=None):
         """
         Example of a wildcard query
+        Works only on .exact fields
 
         {
             "query" : {
@@ -459,9 +468,9 @@ class DomainObject(UserDict.IterableUserDict, object):
         """
         # wildcard queries need to be on unanalyzed fields
         suffix = app.config['FACET_FIELD']
-        query_field = field
-        if not query_field.endswith("."  + suffix):
-            query_field = query_field + suffix
+        filter_field = field
+        if not filter_field.endswith(suffix):
+            filter_field = filter_field + suffix
 
         # add the wildcard before/after
         if before:
@@ -469,20 +478,46 @@ class DomainObject(UserDict.IterableUserDict, object):
         if after:
             substring = substring + "*"
 
+        # sort out the facet field
+        if facet_field is None:
+            facet_field = filter_field
+        if not facet_field.endswith(suffix):
+            facet_field = facet_field + suffix
+
         # build the query
         q = {
             "query" : {
-                "wildcard" : {query_field : substring}
+                "wildcard" : {filter_field : substring}
             },
             "size" : 0,
             "facets" : {
                 field : {
-                    "terms" : {"field" : query_field, "size" : facet_size}
+                    "terms" : {"field" : facet_field, "size" : facet_size}
                 }
             }
         }
 
         return cls.send_query(q)
+
+    @classmethod
+    def advanced_autocomplete(cls, filter_field, facet_field, substring, size=5, prefix_only=True):
+        analyzed = True
+        if " " in substring:
+            analyzed = False
+
+        substring = substring.lower()
+
+        if " " in substring and not prefix_only:
+            res = cls.wildcard_autocomplete_query(filter_field, substring, before=True, after=True, facet_size=size, facet_field=facet_field)
+        else:
+            res = cls.prefix_query(filter_field, substring, size=size, facet_field=facet_field, analyzed_field=analyzed)
+
+        result = []
+        for term in res['facets'][filter_field]['terms']:
+            # keep ordering - it's by count by default, so most frequent
+            # terms will now go to the front of the result list
+            result.append({"id": term['term'], "text": term['term']})
+        return result
 
     @classmethod
     def autocomplete(cls, field, prefix, size=5):

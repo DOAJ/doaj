@@ -874,15 +874,15 @@ class TestClient(DoajTestCase):
 
         time.sleep(2)
 
-        res = models.Journal.autocomplete("bibjson.publisher", "Bio")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "Bio")
         assert len(res) == 2
 
-        res = models.Journal.autocomplete("bibjson.publisher", "BioMed")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed")
         assert len(res) == 2
 
-        res = models.Journal.autocomplete("bibjson.publisher", "De ")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "De ")
         assert len(res) == 1
 
-        res = models.Journal.autocomplete("bibjson.publisher", "BioMed C")
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed C")
         assert len(res) == 1
 

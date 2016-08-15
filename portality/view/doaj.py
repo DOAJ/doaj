@@ -147,7 +147,16 @@ def autocomplete(doc_type, field_name):
         return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 404, which is the correct code here...
 
     size = request.args.get('size', 5)
-    return jsonify({'suggestions': m.autocomplete(field_name, prefix, size=size)})
+
+    filter_field = app.config.get("AUTOCOMPLETE_ADVANCED_FIELD_MAPS", {}).get(field_name)
+
+    suggs = []
+    if filter_field is None:
+        suggs = m.autocomplete(field_name, prefix, size=size)
+    else:
+        suggs = m.advanced_autocomplete(filter_field, field_name, prefix, size=size, prefix_only=False)
+
+    return jsonify({'suggestions': suggs})
     # you shouldn't return lists top-level in a JSON response:
     # http://flask.pocoo.org/docs/security/#json-security
 
