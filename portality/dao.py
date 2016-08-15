@@ -437,8 +437,64 @@ class DomainObject(UserDict.IterableUserDict, object):
         return cls.send_query(q)
 
     @classmethod
+    def wildcard_autocomplete_query(cls, field, substring, before=False, after=True, facet_size=5):
+        """
+        Example of a wildcard query
+
+        {
+            "query" : {
+                "wildcard" : {"bibjson.publisher.exact" : "De *"}
+            },
+            "size" : 0,
+            "facets" : {
+                "bibjson.publisher.exact" : {
+                    "terms" : {"field" : "bibjson.publisher.exact", "size" : 5}
+                }
+            }
+        }
+        :param field:
+        :param substring:
+        :param facet_size:
+        :return:
+        """
+        # wildcard queries need to be on unanalyzed fields
+        suffix = app.config['FACET_FIELD']
+        query_field = field
+        if not query_field.endswith("."  + suffix):
+            query_field = query_field + suffix
+
+        # add the wildcard before/after
+        if before:
+            substring = "*" + substring
+        if after:
+            substring = substring + "*"
+
+        # build the query
+        q = {
+            "query" : {
+                "wildcard" : {query_field : substring}
+            },
+            "size" : 0,
+            "facets" : {
+                field : {
+                    "terms" : {"field" : query_field, "size" : facet_size}
+                }
+            }
+        }
+
+        return cls.send_query(q)
+
+    @classmethod
     def autocomplete(cls, field, prefix, size=5):
-        res = cls.prefix_query(field, prefix, size=size)
+        res = None
+        # if there is a space in the prefix, the prefix query won't work, so we fall back to a wildcard
+        # we only do this if we have to, because the wildcard query is a little expensive
+        if " " in prefix:
+            res = cls.wildcard_autocomplete_query(field, prefix, before=False, after=True, facet_size=size)
+        else:
+            prefix = prefix.lower()
+            res = cls.prefix_query(field, prefix, size=size)
+
         result = []
         for term in res['facets'][field]['terms']:
             # keep ordering - it's by count by default, so most frequent

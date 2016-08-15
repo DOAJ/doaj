@@ -138,7 +138,7 @@ def sitemap():
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
-    prefix = request.args.get('q', '').lower()
+    prefix = request.args.get('q', '')
     if not prefix:
         return jsonify({'suggestions': [{"id": "", "text": "No results found"}]})  # select2 does not understand 400, which is the correct code here...
 
