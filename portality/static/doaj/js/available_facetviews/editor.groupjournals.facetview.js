@@ -17,6 +17,7 @@ jQuery(document).ready(function($) {
         facets: [
             {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
             {'field': 'admin.owner', 'display': 'Owner'},
+            {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
             {
