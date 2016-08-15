@@ -197,7 +197,9 @@ APPLICATION_STRUCT = {
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
-                "application_type": {"coerce": "unicode"}
+                "application_type": {"coerce": "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
