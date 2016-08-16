@@ -294,7 +294,44 @@
 <li><a href="http://library.uta.edu/">University of Texas at Arlington Library</a></li>
 <li><a href="http://vanderbilt.edu/">Vanderbilt University</a></li>
 <li><a href="http://vassar.edu/">Vassar College</a></li>
-<li><a href="http://www.vivalib.org/index.html"><b>Virtual Library of Virginia (VIVA)</b></a></li>
+<li><a href="http://www.vivalib.org/index.html"><b>Virtual Library of Virginia (VIVA)</b></a>
+    <ul>
+<li>Bridgewater College</li>
+<li>Christopher Newport University</li>
+<li>College of William & Mary</li>
+<li>Eastern Shore Community College</li>
+<li>Eastern Virginia Medical School</li>
+<li>George Mason University</li>
+<li>Hampden-Sydney College</li>
+<li>James Madison University</li>
+<li>Liberty University</li>
+<li>Longwood University</li>
+<li>Lynchburg College</li>
+<li>Mary Baldwin College</li>
+<li>Marymount University</li>
+<li>Norfolk State University</li>
+<li>Northern Virginia Community College</li>
+<li>Old Dominion University</li>
+<li>Paul D. Camp Community College</li>
+<li>Piedmont Virginia Community College</li>
+<li>Radford University</li>
+<li>Regent University</li>
+<li>Shenandoah University</li>
+<li>Southside Virginia Community College</li>
+<li>Sweet Briar College</li>
+<li>Tidewater Community College</li>
+<li>University of Mary Washington</li>
+<li>University of Richmond</li>
+<li>University of Virginia</li>
+<li>University of Virginia's College at Wise</li>
+<li>VCCS Systems Office</li>
+<li>Virginia Commonwealth University</li>
+<li>Virginia Military Institute</li>
+<li>Virginia State University</li>
+<li>Virginia Tech</li>
+<li>Washington & Lee University</li>
+        </ul>
+</li>
 <li><a href="http://wvu.edu/">West Virginia University</a></li>
 <li><a href="http://web.library.yale.edu/">Yale University Library</a></li>
 
@@ -328,3 +365,23 @@
 
 {% endblock %}
 
+
+{% block extra_js_bottom %}
+
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $(".content ul li:has(ul)").prepend('<a href="#" class="consortium" data-toggle="open">[+]</a>&nbsp;')
+            .find("ul").hide();
+    $(".consortium").on("click", function(event) {
+        event.preventDefault();
+        if ($(this).attr("data-toggle") === "open") {
+            $(this).html("[-]").attr("data-toggle", "close").parent().find("ul").show();
+        } else {
+            $(this).html("[+]").attr("data-toggle", "open").parent().find("ul").hide();
+        }
+
+    })
+});
+</script>
+
+{% endblock %}
