@@ -1,0 +1,24 @@
+Dear {{ publisher_name }},
+
+Congratulations! The journal {{ journal_title }} has now been added to DOAJ.
+You may access the journal in your Publisher Area: {{ url_root }}/publisher/ .
+You will need your username and password.
+If you do not already have a DOAJ account, you will receive more information in a separate email. (If you do not have your username or the instructions to set your password then please contact us: {{ url_root }}/contact .)
+
+To increase the visibility, impact, distribution and usage* of your journal, we urge you to upload the journal's article metadata to us as soon as possible. You may do this from the Publisher Area in two ways:
+
+1) Upload Article XML: {{ url_root }}/publisher/uploadfile
+2) Enter Article Metadata: {{ url_root }}/publisher/metadata
+3) Use our API: {{ url_root }}/api/v1/docs
+For help on how to do this read https://doaj.org/publishers#upload and https://doaj.org/features#xml_upload
+
+*Benefits of supplying DOAJ with metadata:
+
+- Our statistics show more than 900 000 page views, and 300 000 unique visitors, a month to DOAJ from all over the world.
+- Many aggregators, databases, libraries, publishers and search portals collect our free metadata and include it in their products. Examples are Scopus, Serial Solutions and EBSCO.
+- DOAJ is OAI compliant and once an article is in DOAJ, it is automatically harvestable.
+- DOAJ is OpenURL compliant and once an article is in DOAJ, it is automatically linkable.
+- Over 95% of the DOAJ Publisher community said that DOAJ is important for increasing their journal's visibility
+- DOAJ is often cited as a source of quality, open access journals in research and scholarly publishing circles.
+
+The DOAJ Team

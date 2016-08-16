@@ -465,6 +465,40 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
+    def _send_contact_approved_email(self, journal_title, publisher_name, email, reapplication=False):
+        """Email the journal contact when an application is accepted """
+        url_root = request.url_root
+        if url_root.endswith("/"):
+            url_root = url_root[:-1]
+
+        to = [email]
+        fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+        subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
+
+        try:
+            if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                template = "email/contact_application_accepted.txt"
+                if reapplication:
+                    template = "email/contact_reapplication_accepted.txt"
+                jn = journal_title #.encode('utf-8', 'replace')
+
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name=template,
+                                    journal_title=jn,
+                                    publisher_name=publisher_name,
+                                    url_root=url_root
+                )
+                self.add_alert('Sent email to journal contact ' + email + ' to tell them about their journal getting accepted into DOAJ.')
+            else:
+                self.add_alert('Did not send email to journal contact' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.')
+        except Exception as e:
+            magic = str(uuid.uuid1())
+            self.add_alert('Hm, sending the journal contact acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
+
 
 class ApplicationFormFactory(object):
     @classmethod
@@ -583,6 +617,8 @@ class ManEdApplicationReview(ApplicationContext):
             try:
                 owner = self._create_account_on_suggestion_approval(self.target, j)
                 self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                for contact in j.contacts():
+                    self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), self.source.current_journal is not None)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
 
