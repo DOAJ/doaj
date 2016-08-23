@@ -106,12 +106,6 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre" : "<strong>DOAJ Seal</strong>: ",
-                    "field" : "has_seal"
-                }
-            ],
-            [
-                {
                     "pre" : "<strong>Owner</strong>: ",
                     "field" : "owner"
                 }
