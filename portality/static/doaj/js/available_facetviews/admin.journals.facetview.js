@@ -15,6 +15,7 @@ jQuery(document).ready(function($) {
 
         facets: [
             {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
+            {'field': 'index.has_seal.exact', 'display': "DOAJ Seal"},
             {'field': 'admin.owner.exact', 'display': 'Owner'},
             {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
             {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
@@ -32,7 +33,6 @@ jQuery(document).ready(function($) {
             {'field': 'index.subject.exact', 'display': 'Subject'},
             {'field': 'index.language.exact', 'display': 'Journal Language'},
             {'field': 'index.country.exact', 'display': 'Country of publisher'},
-            {'field': 'index.title.exact', 'display': 'Journal Title'},
             {'field': 'index.continued.exact', 'display': 'Continued'},
             {
                 type: "date_histogram",
