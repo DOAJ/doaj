@@ -858,3 +858,38 @@ class TestClient(DoajTestCase):
         j.prep()
         assert j.data.get("index", {}).get("has_apc") == "Yes"
 
+    def test_25_autocomplete(self):
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.publisher = "BioMed Central"
+        j.save()
+
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.publisher = "BioMedical Publisher"
+        j.save()
+
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.publisher = "De Gruyter"
+        j.save()
+
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.publisher = "Deep Mind"
+        j.save()
+
+        time.sleep(2)
+
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "Bio")
+        assert len(res) == 2
+
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed")
+        assert len(res) == 2
+
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "De ")
+        assert len(res) == 1
+
+        res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed C")
+        assert len(res) == 1
+
