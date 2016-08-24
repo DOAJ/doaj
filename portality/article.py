@@ -23,20 +23,33 @@ class XWalk(object):
         # check each issn against the index, and if a related journal is found
         # record the owner of that journal
         owners = []
+        seen_issns = {}
         for issn in issns:
             journals = models.Journal.find_by_issn(issn)
             if journals is not None and len(journals) > 0:
-                owners += [j.owner for j in journals if j.owner is not None]
+                for j in journals:
+                    owners.append(j.owner)
+                    if j.owner not in seen_issns:
+                        seen_issns[j.owner] = []
+                    seen_issns[j.owner] += j.bibjson().issns()
 
         # deduplicate the list of owners
         owners = list(set(owners))
-        
+
+        # no owner means we can't confirm
         if len(owners) == 0:
-            # no owner means we can't confirm
             return False
+
+        # multiple owners means ownership of this article is confused
         if len(owners) > 1:
-            # multiple owners means ownership of this article is confused
             return False
+
+        # single owner must still know of all supplied issns
+        compare = list(set(seen_issns[owners[0]]))
+        if len(compare) == 2:   # we only want to check issn parity for journals where there is more than one issn available.
+            for issn in issns:
+                if issn not in compare:
+                    return False
 
         # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
