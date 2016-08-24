@@ -20,6 +20,8 @@ jQuery(document).ready(function($) {
             },
             {'field': 'index.application_type.exact', 'display': 'Application type'},
             {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
+            {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
+            {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
             {'field': 'index.classification.exact', 'display': 'Subject'},
