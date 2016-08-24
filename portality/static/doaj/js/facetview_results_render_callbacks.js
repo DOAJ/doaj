@@ -2,7 +2,7 @@
 // the function, a bit cleaner
 fv_author_pays = (function(resultobj) {
     var that = function(resultobj) {
-        field = "";
+        var field = "";
         if (resultobj.bibjson && resultobj.bibjson.author_pays) {
             if(that.mapping[resultobj['bibjson']['author_pays']]) {
                 var result = '<span class=' + that.mapping[resultobj['bibjson']['author_pays']]['class'] + '>';
@@ -13,7 +13,7 @@ fv_author_pays = (function(resultobj) {
                 field += resultobj['bibjson']['author_pays'];
             }
             if (resultobj.bibjson && resultobj.bibjson.author_pays_url) {
-                url = resultobj.bibjson.author_pays_url;
+                var url = resultobj.bibjson.author_pays_url;
                 field += " (see <a href='" + url + "'>" + url + "</a>)"
             }
             if (field === "") {
@@ -30,7 +30,7 @@ fv_author_pays.mapping = {
     "Y": {"text": "Has charges", "class": "red"},
     "N": {"text": "No charges", "class": "green"},
     "CON": {"text": "Conditional charges", "class": "blue"},
-    "NY": {"text": "No info available", "class": ""},
+    "NY": {"text": "No info available", "class": ""}
 };
 
 fv_application_status = (function(resultobj) {
@@ -119,7 +119,7 @@ fv_abstract = (function (resultobj) {
 
 fv_addthis = (function (resultobj) {
     var that = function(resultobj) {
-        var prefix = ''
+        var prefix = '';
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             prefix = '[OA Article]'
         }
@@ -139,15 +139,15 @@ fv_addthis = (function (resultobj) {
 
 fv_journal_license = (function (resultobj) {
     var that = function(resultobj) {
-        var title = undefined
+        var title = undefined;
         if (resultobj.bibjson && resultobj.bibjson.journal && resultobj.bibjson.journal.license) {
-            var lics = resultobj["bibjson"]["journal"]["license"]
+            var lics = resultobj["bibjson"]["journal"]["license"];
             if (lics.length > 0) {
                 title = lics[0].title
             }
         }
         else if (resultobj.bibjson && resultobj.bibjson.license) {
-            var lics = resultobj["bibjson"]["license"]
+            var lics = resultobj["bibjson"]["license"];
             if (lics.length > 0) {
                 title = lics[0].title
             }
@@ -155,7 +155,7 @@ fv_journal_license = (function (resultobj) {
         
         if (title) {
             if (CC_MAP[title]) {
-                urls = CC_MAP[title]
+                var urls = CC_MAP[title];
                 // i know i know, i'm not using styles.  the attrs still work and are easier.
                 return "<a href='" + urls[1] + "' title='" + title + "' target='blank'><img src='" + urls[0] + "' width='80' height='15' valign='middle' alt='" + title + "'></a>"
             } else {
@@ -175,11 +175,11 @@ CC_MAP = {
     "CC BY-NC-SA" : ["/static/doaj/images/cc/by-nc-sa.png", "http://creativecommons.org/licenses/by-nc-sa/3.0/"],
     "CC BY-ND" : ["/static/doaj/images/cc/by-nd.png", "http://creativecommons.org/licenses/by-nd/3.0/"],
     "CC BY-SA" : ["/static/doaj/images/cc/by-sa.png", "http://creativecommons.org/licenses/by-sa/3.0/"]
-}
+};
 
 fv_title_field = (function (resultobj) {
     var that = function(resultobj) {
-        var field = '<span class="title">'
+        var field = '<span class="title">';
         var isjournal = false;
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // this is an article
@@ -199,8 +199,11 @@ fv_title_field = (function (resultobj) {
             } else {
                 field += "&nbsp" + escapeHtml(resultobj.bibjson.title);
             }
-            if (resultobj.admin.ticked) {
+            if (resultobj.admin && resultobj.admin.ticked) {
                 field += "&nbsp<img src='/static/doaj/images/tick_short.png' width='16px' height='16px' title='Accepted after March 2014' alt='Tick icon: journal was accepted after March 2014' style='padding-bottom: 3px'>​​";
+            }
+            if (resultobj.admin && resultobj.admin.seal) {
+                field += "&nbsp<img src='/static/doaj/images/seal_short.png' width='16px' height='16px' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal' style='padding-bottom: 3px'>​​";
             }
             return field + "</span>"
         } else {
@@ -213,12 +216,12 @@ fv_title_field = (function (resultobj) {
 fv_doi_link = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.identifier) {
-            var ids = resultobj.bibjson.identifier
+            var ids = resultobj.bibjson.identifier;
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].type === "doi") {
-                    var doi = ids[i].id
-                    var tendot = doi.indexOf("10.")
-                    var url = "http://dx.doi.org/" + doi.substring(tendot)
+                    var doi = ids[i].id;
+                    var tendot = doi.indexOf("10.");
+                    var url = "http://dx.doi.org/" + doi.substring(tendot);
                     return "<a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>"
                 }
             }
@@ -231,10 +234,10 @@ fv_doi_link = (function (resultobj) {
 fv_links = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.link) {
-            var ls = resultobj.bibjson.link
+            var ls = resultobj.bibjson.link;
             for (var i = 0; i < ls.length; i++) {
-                var t = ls[i].type
-                var label = ''
+                var t = ls[i].type;
+                var label = '';
                 if (t == 'fulltext') {
                     label = 'Full text'
                 } else if (t == 'homepage') {
@@ -253,8 +256,8 @@ fv_links = (function (resultobj) {
 fv_issns = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.identifier) {
-            var ids = resultobj.bibjson.identifier
-            var issns = []
+            var ids = resultobj.bibjson.identifier;
+            var issns = [];
             for (var i = 0; i < ids.length; i++) {
                 if (ids[i].type === "pissn" || ids[i].type === "eissn") {
                     issns.push(escapeHtml(ids[i].id))
@@ -375,7 +378,7 @@ fv_edit_user = (function (resultobj) {
 
 fv_in_doaj = (function(resultobj) {
     var that = function(resultobj) {
-        var field = ""
+        var field = "";
         if (resultobj.admin && resultobj.admin.in_doaj !== undefined) {
             if(that.mapping[resultobj['admin']['in_doaj']]) {
                 var result = '<span class=' + that.mapping[resultobj['admin']['in_doaj']]['class'] + '>';
@@ -398,7 +401,7 @@ fv_in_doaj = (function(resultobj) {
 fv_in_doaj.mapping = {
     "false": {"text": "No", "class": "red"},
     "true": {"text": "Yes", "class": "green"}
-}
+};
 
 fv_country_name = (function (resultobj) {
     var that = function(resultobj) {
@@ -413,7 +416,7 @@ fv_country_name = (function (resultobj) {
 fv_owner = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.admin && resultobj.admin.owner !== undefined) {
-            var own = resultobj.admin.owner
+            var own = resultobj.admin.owner;
             return '<a href="/account/' + own + '">' + escapeHtml(own) + '</a>'
         }
         return false
@@ -445,12 +448,12 @@ fv_user_journals = (function (resultobj) {
 fv_linked_associates = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj.associates) {
-            frag = "Associate Editors: "
+            var frag = "Associate Editors: ";
             for (var i = 0; i < resultobj.associates.length; i++) {
                 if (i > 0) {
                     frag += ", "
                 }
-                var ass = resultobj.associates[i]
+                var ass = resultobj.associates[i];
                 frag += '<a href="/account/' + ass + '">' + escapeHtml(ass) + '</a>'
             }
             return frag
