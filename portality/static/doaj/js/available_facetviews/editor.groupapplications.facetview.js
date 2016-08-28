@@ -16,6 +16,7 @@ jQuery(document).ready(function($) {
 
         facets: [
             {'field': 'admin.application_status.exact', 'display': 'Application Status'},
+            {'field': 'index.application_type.exact', 'display': 'Application type'},
             {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
