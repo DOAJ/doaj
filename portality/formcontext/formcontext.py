@@ -431,7 +431,7 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_application_approved_email(self, journal_title, publisher_name, email, reapplication=False):
+    def _send_application_approved_email(self, journal_title, publisher_name, email, journal_contact, reapplication=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -454,6 +454,7 @@ class ApplicationContext(PrivateContext):
                                     template_name=template,
                                     journal_title=jn,
                                     publisher_name=publisher_name,
+                                    journal_contact=journal_contact,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -465,7 +466,7 @@ class ApplicationContext(PrivateContext):
             app.logger.error(magic + "\n" + repr(e))
             raise e
 
-    def _send_contact_approved_email(self, journal_title, publisher_name, email, reapplication=False):
+    def _send_contact_approved_email(self, journal_title, journal_contact, email, publisher_name, reapplication=False):
         """Email the journal contact when an application is accepted """
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -487,7 +488,8 @@ class ApplicationContext(PrivateContext):
                                     subject=subject,
                                     template_name=template,
                                     journal_title=jn,
-                                    publisher_name=publisher_name,
+                                    journal_contact=journal_contact,
+                                    publisher=publisher_name,
                                     url_root=url_root
                 )
                 self.add_alert('Sent email to journal contact ' + email + ' to tell them about their journal getting accepted into DOAJ.')
@@ -616,9 +618,13 @@ class ManEdApplicationReview(ApplicationContext):
             # create the user account for the owner and send the notification email
             try:
                 owner = self._create_account_on_suggestion_approval(self.target, j)
-                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
+                journal_contacts = ""
                 for contact in j.contacts():
-                    self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), self.source.current_journal is not None)
+                    names = contact.get("name")
+                    journal_contacts = ", ".join(names)
+                self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, journal_contacts, self.source.current_journal is not None)
+                for contact in j.contacts():
+                    self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), owner.name, self.source.current_journal is not None)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
 
