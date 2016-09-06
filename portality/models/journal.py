@@ -197,6 +197,8 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         unpunctitle = None
         asciiunpunctitle = None
         continued = "No"
+        has_editor_group = "No"
+        has_editor = "No"
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -275,6 +277,12 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         if len(cbib.replaces) > 0 or len(cbib.is_replaced_by) > 0:
             continued = "Yes"
 
+        if self.editor_group is not None:
+            has_editor_group = "Yes"
+
+        if self.editor is not None:
+            has_editor = "Yes"
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -308,6 +316,8 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
         self.data["index"]["continued"] = continued
+        self.data["index"]["has_editor_group"] = has_editor_group
+        self.data["index"]["has_editor"] = has_editor
 
 class Journal(JournalLikeObject):
     __type__ = "journal"
@@ -648,6 +658,7 @@ class Journal(JournalLikeObject):
         self.calculate_tick()
         self._generate_index()
         self._calculate_has_apc()
+        self._generate_autocompletes()
         self.set_last_updated()
 
     def save(self, snapshot=True, sync_owner=True, **kwargs):
@@ -660,6 +671,24 @@ class Journal(JournalLikeObject):
 
     ######################################################
     ## internal utility methods
+
+    def _generate_autocompletes(self):
+        bj = self.bibjson()
+        publisher = bj.publisher
+        institution = bj.institution
+        provider = bj.provider
+
+        if "index" not in self.data:
+            self.data["index"] = {}
+
+        if publisher is not None:
+            self.data["index"]["publisher_ac"] = publisher.lower()
+
+        if institution is not None:
+            self.data["index"]["institution_ac"] = institution.lower()
+
+        if provider is not None:
+            self.data["index"]["provider_ac"] = provider.lower()
 
     def _calculate_has_apc(self):
         # work out of the journal has an apc
@@ -1183,7 +1212,12 @@ JOURNAL_STRUCT = {
                 "has_seal" : {"coerce" : "unicode"},
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
-                "continued" : {"coerce" : "unicode"}
+                "continued" : {"coerce" : "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"},
+                "publisher_ac" : {"coerce" : "unicode"},
+                "institution_ac" : {"coerce" : "unicode"},
+                "provider_ac" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},

@@ -1,5 +1,5 @@
 from portality import models
-import json
+import json, codecs, csv
 from portality.core import app
 
 if __name__ == "__main__":
@@ -14,23 +14,29 @@ if __name__ == "__main__":
     parser.add_argument("-g", "--ghost", help="specify if you want the articles being deleted not to be snapshot", action="store_true")
     parser.add_argument("-q", "--query", help="file page of json document containing delete-by query")
     parser.add_argument("-ip", "--ignore-paging", help="ignore the from: and size: parameters in a query object", action="store_true")
+    parser.add_argument("-c", "--csv", help="csv containing article ids to remove")
 
     args = parser.parse_args()
 
-    if not args.username and not args.query:
-        print "Please specify a username with the -u option, or a query file with the -q option"
+    if not args.username and not args.query and not args.csv:
+        print "Please specify a username with the -u option, or a query file with the -q option, or a csv with the -c option"
         exit()
 
-    if args.username and args.query:
-        print "You can't specify both a username and a query - pick one!"
+    exclusives = 0
+    if args.username: exclusives += 1
+    if args.query: exclusives += 1
+    if args.csv: exclusives += 1
+
+    if exclusives > 1:
+        print "You may only specify a username, a query or a csv alone, not combinations."
         exit()
 
     snapshot = not args.ghost
 
-    if not args.query:
+    if args.username is not None:
         models.Article.delete_selected(owner=args.username, snapshot=snapshot)
         print "Articles deleted"
-    else:
+    elif args.query is not None:
         f = open(args.query)
         query = json.loads(f.read())
 
@@ -58,6 +64,12 @@ if __name__ == "__main__":
             print "Articles deleted"
         else:
             print "Aborted"
+    elif args.csv is not None:
+        with codecs.open(args.csv) as f:
+            reader = csv.reader(f)
+            for row in reader:
+                article_id = row[0]
+                models.Article.remove_by_id(article_id)
 
 
 

@@ -219,6 +219,12 @@ QUERY_ROUTE = {
     "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : True}
 }
 
+AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
+    "bibjson.publisher" : "index.publisher_ac",
+    "bibjson.institution" : "index.institution_ac",
+    "bibjson.provider" : "index.provider_ac"
+}
+
 # ========================
 # MEDIA SETTINGS
 

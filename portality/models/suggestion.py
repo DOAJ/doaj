@@ -27,6 +27,11 @@ class Suggestion(JournalLikeObject):
         q = SuggestionQuery(email=email, statuses=statuses)
         r = cls.delete_by_query(q.query())
 
+    @classmethod
+    def list_by_status(cls, status):
+        q = StatusQuery(status)
+        return cls.iterate(q=q.query())
+
     def make_journal(self):
         # first make a raw copy of the content into a journal
         journal_data = deepcopy(self.data)
@@ -197,7 +202,9 @@ APPLICATION_STRUCT = {
                 "unpunctitle" : {"coerce" : "unicode"},
                 "asciiunpunctitle" : {"coerce" : "unicode"},
                 "continued" : {"coerce" : "unicode"},
-                "application_type": {"coerce": "unicode"}
+                "application_type": {"coerce": "unicode"},
+                "has_editor_group" : {"coerce" : "unicode"},
+                "has_editor" : {"coerce" : "unicode"}
             },
             "lists" : {
                 "issn" : {"contains" : "field", "coerce" : "unicode"},
@@ -292,4 +299,22 @@ class OwnerStatusQuery(object):
 
     def query(self):
         return self._query
+
+class StatusQuery(object):
+
+    def __init__(self, statuses):
+        if not isinstance(statuses, list):
+            statuses = [statuses]
+        self.statuses = statuses
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"terms" : {"admin.application_status.exact" : self.statuses}}
+                    ]
+                }
+            }
+        }
 

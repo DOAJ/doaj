@@ -17,6 +17,8 @@ jQuery(document).ready(function($) {
             {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
             {'field': 'index.has_seal.exact', 'display': "DOAJ Seal"},
             {'field': 'admin.owner.exact', 'display': 'Owner'},
+            {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
+            {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},
             {

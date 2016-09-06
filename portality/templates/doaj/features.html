@@ -196,8 +196,8 @@
             <td>Links to related resources: the full-text url</td>
         </tr>
         <tr>
-            <td>rights</td>
-            <td>The journal's content re-use policy.  Will be one of the Creative Commons licences</td>
+            <td>provenance</td>
+            <td>Includes information about the journal's content re-use policy.  Will be one of the Creative Commons licences.  This does not necessarily indicate the article's re-use policy.</td>
         </tr>
         <tr>
             <td>publisher</td>
@@ -297,6 +297,14 @@
         </tr>
     </thead>
     <tbody>
+        <tr>
+            <td>22 August 2016</td>
+            <td>
+                <ul>
+                    <li>The <code>dc:rights</code> element was removed, as it was technically inacurate - it represented the Journal's overall licence policy, not the specific rights for the article.  This information is now in <code>dc:provenance</code>.</li>
+                </ul>
+            </td>
+        </tr>
         <tr>
             <td>20 April 2015</td>
             <td>

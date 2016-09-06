@@ -117,7 +117,7 @@ class TestArticleUpload(DoajTestCase):
     def test_05_journal_2_article_2_1_different_success(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the
         # article, but the article also contains an issn which doesn't match the journal
-        # We expect a successful article ingest nonetheless
+        # We expect a failed ingest
 
         j = models.Journal()
         j.set_owner("testowner")
@@ -131,15 +131,15 @@ class TestArticleUpload(DoajTestCase):
         handle = ArticleFixtureFactory.upload_2_issns_ambiguous()
         results = article.ingest_file(handle, format_name="doaj", owner="testowner", upload_id=None)
 
-        assert results["success"] == 1
-        assert results["fail"] == 0
+        assert results["success"] == 0
+        assert results["fail"] == 1
         assert results["update"] == 0
-        assert results["new"] == 1
+        assert results["new"] == 0
 
         time.sleep(2)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
-        assert len(found) == 1
+        assert len(found) == 0
 
     def test_05_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
@@ -377,3 +377,38 @@ class TestArticleUpload(DoajTestCase):
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
         assert len(found) == 1
         assert len(found[0].bibjson().abstract) == 30000, len(found[0].bibjson().abstract)
+
+    def test_12_one_journal_one_article_2_issns_one_unknown(self):
+        # Create 2 journals with different owners and one different issn each.  The two issns in the
+        # article match each of the journals respectively
+        # We expect an ingest failure
+
+        legit_fail = {"fail" : 0}
+        def fail_callback_closure(register):
+            def fail_callback(article):
+                register["fail"] += 1
+            return fail_callback
+
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.P_ISSN, "2222-2222")
+        j1.save()
+
+        time.sleep(2)
+
+        handle = ArticleFixtureFactory.upload_2_issns_correct()
+        results = article.ingest_file(handle, format_name="doaj", owner="testowner1", upload_id=None, article_fail_callback=fail_callback_closure(legit_fail))
+
+        assert results["success"] == 0
+        assert results["fail"] == 1
+        assert results["update"] == 0
+        assert results["new"] == 0
+
+        assert legit_fail["fail"] == 1
+
+        time.sleep(2)
+
+        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
+        assert len(found) == 0
