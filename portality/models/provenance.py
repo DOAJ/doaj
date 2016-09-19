@@ -24,7 +24,18 @@ class Provenance(dataobj.DataObj, DomainObject):
         self._add_struct(PROVENANCE_STRUCT)
         super(Provenance, self).__init__(raw=kwargs)
 
+    @property
+    def type(self):
+        return self._get_single("type")
 
+    @type.setter
+    def type(self, val):
+        self._set_with_struct("type", val)
+
+    def save(self, **kwargs):
+        # self.prep()
+        self.check_construct()
+        super(Provenance, self).save(**kwargs)
 
 
 PROVENANCE_STRUCT = {

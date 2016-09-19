@@ -663,6 +663,7 @@ class Journal(JournalLikeObject):
 
     def save(self, snapshot=True, sync_owner=True, **kwargs):
         self.prep()
+        self.check_construct()
         if sync_owner:
             self._sync_owner_to_application()
         super(Journal, self).save(**kwargs)

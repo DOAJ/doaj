@@ -906,3 +906,27 @@ class TestClient(DoajTestCase):
         # run the remaining methods just to make sure there are no errors
         p.save()
 
+    def test_27_save_valid_dataobj(self):
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.title = "A legitimate title"
+        j.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            j.save()
+        assert j.id is None
+
+        s = models.Suggestion()
+        sbj = s.bibjson()
+        sbj.title = "A legitimate title"
+        s.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            s.save()
+        assert s.id is None
+
+        p = models.Provenance()
+        p.type = "suggestion"
+        p.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            p.save()
+        assert p.id is None
+
