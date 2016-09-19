@@ -286,6 +286,18 @@ class DataObj(object):
         except:
             self._expose_data = expose_data
 
+        # if no subclass has set _construct_silent_prune, set it
+        try:
+            og(self, "_construct_silent_prune")
+        except:
+            self._construct_silent_prune = construct_silent_prune
+
+        # if no subclass has set _construct_maintain_reference, set it
+        try:
+            og(self, "_construct_maintain_reference")
+        except:
+            self._construct_maintain_reference = construct_maintain_reference
+
         # restructure the object based on the struct if requried
         if self._struct is not None and raw is not None and construct_raw:
             self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune, maintain_reference=construct_maintain_reference)
@@ -363,7 +375,25 @@ class DataObj(object):
         # fall back to the default approach of allowing any attribute to be set on the object
         return object.__setattr__(self, key, value)
 
+    def check_construct(self):
+        """
+        Apply the construct to the internal data and throw errors if it is not validated
+
+        This could be used, for example, if external processes have violated the .data encapsulation, or
+        if internal processes which change .data need to be checked to make sure they haven't strayed outside
+        their remit
+
+        :return:
+        """
+        if self._struct is not None and self.data is not None:
+            construct(self.data, self._struct, self._coerce_map, silent_prune=self._construct_silent_prune, maintain_reference=False)
+
     def validate(self):
+        """
+        DEPRECATED - do not use
+
+        :return:
+        """
         if self.SCHEMA is not None:
             validate(self.data, self.SCHEMA)
         return True
