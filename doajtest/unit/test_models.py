@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory
 import time
 from portality.lib import dataobj
 from portality.models import shared_structs
@@ -39,6 +39,7 @@ class TestClient(DoajTestCase):
         from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
         from portality.models import ObjectDict
         from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
+        from portality.models import Provenance
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -892,4 +893,16 @@ class TestClient(DoajTestCase):
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed C")
         assert len(res) == 1
+
+    def test_26_provenance(self):
+        """Read and write properties into the provenance model"""
+        p = models.Provenance()
+
+        # now construct from a fixture
+        source = ProvenanceFixtureFactory.make_provenance_source()
+        p = models.Provenance(**source)
+        assert p is not None
+
+        # run the remaining methods just to make sure there are no errors
+        p.save()
 
