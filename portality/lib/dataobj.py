@@ -386,7 +386,7 @@ class DataObj(object):
         :return:
         """
         if self._struct is not None and self.data is not None:
-            construct(self.data, self._struct, self._coerce_map, silent_prune=self._construct_silent_prune, maintain_reference=False)
+            construct(self.data, self._struct, self._coerce_map, silent_prune=False, maintain_reference=False)
 
     def validate(self):
         """
