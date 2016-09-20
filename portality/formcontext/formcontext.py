@@ -618,10 +618,10 @@ class ManEdApplicationReview(ApplicationContext):
             # create the user account for the owner and send the notification email
             try:
                 owner = self._create_account_on_suggestion_approval(self.target, j)
-                journal_contacts = ""
+                names = []
                 for contact in j.contacts():
-                    names = contact.get("name")
-                    journal_contacts = ", ".join(names)
+                    names.append(contact.get("name"))
+                journal_contacts = ", ".join(names)
                 self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, journal_contacts, self.source.current_journal is not None)
                 for contact in j.contacts():
                     self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), owner.name, self.source.current_journal is not None)
