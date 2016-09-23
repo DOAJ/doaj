@@ -7,6 +7,7 @@ class Provenance(dataobj.DataObj, DomainObject):
         "id" : "<provenance record id>",
         "created_date" : "<when this action took place>",
         "user": "<user that carried out the action>",
+        "roles" : ["<roles this user has at the time of the event>"],
         "editor_group": ["<list of editor groups the user was in at the time>"],
         "type" : "<type being acted on: suggestion, journal, etc>",
         "subtype" : "<inner type being acted on, in case you want to distinguish between applications/reapplications, etc>",
@@ -49,6 +50,7 @@ PROVENANCE_STRUCT = {
         "resource_id" : {"coerce" : "unicode"}
     },
     "lists" : {
+        "roles" : {"contains" : "field", "coerce" : "unicode"},
         "editor_group" : {"contains" : "field", "coerce" : "unicode"}
     }
 }
