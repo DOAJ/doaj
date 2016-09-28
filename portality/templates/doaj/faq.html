@@ -70,6 +70,7 @@
 <h3>Metadata</h3>
 <ul>
 <li><a href="#api2">Does DOAJ have an API?</a></li>
+<li><a href="#cantfind">Why do some journals have no article metadata in DOAJ?</a></li>
 <li><a href="#metadata">How can I get journal metadata from DOAJ?</a></li>
 <li><a href="#metadataA">How can I get article metadata from DOAJ?</a></li>
 <li><a href="#alldata">Can I download all the DOAJ metadata?</a></li>
@@ -459,10 +460,10 @@ and includes the latest 100 items.</p>
 
 <h3><b><a name="api2"></a>Does DOAJ have an API?</b></h3>
 
-<p>Yes! We will be launching the full API suite later in 2015. A <a href="{{ url_for('api_v1.docs')  }}">beta version of 
-our search API</a> is available now. Have a play with it and let us know what you think. We would welcome feedback.</p>
+<p>Yes! Our <a href="{{ url_for('api_v1.docs')  }}">search API</a> is available now. Have a play with it and let us know what
+you think. We would welcome feedback.</p>
 
-<p>We also have 3 groups that you might like to join for API announcements or discussion:
+<p>We have 3 groups that you might like to join for API announcements or discussion:
 
 <ul>
 <li><a href="https://groups.google.com/forum/#!forum/doaj-api-announcements">an announcement-only group</a> (e.g. we 
@@ -476,9 +477,14 @@ metadata directly</li>
 </p>
 
 <p>Sign up to the announcement group or follow us on <a href="#news">our news channels</a> to find out more about our 
-full API offering, and release dates.</p>
+full API offering.</p>
 <a href="#top">Back to top</a>
 <br><br>
+
+<h3><b><a name="cantfind"></a>Why do some journals have no article metadata in DOAJ?</b></h3>
+<p>Unlike most indexes, we do not crawl publisher sites to collect article metadata but we ask publishers to upload the 
+metadata to us. If a journal in DOAJ does not have any articles linked to it, this is simply because the article metadata hasn't
+been provided to us by the publisher or group responsible.</p>
 
 <h3><b><a name="metadata"></a>How can I get journal metadata from DOAJ?</b></h3>
 <p>The DOAJ service supports the OAI protocol for metadata harvesting
