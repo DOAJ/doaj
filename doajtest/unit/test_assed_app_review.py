@@ -1,9 +1,10 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ApplicationFixtureFactory
 
-import re
+import time
 from copy import deepcopy
 
+from portality.app import app   # this line is required, or the test context doesn't work; I don't know why
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
@@ -324,6 +325,10 @@ class TestAssedAppReview(DoajTestCase):
 
     def test_01_editor_review_success(self):
         """Give the editor's reapplication form a full workout"""
+        acc = models.Account()
+        acc.set_id("richard")
+        acc.add_role("associate_editor")
+        ctx = self._make_and_push_test_context(acc=acc)
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", source=models.Suggestion(**APPLICATION_SOURCE))
@@ -379,7 +384,14 @@ class TestAssedAppReview(DoajTestCase):
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
-        assert True # gives us a place to drop a break point later if we need it
+
+        time.sleep(2)
+
+        # now check that a provenance record was recorded
+        prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
+        assert prov is not None
+
+        ctx.pop()
 
     def test_02_classification_required(self):
         # Check we can mark an application 'completed' with a subject classification present
@@ -407,3 +419,46 @@ class TestAssedAppReview(DoajTestCase):
         fc.form.application_status.data = "pending"
 
         assert fc.validate()
+
+    def test_03_associate_review_complete(self):
+        """Give the editor's reapplication form a full workout"""
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("associate_editor")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        editor = models.Account()
+        editor.set_id("editor")
+        editor.set_email("email@example.com")
+        editor.save()
+
+        eg = models.EditorGroup()
+        eg.set_name(APPLICATION_SOURCE["admin"]["editor_group"])
+        eg.set_editor("editor")
+        eg.add_associate("contextuser")
+        eg.save()
+
+        time.sleep(2)
+
+        # construct a context from a form submission
+        source = deepcopy(APPLICATION_FORM)
+        source["application_status"] = "completed"
+        fd = MultiDict(source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="associate_editor",
+            form_data=fd,
+            source=models.Suggestion(**APPLICATION_SOURCE))
+
+        fc.finalise()
+        time.sleep(2)
+
+        # now check that a provenance record was recorded
+        count = 0
+        for prov in models.Provenance.iterall():
+            if prov.action == "edit":
+                count += 1
+            if prov.action == "status:completed":
+                count += 10
+        assert count == 11
+
+        ctx.pop()

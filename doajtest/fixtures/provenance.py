@@ -10,6 +10,7 @@ class ProvenanceFixtureFactory(object):
 PROVENANCE = {
     "id" : "1234567890",
     "created_date" : "2001-01-01T00:00:00Z",
+    "last_updated" : "2001-01-01T00:00:00Z",
     "user": "test",
     "roles" : ["associate_editor", "editor", "admin"],
     "editor_group": ["eg1", "eg2"],

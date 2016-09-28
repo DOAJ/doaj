@@ -187,6 +187,7 @@ MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
 MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
 MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
 MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
+MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS

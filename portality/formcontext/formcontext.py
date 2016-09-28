@@ -1,4 +1,6 @@
 from flask import render_template, url_for, request
+from flask.ext.login import current_user
+
 import json, uuid
 from datetime import datetime
 
@@ -562,6 +564,9 @@ class ManEdApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
+        # record the event in the provenance tracker
+        models.Provenance.make(current_user, "edit", self.target)
+
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == 'accepted':
             # this suggestion is just getting accepted
@@ -569,6 +574,9 @@ class ManEdApplicationReview(ApplicationContext):
             j.set_in_doaj(True)
             j.set_last_manual_update()
             j.save()
+
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:accepted", self.target)
 
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
@@ -585,6 +593,11 @@ class ManEdApplicationReview(ApplicationContext):
                 self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, self.source.current_journal is not None)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
+
+        # if the application was instead rejected, record a provenance event against it
+        if self.source.application_status != "rejected" and self.target.application_status == "rejected":
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:rejected", self.target)
 
         # if we need to email the editor and/or the associate, handle those here
         if is_editor_group_changed:
@@ -717,6 +730,9 @@ class EditorApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
+        # record the event in the provenance tracker
+        models.Provenance.make(current_user, "edit", self.target)
+
         # if we need to email the associate, handle that here.
         if new_associate_assigned:
             try:
@@ -739,6 +755,9 @@ class EditorApplicationReview(ApplicationContext):
             editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
             editor_group = models.EditorGroup.pull(editor_group_id)
             editor_acc = editor_group.get_editor_account()
+
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:ready", self.target)
 
             editor_id = editor_acc.id
             try:
@@ -837,6 +856,9 @@ class AssEdApplicationReview(ApplicationContext):
         self.target.set_last_manual_update()
         self.target.save()
 
+        # record the event in the provenance tracker
+        models.Provenance.make(current_user, "edit", self.target)
+
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == 'pending' and self.target.application_status == 'in progress':
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
@@ -853,6 +875,9 @@ class AssEdApplicationReview(ApplicationContext):
 
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != 'completed' and self.target.application_status == 'completed':
+            # record the event in the provenance tracker
+            models.Provenance.make(current_user, "status:completed", self.target)
+
             try:
                 emails.send_editor_completed_email(self.target)
                 self.add_alert('A confirmation email has been sent to notify the editor of the change in status.')

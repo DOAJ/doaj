@@ -2,7 +2,6 @@ from doajtest.helpers import DoajTestCase
 
 from portality import models
 from portality.formcontext import formcontext
-from portality.app import app
 
 from StringIO import StringIO
 from copy import deepcopy
@@ -10,6 +9,8 @@ import logging
 import re
 
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
+
+from portality.app import app
 
 APPLICATION_SOURCE_TEST_1 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_2 = ApplicationFixtureFactory.make_application_source()
@@ -45,6 +46,10 @@ def editor_account_pull(self, _id):
         return models.Account(**ASSED2_SOURCE)
     if _id == 'associate_3':
         return models.Account(**ASSED3_SOURCE)
+    else:
+        return ACTUAL_ACCOUNT_PULL(_id)
+
+ACTUAL_ACCOUNT_PULL = models.Account.pull
 
 # A regex string for searching the log entries
 email_log_regex = 'template.*%s.*to:\[u{0,1}\'%s.*subject:.*%s'
@@ -144,6 +149,11 @@ class TestApplicationReviewEmails(DoajTestCase):
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's application review form sends the right emails"""
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # If an application has been set to 'ready' but is returned to 'in progress', an email is sent to the editor
         ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
         ready_application.set_application_status("ready")
@@ -159,8 +169,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         fc.form.application_status.data = "in progress"
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
+
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
 
@@ -191,8 +201,8 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Assign the associate editor and save the form
         fc.form.editor.data = "associate_3"
-        with app.test_request_context():
-            fc.finalise()
+
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
@@ -230,8 +240,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         fc.form.editor_group.data = "Test Editor Group"
         fc.form.editor.data = "associate_3"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
@@ -270,8 +279,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Make changes to the application status via the form
         fc.form.application_status.data = "ready"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -295,8 +303,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
         fc.form.application_status.data = 'accepted'
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect 2 emails to be sent:
@@ -321,8 +328,15 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert bool(publisher_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
+        ctx.pop()
+
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("editor")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # If an application has been set to 'ready' from another status, the ManEds are notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
 
@@ -336,8 +350,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Make changes to the application status via the form
         fc.form.application_status.data = "ready"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -364,8 +377,8 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Assign the associate editor and save the form
         fc.form.editor.data = "associate_3"
-        with app.test_request_context():
-            fc.finalise()
+
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
@@ -402,8 +415,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         fc.form.editor.data = "associate_2"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # check the associate was changed
@@ -421,8 +433,15 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert bool(assEd_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
+        ctx.pop()
+
     def test_03_assoc_ed_review_emails(self):
         """ Ensure the Associate Editor's application review form sends the right emails"""
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("associate_editor")
+        ctx = self._make_and_push_test_context(acc=acc)
+
         # If an application has been set to 'in progress' from 'pending', the publisher is notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_3)
 
@@ -436,8 +455,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Make changes to the application status via the form
         fc.form.application_status.data = "in progress"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email to be sent here:
@@ -458,8 +476,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # When the application is then set to 'completed', the editor in charge of this group is informed
         fc.form.application_status.data = "completed"
 
-        with app.test_request_context():
-            fc.finalise()
+        fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
         # We expect one email sent:
@@ -472,6 +489,8 @@ class TestApplicationReviewEmails(DoajTestCase):
                                          re.DOTALL)
         assert bool(editor_email_matched)
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
+
+        ctx.pop()
 
 
 class TestJournalReviewEmails(DoajTestCase):

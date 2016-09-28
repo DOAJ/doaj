@@ -1,11 +1,13 @@
 from portality.dao import DomainObject
 from portality.lib import dataobj
+from portality.models import EditorGroup
 
 class Provenance(dataobj.DataObj, DomainObject):
     """
     {
         "id" : "<provenance record id>",
         "created_date" : "<when this action took place>",
+        "last_updated" : "<when this record was last updated>",
         "user": "<user that carried out the action>",
         "roles" : ["<roles this user has at the time of the event>"],
         "editor_group": ["<list of editor groups the user was in at the time>"],
@@ -33,16 +35,78 @@ class Provenance(dataobj.DataObj, DomainObject):
     def type(self, val):
         self._set_with_struct("type", val)
 
+    @property
+    def user(self):
+        return self._get_single("user")
+
+    @property
+    def roles(self):
+        return self._get_list("roles")
+
+    @property
+    def editor_group(self):
+        return self._get_list("editor_group")
+
+    @property
+    def subtype(self):
+        return self._get_single("subtype")
+
+    @property
+    def action(self):
+        return self._get_single("action")
+
+    @property
+    def resource_id(self):
+        return self._get_single("resource_id")
+
     def save(self, **kwargs):
         # self.prep()
         self.check_construct()
         super(Provenance, self).save(**kwargs)
+
+    @classmethod
+    def make(cls, account, action, obj, subtype=None, save=True):
+        egs1 = EditorGroup.groups_by_editor(account.id)
+        egs2 = EditorGroup.groups_by_associate(account.id)
+        egs = []
+        for eg in egs1:
+            if eg.id not in egs:
+                egs.append(eg.id)
+        for eg in egs2:
+            if eg.id not in egs:
+                egs.append(eg.id)
+
+        d = {
+            "user" : account.id,
+            "roles" : account.role,
+            "type" : obj.__type__,
+            "action" : action,
+            "resource_id" : obj.id,
+            "editor_group" : egs
+        }
+        if subtype is not None:
+            d["subtype"] = subtype
+
+        p = Provenance(**d)
+        if save:
+            p.save()
+        return p
+
+    @classmethod
+    def get_latest_by_resource_id(cls, resource_id):
+        q = ResourceIDQuery(resource_id)
+        resp = cls.query(q=q.query())
+        obs = [hit.get("_source") for hit in resp.get("hits", {}).get("hits", [])]
+        if len(obs) == 0:
+            return None
+        return Provenance(**obs[0])
 
 
 PROVENANCE_STRUCT = {
     "fields" : {
         "id" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
+        "last_updated" : {"coerce" : "utcdatetime"},
         "user" : {"coerce" : "unicode"},
         "type" : {"coerce" : "unicode"},
         "subtype" : {"coerce" : "unicode"},
@@ -54,3 +118,19 @@ PROVENANCE_STRUCT = {
         "editor_group" : {"contains" : "field", "coerce" : "unicode"}
     }
 }
+
+class ResourceIDQuery(object):
+    def __init__(self, resource_id):
+        self.resource_id = resource_id
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"resource_id.exact" : self.resource_id}}
+                    ]
+                }
+            },
+            "sort" : [{"created_date" : {"order" : "desc"}}]
+        }

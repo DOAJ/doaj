@@ -930,3 +930,53 @@ class TestClient(DoajTestCase):
             p.save()
         assert p.id is None
 
+    def test_28_make_provenance(self):
+        acc = models.Account()
+        acc.set_id("test")
+        acc.add_role("associate_editor")
+        acc.add_role("editor")
+
+        obj1 = models.Suggestion()
+        obj1.set_id("obj1")
+
+        models.Provenance.make(acc, "act1", obj1)
+
+        time.sleep(2)
+
+        prov = models.Provenance.get_latest_by_resource_id("obj1")
+        assert prov.type == "suggestion"
+        assert prov.user == "test"
+        assert prov.roles == ["associate_editor", "editor"]
+        assert len(prov.editor_group) == 0
+        assert prov.subtype is None
+        assert prov.action == "act1"
+        assert prov.resource_id == "obj1"
+
+        eg1 = models.EditorGroup()
+        eg1.set_id("associate")
+        eg1.add_associate(acc.id)
+        eg1.save()
+
+        eg2 = models.EditorGroup()
+        eg2.set_id("editor")
+        eg2.set_editor(acc.id)
+        eg2.save()
+
+        time.sleep(2)
+
+        obj2 = models.Suggestion()
+        obj2.set_id("obj2")
+
+        models.Provenance.make(acc, "act2", obj2, "sub")
+
+        time.sleep(2)
+
+        prov = models.Provenance.get_latest_by_resource_id("obj2")
+        assert prov.type == "suggestion"
+        assert prov.user == "test"
+        assert prov.roles == ["associate_editor", "editor"]
+        assert prov.editor_group == ["editor", "associate"]
+        assert prov.subtype == "sub"
+        assert prov.action == "act2"
+        assert prov.resource_id == "obj2"
+

@@ -1,3 +1,5 @@
+from flask_login import login_user
+
 from unittest import TestCase
 from portality import core, dao
 from portality.core import app
@@ -25,6 +27,16 @@ class DoajTestCase(TestCase):
 
     def list_today_journal_history_files(self):
         return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
+
+    def _make_and_push_test_context(self, path="/", acc=None):
+        ctx = app.test_request_context(path)
+        ctx.push()
+        if acc is not None:
+            acc.save()
+            time.sleep(2)
+            login_user(acc)
+
+        return ctx
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """
