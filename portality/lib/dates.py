@@ -1,6 +1,7 @@
 from portality.core import app
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from random import randint
 
 def parse(s, format=None, guess=True):
     s = s.strip()
@@ -30,3 +31,17 @@ def reformat(s, in_format=None, out_format=None):
 
 def now():
     return format(datetime.utcnow())
+
+def random_date(fro=None, to=None):
+    if fro is None:
+        fro = parse("1970-01-01T00:00:00Z")
+    if isinstance(fro, basestring):
+        fro = parse(fro)
+    if to is None:
+        to = datetime.utcnow()
+    if isinstance(to, basestring):
+        to = parse(to)
+
+    span = int((to - fro).total_seconds())
+    s = randint(0, span)
+    return format(to - timedelta(seconds=s))

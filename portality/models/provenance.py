@@ -39,9 +39,17 @@ class Provenance(dataobj.DataObj, DomainObject):
     def user(self):
         return self._get_single("user")
 
+    @user.setter
+    def user(self, val):
+        self._set_with_struct("user", val)
+
     @property
     def roles(self):
         return self._get_list("roles")
+
+    @roles.setter
+    def roles(self, val):
+        self._set_with_struct("roles", val)
 
     @property
     def editor_group(self):
@@ -55,9 +63,17 @@ class Provenance(dataobj.DataObj, DomainObject):
     def action(self):
         return self._get_single("action")
 
+    @action.setter
+    def action(self, val):
+        self._set_with_struct("action", val)
+
     @property
     def resource_id(self):
         return self._get_single("resource_id")
+
+    @resource_id.setter
+    def resource_id(self, val):
+        self._set_with_struct("resource_id", val)
 
     def save(self, **kwargs):
         # self.prep()
