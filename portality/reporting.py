@@ -2,6 +2,7 @@ from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 import codecs, os
+from datetime import datetime
 
 def provenance_reports(fr, to, outdir):
     pipeline = []
@@ -27,6 +28,66 @@ def provenance_reports(fr, to, outdir):
 
     return outfiles
 
+
+def content_reports(fr, to, outdir):
+    report = {}
+
+    q = ContentByDate(fr, to)
+    res = models.Suggestion.query(q=q.query())
+    year_buckets = res.get("aggregations", {}).get("years", {}).get("buckets", [])
+    for years in year_buckets:
+        ds = years.get("key_as_string")
+        do = dates.parse(ds)
+        year = do.year
+        if year not in report:
+            report[year] = {}
+        country_buckets = years.get("countries", {}).get("buckets", [])
+        for country in country_buckets:
+            cn = country.get("key")
+            if cn not in report[year]:
+                report[year][cn] = {}
+            count = country.get("doc_count")
+            report[year][cn]["count"] = count
+
+    table = _tabulate_time_entity_group(report, "Country")
+
+    filename = "applications_by_year_by_country__" + fr + "_" + to + "__" + dates.now() + ".csv"
+    outfiles = []
+    outfile = os.path.join(outdir, filename)
+    outfiles.append(outfile)
+    with codecs.open(outfile, "wb") as f:
+        writer = UnicodeWriter(f)
+        for row in table:
+            writer.writerow(row)
+
+    return outfiles
+
+
+def _tabulate_time_entity_group(group, entityKey):
+    dates = group.keys()
+    dates.sort()
+    table = []
+    padding = []
+    for db in dates:
+        users = group[db].keys()
+        for u in users:
+            c = group[db][u]["count"]
+            existing = False
+            for row in table:
+                if row[0] == u:
+                    row.append(c)
+                    existing = True
+            if not existing:
+                table.append([u] + padding + [c])
+        padding.append(0)
+
+    for row in table:
+        if len(row) < len(dates) + 1:
+            row += [0] * (len(dates) - len(row) + 1)
+
+    table.sort(key=lambda user: user[0])
+    table = [[entityKey] + dates] + table
+    return table
 
 class ReportCounter(object):
     def __init__(self, period):
@@ -75,30 +136,7 @@ class ActionCounter(ReportCounter):
 
     def tabulate(self):
         self._count_down(self._last_period)
-        dates = self.report.keys()
-        dates.sort()
-        table = []
-        padding = []
-        for db in dates:
-            users = self.report[db].keys()
-            for u in users:
-                c = self.report[db][u]["count"]
-                existing = False
-                for row in table:
-                    if row[0] == u:
-                        row.append(c)
-                        existing = True
-                if not existing:
-                    table.append([u] + padding + [c])
-            padding.append(0)
-
-        for row in table:
-            if len(row) < len(dates) + 1:
-                row += [0] * (len(dates) - len(row) + 1)
-
-        table.sort(key=lambda user: user[0])
-        table = [["User"] + dates] + table
-        return table
+        return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
         return self.action + "_by_" + self.period + "__from_" + fr + "_to_" + to + "__" + dates.now() + ".csv"
@@ -156,30 +194,7 @@ class StatusCounter(ReportCounter):
 
     def tabulate(self):
         self._count_down(self._last_period)
-        dates = self.report.keys()
-        dates.sort()
-        table = []
-        padding = []
-        for db in dates:
-            users = self.report[db].keys()
-            for u in users:
-                c = self.report[db][u]["count"]
-                existing = False
-                for row in table:
-                    if row[0] == u:
-                        row.append(c)
-                        existing = True
-                if not existing:
-                    table.append([u] + padding + [c])
-            padding.append(0)
-
-        for row in table:
-            if len(row) < len(dates) + 1:
-                row += [0] * (len(dates) - len(row) + 1)
-
-        table.sort(key=lambda user: user[0])
-        table = [["User"] + dates] + table
-        return table
+        return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
         return "completion_by_" + self.period + "__from_" + fr + "_to_" + to + "__" + dates.now() + ".csv"
@@ -206,4 +221,34 @@ class ProvenanceList(object):
                 }
             },
             "sort" : [{"created_date" : {"order" : "asc"}}]
+        }
+
+class ContentByDate(object):
+    def __init__(self, fr, to):
+        self.fr = fr
+        self.to = to
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"range" : {"created_date" : {"gt" : self.fr, "lte" : self.to}}}
+                    ]
+                }
+            },
+            "size" : 0,
+            "aggs" : {
+                "years" : {
+                    "date_histogram" : {
+                        "field" : "created_date",
+                        "interval" : "year"
+                    },
+                    "aggs" : {
+                        "countries" : {
+                            "terms" : {"field" : "bibjson.country.exact"}
+                        }
+                    }
+                }
+            }
         }

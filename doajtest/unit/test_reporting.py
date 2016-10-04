@@ -1,10 +1,11 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ProvenanceFixtureFactory
+from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactory
 
 import time, os, shutil, codecs, csv
 from copy import deepcopy
 
 from portality import reporting
+from portality.lib import dates
 
 MONTH_EDIT_OUTPUT = [
     ["User", "2015-01", "2015-02", "2015-03", "2015-04", "2015-05", "2015-06"],
@@ -34,17 +35,24 @@ YEAR_COMPLETE_OUTPUT = [
     ["u3", 81]
 ]
 
+APPLICATION_YEAR_OUTPUT = [
+    ["Country", "2010", "2011", "2012", "2013", "2014", "2015"],
+    ["Angola", 0, 1, 2, 3, 4, 5],
+    ["Belarus", 6, 7, 8 , 9, 10, 0],
+    ["Cambodia", 11, 12, 13, 14, 15, 16]
+]
+
 TMP_DIR = "resources/reports"
 
-class TestProvenance(DoajTestCase):
+class TestReporting(DoajTestCase):
     def setUp(self):
-        super(TestProvenance, self).setUp()
+        super(TestReporting, self).setUp()
         if os.path.exists(TMP_DIR):
             shutil.rmtree(TMP_DIR)
         os.mkdir(TMP_DIR)
 
     def tearDown(self):
-        super(TestProvenance, self).tearDown()
+        super(TestReporting, self).tearDown()
         shutil.rmtree(TMP_DIR)
 
     def _as_output(self, table):
@@ -127,3 +135,23 @@ class TestProvenance(DoajTestCase):
 
         expected_year = self._as_output(YEAR_COMPLETE_OUTPUT)
         assert table_year == expected_year
+
+    def test_03_apps_by_country(self):
+        apps = ApplicationFixtureFactory.make_application_spread(APPLICATION_YEAR_OUTPUT, "year")
+        for a in apps:
+            a.save()
+        time.sleep(2)
+
+        outfiles = reporting.content_reports("1970-01-01T00:00:00Z", dates.now(), TMP_DIR)
+
+        assert len(outfiles) == 1
+        assert os.path.exists(outfiles[0])
+
+        table = []
+        with codecs.open(outfiles[0]) as f:
+            reader = csv.reader(f)
+            for row in reader:
+                table.append(row)
+
+        expected = self._as_output(APPLICATION_YEAR_OUTPUT)
+        assert table == expected
