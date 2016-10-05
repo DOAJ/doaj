@@ -299,9 +299,10 @@ class TestApplicationReviewEmails(DoajTestCase):
             fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
-        # We expect 2 emails to be sent:
+        # We expect 3 emails to be sent:
         #   * to the publisher, because they have a new account
         #   * to the publisher, informing them of the journal's acceptance
+        #   * to the journal contact, informing them of the journal's acceptance
         publisher_template = 'account_created.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'account created'
@@ -319,7 +320,19 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+
+        publisher_template = 'contact_application_accepted.txt'
+        publisher_to = re.escape(ready_application.get_latest_contact_email())
+        publisher_subject = 'journal accepted'
+
+        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
+                                            info_stream_contents,
+                                            re.DOTALL)
+        assert bool(publisher_email_matched)
+
+        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+
+
 
     def test_02_ed_review_emails(self):
         """ Ensure the Editor's application review form sends the right emails"""
