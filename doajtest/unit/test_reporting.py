@@ -5,7 +5,7 @@ import time, os, shutil, codecs, csv
 from copy import deepcopy
 
 from portality import reporting
-from portality.lib import dates
+from portality.lib import dates, paths
 
 MONTH_EDIT_OUTPUT = [
     ["User", "2015-01", "2015-02", "2015-03", "2015-04", "2015-05", "2015-06"],
@@ -42,7 +42,7 @@ APPLICATION_YEAR_OUTPUT = [
     ["Cambodia", 11, 12, 13, 14, 15, 16]
 ]
 
-TMP_DIR = "resources/reports"
+TMP_DIR = paths.rel2abs(__file__, "resources/reports")
 
 class TestReporting(DoajTestCase):
     def setUp(self):
