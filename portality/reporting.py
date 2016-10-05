@@ -51,7 +51,7 @@ def content_reports(fr, to, outdir):
 
     table = _tabulate_time_entity_group(report, "Country")
 
-    filename = "applications_by_year_by_country__" + fr + "_" + to + "__" + dates.now() + ".csv"
+    filename = "applications_by_year_by_country__" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
@@ -139,7 +139,7 @@ class ActionCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        return self.action + "_by_" + self.period + "__from_" + fr + "_to_" + to + "__" + dates.now() + ".csv"
+        return self.action + "_by_" + self.period + "__from_" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
 
     def _count_down(self, p):
         if p is None:
@@ -197,7 +197,7 @@ class StatusCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        return "completion_by_" + self.period + "__from_" + fr + "_to_" + to + "__" + dates.now() + ".csv"
+        return "completion_by_" + self.period + "__from_" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
 
     def _count_down(self, p):
         if p is None:
