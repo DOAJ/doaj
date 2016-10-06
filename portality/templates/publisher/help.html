@@ -6,35 +6,16 @@
 <p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
 {% if app.config.get("REAPPLICATION_ACTIVE", False) %}
-    <h3 style="color: red">Reapplications</h3>
-    <p>If you have <b>10 or fewer</b> journals in DOAJ, you will need to log into your Publisher's Area and process 
-    your reapplications online. We have created two documents that you must read before you start:
-        <ol>
-            <li><a href="http://bit.ly/1LE7RJP">Some important notes</a> on how to: fill in your reapplications online; 
-            submit them once you are finished; and come back to them if you need to make changes.</li>
-            <li>We created a
-            <a href="http://bit.ly/1HG3jPq">
-            spreadsheet version of the Reapplication form</a> with some important help notes. You can't edit this 
-            online but you can download a copy to your desktop.</li>
-        </ol>
-    </p>
-
-    <p>If you have <b>more than 10 journals</b>, you will need to log into your Publishers Area and download the CSV 
-    file that we have created for you. We have created two documents that you must read before you start:
-        <ol>
-            <li>Here are some important
-            <a href="https://docs.google.com/document/d/1nh5fCgDdM6rP6ubwbvCOsUtzn-JJhUnDSF-E7sFnJpE/edit?usp=sharing">notes
-            on how to: download your CSV; convert it into another format for easier completion; fill it in; reupload it to our
-            servers</a>.</li>
-            <li>We created a
-            <a href="http://bit.ly/1HG3jPq">
-            version of the Reapplication form as a spreadsheet</a> with some important help notes.</li>
-        </ol>
+    <h3>Reapplications</h3>
+    <p>The reapplication project is now closed but you will still see the Reapplications tab in your Publisher Area and you may
+        even see a note telling you that you have reapplications to submit: you can ignore that. If the reapplication that you
+        submitted is still visible, go ahead and make any updates, edits or changes that you wish. If you
+        no longer see the reapplication you submitted, this is because we are working on it already and will be in touch soon.
     </p>
 {% endif %}
 
 <h3>Application Form</h3>
-<p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in other 
+<p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in at least 12 other 
 languages. <a href="{{ url_for('doaj.translated') }}">Download the language of your choice</a> and refer to it when 
 filling in the form.</p>
 
@@ -50,8 +31,9 @@ What to do if your XML upload fails</a> and <a href="{{ url_for('doaj.publishers
 Troubleshooting your XML upload</a> sections on our 'For Publishers' page.
 
 <h3>Correcting articles on DOAJ</h3>
-<p>If you need to correct an article on DOAJ, upload it to us again. Read <a href="{{ url_for('doaj.publishers', _anchor='correct') }}">
-How to correct an error in Article Metadata?</a> on our 'For Publishers' page.
+<p>If you need to correct an article on DOAJ, upload it to us again. You can do this either by uploading XML, entering the metadata
+    manually, or by using our API. Read <a href="{{ url_for('doaj.publishers', _anchor='correct') }}">
+How do I correct an error in Article Metadata?</a> on our 'For Publishers' page.
 
 <h3>Deleting articles from DOAJ</h3>
 <p>If an article or a range of articles needs to be deleted, please <a href="{{ url_for('doaj.contact') }}">Contact Us</a>. 
