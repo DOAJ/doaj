@@ -3,7 +3,7 @@
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
-import locale, json, urlparse
+import locale, json, urlparse, warnings
 from datetime import date, datetime
 
 #########################################################
@@ -390,10 +390,11 @@ class DataObj(object):
 
     def validate(self):
         """
-        DEPRECATED - do not use
+        DEPRECATED - use 'check_construct' instead.
 
         :return:
         """
+        warnings.warn("DEPRECATED - use 'check_construct' instead.", DeprecationWarning)
         if self.SCHEMA is not None:
             validate(self.data, self.SCHEMA)
         return True
@@ -846,7 +847,6 @@ class DataObj(object):
         return date_str(in_format=in_format, out_format=out_format)
 
 
-
 ############################################################
 ## Primitive object schema validation
 
@@ -856,12 +856,14 @@ class ObjectSchemaValidationError(Exception):
 
 def validate(obj, schema):
     """
-    DEPRECATED - use "construct" instead
+    DEPRECATED - use 'construct' instead.
 
     :param obj:
     :param schema:
     :return:
     """
+    warnings.warn("DEPRECATED - use 'construct' instead.", DeprecationWarning)
+
     # all fields
     allowed = schema.get("bools", []) + schema.get("fields", []) + schema.get("lists", []) + schema.get("objects", [])
 
@@ -907,6 +909,7 @@ def validate(obj, schema):
                 pass # we are not imposing a schema on this object
             else:
                 validate(v, object_schema)
+
 
 ############################################################
 ## Data structure coercion
