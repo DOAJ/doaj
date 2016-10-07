@@ -165,14 +165,21 @@ class DomainObject(UserDict.IterableUserDict, object):
         '''Retrieve object by id.'''
         if id_ is None:
             return None
+
+        # swallow any network exceptions
         try:
             out = requests.get(cls.target() + id_)
-            if out.status_code == 404:
-                return None
-            else:
-                return cls(**out.json())
         except Exception as e:
             return None
+        if out is None:
+            return None
+
+        # allow other exceptions to bubble up, as they may be data structure exceptions we want to know about
+        if out.status_code == 404:
+            return None
+        else:
+            return cls(**out.json())
+
 
     @classmethod
     def pull_by_key(cls, key, value):

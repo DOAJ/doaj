@@ -1,6 +1,9 @@
 from copy import deepcopy
 from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
+from portality.models import Suggestion
+from portality.lib import dates
+from datetime import datetime
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -26,6 +29,48 @@ class ApplicationFixtureFactory(object):
     @classmethod
     def incoming_application(cls):
         return deepcopy(INCOMING_SOURCE)
+
+    @classmethod
+    def make_application_spread(cls, desired_output, period):
+        desired_output = deepcopy(desired_output)
+        header = desired_output[0]
+        del desired_output[0]
+        del header[0]
+        ranges = []
+        for h in header:
+            start = None
+            end = None
+            if period == "month":
+                startts = dates.parse(h, "%Y-%m")
+                year, month = divmod(startts.month+1, 12)
+                if month == 0:
+                    month = 12
+                    year = year - 1
+                endts = datetime(startts.year + year, month, 1)
+                start = dates.format(startts)
+                end = dates.format(endts)
+            elif period == "year":
+                startts = dates.parse(h, "%Y")
+                endts = datetime(startts.year + 1, 1, 1)
+                start = dates.format(startts)
+                end = dates.format(endts)
+
+            ranges.append((start, end))
+
+        apps = []
+        for row in desired_output:
+            country = row[0]
+            del row[0]
+            for i in range(len(row)):
+                count = row[i]
+                start, end = ranges[i]
+                for j in range(count):
+                    s = Suggestion()
+                    s.set_created(dates.random_date(start, end))
+                    s.bibjson().country = country
+                    apps.append(s)
+
+        return apps
 
 APPLICATION_SOURCE = {
     "id" : "abcdefghijk",

@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory
 import time
 from portality.lib import dataobj
 from portality.models import shared_structs
@@ -39,6 +39,7 @@ class TestClient(DoajTestCase):
         from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
         from portality.models import ObjectDict
         from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
+        from portality.models import Provenance
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -892,4 +893,90 @@ class TestClient(DoajTestCase):
 
         res = models.Journal.advanced_autocomplete("index.publisher_ac", "bibjson.publisher", "BioMed C")
         assert len(res) == 1
+
+    def test_26_provenance(self):
+        """Read and write properties into the provenance model"""
+        p = models.Provenance()
+
+        # now construct from a fixture
+        source = ProvenanceFixtureFactory.make_provenance_source()
+        p = models.Provenance(**source)
+        assert p is not None
+
+        # run the remaining methods just to make sure there are no errors
+        p.save()
+
+    def test_27_save_valid_dataobj(self):
+        j = models.Journal()
+        bj = j.bibjson()
+        bj.title = "A legitimate title"
+        j.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            j.save()
+        assert j.id is None
+
+        s = models.Suggestion()
+        sbj = s.bibjson()
+        sbj.title = "A legitimate title"
+        s.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            s.save()
+        assert s.id is None
+
+        p = models.Provenance()
+        p.type = "suggestion"
+        p.data["junk"] = "in here"
+        with self.assertRaises(dataobj.DataStructureException):
+            p.save()
+        assert p.id is None
+
+    def test_28_make_provenance(self):
+        acc = models.Account()
+        acc.set_id("test")
+        acc.add_role("associate_editor")
+        acc.add_role("editor")
+
+        obj1 = models.Suggestion()
+        obj1.set_id("obj1")
+
+        models.Provenance.make(acc, "act1", obj1)
+
+        time.sleep(2)
+
+        prov = models.Provenance.get_latest_by_resource_id("obj1")
+        assert prov.type == "suggestion"
+        assert prov.user == "test"
+        assert prov.roles == ["associate_editor", "editor"]
+        assert len(prov.editor_group) == 0
+        assert prov.subtype is None
+        assert prov.action == "act1"
+        assert prov.resource_id == "obj1"
+
+        eg1 = models.EditorGroup()
+        eg1.set_id("associate")
+        eg1.add_associate(acc.id)
+        eg1.save()
+
+        eg2 = models.EditorGroup()
+        eg2.set_id("editor")
+        eg2.set_editor(acc.id)
+        eg2.save()
+
+        time.sleep(2)
+
+        obj2 = models.Suggestion()
+        obj2.set_id("obj2")
+
+        models.Provenance.make(acc, "act2", obj2, "sub")
+
+        time.sleep(2)
+
+        prov = models.Provenance.get_latest_by_resource_id("obj2")
+        assert prov.type == "suggestion"
+        assert prov.user == "test"
+        assert prov.roles == ["associate_editor", "editor"]
+        assert prov.editor_group == ["editor", "associate"]
+        assert prov.subtype == "sub"
+        assert prov.action == "act2"
+        assert prov.resource_id == "obj2"
 

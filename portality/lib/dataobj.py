@@ -3,7 +3,7 @@
 from portality.lib import dates
 from portality.datasets import get_country_code, get_currency_code
 from copy import deepcopy
-import locale, json, urlparse
+import locale, json, urlparse, warnings
 from datetime import date, datetime
 
 #########################################################
@@ -286,6 +286,18 @@ class DataObj(object):
         except:
             self._expose_data = expose_data
 
+        # if no subclass has set _construct_silent_prune, set it
+        try:
+            og(self, "_construct_silent_prune")
+        except:
+            self._construct_silent_prune = construct_silent_prune
+
+        # if no subclass has set _construct_maintain_reference, set it
+        try:
+            og(self, "_construct_maintain_reference")
+        except:
+            self._construct_maintain_reference = construct_maintain_reference
+
         # restructure the object based on the struct if requried
         if self._struct is not None and raw is not None and construct_raw:
             self.data = construct(self.data, self._struct, self._coerce_map, silent_prune=construct_silent_prune, maintain_reference=construct_maintain_reference)
@@ -363,7 +375,26 @@ class DataObj(object):
         # fall back to the default approach of allowing any attribute to be set on the object
         return object.__setattr__(self, key, value)
 
+    def check_construct(self):
+        """
+        Apply the construct to the internal data and throw errors if it is not validated
+
+        This could be used, for example, if external processes have violated the .data encapsulation, or
+        if internal processes which change .data need to be checked to make sure they haven't strayed outside
+        their remit
+
+        :return:
+        """
+        if self._struct is not None and self.data is not None:
+            construct(self.data, self._struct, self._coerce_map, silent_prune=False, maintain_reference=False)
+
     def validate(self):
+        """
+        DEPRECATED - use 'check_construct' instead.
+
+        :return:
+        """
+        warnings.warn("DEPRECATED - use 'check_construct' instead.", DeprecationWarning)
         if self.SCHEMA is not None:
             validate(self.data, self.SCHEMA)
         return True
@@ -816,7 +847,6 @@ class DataObj(object):
         return date_str(in_format=in_format, out_format=out_format)
 
 
-
 ############################################################
 ## Primitive object schema validation
 
@@ -826,12 +856,14 @@ class ObjectSchemaValidationError(Exception):
 
 def validate(obj, schema):
     """
-    DEPRECATED - use "construct" instead
+    DEPRECATED - use 'construct' instead.
 
     :param obj:
     :param schema:
     :return:
     """
+    warnings.warn("DEPRECATED - use 'construct' instead.", DeprecationWarning)
+
     # all fields
     allowed = schema.get("bools", []) + schema.get("fields", []) + schema.get("lists", []) + schema.get("objects", [])
 
@@ -877,6 +909,7 @@ def validate(obj, schema):
                 pass # we are not imposing a schema on this object
             else:
                 validate(v, object_schema)
+
 
 ############################################################
 ## Data structure coercion

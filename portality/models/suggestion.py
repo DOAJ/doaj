@@ -142,6 +142,7 @@ class Suggestion(JournalLikeObject):
 
     def save(self, sync_owner=True, **kwargs):
         self.prep()
+        self.check_construct()
         if sync_owner:
             self._sync_owner_to_journal()
         super(Suggestion, self).save(**kwargs)
