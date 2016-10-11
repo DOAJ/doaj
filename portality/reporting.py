@@ -2,7 +2,6 @@ from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 import codecs, os
-from datetime import datetime
 
 def provenance_reports(fr, to, outdir):
     pipeline = []
@@ -13,8 +12,8 @@ def provenance_reports(fr, to, outdir):
 
     q = ProvenanceList(fr, to)
     for prov in models.Provenance.iterate(q.query()):
-        for filter in pipeline:
-            filter.count(prov)
+        for filt in pipeline:
+            filt.count(prov)
 
     outfiles = []
     for p in pipeline:
@@ -64,11 +63,11 @@ def content_reports(fr, to, outdir):
 
 
 def _tabulate_time_entity_group(group, entityKey):
-    dates = group.keys()
-    dates.sort()
+    date_keys = group.keys()
+    date_keys.sort()
     table = []
     padding = []
-    for db in dates:
+    for db in date_keys:
         users = group[db].keys()
         for u in users:
             c = group[db][u]["count"]
@@ -82,12 +81,13 @@ def _tabulate_time_entity_group(group, entityKey):
         padding.append(0)
 
     for row in table:
-        if len(row) < len(dates) + 1:
-            row += [0] * (len(dates) - len(row) + 1)
+        if len(row) < len(date_keys) + 1:
+            row += [0] * (len(date_keys) - len(row) + 1)
 
     table.sort(key=lambda user: user[0])
-    table = [[entityKey] + dates] + table
+    table = [[entityKey] + date_keys] + table
     return table
+
 
 class ReportCounter(object):
     def __init__(self, period):
@@ -162,10 +162,13 @@ class StatusCounter(ReportCounter):
         role_precedence = ["associate_editor", "editor", "admin"]
         best_role = None
         for r in prov.roles:
-            if best_role is None:
-                best_role = r
-            if role_precedence.index(r) > role_precedence.index(best_role):
-                best_role = r
+            try:
+                if best_role is None:
+                    best_role = r
+                if role_precedence.index(r) > role_precedence.index(best_role):
+                    best_role = r
+            except ValueError:
+                pass                            # The user has a role not in our precedence list (e.g. api) - ignore it.
 
         countable = False
         if best_role == "admin" and (prov.action == "status:accepted" or prov.action == "status:rejected"):
@@ -206,6 +209,7 @@ class StatusCounter(ReportCounter):
             self.report[p][k]["count"] = len(self.report[p][k]["ids"])
             del self.report[p][k]["ids"]
 
+
 class ProvenanceList(object):
     def __init__(self, fr, to):
         self.fr = fr
@@ -222,6 +226,7 @@ class ProvenanceList(object):
             },
             "sort" : [{"created_date" : {"order" : "asc"}}]
         }
+
 
 class ContentByDate(object):
     def __init__(self, fr, to):
