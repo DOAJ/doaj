@@ -2,6 +2,7 @@ from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 import codecs, os
+from portality import datasets
 
 def provenance_reports(fr, to, outdir):
     pipeline = []
@@ -42,7 +43,8 @@ def content_reports(fr, to, outdir):
             report[year] = {}
         country_buckets = years.get("countries", {}).get("buckets", [])
         for country in country_buckets:
-            cn = country.get("key")
+            cc = country.get("key")
+            cn = datasets.get_country_name(cc)
             if cn not in report[year]:
                 report[year][cn] = {}
             count = country.get("doc_count")
