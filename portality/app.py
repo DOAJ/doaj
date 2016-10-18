@@ -72,7 +72,6 @@ SPONSORS = {
         # the key should correspond to the sponsor logo name in
         # /static/doaj/images/sponsors without the extension for
         # consistency - no code should rely on this though
-        'coaction': {'name': 'Co-Action Publishing', 'logo': 'coaction.jpg', 'url': 'http://www.co-action.net/'},
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.gif', 'url': 'http://www.frontiersin.org/'},
@@ -104,6 +103,7 @@ SPONSORS = {
         'iop': {'name': 'IOP Publishing', 'logo': 'iop.jpg', 'url': 'http://ioppublishing.org/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.jpg', 'url': 'http://www.springernature.com/gp/group/aboutus'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.jpg', 'url': 'https://www.aps.org/'},
+        'wolters-kluwer': {'name': 'Wolters Kluwer', 'logo': 'wolters-kluwer.gif', 'url': 'http://wolterskluwer.com/'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
