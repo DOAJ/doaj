@@ -11,7 +11,13 @@ class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     @classmethod
-    def make_account(cls, username, name=None, email=None, roles=[], associated_journal_ids=[]):
+    def make_account(cls, username, name=None, email=None, roles=None, associated_journal_ids=None):
+        if not roles:
+            roles = []
+
+        if not associated_journal_ids:
+            associated_journal_ids = []
+
         a = cls.pull(username)
         if a:
             return a
