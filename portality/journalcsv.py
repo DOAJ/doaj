@@ -253,7 +253,8 @@ class Journal2QuestionXwalk(object):
         #kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
         #kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
         kvs.append((cls.q("country"), datasets.get_country_name(forminfo.get("country"))))
-        kvs.append((cls.q("processing_charges"), yes_or_blank(forminfo.get("processing_charges"))))
+        # Get the APC info from journal index, since this includes [yes / no / no information] rather than true / false
+        kvs.append((cls.q("processing_charges"), journal.data.get("index", {}).get("has_apc")))
         kvs.append((cls.q("processing_charges_url"), forminfo.get("processing_charges_url")))
         kvs.append((cls.q("processing_charges_amount"), forminfo.get("processing_charges_amount")))
         kvs.append((cls.q("processing_charges_currency"), datasets.get_currency_name(forminfo.get("processing_charges_currency"))))
