@@ -2,11 +2,11 @@ import re
 from datetime import datetime
 
 from wtforms import Form, validators
-from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList, ValidationError, HiddenField, DateField
+from wtforms import StringField, SelectField, TextAreaField, IntegerField, RadioField, BooleanField, SelectMultipleField, FormField, FieldList
 from wtforms import widgets
 
 from portality.formcontext.fields import URLField, TagListField, DisabledTextField, PermissiveSelectField
-from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList
+from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
 
 from portality.formcontext.choices import Choices
 
@@ -347,14 +347,14 @@ class JournalLegacy(Form):
 class RequiredOwner(Form):
     """ An Owner field which is required - validation will fail if it is not provided.  For use in some admin forms """
 
-    owner = StringField('Owner', [validators.DataRequired()])
+    owner = StringField('Owner', [validators.DataRequired(), ReservedUsernames()])
 
 
 class ApplicationOwner(Form):
     """ An Owner field which is optional under certain conditions.  For use in some admin forms """
 
     owner = StringField('Owner',
-        [OptionalIf('application_status', optvals=Choices.application_status_optional())],
+        [ReservedUsernames(), OptionalIf('application_status', optvals=Choices.application_status_optional())],
         description='DOAJ account to which the application belongs to.'
                     '<br><br>'
                     'This field is optional unless the application status is set to Accepted.'

@@ -4,6 +4,7 @@ import re
 from wtforms.compat import string_types
 
 from portality.formcontext.choices import Choices
+from portality.core import app
 
 class DataOptional(object):
     """
@@ -201,8 +202,6 @@ class MaxLen(object):
     Use {max_len} in your custom message to insert the maximum length you've
     specified into the message.
     '''
-    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
-    # except where it will simplify a 50-field form, k?
 
     def __init__(self, max_len, message='Maximum {max_len}.', *args, **kwargs):
         self.max_len = max_len
@@ -216,8 +215,6 @@ class RequiredIfRole(validators.Required):
     '''
     Makes a field required, if the user has the specified role
     '''
-    # Using checkboxes as radio buttons is a Bad Idea (TM). Do not do it,
-    # except where it will simplify a 50-field form, k?
 
     def __init__(self, role, *args, **kwargs):
         self.role = role
@@ -270,3 +267,23 @@ class ThisOrThat(object):
         that = bool(other_field.data)
         if not this and not that:
             raise validators.ValidationError("Either this field or " + other_field.label.text + " is required")
+
+
+class ReservedUsernames(object):
+    '''
+    A username validator. When applied to fields containing usernames it prevents
+    their use if they are reserved.
+    '''
+    def __init__(self, message='The "{reserved}" user is reserved. Please choose a different username.', *args, **kwargs):
+        self.message = message
+
+    def __call__(self, form, field):
+        return self.__validate(field.data)
+
+    def __validate(self, username):
+        if username.lower() in [u.lower() for u in app.config.get('RESERVED_USERNAMES', [])]:
+            raise validators.ValidationError(self.message.format(reserved=username))
+
+    @classmethod
+    def validate(cls, username):
+        return cls().__validate(username)

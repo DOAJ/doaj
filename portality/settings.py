@@ -146,6 +146,10 @@ ROLE_MAP = {
     ]
 }
 
+# If you change the reserved usernames, your data will likely need a migration to remove their
+# existing use in the system.
+RESERVED_USERNAMES = ['system']  # do not allow the creation of user accounts with this id
+
 # ========================
 # MAPPING SETTINGS
 
