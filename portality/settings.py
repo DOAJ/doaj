@@ -46,6 +46,7 @@ ENABLE_EMAIL = True
 ENABLE_PUBLISHER_EMAIL = True
 MANAGING_EDITOR_EMAIL = "managing-editors@doaj.org"
 CONTACT_FORM_ADDRESS = "feedback+contactform@doaj.org"
+REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 
 # service info
 SERVICE_NAME = "Directory of Open Access Journals"
