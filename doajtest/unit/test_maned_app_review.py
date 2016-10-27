@@ -1,4 +1,3 @@
-
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
@@ -8,7 +7,7 @@ from copy import deepcopy
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
-from portality.app import app
+from portality.app import app    # this line is required, or the test context doesn't work; I don't know why
 
 from werkzeug.datastructures import MultiDict
 
@@ -322,6 +321,10 @@ class TestManEdAppReview(DoajTestCase):
 
     def test_01_maned_review_success(self):
         """Give the editor's reapplication form a full workout"""
+        acc = models.Account()
+        acc.set_id("richard")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=models.Suggestion(**APPLICATION_SOURCE))
@@ -366,9 +369,20 @@ class TestManEdAppReview(DoajTestCase):
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
-        assert True # gives us a place to drop a break point later if we need it
+
+        time.sleep(2)
+
+        # now check that a provenance record was recorded
+        prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
+        assert prov is not None
+
+        ctx.pop()
 
     def test_02_reapplication(self):
+        acc = models.Account()
+        acc.set_id("richard")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
 
         # There needs to be an existing journal in the index for this test to work
         extant_j = models.Journal(**JOURNAL_SOURCE)
@@ -395,8 +409,8 @@ class TestManEdAppReview(DoajTestCase):
         # create and finalise the form context
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", form_data=fd, source=s)
 
-        with app.test_request_context():
-            fc.finalise()
+        # with app.test_request_context():
+        fc.finalise()
 
         # let the index catch up
         time.sleep(1)
@@ -410,6 +424,8 @@ class TestManEdAppReview(DoajTestCase):
         h = self.list_today_journal_history_files()
         assert h is not None
         assert len(h) == 2
+
+        ctx.pop()
 
     def test_03_classification_required(self):
         # Check we can accept an application with a subject classification present
@@ -459,3 +475,63 @@ class TestManEdAppReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
+
+    def test_05_maned_review_accept(self):
+        """Give the editor's reapplication form a full workout"""
+        acc = models.Account()
+        acc.set_id("richard")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        # construct a context from a form submission
+        source = deepcopy(APPLICATION_FORM)
+        source["application_status"] = "accepted"
+        fd = MultiDict(source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            form_data=fd,
+            source=models.Suggestion(**APPLICATION_SOURCE))
+
+        fc.finalise()
+        time.sleep(2)
+
+        # now check that a provenance record was recorded
+        count = 0
+        for prov in models.Provenance.iterall():
+            if prov.action == "edit":
+                count += 1
+            if prov.action == "status:accepted":
+                count += 10
+        assert count == 11
+
+        ctx.pop()
+
+    def test_06_maned_review_reject(self):
+        """Give the editor's reapplication form a full workout"""
+        acc = models.Account()
+        acc.set_id("richard")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        # construct a context from a form submission
+        source = deepcopy(APPLICATION_FORM)
+        source["application_status"] = "rejected"
+        fd = MultiDict(source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            form_data=fd,
+            source=models.Suggestion(**APPLICATION_SOURCE))
+
+        fc.finalise()
+        time.sleep(2)
+
+        # now check that a provenance record was recorded
+        count = 0
+        for prov in models.Provenance.iterall():
+            if prov.action == "edit":
+                count += 1
+            if prov.action == "status:rejected":
+                count += 10
+        assert count == 11
+
+        ctx.pop()

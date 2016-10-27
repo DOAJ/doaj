@@ -11,6 +11,8 @@ from portality.decorators import ssl_required, write_required
 from portality import models
 from portality import util, app_email
 
+from portality.formcontext.validate import ReservedUsernames
+
 blueprint = Blueprint('account', __name__)
 
 
@@ -234,7 +236,7 @@ def existscheck(form, field):
 
 
 class RegisterForm(Form):
-    w = StringField('Username', [validators.Length(min=3, max=25), existscheck])
+    w = StringField('Username', [ReservedUsernames(), validators.Length(min=3, max=25), existscheck])
     n = StringField('Email Address', [
         validators.Length(min=3, max=254),
         validators.Email(message='Must be a valid email address')

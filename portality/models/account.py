@@ -6,12 +6,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
+from portality.formcontext.validate import ReservedUsernames
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
+    def __init__(self, **kwargs):
+        ReservedUsernames().validate(kwargs.get('id', ''))
+        super(Account, self).__init__(**kwargs)
+
     @classmethod
-    def make_account(cls, username, name=None, email=None, roles=[], associated_journal_ids=[]):
+    def make_account(cls, username, name=None, email=None, roles=None, associated_journal_ids=None):
+        if not roles:
+            roles = []
+
+        if not associated_journal_ids:
+            associated_journal_ids = []
+
         a = cls.pull(username)
         if a:
             return a
