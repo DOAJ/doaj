@@ -23,7 +23,7 @@ def email(data_dir, archv_name):
 
     email_to = app.config.get('REPORTS_EMAIL_TO', ['feedback@doaj.org'])
     email_from = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    email_sub = app.config.get('SERVICE_NAME', '') + ' - reports generated'
+    email_sub = app.config.get('SERVICE_NAME', '') + ' - generated {0}'.format(archv_name)
     msg = "Attached: {0}.zip\n".format(archv_name)
 
     # Create an archive of the reports
