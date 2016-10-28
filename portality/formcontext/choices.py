@@ -55,7 +55,6 @@ class Choices(object):
     ]
 
     _licence = main_license_options + [
-        ('Not CC-like', 'No'),
         (OTHER, OTHER)
     ]
 
@@ -70,7 +69,6 @@ class Choices(object):
         (NONE, NONE),
         ('Sherpa/Romeo', 'Sherpa/Romeo'),
         ('Dulcinea', 'Dulcinea'),
-        ('OAKlist', 'OAKlist'),
         ('H\xc3\xa9lo\xc3\xafse'.decode('utf-8'), 'H\xc3\xa9lo\xc3\xafse'.decode('utf-8')),
         ('Diadorim', 'Diadorim'),
         (OTHER, OTHER)
@@ -331,17 +329,7 @@ class Choices(object):
 
     @classmethod
     def copyright(cls):
-        return cls.ternary()
-
-    @classmethod
-    def copyright_val(cls, type):
-        if type == "other":
-            return cls.OTHER
-
-    @classmethod
-    def copyright_other_val(cls, type):
-        if type == "other":
-            return cls.OTHER
+        return cls.binary()
 
     @classmethod
     def copyright_url_optional(cls):
@@ -349,17 +337,7 @@ class Choices(object):
 
     @classmethod
     def publishing_rights(cls):
-        return cls.ternary()
-
-    @classmethod
-    def publishing_rights_val(cls, type):
-        if type == "other":
-            return cls.OTHER
-
-    @classmethod
-    def publishing_rights_other_val(cls, type):
-        if type == "other":
-            return cls.OTHER
+        return cls.binary()
 
     @classmethod
     def publishing_rights_url_optional(cls):

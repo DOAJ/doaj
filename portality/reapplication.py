@@ -422,8 +422,6 @@ class Suggestion2QuestionXwalk(object):
         "fulltext_format_other" : "fulltext_format",
         "license_other" : "license",
         "deposit_policy_other" : "deposit_policy",
-        "copyright_other" : "copyright",
-        "publishing_rights_other" : "publishing_rights"
     }
 
     @classmethod
@@ -598,15 +596,11 @@ class Suggestion2QuestionXwalk(object):
         kvs.append((cls.q("deposit_policy"), deposit_policies))
 
         cr = forminfo.get("copyright")
-        if cr == choices.Choices.copyright_other_val("other"):
-            cr = forminfo.get("copyright_other")
         kvs.append((cls.q("copyright"), cr))
 
         kvs.append((cls.q("copyright_url"), forminfo.get("copyright_url")))
 
         pr = forminfo.get("publishing_rights")
-        if pr == choices.Choices.publishing_rights_other_val("other"):
-            pr = forminfo.get("publishing_rights_other")
         kvs.append((cls.q("publishing_rights"), pr))
 
         kvs.append((cls.q("publishing_rights_url"), forminfo.get("publishing_rights_url")))
@@ -771,12 +765,6 @@ class Suggestion2QuestionXwalk(object):
         def get_license(val):
             return _this_or_other(val, choices.Choices.licence(), choices.Choices.licence_val("other"))
 
-        def copyright(val):
-            return _this_or_other(yes_no(val), choices.Choices.copyright(), choices.Choices.copyright_other_val("other"))
-
-        def publishing_rights(val):
-            return _this_or_other(yes_no(val), choices.Choices.publishing_rights(), choices.Choices.publishing_rights_other_val("other"))
-
         def _this_or_other(val, form_options, other_val):
             val = normal(val)
             if val is None:
@@ -909,16 +897,12 @@ class Suggestion2QuestionXwalk(object):
             forminfo["deposit_policy"] = dp
             forminfo["deposit_policy_other"] = dpother
 
-        cr, crother = copyright(cls.a(qs, "copyright"))
+        cr = yes_no(cls.a(qs, "copyright"))
         forminfo["copyright"] = cr
-        forminfo["copyright_other"] = crother
-
         forminfo["copyright_url"] = normal(cls.a(qs, "copyright_url"))
 
-        pr, prother = publishing_rights(cls.a(qs, "publishing_rights"))
+        pr = yes_no(cls.a(qs, "publishing_rights"))
         forminfo["publishing_rights"] = pr
-        forminfo["publishing_rights_other"] = prother
-
         forminfo["publishing_rights_url"] = normal(cls.a(qs, "publishing_rights_url"))
 
         return forminfo
