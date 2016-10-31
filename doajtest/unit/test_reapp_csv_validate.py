@@ -180,10 +180,10 @@ APPLICATION_COL = [
     "Sherpa/Romeo, Store it",
     # "Store it",
     #"Other",
-    "Sometimes",
+    "True",
     "http://copyright.com",
     #"Other",
-    "Occasionally",
+    "True",
     "http://publishing.rights"
 ]
 
