@@ -253,7 +253,10 @@ class ContentByDate(object):
                     },
                     "aggs" : {
                         "countries" : {
-                            "terms" : {"field" : "bibjson.country.exact"}
+                            "terms" : {
+                                "field" : "bibjson.country.exact",
+                                "size" : 1000
+                            }
                         }
                     }
                 }
