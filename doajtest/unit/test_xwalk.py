@@ -61,8 +61,7 @@ class TestXwalk(DoajTestCase):
         # the model object is not going to have an id or created_date since it's not been saved yet
         del csource['id']
         del csource['created_date']
-        #diff_dicts(csource, obj, 'csource', 'modelobj')
-        assert obj == csource
+        assert obj == csource, diff_dicts(csource, obj, 'csource', 'modelobj')
 
     def test_02_application(self):
         forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**APPLICATION_SOURCE))

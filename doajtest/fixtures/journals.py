@@ -123,11 +123,11 @@ JOURNAL_SOURCE = {
         },
         "deposit_policy": ["Sherpa/Romeo", "Store it"],
         "author_copyright": {
-            "copyright": "True",
+            "copyright": True,
             "url": "http://copyright.com"
         },
         "author_publishing_rights": {
-            "publishing_rights": "True",
+            "publishing_rights": True,
             "url": "http://publishing.rights"
         },
         "allows_fulltext_indexing": True,

@@ -190,10 +190,10 @@ APPLICATION_COL = [
     "Sherpa/Romeo, Store it",
     # "Store it",
     #"Other",
-    "Sometimes",
+    "True",
     "http://copyright.com",
     #"Other",
-    "Occasionally",
+    "True",
     "http://publishing.rights"
 ]
 
@@ -531,7 +531,7 @@ class TestReApplication(DoajTestCase):
         col[49] = "BY, Share Alike, Whatever"       # license_checkbox
         col[52] = "Sherpa/Romeo, Under desk, over there"    # deposit_policy and deposit_policy_other
         col[53] = "True"                   # copyright
-        col[55] = "False"                    # publishing rights
+        col[55] = "True"                    # publishing rights
 
 
         # run the xwalk and see that it produces what we expect
@@ -558,7 +558,7 @@ class TestReApplication(DoajTestCase):
         assert forminfo.get("deposit_policy") == ["Sherpa/Romeo", "Other"]
         assert forminfo.get("deposit_policy_other") == "Under desk, over there"
         assert forminfo.get("copyright") == "True"
-        assert forminfo.get("publishing_rights") == "True"
+        assert forminfo.get("publishing_rights") == "True", forminfo.get("publishing_rights")
         assert forminfo.get("keywords") == ["a", "long", "list", "of", "keywords", "more", "than", "six"]
 
         # run the data into the form and validate it, to check we get the validation errors we expect
