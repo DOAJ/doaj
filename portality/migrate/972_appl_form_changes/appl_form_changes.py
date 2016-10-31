@@ -28,9 +28,6 @@ un = []
 def migrate(model):
     edited = False
 
-    #TODO change the forms to remove the radio buttons now
-    # NEXT: search for publishing_rights_other all over the codebase now
-
     # question 47 - remove the "No" option (my license is not
     # CC-like) and replace with "Publisher's own license" in the
     # Other box.
