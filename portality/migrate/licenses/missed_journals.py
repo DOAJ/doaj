@@ -4,7 +4,6 @@ import json
 
 '''
 Use a scroll search to update mis-labelled licenses in the DOAJ.
-Requires esprit (install from https://github.com/richard-jones/esprit)
 '''
 
 # The articles missed by the update_licenses script

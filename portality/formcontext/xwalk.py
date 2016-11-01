@@ -338,17 +338,11 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.deposit_policy = deposit_policies
 
         if form.copyright.data and form.copyright.data != 'None':
-            holds_copyright = interpret_other(
-                interpret_special(form.copyright.data),
-                form.copyright_other.data
-            )
+            holds_copyright = interpret_special(form.copyright.data)
             bibjson.set_author_copyright(form.copyright_url.data, holds_copyright=holds_copyright)
 
         if form.publishing_rights.data and form.publishing_rights.data != 'None':
-            publishing_rights = interpret_other(
-                interpret_special(form.publishing_rights.data),
-                form.publishing_rights_other.data
-            )
+            publishing_rights = interpret_special(form.publishing_rights.data)
             bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
         if getattr(form, "suggester_name", None) or getattr(form, "suggester_email", None):
@@ -546,18 +540,10 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         forminfo['deposit_policy'], forminfo['deposit_policy_other'] = \
             reverse_interpret_other(reverse_interpret_special(bibjson.deposit_policy), Choices.deposit_policy_list())
 
-        forminfo['copyright'], forminfo['copyright_other'] = \
-            reverse_interpret_other(
-                reverse_interpret_special(bibjson.author_copyright.get('copyright', '')),
-                Choices.ternary_list()
-            )
+        forminfo['copyright'] = reverse_interpret_special(bibjson.author_copyright.get('copyright', ''))
         forminfo['copyright_url'] = bibjson.author_copyright.get('url')
 
-        forminfo['publishing_rights'], forminfo['publishing_rights_other'] = \
-            reverse_interpret_other(
-                reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', '')),
-                Choices.ternary_list()
-            )
+        forminfo['publishing_rights'] = reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', ''))
         forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
 
         forminfo['suggester_name'] = obj.suggester.get('name')
@@ -724,17 +710,11 @@ class JournalFormXWalk(JournalGenericXWalk):
             bibjson.deposit_policy = deposit_policies
 
         if form.copyright.data and form.copyright.data != 'None':
-            holds_copyright = interpret_other(
-                interpret_special(form.copyright.data),
-                form.copyright_other.data
-            )
+            holds_copyright = interpret_special(form.copyright.data)
             bibjson.set_author_copyright(form.copyright_url.data, holds_copyright=holds_copyright)
 
         if form.publishing_rights.data and form.publishing_rights.data != 'None':
-            publishing_rights = interpret_other(
-                interpret_special(form.publishing_rights.data),
-                form.publishing_rights_other.data
-            )
+            publishing_rights = interpret_special(form.publishing_rights.data)
             bibjson.set_author_publishing_rights(form.publishing_rights_url.data, holds_rights=publishing_rights)
 
         for formnote in form.notes.data:
@@ -921,18 +901,10 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo['deposit_policy'], forminfo['deposit_policy_other'] = \
             reverse_interpret_other(reverse_interpret_special(bibjson.deposit_policy), Choices.deposit_policy_list())
 
-        forminfo['copyright'], forminfo['copyright_other'] = \
-            reverse_interpret_other(
-                reverse_interpret_special(bibjson.author_copyright.get('copyright', '')),
-                Choices.ternary_list()
-            )
+        forminfo['copyright'] = reverse_interpret_special(bibjson.author_copyright.get('copyright', ''))
         forminfo['copyright_url'] = bibjson.author_copyright.get('url')
 
-        forminfo['publishing_rights'], forminfo['publishing_rights_other'] = \
-            reverse_interpret_other(
-                reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', '')),
-                Choices.ternary_list()
-            )
+        forminfo['publishing_rights'] = reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', ''))
         forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
 
         forminfo['notes'] = obj.notes()

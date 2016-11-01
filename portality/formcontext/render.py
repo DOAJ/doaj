@@ -187,19 +187,11 @@ class BasicJournalInformationRenderer(Renderer):
 
             "copyright" : [
                 {
-                    "copyright" : {
-                        "extra_input_fields": {
-                            Choices.copyright_val("other") :  "copyright_other"
-                        }
-                    }
+                    "copyright" : {}
                 },
                 {"copyright_url" : {"class": "input-xlarge"}},
                 {
-                    "publishing_rights" : {
-                        "extra_input_fields": {
-                            Choices.publishing_rights_val("other") : "publishing_rights_other"
-                        }
-                    }
+                    "publishing_rights" : {}
                 },
                 {"publishing_rights_url" : {"class": "input-xlarge"}}
             ]

@@ -3,7 +3,6 @@ from portality import models
 
 '''
 Use a scroll search to update mis-labelled licenses in the DOAJ.
-Requires esprit (install from https://github.com/richard-jones/esprit)
 '''
 
 license_correct_dict = { "CC by" : "CC BY",
