@@ -6,11 +6,14 @@ class Locked(Exception):
         self.message = message
         self.lock = lock
 
-def lock(type, id, username):
+def lock(type, id, username, timeout=None):
     """
     Obtain a lock on the object for the given username.  If unable to obtain
     a lock, raise an exception
     """
+    if timeout is None:
+        timeout = app.config.get("EDIT_LOCK_TIMEOUT", 1200)
+
     l = _retrieve_latest_with_cleanup(type, id)
 
     if l is None:
@@ -18,7 +21,7 @@ def lock(type, id, username):
         l.set_about(id)
         l.set_type(type)
         l.set_username(username)
-        l.expires_in(app.config.get("EDIT_LOCK_TIMEOUT", 1200))
+        l.expires_in(timeout)
         l.save()
         return l
 
@@ -28,7 +31,7 @@ def lock(type, id, username):
     if not yours and not indate:
         # overwrite the old lock with a new one
         l.set_username(username)
-        l.expires_in(app.config.get("EDIT_LOCK_TIMEOUT", 1200))
+        l.expires_in(timeout)
         l.save()
         return l
 
@@ -38,7 +41,7 @@ def lock(type, id, username):
 
     if yours:
         # the lock is yours so we extend it, whether it is in date or not
-        l.expires_in(app.config.get("EDIT_LOCK_TIMEOUT", 1200))
+        l.expires_in(timeout)
         l.save()
         return l
 
@@ -71,7 +74,7 @@ def has_lock(type, id, username):
 
     return False
 
-def batch_lock(type, ids, username):
+def batch_lock(type, ids, username, timeout=None):
     """
     Batch lock succeeds and fails as a unit.  If locks can't be obtained on everything
     then all locks are released.
@@ -90,7 +93,7 @@ def batch_lock(type, ids, username):
     failon = None
     for id in ids:
         try:
-            lock(type, id, username)
+            lock(type, id, username, timeout)
             locked.append(id)
             locks.append(lock)
         except Locked as e:

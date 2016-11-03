@@ -1,7 +1,9 @@
 from doajtest.helpers import DoajTestCase
 from portality import models, lock
+from portality.lib import dates
 from doajtest.fixtures import JournalFixtureFactory
 import time
+from datetime import datetime, timedelta
 from copy import deepcopy
 
 class TestLock(DoajTestCase):
@@ -103,4 +105,18 @@ class TestLock(DoajTestCase):
 
         for id in ids:
             assert lock.has_lock("journal", id, "testuser") is False
+
+    def test_04_timeout(self):
+        source = JournalFixtureFactory.make_journal_source()
+        j = models.Journal(**source)
+        j.save()
+
+        time.sleep(2)
+
+        after = datetime.utcnow() + timedelta(seconds=2300)
+
+        # set a lock with a longer timout
+        l = lock.lock("journal", j.id, "testuser", 2400)
+
+        assert dates.parse(l.expires) > after
 
