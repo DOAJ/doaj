@@ -11,7 +11,7 @@ def lock(type, id, username):
     Obtain a lock on the object for the given username.  If unable to obtain
     a lock, raise an exception
     """
-    l = models.Lock.pull_by_key("about", id)
+    l = _retrieve_latest_with_cleanup(type, id)
 
     if l is None:
         l = models.Lock()
@@ -46,10 +46,119 @@ def lock(type, id, username):
     raise Locked("Unable to resolve lock state", None)
 
 def unlock(type, id, username):
-    l = models.Lock.pull_by_key("about", id)
-    if not l:
+    l = _retrieve_latest_with_cleanup(type, id)
+
+    if l is None:
         return True
+
     if l.username == username:
         l.delete()
         return True
+
     return False
+
+def has_lock(type, id, username):
+    l = _retrieve_latest_with_cleanup(type, id)
+
+    if l is None:
+        return False
+
+    indate = not l.is_expired()
+    yours = l.username == username
+
+    if indate and yours:
+        return True
+
+    return False
+
+def batch_lock(type, ids, username):
+    """
+    Batch lock succeeds and fails as a unit.  If locks can't be obtained on everything
+    then all locks are released.
+
+    Works by attempting to lock everything, and then backing out, unlocking already locked
+    resources, when it first encounters a locked record
+
+    :param type:
+    :param ids:
+    :param username:
+    :return:
+    """
+    locked = []
+    locks = []
+    abort = False
+    failon = None
+    for id in ids:
+        try:
+            lock(type, id, username)
+            locked.append(id)
+            locks.append(lock)
+        except Locked as e:
+            abort = True
+            failon = id
+            break
+
+    if abort:
+        for id in locked:
+            unlock(type, id, username)
+        raise Locked("Batch lock failed on id {x}".format(x=failon), None)
+
+    return locks
+
+def batch_unlock(type, ids, username):
+    """
+    Calls unlock on all resources.  Unlock may fail on one or more resources
+    without affecting the others.
+
+    :param type:
+    :param ids:
+    :param username:
+    :return:
+    """
+    success = []
+    fail = []
+    for id in ids:
+        unlocked = unlock(type, id, username)
+        if unlocked:
+            success.append(id)
+        else:
+            fail.append(id)
+
+    return {"success": success, "fail" : fail}
+
+def _retrieve_latest_with_cleanup(type, id):
+    # query for any locks on this id.  There is a chance there's more than one, if two locks
+    # are created at the same time
+    q = LockQuery(type, id)
+    res = models.Lock.query(q=q.query())
+    ls = [models.Lock(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+
+    # if there's more than one lock, keep the most recent (the query is sorted) and
+    # delete all the rest.  Code that uses locks should check for a lock before each
+    # operation, and handle the fact that it may lose its lock.
+    l = None
+    if len(ls) > 0:
+        l = ls[0]
+    if len(ls) > 1:
+        for i in range(1, len(ls)):
+            ls[i].delete()
+
+    return l
+
+class LockQuery(object):
+    def __init__(self, type, about):
+        self.about = about
+        self.type = type
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"about.exact" : self.about}},
+                        {"term" : {"type.exact" : self.type}}
+                    ]
+                }
+            },
+            "sort" : [{"last_updated" : {"order" : "desc"}}]
+        }
