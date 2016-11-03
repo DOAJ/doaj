@@ -1,8 +1,8 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory
-import time
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
+import time, json
 from portality.lib import dataobj
 from portality.models import shared_structs
 
@@ -40,6 +40,7 @@ class TestClient(DoajTestCase):
         from portality.models import ObjectDict
         from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
         from portality.models import Provenance
+        from portality.models.background import BackgroundJob
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -979,4 +980,24 @@ class TestClient(DoajTestCase):
         assert prov.subtype == "sub"
         assert prov.action == "act2"
         assert prov.resource_id == "obj2"
+
+    def test_29_background_job(self):
+        source = BackgroundFixtureFactory.example()
+        bj = models.BackgroundJob(**source)
+        bj.save()
+
+        time.sleep(2)
+
+        retrieved = models.BackgroundJob.pull(bj.id)
+        assert retrieved is not None
+
+        source = BackgroundFixtureFactory.example()
+        source["params"]["ids"] = ["1", "2", "3"]
+        source["params"]["type"] = "suggestion"
+        source["reference"]["query"]  = json.dumps({"query" : {"match_all" : {}}})
+        bj = models.BackgroundJob(**source)
+        bj.save()
+
+        bj.add_audit_message("message")
+        assert len(bj.audit) == 2
 
