@@ -1,10 +1,12 @@
+# -*- coding: UTF-8 -*-
+
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactory
 
 import time, os, shutil, codecs, csv
 from copy import deepcopy
 
-from portality import reporting
+from portality import reporting, clcsv
 from portality.lib import dates, paths
 
 MONTH_EDIT_OUTPUT = [
@@ -39,7 +41,7 @@ APPLICATION_YEAR_OUTPUT = [
     ["Country", "2010", "2011", "2012", "2013", "2014", "2015"],
     ["Angola", 0, 1, 2, 3, 4, 5],
     ["Belarus", 6, 7, 8 , 9, 10, 0],
-    ["Cambodia", 11, 12, 13, 14, 15, 16]
+    [u"Cambôdia", 11, 12, 13, 14, 15, 16]
 ]
 
 TMP_DIR = paths.rel2abs(__file__, "resources/reports")
@@ -148,8 +150,8 @@ class TestReporting(DoajTestCase):
         assert os.path.exists(outfiles[0])
 
         table = []
-        with codecs.open(outfiles[0]) as f:
-            reader = csv.reader(f)
+        with codecs.open(outfiles[0], "rb", "utf-8") as f:
+            reader = clcsv.UnicodeReader(f)
             for row in reader:
                 table.append(row)
 
