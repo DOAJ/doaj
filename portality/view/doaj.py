@@ -79,7 +79,7 @@ def subjects():
 
 
 @blueprint.route("/application/new", methods=["GET", "POST"])
-@write_required
+@write_required()
 def suggestion():
     if request.method == "GET":
         fc = formcontext.ApplicationFormFactory.get_form_context()

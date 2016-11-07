@@ -66,6 +66,10 @@ ELASTIC_SEARCH_VERSION = "1.7.5"
 
 ES_TERMS_LIMIT = 1024
 
+# redis settings
+HUEY_REDIS_HOST = '127.0.0.1'
+HUEY_REDIS_PORT = 6379
+
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
 DEBUG_PYCHARM_SERVER = 'localhost'

@@ -10,6 +10,7 @@ from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url, jsonp
 from portality.core import app
+from portality import tasks
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -42,7 +43,7 @@ def journals():
 @blueprint.route("/journals", methods=["POST", "DELETE"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 @jsonp
 def journals_list():
     if request.method == "POST":
@@ -84,7 +85,7 @@ def journals_list():
 @blueprint.route("/articles", methods=["POST", "DELETE"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 @jsonp
 def articles_list():
     if request.method == "POST":
@@ -117,7 +118,7 @@ def articles_list():
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def article_endpoint(article_id):
     if not current_user.has_role("delete_article"):
         abort(401)
@@ -137,7 +138,7 @@ def article_endpoint(article_id):
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def journal_page(journal_id):
     if not current_user.has_role("edit_journal"):
         abort(401)
@@ -169,39 +170,30 @@ def journal_page(journal_id):
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
 
+JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page in a few minutes to see the results. The time taken depends on the size of the journal (how many articles it has in DOAJ) - for very large journals, this could take up to 30 minutes.'
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+# @write_required()
 def journal_activate(journal_id):
-    j = models.Journal.pull(journal_id)
-    if j is None:
-        abort(404)
-    j.bibjson().active = True
-    j.set_in_doaj(True)
-    j.save()
-    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
+    tasks.journal_activate(journal_id)
+    flash(JOURNAL_OP_MSG.format('activation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+# @write_required()
 def journal_deactivate(journal_id):
-    j = models.Journal.pull(journal_id)
-    if j is None:
-        abort(404)
-    j.bibjson().active = False
-    j.set_in_doaj(False)
-    j.save()
-    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
+    tasks.journal_deactivate(journal_id)
+    flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def journal_continue(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -245,7 +237,7 @@ def suggestions():
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
@@ -293,7 +285,7 @@ def editor_group_search():
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
