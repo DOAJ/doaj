@@ -1,12 +1,20 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
-<div style="padding-bottom: 30px">
+<div style="padding-bottom: 20px">
 <div class="row-fluid">
     <div class="span12">
-        <div class="pull-right">
-            <button id="delete-articles" class="btn btn-danger" disabled="disabled">Delete Selected Articles</button>
-            <button id="delete-journals" class="btn btn-danger" disabled="disabled">Delete Selected Journals</button>
+        <div id="admin-bulk-box" class="pull-right" style="border-radius: 10px; border: 2px solid #F68B1F; padding: 12px;">
+            <label style="text-align: center; margin-top: -20px; margin-left: 25%; margin-right: 25%; background: #ffffff">Bulk Edit Records</label>
+            <select style="width: auto; margin: 0">
+                <option value="">Select action...</option>
+                <option value="bulk.withdraw">Withdraw from DOAJ</option>
+                <option value="bulk.reinstate">Reinstate into DOAJ</option>
+                <option value="bulk.delete">Delete records</option>
+                <option value="bulk.ed_group">Assign to editor group...</option>
+            </select>
+            <button id="bulk-submit" class="btn btn-danger" disabled="disabled" style="margin-left: 20px">Submit</button>
+            <!-- Select2 for editor group, which appears when that option is selected -->
         </div>
     </div>
 </div>
