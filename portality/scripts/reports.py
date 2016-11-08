@@ -2,7 +2,9 @@ from portality import reporting
 from portality.lib import dates
 import os
 
+from portality.background import BackgroundApi
 
+"""
 def reports(fr, to, outdir):
     print "Saving reports to " + outdir
     if not os.path.exists(outdir):
@@ -10,7 +12,9 @@ def reports(fr, to, outdir):
     reporting.provenance_reports(fr, to, outdir)
     reporting.content_reports(fr, to, outdir)
 
+"""
 
+'''
 def email(data_dir, archv_name):
     """
     Compress and email the reports to the specified email address.
@@ -37,6 +41,7 @@ def email(data_dir, archv_name):
 
     # Clean up the archive
     os.remove(archv)
+'''
 
 if __name__ == "__main__":
 
@@ -57,8 +62,14 @@ if __name__ == "__main__":
                         action='store_true')
     args = parser.parse_args()
 
+    """
     reports(args.from_date, args.to_date, args.out)
 
     if args.email:
         archive_name = "reports_" + args.from_date + "_to_" + args.to_date
         email(args.out, archive_name)
+    """
+
+    job = reporting.ReportingBackgroundTask.prepare("system", from_date=args.from_date, to_date=args.to_date, outdir=args.out, email=args.email)
+    task = reporting.ReportingBackgroundTask(job)
+    BackgroundApi.execute(task)

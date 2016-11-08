@@ -1,8 +1,12 @@
 from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
-import codecs, os
+import codecs, os, shutil
 from portality import datasets
+
+from portality.background import BackgroundTask
+
+
 
 def provenance_reports(fr, to, outdir):
     pipeline = []
@@ -21,7 +25,7 @@ def provenance_reports(fr, to, outdir):
         table = p.tabulate()
         outfile = os.path.join(outdir, p.filename(fr, to))
         outfiles.append(outfile)
-        with codecs.open(outfile, "wb") as f:
+        with codecs.open(outfile, "wb", "utf-8") as f:
             writer = UnicodeWriter(f)
             for row in table:
                 writer.writerow(row)
@@ -262,3 +266,107 @@ class ContentByDate(object):
                 }
             }
         }
+
+
+#########################################################
+## Background task implementation
+
+def email(data_dir, archv_name):
+    """
+    Compress and email the reports to the specified email address.
+    :param data_dir: Directory containing the reports
+    :param archv_name: Filename for the archive and resulting email attachment
+    """
+    import shutil
+    from portality import app_email
+    from portality.core import app
+
+    email_to = app.config.get('REPORTS_EMAIL_TO', ['feedback@doaj.org'])
+    email_from = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    email_sub = app.config.get('SERVICE_NAME', '') + ' - generated {0}'.format(archv_name)
+    msg = "Attached: {0}.zip\n".format(archv_name)
+
+    # Create an archive of the reports
+    archv = shutil.make_archive(archv_name, "zip", root_dir=data_dir)
+
+    # Read the archive to create an attachment, send it with the app email
+    with open(archv) as f:
+        dat = f.read()
+        attach = [app_email.make_attachment(filename=archv_name, content_type='application/zip', data=dat)]
+        app_email.send_mail(to=email_to, fro=email_from, subject=email_sub, msg_body=msg, files=attach)
+
+    # Clean up the archive
+    os.remove(archv)
+
+class ReportingBackgroundTask(BackgroundTask):
+
+    __action__ = "reporting"
+
+    def run(self):
+        """
+        Execute the task as specified by the background_jon
+        :return:
+        """
+        job = self.background_job
+        params = job.params
+
+        outdir = params.get("outdir", "report_" + dates.now())
+        fr = params.get("from", "1970-01-01T00:00:00Z")
+        to = params.get("to", dates.now())
+
+        job.add_audit_message("Saving reports to " + outdir)
+        if not os.path.exists(outdir):
+            os.makedirs(outdir)
+
+        provenance_reports(fr, to, outdir)
+        content_reports(fr, to, outdir)
+
+        msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
+        job.add_audit_message(msg)
+
+        send_email = params.get("email", False)
+        if send_email:
+            archive_name = "reports_" + fr + "_to_" + to
+            email(outdir, archive_name)
+            job.add_audit_message("email alert sent")
+        else:
+            job.add_audit_message("no email alert sent")
+
+    def cleanup(self):
+        """
+        Cleanup after a successful OR failed run of the task
+        :return:
+        """
+        failed = self.background_job.is_failed()
+        if not failed:
+            return
+
+        params = self.background_job.params
+        outdir = params.get("outdir")
+        if outdir is not None:
+            shutil.rmtree(outdir)
+
+        self.background_job.add_audit_message(u"Deleted directory {x} due to job failure".format(x=outdir))
+
+    @classmethod
+    def prepare(cls, username, **kwargs):
+        """
+        Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
+        or fail with a suitable exception
+
+        :param kwargs: arbitrary keyword arguments pertaining to this task type
+        :return: a BackgroundJob instance representing this task
+        """
+
+        job = models.BackgroundJob()
+        job.user = username
+        job.action = cls.__action__
+
+        params ={}
+        params["outdir"] = kwargs.get("outdir", "report_" + dates.now())
+        params["from"] = kwargs.get("from_date", "1970-01-01T00:00:00Z")
+        params["to"] = kwargs.get("to_date", dates.now())
+        params["email"] = kwargs.get("email", False)
+        job.params = params
+
+        return job
