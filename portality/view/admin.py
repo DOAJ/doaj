@@ -175,7 +175,7 @@ JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page i
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-# @write_required()
+@write_required()
 def journal_activate(journal_id):
     tasks.journal_activate(journal_id)
     flash(JOURNAL_OP_MSG.format('activation'), 'success')
@@ -184,7 +184,7 @@ def journal_activate(journal_id):
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-# @write_required()
+@write_required()
 def journal_deactivate(journal_id):
     tasks.journal_deactivate(journal_id)
     flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
