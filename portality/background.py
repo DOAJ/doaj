@@ -1,5 +1,8 @@
 from portality import models
 from portality.core import app
+from flask_login import login_user
+
+import traceback
 
 class BackgroundApi(object):
 
@@ -10,18 +13,33 @@ class BackgroundApi(object):
         if job.user is not None:
             ctx = app.test_request_context("/")
             ctx.push()
+            acc = models.Account.pull(job.user)     # FIXME: what happens when this is the "system" user
+            if acc is not None:
+                login_user(acc)
+
+        job.start()
+        job.add_audit_message("Job Started")
 
         try:
             background_task.run()
-        except:
-            background_task.log()
+        except Exception as e:
+            job.fail()
+            job.add_audit_message("Error in Job Run")
+            job.add_audit_message("Caught in job runner during run: " + traceback.format_exc())
+        job.add_audit_message("Job Run Completed")
 
+        job.add_audit_message("Cleanup Started")
         try:
             background_task.cleanup()
-        except:
-            background_task.log()
+        except Exception as e:
+            job.fail()
+            job.add_audit_message("Error in Cleanup Run")
+            job.add_audit_message("Caught in job runner during cleanup: " + traceback.format_exc())
+        job.add_audit_message("Job Cleanup Completed")
 
-        background_task.report()
+        job.add_audit_message("Job Finished")
+        if not job.is_failed():
+            job.success()
         job.save()
 
         if ctx is not None:
@@ -33,17 +51,23 @@ class BackgroundTask(object):
 
     - run
     - cleanup
-    - report
-    - log
     - prepare (class method)
 
     """
+
+    __action__ = None
+    """ static member variable defining the name of this task """
+
     def __init__(self, background_job):
-        self.background_job = background_job
+        self._background_job = background_job
+
+    @property
+    def background_job(self):
+        return self._background_job
 
     def run(self):
         """
-        Execute the task as specified by the background_jon
+        Execute the task as specified by the background_job
         :return:
         """
         raise NotImplementedError()
@@ -55,26 +79,13 @@ class BackgroundTask(object):
         """
         raise NotImplementedError()
 
-    def report(self):
-        """
-        Augment the background_job with information about the task run
-        :return:
-        """
-        raise NotImplementedError()
-
-    def log(self):
-        """
-        Log any exceptions or other errors in running the task
-        :return:
-        """
-        raise NotImplementedError()
-
     @classmethod
-    def prepare(cls, **kwargs):
+    def prepare(cls, username, **kwargs):
         """
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
 
+        :param user: the user creating the job
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
