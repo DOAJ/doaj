@@ -15,6 +15,7 @@ from wtforms import TextField, StringField, SelectField, TextAreaField, FormFiel
 from portality.core import app
 from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
+from portality.formcontext.choices import Choices
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -113,9 +114,9 @@ class NotRole(object):
 
 class EditorGroupForm(Form):
     group_id = HiddenField("Group ID", [validators.Optional()])
-    name = TextField("Group Name", [validators.Required(), UniqueGroupName()])
-    editor = TextField("Editor", [validators.Required(), NotRole("publisher")])
-    associates = TextField("Associate Editors", [validators.Optional(), NotRole("publisher")])
+    name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
+    editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
+    associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
 ##########################################################################
 ## Continuations Forms
@@ -150,3 +151,19 @@ class ContactUs(Form):
     subject = StringField("Subject", [validators.Optional()])
 
     message = TextAreaField("Message", [validators.DataRequired(), MaxLen(1000)], description="1000 characters max - <span id='wordcount'></span>")
+
+##########################################################################
+## Bulk Edit Form
+##########################################################################
+
+class BulkJournalArticleForm(Form):
+    bulk_action = SelectField("Action",
+                              [validators.DataRequired()],
+                              choices=Choices.bulk_journal_article_actions(),
+                              default=Choices.bulk_journal_article_actions_default()
+                              )
+
+    editor_group = StringField("Editor Group", [validators.DataRequired()])
+
+class BulkApplicationForm(Form):
+    pass

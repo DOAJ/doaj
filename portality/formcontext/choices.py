@@ -101,6 +101,14 @@ class Choices(object):
         ('ready', 'Ready'),
     ]
 
+    _bulk_journal_article_actions = [
+        ('', 'Select action...'),
+        ('bulk.withdraw', 'Withdraw from DOAJ'),
+        ('bulk.reinstate', 'Reinstate into DOAJ'),
+        ('bulk.delete', 'Delete records'),
+        ('bulk.ed_group', 'Assign to editor group...')
+    ]
+
     ############################################################
     # General utility functions
     ############################################################
@@ -376,3 +384,11 @@ class Choices(object):
         all_s = [v[0] for v in cls._application_status_admin]
         disallowed_statuses = {'accepted', 'ready', 'completed'}
         return list(set(all_s).difference(disallowed_statuses))
+
+    @classmethod
+    def bulk_journal_article_actions(cls):
+        return cls._bulk_journal_article_actions
+
+    @classmethod
+    def bulk_journal_article_actions_default(cls):
+        return cls._bulk_journal_article_actions[0][0]

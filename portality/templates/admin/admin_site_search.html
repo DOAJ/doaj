@@ -4,17 +4,42 @@
 <div style="padding-bottom: 20px">
 <div class="row-fluid">
     <div class="span12">
-        <div id="admin-bulk-box" class="pull-right" style="border-radius: 10px; border: 2px solid #F68B1F; padding: 12px;">
-            <label style="text-align: center; margin-top: -20px; margin-left: 25%; margin-right: 25%; background: #ffffff">Bulk Edit Records</label>
-            <select style="width: auto; margin: 0">
+        <div id="admin-bulk-box" class="pull-right">
+            <label id="admin-bulk-label">Bulk Edit Records</label>
+
+            {% from "_formhelpers.html" import render_field_horizontal %}
+            {% from "_formhelpers.html" import render_field %}
+
+        <form method="post" action="{{ url_for('admin.admin_site_search') }}" class="form-horizontal wide" id="editor_group_form">
+            <fieldset>
+                {{ render_field(form.bulk_action, style="width: 200px;") }}
+
+                {{ render_field(form.editor_group, style="width: 200px", hidden=True) }}
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button id="bulk-submit" class="btn btn-danger" disabled="disabled">Submit</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        <!--
+            <select id="admin-bulk-select">
                 <option value="">Select action...</option>
                 <option value="bulk.withdraw">Withdraw from DOAJ</option>
                 <option value="bulk.reinstate">Reinstate into DOAJ</option>
                 <option value="bulk.delete">Delete records</option>
                 <option value="bulk.ed_group">Assign to editor group...</option>
             </select>
-            <button id="bulk-submit" class="btn btn-danger" disabled="disabled" style="margin-left: 20px">Submit</button>
+            <button id="bulk-submit" class="btn btn-danger" disabled="disabled" style="margin-left: 20px">Submit</button>-->
             <!-- Select2 for editor group, which appears when that option is selected -->
+            <!--<select id="admin-bulk-editor-select">
+                <option value="">Select action...</option>
+                <option value="bulk.withdraw">Withdraw from DOAJ</option>
+                <option value="bulk.reinstate">Reinstate into DOAJ</option>
+                <option value="bulk.delete">Delete records</option>
+                <option value="bulk.ed_group">Assign to editor group...</option>
+            </select>-->
         </div>
     </div>
 </div>

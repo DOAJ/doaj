@@ -12,14 +12,16 @@ from portality.util import flash_with_url, jsonp
 from portality.core import app
 from portality.tasks import journal_in_out_doaj
 
-from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.view.forms import EditorGroupForm, MakeContinuation, BulkJournalArticleForm, BulkApplicationForm
 
 blueprint = Blueprint('admin', __name__)
+
 
 # restrict everything in admin to logged in users with the "admin" role
 @blueprint.before_request
 def restrict():
     return restrict_to_role('admin')
+
 
 # build an admin page where things can be done
 @blueprint.route('/')
@@ -27,6 +29,7 @@ def restrict():
 @ssl_required
 def index():
     return render_template('admin/index.html', admin_page=True)
+
 
 @blueprint.route("/journals", methods=["GET"])
 @login_required
@@ -39,6 +42,7 @@ def journals():
                facetviews=['admin.journals.facetview'],
                admin_page=True
            )
+
 
 @blueprint.route("/journals", methods=["POST", "DELETE"])
 @login_required
@@ -115,6 +119,7 @@ def articles_list():
         resp.mimetype = "application/json"
         return resp
 
+
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
@@ -134,6 +139,7 @@ def article_endpoint(article_id):
     resp = make_response(json.dumps({"success" : True}))
     resp.mimetype = "application/json"
     return resp
+
 
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
@@ -181,6 +187,7 @@ def journal_activate(journal_id):
     flash(JOURNAL_OP_MSG.format('activation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
+
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -189,6 +196,7 @@ def journal_deactivate(journal_id):
     journal_in_out_doaj.journal_manage(journal_id, False)
     flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
+
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
@@ -224,6 +232,7 @@ def journal_continue(journal_id):
         flash("The continuation has been created (see below).  You may now edit the other metadata associated with it.  The original journal has also been updated with this continuation's ISSN(s).  Once you are happy with this record, you can publish it to the DOAJ", "success")
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
+
 @blueprint.route("/applications")
 @login_required
 @ssl_required
@@ -233,6 +242,7 @@ def suggestions():
                facetviews=["admin.applications.facetview"],
                admin_page=True
            )
+
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
@@ -269,17 +279,26 @@ def suggestion_page(suggestion_id):
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
 
+
 @blueprint.route("/admin_site_search")
 @login_required
 @ssl_required
 def admin_site_search():
-    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'])
+    if request.method == "GET":
+        form = BulkJournalArticleForm()
+        return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'], form=form)
+    elif request.method == "POST":
+        form = BulkJournalArticleForm(request.form)
+        if form.validate():
+            pass
+
 
 @blueprint.route("/editor_groups")
 @login_required
 @ssl_required
 def editor_group_search():
     return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
+
 
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
@@ -359,6 +378,7 @@ def editor_group(group_id=None):
             return redirect(url_for('admin.editor_group_search'))
         else:
             return render_template("admin/editor_group.html", admin_page=True, form=form)
+
 
 @blueprint.route("/autocomplete/user")
 @login_required

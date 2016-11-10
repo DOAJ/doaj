@@ -148,3 +148,32 @@ hr {
     filter: none;
     -ms-filter: none;
 }
+
+/* admin search page, bulk edit controls */
+
+#admin-bulk-box {
+    border-radius: 10px;
+    border: 2px solid #F68B1F;
+    padding: 12px;
+}
+
+#admin-bulk-label {
+    text-align: center;
+    margin-top: -20px;
+    margin-left: 33%;
+    margin-right: 33%;
+    background: #ffffff
+}
+
+#admin-bulk-select {
+    width: auto;
+    margin: 0
+}
+
+#admin-bulk-editor-select {
+    display: block;
+}
+
+#admin-bulk-submit {
+    margin-left: 20px;
+}
