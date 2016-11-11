@@ -154,26 +154,25 @@ hr {
 #admin-bulk-box {
     border-radius: 10px;
     border: 2px solid #F68B1F;
-    padding: 12px;
+    padding: 10px;
 }
 
 #admin-bulk-label {
     text-align: center;
     margin-top: -20px;
-    margin-left: 33%;
-    margin-right: 33%;
+    margin-left: 25%;
+    margin-right: 25%;
     background: #ffffff
 }
 
-#admin-bulk-select {
-    width: auto;
-    margin: 0
+#admin-bulk-box .controls {
+    margin: 0 0 0 0;
 }
 
-#admin-bulk-editor-select {
-    display: block;
+#admin-bulk-box .control-group {
+    margin: 5px 0 0 0;
 }
 
-#admin-bulk-submit {
-    margin-left: 20px;
+#admin-bulk-box fieldset label {
+    display : none;
 }
