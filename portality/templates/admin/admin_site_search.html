@@ -23,23 +23,6 @@
                 </div>
             </fieldset>
         </form>
-        <!--
-            <select id="admin-bulk-select">
-                <option value="">Select action...</option>
-                <option value="bulk.withdraw">Withdraw from DOAJ</option>
-                <option value="bulk.reinstate">Reinstate into DOAJ</option>
-                <option value="bulk.delete">Delete records</option>
-                <option value="bulk.ed_group">Assign to editor group...</option>
-            </select>
-            <button id="bulk-submit" class="btn btn-danger" disabled="disabled" style="margin-left: 20px">Submit</button>-->
-            <!-- Select2 for editor group, which appears when that option is selected -->
-            <!--<select id="admin-bulk-editor-select">
-                <option value="">Select action...</option>
-                <option value="bulk.withdraw">Withdraw from DOAJ</option>
-                <option value="bulk.reinstate">Reinstate into DOAJ</option>
-                <option value="bulk.delete">Delete records</option>
-                <option value="bulk.ed_group">Assign to editor group...</option>
-            </select>-->
         </div>
     </div>
 </div>
@@ -50,5 +33,10 @@
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";</script>
+
+<script type="text/javascript">
+    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
+</script>
+
 {% endblock %}
