@@ -40,9 +40,10 @@ def lock(type, id, username, timeout=None):
         raise Locked("Object is locked by another user", l)
 
     if yours:
-        # the lock is yours so we extend it, whether it is in date or not
-        l.expires_in(timeout)
-        l.save()
+        # if the lock would expire within the time specified by the timeout, extend it
+        if l.would_expire_within(timeout):
+            l.expires_in(timeout)
+            l.save()
         return l
 
     # shouldn't ever get here - if we do something is bust
