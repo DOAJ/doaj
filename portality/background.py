@@ -5,6 +5,7 @@ from portality import models
 
 import traceback
 
+
 class BackgroundException(Exception):
     pass
 

@@ -12,6 +12,10 @@ from portality.decorators import write_required
 from huey import crontab
 
 
+from portality.background import BackgroundTask
+
+
+
 def provenance_reports(fr, to, outdir):
     pipeline = []
     pipeline.append(ActionCounter("edit", "month"))
@@ -347,6 +351,7 @@ class ReportingBackgroundTask(BackgroundTask):
 
         params = self.background_job.params
         outdir = params.get("outdir")
+
         if outdir is not None and os.path.exists(outdir):
             shutil.rmtree(outdir)
 

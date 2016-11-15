@@ -7,6 +7,7 @@ from portality.core import app
 
 from portality.background import BackgroundApi
 
+
 if __name__ == "__main__":
 
     import argparse
