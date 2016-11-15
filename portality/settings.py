@@ -153,7 +153,8 @@ ROLE_MAP = {
 
 # If you change the reserved usernames, your data will likely need a migration to remove their
 # existing use in the system.
-RESERVED_USERNAMES = ['system']  # do not allow the creation of user accounts with this id
+SYSTEM_USERNAME = "system"
+RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
 # ========================
 # MAPPING SETTINGS
@@ -197,6 +198,7 @@ MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['jour
 MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
 MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
 MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
+MAPPINGS['background_job'] = {'background_job':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS
@@ -443,6 +445,9 @@ NEWS_PAGE_NEWS_ITEMS = 20
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
 
+# amount of time a background task can lock a resource for, in seconds
+BACKGROUND_TASK_LOCK_TIMEOUT = 3600
+
 
 # =====================================
 # Search query shortening settings
@@ -527,3 +532,8 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
+
+
+# =========================================
+# scheduled reports configuration
+REPORTS_BASE_DIR = "/home/cloo/reports/"

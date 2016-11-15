@@ -3,9 +3,13 @@ from portality.clcsv import UnicodeWriter
 from portality.lib import dates
 import codecs, os, shutil
 from portality import datasets
+from portality.core import app
 
-from portality.background import BackgroundTask
+from portality.background import BackgroundTask, BackgroundApi
 
+from portality.tasks.redis_huey import main_queue
+from portality.decorators import write_required
+from huey import crontab
 
 
 def provenance_reports(fr, to, outdir):
@@ -343,7 +347,7 @@ class ReportingBackgroundTask(BackgroundTask):
 
         params = self.background_job.params
         outdir = params.get("outdir")
-        if outdir is not None:
+        if outdir is not None and os.path.exists(outdir):
             shutil.rmtree(outdir)
 
         self.background_job.add_audit_message(u"Deleted directory {x} due to job failure".format(x=outdir))
@@ -370,3 +374,31 @@ class ReportingBackgroundTask(BackgroundTask):
         job.params = params
 
         return job
+
+    @classmethod
+    def submit(cls, background_job):
+        """
+        Submit the specified BackgroundJob to the background queue
+
+        :param background_job: the BackgroundJob instance
+        :return:
+        """
+        background_job.save()
+        run_reports.schedule(args=(background_job.id,), delay=10)
+
+@main_queue.periodic_task(crontab(month="*", day="1", hour="0", minute="0"))
+@write_required(script=True)
+def scheduled_reports():
+    user = app.config.get("SYSTEM_USERNAME")
+    outdir = app.config.get("REPORTS_BASE_DIR")
+    outdir = os.path.join(outdir, dates.now())
+    print outdir
+    job = ReportingBackgroundTask.prepare(user, outdir=outdir)
+    ReportingBackgroundTask.submit(job)
+
+@main_queue.task()
+@write_required(script=True)
+def run_reports(job_id):
+    job = models.BackgroundJob.pull(job_id)
+    task = ReportingBackgroundTask(job)
+    BackgroundApi.execute(task)

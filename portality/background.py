@@ -1,10 +1,12 @@
 from flask_login import login_user
 
-# from portality.core import app
-from portality.app import app   # we need to import the app after the user loader is defined, which is done in portality.app not portality.core
+from portality.core import app
 from portality import models
 
 import traceback
+
+class BackgroundException(Exception):
+    pass
 
 class BackgroundApi(object):
 
@@ -101,4 +103,4 @@ class BackgroundTask(object):
         :param background_job: the BackgroundJob instance
         :return:
         """
-        pass
+        raise NotImplementedError()

@@ -10,7 +10,7 @@ from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url, jsonp
 from portality.core import app
-from portality import tasks
+from portality.tasks import journal_in_out_doaj
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -177,7 +177,7 @@ JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page i
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    tasks.journal_activate(journal_id)
+    journal_in_out_doaj.journal_manage(journal_id, True)
     flash(JOURNAL_OP_MSG.format('activation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
@@ -186,7 +186,7 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    tasks.journal_deactivate(journal_id)
+    journal_in_out_doaj.journal_manage(journal_id, False)
     flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
