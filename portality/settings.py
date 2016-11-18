@@ -403,7 +403,7 @@ TOC_CHANGEFREQ = "monthly"
 
 STATIC_PAGES = [
     ("", "monthly"), # home page
-    ("/search", "daily"),
+    # ("/search", "daily"),  # taken out since javascript-enabled bots were spidering this, causing enormous load - there should be other ways to present a list of all journals to them if we need to
     ("/toc", "monthly"),
     ("/application/new", "monthly"),
     ("/about", "monthly"),
