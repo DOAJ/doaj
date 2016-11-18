@@ -9,6 +9,8 @@ from portality.core import app
 import urllib2
 import json
 
+import esprit
+
 '''
 All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
@@ -86,7 +88,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     def last_updated(self):
         return self.data.get("last_updated")
 
-    def save(self, retries=0, back_off_factor=1, differentiate=False):
+    def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False):
 
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
@@ -98,14 +100,18 @@ class DomainObject(UserDict.IterableUserDict, object):
             id_ = self.makeid()
             self.data['id'] = id_
 
-        # FIXME: ok, this is not the best, but it's the quickest fix to the differentiability problem
-        # if we want a differentiable record, we need to wait for the last_updated seconds to tick over
-        if "last_updated" in self.data and differentiate:
+        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        if blocking or differentiate:
             diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+
+            # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
                 time.sleep(1 - diff.total_seconds())
-        # now when we write this, it is either new, or at least 1 second later than the previous value
-        self.data['last_updated'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+                # TODO could we just set last_updated = now + 1 second? Instead of actually sleeping 1s?
+            now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")  # update the new timestamp
+
+        self.data['last_updated'] = now
+
 
         if 'created_date' not in self.data:
             self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -113,6 +119,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         attempt = 0
         url = self.target() + self.data['id']
         d = json.dumps(self.data)
+        r = None
         while attempt <= retries:
             try:
                 r = requests.post(url, data=d)
@@ -125,7 +132,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                     print "server error", r.json()
                     attempt += 1
                 else:
-                    return r
+                    break  # everything is OK, so r should now be assigned to the result
 
             except requests.exceptions.ConnectionError:
                 attempt += 1
@@ -133,7 +140,34 @@ class DomainObject(UserDict.IterableUserDict, object):
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
 
-        raise DAOSaveExceptionMaxRetriesReached(u"After the max {attempts} attempts the record with id {id} failed to save.".format(attempts=attempt, id=self.data['id']))
+        if attempt > retries:
+            raise DAOSaveExceptionMaxRetriesReached(
+                u"After the max {attempts} attempts the record with "
+                u"id {id} failed to save.".format(
+                    attempts=attempt, id=self.data['id']))
+
+        if blocking:
+            q = {
+                "query" : {
+                    "term" : {"id.exact" : self.id}
+                },
+                "fields" : ["last_updated"]
+            }
+            while True:
+                res = self.query(q=q, return_raw_resp=True)
+                j = esprit.raw.unpack_result(res)
+                if len(j) == 0:
+                    time.sleep(0.25)
+                    continue
+                if len(j) > 1:
+                    raise Exception("More than one record with id {x}".format(x=self.id))
+                if j[0].get("last_updated", [])[0] == now:  # NOTE: only works on ES > 1.x
+                    break
+                else:
+                    time.sleep(0.25)
+                    continue
+
+        return r
 
     @classmethod
     def bulk(cls, bibjson_list, idkey='id', refresh=False):
@@ -289,7 +323,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return query
 
     @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, **kwargs):
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, **kwargs):
         '''Perform a query on backend.
 
         :param recid: needed if endpoint is about a record, e.g. mlt
@@ -301,11 +335,11 @@ class DomainObject(UserDict.IterableUserDict, object):
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         '''
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
-        return cls.send_query(query, endpoint=endpoint, recid=recid)
+        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp)
 
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid='', retry=50):
+    def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False):
         '''Actually send a query object to the backend.'''
         r = None
         count = 0
@@ -323,6 +357,10 @@ class DomainObject(UserDict.IterableUserDict, object):
             time.sleep(0.5)
                 
         if r is not None:
+
+            if return_raw_resp:
+                return r
+
             return r.json()
         if exception is not None:
             raise exception
