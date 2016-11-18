@@ -101,7 +101,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             self.data['id'] = id_
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-        if blocking or differentiate:
+        if (blocking or differentiate) and "last_updated" in self.data:
             diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
 
             # we need the new last_updated time to be later than the new one
