@@ -4,7 +4,7 @@ from flask import Response
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.core import app
-from portality.app import load_account_for_login_manager
+from portality.core import load_account_for_login_manager
 from portality.decorators import api_key_required, api_key_optional
 
 class TestClient(DoajTestCase):

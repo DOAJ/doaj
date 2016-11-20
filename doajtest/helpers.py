@@ -2,7 +2,8 @@ from flask_login import login_user
 
 from unittest import TestCase
 from portality import core, dao
-from portality.core import app
+# from portality.core import app
+from portality.app import app
 from doajtest.bootstrap import prepare_for_test
 import time
 import dictdiffer
