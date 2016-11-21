@@ -13,7 +13,7 @@ DOAJ_VERSION = "2.10.11"
 OFFLINE_MODE = False
 
 # List the features we want to be active
-FEATURES = []
+FEATURES = ['api']
 VALID_FEATURES = ['api']
 
 # ========================
