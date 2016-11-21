@@ -255,11 +255,6 @@ del REAPPLICATION_FORM["confirm_contact_email"]
 
 class TestPublisherReApplication(DoajTestCase):
 
-    # FIXME: abortive attempt to incorporate Flask-Testing.  May revisit if time permits
-    #def create_app(self):
-    #    from portality.core import app
-    #    return app
-
     def setUp(self):
         super(TestPublisherReApplication, self).setUp()
 

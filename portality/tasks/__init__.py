@@ -1,1 +1,0 @@
-from portality.tasks.journal_in_out_doaj import journal_activate, journal_deactivate

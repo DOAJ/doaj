@@ -5,7 +5,6 @@ from doajtest.fixtures import ApplicationFixtureFactory
 from copy import deepcopy
 from portality.formcontext import xwalk, forms
 from portality.clcsv import ClCsv
-from portality.core import app
 
 REAPP1_SOURCE = ApplicationFixtureFactory.make_reapp_source()
 REAPP2_UNICODE_SOURCE = ApplicationFixtureFactory.make_reapp_unicode_source()
@@ -236,8 +235,8 @@ class TestReApplication(DoajTestCase):
         self.old_account_pull = models.Account.pull
         models.Account.pull = mock_account_pull
 
-        self.old_reapp_upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR")
-        app.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
+        self.old_reapp_upload_dir = self.test_app.config.get("REAPPLICATION_UPLOAD_DIR")
+        self.test_app.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
@@ -260,7 +259,7 @@ class TestReApplication(DoajTestCase):
         models.Suggestion.find_by_issn = self.old_find_by_issn
         models.Account.pull = self.old_account_pull
 
-        app.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
+        self.test_app.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
 
     def _make_valid_csv(self):
         sheet = ClCsv("valid.csv")
