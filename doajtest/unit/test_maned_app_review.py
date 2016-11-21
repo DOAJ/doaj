@@ -7,7 +7,6 @@ from copy import deepcopy
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
-# from portality.app import app    # this line is required, or the test context doesn't work; I don't know why
 
 from werkzeug.datastructures import MultiDict
 

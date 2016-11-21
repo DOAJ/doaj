@@ -1,5 +1,4 @@
 from doajtest.helpers import DoajTestCase
-from portality.app import app
 from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
@@ -41,7 +40,7 @@ class TestArticleMatch(DoajTestCase):
         time.sleep(1)
 
         # now run some queries
-        with app.test_request_context():
+        with self.test_app.test_request_context():
             # 1. a general query that should hit everything (except number 6)
             res = DiscoveryApi.search_journals("Test", 1, 2)
             assert res.data.get("total") == 5
@@ -144,7 +143,7 @@ class TestArticleMatch(DoajTestCase):
 
         # now run some queries
 
-        with app.test_request_context():
+        with self.test_app.test_request_context():
             # 1. a general query that should hit everything
             res = DiscoveryApi.search_articles("Test", 1, 2)
             assert res.data.get("total") == 5
@@ -264,7 +263,7 @@ class TestArticleMatch(DoajTestCase):
         time.sleep(1)
 
         # now run some queries
-        with app.test_request_context():
+        with self.test_app.test_request_context():
             # 1. a general query that should hit everything
             res = DiscoveryApi.search_applications(acc, "Test", 1, 2)
             assert res.data.get("total") == 5

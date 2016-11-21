@@ -1,6 +1,5 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.app import app
 from doajtest.fixtures import ApplicationFixtureFactory, ArticleFixtureFactory, JournalFixtureFactory
 from copy import deepcopy
 import json
@@ -31,7 +30,7 @@ class TestCrudReturnValues(DoajTestCase):
     def test_01_all_crud(self):
 
         # we should get a JSON 404 if we try to hit a nonexistent endpoint
-        with app.test_client() as t_client:
+        with self.test_app.test_client() as t_client:
             response = t_client.get('/api/v1/not_valid')
             assert response.status_code == 404
             assert response.mimetype == 'application/json'
@@ -60,7 +59,7 @@ class TestCrudReturnValues(DoajTestCase):
         # add some data to the index with a Create
         user_data = ApplicationFixtureFactory.incoming_application()
 
-        with app.test_client() as t_client:
+        with self.test_app.test_client() as t_client:
             # log into the app as our user
             self.login(t_client, 'test', 'password123')
 
@@ -114,7 +113,7 @@ class TestCrudReturnValues(DoajTestCase):
         # add some data to the index with a Create
         user_data = ArticleFixtureFactory.make_article_source()
 
-        with app.test_client() as t_client:
+        with self.test_app.test_client() as t_client:
             # log into the app as our user
             self.login(t_client, 'test', 'password123')
 

@@ -4,7 +4,6 @@ from doajtest.fixtures import ApplicationFixtureFactory
 import time
 from copy import deepcopy
 
-from portality.app import app   # this line is required, or the test context doesn't work; I don't know why
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
