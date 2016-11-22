@@ -335,10 +335,9 @@ class Journal(JournalLikeObject):
     ## Journal-specific data access methods
 
     @classmethod
-    def all_in_doaj(cls, page_size=5000, minified=False):
-        q = JournalQuery(minified=minified, sort_by_title=minified)
-        wrap = not minified
-        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=wrap)
+    def all_in_doaj(cls, page_size=5000):
+        q = JournalQuery()
+        return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True)
 
     @classmethod
     def find_by_publisher(cls, publisher, exact=True):

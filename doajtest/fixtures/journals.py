@@ -35,6 +35,7 @@ class JournalFixtureFactory(object):
             ]
             template['admin']['in_doaj'] = in_doaj
             template['bibjson']['active'] = in_doaj  # legacy field?
+            template['bibjson']['title'] = 'Test Title {}'.format(i)
             journal_sources.append(deepcopy(template))
         return journal_sources
 

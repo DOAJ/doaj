@@ -23,7 +23,6 @@ class DoajTestCase(TestCase):
         dao.DomainObject.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
-        time.sleep(1)
 
     def list_today_article_history_files(self):
         return glob(os.path.join(app.config['ARTICLE_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))

@@ -37,6 +37,10 @@ server {
         allow all;
     }
 
+    location =/robots.txt {
+        alias /home/cloo/repl/production/doaj/src/doaj/deploy/robots-production.txt;
+    }
+
     location / {
         return 301 https://$host$request_uri;
     }
@@ -66,6 +70,10 @@ server {
         allow all;
     }
 
+    location =/robots.txt {
+        alias /home/cloo/repl/test/doaj/src/doaj/deploy/robots-test.txt;
+    }
+
     location / {
         proxy_pass http://testapps;
         proxy_redirect off;
@@ -75,25 +83,6 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-
-    # # Serve some crucial XML schemas via plain HTTP as well
-
-    # # Common misspelling of doajArticle**s**.xsd
-    # location =/static/doaj/doajArticle.xsd {
-    #     alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
-    # }
-
-    # location =/static/doaj/doajArticles.xsd {
-    #     alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
-    # }
-
-    # location =/static/doaj/iso_639-2b.xsd {
-    #     alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
-    # }
-
-    # location / {
-    #     return 301 https://$host$request_uri;
-    # }
 
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
@@ -122,6 +111,10 @@ server {
     location ~ /.well-known {
         root /usr/share/nginx/html/;
         allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/production/doaj/src/doaj/deploy/robots-production.txt;
     }
 
     location / {
@@ -156,6 +149,10 @@ server {
     location ~ /.well-known {
         root /usr/share/nginx/html/;
         allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/test/doaj/src/doaj/deploy/robots-test.txt;
     }
 
     location / {

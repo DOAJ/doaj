@@ -44,7 +44,7 @@ for path, change in statics:
     counter += 1
 
 # do all the journal ToCs
-for j in models.Journal.all_in_doaj(page_size=12000):
+for j in models.Journal.all_in_doaj():
     
     # first create an entry purely for the journal
     toc_loc = base_url + "toc/" + j.toc_id
