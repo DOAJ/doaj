@@ -10,7 +10,7 @@ from portality.formcontext import formcontext
 from portality import lock
 from portality.util import flash_with_url, jsonp
 from portality.core import app
-from portality.tasks import journal_in_out_doaj
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit
 
 from portality.view.forms import EditorGroupForm, MakeContinuation, BulkJournalArticleForm, BulkApplicationForm
 
@@ -414,5 +414,21 @@ def eg_associates_dropdown():
 
     # return a json response
     resp = make_response(json.dumps(editors))
+    resp.mimetype = "application/json"
+    return resp
+
+@blueprint.route("/journals/bulk_edit", methods=["POST"])
+@login_required
+@ssl_required
+def journals_bulk_edit():
+    payload = json.loads(request.data)
+
+    affected_records = journal_bulk_edit.journal_manage(
+        payload['selection_query'],
+        payload.get('editor_group', ''),
+        payload.get('note', ''),
+        payload.get('dry_run', False)
+    )
+    resp = make_response(json.dumps({'affected_records': affected_records}))
     resp.mimetype = "application/json"
     return resp
