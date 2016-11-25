@@ -105,3 +105,11 @@ class BackgroundTask(object):
         :return:
         """
         raise NotImplementedError()
+
+    @classmethod
+    def get_param(cls, params, param_name):
+        return params.get('{}__{}'.format(cls.__action__, param_name))
+
+    @classmethod
+    def set_param(cls, params, param_name, value):
+        params['{}__{}'.format(cls.__action__, param_name)] = value
