@@ -237,11 +237,14 @@ def journal_continue(journal_id):
 @login_required
 @ssl_required
 def suggestions():
-    return render_template('admin/suggestions.html',
-               search_page=True,
-               facetviews=["admin.applications.facetview"],
-               admin_page=True
-           )
+    if request.method == "GET":
+        form = BulkApplicationForm()
+        return render_template("admin/suggestions.html", admin_page=True, search_page=True,
+                               facetviews=['admin.applications.facetview'], form=form)
+    elif request.method == "POST":
+        form = BulkApplicationForm(request.form)
+        if form.validate():
+            pass
 
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])

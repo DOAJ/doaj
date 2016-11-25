@@ -2,30 +2,30 @@
 
 {% block admin_content %}
 <div style="padding-bottom: 20px">
-<div class="row-fluid">
-    <div class="span12">
-        <div id="admin-bulk-box" class="pull-right">
-            <label id="admin-bulk-label">Bulk Edit Records</label>
+    <div class="row-fluid">
+        <div class="span12">
+            <div id="admin-bulk-box" class="pull-right">
+                <label id="admin-bulk-label">Bulk Edit Records</label>
 
-            {% from "_formhelpers.html" import render_field_horizontal %}
-            {% from "_formhelpers.html" import render_field %}
+                {% from "_formhelpers.html" import render_field_horizontal %}
+                {% from "_formhelpers.html" import render_field %}
 
-        <form method="post" action="{{ url_for('admin.admin_site_search') }}" class="form-horizontal wide" id="editor_group_form">
-            <fieldset>
-                {{ render_field(form.bulk_action, style="width: 250px;") }}
+                <form method="post" action="{{ url_for('admin.admin_site_search') }}" class="form-horizontal wide" id="editor_group_form">
+                    <fieldset>
+                        {{ render_field(form.bulk_action, style="width: 250px;") }}
 
-                {{ render_field(form.editor_group, style="width: 250px", hidden=False) }}
+                        {{ render_field(form.editor_group, style="width: 250px", hidden=False) }}
 
-                <div class="control-group">
-                    <div class="controls">
-                        <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit</button>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <div class="facetview admin_journals_and_articles"></div>

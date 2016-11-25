@@ -30,10 +30,12 @@ start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
 YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
 MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
 
+
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
-    
+
+
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
@@ -92,6 +94,7 @@ class UniqueGroupName(object):
         if id_field.data != exists_id:
             raise validators.ValidationError("The group's name must be unique among the Editor Groups")
 
+
 class NotRole(object):
     def __init__(self, role, *args, **kwargs):
         self.role = role
@@ -125,6 +128,7 @@ class EditorGroupForm(Form):
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 
+
 class MakeContinuation(Form):
 
     title = StringField('Journal Title', [validators.DataRequired()])
@@ -144,6 +148,7 @@ class MakeContinuation(Form):
 ## Contact Forms
 ##########################################################################
 
+
 class ContactUs(Form):
 
     email = StringField('Your Email', [validators.DataRequired(), validators.Email()])
@@ -156,6 +161,7 @@ class ContactUs(Form):
 ## Bulk Edit Form
 ##########################################################################
 
+
 class BulkJournalArticleForm(Form):
     bulk_action = SelectField("Action",
                               [validators.DataRequired()],
@@ -165,5 +171,17 @@ class BulkJournalArticleForm(Form):
 
     editor_group = StringField("Editor Group", [validators.DataRequired()])
 
+
 class BulkApplicationForm(Form):
-    pass
+    bulk_action = SelectField("Action",
+                              [validators.DataRequired()],
+                              choices=Choices.bulk_application_actions(),
+                              default=Choices.bulk_application_actions_default()
+                              )
+
+    application_status = SelectField('Application Status',
+                                     [validators.DataRequired()],
+                                     choices=Choices.application_status("admin")
+                                     )
+
+    editor_group = StringField("Editor Group", [validators.DataRequired()])
