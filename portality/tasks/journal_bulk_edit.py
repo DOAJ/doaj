@@ -86,7 +86,7 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
 
     @classmethod
     def resolve_selection_query(cls, selection_query):
-        return [j['_id'] for j in models.Journal.query(q=selection_query)]
+        return [j['_id'] for j in models.Journal.query(q=selection_query)['hits']['hits']]
 
     @classmethod
     def prepare(cls, username, **kwargs):

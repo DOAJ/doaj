@@ -398,11 +398,13 @@ def eg_associates_dropdown():
 @login_required
 @ssl_required
 def journals_bulk_edit():
+    payload = json.loads(request.data)
+
     affected_records = journal_bulk_edit.journal_manage(
-        request.values['selection_query'],
-        request.values.get('editor_group', ''),
-        request.values.get('note', ''),
-        request.values.get('dry_run', False)
+        payload['selection_query'],
+        payload.get('editor_group', ''),
+        payload.get('note', ''),
+        payload.get('dry_run', False)
     )
     resp = make_response(json.dumps({'affected_records': affected_records}))
     resp.mimetype = "application/json"
