@@ -10,5 +10,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 7       10      cron.weekly      nice run-parts --report /etc/cron.weekly
 @monthly        15      cron.monthly nice run-parts --report /etc/cron.monthly
 
-1       5     doaj-sitemap    su - cloo -c 'export NOW=`date +\%F_\%H\%M\%S` ; export DOAJENV=production ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/doaj-sitemap.log && nice -n 19 /home/cloo/repl/production/doaj/bin/python /home/cloo/repl/production/doaj/src/doaj/portality/scripts/sitemap.py >> /home/cloo/cron-logs/doaj-sitemap.log 2>&1'
+#1       5     doaj-sitemap    su - cloo -c 'export NOW=`date +\%F_\%H\%M\%S` ; export DOAJENV=production ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/doaj-sitemap.log && nice -n 19 /home/cloo/repl/production/doaj/bin/python /home/cloo/repl/production/doaj/src/doaj/portality/scripts/sitemap.py >> /home/cloo/cron-logs/doaj-sitemap.log 2>&1'
 #1       240   doaj-article-cleanup-sync      su - cloo -c 'export NOW=`date +\%F_\%H\%M\%S` ; export DOAJENV=production ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/doaj-article-cleanup-sync.log && nice -n 18 /home/cloo/repl/production/doaj/bin/python /home/cloo/repl/production/doaj/src/doaj/portality/scripts/article_cleanup_sync.py -w >> /home/cloo/cron-logs/doaj-article-cleanup-sync.log 2>&1'
