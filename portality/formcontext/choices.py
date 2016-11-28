@@ -111,7 +111,7 @@ class Choices(object):
 
     _bulk_application_actions = [
         ('', 'Select action...'),
-        ('bulk.changestatus', 'Change status...'),
+        ('bulk.change_status', 'Change status...'),
         ('bulk.ed_group', 'Assign to editor group...')
     ]
 
@@ -396,12 +396,24 @@ class Choices(object):
         return cls._bulk_journal_article_actions
 
     @classmethod
+    def bulk_journal_article_actions_val(cls, type):
+        if type == 'editor_group':
+            return cls._bulk_journal_article_actions[4][1]
+
+    @classmethod
     def bulk_journal_article_actions_default(cls):
         return cls._bulk_journal_article_actions[0][0]
 
     @classmethod
     def bulk_application_actions(cls):
         return cls._bulk_application_actions
+
+    @classmethod
+    def bulk_application_actions_val(cls, type):
+        if type == 'change_status':
+            return cls._bulk_journal_article_actions[1][1]
+        elif type == 'editor_group':
+            return cls._bulk_journal_article_actions[2][1]
 
     @classmethod
     def bulk_application_actions_default(cls):

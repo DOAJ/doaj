@@ -14,7 +14,7 @@ from wtforms import TextField, StringField, SelectField, TextAreaField, FormFiel
 
 from portality.core import app
 from portality import models
-from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
+from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen, ExtraFieldRequiredIf
 from portality.formcontext.choices import Choices
 
 ##########################################################################
@@ -163,25 +163,30 @@ class ContactUs(Form):
 
 
 class BulkJournalArticleForm(Form):
-    bulk_action = SelectField("Action",
-                              [validators.DataRequired()],
+    bulk_action = SelectField("",
+                              [validators.DataRequired(),
+                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_journal_article_actions_val('editor_group'))],
                               choices=Choices.bulk_journal_article_actions(),
                               default=Choices.bulk_journal_article_actions_default()
                               )
 
-    editor_group = StringField("Editor Group", [validators.DataRequired()])
+    editor_group = StringField("")
+
+    selection_query = StringField("", [validators.DataRequired()])
 
 
 class BulkApplicationForm(Form):
     bulk_action = SelectField("Action",
-                              [validators.DataRequired()],
+                              [validators.DataRequired(),
+                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('editor_group')),
+                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('change_status'))
+                               ],
                               choices=Choices.bulk_application_actions(),
                               default=Choices.bulk_application_actions_default()
                               )
 
-    application_status = SelectField('Application Status',
-                                     [validators.DataRequired()],
-                                     choices=Choices.application_status("admin")
-                                     )
+    application_status = SelectField('Application Status', choices=Choices.application_status("admin"))
 
-    editor_group = StringField("Editor Group", [validators.DataRequired()])
+    editor_group = StringField("")
+
+    selection_query = StringField("", [validators.DataRequired()])

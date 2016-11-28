@@ -1,20 +1,15 @@
 jQuery(document).ready(function($) {
 
     function adminButtons(options, context) {
-        var type = false;
-        if ("_type" in options.active_filters) {
-            type = options.active_filters._type[0];
-        }
-        if (type === "article") {
-            $("#delete-articles").removeAttr("disabled");
-            $("#delete-journals").attr("disabled", "disabled");
-        } else if (type === "journal") {
-            $("#delete-journals").removeAttr("disabled");
-            $("#delete-articles").attr("disabled", "disabled");
+        // Disable the bulk action submit button if there is an empty query in the facetview
+        if ($.isEmptyObject(options.active_filters) && options.q == "") {
+            $("#bulk-submit").attr("disabled", "disabled");
         } else {
-            $("#delete-journals").attr("disabled", "disabled");
-            $("#delete-articles").attr("disabled", "disabled");
+            $("#bulk-submit").removeAttr("disabled");
         }
+
+        // Add the query to our hidden form field
+        $("#selection_query").attr("value", JSON.stringify(elasticSearchQuery({options:options, include_facets: false, include_fields: false})));
     }
 
     function adminJAPostRender(options, context) {

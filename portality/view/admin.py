@@ -233,18 +233,15 @@ def journal_continue(journal_id):
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
 
-@blueprint.route("/applications")
+@blueprint.route("/applications", methods=["GET"])
 @login_required
 @ssl_required
 def suggestions():
-    if request.method == "GET":
-        form = BulkApplicationForm()
-        return render_template("admin/suggestions.html", admin_page=True, search_page=True,
-                               facetviews=['admin.applications.facetview'], form=form)
-    elif request.method == "POST":
-        form = BulkApplicationForm(request.form)
-        if form.validate():
-            pass
+    form = BulkApplicationForm()
+    return render_template("admin/suggestions.html",
+                           admin_page=True, search_page=True,
+                           facetviews=['admin.applications.facetview'],
+                           form=form)
 
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
@@ -283,17 +280,19 @@ def suggestion_page(suggestion_id):
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
 
 
-@blueprint.route("/admin_site_search")
+@blueprint.route("/admin_site_search", methods=["GET"])
 @login_required
 @ssl_required
 def admin_site_search():
     if request.method == "GET":
         form = BulkJournalArticleForm()
-        return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'], form=form)
+        return render_template("admin/admin_site_search.html",
+                               admin_page=True, search_page=True,
+                               facetviews=['admin.journalarticle.facetview'],
+                               form=form)
     elif request.method == "POST":
-        form = BulkJournalArticleForm(request.form)
-        if form.validate():
-            pass
+        pass
+
 
 
 @blueprint.route("/editor_groups")
@@ -417,18 +416,38 @@ def eg_associates_dropdown():
     resp.mimetype = "application/json"
     return resp
 
+
 @blueprint.route("/journals/bulk_edit", methods=["POST"])
 @login_required
 @ssl_required
 def journals_bulk_edit():
+    form = BulkJournalArticleForm(request.form)
+    if form.validate():
+        affected_records = journal_bulk_edit.journal_manage(
+            json.loads(request.values['selection_query']),
+            request.values.get('editor_group', ''),
+            request.values.get('note', ''),
+            request.values.get('dry_run', True)
+        )
+    resp = make_response(json.dumps({'affected_records': affected_records}))
+    resp.mimetype = "application/json"
+    return resp
+
+'''
+@blueprint.route("/applications/bulk_edit", methods=["POST"])
+@login_required
+@ssl_required
+def applications_bulk_edit():
     payload = json.loads(request.data)
 
-    affected_records = journal_bulk_edit.journal_manage(
+    affected_records = application_bulk_edit.application_manage(
         payload['selection_query'],
         payload.get('editor_group', ''),
+        payload.get('application_status', ''),
         payload.get('note', ''),
         payload.get('dry_run', False)
     )
     resp = make_response(json.dumps({'affected_records': affected_records}))
     resp.mimetype = "application/json"
     return resp
+'''

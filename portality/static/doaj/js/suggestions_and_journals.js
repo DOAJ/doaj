@@ -3,19 +3,19 @@ jQuery(document).ready(function($) {
     ////// functions for handling edit locks ///////////////////////
 
     function setLockTimeout() {
-        var ts = $("#lock_expires").attr("data-timestamp")
-        var d = new Date(ts)
-        var hours = d.getHours()
-        var minutes = d.getMinutes()
+        var ts = $("#lock_expires").attr("data-timestamp");
+        var d = new Date(ts);
+        var hours = d.getHours();
+        var minutes = d.getMinutes();
         if (String(minutes).length == 1) { minutes = "0" + minutes }
-        var formatted = hours + ":" + minutes
+        var formatted = hours + ":" + minutes;
         $("#lock_expires").html(formatted)
     }
-    setLockTimeout()
+    setLockTimeout();
 
     function unlock(params) {
-        var type = params.type
-        var id = params.id
+        var type = params.type;
+        var id = params.id;
 
         function success_callback(data) {
             var newWindow = window.open('', '_self', ''); //open the current window
@@ -37,11 +37,11 @@ jQuery(document).ready(function($) {
     }
 
     $("#unlock").click(function(event) {
-        event.preventDefault()
-        var id = $(this).attr("data-id")
-        var type = $(this).attr("data-type")
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        var type = $(this).attr("data-type");
         unlock({type : type, id : id})
-    })
+    });
 
     // NOTE: this does not play well with page reloads, so not using it
     //$(window).unload(function() {
@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
 
        $(this).each(function() {
             var el = $(this);
-            el.before("<div/>")
+            el.before("<div/>");
             el.prev()
                 .width(el.width())
                 .height(el.height())
@@ -74,7 +74,7 @@ jQuery(document).ready(function($) {
                 })
                 .fadeOut(fade_time);
         });
-    }
+    };
 
     // animated scrolling to an anchor
     jQuery.fn.anchorAnimate = function(settings) {
@@ -84,11 +84,11 @@ jQuery(document).ready(function($) {
         }, settings);   
     
         return this.each(function(){
-            var caller = this
+            var caller = this;
             $(caller).click(function (event) {  
-                event.preventDefault()
-                var locationHref = window.location.href
-                var elementClick = $(caller).attr("href")
+                event.preventDefault();
+                var locationHref = window.location.href;
+                var elementClick = $(caller).attr("href");
     
                 var destination = $(elementClick).offset().top;
 
@@ -103,7 +103,7 @@ jQuery(document).ready(function($) {
                 return false;
             })
         })
-    }
+    };
     
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
     toggle_optional_field('download_statistics', ['#download_statistics_url']);
@@ -152,7 +152,7 @@ jQuery(document).ready(function($) {
     }
 
     $("#editor_group").change(function(event) {
-        event.preventDefault()
+        event.preventDefault();
         $("#editor").html("<option val='' selected='selected'></option>")
     })
 });
@@ -170,7 +170,7 @@ function setup_subject_tree() {
             "search" : {
                 "fuzzy" : false,
                 "show_only_matches" : true
-            },
+            }
         });
     });
 
@@ -206,45 +206,6 @@ function setup_subject_tree() {
     $('#subject-container').css('margin-bottom', 0);
 }
 
-function toggle_optional_field(field_name, optional_field_selectors, values_to_show_for) {
-    var values_to_show_for = values_to_show_for || ["True"];
-    var main_field_selector = 'input[name=' + field_name + '][type="radio"]';
-
-    // hide all optional fields first
-    for (var i = 0; i < optional_field_selectors.length; i++) {
-        $(optional_field_selectors[i]).parents('.control-group').hide();
-    }
-
-    // show them again if the correct radio button is chosen
-    $(main_field_selector).each( function () {
-        __init_optional_field(this, optional_field_selectors, values_to_show_for);
-    });
-
-    $(main_field_selector).change( function () {
-        if ($.inArray(this.value, values_to_show_for) >= 0) {
-            for (var i = 0; i < optional_field_selectors.length; i++) {
-                $(optional_field_selectors[i]).parents('.control-group').show();
-            }
-        } else {
-            for (var i = 0; i < optional_field_selectors.length; i++) {
-                $(optional_field_selectors[i]).parents('.control-group').hide();
-                $(optional_field_selectors[i]).val(undefined);
-            }
-        }
-    });
-}
-
-function __init_optional_field(elem, optional_field_selectors, values_to_show_for) {
-    var values_to_show_for = values_to_show_for || ["True"];
-    var main_field = $(elem);
-
-    if (main_field.is(':checked') && $.inArray(main_field.val(), values_to_show_for) >= 0) {
-        for (var i = 0; i < optional_field_selectors.length; i++) {
-            $(optional_field_selectors[i]).parents('.control-group').show();
-        }
-    }
-}
-
 function exclusive_checkbox(field_name, exclusive_val) {
     var doit = function() {
         if (this.checked) {
@@ -272,7 +233,7 @@ function setup_add_buttons() {
 
     $('.addable-field-container').each(function() {
         e = $(this);
-        id = e.attr('id')
+        id = e.attr('id');
         var value = customisations[id]['value'] || 'Add';
 
         var thebtn = '<button class="btn btn-info add_button"';
@@ -305,7 +266,7 @@ function setup_add_button_handlers() {
 
         // FIXME: this is a duplicate of what the jinja template does, meaning we have 2 places
         // where we need to update it if it changes.  Should clone a similar element instead.
-        var delclass = ""
+        var delclass = "";
         if (notes_deletable) { // global variable set by template
             delclass = " deletable "
         }
@@ -327,7 +288,7 @@ function setup_add_button_handlers() {
             '                <input class="span11" disabled="" id="notes-' + cur_number_of_notes + '-date" name="notes-' + cur_number_of_notes + '-date" type="text" value="">',
             '        </div>',
             '    </div>',
-            '</div>',
+            '</div>'
         ].join('\n');
 
         cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
@@ -360,7 +321,7 @@ function setup_remove_buttons() {
 }
 
 function setup_remove_button_handler() {
-    $(".remove_button").unbind("click")
+    $(".remove_button").unbind("click");
     $(".remove_button").click( function(event) {
         event.preventDefault();
         var toremove = $(this).attr('target');
@@ -408,4 +369,3 @@ function load_eds_in_group(ed_query_url) {
         }
     })
 }
-
