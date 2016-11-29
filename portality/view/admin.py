@@ -233,15 +233,46 @@ def journal_continue(journal_id):
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
 
-@blueprint.route("/applications", methods=["GET"])
+@blueprint.route("/applications", methods=["GET", "POST"])
 @login_required
 @ssl_required
 def suggestions():
-    form = BulkApplicationForm()
-    return render_template("admin/suggestions.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'],
-                           form=form)
+    if request.method == "GET":
+        form = BulkApplicationForm()
+        return render_template("admin/suggestions.html",
+                               admin_page=True, search_page=True,
+                               facetviews=['admin.applications.facetview'],
+                               form=form)
+
+    elif request.method == "POST":
+        try:
+            q = json.loads(request.values['source'])
+        except ValueError:
+            app.logger.error("Invalid selection query in journal_bulk_edit:\n"
+                             "{}".format(request.values['selection_query']))
+            abort(400)
+        except KeyError as e:
+            app.logger.error(
+                'selection_query is a required argument for this '
+                'route, Flask will raise a 400 Bad Request '
+                'automatically.')
+            raise e
+
+        form = BulkApplicationForm(request.form)
+        if form.validate():
+            action = request.values['bulk_action']
+
+            if action == 'bulk.editor_group':
+                print request.values
+            elif action == 'bulk.application_status':
+                print request.values
+
+            return redirect(url_for('.suggestions'))
+        else:
+            return render_template("admin/suggestions.html",
+                                   admin_page=True, search_page=True,
+                                   facetviews=['admin.applications.facetview'],
+                                   form=form)
 
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
@@ -293,7 +324,7 @@ def admin_site_search():
 
     elif request.method == "POST":
         try:
-            q = json.loads(request.values['selection_query'])
+            q = json.loads(request.values['source'])
         except ValueError:
             app.logger.error("Invalid selection query in journal_bulk_edit:\n"
                              "{}".format(request.values['selection_query']))
@@ -307,13 +338,23 @@ def admin_site_search():
 
         form = BulkJournalArticleForm(request.form)
         if form.validate():
-            affected_records = journal_bulk_edit.journal_manage(
-                q,
-                request.values.get('editor_group', ''),
-                request.values.get('note', ''),
-                request.values.get('dry_run', True)
-            )
-            flash('Bulk journal edit of {} journals has been added to the job queue'.format(affected_records), 'success')
+            action = request.values['bulk_action']
+
+            if action == 'bulk.editor_group':
+                affected_records = journal_bulk_edit.journal_manage(
+                    q,
+                    request.values.get('editor_group', ''),
+                    request.values.get('note', ''),
+                    request.values.get('dry_run', True)
+                )
+                flash('Bulk journal edit of {} journals has been added to the job queue'.format(affected_records), 'success')
+            elif action == 'bulk.delete':
+                print request.values
+            elif action == 'bulk.withdraw':
+                print request.values
+            elif action == 'bulk.reinstate':
+                print request.values
+
             return redirect(url_for('.admin_site_search'))
         else:
             return render_template("admin/admin_site_search.html",
@@ -442,22 +483,3 @@ def eg_associates_dropdown():
     resp = make_response(json.dumps(editors))
     resp.mimetype = "application/json"
     return resp
-
-'''
-@blueprint.route("/applications/bulk_edit", methods=["POST"])
-@login_required
-@ssl_required
-def applications_bulk_edit():
-    payload = json.loads(request.data)
-
-    affected_records = application_bulk_edit.application_manage(
-        payload['selection_query'],
-        payload.get('editor_group', ''),
-        payload.get('application_status', ''),
-        payload.get('note', ''),
-        payload.get('dry_run', False)
-    )
-    resp = make_response(json.dumps({'affected_records': affected_records}))
-    resp.mimetype = "application/json"
-    return resp
-'''

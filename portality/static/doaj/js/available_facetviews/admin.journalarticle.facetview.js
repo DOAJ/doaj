@@ -7,9 +7,6 @@ jQuery(document).ready(function($) {
         } else {
             $("#bulk-submit").removeAttr("disabled");
         }
-
-        // Add the query to our hidden form field
-        $("#selection_query").attr("value", JSON.stringify(elasticSearchQuery({options:options, include_facets: false, include_fields: false})));
     }
 
     function adminJAPostRender(options, context) {

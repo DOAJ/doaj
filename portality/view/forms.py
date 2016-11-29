@@ -10,7 +10,7 @@ import re
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import TextField, StringField, SelectField, TextAreaField, FormField, FieldList, HiddenField
+from wtforms import StringField, SelectField, TextAreaField, FormField, FieldList, HiddenField
 
 from portality.core import app
 from portality import models
@@ -172,15 +172,12 @@ class BulkJournalArticleForm(Form):
 
     editor_group = StringField("")
 
-    selection_query = StringField("", [validators.DataRequired()])
-
 
 class BulkApplicationForm(Form):
     bulk_action = SelectField("Action",
                               [validators.DataRequired(),
                                ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('editor_group')),
-                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('change_status'))
-                               ],
+                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('change_status'))],
                               choices=Choices.bulk_application_actions(),
                               default=Choices.bulk_application_actions_default()
                               )
@@ -188,5 +185,3 @@ class BulkApplicationForm(Form):
     application_status = SelectField('Application Status', choices=Choices.application_status("admin"))
 
     editor_group = StringField("")
-
-    selection_query = StringField("", [validators.DataRequired()])

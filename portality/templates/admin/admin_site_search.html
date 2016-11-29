@@ -16,8 +16,6 @@
 
                         {{ render_field(form.editor_group, style="width: 250px", hidden=False) }}
 
-                        {{ render_field(form.selection_query, hidden=True) }}
-
                         <div class="control-group">
                             <div class="controls">
                                 <button id="bulk-submit" class="btn btn-danger pull-right">Submit</button>
@@ -40,7 +38,7 @@
     var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
-    toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.ed_group']);
+    toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);
 </script>
 
 {% endblock %}

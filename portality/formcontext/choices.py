@@ -106,13 +106,13 @@ class Choices(object):
         ('bulk.withdraw', 'Withdraw from DOAJ'),
         ('bulk.reinstate', 'Reinstate into DOAJ'),
         ('bulk.delete', 'Delete records'),
-        ('bulk.ed_group', 'Assign to editor group...')
+        ('bulk.editor_group', 'Assign to editor group...')
     ]
 
     _bulk_application_actions = [
         ('', 'Select action...'),
         ('bulk.change_status', 'Change status...'),
-        ('bulk.ed_group', 'Assign to editor group...')
+        ('bulk.editor_group', 'Assign to editor group...')
     ]
 
     ############################################################
@@ -398,7 +398,7 @@ class Choices(object):
     @classmethod
     def bulk_journal_article_actions_val(cls, type):
         if type == 'editor_group':
-            return cls._bulk_journal_article_actions[4][1]
+            return cls._bulk_journal_article_actions[4][0]
 
     @classmethod
     def bulk_journal_article_actions_default(cls):
@@ -411,9 +411,9 @@ class Choices(object):
     @classmethod
     def bulk_application_actions_val(cls, type):
         if type == 'change_status':
-            return cls._bulk_journal_article_actions[1][1]
+            return cls._bulk_journal_article_actions[1][0]
         elif type == 'editor_group':
-            return cls._bulk_journal_article_actions[2][1]
+            return cls._bulk_journal_article_actions[2][0]
 
     @classmethod
     def bulk_application_actions_default(cls):

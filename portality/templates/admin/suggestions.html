@@ -11,13 +11,13 @@
                 {% from "_formhelpers.html" import render_field_horizontal %}
                 {% from "_formhelpers.html" import render_field %}
 
-                <form method="post" action="{{ url_for('admin.suggestions') }}" class="form-horizontal wide" id="editor_group_form">
+                <form method="post" class="form-horizontal wide" id="editor_group_form">
                     <fieldset>
                         {{ render_field(form.bulk_action, style="width: 250px;") }}
 
-                        {{ render_field(form.application_status, style="width: 250px", hidden=False) }}
+                        {{ render_field(form.application_status, style="width: 250px", hidden=True) }}
 
-                        {{ render_field(form.editor_group, style="width: 250px", hidden=False) }}
+                        {{ render_field(form.editor_group, style="width: 250px", hidden=True) }}
 
                         <div class="control-group">
                             <div class="controls">
@@ -38,5 +38,8 @@
 <script type="text/javascript">
     var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
+
+    toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);
+    toggle_optional_field('bulk_action', ['#application_status'], ['bulk.change_status']);
 </script>
 {% endblock %}
