@@ -10,7 +10,7 @@
                 {% from "_formhelpers.html" import render_field_horizontal %}
                 {% from "_formhelpers.html" import render_field %}
 
-                <form method="post" action="{{ url_for('admin.journals_bulk_edit') }}" class="form-horizontal wide" id="journal_bulk_form">
+                <form method="post" class="form-horizontal wide" id="journal_bulk_form">
                     <fieldset>
                         {{ render_field(form.bulk_action, style="width: 250px;") }}
 
