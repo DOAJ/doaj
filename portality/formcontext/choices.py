@@ -411,9 +411,9 @@ class Choices(object):
     @classmethod
     def bulk_application_actions_val(cls, type):
         if type == 'change_status':
-            return cls._bulk_journal_article_actions[1][0]
+            return cls._bulk_application_actions[1][0]
         elif type == 'editor_group':
-            return cls._bulk_journal_article_actions[2][0]
+            return cls._bulk_application_actions[2][0]
 
     @classmethod
     def bulk_application_actions_default(cls):

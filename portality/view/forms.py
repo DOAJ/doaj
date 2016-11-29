@@ -177,7 +177,7 @@ class BulkApplicationForm(Form):
     bulk_action = SelectField("Action",
                               [validators.DataRequired(),
                                ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('editor_group')),
-                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('change_status'))],
+                               ExtraFieldRequiredIf('application_status', reqval=Choices.bulk_application_actions_val('change_status'))],
                               choices=Choices.bulk_application_actions(),
                               default=Choices.bulk_application_actions_default()
                               )

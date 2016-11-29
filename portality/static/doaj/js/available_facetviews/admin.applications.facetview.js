@@ -1,11 +1,21 @@
 jQuery(document).ready(function($) {
 
+    function adminButtons(options, context) {
+        // Disable the bulk action submit button if there is an empty query in the facetview
+        if ($.isEmptyObject(options.active_filters) && options.q == "") {
+            $("#bulk-submit").attr("disabled", "disabled");
+        } else {
+            $("#bulk-submit").removeAttr("disabled");
+        }
+    }
+
     $('.facetview.suggestions').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: doajScrollTop,
+        post_search_callback: adminButtons,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
