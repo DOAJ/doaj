@@ -307,15 +307,20 @@ def admin_site_search():
 
         form = BulkJournalArticleForm(request.form)
         if form.validate():
-            affected_records = journal_bulk_edit.journal_manage(
-                q,
-                request.values.get('editor_group', ''),
-                request.values.get('note', ''),
-                request.values.get('dry_run', True)
-            )
-            flash('Bulk journal edit of {} journals has been added to the job queue'.format(affected_records), 'success')
-            return redirect(url_for('.admin_site_search'))
+            if request.values['bulk_action'] in ['bulk.ed_group', 'bulk.add_note']:
+                affected_records = journal_bulk_edit.journal_manage(
+                    selection_query=q,
+                    editor_group=request.values.get('editor_group', ''),
+                    note=request.values.get('note', ''),
+                    dry_run=formcontext.xwalk.interpret_special(request.values.get('dry_run', True))
+                )
+                flash('Bulk journal edit of {} journals has been added to the job queue'.format(affected_records), 'success')
+                return redirect(url_for('.admin_site_search'))
+
+            # TODO else if it's one of the other actions, call the appropriate task generator function here
+
         else:
+            # render the same page so the user can see the errors on the form
             return render_template("admin/admin_site_search.html",
                                    admin_page=True, search_page=True,
                                    facetviews=['admin.journalarticle.facetview'],
