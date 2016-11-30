@@ -9,6 +9,7 @@ from portality import models, article
 from portality.view.forms import ArticleForm
 from portality.formcontext import formcontext
 from portality.util import flash_with_url
+from portality.tasks.ingestarticles import process_file_upload
 
 import os, requests, ftplib
 from urlparse import urlparse
@@ -156,6 +157,8 @@ def _file_upload(f, schema, previous):
     if actual_schema:
         record.validated(actual_schema)
         record.save()
+        # trigger the background task
+        process_file_upload(record)
         previous = [record] + previous # add the new record to the previous records
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
@@ -218,6 +221,8 @@ def _url_upload(url, schema, previous):
     def __ok(record, previous):
         record.exists()
         record.save()
+        # trigger the background task
+        process_file_upload(record)
         previous = [record] + previous
         flash("File reference successfully received - it will be processed shortly", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
@@ -242,7 +247,7 @@ def _url_upload(url, schema, previous):
     try:
         # first, determine if ftp or http
         parsed_url = urlparse(url)
-        if parsed_url.scheme == 'http':
+        if parsed_url.scheme in ['http', "https"]:
             return __http_upload(record, previous, url)
         elif parsed_url.scheme == 'ftp':
             return __ftp_upload(record, previous, parsed_url)

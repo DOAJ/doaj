@@ -1,3 +1,4 @@
+from flask_login import current_user
 from portality import models, article
 from portality.core import app
 
@@ -10,6 +11,10 @@ from urlparse import urlparse
 
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
+
+def process_file_upload(file_upload):
+    job = IngestArticlesBackgroundTask.prepare(current_user.id, file_upload_id=file_upload.id)
+    IngestArticlesBackgroundTask.submit(job)
 
 def ftp_upload(path, parsed_url, file_upload):
     # 1. find out the file size
@@ -131,9 +136,9 @@ def http_upload(path, file_upload):
 
     return True
 
-class IngestArticleBackgroundTask(BackgroundTask):
+class IngestArticlesBackgroundTask(BackgroundTask):
 
-    __action__ = "ingest_article"
+    __action__ = "ingest_articles"
 
     def run(self):
         """
@@ -151,41 +156,43 @@ class IngestArticleBackgroundTask(BackgroundTask):
         if file_upload is None:
             raise BackgroundException(u"IngestArticleBackgroundTask.run unable to find file upload with id {x}".format(x=file_upload_id))
 
-        if file_upload.status == "exists":
-            job.add_audit_message(u"Downloading file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
-            self._download(file_upload)
-        elif file_upload.status == "validated":
-            job.add_audit_message(u"Importing file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
-            self._process(file_upload)
+        try:
+            # if the file "exists", this means its a remote file that needs to be downloaded, so do that
+            if file_upload.status == "exists":
+                job.add_audit_message(u"Downloading file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
+                self._download(file_upload)
+
+            # if the file is validated, which will happen if it has been uploaded, or downloaded successfully, process it.
+            if file_upload.status == "validated":
+                job.add_audit_message(u"Importing file for file upload {x}, job {y}".format(x=file_upload_id, y=job.id))
+                self._process(file_upload)
+        finally:
+            file_upload.save()
 
     def _download(self, file_upload):
+        job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
-        remote_filename = file_upload.filename
-        if isinstance(remote_filename, unicode):
-            remote_filename = remote_filename.encode('utf-8', errors='ignore')
-        # do not print the remote filename, can cause unicode errors,
-        # and we've got the name in the "upload" type record in ES anyway!
-        print 'processing upload record {0}'.format(file_upload.id)
+
         # first, determine if ftp or http
         parsed_url = urlparse(file_upload.filename)
         if parsed_url.scheme == 'ftp':
             if not ftp_upload(path, parsed_url, file_upload):
                 return False
-        elif parsed_url.scheme == 'http':
+        elif parsed_url.scheme in ['http', "https"]:
             if not http_upload(path, file_upload):
                 return False
         else:
-            print 'We only support HTTP and FTP uploads by URL. This is a: ' + parsed_url.scheme
+            msg = u"We only support HTTP(s) and FTP uploads by URL. This is a: {x}".format(x=parsed_url.scheme)
+            job.add_audit_message(msg)
+            file_upload.failed(msg)
             return False
 
-        print "...downloaded as", file_upload.local_filename
+        job.add_audit_message(u"Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
-        print "validating", file_upload.local_filename
         try:
-            actual_schema = None
             with open(path) as handle:
                 actual_schema = article.check_schema(handle, file_upload.schema)
         except:
@@ -193,70 +200,67 @@ class IngestArticleBackgroundTask(BackgroundTask):
             try:
                 os.remove(path)
             except:
-                print traceback.format_exc()
+                job.add_audit_message(u"Error cleaning up invalid file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("Unable to parse file")
             file_upload.save()
-            print "...failed"
-            return False
+            raise
 
         # if we get to here then we have a successfully downloaded and validated
         # document, so we can write it to the index
+        job.add_audit_message(u"Validated file as schema {x}".format(x=actual_schema))
         file_upload.validated(actual_schema)
-        file_upload.save()
-        print "...success"
         return True
 
     def _process(self, file_upload):
+        job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
-        print "importing ", path
+        job.add_audit_message(u"Importing from {x}".format(x=path))
+
+        success = 0
+        fail = 0
+        update = 0
+        new = 0
 
         try:
-            try:
-                with open(path) as handle:
-                    result = article.ingest_file(handle, format_name=file_upload.schema, owner=file_upload.owner, upload_id=file_upload.id)
-                    success = result["success"]
-                    fail = result["fail"]
-                    update = result["update"]
-                    new = result["new"]
-            except article.IngestException as e:
-                print "... ingest exception: ", e
-                file_upload.failed(e.message)
-                file_upload.save()
-                try:
-                    os.remove(path)
-                except:
-                    pass
-            except Exception as e:
-                print 'File system error while reading file'
-                file_upload.failed("File system error when reading file")
-                file_upload.save()
-                try:
-                    os.remove(path)
-                except:
-                    pass
-            if success == 0 and fail > 0:
-                file_upload.failed("All articles in file failed to import")
-            if success > 0 and fail == 0:
-                file_upload.processed(success, update, new)
-            if success > 0 and fail > 0:
-                file_upload.partial(success, fail, update, new)
-            file_upload.save()
-            print "... success"
+            with open(path) as handle:
+                result = article.ingest_file(handle, format_name=file_upload.schema, owner=file_upload.owner, upload_id=file_upload.id)
+                success = result["success"]
+                fail = result["fail"]
+                update = result["update"]
+                new = result["new"]
+        except article.IngestException as e:
+            job.add_audit_message(u"IngestException: {x}".format(x=traceback.format_exc()))
+            file_upload.failed(e.message)
             try:
                 os.remove(path)
-            except Exception as e:
-                print u"Error while deleting file {0}: {1}".format(path, e.message)
-
+            except:
+                job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
         except Exception as e:
-            print "... unexpected exception, " + e.message
+            job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
+            file_upload.failed("File system error when reading file")
+            try:
+                os.remove(path)
+            except:
+                job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+
+        if success == 0 and fail > 0:
+            file_upload.failed("All articles in file failed to import")
+        if success > 0 and fail == 0:
+            file_upload.processed(success, update, new)
+        if success > 0 and fail > 0:
+            file_upload.partial(success, fail, update, new)
+
+        try:
+            os.remove(path)
+        except Exception as e:
+            job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
 
     def cleanup(self):
         """
         Cleanup after a successful OR failed run of the task
         :return:
         """
-        # remove the lock on the journal
         job = self.background_job
         params = job.params
 
@@ -282,10 +286,10 @@ class IngestArticleBackgroundTask(BackgroundTask):
         file_upload_id = kwargs.get("file_upload_id")
 
         params ={}
-        params["ingest_article__file_upload_id"] = file_upload_id
+        params["ingest_articles__file_upload_id"] = file_upload_id
 
-        if params["ingest_article__file_upload_id"] is None:
-            raise BackgroundException(u"SetInDOAJBackgroundTask.prepare run without sufficient parameters")
+        if params["ingest_articles__file_upload_id"] is None:
+            raise BackgroundException(u"IngestArticlesBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
         return job
@@ -299,11 +303,11 @@ class IngestArticleBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        ingest_article.schedule(args=(background_job.id,), delay=10)
+        ingest_articles.schedule(args=(background_job.id,), delay=10)
 
 @main_queue.task()
 @write_required(script=True)
-def ingest_article(job_id):
+def ingest_articles(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = IngestArticleBackgroundTask(job)
+    task = IngestArticlesBackgroundTask(job)
     BackgroundApi.execute(task)
