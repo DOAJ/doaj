@@ -1,11 +1,10 @@
 from portality import models
 from portality.core import app
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
-from huey import crontab
 
 import os
 from lxml import etree
@@ -145,7 +144,7 @@ class SitemapBackgroundTask(BackgroundTask):
         background_job.save()
         generate_sitemap.schedule(args=(background_job.id,), delay=10)
 
-@main_queue.periodic_task(crontab(month="*", day="1", hour="0", minute="0"))
+@main_queue.periodic_task(schedule("sitemap"))
 @write_required(script=True)
 def scheduled_sitemap():
     user = app.config.get("SYSTEM_USERNAME")
