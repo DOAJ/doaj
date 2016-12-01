@@ -407,3 +407,50 @@ def eg_associates_dropdown():
     resp = make_response(json.dumps(editors))
     resp.mimetype = "application/json"
     return resp
+
+
+@blueprint.route("/journals/bulk_action", methods=["POST"])
+@login_required
+@ssl_required
+def journals_bulk_action():
+    try:
+        payload = json.loads(request.data)
+    except ValueError:
+        app.logger.error("Invalid JSON payload from request.data .\n{}".format(request.data))
+        abort(400)
+
+    q = payload['selection_query']
+    for del_attr in ['size', 'from']:
+        if del_attr in q:
+            del q[del_attr]
+
+    try:
+        if payload['bulk_action'] == 'bulk.editor_group':
+            affected_records = journal_bulk_edit.journal_manage(
+                selection_query=payload['selection_query'],
+                editor_group=payload['editor_group'],
+                dry_run=payload.get('dry_run', True)
+            )
+        elif payload['bulk_action'] == 'bulk.add_note':
+            affected_records = journal_bulk_edit.journal_manage(
+                selection_query=payload['selection_query'],
+                note=payload['note'],
+                dry_run=payload.get('dry_run', True)
+            )
+        elif payload['bulk_action'] == 'bulk.delete':
+            affected_records = 0
+        elif payload['bulk_action'] == 'bulk.reinstate':
+            affected_records = 0
+        elif payload['bulk_action'] == 'bulk.withdraw':
+            affected_records = 0
+        else:
+            app.logger.error('Invalid value for bulk_action argument.')
+            abort(400)
+    except KeyError as e:
+        app.logger.error("{} is a required argument for the action you're"
+                         " trying to take.".format(e.message))
+        abort(400)
+
+    resp = make_response(json.dumps({'affected_records': affected_records}))
+    resp.mimetype = "application/json"
+    return resp

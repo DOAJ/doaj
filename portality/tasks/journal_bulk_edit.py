@@ -8,13 +8,12 @@ from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
 
 
-def journal_manage(selection_query, dry_run=True, editor_group='', note=None):
+def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
 
     ids = JournalBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
         return len(ids)
 
-    note = note if note else []
     job = JournalBulkEditBackgroundTask.prepare(
         current_user.id,
         selection_query=selection_query,
@@ -34,7 +33,7 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
 
     def run(self):
         """
-        Execute the task as specified by the background_jon
+        Execute the task as specified by the background_job
         :return:
         """
         job = self.background_job
