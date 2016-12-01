@@ -8,20 +8,42 @@
             <div id="admin-bulk-box" class="pull-right">
                 <label id="admin-bulk-label">Bulk Edit Records</label>
 
-                {% from "_formhelpers.html" import render_field_horizontal %}
-                {% from "_formhelpers.html" import render_field %}
-
-                <form method="post" class="form-horizontal wide" id="editor_group_form">
+                <form method="post" class="form-horizontal wide" id="suggestion_bulk_form">
                     <fieldset>
-                        {{ render_field(form.bulk_action, style="width: 250px;") }}
-
-                        {{ render_field(form.application_status, style="width: 250px", hidden=True) }}
-
-                        {{ render_field(form.editor_group, style="width: 250px", hidden=True) }}
-
+                        <div class="control-group" id="bulk_action-container">
+                            <div class="controls ">
+                                <select class="" id="bulk_action" name="bulk_action" style="width: 250px;">
+                                    <option selected="" value="">Select action...</option>
+                                    <option value="bulk.change_status">Change status...</option>
+                                    <option value="bulk.editor_group">Assign to editor group...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group" style="display: none;" id="application_status-container">
+                            <div class="controls ">
+                                <select class="" id="application_status" name="application_status" style="width: 250px">
+                                    <option value=""></option>
+                                    <option value="pending">Pending</option>
+                                    <option value="in progress">In Progress</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="reapplication">Reapplication Pending</option>
+                                    <option value="submitted">Reapplication Submitted</option>
+                                    <option value="on hold">On Hold</option>
+                                    <option value="ready">Ready</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="accepted">Accepted</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group" style="display: none;" id="editor_group-container">
+                            <div class="controls ">
+                                <input id="editor_group" name="editor_group" style="width: 250px" type="text" value="">
+                            </div>
+                        </div>
                         <div class="control-group">
                             <div class="controls">
-                                <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit</button>
+                                <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit
+                                </button>
                             </div>
                         </div>
                     </fieldset>

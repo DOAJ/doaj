@@ -156,32 +156,3 @@ class ContactUs(Form):
     subject = StringField("Subject", [validators.Optional()])
 
     message = TextAreaField("Message", [validators.DataRequired(), MaxLen(1000)], description="1000 characters max - <span id='wordcount'></span>")
-
-##########################################################################
-## Bulk Edit Form
-##########################################################################
-
-
-class BulkJournalArticleForm(Form):
-    bulk_action = SelectField("",
-                              [validators.DataRequired(),
-                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_journal_article_actions_val('editor_group'))],
-                              choices=Choices.bulk_journal_article_actions(),
-                              default=Choices.bulk_journal_article_actions_default()
-                              )
-
-    editor_group = StringField("")
-
-
-class BulkApplicationForm(Form):
-    bulk_action = SelectField("Action",
-                              [validators.DataRequired(),
-                               ExtraFieldRequiredIf('editor_group', reqval=Choices.bulk_application_actions_val('editor_group')),
-                               ExtraFieldRequiredIf('application_status', reqval=Choices.bulk_application_actions_val('change_status'))],
-                              choices=Choices.bulk_application_actions(),
-                              default=Choices.bulk_application_actions_default()
-                              )
-
-    application_status = SelectField('Application Status', choices=Choices.application_status("admin"))
-
-    editor_group = StringField("")

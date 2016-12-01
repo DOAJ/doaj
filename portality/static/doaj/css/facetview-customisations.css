@@ -172,7 +172,3 @@ hr {
 #admin-bulk-box .control-group {
     margin: 5px 0 0 0;
 }
-
-#admin-bulk-box fieldset label {
-    display : none;
-}

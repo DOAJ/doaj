@@ -12,7 +12,7 @@ from portality.util import flash_with_url, jsonp
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit
 
-from portality.view.forms import EditorGroupForm, MakeContinuation, BulkJournalArticleForm, BulkApplicationForm
+from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
@@ -233,46 +233,13 @@ def journal_continue(journal_id):
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
 
-@blueprint.route("/applications", methods=["GET", "POST"])
+@blueprint.route("/applications", methods=["GET"])
 @login_required
 @ssl_required
 def suggestions():
-    if request.method == "GET":
-        form = BulkApplicationForm()
-        return render_template("admin/suggestions.html",
-                               admin_page=True, search_page=True,
-                               facetviews=['admin.applications.facetview'],
-                               form=form)
-
-    elif request.method == "POST":
-        try:
-            q = json.loads(request.values['source'])
-        except ValueError:
-            app.logger.error("Invalid selection query in journal_bulk_edit:\n"
-                             "{}".format(request.values['selection_query']))
-            abort(400)
-        except KeyError as e:
-            app.logger.error(
-                'selection_query is a required argument for this '
-                'route, Flask will raise a 400 Bad Request '
-                'automatically.')
-            raise e
-
-        form = BulkApplicationForm(request.form)
-        if form.validate():
-            action = request.values['bulk_action']
-
-            if action == 'bulk.editor_group':
-                print request.values
-            elif action == 'bulk.change_status':
-                print request.values
-
-            return redirect(url_for('.suggestions'))
-        else:
-            return render_template("admin/suggestions.html",
-                                   admin_page=True, search_page=True,
-                                   facetviews=['admin.applications.facetview'],
-                                   form=form)
+    return render_template("admin/suggestions.html",
+                           admin_page=True, search_page=True,
+                           facetviews=['admin.applications.facetview'])
 
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
@@ -311,52 +278,13 @@ def suggestion_page(suggestion_id):
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
 
 
-@blueprint.route("/admin_site_search", methods=["GET", "POST"])
+@blueprint.route("/admin_site_search", methods=["GET"])
 @login_required
 @ssl_required
 def admin_site_search():
-    if request.method == "GET":
-        form = BulkJournalArticleForm()
-        return render_template("admin/admin_site_search.html",
-                               admin_page=True, search_page=True,
-                               facetviews=['admin.journalarticle.facetview'],
-                               form=form)
-
-    elif request.method == "POST":
-        try:
-            q = json.loads(request.values['source'])
-        except ValueError:
-            app.logger.error("Invalid selection query in journal_bulk_edit:\n"
-                             "{}".format(request.values['selection_query']))
-            abort(400)
-        except KeyError as e:
-            app.logger.error(
-                'selection_query is a required argument for this '
-                'route, Flask will raise a 400 Bad Request '
-                'automatically.')
-            raise e
-
-        form = BulkJournalArticleForm(request.form)
-        if form.validate():
-            if request.values['bulk_action'] in ['bulk.editor_group', 'bulk.add_note']:
-                affected_records = journal_bulk_edit.journal_manage(
-                    selection_query=q,
-                    editor_group=request.values.get('editor_group', ''),
-                    note=request.values.get('note', ''),
-                    dry_run=formcontext.xwalk.interpret_special(request.values.get('dry_run', True))
-                )
-                flash('Bulk journal edit of {} journals has been added to the job queue'.format(affected_records), 'success')
-            # TODO: else if it's one of the other actions, call the appropriate task generator function here
-            else:
-                print request.values
-
-            return redirect(url_for('.admin_site_search'))
-        else:
-            # render the same page so the user can see the errors on the form
-            return render_template("admin/admin_site_search.html",
-                                   admin_page=True, search_page=True,
-                                   facetviews=['admin.journalarticle.facetview'],
-                                   form=form)
+    return render_template("admin/admin_site_search.html",
+                           admin_page=True, search_page=True,
+                           facetviews=['admin.journalarticle.facetview'])
 
 
 @blueprint.route("/editor_groups")

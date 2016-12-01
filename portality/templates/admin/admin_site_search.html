@@ -6,19 +6,28 @@
         <div class="span12">
             <div id="admin-bulk-box" class="pull-right">
                 <label id="admin-bulk-label">Bulk Edit Records</label>
-
-                {% from "_formhelpers.html" import render_field_horizontal %}
-                {% from "_formhelpers.html" import render_field %}
-
                 <form method="post" class="form-horizontal wide" id="journal_bulk_form">
                     <fieldset>
-                        {{ render_field(form.bulk_action, style="width: 250px;") }}
-
-                        {{ render_field(form.editor_group, style="width: 250px", hidden=True) }}
-
+                        <div class="control-group" id="bulk_action-container">
+                            <div class="controls ">
+                                <select id="bulk_action" name="bulk_action" style="width: 250px;">
+                                    <option selected value="">Select action...</option>
+                                    <option value="bulk.withdraw">Withdraw from DOAJ</option>
+                                    <option value="bulk.reinstate">Reinstate into DOAJ</option>
+                                    <option value="bulk.delete">Delete records</option>
+                                    <option value="bulk.editor_group">Assign to editor group...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group" style="display: none;" id="editor_group-container">
+                            <div class="controls ">
+                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
+                            </div>
+                        </div>
                         <div class="control-group">
                             <div class="controls">
-                                <button id="bulk-submit" class="btn btn-danger pull-right">Submit</button>
+                                <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit
+                                </button>
                             </div>
                         </div>
                     </fieldset>
