@@ -42,6 +42,7 @@ jQuery(document).ready(function($) {
                         selection_query: query,
                         bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
+                        note: $('#note').val(),
                         dry_run: false
                     }),
                     contentType : 'application/json',
@@ -73,6 +74,7 @@ jQuery(document).ready(function($) {
                         selection_query: query,
                         bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
+                        note: $('#note').val(),
                         dry_run: true
                     }),
                     contentType : 'application/json',

@@ -44,6 +44,7 @@ jQuery(document).ready(function($) {
                         bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
                         application_status: $('#application_status').val(),     //fixme: this is the only difference from journals
+                        note: $('#note').val(),
                         dry_run: false
                     }),
                     contentType : 'application/json',
@@ -60,31 +61,21 @@ jQuery(document).ready(function($) {
 
             $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
 
-            var sure;
-            if ($('#bulk_action').val() == 'bulk.delete') {
-                sure = confirm('Are you sure?  This operation cannot be undone!');
-            } else {
-                sure = true;
-            }
-
-            if (sure) {
-                $.ajax({
-                    type: 'POST',
-                    url: '/admin/applications/bulk_action',
-                    data: JSON.stringify({
-                        selection_query: query,
-                        bulk_action: $('#bulk_action').val(),
-                        editor_group: $('#editor_group').val(),
-                        application_status: $('#application_status').val(),
-                        dry_run: true
-                    }),
-                    contentType : 'application/json',
-                    success : application_confirm_callback,
-                    error: application_error_callback
-                });
-            } else {
-                $('#bulk-submit').removeAttr('disabled').html('Submit');
-            }
+            $.ajax({
+                type: 'POST',
+                url: '/admin/applications/bulk_action',
+                data: JSON.stringify({
+                    selection_query: query,
+                    bulk_action: $('#bulk_action').val(),
+                    editor_group: $('#editor_group').val(),
+                    application_status: $('#application_status').val(),
+                    note: $('#note').val(),
+                    dry_run: true
+                }),
+                contentType : 'application/json',
+                success : application_confirm_callback,
+                error: application_error_callback
+            });
         });
     }
 

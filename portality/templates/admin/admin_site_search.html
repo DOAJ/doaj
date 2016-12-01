@@ -15,13 +15,19 @@
                                     <option value="bulk.withdraw">Withdraw from DOAJ</option>
                                     <option value="bulk.reinstate">Reinstate into DOAJ</option>
                                     <option value="bulk.delete">Delete records</option>
-                                    <option value="bulk.editor_group">Assign to editor group...</option>
+                                    <option value="bulk.editor_group">Journal: Assign to editor group...</option>
+                                    <option value="bulk.add_note">Journal: Add a note...</option>
                                 </select>
                             </div>
                         </div>
                         <div class="control-group" style="display: none" id="editor_group-container">
                             <div class="controls ">
                                 <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
+                            </div>
+                        </div>
+                        <div class="control-group" style="display: none" id="note-container">
+                            <div class="controls ">
+                                <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
                         <div class="control-group">
@@ -48,6 +54,7 @@
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);
+    toggle_optional_field('bulk_action', ['#note'], ['bulk.add_note']);
 </script>
 
 {% endblock %}
