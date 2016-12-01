@@ -19,7 +19,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group" style="display: none;" id="editor_group-container">
+                        <div class="control-group" style="display: none" id="editor_group-container">
                             <div class="controls ">
                                 <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
                             </div>
@@ -44,7 +44,7 @@
 {% block extra_js_bottom %}
 
 <script type="text/javascript">
-    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";
+    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id='') }}";
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);

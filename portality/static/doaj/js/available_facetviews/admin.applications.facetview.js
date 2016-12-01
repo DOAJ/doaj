@@ -9,12 +9,91 @@ jQuery(document).ready(function($) {
         }
     }
 
+
+    function adminJAPostRender(options, context) {
+        doajJAPostRender(options, context);
+
+        var query = elasticSearchQuery({
+            options: options,
+            include_facets: false,
+            include_fields: false
+        });
+
+        ////////////////////////////////////////////////////////////
+        // functions for handling the bulk form
+
+        function application_success_callback(data) {
+            alert('Done. ' + data.affected_records + ' records have been queued.');             //todo: improve feedback
+            $('#bulk-submit').removeAttr('disabled').html('Submit');
+        }
+
+        function application_error_callback(jqXHR, textStatus, errorThrown) {
+            alert('There was an error with your request.');
+            console.error(textStatus + ': ' + errorThrown);
+            $('#bulk-submit').removeAttr('disabled').html('Submit');
+        }
+
+        function application_confirm_callback(data) {
+            var sure = confirm('This operation will affect ' + data.affected_records + ' records');
+            if (sure) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/applications/bulk_action',
+                    data: JSON.stringify({
+                        selection_query: query,
+                        bulk_action: $('#bulk_action').val(),
+                        editor_group: $('#editor_group').val(),
+                        application_status: $('#application_status').val(),     //fixme: this is the only difference from journals
+                        dry_run: false
+                    }),
+                    contentType : 'application/json',
+                    success : application_success_callback,
+                    error: application_error_callback
+                });
+            } else {
+                $('#bulk-submit').removeAttr('disabled').html('Submit');
+            }
+        }
+
+        $('#bulk-submit').unbind('click').bind('click', function(event) {
+            event.preventDefault();
+
+            $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
+
+            var sure;
+            if ($('#bulk_action').val() == 'bulk.delete') {
+                sure = confirm('Are you sure?  This operation cannot be undone!');
+            } else {
+                sure = true;
+            }
+
+            if (sure) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/admin/applications/bulk_action',
+                    data: JSON.stringify({
+                        selection_query: query,
+                        bulk_action: $('#bulk_action').val(),
+                        editor_group: $('#editor_group').val(),
+                        application_status: $('#application_status').val(),
+                        dry_run: true
+                    }),
+                    contentType : 'application/json',
+                    success : application_confirm_callback,
+                    error: application_error_callback
+                });
+            } else {
+                $('#bulk-submit').removeAttr('disabled').html('Submit');
+            }
+        });
+    }
+
     $('.facetview.suggestions').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
-        post_render_callback: doajScrollTop,
+        post_render_callback: adminJAPostRender,
         post_search_callback: adminButtons,
 
         sharesave_link: false,
