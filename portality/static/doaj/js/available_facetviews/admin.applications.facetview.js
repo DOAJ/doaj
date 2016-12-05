@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
         // functions for handling the bulk form
 
         function application_success_callback(data) {
-            alert('Done. ' + data.affected_records + ' records have been queued.');             //todo: improve feedback
+            alert('Submitted - ' + data.affected_applications + ' applications have been queued for edit.');
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
 
@@ -34,7 +34,7 @@ jQuery(document).ready(function($) {
         }
 
         function application_confirm_callback(data) {
-            var sure = confirm('This operation will affect ' + data.affected_records + ' records');
+            var sure = confirm('This operation will affect ' + data.affected_applications + ' applications.');
             if (sure) {
                 $.ajax({
                     type: 'POST',
@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
                         selection_query: query,
                         bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
-                        application_status: $('#application_status').val(),     //fixme: this is the only difference from journals
+                        application_status: $('#application_status').val(),
                         note: $('#note').val(),
                         dry_run: false
                     }),

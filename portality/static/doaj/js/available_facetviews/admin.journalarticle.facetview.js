@@ -21,8 +21,25 @@ jQuery(document).ready(function($) {
         ////////////////////////////////////////////////////////////
         // functions for handling the bulk form
 
+        function build_affected_msg(data) {
+            var mfrg = undefined;
+            if (data.affected_journals && data.affected_articles) {
+                mfrg = data.affected_journals + " journals and " + data.affected_articles + " articles"
+            }
+            else if (data.affected_journals) {
+                mfrg = data.affected_journals + " journals"
+            }
+            else if (data.affected_articles) {
+                mfrg = data.affected_journals + " articles"
+            }
+            else {
+                mfrg = "an unknown number of records"
+            }
+            return mfrg
+        }
+
         function journal_success_callback(data) {
-            alert('Done. ' + data.affected_records + ' records have been queued.');             //todo: improve feedback
+            alert('Submitted - ' + build_affected_msg(data) + ' have been queued for edit.');
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
 
@@ -33,7 +50,7 @@ jQuery(document).ready(function($) {
         }
 
         function journal_confirm_callback(data) {
-            var sure = confirm('This operation will affect ' + data.affected_records + ' records');
+            var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
             if (sure) {
                 $.ajax({
                     type: 'POST',
