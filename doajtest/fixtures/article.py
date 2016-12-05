@@ -41,6 +41,10 @@ class ArticleFixtureFactory(object):
     def upload_1_issn_superlong_should_clip(cls):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to be Clipped']")
 
+    @classmethod
+    def invalid_schema_xml(cls):
+        return StringIO("<this><isnot my='schema'></isnot></this>");
+
     @staticmethod
     def make_article_source():
         return deepcopy(ARTICLE_SOURCE)

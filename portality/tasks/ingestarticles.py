@@ -12,11 +12,7 @@ from urlparse import urlparse
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
 
-def process_file_upload(file_upload):
-    job = IngestArticlesBackgroundTask.prepare(current_user.id, file_upload_id=file_upload.id)
-    IngestArticlesBackgroundTask.submit(job)
-
-def ftp_upload(path, parsed_url, file_upload):
+def ftp_upload(job, path, parsed_url, file_upload):
     # 1. find out the file size
     #    (in the meantime the size command will return an error if
     #     the file does not exist)
@@ -47,31 +43,33 @@ def ftp_upload(path, parsed_url, file_upload):
 
     try:
         f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
+
         r = f.sendcmd('TYPE I')  # SIZE is not usually allowed in ASCII mode, so set to binary mode
         if not r.startswith('2'):
-            print '...could not set binary mode in target FTP server while checking file exists'
+            job.add_audit_message('could not set binary mode in target FTP server while checking file exists')
+            file_upload.failed("Unable to download file from FTP site")
             return False
+
         file_size = f.size(parsed_url.path)
         if file_size < 0:
             # this will either raise an error which will get caught below
             # or, very rarely, will return an invalid size
-            print '...invalid file size: ' + str(file_size)
+            job.add_audit_message('invalid file size: ' + str(file_size))
+            file_upload.failed("Unable to download file from FTP site")
             return False
 
         if file_size > size_limit:
             file_upload.failed("The file at the URL was too large")
-            file_upload.save()
-            print "...too large"
+            job.add_audit_message("too large")
             return False
 
-
         f.close()
+
         f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
         c = f.retrbinary('RETR ' + parsed_url.path, ftp_callback, CHUNK_SIZE)
         if too_large[0]:
             file_upload.failed("The file at the URL was too large")
-            file_upload.save()
-            print "...too large"
+            job.add_audit_message("too large")
             try:
                 os.remove(path)
             except:
@@ -79,19 +77,27 @@ def ftp_upload(path, parsed_url, file_upload):
             return False
 
         if c.startswith('226'):
+            file_upload.downloaded()
             return True
 
-        print 'Bad code returned by FTP server for the file transfer: "{0}"'.format(c)
+        msg = u'Bad code returned by FTP server for the file transfer: "{0}"'.format(c)
+        job.add_audit_message(msg)
+        file_upload.failed(msg)
         return False
 
     except Exception as e:
-        print 'error during FTP file download: ' + str(e.args)
+        job.add_audit_message('error during FTP file download: ' + str(e.args))
+        file_upload.failed("Unable to download file from FTP site")
         return False
 
 
-def http_upload(path, file_upload):
+def http_upload(job, path, file_upload):
     try:
         r = requests.get(file_upload.filename, stream=True)
+        if r.status_code != requests.codes.ok:
+            job.add_audit_message("The URL could not be accessed")
+            file_upload.failed("The URL could not be accessed")
+            return False
 
         # check the content length
         size_limit = app.config.get("MAX_REMOTE_SIZE", DEFAULT_MAX_REMOTE_SIZE)
@@ -100,10 +106,10 @@ def http_upload(path, file_upload):
             cl = int(cl)
         except:
             cl = 0
+
         if cl > size_limit:
             file_upload.failed("The file at the URL was too large")
-            file_upload.save()
-            print "...too large"
+            job.add_audit_message("too large")
             return False
 
         too_large = False
@@ -114,17 +120,15 @@ def http_upload(path, file_upload):
                 # check the size limit again
                 if downloaded > size_limit:
                     file_upload.failed("The file at the URL was too large")
-                    file_upload.save()
-                    print "...too large"
+                    job.add_audit_message("too large")
                     too_large = True
                     break
                 if chunk: # filter out keep-alive new chunks
                     f.write(chunk)
                     f.flush()
     except:
+        job.add_audit_message("The URL could not be accessed")
         file_upload.failed("The URL could not be accessed")
-        file_upload.save()
-        print "...failed"
         return False
 
     if too_large:
@@ -134,6 +138,7 @@ def http_upload(path, file_upload):
             pass
         return False
 
+    file_upload.downloaded()
     return True
 
 class IngestArticlesBackgroundTask(BackgroundTask):
@@ -148,7 +153,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        file_upload_id = params.get("ingest_article__file_upload_id")
+        if params is None:
+            raise BackgroundException(u"IngestArticleBackgroundTask.run run without sufficient parameters")
+
+        file_upload_id = params.get("ingest_articles__file_upload_id")
         if file_upload_id is None:
             raise BackgroundException(u"IngestArticleBackgroundTask.run run without sufficient parameters")
 
@@ -177,10 +185,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         # first, determine if ftp or http
         parsed_url = urlparse(file_upload.filename)
         if parsed_url.scheme == 'ftp':
-            if not ftp_upload(path, parsed_url, file_upload):
+            if not ftp_upload(job, path, parsed_url, file_upload):
                 return False
         elif parsed_url.scheme in ['http', "https"]:
-            if not http_upload(path, file_upload):
+            if not http_upload(job, path, file_upload):
                 return False
         else:
             msg = u"We only support HTTP(s) and FTP uploads by URL. This is a: {x}".format(x=parsed_url.scheme)
@@ -202,7 +210,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 job.add_audit_message(u"Error cleaning up invalid file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("Unable to parse file")
-            file_upload.save()
             raise
 
         # if we get to here then we have a successfully downloaded and validated
@@ -278,18 +285,32 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         if upload_dir is None:
             raise BackgroundException("UPLOAD_DIR is not set in configuration")
 
+        f = kwargs.get("upload_file")
+        schema = kwargs.get("schema")
+        url = kwargs.get("url")
+        previous = kwargs.get("previous", [])
+
+        if f is None and url is None:
+            raise BackgroundException("You must specify one of 'upload_file' or 'url' as keyword arguments")
+        if schema is None:
+            raise BackgroundException("You must specify 'schema' in the keyword arguments")
+
+        file_upload_id = None
+        if f is not None and f.filename != "":
+            file_upload_id = cls._file_upload(username, f, schema, previous)
+        elif url is not None and url != "":
+            file_upload_id = cls._url_upload(username, url, schema, previous)
+
+        if file_upload_id is None:
+            raise BackgroundException("No file upload record was created")
+
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
 
-        file_upload_id = kwargs.get("file_upload_id")
-
         params ={}
         params["ingest_articles__file_upload_id"] = file_upload_id
-
-        if params["ingest_articles__file_upload_id"] is None:
-            raise BackgroundException(u"IngestArticlesBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
         return job
@@ -304,6 +325,151 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         """
         background_job.save()
         ingest_articles.schedule(args=(background_job.id,), delay=10)
+
+    @classmethod
+    def _file_upload(cls, username, f, schema, previous):
+        # prep a record to go into the index, to record this upload
+        record = models.FileUpload()
+        record.upload(username, f.filename)
+        record.set_id()
+
+        # the file path that we are going to write to
+        xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.local_filename)
+
+        # it's critical here that no errors cause files to get left behind unrecorded
+        try:
+            # write the incoming file out to the XML file
+            f.save(xml)
+
+            # save the index entry
+            record.save()
+        except:
+            # if we can't record either of these things, we need to back right off
+            try:
+                os.remove(xml)
+            except:
+                pass
+            try:
+                record.delete()
+            except:
+                pass
+
+            raise BackgroundException("Failed to upload file - please contact an administrator")
+
+        # now we have the record in the index and on disk, we can attempt to
+        # validate it
+        try:
+            actual_schema = None
+            with open(xml) as handle:
+                actual_schema = article.check_schema(handle, schema)
+        except:
+            # file is a dud, so remove it
+            try:
+                os.remove(xml)
+            except:
+                pass
+
+            # if we're unable to validate the file, we should record this as
+            # a file error.
+            record.failed("Unable to parse file")
+            record.save()
+            previous.insert(0, record)
+            raise BackgroundException("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.")
+
+        if actual_schema:
+            record.validated(actual_schema)
+            record.save()
+            previous.insert(0, record)
+        else:
+            record.failed("File could not be validated against a known schema")
+            record.save()
+            os.remove(xml)
+            previous.insert(0, record)
+            raise BackgroundException("File could not be validated against a known schema; please fix this before attempting to upload again")
+
+        return record.id
+
+    @classmethod
+    def _url_upload(cls, username, url, schema, previous):
+        # first define a few functions
+        def __http_upload(record, previous, url):
+            # first thing to try is a head request, supporting redirects
+            head = requests.head(url, allow_redirects=True)
+            if head.status_code == requests.codes.ok:
+                return __ok(record, previous)
+
+            # if we get to here, the head request failed.  This might be because the file
+            # isn't there, but it might also be that the server doesn't support HEAD (a lot
+            # of webapps [including this one] don't implement it)
+            #
+            # so we do an interruptable get request instead, so we don't download too much
+            # unnecessary content
+            get = requests.get(url, stream=True)
+            get.close()
+            if get.status_code == requests.codes.ok:
+                return __ok(record, previous)
+            return __fail(record, previous, error='error while checking submitted file reference: {0}'.format(get.status_code))
+
+
+        def __ftp_upload(record, previous, parsed_url):
+            # 1. find out whether the file exists
+            # 2. that's it, return OK
+
+            # We might as well check if the file exists using the SIZE command.
+            # If the FTP server does not support SIZE, our article ingestion
+            # script is going to refuse to process the file anyway, so might as
+            # well get a failure now.
+            # Also it's more of a faff to check file existence using LIST commands.
+            try:
+                f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
+                r = f.sendcmd('TYPE I')  # SIZE is not usually allowed in ASCII mode, so set to binary mode
+                if not r.startswith('2'):
+                    return __fail(record, previous, error='could not set binary '
+                        'mode in target FTP server while checking file exists')
+                if f.size(parsed_url.path) < 0:
+                    # this will either raise an error which will get caught below
+                    # or, very rarely, will return an invalid size
+                    return __fail(record, previous, error='file does not seem to exist on FTP server')
+
+            except Exception as e:
+                return __fail(record, previous, error='error during FTP file existence check: ' + str(e.args))
+
+            return __ok(record, previous)
+
+
+        def __ok(record, previous):
+            record.exists()
+            record.save()
+            previous.insert(0, record)
+            return record.id
+
+        def __fail(record, previous, error):
+            message = 'The URL could not be accessed; ' + error
+            record.failed(message)
+            record.save()
+            previous.insert(0, record)
+            raise BackgroundException(message)
+
+        # prep a record to go into the index, to record this upload.  The filename is the url
+        record = models.FileUpload()
+        record.upload(username, url)
+        record.set_id()
+        record.set_schema(schema) # although it could be wrong, this will get checked later
+
+        # now we attempt to verify that the file is retrievable
+        try:
+            # first, determine if ftp or http
+            parsed_url = urlparse(url)
+            if parsed_url.scheme in ['http', "https"]:
+                return __http_upload(record, previous, url)
+            elif parsed_url.scheme == 'ftp':
+                return __ftp_upload(record, previous, parsed_url)
+            else:
+                return __fail(record, previous, error='unsupported URL scheme "{0}". Only HTTP(s) and FTP are supported.'.format(parsed_url.scheme))
+        except BackgroundException as e:
+            raise
+        except Exception as e:
+            return __fail(record, previous, error="please check it before submitting again; " + e.message)
 
 @main_queue.task()
 @write_required(script=True)
