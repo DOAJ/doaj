@@ -1,11 +1,15 @@
+from copy import deepcopy
+import json
+
 from flask_login import current_user
+
 from portality import models, lock
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 
 def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
@@ -17,7 +21,6 @@ def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
     job = JournalBulkEditBackgroundTask.prepare(
         current_user.id,
         selection_query=selection_query,
-        dry_run=dry_run,
         editor_group=editor_group,
         note=note,
         ids=ids
@@ -85,7 +88,9 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
 
     @classmethod
     def resolve_selection_query(cls, selection_query):
-        return [j['_id'] for j in models.Journal.query(q=selection_query)['hits']['hits']]
+        q = deepcopy(selection_query)
+        q["_source"] = False
+        return [j['_id'] for j in models.Journal.iterate(q=q, page_size=5000, wrap=False)]
 
     @classmethod
     def prepare(cls, username, **kwargs):
@@ -101,7 +106,7 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
-        job.reference = {'selection_query': kwargs['selection_query']}
+        job.reference = {'selection_query': json.dumps(kwargs['selection_query'])}
 
         params = {}
         cls.set_param(params, 'ids', kwargs['ids'])
@@ -111,7 +116,7 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         if not cls.get_param(params, 'ids')\
                 and not cls.get_param(params, 'editor_group')\
                 and not cls.get_param(params, 'note'):
-            raise RuntimeError(u"{}.prepare run without sufficient parameters".format(cls.__name__))
+            raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 

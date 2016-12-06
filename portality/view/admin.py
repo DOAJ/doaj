@@ -424,15 +424,16 @@ def journals_bulk_action():
         if del_attr in q:
             del q[del_attr]
 
+    r = {}
     try:
         if payload['bulk_action'] == 'bulk.editor_group':
-            affected_records = journal_bulk_edit.journal_manage(
+            r['affected_journals'] = journal_bulk_edit.journal_manage(
                 selection_query=payload['selection_query'],
                 editor_group=payload['editor_group'],
                 dry_run=payload.get('dry_run', True)
             )
         elif payload['bulk_action'] == 'bulk.add_note':
-            affected_records = journal_bulk_edit.journal_manage(
+            r['affected_journals'] = journal_bulk_edit.journal_manage(
                 selection_query=payload['selection_query'],
                 note=payload['note'],
                 dry_run=payload.get('dry_run', True)
@@ -451,6 +452,14 @@ def journals_bulk_action():
                          " trying to take.".format(e.message))
         abort(400)
 
-    resp = make_response(json.dumps({'affected_records': affected_records}))
+    resp = make_response(json.dumps(r))
+    resp.mimetype = "application/json"
+    return resp
+
+@blueprint.route("/applications/bulk_action", methods=["POST"])
+@login_required
+@ssl_required
+def applications_bulk_action():
+    resp = make_response(json.dumps({'affected_applications': 0}))
     resp.mimetype = "application/json"
     return resp
