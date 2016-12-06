@@ -28,7 +28,11 @@ jQuery(document).ready(function($) {
         }
 
         function application_error_callback(jqXHR, textStatus, errorThrown) {
-            alert('There was an error with your request.');
+            var msg = 'There was an error with your request.';
+            if (jqXHR.error) {
+                msg = jqXHR.error
+            }
+            alert(msg);
             console.error(textStatus + ': ' + errorThrown);
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
