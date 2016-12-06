@@ -30,7 +30,7 @@ jQuery(document).ready(function($) {
                 mfrg = data.affected_journals + " journals"
             }
             else if (data.affected_articles) {
-                mfrg = data.affected_journals + " articles"
+                mfrg = data.affected_articles + " articles"
             }
             else {
                 mfrg = "an unknown number of records"
