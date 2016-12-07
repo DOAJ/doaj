@@ -5,7 +5,7 @@ from portality.core import app
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
 import ftplib, os, requests, traceback
 from urlparse import urlparse
 
@@ -222,6 +222,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job = self.background_job
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
+
+        if not os.path.exists(path):
+            raise RetryException()
+
         job.add_audit_message(u"Importing from {x}".format(x=path))
 
         success = 0
@@ -323,7 +327,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
-        background_job.save()
+        background_job.save(blocking=True)
         ingest_articles.schedule(args=(background_job.id,), delay=10)
 
     @classmethod
@@ -471,7 +475,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except Exception as e:
             return __fail(record, previous, error="please check it before submitting again; " + e.message)
 
-@main_queue.task()
+# FIXME: make the parameters configurable
+@main_queue.task(retries=3, retry_delay=10)
 @write_required(script=True)
 def ingest_articles(job_id):
     job = models.BackgroundJob.pull(job_id)

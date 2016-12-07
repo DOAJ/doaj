@@ -9,6 +9,9 @@ import traceback
 class BackgroundException(Exception):
     pass
 
+class RetryException(Exception):
+    pass
+
 class BackgroundApi(object):
 
     @classmethod
@@ -27,6 +30,13 @@ class BackgroundApi(object):
 
         try:
             background_task.run()
+        except RetryException:
+            if job.reference is None:
+                job.reference = {}
+            retries = job.reference.get("retries", 0)
+            job.reference["retries"] = retries + 1
+            job.save()
+            raise
         except Exception as e:
             job.fail()
             job.add_audit_message("Error in Job Run")

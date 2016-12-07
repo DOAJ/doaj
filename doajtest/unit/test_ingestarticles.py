@@ -1,10 +1,11 @@
 from doajtest.helpers import DoajTestCase
+
 from portality.tasks import ingestarticles
 from doajtest.fixtures.article import ArticleFixtureFactory
 from portality import models, article
 from portality.core import app
 import os, requests, ftplib, urlparse
-from portality.background import BackgroundException
+from portality.background import BackgroundException, RetryException
 import uuid, time
 
 GET = requests.get
@@ -755,3 +756,46 @@ class TestArticleUpload(DoajTestCase):
 
         with self.assertRaises(BackgroundException):
             task.run()
+
+    def test_29_submit_success(self):
+        j = models.Journal()
+        j.set_owner("testowner")
+        bj = j.bibjson()
+        bj.add_identifier(bj.P_ISSN, "1234-5678")
+        j.save(blocking=True)
+
+        handle = ArticleFixtureFactory.upload_1_issn_correct()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", upload_file=f, schema="doaj", previous=previous)
+        id = job.params.get("ingest_articles__file_upload_id")
+        self.cleanup_ids.append(id)
+
+        # because file upload gets created and saved by prepare
+        time.sleep(2)
+
+        # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
+        # which in turn calls execute, which ultimately calls run
+        ingestarticles.IngestArticlesBackgroundTask.submit(job)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.status == "processed"
+
+    def test_30_submit_retry(self):
+        fu = models.FileUpload()
+        fu.validated("doaj")
+        fu.save()
+
+        job = models.BackgroundJob()
+        params = {}
+        params["ingest_articles__file_upload_id"] = fu.id
+        job.params = params
+        job.save(blocking=True)
+
+        # this assumes that huey is in always eager mode, and thus this immediately calls the async task,
+        # which in turn calls execute, which ultimately calls run
+        with self.assertRaises(RetryException):
+            ingestarticles.IngestArticlesBackgroundTask.submit(job)
