@@ -66,9 +66,11 @@ ELASTIC_SEARCH_VERSION = "1.7.5"
 
 ES_TERMS_LIMIT = 1024
 
-# redis settings
+# huey/redis settings
 HUEY_REDIS_HOST = '127.0.0.1'
 HUEY_REDIS_PORT = 6379
+HUEY_EAGER = False
+
 HUEY_SCHEDULE = {
     "sitemap" : {"month" : "*", "day" : "*", "hour" : "8", "minute" : "0"},
     "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"}

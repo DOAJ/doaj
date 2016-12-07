@@ -1,7 +1,7 @@
 from huey import RedisHuey, crontab
 from portality.core import app
 
-main_queue = RedisHuey('doaj', host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'])
+main_queue = RedisHuey('doaj', host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'], always_eager=app.config.get("HUEY_EAGER", False))
 
 def schedule(action):
     cfg = app.config.get("HUEY_SCHEDULE", {})
