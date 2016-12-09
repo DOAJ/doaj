@@ -268,7 +268,7 @@ REAPP1_SOURCE = {
         },
         "author_publishing_rights":{
             "url":"http://publishing.rights",
-            "publishing_rights":"Occasionally"
+            "publishing_rights":"True"
         },
         "keywords":[
             "word",
@@ -347,7 +347,7 @@ REAPP1_SOURCE = {
         },
         "author_copyright":{
             "url":"http://copyright.com",
-            "copyright":"Sometimes"
+            "copyright":"True"
         },
         "institution":"Society Institution",
         "deposit_policy":[
@@ -479,7 +479,7 @@ REAPP2_UNICODE_SOURCE = {
         },
         u"author_publishing_rights":{
             u"url":u"http://publishing.rights",
-            u"publishing_rights":u"Occasionally"
+            u"publishing_rights":u"True"
         },
         u"keywords":[
             u"word",
@@ -558,7 +558,7 @@ REAPP2_UNICODE_SOURCE = {
         },
         u"author_copyright":{
             u"url":u"http://copyright.com",
-            u"copyright":u"Sometimes"
+            u"copyright":u"True"
         },
         u"institution":u"Society Institution",
         u"deposit_policy":[

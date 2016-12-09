@@ -235,19 +235,15 @@ class JournalInformation(Form):
     deposit_policy_other = StringField('',
     )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?',
-        [validators.DataRequired(), ExtraFieldRequiredIf('copyright_other', reqval=Choices.copyright_other_val("other"))],
+        [validators.DataRequired()],
         choices = Choices.copyright()
-    )
-    copyright_other = StringField('',
     )
     copyright_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('copyright', optvals=Choices.copyright_url_optional()), URLOptionalScheme()]
     )
     publishing_rights = RadioField('Will the journal allow the author(s) to retain publishing rights without restrictions?',
-        [validators.DataRequired(), ExtraFieldRequiredIf('publishing_rights_other', reqval=Choices.publishing_rights_other_val("other"))],
+        [validators.DataRequired()],
         choices = Choices.publishing_rights()
-    )
-    publishing_rights_other = StringField('',
     )
     publishing_rights_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('publishing_rights', optvals=Choices.publishing_rights_url_optional()), URLOptionalScheme()]

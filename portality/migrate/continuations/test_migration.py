@@ -95,11 +95,11 @@ OLD_JOURNAL_FORMAT = {
         },
         "deposit_policy": ["Sherpa/Romeo", "Store it"],
         "author_copyright": {
-            "copyright": "Sometimes",
+            "copyright": "True",
             "url": "http://copyright.com"
         },
         "author_publishing_rights": {
-            "publishing_rights": "Occasionally",
+            "publishing_rights": "True",
             "url": "http://publishing.rights"
         },
         "allows_fulltext_indexing": True,

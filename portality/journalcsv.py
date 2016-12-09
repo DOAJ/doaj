@@ -140,9 +140,7 @@ class Journal2QuestionXwalk(object):
         "article_identifiers_other" : "article_identifiers",
         "fulltext_format_other" : "fulltext_format",
         "license_other" : "license",
-        "deposit_policy_other" : "deposit_policy",
-        "copyright_other" : "copyright",
-        "publishing_rights_other" : "publishing_rights"
+        "deposit_policy_other" : "deposit_policy"
     }
 
     @classmethod
@@ -318,15 +316,11 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("deposit_policy"), deposit_policies))
 
         cr = forminfo.get("copyright")
-        if cr == choices.Choices.copyright_other_val("other"):
-            cr = forminfo.get("copyright_other")
         kvs.append((cls.q("copyright"), cr))
 
         kvs.append((cls.q("copyright_url"), forminfo.get("copyright_url")))
 
         pr = forminfo.get("publishing_rights")
-        if pr == choices.Choices.publishing_rights_other_val("other"):
-            pr = forminfo.get("publishing_rights_other")
         kvs.append((cls.q("publishing_rights"), pr))
 
         kvs.append((cls.q("publishing_rights_url"), forminfo.get("publishing_rights_url")))

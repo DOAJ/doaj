@@ -124,11 +124,11 @@ JOURNAL_SOURCE = {
         },
         "deposit_policy": ["Sherpa/Romeo", "Store it"],
         "author_copyright": {
-            "copyright": "Sometimes",
+            "copyright": True,
             "url": "http://copyright.com"
         },
         "author_publishing_rights": {
-            "publishing_rights": "Occasionally",
+            "publishing_rights": True,
             "url": "http://publishing.rights"
         },
         "allows_fulltext_indexing": True,
@@ -243,11 +243,9 @@ JOURNAL_INFO = {
     "open_access": "True",
     "deposit_policy": ["Sherpa/Romeo", "Other"],
     "deposit_policy_other": "Store it",
-    "copyright": "Other",
-    "copyright_other": "Sometimes",
+    "copyright": "True",
     "copyright_url": "http://copyright.com",
-    "publishing_rights": "Other",
-    "publishing_rights_other": "Occasionally",
+    "publishing_rights": "True",
     "publishing_rights_url": "http://publishing.rights",
     "replaces" : ["1111-1111"],
     "is_replaced_by" : ["2222-2222"],

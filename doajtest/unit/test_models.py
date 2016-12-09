@@ -515,9 +515,9 @@ class TestClient(DoajTestCase):
         assert bj.article_statistics.get("statistics") is True
         assert bj.article_statistics.get("url") == "http://download.stats"
         assert bj.deposit_policy == ["Sherpa/Romeo", "Store it"]
-        assert bj.author_copyright.get("copyright") == "Sometimes"
+        assert bj.author_copyright.get("copyright") == "True"
         assert bj.author_copyright.get("url") == "http://copyright.com"
-        assert bj.author_publishing_rights.get("publishing_rights") == "Occasionally"
+        assert bj.author_publishing_rights.get("publishing_rights") == "True"
         assert bj.author_publishing_rights.get("url") == "http://publishing.rights"
         assert bj.allows_fulltext_indexing is True
         assert bj.persistent_identifier_scheme == ["DOI", "ARK", "PURL"]
@@ -546,8 +546,8 @@ class TestClient(DoajTestCase):
         bj.set_plagiarism_detection("http://test1", False)
         bj.set_article_statistics("http://test2", False)
         bj.deposit_policy = ["Never"]
-        bj.set_author_copyright("http://test3", "Occasionally")
-        bj.set_author_publishing_rights("http://test4", "Often")
+        bj.set_author_copyright("http://test3", "True")
+        bj.set_author_publishing_rights("http://test4", "True")
         bj.allows_fulltext_indexing = False
         bj.persistent_identifier_scheme = "DOI"
         bj.format = "PDF"
@@ -579,9 +579,9 @@ class TestClient(DoajTestCase):
         assert bj.article_statistics.get("statistics") is False
         assert bj.article_statistics.get("url") == "http://test2"
         assert bj.deposit_policy == ["Never"]
-        assert bj.author_copyright.get("copyright") == "Occasionally"
+        assert bj.author_copyright.get("copyright") == "True"
         assert bj.author_copyright.get("url") == "http://test3"
-        assert bj.author_publishing_rights.get("publishing_rights") == "Often"
+        assert bj.author_publishing_rights.get("publishing_rights") == "True"
         assert bj.author_publishing_rights.get("url") == "http://test4"
         assert bj.allows_fulltext_indexing is False
         assert bj.persistent_identifier_scheme == ["DOI"]

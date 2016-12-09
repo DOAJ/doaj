@@ -108,8 +108,8 @@ jQuery(document).ready(function($) {
     toggle_optional_field('waiver_policy', ['#waiver_policy_url']);
     toggle_optional_field('download_statistics', ['#download_statistics_url']);
     toggle_optional_field('plagiarism_screening', ['#plagiarism_screening_url']);
-    toggle_optional_field('publishing_rights', ['#publishing_rights_url'], ["True", "Other"]);
-    toggle_optional_field('copyright', ['#copyright_url'], ["True", "Other"]);
+    toggle_optional_field('publishing_rights', ['#publishing_rights_url'], ["True"]);
+    toggle_optional_field('copyright', ['#copyright_url'], ["True"]);
     toggle_optional_field('license_embedded', ['#license_embedded_url']);
     toggle_optional_field('processing_charges', ['#processing_charges_amount', '#processing_charges_currency']);
     toggle_optional_field('submission_charges', ['#submission_charges_amount', '#submission_charges_currency']);
