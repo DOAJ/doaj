@@ -12,27 +12,28 @@ from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 
-def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
+def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', application_status=''):
 
-    ids = JournalBulkEditBackgroundTask.resolve_selection_query(selection_query)
+    ids = SuggestionBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
         return len(ids)
 
-    job = JournalBulkEditBackgroundTask.prepare(
+    job = SuggestionBulkEditBackgroundTask.prepare(
         current_user.id,
         selection_query=selection_query,
         editor_group=editor_group,
         note=note,
+        application_status=application_status,
         ids=ids
     )
-    JournalBulkEditBackgroundTask.submit(job)
 
+    SuggestionBulkEditBackgroundTask.submit(job)
     return len(ids)
 
 
-class JournalBulkEditBackgroundTask(BackgroundTask):
+class SuggestionBulkEditBackgroundTask(BackgroundTask):
 
-    __action__ = "journal_bulk_edit"
+    __action__ = "suggestion_bulk_edit"
 
     def run(self):
         """
@@ -45,34 +46,40 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         ids = self.get_param(params, 'ids')
         editor_group = self.get_param(params, 'editor_group')
         note = self.get_param(params, 'note')
+        application_status = self.get_param(params, 'application_status')
 
         if not self.get_param(params, 'ids') \
                 and not self.get_param(params, 'editor_group') \
-                and not self.get_param(params, 'note'):
+                and not self.get_param(params, 'note') \
+                and not self.get_param(params, 'application_status'):
             raise RuntimeError(u"{}.prepare run without sufficient parameters".format(self.__class__.__name__))
 
-        for journal_id in ids:
+        for suggestion_id in ids:
             updated = False
 
-            j = models.Journal.pull(journal_id)
-            if j is None:
-                job.add_audit_message(u"Journal with id {} does not exist, skipping".format(journal_id))
+            s = models.Suggestion.pull(suggestion_id)
+            if s is None:
+                job.add_audit_message(u"Suggestion with id {} does not exist, skipping".format(suggestion_id))
                 continue
-                
-            if editor_group:
-                job.add_audit_message(u"Setting editor_group to {x} for journal {y}".format(x=str(editor_group), y=journal_id))
-                j.set_editor_group(editor_group)
-                updated = True
-                
-            if note:
-                job.add_audit_message(u"Adding note to for journal {y}".format(y=journal_id))
-                j.add_note(note)
-                updated = True
-            
-            if updated:
-                j.save()
 
-            job.add_audit_message(u"Journal {} set editor_group to {}".format(journal_id, editor_group))
+            if editor_group:
+                job.add_audit_message(u"Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
+                s.set_editor_group(editor_group)
+                updated = True
+
+            if note:
+                job.add_audit_message(u"Adding note to for suggestion {y}".format(y=suggestion_id))
+                s.add_note(note)
+                updated = True
+
+            if application_status:
+                s.set_application_status(application_status)
+                updated = True
+
+            if updated:
+                s.save()
+
+            job.add_audit_message(u"Suggestion {} set editor_group to {}".format(suggestion_id, editor_group))
 
     def cleanup(self):
         """
@@ -84,13 +91,13 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         ids = self.get_param(params, 'ids')
         username = job.user
 
-        lock.batch_unlock("journal", ids, username)
+        lock.batch_unlock("suggestion", ids, username)
 
     @classmethod
     def resolve_selection_query(cls, selection_query):
         q = deepcopy(selection_query)
         q["_source"] = False
-        return [j['_id'] for j in models.Journal.iterate(q=q, page_size=5000, wrap=False)]
+        return [s['_id'] for s in models.Suggestion.iterate(q=q, page_size=5000, wrap=False)]
 
     @classmethod
     def prepare(cls, username, **kwargs):
@@ -112,17 +119,19 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         cls.set_param(params, 'ids', kwargs['ids'])
         cls.set_param(params, 'editor_group', kwargs.get('editor_group', ''))
         cls.set_param(params, 'note', kwargs.get('note', ''))
+        cls.set_param(params, 'application_status', kwargs.get('application_status', ''))
 
         if not cls.get_param(params, 'ids')\
                 and not cls.get_param(params, 'editor_group')\
-                and not cls.get_param(params, 'note'):
+                and not cls.get_param(params, 'note') \
+                and not cls.get_param(params, 'application_status'):
             raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 
-        # now ensure that we have the locks for all the journals
+        # now ensure that we have the locks for all the suggestions
         # will raise an exception if this fails
-        lock.batch_lock("journal", kwargs.get('ids', []), username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
+        lock.batch_lock("suggestion", kwargs.get('ids', []), username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
 
         return job
 
@@ -135,12 +144,12 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        journal_bulk_edit.schedule(args=(background_job.id,), delay=10)
+        suggestion_bulk_edit.schedule(args=(background_job.id,), delay=10)
 
 
 @main_queue.task()
 @write_required(script=True)
-def journal_bulk_edit(job_id):
+def suggestion_bulk_edit(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = JournalBulkEditBackgroundTask(job)
+    task = SuggestionBulkEditBackgroundTask(job)
     BackgroundApi.execute(task)
