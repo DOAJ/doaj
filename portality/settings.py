@@ -69,6 +69,10 @@ ES_TERMS_LIMIT = 1024
 # redis settings
 HUEY_REDIS_HOST = '127.0.0.1'
 HUEY_REDIS_PORT = 6379
+HUEY_SCHEDULE = {
+    "sitemap" : {"month" : "*", "day" : "*", "hour" : "8", "minute" : "0"},
+    "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"}
+}
 
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default

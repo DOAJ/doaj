@@ -7,7 +7,7 @@ from portality.core import app
 
 from portality.background import BackgroundTask, BackgroundApi
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
 from huey import crontab
 
@@ -391,7 +391,7 @@ class ReportingBackgroundTask(BackgroundTask):
         background_job.save()
         run_reports.schedule(args=(background_job.id,), delay=10)
 
-@main_queue.periodic_task(crontab(month="*", day="1", hour="0", minute="0"))
+@main_queue.periodic_task(schedule("reporting"))
 @write_required(script=True)
 def scheduled_reports():
     user = app.config.get("SYSTEM_USERNAME")

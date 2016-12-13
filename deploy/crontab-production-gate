@@ -25,5 +25,5 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m     h   dom     mon     dow     command
   0     6      *       *       *       export NOW=`date +\%F_\%H\%M\%S` ; export SNAPSHOT="snapshot_"`date +\%F_\%H\%M`; echo -e "\n\nstart timestamp $NOW with snapshot name $SNAPSHOT" >> /home/cloo/cron-logs/es_backups.log && curl -s -XPUT "http://"`head -n 1 /home/cloo/repl/ips/index | tr -d '\n'`":9200/_snapshot/doaj_s3/$SNAPSHOT" >> /home/cloo/cron-logs/es_backups.log 2>&1
-  19    11,22  *       *       *       export NOW=`date +\%F_\%H\%M\%S` ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/letsencrypt-autorenew.log && cd /opt/letsencrypt && ./letsencrypt-auto renew >> /home/cloo/cron-logs/letsencrypt-autorenew.log 2>&1
+  19    11,22  *       *       *       export NOW=`date +\%F_\%H\%M\%S` ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/letsencrypt-autorenew.log && cd /opt/letsencrypt && ./letsencrypt-auto renew >> /home/cloo/cron-logs/letsencrypt-autorenew.log 2>&1 && sudo nginx -t >> /home/cloo/cron-logs/letsencrypt-autorenew.log 2>&1 && sudo nginx -s reload >> /home/cloo/cron-logs/letsencrypt-autorenew.log 2>&1
 
