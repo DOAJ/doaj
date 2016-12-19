@@ -2,7 +2,7 @@ from flask_login import current_user
 from portality import models, article
 from portality.core import app
 
-from portality.tasks.redis_huey import main_queue
+from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
@@ -475,8 +475,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except Exception as e:
             return __fail(record, previous, error="please check it before submitting again; " + e.message)
 
-# FIXME: make the parameters configurable
-@main_queue.task(retries=3, retry_delay=10)
+@main_queue.task(**configure("ingest_articles"))
 @write_required(script=True)
 def ingest_articles(job_id):
     job = models.BackgroundJob.pull(job_id)
