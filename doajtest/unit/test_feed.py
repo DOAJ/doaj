@@ -40,7 +40,7 @@ class TestFeed(DoajTestCase):
 
         time.sleep(1)
 
-        with self.test_app.test_request_context('/feed'):
+        with self.app_test.test_request_context('/feed'):
             f = atom.get_feed("http://my.test.com")
         assert len(f.entries.keys()) == 5
 
@@ -82,7 +82,7 @@ class TestFeed(DoajTestCase):
 
         time.sleep(1)
 
-        with self.test_app.test_request_context('/feed'):
+        with self.app_test.test_request_context('/feed'):
             f = atom.get_feed("http://my.test.com")
         s = f.serialise()
 

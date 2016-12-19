@@ -235,8 +235,8 @@ class TestReApplication(DoajTestCase):
         self.old_account_pull = models.Account.pull
         models.Account.pull = mock_account_pull
 
-        self.old_reapp_upload_dir = self.test_app.config.get("REAPPLICATION_UPLOAD_DIR")
-        self.test_app.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
+        self.old_reapp_upload_dir = self.app_test.config.get("REAPPLICATION_UPLOAD_DIR")
+        self.app_test.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
@@ -259,7 +259,7 @@ class TestReApplication(DoajTestCase):
         models.Suggestion.find_by_issn = self.old_find_by_issn
         models.Account.pull = self.old_account_pull
 
-        self.test_app.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
+        self.app_test.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
 
     def _make_valid_csv(self):
         sheet = ClCsv("valid.csv")
