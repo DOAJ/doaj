@@ -14,3 +14,11 @@ def schedule(action):
     hour = action_cfg.get("hour", "*")
     minute = action_cfg.get("minute", "*")
     return crontab(month=month, day=day, hour=hour, minute=minute)
+
+def configure(action):
+    cfg = app.config.get("HUEY_TASKS", {})
+    action_cfg = cfg.get(action)
+    if action_cfg is None:
+        raise RuntimeError(u"No task configuration for action '{x}'.  Define this in HUEY_TASKS first then try again.".format(x=action))
+    return action_cfg
+

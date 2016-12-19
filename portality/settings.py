@@ -76,6 +76,10 @@ HUEY_SCHEDULE = {
     "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"}
 }
 
+HUEY_TASKS = {
+    "ingest_articles" : {"retries" : 3, "retry_delay" : 10}
+}
+
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
 DEBUG_PYCHARM_SERVER = 'localhost'
