@@ -14,10 +14,10 @@ prepare_for_test()
 
 
 class DoajTestCase(TestCase):
-    test_app = app
+    app_test = app
 
     def setUp(self):
-        core.initialise_index(self.test_app)
+        core.initialise_index(self.app_test)
 
     def tearDown(self):
         dao.DomainObject.destroy_index()
@@ -31,7 +31,7 @@ class DoajTestCase(TestCase):
         return glob(os.path.join(app.config['JOURNAL_HISTORY_DIR'], datetime.now().strftime('%Y-%m-%d'), '*'))
 
     def _make_and_push_test_context(self, path="/", acc=None):
-        ctx = self.test_app.test_request_context(path)
+        ctx = self.app_test.test_request_context(path)
         ctx.push()
         if acc is not None:
             acc.save()
