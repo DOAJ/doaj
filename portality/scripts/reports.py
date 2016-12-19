@@ -1,12 +1,10 @@
 """
 use this script if you want to manually (and synchronously) execute the reporting task
 """
-from portality import reporting
-from portality.lib import dates
-from portality.core import app
-
 from portality.background import BackgroundApi
-
+from portality.core import app
+from portality.lib import dates
+from portality.tasks import reporting
 
 if __name__ == "__main__":
 
