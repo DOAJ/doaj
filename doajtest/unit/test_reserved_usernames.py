@@ -14,7 +14,7 @@ class TestReservedUsernames(DoajTestCase):
             username = StringField('Username', [validate.ReservedUsernames()])
 
         self.test_form_class = FormWithUsernameField
-        self.reserved_user = self.test_app.config['RESERVED_USERNAMES'][0]
+        self.reserved_user = self.app_test.config['RESERVED_USERNAMES'][0]
 
     def tearDown(self):
         pass

@@ -1,19 +1,14 @@
 from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
-import codecs, os, shutil
 from portality import datasets
 from portality.core import app
 
-from portality.background import BackgroundTask, BackgroundApi
-
+from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
-from huey import crontab
 
-
-from portality.background import BackgroundTask
-
+import codecs, os, shutil
 
 
 def provenance_reports(fr, to, outdir):
@@ -275,10 +270,6 @@ class ContentByDate(object):
             }
         }
 
-
-#########################################################
-## Background task implementation
-
 def email(data_dir, archv_name):
     """
     Compress and email the reports to the specified email address.
@@ -306,6 +297,9 @@ def email(data_dir, archv_name):
     # Clean up the archive
     os.remove(archv)
 
+#########################################################
+## Background task implementation
+
 class ReportingBackgroundTask(BackgroundTask):
 
     __action__ = "reporting"
@@ -318,21 +312,23 @@ class ReportingBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        outdir = params.get("outdir", "report_" + dates.now())
-        fr = params.get("from", "1970-01-01T00:00:00Z")
-        to = params.get("to", dates.now())
+        outdir = params.get("reporting__outdir", "report_" + dates.now())
+        fr = params.get("reporting__from", "1970-01-01T00:00:00Z")
+        to = params.get("reporting__to", dates.now())
 
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        provenance_reports(fr, to, outdir)
-        content_reports(fr, to, outdir)
+        prov_outfiles = provenance_reports(fr, to, outdir)
+        cont_outfiles = content_reports(fr, to, outdir)
+        job.add_reference("reporting__provenance_outfiles", prov_outfiles)
+        job.add_reference("reporting__content_outfiles", cont_outfiles)
 
         msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
         job.add_audit_message(msg)
 
-        send_email = params.get("email", False)
+        send_email = params.get("reporting__email", False)
         if send_email:
             archive_name = "reports_" + fr + "_to_" + to
             email(outdir, archive_name)
@@ -350,7 +346,7 @@ class ReportingBackgroundTask(BackgroundTask):
             return
 
         params = self.background_job.params
-        outdir = params.get("outdir")
+        outdir = params.get("reporting__outdir")
 
         if outdir is not None and os.path.exists(outdir):
             shutil.rmtree(outdir)
@@ -372,10 +368,10 @@ class ReportingBackgroundTask(BackgroundTask):
         job.action = cls.__action__
 
         params ={}
-        params["outdir"] = kwargs.get("outdir", "report_" + dates.now())
-        params["from"] = kwargs.get("from_date", "1970-01-01T00:00:00Z")
-        params["to"] = kwargs.get("to_date", dates.now())
-        params["email"] = kwargs.get("email", False)
+        params["reporting__outdir"] = kwargs.get("outdir", "report_" + dates.now())
+        params["reporting__from"] = kwargs.get("from_date", "1970-01-01T00:00:00Z")
+        params["reporting__to"] = kwargs.get("to_date", dates.now())
+        params["reporting__email"] = kwargs.get("email", False)
         job.params = params
 
         return job
@@ -397,7 +393,6 @@ def scheduled_reports():
     user = app.config.get("SYSTEM_USERNAME")
     outdir = app.config.get("REPORTS_BASE_DIR")
     outdir = os.path.join(outdir, dates.now())
-    print outdir
     job = ReportingBackgroundTask.prepare(user, outdir=outdir)
     ReportingBackgroundTask.submit(job)
 

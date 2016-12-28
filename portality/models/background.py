@@ -51,6 +51,11 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
     def reference(self, obj):
         self._set_single("reference", obj)     # note we don't bother setting with struct, as there is none
 
+    def add_reference(self, name, value):
+        if self.reference is None:
+            self.reference = {}
+        self.reference[name] = value
+
     @property
     def status(self):
         return self._get_single("status")

@@ -2,7 +2,6 @@ import time
 from portality import core, dao
 from portality.tasks.redis_huey import main_queue
 
-
 import logging
 logging.getLogger("requests").setLevel(logging.WARNING)
 
