@@ -45,6 +45,9 @@ jQuery(document).ready(function($) {
             paramsBlock += "<strong>Parameters:</strong><br>";
             for (var key in resultobj.params) {
                 var val = resultobj.params[key];
+                if (val instanceof Array) {
+                    val = val.join(',\n')
+                }
                 paramsBlock += key + " -- " + escapeHtml(val) + "<br>";
             }
         }
@@ -53,7 +56,7 @@ jQuery(document).ready(function($) {
         if (resultobj.reference) {
             paramsBlock += "<strong>Reference:</strong><br>";
             for (var key in resultobj.reference) {
-                var val = resultobj.reference[key];
+                var val = JSON.stringify(resultobj.reference[key]);
                 refsBlock += key + " -- " + escapeHtml(val) + "<br>";
             }
         }
