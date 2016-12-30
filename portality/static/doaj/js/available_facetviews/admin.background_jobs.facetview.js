@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
             for (var key in resultobj.params) {
                 var val = resultobj.params[key];
                 if (val instanceof Array) {
-                    val = val.join(',\n')
+                    val = val.join(', ')
                 }
                 paramsBlock += key + " -- " + escapeHtml(val) + "<br>";
             }
