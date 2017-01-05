@@ -253,7 +253,6 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
 
         # Deprecated - may be removed
         "description" : "description of the journal's activities",
-        "suggested_by_owner" : true|false,
     },
     "admin" : {
         "in_doaj" : true|false,
