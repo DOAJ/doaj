@@ -20,7 +20,6 @@ jQuery(document).ready(function ($) {
                 'display': 'Status',
                 value_function: publisherStatusMap
             },
-            {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'index.classification.exact', 'display': 'Subject'},
             {'field': 'index.language.exact', 'display': 'Journal Language'},
             {'field': 'index.country.exact', 'display': 'Country of publisher'},
@@ -129,12 +128,6 @@ jQuery(document).ready(function ($) {
                 },
                 {
                     "field": "suggestion.suggester.email"
-                }
-            ],
-            [
-                {
-                    "pre": "<strong>Application by owner?</strong>: ",
-                    "field": "suggestion.suggested_by_owner"
                 }
             ],
             [
