@@ -1,10 +1,16 @@
 """Supply a query to edit all fields based on a regular expression"""
+# https://github.com/DOAJ/doaj/issues/1089
 
 from esprit import tasks, raw
 from portality.core import app
 
 from datetime import datetime
 import json
+import re
+
+# Regex to find and replace http for https when it's a hindawi URL
+match_hindawi_urls = re.compile(r'http://www.hindawi')
+replacement_text = 'https://www.hindawi'
 
 
 def scroll_edit(connection, es_type, query):
@@ -14,7 +20,9 @@ def scroll_edit(connection, es_type, query):
 
     for a in tasks.scroll(connection, type=es_type, q=query):
 
-        print a
+        # Substitute the text and add to the write batch
+        d = match_hindawi_urls.sub(replacement_text, json.dumps(a))
+        write_batch.append(json.loads(d))
 
         # When we have enough, do some writing
         if len(write_batch) >= batch_size:
@@ -36,13 +44,13 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-q", "--query", nargs=1, help="A JSON query to provide our results. Required.")
+    parser.add_argument("-q", "--query", help="A JSON query to provide our results. Required.")
     parser.add_argument("-t", "--type", nargs='+', help="A one or more type to edit. Required.")
 
     args = parser.parse_args()
 
     if not args.query:
-        print 'A query parameter is required. This can be a match_all if you really want to edit indiscriminately.'
+        print 'A query parameter is required. This can be a match_all if you really do want to edit indiscriminately.'
         exit(1)
 
     if not args.type:
@@ -50,7 +58,7 @@ if __name__ == "__main__":
         exit(1)
 
     print 'Starting {0}.'.format(datetime.now())
-    
+
     # Connection to the ES index
     conn = raw.make_connection(None, 'localhost', 9200, 'doaj')
     for t in args.type:
