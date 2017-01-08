@@ -40,7 +40,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
     @classmethod
     def _job_parameter_check(cls, params):
         # we definitely need "ids" defined
-        # we need at least one of, or both, "editor_group" or "note" defined as well
+        # we need at least one of "editor_group" or "note" defined as well
         return bool(
             cls.get_param(params, 'ids') and \
             (cls.get_param(params, 'editor_group') or cls.get_param(params, 'note'))
@@ -92,7 +92,22 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     except formcontext.FormContextException as e:
                         job.add_audit_message(u"Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
                 else:
-                    job.add_audit_message(u"Data validation failed while bulk editing journal {} :\n{}".format(journal_id, json.dumps(fc.form.errors)))
+                    data_submitted = {}
+                    for affected_field_name in fc.form.errors.keys():
+                        affected_field = getattr(fc.form, affected_field_name,
+                                                 ' Field {} does not exist on form. '.format(affected_field_name))
+                        if isinstance(affected_field, basestring):  # ideally this should never happen, an error should not be reported on a field that is not present on the form
+                            data_submitted[affected_field_name] = affected_field
+                            continue
+
+                        data_submitted[affected_field_name] = affected_field.data
+                    job.add_audit_message(
+                        u"Data validation failed while bulk editing journal {} :\n"
+                        u"{}\n\n"
+                        u"The data from the fields with the errors is:\n{}".format(
+                            journal_id, json.dumps(fc.form.errors), json.dumps(data_submitted)
+                        )
+                    )
 
     def cleanup(self):
         """

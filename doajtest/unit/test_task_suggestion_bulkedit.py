@@ -190,6 +190,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         for rec in job.audit:
             if rec['message'].startswith(u'Data validation failed'):
                 at_least_one_validation_fail = True
-                assert u'{"application_status": ["Not a valid choice"]}' in rec['message']
+                assert u'{"application_status": ["Not a valid choice"]}' in rec['message']  # the error details
+                assert u'{"application_status": "' + expected_app_status + u'"}' in rec['message']  # the data present in the failed field
 
         assert at_least_one_validation_fail

@@ -454,6 +454,16 @@ def bulk_action(doaj_type):
                 note=payload['note'],
                 dry_run=payload.get('dry_run', True)
             )
+        elif payload['bulk_action'] == 'bulk.change_status':
+            if doaj_type != 'applications':
+                r['error'] = "Only applications can have their status changed in bulk, since only applications have an application status."
+                return make_json_resp(r, status_code=400)
+
+            r['affected_' + doaj_type] = task(
+                selection_query=q,
+                application_status=payload['application_status'],
+                dry_run=payload.get('dry_run', True)
+            )
         elif payload['bulk_action'] == 'bulk.delete':
             affected_records = 0
         elif payload['bulk_action'] == 'bulk.reinstate':
