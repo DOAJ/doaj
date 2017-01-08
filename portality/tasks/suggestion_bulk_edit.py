@@ -1,21 +1,23 @@
 from copy import deepcopy
 import json
+from datetime import datetime
 
 from flask_login import current_user
 
-from portality import models, lock
+from portality import models, lock, util
 from portality.core import app
+from portality.formcontext import formcontext, xwalk
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
 
 
-def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', application_status=''):
-
+def suggestion_manage(selection_query, dry_run=True, editor_group='', note=''):
     ids = SuggestionBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
+        SuggestionBulkEditBackgroundTask.check_admin_privilege(current_user.id)
         return len(ids)
 
     job = SuggestionBulkEditBackgroundTask.prepare(
@@ -23,16 +25,14 @@ def suggestion_manage(selection_query, dry_run=True, editor_group='', note='', a
         selection_query=selection_query,
         editor_group=editor_group,
         note=note,
-        application_status=application_status,
         ids=ids
     )
-
     SuggestionBulkEditBackgroundTask.submit(job)
+
     return len(ids)
 
 
-class SuggestionBulkEditBackgroundTask(BackgroundTask):
-
+class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
     __action__ = "suggestion_bulk_edit"
 
     def run(self):
@@ -46,40 +46,45 @@ class SuggestionBulkEditBackgroundTask(BackgroundTask):
         ids = self.get_param(params, 'ids')
         editor_group = self.get_param(params, 'editor_group')
         note = self.get_param(params, 'note')
-        application_status = self.get_param(params, 'application_status')
 
         if not self.get_param(params, 'ids') \
-                and not self.get_param(params, 'editor_group') \
-                and not self.get_param(params, 'note') \
-                and not self.get_param(params, 'application_status'):
-            raise RuntimeError(u"{}.prepare run without sufficient parameters".format(self.__class__.__name__))
+                or (not self.get_param(params, 'editor_group') and not self.get_param(params, 'note')):
+            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         for suggestion_id in ids:
             updated = False
 
             s = models.Suggestion.pull(suggestion_id)
+
             if s is None:
                 job.add_audit_message(u"Suggestion with id {} does not exist, skipping".format(suggestion_id))
                 continue
 
+            fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=s)
+
             if editor_group:
-                job.add_audit_message(u"Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
-                s.set_editor_group(editor_group)
+                job.add_audit_message(
+                    u"Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
+                f = fc.form.editor_group
+                f.data = editor_group
                 updated = True
 
             if note:
                 job.add_audit_message(u"Adding note to for suggestion {y}".format(y=suggestion_id))
-                s.add_note(note)
-                updated = True
-
-            if application_status:
-                s.set_application_status(application_status)
+                fc.form.notes.append_entry(
+                    {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
+                )
                 updated = True
 
             if updated:
-                s.save()
-
-            job.add_audit_message(u"Suggestion {} set editor_group to {}".format(suggestion_id, editor_group))
+                if fc.validate():
+                    try:
+                        fc.finalise()
+                    except formcontext.FormContextException as e:
+                        job.add_audit_message(
+                            u"Form context exception while bulk editing suggestion {} :\n{}".format(suggestion_id, e.message))
+                else:
+                    job.add_audit_message(u"Data validation failed while bulk editing suggestion {} :\n{}".format(suggestion_id, json.dumps(fc.form.errors)))
 
     def cleanup(self):
         """
@@ -97,7 +102,8 @@ class SuggestionBulkEditBackgroundTask(BackgroundTask):
     def resolve_selection_query(cls, selection_query):
         q = deepcopy(selection_query)
         q["_source"] = False
-        return [s['_id'] for s in models.Suggestion.iterate(q=q, page_size=5000, wrap=False)]
+        iterator = models.Suggestion.iterate(q=q, page_size=5000, wrap=False)
+        return [s['_id'] for s in iterator]
 
     @classmethod
     def prepare(cls, username, **kwargs):
@@ -109,6 +115,8 @@ class SuggestionBulkEditBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
+        super(SuggestionBulkEditBackgroundTask, cls).prepare(username, **kwargs)
+
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
@@ -119,19 +127,18 @@ class SuggestionBulkEditBackgroundTask(BackgroundTask):
         cls.set_param(params, 'ids', kwargs['ids'])
         cls.set_param(params, 'editor_group', kwargs.get('editor_group', ''))
         cls.set_param(params, 'note', kwargs.get('note', ''))
-        cls.set_param(params, 'application_status', kwargs.get('application_status', ''))
 
-        if not cls.get_param(params, 'ids')\
-                and not cls.get_param(params, 'editor_group')\
-                and not cls.get_param(params, 'note') \
-                and not cls.get_param(params, 'application_status'):
+        if not cls.get_param(params, 'ids') \
+                and not cls.get_param(params, 'editor_group') \
+                and not cls.get_param(params, 'note'):
             raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
 
         # now ensure that we have the locks for all the suggestions
         # will raise an exception if this fails
-        lock.batch_lock("suggestion", kwargs.get('ids', []), username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
+        lock.batch_lock("suggestion", kwargs.get('ids', []), username,
+                        timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
 
         return job
 

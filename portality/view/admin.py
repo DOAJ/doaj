@@ -8,9 +8,9 @@ from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
-from portality.util import flash_with_url, jsonp
+from portality.util import flash_with_url, jsonp, make_json_resp
 from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -414,32 +414,43 @@ def eg_associates_dropdown():
     return resp
 
 
-@blueprint.route("/journals/bulk_action", methods=["POST"])
+@blueprint.route("/<doaj_type>/bulk_action", methods=["POST"])
 @login_required
 @ssl_required
-def journals_bulk_action():
+def bulk_action(doaj_type):
+    r = {}
+
+    if doaj_type == 'journals':
+        task = journal_bulk_edit.journal_manage
+    elif doaj_type == 'applications':
+        task = suggestion_bulk_edit.suggestion_manage
+    else:
+        r['error'] = 'Unsupported action - you can currently only bulk edit journals and applications.'
+        return make_json_resp(r, status_code=400)
+
     try:
         payload = json.loads(request.data)
     except ValueError:
-        app.logger.error("Invalid JSON payload from request.data .\n{}".format(request.data))
-        abort(400)
+        r['error'] = "Invalid JSON payload from request.data .\n{}".format(request.data)
+        return make_json_resp(r, status_code=400)
 
     q = payload['selection_query']
     for del_attr in ['size', 'from']:
         if del_attr in q:
             del q[del_attr]
 
-    r = {}
+    print json.dumps(q, indent=4)
+
     try:
         if payload['bulk_action'] == 'bulk.editor_group':
-            r['affected_journals'] = journal_bulk_edit.journal_manage(
-                selection_query=payload['selection_query'],
+            r['affected_' + doaj_type] = task(
+                selection_query=q,
                 editor_group=payload['editor_group'],
                 dry_run=payload.get('dry_run', True)
             )
         elif payload['bulk_action'] == 'bulk.add_note':
-            r['affected_journals'] = journal_bulk_edit.journal_manage(
-                selection_query=payload['selection_query'],
+            r['affected_' + doaj_type] = task(
+                selection_query=q,
                 note=payload['note'],
                 dry_run=payload.get('dry_run', True)
             )
@@ -450,21 +461,12 @@ def journals_bulk_action():
         elif payload['bulk_action'] == 'bulk.withdraw':
             affected_records = 0
         else:
-            app.logger.error('Invalid value for bulk_action argument.')
-            abort(400)
+            r['error'] = 'Invalid value for bulk_action argument.'
+            return make_json_resp(r, status_code=400)
+
     except KeyError as e:
-        app.logger.error("{} is a required argument for the action you're"
-                         " trying to take.".format(e.message))
-        abort(400)
+        r['error'] = "{} is a required argument for the action you're" \
+                     " trying to take.".format(e.message)
+        return make_json_resp(r, status_code=400)
 
-    resp = make_response(json.dumps(r))
-    resp.mimetype = "application/json"
-    return resp
-
-@blueprint.route("/applications/bulk_action", methods=["POST"])
-@login_required
-@ssl_required
-def applications_bulk_action():
-    resp = make_response(json.dumps({'affected_applications': 0}))
-    resp.mimetype = "application/json"
-    return resp
+    return make_json_resp(r, status_code=200)

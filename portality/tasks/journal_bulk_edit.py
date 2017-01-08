@@ -1,21 +1,24 @@
 from copy import deepcopy
 import json
+from datetime import datetime
 
 from flask_login import current_user
 
-from portality import models, lock
+from portality import models, lock, util
 from portality.core import app
+from portality.formcontext import formcontext, xwalk
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
 
 
 def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
 
     ids = JournalBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
+        JournalBulkEditBackgroundTask.check_admin_privilege(current_user.id)
         return len(ids)
 
     job = JournalBulkEditBackgroundTask.prepare(
@@ -30,7 +33,7 @@ def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
     return len(ids)
 
 
-class JournalBulkEditBackgroundTask(BackgroundTask):
+class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
     __action__ = "journal_bulk_edit"
 
@@ -47,32 +50,41 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         note = self.get_param(params, 'note')
 
         if not self.get_param(params, 'ids') \
-                and not self.get_param(params, 'editor_group') \
-                and not self.get_param(params, 'note'):
-            raise RuntimeError(u"{}.prepare run without sufficient parameters".format(self.__class__.__name__))
+                or (not self.get_param(params, 'editor_group') and not self.get_param(params, 'note')):
+            raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         for journal_id in ids:
             updated = False
 
             j = models.Journal.pull(journal_id)
+
             if j is None:
                 job.add_audit_message(u"Journal with id {} does not exist, skipping".format(journal_id))
                 continue
-                
+
+            fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=j)
+
             if editor_group:
                 job.add_audit_message(u"Setting editor_group to {x} for journal {y}".format(x=str(editor_group), y=journal_id))
-                j.set_editor_group(editor_group)
+                f = fc.form.editor_group
+                f.data = editor_group
                 updated = True
                 
             if note:
                 job.add_audit_message(u"Adding note to for journal {y}".format(y=journal_id))
-                j.add_note(note)
+                fc.form.notes.append_entry(
+                    {'date': datetime.now().strftime(app.config['DEFAULT_DATE_FORMAT']), 'note': note}
+                )
                 updated = True
             
             if updated:
-                j.save()
-
-            job.add_audit_message(u"Journal {} set editor_group to {}".format(journal_id, editor_group))
+                if fc.validate():
+                    try:
+                        fc.finalise()
+                    except formcontext.FormContextException as e:
+                        job.add_audit_message(u"Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
+                else:
+                    job.add_audit_message(u"Data validation failed while bulk editing journal {} :\n".format(journal_id))
 
     def cleanup(self):
         """
@@ -90,7 +102,8 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
     def resolve_selection_query(cls, selection_query):
         q = deepcopy(selection_query)
         q["_source"] = False
-        return [j['_id'] for j in models.Journal.iterate(q=q, page_size=5000, wrap=False)]
+        iterator = models.Journal.iterate(q=q, page_size=5000, wrap=False)
+        return [j['_id'] for j in iterator]
 
     @classmethod
     def prepare(cls, username, **kwargs):
@@ -101,6 +114,8 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
+
+        super(JournalBulkEditBackgroundTask, cls).prepare(username, **kwargs)
 
         # first prepare a job record
         job = models.BackgroundJob()
@@ -134,7 +149,7 @@ class JournalBulkEditBackgroundTask(BackgroundTask):
         :param background_job: the BackgroundJob instance
         :return:
         """
-        background_job.save()
+        background_job.save(blocking=True)
         journal_bulk_edit.schedule(args=(background_job.id,), delay=10)
 
 

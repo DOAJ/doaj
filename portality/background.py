@@ -123,3 +123,19 @@ class BackgroundTask(object):
     @classmethod
     def set_param(cls, params, param_name, value):
         params['{}__{}'.format(cls.__action__, param_name)] = value
+
+
+class AdminBackgroundTask(BackgroundTask):
+    @classmethod
+    def check_admin_privilege(cls, username):
+        a = models.Account.pull(username)
+        if a is None:
+            # very unlikely, as they would have had to log in to get to here..
+            raise BackgroundException('Admin account that is being used to prepare this job does not exist.')
+
+        if not a.has_role('admin'):
+            raise BackgroundException('Account {} is not permitted to run this background task.'.format(username))
+
+    @classmethod
+    def prepare(cls, username, **kwargs):
+        cls.check_admin_privilege(username)

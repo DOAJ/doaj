@@ -3,11 +3,11 @@ import md5
 import os, re, string
 from unicodedata import normalize
 from functools import wraps
-from flask import request, current_app, flash
+from flask import request, current_app, flash, make_response
 from random import choice
+import json
 
 from urlparse import urlparse, urljoin
-from datetime import datetime
 
 
 def is_safe_url(target):
@@ -140,3 +140,12 @@ def unicode_dict(d):
         return [unicode_dict(e) for e in d]
     else:
         return d
+
+
+def make_json_resp(data, status_code, json_dumps_kwargs=None):
+    if json_dumps_kwargs is None:
+        json_dumps_kwargs = {}
+    resp = make_response(json.dumps(data, **json_dumps_kwargs))
+    resp.status_code = status_code
+    resp.mimetype = "application/json"
+    return resp
