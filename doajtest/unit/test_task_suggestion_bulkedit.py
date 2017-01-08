@@ -9,7 +9,7 @@ from flask_login import logout_user
 
 from portality import models
 from portality.background import BackgroundException
-from portality.tasks.suggestion_bulk_edit import suggestion_manage
+from portality.tasks.suggestion_bulk_edit import suggestion_manage, SuggestionBulkEditBackgroundTask
 
 from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 
@@ -59,9 +59,10 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
 
         for ix, s in enumerate(modified_suggestions):
             assert s.editor_group == new_eg.name, \
-                "modified_suggestions[{}].editor_group is {}" \
-                "\nHere is the BackgroundJob audit log:\n{}"\
-                    .format(ix, s.editor_group, json.dumps(job.audit, indent=2))
+                "modified_suggestions[{}].editor_group is {}\n" \
+                "Here is the BackgroundJob audit log:\n{}".format(
+                    ix, s.editor_group, json.dumps(job.audit, indent=2)
+                )
 
     def test_02_note_successful_add(self):
         # test dry run
@@ -80,7 +81,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
             assert s, 'modified_suggestions[{}] is None, does not seem to exist?'
             assert s.notes, "modified_suggestions[{}] has no notes. It is \n{}".format(ix, json.dumps(s.data, indent=2))
             assert 'note' in s.notes[-1], json.dumps(s.notes[-1], indent=2)
-            assert s.notes[-1]['note'] == 'Test note', "The last note on modified_suggestions[{}] is {}\nHere is the BackgroundJob audit log:\n{}".format(ix, s.notes[-1]['note'], json.dumps(job.audit, indent=2))
+            assert s.notes[-1]['note'] == 'Test note', \
+                "The last note on modified_suggestions[{}] is {}\n" \
+                "Here is the BackgroundJob audit log:\n{}".format(
+                    ix, s.notes[-1]['note'], json.dumps(job.audit, indent=2)
+                )
 
     def test_03_bulk_edit_not_admin(self):
 
@@ -94,3 +99,97 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
 
             with self.assertRaises(BackgroundException):
                 r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
+
+    def test_04_parameter_checks(self):
+        # no params set at all
+        params = {}
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is False, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids set to None, but everything else is supplied
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', None)
+        SuggestionBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is False, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids set to [], but everything else is supplied
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', [])
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is False, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied, but nothing else is supplied
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is False, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied along with editor group only
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        SuggestionBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied along with note only
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        SuggestionBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied along with application status only
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+        # everything is supplied
+        params = {}
+        SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        SuggestionBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+        assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
+
+    def test_05_application_successful_status_assign(self):
+        """Bulk set an application status on a bunch of suggestions using a background task"""
+        expected_app_status = 'on hold'
+        # test dry run
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        sleep(1)
+
+        job = models.BackgroundJob.all()[0]
+
+        modified_suggestions = [s.pull(s.id) for s in self.suggestions]
+
+        for ix, s in enumerate(modified_suggestions):
+            assert s.application_status == expected_app_status, \
+                "modified_suggestions[{}].application_status is {}\n" \
+                "Here is the BackgroundJob audit log:\n{}".format(
+                    ix, s.application_status, json.dumps(job.audit, indent=2)
+                )
+
+    def test_06_application_status_assign_validation_fail(self):
+        """Bulk set an application status on a bunch of suggestions using a background task"""
+        expected_app_status = 'lalala'
+        # test dry run
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        sleep(1)
+
+        job = models.BackgroundJob.all()[0]
+
+        at_least_one_validation_fail = False
+        for rec in job.audit:
+            if rec['message'].startswith(u'Data validation failed'):
+                at_least_one_validation_fail = True
+                assert u'{"application_status": ["Not a valid choice"]}' in rec['message']
+
+        assert at_least_one_validation_fail

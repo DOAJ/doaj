@@ -7,7 +7,7 @@ from flask_login import logout_user
 
 from portality import models
 from portality.background import BackgroundException
-from portality.tasks.journal_bulk_edit import journal_manage
+from portality.tasks.journal_bulk_edit import journal_manage, JournalBulkEditBackgroundTask
 
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 
@@ -77,7 +77,11 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j, 'modified_journals[{}] is None, does not seem to exist?'
             assert j.notes, "modified_journals[{}] has no notes. It is \n{}".format(ix, json.dumps(j.data, indent=2))
             assert 'note' in j.notes[-1], json.dumps(j.notes[-1], indent=2)
-            assert j.notes[-1]['note'] == 'Test note', "The last note on modified_journals[{}] is {}\nHere is the BackgroundJob audit log:\n{}".format(ix, j.notes[-1]['note'], json.dumps(job.audit, indent=2))
+            assert j.notes[-1]['note'] == 'Test note', \
+                "The last note on modified_journals[{}] is {}\n" \
+                "Here is the BackgroundJob audit log:\n{}".format(
+                    ix, j.notes[-1]['note'], json.dumps(job.audit, indent=2)
+                )
 
     def test_03_bulk_edit_not_admin(self):
 
@@ -91,3 +95,44 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
             with self.assertRaises(BackgroundException):
                 r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=False)
+
+    def test_04_parameter_checks(self):
+        # no params set at all
+        params = {}
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is False, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids set to None, but everything else is supplied
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', None)
+        JournalBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        JournalBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is False, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids set to [], but everything else is supplied
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', [])
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is False, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied, but nothing else is supplied
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is False, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied along with editor group only
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        JournalBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # ids are supplied along with note only
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        JournalBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+        # everything is supplied
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        JournalBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        JournalBulkEditBackgroundTask.set_param(params, 'note', 'test note')
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)

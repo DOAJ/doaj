@@ -4,9 +4,9 @@ from datetime import datetime
 
 from flask_login import current_user
 
-from portality import models, lock, util
+from portality import models, lock
 from portality.core import app
-from portality.formcontext import formcontext, xwalk
+from portality.formcontext import formcontext
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
@@ -37,6 +37,15 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
     __action__ = "journal_bulk_edit"
 
+    @classmethod
+    def _job_parameter_check(cls, params):
+        # we definitely need "ids" defined
+        # we need at least one of, or both, "editor_group" or "note" defined as well
+        return bool(
+            cls.get_param(params, 'ids') and \
+            (cls.get_param(params, 'editor_group') or cls.get_param(params, 'note'))
+        )
+
     def run(self):
         """
         Execute the task as specified by the background_job
@@ -49,8 +58,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         editor_group = self.get_param(params, 'editor_group')
         note = self.get_param(params, 'note')
 
-        if not self.get_param(params, 'ids') \
-                or (not self.get_param(params, 'editor_group') and not self.get_param(params, 'note')):
+        if not self._job_parameter_check(params):
             raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
 
         for journal_id in ids:
@@ -84,7 +92,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                     except formcontext.FormContextException as e:
                         job.add_audit_message(u"Form context exception while bulk editing journal {} :\n{}".format(journal_id, e.message))
                 else:
-                    job.add_audit_message(u"Data validation failed while bulk editing journal {} :\n".format(journal_id))
+                    job.add_audit_message(u"Data validation failed while bulk editing journal {} :\n{}".format(journal_id, json.dumps(fc.form.errors)))
 
     def cleanup(self):
         """
@@ -128,9 +136,7 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         cls.set_param(params, 'editor_group', kwargs.get('editor_group', ''))
         cls.set_param(params, 'note', kwargs.get('note', ''))
 
-        if not cls.get_param(params, 'ids')\
-                and not cls.get_param(params, 'editor_group')\
-                and not cls.get_param(params, 'note'):
+        if not cls._job_parameter_check(params):
             raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
 
         job.params = params
