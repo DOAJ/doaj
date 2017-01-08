@@ -534,6 +534,17 @@ function humanDate(datestr) {
     return String(dom) + " " + monthmap[monthnum] + " " + String(year);
 }
 
+function humanDateTime(datestr) {
+    var date = new Date(datestr);
+    var dom = date.getUTCDate();
+    var monthnum = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+    var hour = date.getUTCHours();
+    var minute = date.getUTCMinutes();
+
+    return String(dom) + " " + monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
+}
+
 //////////////////////////////////////////////////////
 // fixed query widget generation
 /////////////////////////////////////////////////////

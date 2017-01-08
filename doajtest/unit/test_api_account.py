@@ -9,18 +9,18 @@ from portality.decorators import api_key_required, api_key_optional
 class TestClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
-        @cls.test_app.route('/hello')
+        @cls.app_test.route('/hello')
         @api_key_required
         def hello_world():
             return Response("hello, world!")
 
-        @cls.test_app.route('/helloopt')
+        @cls.app_test.route('/helloopt')
         @api_key_optional
         def hello_world_opt():
             return Response("hello, world!")
 
-        cls.test_app.testing = True
-        cls.test_app.login_manager.user_loader(load_account_for_login_manager)
+        cls.app_test.testing = True
+        cls.app_test.login_manager.user_loader(load_account_for_login_manager)
 
     def setUp(self):
         super(TestClient, self).setUp()
@@ -59,7 +59,7 @@ class TestClient(DoajTestCase):
 
         time.sleep(1)
 
-        with self.test_app.test_client() as t_client:
+        with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/hello?api_key=' + a1_key)
             assert response_authorised.data == "hello, world!"
@@ -83,7 +83,7 @@ class TestClient(DoajTestCase):
 
         time.sleep(1)
 
-        with self.test_app.test_client() as t_client:
+        with self.app_test.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/helloopt?api_key=' + a1_key)
             assert response_authorised.data == "hello, world!"

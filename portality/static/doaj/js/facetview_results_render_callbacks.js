@@ -415,7 +415,7 @@ fv_country_name = (function (resultobj) {
 
 fv_owner = (function (resultobj) {
     var that = function(resultobj) {
-        if (resultobj.admin && resultobj.admin.owner !== undefined) {
+        if (resultobj.admin && resultobj.admin.owner !== undefined && resultobj.admin.owner !== "") {
             var own = resultobj.admin.owner;
             return '<a href="/account/' + own + '">' + escapeHtml(own) + '</a>'
         }

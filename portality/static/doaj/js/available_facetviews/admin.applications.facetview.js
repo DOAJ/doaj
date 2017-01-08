@@ -103,7 +103,6 @@ jQuery(document).ready(function($) {
                 'value_function': adminStatusMap
             },
             {'field': 'index.application_type.exact', 'display': 'Application type'},
-            {'field': 'suggestion.suggested_by_owner.exact', 'display': 'Application by owner?'},
             {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
             {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
@@ -160,7 +159,8 @@ jQuery(document).ready(function($) {
             "country_name": fv_country_name,
             'last_manual_update': fv_last_manual_update,
             'suggested_on': fv_suggested_on,
-            'readonly_journal': fv_readonly_journal
+            'readonly_journal': fv_readonly_journal,
+            'owner' : fv_owner
         },
         result_display: [
             [
@@ -185,6 +185,12 @@ jQuery(document).ready(function($) {
                 {
                     "pre": "<strong>Last updated</strong>: ",
                     "field": "last_manual_update"   // Note: last updated on UI points to when last updated by a person (via form)
+                }
+            ],
+            [
+                {
+                    "pre" : "<strong>Owner</strong>: ",
+                    "field" : "owner"
                 }
             ],
             [
@@ -227,12 +233,6 @@ jQuery(document).ready(function($) {
                 },
                 {
                     "field" : "suggestion.suggester.email"
-                }
-            ],
-            [
-                {
-                    "pre": "<strong>Application by owner?</strong>: ",
-                    "field": "suggestion.suggested_by_owner"
                 }
             ],
             [
