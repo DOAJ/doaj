@@ -552,7 +552,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['application_status'] = obj.application_status
 
-        forminfo['notes'] = obj.notes()
+        forminfo['notes'] = obj.notes
 
         forminfo['subject'] = []
         for s in bibjson.subjects():
@@ -907,7 +907,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo['publishing_rights'] = reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', ''))
         forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
 
-        forminfo['notes'] = obj.notes()
+        forminfo['notes'] = obj.notes
 
         forminfo['subject'] = []
         for s in bibjson.subjects():

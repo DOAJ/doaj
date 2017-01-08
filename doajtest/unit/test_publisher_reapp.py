@@ -331,7 +331,7 @@ class TestPublisherReApplication(DoajTestCase):
         fc.patch_target()
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk"
-        assert len(fc.target.notes()) == 2
+        assert len(fc.target.notes) == 2
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"

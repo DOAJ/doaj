@@ -372,7 +372,7 @@ class TestReApplication(DoajTestCase):
         assert reapp.id != j.id
         assert reapp.suggested_on is not None
         assert reapp.application_status == "reapplication"
-        assert len(reapp.notes()) == 1
+        assert len(reapp.notes) == 1
         assert len(reapp.contacts()) == 1
         assert reapp.owner == "theowner"
         assert reapp.editor_group == "editorgroup"
