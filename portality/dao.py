@@ -424,7 +424,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         theq["size"] = page_size
         theq["from"] = 0
         if "sort" not in theq: # to ensure complete coverage on a changing index, sort by id is our best bet
-            theq["sort"] = [{"id" : {"order" : "asc"}}]
+            theq["sort"] = [{"_id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit
@@ -432,7 +432,47 @@ class DomainObject(UserDict.IterableUserDict, object):
                 break
             
             res = cls.query(q=theq)
-            rs = [r.get("_source") if "_source" in r else r.get("fields") for r in res.get("hits", {}).get("hits", [])]
+
+            if 'error' in res:
+                # TODO consider retrying the query a few times with back-off timing, like the .send_query method does.
+                raise ESError(
+                    "Elasticsearch returned an error:"
+                    "\nES HTTP Response status: {es_status}"
+                    "\nES Response:{es_resp}"
+                    "\n\nQuery sent to ES: {q}"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                    .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2), q=theq, counter=counter, page_size=page_size)
+                )
+
+            if 'hits' not in res and 'hits' not in res['hits']:  # i.e. if res['hits']['hits'] does not exist
+                raise ESResponseCannotBeInterpreted(
+                    "Elasticsearch did not return any records. "
+                    "It probably returned an error we did not understand instead."
+                    "\nES HTTP Response status: {es_status}"
+                    "\nES Response:{es_resp}"
+                    "\n\nQuery sent to ES: {q}"
+                    "\n\nPage #{counter} of the ES response with size {page_size}."
+                    .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2), q=theq, counter=counter, page_size=page_size)
+                )
+
+            rs = []
+            for i, each in enumerate(res['hits']['hits']):
+                if '_source' in each:
+                    rs.append(each['_source'])
+                elif 'fields' in each:
+                    rs.append(each['fields'])
+                elif '_id' in each and not wrap:
+                    # "_id" is a sibling (not child) of "_source" so it can only be used with unwrapped raw responses.
+                    # wrap = True only makes sense if "_source" or "fields" were returned.
+                    # So, if "_id" is the only one present, extract it into an object that's shaped the same as the item in the raw response.
+                    rs.append({"_id": each['_id']})
+                else:
+                    raise ESResponseCannotBeInterpreted("Can't find any useful data in the ES response during iteration."
+                                                        "\nQuery sent to ES: {q}"
+                                                        "\nItem {i} from page {counter} of the ES response."
+                                                        "\nItem data:\n{each}"
+                                                        .format(q=theq, i=i, counter=counter, each=json.dumps(each, indent=2))
+                    )
             # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(theq)
             if len(rs) == 0:
                 break
@@ -636,6 +676,12 @@ class BlockTimeOutException(Exception):
 
 
 class DAOSaveExceptionMaxRetriesReached(Exception):
+    pass
+
+class ESResponseCannotBeInterpreted(Exception):
+    pass
+
+class ESError(Exception):
     pass
 
 ########################################################################
