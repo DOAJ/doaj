@@ -7,8 +7,16 @@ from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi
 
-def change_in_doaj(journal_ids, in_doaj_new_val):
-    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val)
+def change_by_query(query, in_doaj_new_val):
+    ids = []
+    sane = {}
+    sane["query"] = query["query"]
+    for j in models.Journal.iterate(sane, wrap=False):
+        ids.append(j.get("id"))
+    change_in_doaj(ids, in_doaj_new_val, selection_query=sane)
+
+def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
+    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val, **kwargs)
     SetInDOAJBackgroundTask.submit(job)
 
 
