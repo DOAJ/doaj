@@ -184,7 +184,7 @@ JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page i
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    journal_in_out_doaj.journal_manage(journal_id, True)
+    journal_in_out_doaj.change_in_doaj([journal_id], True)
     flash(JOURNAL_OP_MSG.format('activation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
@@ -194,7 +194,7 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    journal_in_out_doaj.journal_manage(journal_id, False)
+    journal_in_out_doaj.change_in_doaj([journal_id], False)
     flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 

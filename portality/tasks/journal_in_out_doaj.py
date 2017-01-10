@@ -7,8 +7,8 @@ from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi
 
-def journal_manage(journal_id, in_doaj_new_val):
-    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_id=journal_id, in_doaj=in_doaj_new_val)
+def change_in_doaj(journal_ids, in_doaj_new_val):
+    job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val)
     SetInDOAJBackgroundTask.submit(job)
 
 
@@ -24,23 +24,23 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        journal_id = params.get("set_in_doaj__journal_id")
+        journal_ids = params.get("set_in_doaj__journal_ids")
         in_doaj = params.get("set_in_doaj__in_doaj")
 
-        if journal_id is None or in_doaj is None:
+        if journal_ids is None or len(journal_ids) == 0 or in_doaj is None:
             raise RuntimeError(u"SetInDOAJBackgroundTask.run run without sufficient parameters")
 
-        job.add_audit_message(u"Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
+        for journal_id in journal_ids:
+            job.add_audit_message(u"Setting in_doaj to {x} for journal {y}".format(x=str(in_doaj), y=journal_id))
 
-        j = models.Journal.pull(journal_id)
-        if j is None:
-            raise RuntimeError(u"Journal with id {} does not exist".format(journal_id))
-        j.bibjson().active = in_doaj
-        j.set_in_doaj(in_doaj)
-        j.save()
-        j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
-
-        job.add_audit_message(u"Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
+            j = models.Journal.pull(journal_id)
+            if j is None:
+                raise RuntimeError(u"Journal with id {} does not exist".format(journal_id))
+            j.bibjson().active = in_doaj
+            j.set_in_doaj(in_doaj)
+            j.save()
+            j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
+            job.add_audit_message(u"Journal {x} set in_doaj to {x}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):
         """
@@ -50,10 +50,10 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         # remove the lock on the journal
         job = self.background_job
         params = job.params
-        journal_id = params.get("set_in_doaj__journal_id")
+        journal_ids = params.get("set_in_doaj__journal_ids")
         username = job.user
 
-        lock.unlock("journal", journal_id, username)
+        lock.batch_unlock("journal", journal_ids, username)
 
     @classmethod
     def prepare(cls, username, **kwargs):
@@ -70,20 +70,23 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         job.user = username
         job.action = cls.__action__
 
-        journal_id = kwargs.get("journal_id")
+        journal_ids = kwargs.get("journal_ids")
 
-        params ={}
-        params["set_in_doaj__journal_id"] = journal_id
+        params = {}
+        params["set_in_doaj__journal_ids"] = journal_ids
         params["set_in_doaj__in_doaj"] = kwargs.get("in_doaj")
 
-        if params["set_in_doaj__journal_id"] is None or params["set_in_doaj__in_doaj"] is None:
+        if params["set_in_doaj__journal_ids"] is None or params["set_in_doaj__in_doaj"] is None:
             raise RuntimeError(u"SetInDOAJBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
 
+        if "selection_query" in kwargs:
+            job.reference = {'set_in_doaj__selection_query': kwargs.get('selection_query')}
+
         # now ensure that we have the locks for this journal
         # will raise an exception if this fails
-        lock.lock("journal", journal_id, username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
+        lock.batch_lock("journal", journal_ids, username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
 
         return job
 
