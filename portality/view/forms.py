@@ -10,12 +10,12 @@ import re
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import StringField, SelectField, TextAreaField, FormField, FieldList, HiddenField
+from wtforms import StringField, TextAreaField, FormField, FieldList, HiddenField
 
 from portality.core import app
 from portality import models
-from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen, ExtraFieldRequiredIf
-from portality.formcontext.choices import Choices
+from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
+from portality.formcontext.fields import DOAJSelectField
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -43,10 +43,10 @@ class ArticleForm(Form):
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [validators.Optional(), validators.URL()], description="(The URL for each article must be unique)")
-    publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
-    publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = SelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
-    eissn = SelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+    publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
+    publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
+    pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
  
     volume = StringField("Volume Number", [validators.Optional()])
     number = StringField("Issue Number", [validators.Optional()])

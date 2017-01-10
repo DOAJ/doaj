@@ -194,3 +194,40 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
                 assert u'{"application_status": "' + expected_app_status + u'"}' in rec['message']  # the data present in the failed field
 
         assert at_least_one_validation_fail
+
+    def test_07_application_successful_status_assign_without_charges(self):
+        # Optional select fields had a problem where their default value
+        # would actually not be a valid choice. So leaving them empty
+        # resulted in a validation error during bulk editing, despite the
+        # fact that they could genuinely be empty under certain conditions
+        # and this was acceptable on the UI.
+        # The problem with select fields has been fixed, this tests for
+        # regressions.
+        expected_app_status = 'on hold'
+        for s in self.suggestions:
+            del s.data['bibjson']['apc']
+            del s.data['bibjson']['apc_url']
+            del s.data['bibjson']['submission_charges']
+            del s.data['bibjson']['submission_charges_url']
+            s.save()
+        self.suggestions[-1].save(blocking=True)
+
+        # test dry run
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert r == TEST_SUGGESTION_COUNT, r
+
+        sleep(1)
+
+        job = models.BackgroundJob.all()[0]
+
+        modified_suggestions = [s.pull(s.id) for s in self.suggestions]
+
+        for ix, s in enumerate(modified_suggestions):
+            assert s.application_status == expected_app_status, \
+                "modified_suggestions[{}].application_status is {}\n" \
+                "Here is the BackgroundJob audit log:\n{}".format(
+                    ix, s.application_status, json.dumps(job.audit, indent=2)
+                )
