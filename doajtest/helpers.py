@@ -34,8 +34,7 @@ class DoajTestCase(TestCase):
         ctx = self.app_test.test_request_context(path)
         ctx.push()
         if acc is not None:
-            acc.save()
-            time.sleep(2)
+            acc.save(blocking=True)
             login_user(acc)
 
         return ctx

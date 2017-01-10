@@ -43,11 +43,37 @@ class ArticleFixtureFactory(object):
 
     @classmethod
     def invalid_schema_xml(cls):
-        return StringIO("<this><isnot my='schema'></isnot></this>");
+        return StringIO("<this><isnot my='schema'></isnot></this>")
 
     @staticmethod
-    def make_article_source():
-        return deepcopy(ARTICLE_SOURCE)
+    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True):
+        source = deepcopy(ARTICLE_SOURCE)
+        if not with_id:
+            del source["id"]
+        source["admin"]["in_doaj"] = in_doaj
+        if eissn is None and pissn is None:
+            return source
+
+        delete = []
+        for i in range(len(source["bibjson"]["identifier"])):
+            ident = source["bibjson"]["identifier"][i]
+            if ident.get("type") == "pissn":
+                if pissn is not None:
+                    ident["id"] = pissn
+                else:
+                    delete.append(i)
+            elif ident.get("type") == "eissn":
+                if eissn is not None:
+                    ident["id"] = pissn
+                else:
+                    delete.append(i)
+
+        delete.sort(reverse=True)
+        for idx in delete:
+            del source["bibjson"]["identifier"][idx]
+
+        return source
+
     
     @staticmethod
     def make_incoming_api_article():
