@@ -1,3 +1,10 @@
+# NOTE: this file is designed to be imported by Huey, the background job processor
+# It changes the logging configuration. If it's imported anywhere else in the app,
+# it will change the logging configuration for the entire app.
+import logging
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 from portality.tasks.redis_huey import main_queue
 
 from portality.tasks.reporting import scheduled_reports, run_reports
