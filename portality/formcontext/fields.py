@@ -1,15 +1,25 @@
-from wtforms import Field, TextField, SelectField, RadioField
+from wtforms import Field, TextField, SelectField, SelectMultipleField, RadioField
 from wtforms import widgets
 import re
 
 URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
 
 
+def set_select_field_default(kwargs):
+    if 'default' not in kwargs:
+        kwargs['default'] = ''
+
+
 class DOAJSelectField(SelectField):
     def __init__(self, *args, **kwargs):
-        if 'default' not in kwargs:
-            kwargs['default'] = ''
+        set_select_field_default(kwargs)
         super(DOAJSelectField, self).__init__(*args, **kwargs)
+
+
+class DOAJSelectMultipleField(SelectMultipleField):
+    def __init__(self, *args, **kwargs):
+        set_select_field_default(kwargs)
+        super(DOAJSelectMultipleField, self).__init__(*args, **kwargs)
 
 
 class OptionalRadioField(RadioField):

@@ -2,10 +2,10 @@ import re
 from datetime import datetime
 
 from wtforms import Form, validators
-from wtforms import StringField, TextAreaField, IntegerField, BooleanField, SelectMultipleField, FormField, FieldList, RadioField
+from wtforms import StringField, TextAreaField, IntegerField, BooleanField, FormField, FieldList, RadioField
 from wtforms import widgets
 
-from portality.formcontext.fields import DOAJSelectField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
+from portality.formcontext.fields import DOAJSelectField, DOAJSelectMultipleField, URLField, TagListField, DisabledTextField, PermissiveSelectField, OptionalRadioField
 from portality.formcontext.validate import URLOptionalScheme, OptionalIf, ExclusiveCheckbox, ExtraFieldRequiredIf, MaxLen, RegexpOnTagList, ReservedUsernames
 
 from portality.formcontext.choices import Choices
@@ -101,7 +101,7 @@ class JournalInformation(Form):
     waiver_policy_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('waiver_policy', optvals=Choices.waiver_policy_url_optional()), URLOptionalScheme()]
     )
-    digital_archiving_policy = SelectMultipleField('What digital archiving policy does the journal use?',
+    digital_archiving_policy = DOAJSelectMultipleField('What digital archiving policy does the journal use?',
         [
             validators.DataRequired(),
             ExclusiveCheckbox(Choices.digital_archiving_policy_val("none")),
@@ -125,7 +125,7 @@ class JournalInformation(Form):
         [validators.DataRequired()],
         choices = Choices.crawl_permission()
     )
-    article_identifiers = SelectMultipleField('Which article identifiers does the journal use?',
+    article_identifiers = DOAJSelectMultipleField('Which article identifiers does the journal use?',
         [validators.DataRequired(), ExtraFieldRequiredIf('article_identifiers_other', reqval=Choices.article_identifiers_val("other")), ExclusiveCheckbox()],
         choices = Choices.article_identifiers(),
         option_widget=widgets.CheckboxInput(),
@@ -145,7 +145,7 @@ class JournalInformation(Form):
         [validators.DataRequired(), validators.NumberRange(min=1600, max=(datetime.now().year)) ],
         description = 'Use 4 digits for the year, i.e. YYYY format.'
     )
-    fulltext_format = SelectMultipleField('Please indicate which formats of full text are available',
+    fulltext_format = DOAJSelectMultipleField('Please indicate which formats of full text are available',
         [validators.DataRequired(), ExtraFieldRequiredIf('fulltext_format_other', reqval=Choices.fulltext_format_val("other"))],
         description = 'Tick all that apply.',
         choices = Choices.fulltext_format(),
@@ -158,7 +158,7 @@ class JournalInformation(Form):
         [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
         description='Maximum 6. Keywords must be in English.'
     )
-    languages = SelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
+    languages = DOAJSelectMultipleField('Select the language(s) that the Full Text of the articles is published in',
         [validators.DataRequired()],
         choices = Choices.language(),
         description="You can select multiple languages."
@@ -212,7 +212,7 @@ class JournalInformation(Form):
     )
     license_other = StringField('',
     )
-    license_checkbox = SelectMultipleField('Which of the following does the content require? (Tick all that apply.)',
+    license_checkbox = DOAJSelectMultipleField('Which of the following does the content require? (Tick all that apply.)',
         choices = Choices.licence_checkbox(),
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False),
@@ -225,7 +225,7 @@ class JournalInformation(Form):
         choices = Choices.open_access(),
         description = 'From the <a href="http://www.budapestopenaccessinitiative.org/read" target="_blank">Budapest Open Access Initiative\'s definition of Open Access</a>.',
     )
-    deposit_policy = SelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?',
+    deposit_policy = DOAJSelectMultipleField('With which deposit policy directory does the journal have a registered deposit policy?',
         [validators.DataRequired(), ExtraFieldRequiredIf('deposit_policy_other', reqval=Choices.deposit_policy_other_val("other")), ExclusiveCheckbox()],
         description = 'Select all that apply.',
         choices = Choices.deposit_policy(),
@@ -323,13 +323,13 @@ class Notes(Form):
 class ApplicationSubject(Form):
     """ Subject classification entry - with workflow validation"""
 
-    subject = SelectMultipleField('Subjects', [OptionalIf('application_status', optvals=Choices.application_status_subject_optional())], choices=Choices.subjects())
+    subject = DOAJSelectMultipleField('Subjects', [OptionalIf('application_status', optvals=Choices.application_status_subject_optional())], choices=Choices.subjects())
 
 
 class JournalSubject(Form):
     """ Subject classification entry - optional"""
 
-    subject = SelectMultipleField('Subjects', [validators.Optional()], choices=Choices.subjects())
+    subject = DOAJSelectMultipleField('Subjects', [validators.Optional()], choices=Choices.subjects())
 
 
 class JournalLegacy(Form):
