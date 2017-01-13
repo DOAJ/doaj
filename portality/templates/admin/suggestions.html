@@ -13,9 +13,9 @@
                             <div class="controls ">
                                 <select class="" id="bulk_action" name="bulk_action" style="width: 250px;">
                                     <option selected="" value="">Select action...</option>
-                                    <option value="bulk.change_status">Change status...</option>
-                                    <option value="bulk.editor_group">Assign to editor group...</option>
-                                    <option value="bulk.add_note">Add a note...</option>
+                                    <option value="change_status">Change status...</option>
+                                    <option value="assign_editor_group">Assign to editor group...</option>
+                                    <option value="add_note">Add a note...</option>
                                 </select>
                             </div>
                         </div>
@@ -66,8 +66,8 @@
     var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
-    toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);
-    toggle_optional_field('bulk_action', ['#application_status'], ['bulk.change_status']);
-    toggle_optional_field('bulk_action', ['#note'], ['bulk.add_note']);
+    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
+    toggle_optional_field('bulk_action', ['#application_status'], ['change_status']);
+    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
 </script>
 {% endblock %}

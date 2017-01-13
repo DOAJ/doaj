@@ -12,11 +12,11 @@
                             <div class="controls ">
                                 <select id="bulk_action" name="bulk_action" style="width: 250px;">
                                     <option selected value="">Select action...</option>
-                                    <option value="bulk.withdraw">Withdraw from DOAJ</option>
-                                    <option value="bulk.reinstate">Reinstate into DOAJ</option>
-                                    <option value="bulk.delete">Delete records</option>
-                                    <option value="bulk.editor_group">Journal: Assign to editor group...</option>
-                                    <option value="bulk.add_note">Journal: Add a note...</option>
+                                    <option value="withdraw">Withdraw from DOAJ</option>
+                                    <option value="reinstate">Reinstate into DOAJ</option>
+                                    <option value="delete">Delete records</option>
+                                    <option value="assign_editor_group">Journal: Assign to editor group...</option>
+                                    <option value="add_note">Journal: Add a note...</option>
                                 </select>
                             </div>
                         </div>
@@ -53,8 +53,8 @@
     var journal_edit_url = "{{ url_for('admin.journal_page', journal_id='') }}";
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
-    toggle_optional_field('bulk_action', ['#editor_group'], ['bulk.editor_group']);
-    toggle_optional_field('bulk_action', ['#note'], ['bulk.add_note']);
+    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
+    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
 </script>
 
 {% endblock %}
