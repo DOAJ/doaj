@@ -20,6 +20,25 @@ jQuery(document).ready(function($) {
 
         ////////////////////////////////////////////////////////////
         // functions for handling the bulk form
+        function get_bulk_action() {
+            action = $('#bulk_action').val();
+            if (! action) {
+                alert('Error: unknown bulk operation.');
+                throw 'Error: unknown bulk operation. The bulk action field was empty.'
+            }
+            return action
+        }
+
+        function bulk_action_type() {
+            if (get_bulk_action() == 'delete') {
+                return 'journals,articles';
+            }
+            return 'journals'
+        }
+
+        function bulk_action_url() {
+            return '/admin/' + bulk_action_type() + '/bulk/' + get_bulk_action()
+        }
 
         function build_affected_msg(data) {
             var mfrg = undefined;
@@ -38,37 +57,32 @@ jQuery(document).ready(function($) {
             return mfrg
         }
 
-        function journal_success_callback(data) {
+        function bulk_action_success_callback(data) {
             alert('Submitted - ' + build_affected_msg(data) + ' have been queued for edit.');
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
 
-        function journal_error_callback(jqXHR, textStatus, errorThrown) {
-            var msg = 'There was an error with your request.';
-            if (jqXHR.error) {
-                msg = jqXHR.error
-            }
-            alert(msg);
+        function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
+            alert('There was an error with your request.');
             console.error(textStatus + ': ' + errorThrown);
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
 
-        function journal_confirm_callback(data) {
+        function bulk_action_confirm_callback(data) {
             var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
             if (sure) {
                 $.ajax({
                     type: 'POST',
-                    url: '/admin/journals/bulk_action',
+                    url: bulk_action_url(),
                     data: JSON.stringify({
                         selection_query: query,
-                        bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
                         note: $('#note').val(),
                         dry_run: false
                     }),
                     contentType : 'application/json',
-                    success : journal_success_callback,
-                    error: journal_error_callback
+                    success : bulk_action_success_callback,
+                    error: bulk_action_error_callback
                 });
             } else {
                 $('#bulk-submit').removeAttr('disabled').html('Submit');
@@ -81,7 +95,7 @@ jQuery(document).ready(function($) {
             $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
 
             var sure;
-            if ($('#bulk_action').val() == 'bulk.delete') {
+            if ($('#bulk_action').val() == 'delete') {
                 sure = confirm('Are you sure?  This operation cannot be undone!');
             } else {
                 sure = true;
@@ -90,17 +104,16 @@ jQuery(document).ready(function($) {
             if (sure) {
                 $.ajax({
                     type: 'POST',
-                    url: '/admin/journals/bulk_action',
+                    url: bulk_action_url(),
                     data: JSON.stringify({
                         selection_query: query,
-                        bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
                         note: $('#note').val(),
                         dry_run: true
                     }),
                     contentType : 'application/json',
-                    success : journal_confirm_callback,
-                    error: journal_error_callback
+                    success : bulk_action_confirm_callback,
+                    error: bulk_action_error_callback
                 });
             } else {
                 $('#bulk-submit').removeAttr('disabled').html('Submit');

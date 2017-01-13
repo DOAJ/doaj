@@ -22,17 +22,26 @@ jQuery(document).ready(function($) {
         ////////////////////////////////////////////////////////////
         // functions for handling the bulk form
 
+        function get_bulk_action() {
+            action = $('#bulk_action').val();
+            if (! action) {
+                alert('Error: unknown bulk operation.');
+                throw 'Error: unknown bulk operation. The bulk action field was empty.'
+            }
+            return action
+        }
+
+        function bulk_action_url() {
+            return '/admin/applications/bulk/' + get_bulk_action()
+        }
+
         function application_success_callback(data) {
             alert('Submitted - ' + data.affected_applications + ' applications have been queued for edit.');
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
 
         function application_error_callback(jqXHR, textStatus, errorThrown) {
-            var msg = 'There was an error with your request.';
-            if (jqXHR.error) {
-                msg = jqXHR.error
-            }
-            alert(msg);
+            alert('There was an error with your request.');
             console.error(textStatus + ': ' + errorThrown);
             $('#bulk-submit').removeAttr('disabled').html('Submit');
         }
@@ -42,10 +51,9 @@ jQuery(document).ready(function($) {
             if (sure) {
                 $.ajax({
                     type: 'POST',
-                    url: '/admin/applications/bulk_action',
+                    url: bulk_action_url(),
                     data: JSON.stringify({
                         selection_query: query,
-                        bulk_action: $('#bulk_action').val(),
                         editor_group: $('#editor_group').val(),
                         application_status: $('#application_status').val(),
                         note: $('#note').val(),
@@ -67,10 +75,9 @@ jQuery(document).ready(function($) {
 
             $.ajax({
                 type: 'POST',
-                url: '/admin/applications/bulk_action',
+                url: bulk_action_url(),
                 data: JSON.stringify({
                     selection_query: query,
-                    bulk_action: $('#bulk_action').val(),
                     editor_group: $('#editor_group').val(),
                     application_status: $('#application_status').val(),
                     note: $('#note').val(),
