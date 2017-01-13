@@ -371,18 +371,21 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.set_subjects(new_subjects)
 
         if getattr(form, 'owner', None):
-            owns = form.owner.data.strip()
+            owns = form.owner.data
             if owns:
-                suggestion.set_owner(form.owner.data.strip())
+                owns = owns.strip()
+                suggestion.set_owner(owns)
 
         if getattr(form, 'editor_group', None):
-            editor_group = form.editor_group.data.strip()
+            editor_group = form.editor_group.data
             if editor_group:
+                editor_group = editor_group.strip()
                 suggestion.set_editor_group(editor_group)
 
         if getattr(form, "editor", None):
-            editor = form.editor.data.strip()
+            editor = form.editor.data
             if editor:
+                editor = editor.strip()
                 suggestion.set_editor(editor)
 
         if getattr(form, "doaj_seal", None):
@@ -728,18 +731,21 @@ class JournalFormXWalk(JournalGenericXWalk):
         bibjson.set_subjects(new_subjects)
 
         if getattr(form, 'owner', None):
-            owner = form.owner.data.strip()
+            owner = form.owner.data
             if owner:
+                owner = owner.strip()
                 journal.set_owner(owner)
 
         if getattr(form, 'editor_group', None):
-            editor_group = form.editor_group.data.strip()
+            editor_group = form.editor_group.data
             if editor_group:
+                editor_group = editor_group.strip()
                 journal.set_editor_group(editor_group)
 
         if getattr(form, "editor", None):
-            editor = form.editor.data.strip()
+            editor = form.editor.data
             if editor:
+                editor = editor.strip()
                 journal.set_editor(editor)
 
         if getattr(form, "doaj_seal", None):
