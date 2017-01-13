@@ -8,7 +8,8 @@ from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
-from portality.util import flash_with_url, jsonp, make_json_resp
+from portality.lib.es_query_http import remove_search_limits
+from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit
 
@@ -414,69 +415,85 @@ def eg_associates_dropdown():
     return resp
 
 
-@blueprint.route("/<doaj_type>/bulk_action", methods=["POST"])
+class BulkAdminEndpointException(Exception):
+    pass
+
+
+@app.errorhandler(BulkAdminEndpointException)
+def bulk_admin_endpoints_bad_request(exception):
+    r = {}
+    r['error'] = exception.message
+    return make_json_resp(r, status_code=400)
+
+
+def get_background_task_manager(doaj_type):
+    r = {}
+    if doaj_type == 'journals':
+        return journal_bulk_edit.journal_manage
+    elif doaj_type == 'applications':
+        return suggestion_bulk_edit.suggestion_manage
+    else:
+        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications.')
+
+
+def get_query_from_request(payload):
+    q = payload['selection_query']
+    q = remove_search_limits(q)
+    return q
+
+
+@blueprint.route("/<doaj_type>/bulk/assign_editor_group", methods=["POST"])
 @login_required
 @ssl_required
-def bulk_action(doaj_type):
+def bulk_assign_editor_group(doaj_type):
     r = {}
+    task = get_background_task_manager(doaj_type)
 
-    if doaj_type == 'journals':
-        task = journal_bulk_edit.journal_manage
-    elif doaj_type == 'applications':
-        task = suggestion_bulk_edit.suggestion_manage
-    else:
-        r['error'] = 'Unsupported action - you can currently only bulk edit journals and applications.'
-        return make_json_resp(r, status_code=400)
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
 
-    try:
-        payload = json.loads(request.data)
-    except ValueError:
-        r['error'] = "Invalid JSON payload from request.data .\n{}".format(request.data)
-        return make_json_resp(r, status_code=400)
+    r['affected_' + doaj_type] = task(
+        selection_query=get_query_from_request(payload),
+        editor_group=payload['editor_group'],
+        dry_run=payload.get('dry_run', True)
+    )
 
-    q = payload['selection_query']
-    for del_attr in ['size', 'from']:
-        if del_attr in q:
-            del q[del_attr]
+    return make_json_resp(r, status_code=200)
 
-    print json.dumps(q, indent=4)
 
-    try:
-        if payload['bulk_action'] == 'bulk.editor_group':
-            r['affected_' + doaj_type] = task(
-                selection_query=q,
-                editor_group=payload['editor_group'],
-                dry_run=payload.get('dry_run', True)
-            )
-        elif payload['bulk_action'] == 'bulk.add_note':
-            r['affected_' + doaj_type] = task(
-                selection_query=q,
-                note=payload['note'],
-                dry_run=payload.get('dry_run', True)
-            )
-        elif payload['bulk_action'] == 'bulk.change_status':
-            if doaj_type != 'applications':
-                r['error'] = "Only applications can have their status changed in bulk, since only applications have an application status."
-                return make_json_resp(r, status_code=400)
+@blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
+@login_required
+@ssl_required
+def bulk_add_note(doaj_type):
+    r = {}
+    task = get_background_task_manager(doaj_type)
 
-            r['affected_' + doaj_type] = task(
-                selection_query=q,
-                application_status=payload['application_status'],
-                dry_run=payload.get('dry_run', True)
-            )
-        elif payload['bulk_action'] == 'bulk.delete':
-            affected_records = 0
-        elif payload['bulk_action'] == 'bulk.reinstate':
-            affected_records = 0
-        elif payload['bulk_action'] == 'bulk.withdraw':
-            affected_records = 0
-        else:
-            r['error'] = 'Invalid value for bulk_action argument.'
-            return make_json_resp(r, status_code=400)
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
 
-    except KeyError as e:
-        r['error'] = "{} is a required argument for the action you're" \
-                     " trying to take.".format(e.message)
-        return make_json_resp(r, status_code=400)
+    r['affected_' + doaj_type] = task(
+        selection_query=get_query_from_request(payload),
+        note=payload['note'],
+        dry_run=payload.get('dry_run', True)
+    )
+
+    return make_json_resp(r, status_code=200)
+
+
+@blueprint.route("/applications/bulk/change_status", methods=["POST"])
+@login_required
+@ssl_required
+def applications_bulk_change_status():
+    r = {}
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
+
+    q = get_query_from_request(payload)
+
+    r['affected_applications'] = get_background_task_manager('applications')(
+        selection_query=q,
+        application_status=payload['application_status'],
+        dry_run=payload.get('dry_run', True)
+    )
 
     return make_json_resp(r, status_code=200)
