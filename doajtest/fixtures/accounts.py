@@ -3,6 +3,14 @@ from copy import deepcopy
 
 class AccountFixtureFactory(object):
     @staticmethod
+    def make_publisher_source():
+        return deepcopy(PUBLISHER_SOURCE)
+
+    @staticmethod
+    def make_managing_editor_source():
+        return deepcopy(MANED_SOURCE)
+
+    @staticmethod
     def make_editor_source():
         return deepcopy(EDITOR_SOURCE)
 
@@ -18,6 +26,19 @@ class AccountFixtureFactory(object):
     def make_assed3_source():
         return deepcopy(ASSED_SOURCE3)
 
+PUBLISHER_SOURCE = {
+    "email": "pub@example.com",
+    "name": "Joe Publisher",
+    "role": ['publisher', 'api'],
+    "id": "publisher"
+}
+
+MANED_SOURCE = {
+    "email": "maned@example.com",
+    "name": "Managing Editor / Administrator",
+    "role": ['admin', 'api'],
+    "id": "maned"
+}
 
 EDITOR_SOURCE = {
     "email": "eddie@example.com",

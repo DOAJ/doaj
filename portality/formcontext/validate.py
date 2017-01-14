@@ -281,6 +281,9 @@ class ReservedUsernames(object):
         return self.__validate(field.data)
 
     def __validate(self, username):
+        if not isinstance(username, basestring):
+            raise validators.ValidationError('Invalid username (not a string) passed to ReservedUsernames validator.')
+
         if username.lower() in [u.lower() for u in app.config.get('RESERVED_USERNAMES', [])]:
             raise validators.ValidationError(self.message.format(reserved=username))
 

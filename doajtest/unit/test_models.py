@@ -81,7 +81,7 @@ class TestClient(DoajTestCase):
         assert len(j.contacts()) == 1
         assert j.get_latest_contact_name() == "richard"
         assert j.get_latest_contact_email() == "richard@email.com"
-        assert len(j.notes()) == 1
+        assert len(j.notes) == 1
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
         assert j.editor == "eddie"
@@ -90,12 +90,12 @@ class TestClient(DoajTestCase):
         assert j.has_seal() is True
         assert j.bulk_upload_id == "abcdef"
 
-        notes = j.notes()
+        notes = j.notes
         j.remove_note(notes[0])
-        assert len(j.notes()) == 0
+        assert len(j.notes) == 0
 
         j.set_notes([{"note" : "testing", "date" : "2005-01-01T00:00:00Z"}])
-        assert len(j.notes()) == 1
+        assert len(j.notes) == 1
 
         j.remove_current_application()
         assert j.current_application is None

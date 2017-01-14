@@ -21,5 +21,6 @@ class TestClient(DoajTestCase):
         with app.test_client() as t_client:
             response_authorised = t_client.get('/toc')
             assert response_authorised.status_code == 200
-            assert '<a href="/toc/0-5432">Test Title 0</a>' in response_authorised.data, response_authorised.data
-            assert '<a href="/toc/1-5432">Test Title 1</a>' not in response_authorised.data, response_authorised.data
+            assert '<a href="/toc/{public_issn}">Test Title 0</a>'.format(public_issn=j_public.bibjson().get_one_identifier(j_public.bibjson().E_ISSN)) in response_authorised.data, response_authorised.data
+            assert '<a href="/toc/{private_eissn}">Test Title 1</a>'.format(private_eissn=j_private.bibjson().get_one_identifier(j_private.bibjson().E_ISSN)) not in response_authorised.data, response_authorised.data
+            assert '<a href="/toc/{private_pissn}">Test Title 1</a>'.format(private_pissn=j_private.bibjson().get_one_identifier(j_private.bibjson().P_ISSN)) not in response_authorised.data, response_authorised.data
