@@ -46,10 +46,12 @@ class ArticleFixtureFactory(object):
         return StringIO("<this><isnot my='schema'></isnot></this>")
 
     @staticmethod
-    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True):
+    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True):
         source = deepcopy(ARTICLE_SOURCE)
         if not with_id:
             del source["id"]
+        if with_journal_info is False:
+            del source["bibjson"]["journal"]
         source["admin"]["in_doaj"] = in_doaj
         if eissn is None and pissn is None:
             return source
@@ -73,7 +75,6 @@ class ArticleFixtureFactory(object):
             del source["bibjson"]["identifier"][idx]
 
         return source
-
     
     @staticmethod
     def make_incoming_api_article():
