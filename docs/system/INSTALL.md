@@ -7,6 +7,28 @@ Install elasticsearch as per [its documentation](http://www.elasticsearch.org/gu
 
 You can check whether its running by pointing your browser to [http://localhost:9200](http://localhost:9200) - you should see a basic JSON response telling you what version you're running.
 
+## Redis
+
+We use a dockerised Redis installation. Currently this is only used for Huey background job processing tasks, so you don't need to run it unless you're going to run background jobs.
+
+  1. Install Docker [by following step 1 of the Docker Compose installation tutorial](https://docs.docker.com/compose/install/) on your machine.
+
+  2. Make sure you don't need to `sudo` to run docker. [Instructions on set-up and how to test that it works.](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/manage-docker-as-a-non-root-user)
+
+  3. Install [Docker Compose by following steps 2 and onwards from the Docker Compose installation Tutorial](https://docs.docker.com/compose/install/).
+
+    Ubuntu Linux users, the command that Docker-Compose provides you with will not work since /usr/local/bin is not writeable by anybody but root in default Ubuntu setups. Use `sudo tee` instead, e.g.:
+
+    ```
+    curl -L https://github.com/docker/compose/releases/download/[INSERT_DESIRED_DOCKER_COMPOSE_VERSION_HERE]/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null && sudo chmod a+x /usr/local/bin/docker-compose
+    ```
+
+  4. Open a console and try running `docker -h` and `docker-compose -h` to verify they are both accessible.
+  
+From this point on, simply `cd docker/` and `docker-compose up`.
+
+If you find yourself developing the Docker setup itself, just run `docker-compose build && docker-compose up`.
+
 ## The DOAJ Python app
 
 Install Python 2.6.6 or more recent . Not tested with Python 3.x .
