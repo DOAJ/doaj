@@ -13,3 +13,4 @@ from portality.tasks.sitemap import scheduled_sitemap, generate_sitemap
 from portality.tasks.journal_bulk_edit import journal_bulk_edit
 from portality.tasks.suggestion_bulk_edit import suggestion_bulk_edit
 from portality.tasks.ingestarticles import ingest_articles
+from portality.tasks.journal_csv import scheduled_journal_csv, journal_csv
