@@ -74,7 +74,8 @@ HUEY_EAGER = False
 HUEY_SCHEDULE = {
     "sitemap" : {"month" : "*", "day" : "*", "hour" : "8", "minute" : "0"},
     "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"},
-    "journal_csv" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"}
+    "journal_csv" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
+    "article_cleanup_sync" : {"month" : "*", "day" : "2", "hour" : "0", "minute" : "0"}
 }
 
 HUEY_TASKS = {

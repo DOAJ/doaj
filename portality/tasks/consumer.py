@@ -14,3 +14,4 @@ from portality.tasks.journal_bulk_edit import journal_bulk_edit
 from portality.tasks.suggestion_bulk_edit import suggestion_bulk_edit
 from portality.tasks.ingestarticles import ingest_articles
 from portality.tasks.journal_csv import scheduled_journal_csv, journal_csv
+from portality.tasks.article_cleanup_sync import scheduled_article_cleanup_sync, article_cleanup_sync
