@@ -7,13 +7,15 @@ from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi
 
-def change_by_query(query, in_doaj_new_val):
+def change_by_query(query, in_doaj_new_val, dry_run=True):
     ids = []
     sane = {}
     sane["query"] = query["query"]
     for j in models.Journal.iterate(sane, wrap=False):
         ids.append(j.get("id"))
-    change_in_doaj(ids, in_doaj_new_val, selection_query=sane)
+    if not dry_run:
+        change_in_doaj(ids, in_doaj_new_val, selection_query=sane)
+    return len(ids)
 
 def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
     job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val, **kwargs)
@@ -48,7 +50,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
             j.set_in_doaj(in_doaj)
             j.save()
             j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
-            job.add_audit_message(u"Journal {x} set in_doaj to {x}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
+            job.add_audit_message(u"Journal {x} set in_doaj to {y}, and all associated articles".format(x=journal_id, y=str(in_doaj)))
 
     def cleanup(self):
         """
