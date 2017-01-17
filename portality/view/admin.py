@@ -179,12 +179,17 @@ def journal_page(journal_id):
 
 JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page in a few minutes to see the results. The time taken depends on the size of the journal (how many articles it has in DOAJ) - for very large journals, this could take up to 30 minutes.'
 
+
+######################################################
+# Endpoints for reinstating/withdrawing journals from the DOAJ
+#
+
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    journal_in_out_doaj.journal_manage(journal_id, True)
+    journal_in_out_doaj.change_in_doaj([journal_id], True)
     flash(JOURNAL_OP_MSG.format('activation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
@@ -194,10 +199,39 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    journal_in_out_doaj.journal_manage(journal_id, False)
+    journal_in_out_doaj.change_in_doaj([journal_id], False)
     flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
     return redirect(url_for('.journal_page', journal_id=journal_id))
 
+
+@blueprint.route("/journals/bulk/withdraw", methods=["POST"])
+@login_required
+@ssl_required
+def journals_bulk_withdraw():
+    r = {}
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
+
+    q = get_query_from_request(payload)
+    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
+
+    return make_json_resp(r, status_code=200)
+
+@blueprint.route("/journals/bulk/reinstate", methods=["POST"])
+@login_required
+@ssl_required
+def journals_bulk_reinstate():
+    r = {}
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
+
+    q = get_query_from_request(payload)
+    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
+
+    return make_json_resp(r, status_code=200)
+
+#
+#####################################################################
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
@@ -478,7 +512,6 @@ def bulk_add_note(doaj_type):
     )
 
     return make_json_resp(r, status_code=200)
-
 
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
 @login_required

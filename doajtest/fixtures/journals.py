@@ -31,7 +31,7 @@ class JournalFixtureFactory(object):
             template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
             template["bibjson"]['identifier'] = [
                 {"type": "pissn", "id": rstr.xeger(forms.ISSN_REGEX)},
-                {"type": "eissn", "id": rstr.xeger(forms.ISSN_REGEX)},
+                {"type": "eissn", "id": rstr.xeger(forms.ISSN_REGEX)}
             ]
             template['admin']['in_doaj'] = in_doaj
             template['bibjson']['active'] = in_doaj  # legacy field?
