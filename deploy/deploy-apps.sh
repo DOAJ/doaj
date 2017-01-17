@@ -15,6 +15,7 @@ mkdir -p /home/cloo/appdata/doaj/reapp_csvs
 mkdir -p /home/cloo/appdata/doaj/history
 mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
+mkdir -p /home/cloo/appdata/doaj/s3fs
 
 sudo supervisorctl reread doaj-$ENV
 sudo supervisorctl update doaj-$ENV
@@ -25,3 +26,11 @@ sudo nginx -t && sudo nginx -s reload
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-apps
 sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-$ENV-apps /etc/anacrontab
+
+echo "Mounting S3FS permanently"
+cd /home/cloo/repl/$ENV/doaj
+. bin/activate
+cd src/doaj
+portality/deploy/install_s3fs.sh
+DOAJENV=$1 python portality/deploy/mount_s3fs.py -u || true  # try to unmount, but don't care if that doesn't work (e.g. s3fs is not mounted)
+DOAJENV=$1 python portality/deploy/mount_s3fs.py -p
