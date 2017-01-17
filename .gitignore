@@ -39,6 +39,8 @@ history/article/*
 history/journal/*
 !history/journal/.gitkeep
 
+.s3fs-credentials
+
 ### OSX template
 .DS_Store
 .AppleDouble
