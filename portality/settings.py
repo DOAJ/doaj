@@ -8,7 +8,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.11.1"
+DOAJ_VERSION = "2.10.13"
 
 OFFLINE_MODE = False
 
@@ -428,7 +428,6 @@ STATIC_PAGES = [
     ("/publishers", "monthly"),
     ("/support", "monthly"),
     ("/contact", "yearly"),
-    ("/supportDoaj", "monthly"),
     ("/members", "monthly"),
     ("/membership", "monthly"),
     ("/publishermembers", "monthly"),

@@ -369,11 +369,6 @@ def suggest():
     return redirect(url_for('.suggestion'), code=301)
 
 
-@blueprint.route("/supportDoaj")
-def support_doaj():
-    return render_template("doaj/supportDoaj.html")
-
-
 @blueprint.route("/support_thanks")
 def support_doaj_thanks():
     return render_template("doaj/support_thanks.html")
