@@ -93,6 +93,7 @@ ARTICLE_SOURCE = {
     "id" : "abcdefghijk_article",
     "admin" : {
         "in_doaj" : True,
+        "seal" : False,
         "publisher_record_id" : "some_identifier",
         "upload_id" : "zyxwvutsrqpo_upload_id"
     },
@@ -175,6 +176,7 @@ ARTICLE_STRUCT = {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
+                "seal": {"coerce": "bool", "get__default": False},
                 "publisher_record_id": {"coerce": "unicode"},
                 "upload_id": {"coerce": "unicode"}
             }
