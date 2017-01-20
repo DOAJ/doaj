@@ -175,13 +175,14 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         background_job.save()
         article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
 
+"""
 @main_queue.periodic_task(schedule("article_cleanup_sync"))
 @write_required(script=True)
 def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
-
+"""
 @main_queue.task()
 @write_required(script=True)
 def article_cleanup_sync(job_id):

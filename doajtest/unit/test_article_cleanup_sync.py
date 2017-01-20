@@ -6,6 +6,7 @@ from portality.tasks import article_cleanup_sync
 
 import time
 
+
 class TestArticleCleanupSync(DoajTestCase):
 
     def setUp(self):
@@ -76,5 +77,3 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # this one should have been deleted
         assert a3u is None
-
-
