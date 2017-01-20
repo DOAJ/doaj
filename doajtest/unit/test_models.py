@@ -126,13 +126,16 @@ class TestClient(DoajTestCase):
             """Read and write properties into the article model"""
             a = models.Article()
             assert not a.is_in_doaj()
+            assert not a.has_seal()
 
             a.set_in_doaj(True)
+            a.set_seal(True)
             a.set_publisher_record_id("abcdef")
             a.set_upload_id("zyxwvu")
 
             assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
             assert a.is_in_doaj()
+            assert a.has_seal()
             assert a.upload_id() == "zyxwvu"
 
     def test_04_suggestion_model_rw(self):
@@ -1001,3 +1004,14 @@ class TestClient(DoajTestCase):
         bj.add_audit_message("message")
         assert len(bj.audit) == 2
 
+    def test_30_article_journal_sync(self):
+        j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+
+        assert a.has_seal() is False
+        assert a.bibjson().journal_issns != j.bibjson().issns()
+
+        a.add_journal_metadata(j)
+
+        assert a.has_seal() is True
+        assert a.bibjson().journal_issns == j.bibjson().issns()
