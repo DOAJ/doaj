@@ -31,6 +31,6 @@ echo "Mounting S3FS permanently"
 cd /home/cloo/repl/$ENV/doaj
 . bin/activate
 cd src/doaj
-portality/deploy/install_s3fs.sh
-DOAJENV=$1 python portality/deploy/mount_s3fs.py -u || true  # try to unmount, but don't care if that doesn't work (e.g. s3fs is not mounted)
-DOAJENV=$1 python portality/deploy/mount_s3fs.py -p
+deploy/install_s3fs.sh
+DOAJENV=$1 python deploy/mount_s3fs.py -u || true  # try to unmount, but don't care if that doesn't work (e.g. s3fs is not mounted)
+DOAJENV=$1 python deploy/mount_s3fs.py -p
