@@ -5,7 +5,7 @@ THIS_SCRIPT=`basename "$0"`
 ENV=$1
 
 sudo apt-get update -q -y
-sudo apt-get -q -y install curl linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates
+sudo apt-get -q -y install curl linux-image-extra-$(uname -r) linux-image-extra-virtual apt-transport-https ca-certificates redis-tools
 curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
 # TODO could use apt-key fingerprint to verify the key had fingerprint 58118E89F3A912897C070ADBF76221572C52609D
 sudo add-apt-repository "deb https://apt.dockerproject.org/repo/ ubuntu-$(lsb_release -cs) main"

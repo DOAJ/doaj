@@ -17,6 +17,9 @@ mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
 mkdir -p /home/cloo/appdata/doaj/s3fs
 
+sudo apt-get update -q -y
+sudo apt-get install -q -y redis-tools
+
 sudo supervisorctl reread doaj-$ENV
 sudo supervisorctl update doaj-$ENV
 kill -HUP $(sudo supervisorctl pid doaj-$ENV)
