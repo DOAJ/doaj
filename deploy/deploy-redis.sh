@@ -14,11 +14,12 @@ sudo apt-get -q -y install docker-engine=1.12.3-0~trusty
 echo
 echo "Docker version should be displayed below if successfully installed"
 docker -v
-echo
-echo "Setting up Docker to be used without sudo"
-sudo groupadd docker
-sudo gpasswd -a ${USER} docker
-newgrp docker
+# might have to be done manually - script terminates at some point after the echoes below, either after adding the group, adding *to* the group, or the newgrp command
+#echo
+#echo "Setting up Docker to be used without sudo"
+#sudo groupadd docker
+#sudo gpasswd -a ${USER} docker
+#newgrp docker
 echo
 echo "Installing Docker Compose, version information should be displayed below"
 curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null && sudo chmod a+x /usr/local/bin/docker-compose
