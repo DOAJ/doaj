@@ -65,6 +65,7 @@ crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 
 # replicate across servers
 /home/cloo/repl/replicate.sh
+/home/cloo/repl/command.sh redis-$ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-redis.sh $ENV
 /home/cloo/repl/command.sh $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
 
 # reload the config if syntax is OK
