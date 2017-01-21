@@ -13,7 +13,11 @@ We use a dockerised Redis installation. Currently this is only used for Huey bac
 
   1. Install Docker [by following step 1 of the Docker Compose installation tutorial](https://docs.docker.com/compose/install/) on your machine.
 
-  2. Make sure you don't need to `sudo` to run docker. [Instructions on set-up and how to test that it works.](https://docs.docker.com/engine/installation/linux/ubuntulinux/#/manage-docker-as-a-non-root-user)
+  2. Make sure you don't need to `sudo` to run docker.
+  
+    sudo groupadd docker
+    sudo gpasswd -a ${USER} docker
+    newgrp docker
 
   3. Install [Docker Compose by following steps 2 and onwards from the Docker Compose installation Tutorial](https://docs.docker.com/compose/install/).
 
