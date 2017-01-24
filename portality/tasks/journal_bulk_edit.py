@@ -144,7 +144,10 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
-        job.reference = {'selection_query': json.dumps(kwargs['selection_query'])}
+
+        refs = {}
+        cls.set_reference(refs, "selection_query", json.dumps(kwargs['selection_query']))
+        job.reference = refs
 
         params = {}
         cls.set_param(params, 'ids', kwargs['ids'])
