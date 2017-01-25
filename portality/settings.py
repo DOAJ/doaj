@@ -76,7 +76,7 @@ HUEY_SCHEDULE = {
     "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"},
     "journal_csv" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
     "read_news" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
-    #"article_cleanup_sync" : {"month" : "*", "day" : "2", "hour" : "0", "minute" : "0"}
+    "article_cleanup_sync" : {"month" : "*", "day" : "2", "hour" : "0", "minute" : "0"}
 }
 
 HUEY_TASKS = {
