@@ -460,7 +460,7 @@ def bulk_admin_endpoints_bad_request(exception):
     return make_json_resp(r, status_code=400)
 
 
-def get_background_task_manager(doaj_type):
+def get_bulk_edit_background_task_manager(doaj_type):
     r = {}
     if doaj_type == 'journals':
         return journal_bulk_edit.journal_manage
@@ -481,7 +481,7 @@ def get_query_from_request(payload):
 @ssl_required
 def bulk_assign_editor_group(doaj_type):
     r = {}
-    task = get_background_task_manager(doaj_type)
+    task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
@@ -500,7 +500,7 @@ def bulk_assign_editor_group(doaj_type):
 @ssl_required
 def bulk_add_note(doaj_type):
     r = {}
-    task = get_background_task_manager(doaj_type)
+    task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
@@ -523,7 +523,7 @@ def applications_bulk_change_status():
 
     q = get_query_from_request(payload)
 
-    r['affected_applications'] = get_background_task_manager('applications')(
+    r['affected_applications'] = get_bulk_edit_background_task_manager('applications')(
         selection_query=q,
         application_status=payload['application_status'],
         dry_run=payload.get('dry_run', True)

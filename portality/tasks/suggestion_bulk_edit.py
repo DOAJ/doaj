@@ -168,7 +168,7 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
 
         # now ensure that we have the locks for all the suggestions
         # will raise an exception if this fails
-        lock.batch_lock("suggestion", kwargs.get('ids', []), username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
+        lock.batch_lock("suggestion", kwargs['ids'], username, timeout=app.config.get("BACKGROUND_TASK_LOCK_TIMEOUT", 3600))
 
         return job
 
