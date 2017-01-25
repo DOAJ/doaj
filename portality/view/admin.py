@@ -11,7 +11,7 @@ from portality import lock
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -526,6 +526,21 @@ def applications_bulk_change_status():
     r['affected_applications'] = get_bulk_edit_background_task_manager('applications')(
         selection_query=q,
         application_status=payload['application_status'],
+        dry_run=payload.get('dry_run', True)
+    )
+
+    return make_json_resp(r, status_code=200)
+
+@blueprint.route("/journals/bulk/delete", methods=['POST'])
+def bulk_journals_delete():
+    r = {}
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
+
+    q = get_query_from_request(payload)
+
+    r = journal_bulk_delete.journal_bulk_delete_manage(
+        selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
 
