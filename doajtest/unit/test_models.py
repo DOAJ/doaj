@@ -1005,13 +1005,23 @@ class TestClient(DoajTestCase):
         assert len(bj.audit) == 2
 
     def test_30_article_journal_sync(self):
-        j = models.Journal(**JournalFixtureFactory.make_journal_source())
-        a = models.Article(**ArticleFixtureFactory.make_article_source())
+        j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        a = models.Article(**ArticleFixtureFactory.make_article_source(in_doaj=False, with_journal_info=False))
 
         assert a.has_seal() is False
         assert a.bibjson().journal_issns != j.bibjson().issns()
 
-        a.add_journal_metadata(j)
+        reg = models.Journal()
+        changed = a.add_journal_metadata(j, reg)
 
+        assert changed is True
         assert a.has_seal() is True
+        assert a.is_in_doaj() is True
         assert a.bibjson().journal_issns == j.bibjson().issns()
+        assert a.bibjson().publisher == j.bibjson().publisher
+        assert a.bibjson().journal_country == j.bibjson().country
+        assert a.bibjson().journal_language == j.bibjson().language
+        assert a.bibjson().journal_title == j.bibjson().title
+
+        changed = a.add_journal_metadata(j)
+        assert changed is False
