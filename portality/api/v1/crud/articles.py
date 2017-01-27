@@ -34,8 +34,12 @@ class ArticlesCrudApi(CrudApi):
         start_page = am.bibjson().start_page
         end_page = am.bibjson().end_page
         am.bibjson().remove_journal_metadata()  # then destroy all journal metadata
-        if not am.add_journal_metadata():  # overwrite journal part of metadata and in_doaj setting
+
+        try:
+            am.add_journal_metadata()  # overwrite journal part of metadata and in_doaj setting
+        except models.NoJournalException as e:
             raise Api400Error("No journal found to attach article to. Each article in DOAJ must belong to a journal and the (E)ISSNs provided in the bibjson.identifiers section of this article record do not match any DOAJ journal.")
+
         # restore the user's data
         am.bibjson().number = number
         am.bibjson().volume = volume
