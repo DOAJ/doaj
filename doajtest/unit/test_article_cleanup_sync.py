@@ -139,3 +139,40 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # this one should have been deleted
         assert a3u is None
+
+    def test_05_best_journal(self):
+        j1 = models.Journal()
+        j1.set_in_doaj(True)
+        j1.set_last_manual_update("2001-01-01T00:00:00Z")
+        j1.save()
+
+        j2 = models.Journal()
+        j2.set_in_doaj(True)
+        j2.save()
+
+        j3 = models.Journal()
+        j3.set_in_doaj(False)
+        j3.set_last_manual_update("2002-01-01T00:00:00Z")
+        j3.save()
+
+        j4 = models.Journal()
+        j4.set_in_doaj(False)
+        j4.save(blocking=True)
+
+        job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
+        task = article_cleanup_sync.ArticleCleanupSyncBackgroundTask(job)
+
+        # the degenerate case, when there's only one journal
+        best = task._get_best_journal([j1])
+        assert best.id == j1.id
+
+        # should return in doaj over not in doaj
+        best = task._get_best_journal([j1, j3])
+        assert best.id == j1.id
+
+        # should return manually updated over not manually updated
+        best = task._get_best_journal([j1, j2])
+        assert best.id == j1.id
+
+        best = task._get_best_journal([j3, j4])
+        assert best.id == j3.id

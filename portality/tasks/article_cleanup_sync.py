@@ -15,6 +15,7 @@ import json
 from portality import models
 from portality.util import unicode_dict
 from portality.core import app
+from datetime import datetime
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
@@ -165,6 +166,8 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             else:
                 context = result["not_in_doaj"]
 
+            if lmu is None:
+                lmu = datetime.utcfromtimestamp(0)
             if lmu not in context:
                 context[lmu] = {}
             context[lmu][lu] = j
