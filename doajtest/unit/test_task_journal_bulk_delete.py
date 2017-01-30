@@ -29,8 +29,7 @@ class TestTaskJournalBulkDelete(DoajTestCase):
                 a = models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, eissn=j.bibjson().first_eissn, pissn=j.bibjson().first_pissn))
                 a.save()
                 self.articles.append(a)
-        self.journals[-1].snapshot()
-        self.articles[-1].snapshot()
+
         sleep(2)
 
         self.forbidden_accounts = [

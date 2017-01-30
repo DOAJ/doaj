@@ -1,5 +1,6 @@
 from portality import models
 from portality.core import app
+from portality.dao import ESMappingMissingError
 
 class Locked(Exception):
     def __init__(self, message, lock):
@@ -133,14 +134,17 @@ def batch_unlock(type, ids, username):
 def _retrieve_latest_with_cleanup(type, id):
     # query for any locks on this id.  There is a chance there's more than one, if two locks
     # are created at the same time
+    l = None
+
     q = LockQuery(type, id)
-    res = models.Lock.query(q=q.query())
-    ls = [models.Lock(**hit.get("_source")) for hit in res.get("hits", {}).get("hits", [])]
+    try:
+        ls = models.Lock.q2obj(q=q.query())
+    except ESMappingMissingError:
+        return l
 
     # if there's more than one lock, keep the most recent (the query is sorted) and
     # delete all the rest.  Code that uses locks should check for a lock before each
     # operation, and handle the fact that it may lose its lock.
-    l = None
     if len(ls) > 0:
         l = ls[0]
     if len(ls) > 1:
