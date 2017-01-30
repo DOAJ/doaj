@@ -45,17 +45,23 @@ class TestTaskJournalBulkDelete(DoajTestCase):
         super(TestTaskJournalBulkDelete, self).tearDown()
 
     def test_01_bulk_delete(self):
-        """Bulk delete journals as an admin"""
+        """Bulk delete journals as an admin, but leave some around to test queries in bulk delete job"""
         # test dry run
-        r = journal_bulk_delete_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, dry_run=True)
-        assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT, 'articles-to-be-deleted': TEST_JOURNAL_COUNT * TEST_ARTICLES_PER_JOURNAL}, r
+        SPARE_JOURNALS_NUM = 5
+        ids_to_delete = []
+        for i in range(0, len(self.journals) - SPARE_JOURNALS_NUM):
+            ids_to_delete.append(self.journals[i].id)
+        del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"_id": ids_to_delete}}]}}}
 
-        r = journal_bulk_delete_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, dry_run=False)
+        r = journal_bulk_delete_manage(del_q_should_terms, dry_run=True)
+        assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM, 'articles-to-be-deleted': (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL}, r
+
+        r = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
         assert r is True, r
 
         sleep(3)
 
         job = models.BackgroundJob.all()[0]
 
-        assert len(models.Journal.all()) == 0, "{}\n\n{}".format(len(models.Journal.all()), json.dumps(job.audit, indent=2))  # json.dumps([j.data for j in models.Journal.all()], indent=2)
-        assert len(models.Article.all()) == 0, "{}\n\n{}".format(len(models.Article.all()), json.dumps(job.audit, indent=2))  # json.dumps([a.data for a in models.Article.all()], indent=2)
+        assert len(models.Journal.all()) == SPARE_JOURNALS_NUM, "{}\n\n{}".format(len(models.Journal.all()), json.dumps(job.audit, indent=2))  # json.dumps([j.data for j in models.Journal.all()], indent=2)
+        assert len(models.Article.all()) == SPARE_JOURNALS_NUM * TEST_ARTICLES_PER_JOURNAL, "{}\n\n{}".format(len(models.Article.all()), json.dumps(job.audit, indent=2))  # json.dumps([a.data for a in models.Article.all()], indent=2)

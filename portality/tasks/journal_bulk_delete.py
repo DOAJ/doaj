@@ -55,7 +55,7 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         job.add_audit_message(u"About to delete an estimated {} journals with {} articles associated with their ISSNs."
                               .format(estimates['journals-to-be-deleted'], estimates['articles-to-be-deleted']))
 
-        journal_delete_q_by_ids = models.Journal.make_query(terms={'_id': ids}, consistent_order=False)
+        journal_delete_q_by_ids = models.Journal.make_query(should_terms={'_id': ids}, consistent_order=False)
         models.Journal.delete_selected(query=journal_delete_q_by_ids, articles=True, snapshot_journals=True, snapshot_articles=True)
         job.add_audit_message(u"Deleted {} journals and all articles associated with their ISSNs.".format(len(ids)))
 
