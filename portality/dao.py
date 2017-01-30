@@ -440,8 +440,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             es_resp = json.dumps(res, indent=2)
 
             error_to_raise = ESMappingMissingError if ES_MAPPING_MISSING_REGEX.match(es_resp) else ESError
-            print ES_MAPPING_MISSING_REGEX.match(es_resp)
-            print error_to_raise.__name__
+
             raise error_to_raise(
                 (
                 "Elasticsearch returned an error:"
