@@ -88,7 +88,7 @@ class SetInDOAJBackgroundTask(BackgroundTask):
         cls.set_param(params, "journal_ids", journal_ids)
         cls.set_param(params, "in_doaj", kwargs.get("in_doaj"))
 
-        if journal_ids is None or kwargs.get("in_doaj") is None:
+        if journal_ids is None or len(journal_ids) == 0 or kwargs.get("in_doaj") is None:
             raise RuntimeError(u"SetInDOAJBackgroundTask.prepare run without sufficient parameters")
 
         job.params = params
