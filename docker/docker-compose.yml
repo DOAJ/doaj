@@ -5,7 +5,7 @@ services:
     build: redis/
     command: "redis-server /usr/local/etc/redis/redis.conf --appendonly yes --port ${HUEY_REDIS_PORT:-6379}"
     ports:
-        - "${HUEY_REDIS_PORT:-6379}:${HUEY_REDIS_PORT:-6379}"
+        - "${REDIS_BIND_HOST:-127.0.0.1}:${HUEY_REDIS_PORT:-6379}:${HUEY_REDIS_PORT:-6379}"
     volumes:
       - doaj_redis_data:/data
 
