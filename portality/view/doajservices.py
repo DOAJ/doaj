@@ -43,10 +43,19 @@ def unlock(object_type, object_id):
 @jsonp
 def shorten():
     try:
-        # Get the URL from the request
-        doajurl = request.data
+        # parse the json
+        d = json.loads(request.data)
+        p = d['page']
+        q = d['query']
 
-        # assemble the bitly url.
+        # re-serialise the query, and url encode it
+        source = urllib.quote(json.dumps(q))
+
+        # assemble the DOAJ url
+        doajurl = p + "?source=" + source
+
+        # assemble the bitly url.  Note that we re-encode the doajurl to include in the
+        # query arguments, so by this point it is double-encoded
         bitly = app.config.get("BITLY_SHORTENING_API_URL")
         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
         bitlyurl = bitly + "?access_token=" + bitly_oauth + "&longUrl=" + urllib.quote(doajurl)

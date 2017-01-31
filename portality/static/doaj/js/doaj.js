@@ -53,16 +53,15 @@ function journal_toc_id(journal) {
             alert("Sorry, we're unable to generate short urls at this time");
             callback();
         }
-
-        var q = JSON.stringify(query);
-        var url_to_shorten = window.location.protocol + '//' + window.location.host + window.location.pathname + '?source=' + q;
+        
+        var page = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
         $.ajax({
             type: "POST",
             contentType: "application/json",
             dataType: "jsonp",
             url: "/service/shorten",
-            data : url_to_shorten,
+            data : JSON.stringify({page: page, query: query}),
             success: callbackWrapper,
             error: errorHandler
         });
