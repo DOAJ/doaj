@@ -124,6 +124,10 @@ class BackgroundTask(object):
     def set_param(cls, params, param_name, value):
         params['{}__{}'.format(cls.__action__, param_name)] = value
 
+    @classmethod
+    def set_reference(cls, refs, ref_name, value):
+        refs['{}__{}'.format(cls.__action__, ref_name)] = value
+
 
 class AdminBackgroundTask(BackgroundTask):
     @classmethod

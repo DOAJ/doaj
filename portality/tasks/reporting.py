@@ -312,9 +312,9 @@ class ReportingBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        outdir = params.get("reporting__outdir", "report_" + dates.now())
-        fr = params.get("reporting__from", "1970-01-01T00:00:00Z")
-        to = params.get("reporting__to", dates.now())
+        outdir = self.get_param(params, "outdir", "report_" + dates.now())
+        fr = self.get_param(params, "from", "1970-01-01T00:00:00Z")
+        to = self.get_param(params, "to", dates.now())
 
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
@@ -322,13 +322,15 @@ class ReportingBackgroundTask(BackgroundTask):
 
         prov_outfiles = provenance_reports(fr, to, outdir)
         cont_outfiles = content_reports(fr, to, outdir)
-        job.add_reference("reporting__provenance_outfiles", prov_outfiles)
-        job.add_reference("reporting__content_outfiles", cont_outfiles)
+        refs = {}
+        self.set_reference(refs, "provenance_outfiles", prov_outfiles)
+        self.set_reference(refs, "content_outfiles", cont_outfiles)
+        job.reference = refs
 
         msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
         job.add_audit_message(msg)
 
-        send_email = params.get("reporting__email", False)
+        send_email = self.get_param(params, "email", False)
         if send_email:
             archive_name = "reports_" + fr + "_to_" + to
             email(outdir, archive_name)
@@ -346,7 +348,7 @@ class ReportingBackgroundTask(BackgroundTask):
             return
 
         params = self.background_job.params
-        outdir = params.get("reporting__outdir")
+        outdir = self.get_param(params, "outdir")
 
         if outdir is not None and os.path.exists(outdir):
             shutil.rmtree(outdir)
@@ -367,11 +369,11 @@ class ReportingBackgroundTask(BackgroundTask):
         job.user = username
         job.action = cls.__action__
 
-        params ={}
-        params["reporting__outdir"] = kwargs.get("outdir", "report_" + dates.now())
-        params["reporting__from"] = kwargs.get("from_date", "1970-01-01T00:00:00Z")
-        params["reporting__to"] = kwargs.get("to_date", dates.now())
-        params["reporting__email"] = kwargs.get("email", False)
+        params = {}
+        cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.now()))
+        cls.set_param(params, "from", kwargs.get("from_date", "1970-01-01T00:00:00Z"))
+        cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
+        cls.set_param(params, "email", kwargs.get("email", False))
         job.params = params
 
         return job

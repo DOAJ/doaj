@@ -183,6 +183,7 @@ def scheduled_article_cleanup_sync():
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
 """
+
 @main_queue.task()
 @write_required(script=True)
 def article_cleanup_sync(job_id):

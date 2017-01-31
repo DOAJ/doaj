@@ -156,7 +156,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         if params is None:
             raise BackgroundException(u"IngestArticleBackgroundTask.run run without sufficient parameters")
 
-        file_upload_id = params.get("ingest_articles__file_upload_id")
+        file_upload_id = self.get_param(params, "file_upload_id")
         if file_upload_id is None:
             raise BackgroundException(u"IngestArticleBackgroundTask.run run without sufficient parameters")
 
@@ -313,10 +313,10 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.user = username
         job.action = cls.__action__
 
-        params ={}
-        params["ingest_articles__file_upload_id"] = file_upload_id
-
+        params = {}
+        cls.set_param(params, "file_upload_id", file_upload_id)
         job.params = params
+
         return job
 
     @classmethod
