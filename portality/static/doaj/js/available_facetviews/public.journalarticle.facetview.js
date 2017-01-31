@@ -171,30 +171,6 @@ jQuery(document).ready(function($) {
         }
     }
 
-    function bitlyShortener(query, callback) {
-
-        function callbackWrapper(data) {
-            callback(data.url);
-        }
-
-        function errorHandler() {
-            alert("Sorry, we're unable to generate short urls at this time");
-            callback();
-        }
-
-        var postdata = JSON.stringify(query);
-
-        $.ajax({
-            type: "POST",
-            contentType: "application/json",
-            dataType: "jsonp",
-            url: "/service/shorten",
-            data : postdata,
-            success: callbackWrapper,
-            error: errorHandler
-        });
-    }
-
     function publicSearchResult(options, resultobj) {
         if (resultobj.bibjson && resultobj.bibjson.journal) {
             // it is an article

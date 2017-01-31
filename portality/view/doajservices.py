@@ -1,6 +1,6 @@
 import json, urllib, requests
 
-from flask import Blueprint, make_response, request, abort, url_for
+from flask import Blueprint, make_response, request, abort
 from flask.ext.login import current_user, login_required
 
 from portality.core import app
@@ -9,6 +9,7 @@ from portality.util import jsonp
 from portality import lock
 
 blueprint = Blueprint('doajservices', __name__)
+
 
 @blueprint.route("/unlock/<object_type>/<object_id>", methods=["POST"])
 @login_required
@@ -37,23 +38,15 @@ def unlock(object_type, object_id):
     resp.mimetype = "application/json"
     return resp
 
+
 @blueprint.route("/shorten", methods=["POST"])
 @jsonp
 def shorten():
     try:
-        # parse the json as a validation stage
-        q = json.loads(request.data)
+        # Get the URL from the request
+        doajurl = request.data
 
-        # re-serialise the data, and url encode it
-        source =  urllib.quote(json.dumps(q))
-
-        # assemble the DOAJ url - note that we don't let url_for do the url escaping of the
-        # source argument for us, as it + encodes things rather than % encodes things, and for
-        # unknown reasons, the + encoding breaks the fv2 urls.
-        doajurl = app.config.get("BASE_URL") + url_for('doaj.search') + "?source=" + source
-
-        # assemble the bitly url.  Note that we re-encode the doajurl to include in the
-        # query arguments, so by this point it is double-encoded
+        # assemble the bitly url.
         bitly = app.config.get("BITLY_SHORTENING_API_URL")
         bitly_oauth = app.config.get("BITLY_OAUTH_TOKEN")
         bitlyurl = bitly + "?access_token=" + bitly_oauth + "&longUrl=" + urllib.quote(doajurl)
@@ -64,7 +57,7 @@ def shorten():
         shorturl = j.get("data", {}).get("url")
 
         # make the response
-        answer = make_response(json.dumps({"url" : shorturl}))
+        answer = make_response(json.dumps({"url": shorturl}))
         answer.mimetype = "application/json"
         return answer
     except:
