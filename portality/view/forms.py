@@ -10,11 +10,12 @@ import re
 from flask.ext.login import current_user
 
 from wtforms import Form, validators
-from wtforms import TextField, StringField, SelectField, TextAreaField, FormField, FieldList, HiddenField
+from wtforms import StringField, TextAreaField, FormField, FieldList, HiddenField
 
 from portality.core import app
 from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
+from portality.formcontext.fields import DOAJSelectField
 
 ##########################################################################
 ## Forms and related features for Article metadata
@@ -29,10 +30,12 @@ start_year = app.config.get("METADATA_START_YEAR", datetime.now().year - 15)
 YEAR_CHOICES = [(str(y), str(y)) for y in range(datetime.now().year + 1, start_year - 1, -1)]
 MONTH_CHOICES = [("1", "01"), ("2", "02"), ("3", "03"), ("4", "04"), ("5", "05"), ("6", "06"), ("7", "07"), ("8", "08"), ("9", "09"), ("10", "10"), ("11", "11"), ("12", "12")]
 
+
 class AuthorForm(Form):
     name = StringField("Name", [validators.Optional()])
     affiliation = StringField("Affiliation", [validators.Optional()])
-    
+
+
 class ArticleForm(Form):
     title = StringField("Article Title", [validators.DataRequired()])
     doi = StringField("DOI", [validators.Optional(), validators.Regexp(regex=DOI_REGEX, message=DOI_ERROR)])
@@ -40,10 +43,10 @@ class ArticleForm(Form):
     abstract = TextAreaField("Abstract", [validators.Optional()])
     keywords = StringField("Keywords", [validators.Optional()], description="Use a , to separate keywords") # enhanced with select2
     fulltext = StringField("Full-Text URL", [validators.Optional(), validators.URL()], description="(The URL for each article must be unique)")
-    publication_year = SelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
-    publication_month = SelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
-    pissn = SelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
-    eissn = SelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
+    publication_year = DOAJSelectField("Year", [validators.Optional()], choices=YEAR_CHOICES, default=str(datetime.now().year))
+    publication_month = DOAJSelectField("Month", [validators.Optional()], choices=MONTH_CHOICES, default=str(datetime.now().month) )
+    pissn = DOAJSelectField("Journal ISSN (print version)", [ThisOrThat("eissn")], choices=[]) # choices set at construction
+    eissn = DOAJSelectField("Journal ISSN (online version)", [ThisOrThat("pissn")], choices=[]) # choices set at construction
  
     volume = StringField("Volume Number", [validators.Optional()])
     number = StringField("Issue Number", [validators.Optional()])
@@ -91,6 +94,7 @@ class UniqueGroupName(object):
         if id_field.data != exists_id:
             raise validators.ValidationError("The group's name must be unique among the Editor Groups")
 
+
 class NotRole(object):
     def __init__(self, role, *args, **kwargs):
         self.role = role
@@ -113,9 +117,9 @@ class NotRole(object):
 
 class EditorGroupForm(Form):
     group_id = HiddenField("Group ID", [validators.Optional()])
-    name = TextField("Group Name", [validators.Required(), UniqueGroupName()])
-    editor = TextField("Editor", [validators.Required(), NotRole("publisher")])
-    associates = TextField("Associate Editors", [validators.Optional(), NotRole("publisher")])
+    name = StringField("Group Name", [validators.DataRequired(), UniqueGroupName()])
+    editor = StringField("Editor", [validators.DataRequired(), NotRole("publisher")])
+    associates = StringField("Associate Editors", [validators.Optional(), NotRole("publisher")])
 
 ##########################################################################
 ## Continuations Forms
@@ -123,6 +127,7 @@ class EditorGroupForm(Form):
 
 ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
+
 
 class MakeContinuation(Form):
 
@@ -142,6 +147,7 @@ class MakeContinuation(Form):
 ##########################################################################
 ## Contact Forms
 ##########################################################################
+
 
 class ContactUs(Form):
 

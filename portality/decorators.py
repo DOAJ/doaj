@@ -80,15 +80,23 @@ def restrict_to_role(role):
         return redirect(url_for('doaj.home'))
 
 
-def write_required(fn):
-    @wraps(fn)
-    def decorated_view(*args, **kwargs):
-        if app.config.get("READ_ONLY_MODE", False):
-            return render_template("doaj/readonly.html")
+def write_required(script=False):
+    def decorator(fn):
+        @wraps(fn)
+        def decorated_view(*args, **kwargs):
+            if app.config.get("READ_ONLY_MODE", False):
+                # TODO remove "script" argument from decorator.
+                # Should be possible to detect if this is run in a web context or not.
+                if script:
+                    raise RuntimeError('This task cannot run since the system is in read-only mode.')
+                else:
+                    return render_template("doaj/readonly.html")
 
-        return fn(*args, **kwargs)
+            return fn(*args, **kwargs)
 
-    return decorated_view
+        return decorated_view
+    return decorator
+
 
 def track_analytics(event_category, event_action, event_label='',
                     event_value=0, record_value_of_which_arg=''):

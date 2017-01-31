@@ -5,3 +5,4 @@ from accounts import AccountFixtureFactory
 from article import ArticleFixtureFactory
 from bibjson import BibJSONFixtureFactory
 from provenance import ProvenanceFixtureFactory
+from background import BackgroundFixtureFactory

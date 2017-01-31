@@ -140,11 +140,6 @@ def legacy_doaj_XML_schema():
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
 
-@login_manager.user_loader
-def load_account_for_login_manager(userid):
-    out = models.Account.pull(userid)
-    return out
-
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
 # equivalent back in when we do the admin area

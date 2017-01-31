@@ -27,6 +27,9 @@ setup(
         "flask-cors==2.1.2",
         "LinkHeader==0.4.3",
         "universal-analytics-python==0.2.4",
+        "huey==1.2.2",
+        "redis==2.10.5",
+        "rstr==2.2.5",
         # for deployment
         "gunicorn",
         "newrelic",

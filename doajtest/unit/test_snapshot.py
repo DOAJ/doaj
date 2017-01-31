@@ -1,9 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.core import app
-from datetime import datetime
 import time
-import os
 import json
 
 class TestSnapshot(DoajTestCase):

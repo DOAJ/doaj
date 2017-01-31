@@ -4,7 +4,6 @@ from doajtest.fixtures import ApplicationFixtureFactory
 import re, time
 from copy import deepcopy
 
-from portality.app import app   # this line is required, or the test context doesn't work; I don't know why
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc
@@ -379,7 +378,7 @@ class TestEditorAppReview(DoajTestCase):
         fc.patch_target()
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk"
-        assert len(fc.target.notes()) == 2
+        assert len(fc.target.notes) == 2
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"

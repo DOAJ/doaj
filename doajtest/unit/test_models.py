@@ -1,8 +1,8 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory
-import time
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
+import time, json
 from portality.lib import dataobj
 from portality.models import shared_structs
 
@@ -40,6 +40,7 @@ class TestClient(DoajTestCase):
         from portality.models import ObjectDict
         from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
         from portality.models import Provenance
+        from portality.models.background import BackgroundJob
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -80,7 +81,7 @@ class TestClient(DoajTestCase):
         assert len(j.contacts()) == 1
         assert j.get_latest_contact_name() == "richard"
         assert j.get_latest_contact_email() == "richard@email.com"
-        assert len(j.notes()) == 1
+        assert len(j.notes) == 1
         assert j.owner == "richard"
         assert j.editor_group == "worldwide"
         assert j.editor == "eddie"
@@ -89,12 +90,12 @@ class TestClient(DoajTestCase):
         assert j.has_seal() is True
         assert j.bulk_upload_id == "abcdef"
 
-        notes = j.notes()
+        notes = j.notes
         j.remove_note(notes[0])
-        assert len(j.notes()) == 0
+        assert len(j.notes) == 0
 
         j.set_notes([{"note" : "testing", "date" : "2005-01-01T00:00:00Z"}])
-        assert len(j.notes()) == 1
+        assert len(j.notes) == 1
 
         j.remove_current_application()
         assert j.current_application is None
@@ -125,13 +126,16 @@ class TestClient(DoajTestCase):
             """Read and write properties into the article model"""
             a = models.Article()
             assert not a.is_in_doaj()
+            assert not a.has_seal()
 
             a.set_in_doaj(True)
+            a.set_seal(True)
             a.set_publisher_record_id("abcdef")
             a.set_upload_id("zyxwvu")
 
             assert a.data.get("admin", {}).get("publisher_record_id") == "abcdef"
             assert a.is_in_doaj()
+            assert a.has_seal()
             assert a.upload_id() == "zyxwvu"
 
     def test_04_suggestion_model_rw(self):
@@ -980,3 +984,34 @@ class TestClient(DoajTestCase):
         assert prov.action == "act2"
         assert prov.resource_id == "obj2"
 
+    def test_29_background_job(self):
+        source = BackgroundFixtureFactory.example()
+        bj = models.BackgroundJob(**source)
+        bj.save()
+
+        time.sleep(2)
+
+        retrieved = models.BackgroundJob.pull(bj.id)
+        assert retrieved is not None
+
+        source = BackgroundFixtureFactory.example()
+        source["params"]["ids"] = ["1", "2", "3"]
+        source["params"]["type"] = "suggestion"
+        source["reference"]["query"]  = json.dumps({"query" : {"match_all" : {}}})
+        bj = models.BackgroundJob(**source)
+        bj.save()
+
+        bj.add_audit_message("message")
+        assert len(bj.audit) == 2
+
+    def test_30_article_journal_sync(self):
+        j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+
+        assert a.has_seal() is False
+        assert a.bibjson().journal_issns != j.bibjson().issns()
+
+        a.add_journal_metadata(j)
+
+        assert a.has_seal() is True
+        assert a.bibjson().journal_issns == j.bibjson().issns()
