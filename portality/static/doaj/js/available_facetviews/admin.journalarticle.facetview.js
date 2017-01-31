@@ -1,19 +1,11 @@
 jQuery(document).ready(function($) {
 
     function adminButtons(options, context) {
-        var type = false;
-        if ("_type" in options.active_filters) {
-            type = options.active_filters._type[0];
-        }
-        if (type === "article") {
-            $("#delete-articles").removeAttr("disabled");
-            $("#delete-journals").attr("disabled", "disabled");
-        } else if (type === "journal") {
-            $("#delete-journals").removeAttr("disabled");
-            $("#delete-articles").attr("disabled", "disabled");
+        // Disable the bulk action submit button if there is an empty query in the facetview
+        if ($.isEmptyObject(options.active_filters) && options.q == '') {
+            $('#bulk-submit').attr('disabled', 'disabled');
         } else {
-            $("#delete-journals").attr("disabled", "disabled");
-            $("#delete-articles").attr("disabled", "disabled");
+            $('#bulk-submit').removeAttr('disabled');
         }
     }
 
@@ -27,103 +19,106 @@ jQuery(document).ready(function($) {
         });
 
         ////////////////////////////////////////////////////////////
-        // functions for handling the article delete requests
-
-        function article_success_callback(data) {
-            alert("All selected articles deleted");
-            $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
-            $(".facetview_freetext").trigger("keyup"); // cause a search
+        // functions for handling the bulk form
+        function get_bulk_action() {
+            action = $('#bulk_action').val();
+            if (! action) {
+                alert('Error: unknown bulk operation.');
+                throw 'Error: unknown bulk operation. The bulk action field was empty.'
+            }
+            return action
         }
 
-        function article_confirm_callback(data) {
-            var sure = confirm("This operation will delete " + data.total + " articles.  Still ok to continue?");
+        function bulk_action_type() {
+            if (get_bulk_action() == 'delete') {
+                return 'journals,articles';
+            }
+            return 'journals'
+        }
+
+        function bulk_action_url() {
+            return '/admin/' + bulk_action_type() + '/bulk/' + get_bulk_action()
+        }
+
+        function build_affected_msg(data) {
+            var mfrg = undefined;
+            if (data.affected_journals && data.affected_articles) {
+                mfrg = data.affected_journals + " journals and " + data.affected_articles + " articles"
+            }
+            else if (data.affected_journals) {
+                mfrg = data.affected_journals + " journals"
+            }
+            else if (data.affected_articles) {
+                mfrg = data.affected_articles + " articles"
+            }
+            else {
+                mfrg = "an unknown number of records"
+            }
+            return mfrg
+        }
+
+        function bulk_action_success_callback(data) {
+            alert('Submitted - ' + build_affected_msg(data) + ' have been queued for edit.');
+            $('#bulk-submit').removeAttr('disabled').html('Submit');
+        }
+
+        function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
+            alert('There was an error with your request.');
+            console.error(textStatus + ': ' + errorThrown);
+            $('#bulk-submit').removeAttr('disabled').html('Submit');
+        }
+
+        function bulk_action_confirm_callback(data) {
+            var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
             if (sure) {
                 $.ajax({
-                    type: "DELETE",
-                    url: "/admin/articles",
-                    data: serialiseQueryObject(query),
-                    success : article_success_callback,
-                    error: article_error_callback
+                    type: 'POST',
+                    url: bulk_action_url(),
+                    data: JSON.stringify({
+                        selection_query: query,
+                        editor_group: $('#editor_group').val(),
+                        note: $('#note').val(),
+                        dry_run: false
+                    }),
+                    contentType : 'application/json',
+                    success : bulk_action_success_callback,
+                    error: bulk_action_error_callback
                 });
             } else {
-                $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+                $('#bulk-submit').removeAttr('disabled').html('Submit');
             }
         }
 
-        function article_error_callback() {
-            alert("There was an error deleting the articles");
-            $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
-        }
-
-        $("#delete-articles").unbind("click").bind("click", function(event) {
+        $('#bulk-submit').unbind('click').bind('click', function(event) {
             event.preventDefault();
 
-            $("#delete-articles").attr("disabled", "disabled").html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Deleting Articles");
+            $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
 
-            var sure = confirm("Are you sure?  This operation cannot be undone!");
+            var sure;
+            if ($('#bulk_action').val() == 'delete') {
+                sure = confirm('Are you sure?  This operation cannot be undone!');
+            } else {
+                sure = true;
+            }
+
             if (sure) {
-                var obj = {q: serialiseQueryObject(query)};
                 $.ajax({
-                    type: "POST",
-                    url: "/admin/articles",
-                    data: obj,
-                    success : article_confirm_callback,
-                    error: article_error_callback
+                    type: 'POST',
+                    url: bulk_action_url(),
+                    data: JSON.stringify({
+                        selection_query: query,
+                        editor_group: $('#editor_group').val(),
+                        note: $('#note').val(),
+                        dry_run: true
+                    }),
+                    contentType : 'application/json',
+                    success : bulk_action_confirm_callback,
+                    error: bulk_action_error_callback
                 });
             } else {
-                $("#delete-articles").removeAttr("disabled").html("Delete Selected Articles");
+                $('#bulk-submit').removeAttr('disabled').html('Submit');
             }
         });
-
-        ////////////////////////////////////////////////////////////
-        // functions for handling the journal delete requests
-
-        function journal_success_callback(data) {
-            alert("All selected journals and associated articles deleted");
-            $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
-            $(".facetview_freetext").trigger("keyup"); // cause a search
-        }
-
-        function journal_error_callback() {
-            alert("There was an error deleting the journals");
-            $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
-        }
-
-        function journal_confirm_callback(data) {
-            var sure = confirm("This operation will delete " + data.journals + " journals and " + data.articles + " articles.  Still ok to continue?");
-            if (sure) {
-                $.ajax({
-                    type: "DELETE",
-                    url: "/admin/journals",
-                    data: serialiseQueryObject(query),
-                    success : journal_success_callback,
-                    error: journal_error_callback
-                });
-            } else {
-                $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
-            }
-        }
-
-        $("#delete-journals").unbind("click").bind("click", function(event) {
-            event.preventDefault();
-
-            $("#delete-journals").attr("disabled", "disabled").html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Deleting Journals");
-
-            var sure = confirm("Are you sure?  This operation cannot be undone!");
-            if (sure) {
-                var obj = {q: serialiseQueryObject(query)};
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/journals",
-                    data: obj,
-                    success : journal_confirm_callback,
-                    error: journal_error_callback
-                });
-            } else {
-                $("#delete-journals").removeAttr("disabled").html("Delete Selected Journals");
-            }
-        });
-
     }
 
     $('.facetview.admin_journals_and_articles').facetview({

@@ -1,14 +1,38 @@
 from copy import deepcopy
+from datetime import datetime
+import rstr
+
 from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
 from portality.models import Suggestion
 from portality.lib import dates
-from datetime import datetime
+from portality.formcontext import forms
 
 class ApplicationFixtureFactory(object):
     @staticmethod
     def make_application_source():
         return deepcopy(APPLICATION_SOURCE)
+    
+    @staticmethod
+    def make_many_application_sources(count=2, in_doaj=False):
+        application_sources = []
+        for i in range(0, count):
+            template = deepcopy(APPLICATION_SOURCE)
+            template['id'] = 'applicationid{0}'.format(i)
+            # now some very quick and very dirty date generation
+            fakemonth = i
+            if fakemonth < 1:
+                fakemonth = 1
+            if fakemonth > 9:
+                fakemonth = 9
+            template['created_date'] = "2000-0{fakemonth}-01T00:00:00Z".format(fakemonth=fakemonth)
+            template["bibjson"]['identifier'] = [
+                {"type": "pissn", "id": rstr.xeger(forms.ISSN_REGEX)},
+                {"type": "eissn", "id": rstr.xeger(forms.ISSN_REGEX)},
+            ]
+            template['bibjson']['title'] = 'Test Title {}'.format(i)
+            application_sources.append(deepcopy(template))
+        return application_sources
 
     @staticmethod
     def make_application_form():

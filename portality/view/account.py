@@ -28,7 +28,7 @@ def index():
 @blueprint.route('/<username>', methods=['GET','POST', 'DELETE'])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def username(username):
     acc = models.Account.pull(username)
 
@@ -138,7 +138,7 @@ def login():
 
 @blueprint.route('/forgot', methods=['GET', 'POST'])
 @ssl_required
-@write_required
+@write_required()
 def forgot():
     CONTACT_INSTR = ' Please <a href="{url}">contact us.</a>'.format(url=url_for('doaj.contact'))
     if request.method == 'POST':
@@ -193,7 +193,7 @@ def forgot():
 
 @blueprint.route("/reset/<reset_token>", methods=["GET", "POST"])
 @ssl_required
-@write_required
+@write_required()
 def reset(reset_token):
     account = models.Account.get_by_reset_token(reset_token)
     if account is None:
@@ -252,7 +252,7 @@ class RegisterForm(Form):
 @blueprint.route('/register', methods=['GET', 'POST'])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def register():
     if not app.config.get('PUBLIC_REGISTER', False) and not current_user.has_role("create_user"):
         abort(401)

@@ -61,3 +61,8 @@ class Lock(DomainObject):
         ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
         formatted = ed.strftime(format)
         return formatted
+
+    def would_expire_within(self, timeout):
+        limit = datetime.now() + timedelta(0, timeout)
+        ed = datetime.strptime(self.expires, "%Y-%m-%dT%H:%M:%SZ")
+        return ed < limit
