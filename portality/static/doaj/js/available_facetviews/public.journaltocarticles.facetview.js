@@ -271,6 +271,7 @@ jQuery(document).ready(function($) {
         post_render_callback: doajPostRender,
 
         sharesave_link: true,
+        url_shortener : bitlyShortener,
         freetext_submit_delay: 1000,
         default_facet_hide_inactive: true,
         default_facet_operator: "AND",
