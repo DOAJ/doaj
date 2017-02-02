@@ -11,7 +11,7 @@ from portality import lock
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete
+from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
@@ -513,6 +513,7 @@ def bulk_add_note(doaj_type):
 
     return make_json_resp(r, status_code=200)
 
+
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
 @login_required
 @ssl_required
@@ -531,6 +532,7 @@ def applications_bulk_change_status():
 
     return make_json_resp(r, status_code=200)
 
+
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
 def bulk_journals_delete():
     r = {}
@@ -540,6 +542,22 @@ def bulk_journals_delete():
     q = get_query_from_request(payload)
 
     r = journal_bulk_delete.journal_bulk_delete_manage(
+        selection_query=q,
+        dry_run=payload.get('dry_run', True)
+    )
+
+    return make_json_resp(r, status_code=200)
+
+
+@blueprint.route("/articles/bulk/delete", methods=['POST'])
+def bulk_articles_delete():
+    r = {}
+    payload = get_web_json_payload()
+    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
+
+    q = get_query_from_request(payload)
+
+    r = article_bulk_delete.article_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
