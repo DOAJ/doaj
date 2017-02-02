@@ -42,3 +42,27 @@ function journal_toc_id(journal) {
 
     return toc_id;
 }
+
+    function bitlyShortener(query, callback) {
+
+        function callbackWrapper(data) {
+            callback(data.url);
+        }
+
+        function errorHandler() {
+            alert("Sorry, we're unable to generate short urls at this time");
+            callback();
+        }
+        
+        var page = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "jsonp",
+            url: "/service/shorten",
+            data : JSON.stringify({page: page, query: query}),
+            success: callbackWrapper,
+            error: errorHandler
+        });
+    }

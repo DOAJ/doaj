@@ -1,7 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.view import atom
-from portality.app import app
 import time
 from lxml import etree
 
@@ -41,7 +40,7 @@ class TestFeed(DoajTestCase):
 
         time.sleep(1)
 
-        with app.test_request_context('/feed'):
+        with self.app_test.test_request_context('/feed'):
             f = atom.get_feed("http://my.test.com")
         assert len(f.entries.keys()) == 5
 
@@ -83,7 +82,7 @@ class TestFeed(DoajTestCase):
 
         time.sleep(1)
 
-        with app.test_request_context('/feed'):
+        with self.app_test.test_request_context('/feed'):
             f = atom.get_feed("http://my.test.com")
         s = f.serialise()
 
