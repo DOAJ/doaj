@@ -5,6 +5,7 @@ from doajtest.fixtures import ApplicationFixtureFactory
 from copy import deepcopy
 from portality.formcontext import xwalk, forms
 from portality.clcsv import ClCsv
+from portality.core import app
 
 REAPP1_SOURCE = ApplicationFixtureFactory.make_reapp_source()
 REAPP2_UNICODE_SOURCE = ApplicationFixtureFactory.make_reapp_unicode_source()
@@ -235,8 +236,8 @@ class TestReApplication(DoajTestCase):
         self.old_account_pull = models.Account.pull
         models.Account.pull = mock_account_pull
 
-        self.old_reapp_upload_dir = self.app_test.config.get("REAPPLICATION_UPLOAD_DIR")
-        self.app_test.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
+        self.old_reapp_upload_dir = app.config.get("REAPPLICATION_UPLOAD_DIR")
+        app.config["REAPPLICATION_UPLOAD_DIR"] = os.path.dirname(os.path.realpath(__file__))
 
     def tearDown(self):
         super(TestReApplication, self).tearDown()
@@ -259,7 +260,7 @@ class TestReApplication(DoajTestCase):
         models.Suggestion.find_by_issn = self.old_find_by_issn
         models.Account.pull = self.old_account_pull
 
-        self.app_test.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
+        app.config["REAPPLICATION_UPLOAD_DIR"] = self.old_reapp_upload_dir
 
     def _make_valid_csv(self):
         sheet = ClCsv("valid.csv")
@@ -372,7 +373,7 @@ class TestReApplication(DoajTestCase):
         assert reapp.id != j.id
         assert reapp.suggested_on is not None
         assert reapp.application_status == "reapplication"
-        assert len(reapp.notes) == 1
+        assert len(reapp.notes()) == 1
         assert len(reapp.contacts()) == 1
         assert reapp.owner == "theowner"
         assert reapp.editor_group == "editorgroup"

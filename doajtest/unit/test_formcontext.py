@@ -278,6 +278,11 @@ class TestContext(formcontext.FormContext):
 
 class TestFormContext(DoajTestCase):
 
+    # FIXME: abortive attempt to incorporate Flask-Testing.  May revisit if time permits
+    #def create_app(self):
+    #    from portality.core import app
+    #    return app
+
     def setUp(self):
         super(TestFormContext, self).setUp()
 
