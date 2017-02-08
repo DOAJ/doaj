@@ -1,37 +1,9 @@
-from wtforms import Field, TextField, SelectField, SelectMultipleField, RadioField
+from wtforms import Field, TextField, SelectField
 from wtforms import widgets
 import re
 
 URL_REQUIRED_SCHEME_REGEX = re.compile(r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$', re.IGNORECASE)
 
-
-def set_select_field_default(kwargs):
-    if 'default' not in kwargs:
-        kwargs['default'] = ''
-
-
-class DOAJSelectField(SelectField):
-    def __init__(self, *args, **kwargs):
-        set_select_field_default(kwargs)
-        super(DOAJSelectField, self).__init__(*args, **kwargs)
-
-
-class DOAJSelectMultipleField(SelectMultipleField):
-    def __init__(self, *args, **kwargs):
-        set_select_field_default(kwargs)
-        super(DOAJSelectMultipleField, self).__init__(*args, **kwargs)
-
-
-class OptionalRadioField(RadioField):
-    """Use this class if you want to have an optional radio button. I.e. if you use validators.Optional() on a radio button, use this class instead of wtforms.RadioButton."""
-    # it's to do with what happens to the default choice for a RadioField - None
-    # by default it will fail WTForms validation since WTForms will only accept
-    # what we have defined as choices for the field. For radio buttons those
-    # don't ever include None.
-    def pre_validate(self, form):
-        if self.data is None:
-            return
-        super(OptionalRadioField, self).pre_validate(form)
 
 class TagListField(Field):
     widget = widgets.TextInput()
@@ -75,7 +47,7 @@ class DisabledTextField(TextField):
         return super(DisabledTextField, self).__call__(*args, **kwargs)
 
 
-class PermissiveSelectField(DOAJSelectField):
+class PermissiveSelectField(SelectField):
     """ A SelectField with validation disabled, allowing us to change the choices in JS and validate later."""
 
     def iter_choices(self):

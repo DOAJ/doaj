@@ -371,21 +371,18 @@ class SuggestionFormXWalk(JournalGenericXWalk):
             bibjson.set_subjects(new_subjects)
 
         if getattr(form, 'owner', None):
-            owns = form.owner.data
+            owns = form.owner.data.strip()
             if owns:
-                owns = owns.strip()
-                suggestion.set_owner(owns)
+                suggestion.set_owner(form.owner.data.strip())
 
         if getattr(form, 'editor_group', None):
-            editor_group = form.editor_group.data
+            editor_group = form.editor_group.data.strip()
             if editor_group:
-                editor_group = editor_group.strip()
                 suggestion.set_editor_group(editor_group)
 
         if getattr(form, "editor", None):
-            editor = form.editor.data
+            editor = form.editor.data.strip()
             if editor:
-                editor = editor.strip()
                 suggestion.set_editor(editor)
 
         if getattr(form, "doaj_seal", None):
@@ -555,7 +552,7 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['application_status'] = obj.application_status
 
-        forminfo['notes'] = obj.notes
+        forminfo['notes'] = obj.notes()
 
         forminfo['subject'] = []
         for s in bibjson.subjects():
@@ -731,21 +728,18 @@ class JournalFormXWalk(JournalGenericXWalk):
         bibjson.set_subjects(new_subjects)
 
         if getattr(form, 'owner', None):
-            owner = form.owner.data
+            owner = form.owner.data.strip()
             if owner:
-                owner = owner.strip()
                 journal.set_owner(owner)
 
         if getattr(form, 'editor_group', None):
-            editor_group = form.editor_group.data
+            editor_group = form.editor_group.data.strip()
             if editor_group:
-                editor_group = editor_group.strip()
                 journal.set_editor_group(editor_group)
 
         if getattr(form, "editor", None):
-            editor = form.editor.data
+            editor = form.editor.data.strip()
             if editor:
-                editor = editor.strip()
                 journal.set_editor(editor)
 
         if getattr(form, "doaj_seal", None):
@@ -913,7 +907,7 @@ class JournalFormXWalk(JournalGenericXWalk):
         forminfo['publishing_rights'] = reverse_interpret_special(bibjson.author_publishing_rights.get('publishing_rights', ''))
         forminfo['publishing_rights_url'] = bibjson.author_publishing_rights.get('url')
 
-        forminfo['notes'] = obj.notes
+        forminfo['notes'] = obj.notes()
 
         forminfo['subject'] = []
         for s in bibjson.subjects():

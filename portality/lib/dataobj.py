@@ -231,7 +231,6 @@ class DataObj(object):
         # extend the coerce map.
         "unicode": to_unicode(),
         "utcdatetime": date_str(),
-        "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
         "integer": to_int(),
         "float": to_float(),

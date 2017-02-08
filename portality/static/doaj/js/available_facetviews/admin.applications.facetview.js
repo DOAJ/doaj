@@ -1,102 +1,11 @@
 jQuery(document).ready(function($) {
 
-    function adminButtons(options, context) {
-        // Disable the bulk action submit button if there is an empty query in the facetview
-        if ($.isEmptyObject(options.active_filters) && options.q == "") {
-            $("#bulk-submit").attr("disabled", "disabled");
-        } else {
-            $("#bulk-submit").removeAttr("disabled");
-        }
-    }
-
-
-    function adminJAPostRender(options, context) {
-        doajJAPostRender(options, context);
-
-        var query = elasticSearchQuery({
-            options: options,
-            include_facets: false,
-            include_fields: false
-        });
-
-        ////////////////////////////////////////////////////////////
-        // functions for handling the bulk form
-
-        function get_bulk_action() {
-            action = $('#bulk_action').val();
-            if (! action) {
-                alert('Error: unknown bulk operation.');
-                throw 'Error: unknown bulk operation. The bulk action field was empty.'
-            }
-            return action
-        }
-
-        function bulk_action_url() {
-            return '/admin/applications/bulk/' + get_bulk_action()
-        }
-
-        function application_success_callback(data) {
-            alert('Submitted - ' + data.affected_applications + ' applications have been queued for edit.');
-            $('#bulk-submit').removeAttr('disabled').html('Submit');
-        }
-
-        function application_error_callback(jqXHR, textStatus, errorThrown) {
-            alert('There was an error with your request.');
-            console.error(textStatus + ': ' + errorThrown);
-            $('#bulk-submit').removeAttr('disabled').html('Submit');
-        }
-
-        function application_confirm_callback(data) {
-            var sure = confirm('This operation will affect ' + data.affected_applications + ' applications.');
-            if (sure) {
-                $.ajax({
-                    type: 'POST',
-                    url: bulk_action_url(),
-                    data: JSON.stringify({
-                        selection_query: query,
-                        editor_group: $('#editor_group').val(),
-                        application_status: $('#application_status').val(),
-                        note: $('#note').val(),
-                        dry_run: false
-                    }),
-                    contentType : 'application/json',
-                    success : application_success_callback,
-                    error: application_error_callback
-                });
-            } else {
-                $('#bulk-submit').removeAttr('disabled').html('Submit');
-            }
-        }
-
-        $('#bulk-submit').unbind('click').bind('click', function(event) {
-            event.preventDefault();
-
-            $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
-
-            $.ajax({
-                type: 'POST',
-                url: bulk_action_url(),
-                data: JSON.stringify({
-                    selection_query: query,
-                    editor_group: $('#editor_group').val(),
-                    application_status: $('#application_status').val(),
-                    note: $('#note').val(),
-                    dry_run: true
-                }),
-                contentType : 'application/json',
-                success : application_confirm_callback,
-                error: application_error_callback
-            });
-        });
-    }
-
     $('.facetview.suggestions').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/suggestion/_search?',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
-        post_render_callback: adminJAPostRender,
-        post_search_callback: adminButtons,
+        post_render_callback: doajScrollTop,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,

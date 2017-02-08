@@ -16,7 +16,6 @@ BASE_ARTICLE_STRUCT = {
         "admin": {
             "fields": {
                 "in_doaj": {"coerce": "bool", "get__default": False},
-                "seal": {"coerce": "bool", "get__default": False},
                 "publisher_record_id": {"coerce": "unicode"},
                 "upload_id": {"coerce": "unicode"}
             }

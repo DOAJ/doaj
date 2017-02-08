@@ -1,0 +1,238 @@
+ 
+ 
+ 
+ 
+ 
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+
+</head>
+
+<body>
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScritp is disabled.  The site is not able to function
+         properly without the browser having JavaScript enabled.
+         <br><a href="http://www.iatn.net/help/javascript">
+              How to Enable JavaScript in Your Browser
+          </a>
+      </div>
+    </noscript>
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=es"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+              selected="selected"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="suggest">
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=es">Search</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=es">Browse</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=es">Suggest</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=es">Support DOAJ</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=es">For publishers</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=es">About</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=es">Contact us</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+    </span>
+    <div id="subMenu">
+<h3>Become a DOAJ supporter</h3>
+    </div>
+
+<p>If you or your organisation would like to become a DOAJ supporter, please submit payment  via PayPal:</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="M4PM4R9PSJ63G">
+<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal â The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
+<p> or you can complete the form below:</p>
+
+ <p>
+<font color=red></font>
+<br>
+<form method=post action=/doaj>
+<input name=func type=hidden value=support>
+<input name=uiLanguage type=hidden value=es>
+<input name=already type=hidden value=1>
+<table border="0" cellpadding="5">
+<tr>
+  <td class="text">Organisation</td>
+  <td class="text"><input size=60 name=organization value=""></td>
+</tr>
+<tr>
+  <td class="text">URL</td>
+  <td class="text"><input size=60 name=url value=""></td>
+</tr>
+<tr>
+
+  <td class="text">Contact person *</td>
+  <td class="text"><input size=60 name=contactPerson value=""></td>
+</tr>
+<tr>
+  <td class="text">Contact Email *</td>
+  <td class="text"><input size=60 name=email value=""></td>
+</tr>
+<tr>
+  <td class="text">Contribution in Euros </td>
+  <td class="text"><input size=20 name=amount value=""></td>
+</tr>
+<tr>
+ <td class="text">Payment
+  </td>
+
+<td class="text">
+DANSKE BANK, DRAGÃR, DENMARK<br>
+IBAN: DK0830000011043585<br>
+BIC (SWIFT): DABADKKK
+
+</td>
+</tr>
+<tr>
+<td class="text">Security *</td>
+<td class="text" valign=middle>Type in the word displayed in the image <img src="/doajImages/captcha81811386699631.gif" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
+<br>
+<input name=cWord value="" size=4>
+<input type=hidden name=cKey value="81811386699631">
+</td>
+</tr>
+<tr>
+<td class="text">Comments</td>
+
+<td class="text"><input name=comment value="" size=60></td>
+</tr>
+<tr>
+<td class="text" colspan=2 align=center>
+<input type=submit value=Submit>
+</td>
+</tr>
+</table>
+</form>
+<p>
+Thank you very much for your support!
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals is provided by <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> in cooperation with <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
+
+
+ 
+ 
+ 
+ 
+ 
+ 

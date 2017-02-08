@@ -3,24 +3,25 @@ from flask import Response
 
 from doajtest.helpers import DoajTestCase
 from portality import models
-from portality.core import load_account_for_login_manager
+from portality.core import app
+from portality.app import load_account_for_login_manager
 from portality.decorators import api_key_required, api_key_optional
 
 class TestClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
-        @cls.app_test.route('/hello')
+        @app.route('/hello')
         @api_key_required
         def hello_world():
             return Response("hello, world!")
 
-        @cls.app_test.route('/helloopt')
+        @app.route('/helloopt')
         @api_key_optional
         def hello_world_opt():
             return Response("hello, world!")
 
-        cls.app_test.testing = True
-        cls.app_test.login_manager.user_loader(load_account_for_login_manager)
+        app.testing = True
+        app.login_manager.user_loader(load_account_for_login_manager)
 
     def setUp(self):
         super(TestClient, self).setUp()
@@ -59,7 +60,7 @@ class TestClient(DoajTestCase):
 
         time.sleep(1)
 
-        with self.app_test.test_client() as t_client:
+        with app.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/hello?api_key=' + a1_key)
             assert response_authorised.data == "hello, world!"
@@ -83,7 +84,7 @@ class TestClient(DoajTestCase):
 
         time.sleep(1)
 
-        with self.app_test.test_client() as t_client:
+        with app.test_client() as t_client:
             # Check the authorised user can access our function, but the unauthorised one can't.
             response_authorised = t_client.get('/helloopt?api_key=' + a1_key)
             assert response_authorised.data == "hello, world!"
