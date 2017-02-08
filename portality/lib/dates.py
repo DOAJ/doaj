@@ -32,9 +32,6 @@ def reformat(s, in_format=None, out_format=None):
 def now():
     return format(datetime.utcnow())
 
-def now_with_microseconds():
-    return format(datetime.utcnow(), format="%Y-%m-%dT%H:%M:%S.%fZ")
-
 def random_date(fro=None, to=None):
     if fro is None:
         fro = parse("1970-01-01T00:00:00Z")

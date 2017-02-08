@@ -175,11 +175,3 @@ class GenericBibJSON(dataobj.DataObj):
         issns += self.get_identifiers(self.P_ISSN)
         issns += self.get_identifiers(self.E_ISSN)
         return issns
-
-    @property
-    def first_pissn(self):
-        return self.get_identifiers(self.P_ISSN)[0]
-
-    @property
-    def first_eissn(self):
-        return self.get_identifiers(self.E_ISSN)[0]

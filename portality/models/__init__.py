@@ -16,7 +16,6 @@ from portality.models.toc import JournalVolumeToC, JournalIssueToC, VolumesToCQu
 from portality.models.reapplication import BulkReApplication, BulkUpload, OwnerBulkQuery
 from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
-from portality.models.background import BackgroundJob
 
 import sys
 

@@ -1,0 +1,321 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+ "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>DOAJ: Directory of Open Access Journals</title>
+    <link rel="icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/doajImages/favicon.ico" type="image/x-icon" />
+   <link rel="stylesheet" type="text/css" href="/doajCSS/st.css">
+   <script type="text/javascript" src="/doajJavaScripts/jquery.min.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/st.js"></script>
+   <script type="text/javascript" src="/doajJavaScripts/addthis_widget.js"></script>
+
+
+
+    <script language="javascript">
+function toggleVisibility()
+{
+    var i = document.getElementById('invoice');
+    if(i.style.display == 'none')
+       i.style.display = 'block';
+    else
+       i.style.display = 'none';
+    var b = document.getElementById('bank');
+    if(b.style.display == 'none')
+       b.style.display = 'block';
+    else
+       b.style.display = 'none';
+}
+    </script>
+
+</head>
+
+<body>
+ 
+   <noscript>
+      <style type="text/css">
+          .noScriptMessage {
+                background:#FCE9C0 url(/doajImages/alert.png) left no-repeat;
+                background-position: 15px;
+                border:2px solid #DBAC48;
+                padding: 25px 20px 25px 60px;
+                margin-top: 150px;
+                font-weight: bold;
+          }
+          .wholePage {display:none;}
+      </style>
+      <div class="noScriptMessage">
+         JavaScript n'est pas activÃ©. Le site ne fonctionne pas correctement si Javascript n'est pas activÃ© dans votre navigateur.
+         <br><a href="http://www.iatn.net/help/javascript">
+              Comment activer Javascript ?
+          </a>
+      </div>
+    </noscript>
+ 
+
+<div class="wholePage">
+
+  <div id="pageContainer">
+  <div id="leftLogo">
+    <a href="/doaj?uiLanguage=fr"><img src="/doajImages/doaj.jpg"></a> <span style="color:red"><b></b></span>
+  </div>
+  <div id="rightLogo">
+    <form action="#">
+      <select class="selectMenu" 
+          onchange="setLanguage(this.options[this.selectedIndex].value)" name="uiLanguage">
+        
+        <option value="en" label="English"
+        >English</option>
+
+        <option value="es" label="EspaÃ±ol"
+         >EspaÃ±ol</option>
+
+        <option value="fr" label="French"
+              selected="selected"
+        >FranÃ§ais</option>
+
+        <option value="gr" label="ÎÎ»Î»Î·Î½Î¹ÎºÎ¬"
+        >ÎÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+
+        <option value="pt" label="PortuguÃªs"
+          >PortuguÃªs</option>
+
+        <option value="tr" label="Turkish"
+         >TÃ¼rkÃ§e</option>
+      </select>
+    </form>
+  </div>
+ <div class="clearBoth"></div>
+    <span id="suggest">
+ 
+ 
+ 
+ 
+ 
+       <div id="menuArea">
+    <div id="menuLeft">
+      <span id="menuSearch">
+        <a href="/doaj?func=search&uiLanguage=fr">Rechercher</a>
+      </span> 
+      <span class="menuSeparator"></span>
+      <span id="menuBrowse">
+        <a href="/doaj?func=browse&uiLanguage=fr">Consulter</a>
+      </span>
+    </div>
+
+    <div id="menuRight">
+      <span id="suggest">
+       <a href="/doaj?func=suggest&uiLanguage=fr">SuggÃ©rer une revue</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="support">
+       <a href="/doaj?func=loadTemplate&template=supportDoaj&uiLanguage=fr">Soutenir le DOAJ</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="publishers">
+       <a href="/doaj?func=loadTemplate&template=forPublishers&uiLanguage=fr">Pour les Ã©diteurs</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuAbout">
+        <a href="/doaj?func=loadTemplate&template=about&uiLanguage=fr">A propos</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuFeedback">
+        <a href="/doaj?func=contact&uiLanguage=fr">Nous contacter</a>
+      </span>
+      <span class="menuSeparator"></span>
+      <span id="menuRSS">
+        <a href="/doaj?func=rss"><img src="/doajImages/rss.jpg" border="0" alt=""></a>
+      </span>
+    </div>
+    <div class="clearBoth"></div>
+  </div> <!-- menuArea-->
+ 
+  
+ 
+ 
+    </span>
+    <div id="subMenu">
+<h3>AdhÃ©rer</h3>
+    </div>
+
+<p>Merci beaucoup pour votre soutien !</p>
+
+<b>Tarifs:</b>
+<li>
+Individuels: GBPs Â£100 annuels
+</li>
+<li>
+BibliothÃ¨ques universitaires, universitÃ©s, organismes de recherche : GBPs Â£400 annuels
+</li>
+<li>
+Consortia et associations de bibliothÃ¨ques : GBPs Â£4000 annuels
+</li>
+<li>
+Aggregateurs et autres fournisseurs de services : GBPs Â£5000 annuels
+</li>
+
+<p>La faÃ§on la plus rapide et la plus sÃ©curisÃ©e de payer est de passer par PayPal.</p>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="PDKWBTFHT9JMN">
+<table>
+<tr><td><input type="hidden" name="on0" value="Membership options">Choisissez une des options suivantes :</td></tr><tr><td><select name="os0">
+	<option value="Individual">Individuel : Â£100.00 GBP - annuels</option>
+	<option value="Academic Library">BibliothÃ¨que universitaire : Â£400.00 GBP - annuels</option>
+	<option value="Library Consortium">Consortia et associations de bibliothÃ¨ques : Â£4,000.00 GBP - annuels</option>
+	<option value="Aggregator">Aggregateurs : Â£5,000.00 GBP - annuels</option>
+</select> </td></tr>
+</table>
+<input type="hidden" name="currency_code" value="GBP">
+<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_subscribeCC_LG.gif" border="0" name="submit" alt="PayPal â The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
+<p>Vous pouvez Ã©galement remplir le formulaire ci-dessous.</p>
+
+
+<a name="form"></a>
+<form method=post action=doaj>
+<input name=func type=hidden value=membership>
+<input name=uiLanguage type=hidden value=fr>
+<input name=already type=hidden value=1>
+
+<table border=0 cellpadding="5">
+<tr>
+  <td class="text">Organisation</td>
+  <td class="text"><input size=50 name=organization value=""></td>
+</tr>
+<tr>
+  <td class="text">URL</td>
+  <td class="text"><input size=50 name=url value=""></td>
+</tr>
+<tr>
+  <td class="text">Nom d'un contact*</td>
+  <td class="text"><input size=50 name=contactPerson value=""></td>
+</tr>
+<tr>
+  <td class="text">Adresse Ã©lectronique du contact*</td>
+  <td class="text"><input size=50 name=email value=""></td>
+</tr>
+<tr>
+  <td class="text">Categorie: *</td>
+  <td class="text"><input name=category type=radio value=individual >Individuel
+      <br>
+      <input name=category type=radio value=library >BibliothÃ¨ques, universitÃ©s, organismes de recherche
+      <br>
+      <input name=category type=radio value=consortia >Consortia et associations de bibliothÃ¨ques
+      <br>
+      <input name=category type=radio value=aggregators >Aggregateurs et autres fournisseurs de services
+  </td>
+</tr>
+<tr>
+ <td class="text">Paiement *:
+</td>
+<td class="text">
+<br>
+ Nous proposons 2 mÃ©thodes de paiement, merci de cocher celui de votre choix :<br>
+
+
+ <input name=payment type=radio value=bankTransfer onClick=javascript:toggleVisibility() checked>Virement bancaire
+ <input name=payment type=radio value=invoiceMe onClick=javascript:toggleVisibility()>Facturez-moi 
+
+
+
+<br>
+
+<div id="invoice" style="display:none">
+Adresse de facturation : *<br>
+<textarea name=invoicingAddress cols=40 rows=7></textarea>
+<br>
+NÂ° de TVA :
+<br>
+<input name=vatNumber value="" size=40>
+<br>
+</div>
+
+
+<div id="bank" style="display:block">
+<br>
+<textarea name=address cols=60 rows=7 READONLY>
+DANSKE BANK, DRAGÃR, DENMARK
+IBAN: DK0830000011043585
+BIC (SWIFT): DABADKKK
+</textarea>
+</div>
+ <br>
+</td>
+</tr>
+<tr>
+<td class="text">SecuritÃ©*</td>
+<td class="text" valign=middle>
+Merci de saisir le mot qui apparaÃ®t sur l'image : <img src="/doajImages/captcha661386699618.gif" style="border: 1px solid #c0c0c0; width: 50px; height: 31px;">
+<br>
+<input name=cWord value="" size=4>
+<input type=hidden name=cKey value="661386699618">
+</td>
+</tr>
+<tr>
+<td class="text">Commentaires
+</td>
+<td><input name=comment value="" size=50></td>
+</tr>
+<tr>
+<td class="text" colspan=2 align=center>
+<input type=submit value=Submit>
+</td>
+</tr>
+</table>
+</form>
+<br><br>
+
+
+    <div class="clearBoth"></div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+<div class="push"></div>
+<div id="footer">
+
+  <div id="footerLeft">
+DOAJ - Directory of Open Access Journals est proposÃ© par <a href="http://www.is4oa.org/">Infrastructure Services for Open Access</a> en collaboration avec <a href="http://www.sempertool.dk">SemperTool</a>
+  </div>
+  <div id="footerRight">
+    Â©2013 SemperTool
+  </div>
+</div>
+  <div class="clearBoth"></div>
+   
+ 
+ 
+ 
+ 
+  </div><!-- end pageContainer -->
+</div><!-- end whlePage -->
+
+</body>
+</html>
+
+
+ 
+    
+ 
+ 
+ 
+ 
+ 

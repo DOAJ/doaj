@@ -10,6 +10,8 @@ import re
 
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
 
+from portality.app import app
+
 APPLICATION_SOURCE_TEST_1 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_2 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_3 = ApplicationFixtureFactory.make_application_source()
@@ -61,24 +63,24 @@ class TestPublicApplicationEmails(DoajTestCase):
         super(TestPublicApplicationEmails, self).setUp()
 
         # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
+        self.stdout_handler = app.logger.handlers[0]
+        app.logger.removeHandler(self.stdout_handler)
 
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
         self.read_info.setLevel(logging.INFO)
-        self.app_test.logger.addHandler(self.read_info)
+        app.logger.addHandler(self.read_info)
 
     def tearDown(self):
         super(TestPublicApplicationEmails, self).tearDown()
 
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
-        self.app_test.logger.removeHandler(self.read_info)
+        app.logger.removeHandler(self.read_info)
 
         # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
+        app.logger.addHandler(self.stdout_handler)
 
     def test_01_public_application_email(self):
         application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
@@ -91,7 +93,7 @@ class TestPublicApplicationEmails(DoajTestCase):
         assert isinstance(fc, formcontext.PublicApplication)
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
-        with self.app_test.test_request_context():
+        with app.test_request_context():
             fc.finalise()
         # Use the captured info stream to get email send logs
         info_stream_contents = self.info_stream.getvalue()
@@ -122,14 +124,14 @@ class TestApplicationReviewEmails(DoajTestCase):
         models.Account.pull = editor_account_pull
 
         # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
+        self.stdout_handler = app.logger.handlers[0]
+        app.logger.removeHandler(self.stdout_handler)
 
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
         self.read_info.setLevel(logging.INFO)
-        self.app_test.logger.addHandler(self.read_info)
+        app.logger.addHandler(self.read_info)
 
     def tearDown(self):
         super(TestApplicationReviewEmails, self).tearDown()
@@ -140,10 +142,10 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
-        self.app_test.logger.removeHandler(self.read_info)
+        app.logger.removeHandler(self.read_info)
 
         # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
+        app.logger.addHandler(self.stdout_handler)
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's application review form sends the right emails"""
@@ -283,7 +285,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
         manEd_template = 'admin_application_ready.txt'
-        manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
+        manEd_to = re.escape(app.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
@@ -367,7 +369,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect one email to be sent here:
         #   * to the ManEds, saying an application is ready
         manEd_template = 'admin_application_ready.txt'
-        manEd_to = re.escape(self.app_test.config.get('MANAGING_EDITOR_EMAIL'))
+        manEd_to = re.escape(app.config.get('MANAGING_EDITOR_EMAIL'))
         manEd_subject = 'application ready'
 
         manEd_email_matched = re.search(email_log_regex % (manEd_template, manEd_to, manEd_subject),
@@ -518,14 +520,14 @@ class TestJournalReviewEmails(DoajTestCase):
         models.Account.pull = editor_account_pull
 
         # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
+        self.stdout_handler = app.logger.handlers[0]
+        app.logger.removeHandler(self.stdout_handler)
 
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
         self.read_info.setLevel(logging.INFO)
-        self.app_test.logger.addHandler(self.read_info)
+        app.logger.addHandler(self.read_info)
 
     def tearDown(self):
         super(TestJournalReviewEmails, self).tearDown()
@@ -536,10 +538,10 @@ class TestJournalReviewEmails(DoajTestCase):
 
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
-        self.app_test.logger.removeHandler(self.read_info)
+        app.logger.removeHandler(self.read_info)
 
         # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
+        app.logger.addHandler(self.stdout_handler)
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's journal review form sends the right emails"""
@@ -556,7 +558,7 @@ class TestJournalReviewEmails(DoajTestCase):
         fc.form.editor_group.data = "Test Editor Group"
         fc.form.editor.data = "associate_3"
 
-        with self.app_test.test_request_context():
+        with app.test_request_context():
             fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 
@@ -602,7 +604,7 @@ class TestJournalReviewEmails(DoajTestCase):
 
         fc.form.editor.data = "associate_2"
 
-        with self.app_test.test_request_context():
+        with app.test_request_context():
             fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
 

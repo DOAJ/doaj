@@ -2,7 +2,6 @@ import json, UserDict, requests, uuid
 from copy import deepcopy
 from datetime import datetime
 import time
-import re
 # debugging
 import traceback, sys
 
@@ -16,8 +15,7 @@ import esprit
 All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
 You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
 '''
-
-ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_]+?\] in order to sort on.*', re.DOTALL)
+    
     
 class DomainObject(UserDict.IterableUserDict, object):
     __type__ = None # set the type on the model that inherits this
@@ -244,7 +242,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     @staticmethod
     def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
         '''
-        Generate a query object based on parameters but don't send to
+        Generate a query object based on parameters but don't sent to
         backend - return it instead. Must always have the same
         parameters as the query method. See query method for explanation
         of parameters.
@@ -419,74 +417,14 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
-
-    @staticmethod
-    def handle_es_raw_response(res, wrap, extra_trace_info=''):
-        """
-        Handles the JSON returned by ES, raising errors as needed. If no problems are detected it returns its input
-        unchanged.
-
-        :param res: The full ES raw response to a query in a Python dict (this method does not handle the raw JSON ES
-        outputs). Usually this parameter is the return value of the .query or .send_query methods.
-        :param wrap: Did the caller request wrapping of each ES record inside a model object? This matters for handling
-        records that have no '_source' or 'fields' keys, but do have an '_id' key. Such records should raise an error
-        if wrapping was requested, since there is nothing to wrap. If no wrapping was requested, perhaps the caller
-        simply needed the object IDs and nothing else, so we do not need to raise an error.
-        :param extra_trace_info: A string with additional diagnostic information to be put into exceptions.
-        """
-
-        if 'error' in res:
-            # TODO consider retrying the query a few times with back-off timing, like the .send_query method does.
-            es_resp = json.dumps(res, indent=2)
-
-            error_to_raise = ESMappingMissingError if ES_MAPPING_MISSING_REGEX.match(es_resp) else ESError
-
-            raise error_to_raise(
-                (
-                "Elasticsearch returned an error:"
-                "\nES HTTP Response status: {es_status}"
-                "\nES Response:{es_resp}"
-                    .format(es_status=res.get('status', 'unknown'), es_resp=es_resp)
-                ) + extra_trace_info
-            )
-
-        if 'hits' not in res and 'hits' not in res['hits']:  # i.e. if res['hits']['hits'] does not exist
-            raise ESResponseCannotBeInterpreted(
-                (
-                "Elasticsearch did not return any records. "
-                "It probably returned an error we did not understand instead."
-                "\nES HTTP Response status: {es_status}"
-                "\nES Response:{es_resp}\n"
-                    .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
-                ) + extra_trace_info
-            )
-
-        rs = []
-        for i, each in enumerate(res['hits']['hits']):
-            if '_source' in each:
-                rs.append(each['_source'])
-            elif 'fields' in each:
-                rs.append(each['fields'])
-            elif '_id' in each and not wrap:
-                # "_id" is a sibling (not child) of "_source" so it can only be used with unwrapped raw responses.
-                # wrap = True only makes sense if "_source" or "fields" were returned.
-                # So, if "_id" is the only one present, extract it into an object that's shaped the same as the item
-                # in the raw response.
-                rs.append({"_id": each['_id']})
-            else:
-                msg1 = "Can't find any useful data in the ES response.\n" + extra_trace_info
-                msg2 = "\nItem {i}.\nItem data:\n{each}".format(i=i, each=json.dumps(each, indent=2))
-                raise ESResponseCannotBeInterpreted(msg1 + msg2)
-
-        return rs
-
+    
     @classmethod
     def iterate(cls, q, page_size=1000, limit=None, wrap=True):
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
         if "sort" not in theq: # to ensure complete coverage on a changing index, sort by id is our best bet
-            theq["sort"] = [{"_id" : {"order" : "asc"}}]
+            theq["sort"] = [{"id" : {"order" : "asc"}}]
         counter = 0
         while True:
             # apply the limit
@@ -494,15 +432,8 @@ class DomainObject(UserDict.IterableUserDict, object):
                 break
             
             res = cls.query(q=theq)
-            rs = cls.handle_es_raw_response(
-                res,
-                wrap=wrap,
-                extra_trace_info=
-                    "\nQuery sent to ES:\n{q}\n"
-                    "\n\nPage #{counter} of the ES response with size {page_size}."
-                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
-            )
-
+            rs = [r.get("_source") if "_source" in r else r.get("fields") for r in res.get("hits", {}).get("hits", [])]
+            # print counter, len(rs), res.get("hits", {}).get("total"), len(res.get("hits", {}).get("hits", [])), json.dumps(theq)
             if len(rs) == 0:
                 break
             for r in rs:
@@ -653,13 +584,14 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def q2obj(cls, **kwargs):
-        extra_trace_info = ''
-        if 'q' in kwargs:
-            extra_trace_info = "\nQuery sent to ES (before manipulation in DomainObject.query):\n{}\n".format(json.dumps(kwargs['q'], indent=2))
-
         res = cls.query(**kwargs)
-        rs = cls.handle_es_raw_response(res, wrap=True, extra_trace_info=extra_trace_info)
-        results = [cls(**r) for r in rs]
+        if 'hits' not in res:
+            return []
+        if res['hits']['total'] <= 0:
+            return []
+
+        hits = res['hits']['hits']
+        results = [cls(**h.get('_source', {})) for h in hits]
         return results
 
     @classmethod
@@ -704,15 +636,6 @@ class BlockTimeOutException(Exception):
 
 
 class DAOSaveExceptionMaxRetriesReached(Exception):
-    pass
-
-class ESResponseCannotBeInterpreted(Exception):
-    pass
-
-class ESMappingMissingError(Exception):
-    pass
-
-class ESError(Exception):
     pass
 
 ########################################################################
