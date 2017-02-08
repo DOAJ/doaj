@@ -20,8 +20,7 @@ countries = countries_dict.items()
 country_options = [('','')]
 country_options_two_char_code_index = []
 
-CURRENCY_DEFAULT = ''
-currency_options = [(CURRENCY_DEFAULT, CURRENCY_DEFAULT)]
+currency_options = [('','')]
 currency_options_code_index = []
 currency_name_opts = []
 

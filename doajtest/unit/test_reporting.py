@@ -6,8 +6,7 @@ from doajtest.fixtures import ProvenanceFixtureFactory, ApplicationFixtureFactor
 import time, os, shutil, codecs, csv
 from copy import deepcopy
 
-from portality import clcsv, models
-from portality.tasks import reporting
+from portality import reporting, clcsv
 from portality.lib import dates, paths
 
 MONTH_EDIT_OUTPUT = [
@@ -158,27 +157,3 @@ class TestReporting(DoajTestCase):
 
         expected = self._as_output(APPLICATION_YEAR_OUTPUT)
         assert table == expected
-
-    def test_04_background(self):
-        provs = ProvenanceFixtureFactory.make_action_spread(MONTH_EDIT_OUTPUT, "edit", "month")
-        for p in provs:
-            p.save()
-
-        apps = ApplicationFixtureFactory.make_application_spread(APPLICATION_YEAR_OUTPUT, "year")
-        for a in apps:
-            a.save()
-
-        time.sleep(2)
-
-        job = reporting.ReportingBackgroundTask.prepare("system", outdir=TMP_DIR, from_date="1970-01-01T00:00:00Z", to_date=dates.now())
-        reporting.ReportingBackgroundTask.submit(job)
-
-        time.sleep(2)
-
-        job = models.BackgroundJob.pull(job.id)
-        prov_outfiles = job.reference["reporting__provenance_outfiles"]
-        cont_outfiles = job.reference["reporting__content_outfiles"]
-
-        assert len(prov_outfiles) == 4
-        assert len(cont_outfiles) == 1
-

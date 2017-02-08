@@ -14,10 +14,6 @@ jQuery(document).ready(function($) {
                 return val
             }
         },
-        seal : {
-            field : "index.has_seal.exact",
-            display: "DOAJ Seal"
-        },
         subject : {
             field: 'index.classification.exact',
             display: 'Subject'
@@ -46,6 +42,10 @@ jQuery(document).ready(function($) {
             display: "Article processing charges (APCs)",
             tooltip_text: "What do these figures mean?",
             tooltip: 'For more information see this <a href="https://doajournals.wordpress.com/2015/05/11/historical-apc-data-from-before-the-april-upgrade/" target="_blank">blog post</a> (opens in new window).'
+        },
+        seal : {
+            field : "index.has_seal.exact",
+            display: "DOAJ Seal"
         },
         peer_review : {
             field : "bibjson.editorial_review.process.exact",
@@ -137,6 +137,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", false);
                     disableFacet(options, "index.country.exact", false);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", false);
+                    disableFacet(options, "index.has_seal.exact", false);
 
                 } else if (t === "article") {
                     // disable the journal facets
@@ -145,6 +146,7 @@ jQuery(document).ready(function($) {
                     disableFacet(options, "index.has_apc.exact", true);
                     disableFacet(options, "index.country.exact", true);
                     disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+                    disableFacet(options, "index.has_seal.exact", true);
 
                     // enable the article facets
                     disableFacet(options, "bibjson.journal.title.exact", false);
@@ -165,6 +167,7 @@ jQuery(document).ready(function($) {
             disableFacet(options, "index.has_apc.exact", true);
             disableFacet(options, "index.country.exact", true);
             disableFacet(options, "bibjson.archiving_policy.policy.exact", true);
+            disableFacet(options, "index.has_seal.exact", true);
         }
     }
 
@@ -425,8 +428,6 @@ jQuery(document).ready(function($) {
 
         result += "<div class='pull-left' style='width: 90%'>";
 
-        result += "<div class='row-fluid'><div class='span10'>";
-
         // set the title
         if (resultobj.bibjson.title) {
             result += "<span class='title'><a href='/article/" + resultobj.id + "'>" + escapeHtml(resultobj.bibjson.title) + "</a></span><br>";
@@ -496,21 +497,10 @@ jQuery(document).ready(function($) {
         }
 
         // close the main details box
-        result += "</div>";
-        
-        // start the journal properties side-bar
-        result += "<div class='span2' align='right'>";
-
-        // show the seal if it's set
-        if (resultobj.admin && resultobj.admin.seal) {
-            result += "<img src='/static/doaj/images/seal_short.png' title='Awarded the DOAJ Seal' alt='Seal icon: awarded the DOAJ Seal'>​​<br>";
-        }
-
-        // close the journal properties side-bar
-        result += "</div>";
+        result += "</div></div>";
 
         // close off the main result
-        result += "</div></div>";
+        result += "</div>";
 
 
 
