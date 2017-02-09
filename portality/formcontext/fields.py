@@ -20,6 +20,7 @@ class DOAJSelectMultipleField(SelectMultipleField):
     def __init__(self, *args, **kwargs):
         set_select_field_default(kwargs)
         super(DOAJSelectMultipleField, self).__init__(*args, **kwargs)
+        self.type = 'SelectMultipleField'
 
 
 class OptionalRadioField(RadioField):
