@@ -15,11 +15,11 @@ echo
 echo "Docker version should be displayed below if successfully installed"
 docker -v
 # might have to be done manually - script terminates at some point after the echoes below, either after adding the group, adding *to* the group, or the newgrp command
-echo
-echo "Setting up Docker to be used without sudo"
-sudo groupadd docker
-sudo gpasswd -a ${USER} docker
-#newgrp docker  # TODO automate this. Calling newgrp will start a subshell and not normally execute commands after this line. If we need to run commands under a different group (as we do - everything below this line), then use redirection, see http://unix.stackexchange.com/q/18897/160468 .
+#echo
+#echo "Setting up Docker to be used without sudo"
+#sudo groupadd docker
+#sudo gpasswd -a ${USER} docker
+#newgrp docker
 echo
 echo "Installing Docker Compose, version information should be displayed below"
 curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null && sudo chmod a+x /usr/local/bin/docker-compose
@@ -43,12 +43,9 @@ if [ -z "$HUEY_REDIS_PORT" ]; then
     HUEY_REDIS_PORT=${DEFAULT_REDIS_PORT}
     echo "HUEY_REDIS_PORT not set, defaulting to $DEFAULT_REDIS_PORT"
 else
-    echo "HUEY_REDIS_PORT read in from app.cfg: '$HUEY_REDIS_PORT'"
+    echo "HUEY_REDIS_PORT read in from app.cfg: '$DEFAULT_REDIS_PORT'"
 fi
 
 echo "Opening firewall port for Redis"
-echo "sudo ufw deny in on eth1 to any port ${HUEY_REDIS_PORT}"
 echo "sudo ufw allow in on eth1 from $aip to any port $HUEY_REDIS_PORT"
-sudo ufw deny in on eth1 to any port ${HUEY_REDIS_PORT}
 sudo ufw allow in on eth1 from ${aip} to any port ${HUEY_REDIS_PORT}
-sudo ufw status verbose

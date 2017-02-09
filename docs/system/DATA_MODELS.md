@@ -13,8 +13,7 @@
 {
     "id" : "<some opaque identifier>",
     "admin" : {
-        "in_doaj" : true|false (taken from journal record),
-        "seal" : true|false (taken from journal record),
+        "in_doaj" : true|false,
         "publisher_record_id" : "<publisher identifier for item>",
         "upload_id" : "<opaque identifier>"
     },

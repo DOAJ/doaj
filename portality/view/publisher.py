@@ -9,7 +9,6 @@ from portality import models, article
 from portality.view.forms import ArticleForm
 from portality.formcontext import formcontext
 from portality.util import flash_with_url
-from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 
 import os, requests, ftplib
 from urlparse import urlparse
@@ -32,7 +31,7 @@ def index():
 @blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def reapplication_page(reapplication_id):
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         return render_template("publisher/reapps_shutdown.html")
@@ -77,7 +76,7 @@ def updates_in_progress():
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def upload_file():
     # all responses involve getting the previous uploads
     previous = models.FileUpload.by_owner(current_user.id)
@@ -93,26 +92,16 @@ def upload_file():
     # file upload takes precedence over URL, in case the user has given us both
     if f.filename != "" and url is not None and url != "":
         flash("You provided a file and a URL - the URL has been ignored")
-
-    try:
-        job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
-        IngestArticlesBackgroundTask.submit(job)
-    except BackgroundException as e:
-        flash(e.message, "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-
+    
     if f.filename != "":
-        flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return _file_upload(f, schema, previous)
     
     if url is not None and url != "":
-        flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return _url_upload(url, schema, previous)
     
     flash("No file or URL provided", "error")
     return render_template('publisher/uploadmetadata.html', previous=previous)
 
-"""
 def _file_upload(f, schema, previous):
     # prep a record to go into the index, to record this upload
     record = models.FileUpload()
@@ -167,8 +156,6 @@ def _file_upload(f, schema, previous):
     if actual_schema:
         record.validated(actual_schema)
         record.save()
-        # trigger the background task
-        process_file_upload(record)
         previous = [record] + previous # add the new record to the previous records
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
@@ -231,8 +218,6 @@ def _url_upload(url, schema, previous):
     def __ok(record, previous):
         record.exists()
         record.save()
-        # trigger the background task
-        process_file_upload(record)
         previous = [record] + previous
         flash("File reference successfully received - it will be processed shortly", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
@@ -257,7 +242,7 @@ def _url_upload(url, schema, previous):
     try:
         # first, determine if ftp or http
         parsed_url = urlparse(url)
-        if parsed_url.scheme in ['http', "https"]:
+        if parsed_url.scheme == 'http':
             return __http_upload(record, previous, url)
         elif parsed_url.scheme == 'ftp':
             return __ftp_upload(record, previous, parsed_url)
@@ -266,12 +251,12 @@ def _url_upload(url, schema, previous):
 
     except Exception as e:
         return __fail(record, previous, error="please check it before submitting again; " + e.message)
-"""
+    
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def metadata():
     # if this is a get request, give the blank form - there is no edit feature
     if request.method == "GET":
@@ -336,7 +321,7 @@ def help():
 @blueprint.route("/reapply", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def bulk_reapply():
     if not app.config.get("REAPPLICATION_ACTIVE", False):
         if request.method == "GET":

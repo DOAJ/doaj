@@ -14,7 +14,7 @@ def do_report(out):
             applied = s.created_date
             last_manual = s.last_manual_update
             last_update = s.last_updated
-            notes = s.notes
+            notes = s.notes()
             status = s.application_status
 
             if title is None:

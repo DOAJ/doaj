@@ -1,5 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality import models
+from portality.app import app
 import time
 
 
@@ -12,7 +13,7 @@ class TestApiErrors(DoajTestCase):
         super(TestApiErrors, self).tearDown()
 
     def test_01_api_404(self):
-        with self.app_test.test_client() as t_client:
+        with app.test_client() as t_client:
             # On API blueprint, check we get an HTML doc page but a json 404
             response = t_client.get('/api/v1/docs')
             assert response.status_code == 200
@@ -34,7 +35,7 @@ class TestApiErrors(DoajTestCase):
 
     def test_02_api_400(self):
 
-        with self.app_test.test_client() as t_client:
+        with app.test_client() as t_client:
             # a normal journal query, with a valid page number
             response = t_client.get('/api/v1/search/journals/query_string?page=1')
             assert response.status_code == 200
@@ -64,7 +65,7 @@ class TestApiErrors(DoajTestCase):
 
         time.sleep(1)
 
-        with self.app_test.test_client() as t_client:
+        with app.test_client() as t_client:
             # a successful authenticated query, giving the right result
             response = t_client.get('/api/v1/search/applications/issn%3A0000-0000?api_key=' + a1_key)
             assert response.status_code == 200

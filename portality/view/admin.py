@@ -8,21 +8,17 @@ from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
 from portality import lock
-from portality.lib.es_query_http import remove_search_limits
-from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
+from portality.util import flash_with_url, jsonp
 from portality.core import app
-from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 
 blueprint = Blueprint('admin', __name__)
 
-
 # restrict everything in admin to logged in users with the "admin" role
 @blueprint.before_request
 def restrict():
     return restrict_to_role('admin')
-
 
 # build an admin page where things can be done
 @blueprint.route('/')
@@ -30,7 +26,6 @@ def restrict():
 @ssl_required
 def index():
     return render_template('admin/index.html', admin_page=True)
-
 
 @blueprint.route("/journals", methods=["GET"])
 @login_required
@@ -44,11 +39,10 @@ def journals():
                admin_page=True
            )
 
-
 @blueprint.route("/journals", methods=["POST", "DELETE"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 @jsonp
 def journals_list():
     if request.method == "POST":
@@ -90,7 +84,7 @@ def journals_list():
 @blueprint.route("/articles", methods=["POST", "DELETE"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 @jsonp
 def articles_list():
     if request.method == "POST":
@@ -120,11 +114,10 @@ def articles_list():
         resp.mimetype = "application/json"
         return resp
 
-
 @blueprint.route("/article/<article_id>", methods=["POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def article_endpoint(article_id):
     if not current_user.has_role("delete_article"):
         abort(401)
@@ -141,11 +134,10 @@ def article_endpoint(article_id):
     resp.mimetype = "application/json"
     return resp
 
-
 @blueprint.route("/journal/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def journal_page(journal_id):
     if not current_user.has_role("edit_journal"):
         abort(401)
@@ -177,66 +169,39 @@ def journal_page(journal_id):
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
 
-JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page in a few minutes to see the results. The time taken depends on the size of the journal (how many articles it has in DOAJ) - for very large journals, this could take up to 30 minutes.'
-
-
-######################################################
-# Endpoints for reinstating/withdrawing journals from the DOAJ
-#
 
 @blueprint.route("/journal/<journal_id>/activate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def journal_activate(journal_id):
-    journal_in_out_doaj.change_in_doaj([journal_id], True)
-    flash(JOURNAL_OP_MSG.format('activation'), 'success')
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+    j.bibjson().active = True
+    j.set_in_doaj(True)
+    j.save()
+    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
     return redirect(url_for('.journal_page', journal_id=journal_id))
-
 
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def journal_deactivate(journal_id):
-    journal_in_out_doaj.change_in_doaj([journal_id], False)
-    flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
+    j = models.Journal.pull(journal_id)
+    if j is None:
+        abort(404)
+    j.bibjson().active = False
+    j.set_in_doaj(False)
+    j.save()
+    j.propagate_in_doaj_status_to_articles()  # will save each article, could take a while
     return redirect(url_for('.journal_page', journal_id=journal_id))
-
-
-@blueprint.route("/journals/bulk/withdraw", methods=["POST"])
-@login_required
-@ssl_required
-def journals_bulk_withdraw():
-    r = {}
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
-
-    q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
-
-    return make_json_resp(r, status_code=200)
-
-@blueprint.route("/journals/bulk/reinstate", methods=["POST"])
-@login_required
-@ssl_required
-def journals_bulk_reinstate():
-    r = {}
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
-
-    q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
-
-    return make_json_resp(r, status_code=200)
-
-#
-#####################################################################
 
 @blueprint.route("/journal/<journal_id>/continue", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def journal_continue(journal_id):
     j = models.Journal.pull(journal_id)
     if j is None:
@@ -267,20 +232,20 @@ def journal_continue(journal_id):
         flash("The continuation has been created (see below).  You may now edit the other metadata associated with it.  The original journal has also been updated with this continuation's ISSN(s).  Once you are happy with this record, you can publish it to the DOAJ", "success")
         return redirect(url_for('.journal_page', journal_id=cont.id))
 
-
-@blueprint.route("/applications", methods=["GET"])
+@blueprint.route("/applications")
 @login_required
 @ssl_required
 def suggestions():
-    return render_template("admin/suggestions.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'])
-
+    return render_template('admin/suggestions.html',
+               search_page=True,
+               facetviews=["admin.applications.facetview"],
+               admin_page=True
+           )
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def suggestion_page(suggestion_id):
     if not current_user.has_role("edit_suggestion"):
         abort(401)
@@ -312,15 +277,11 @@ def suggestion_page(suggestion_id):
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
 
-
-@blueprint.route("/admin_site_search", methods=["GET"])
+@blueprint.route("/admin_site_search")
 @login_required
 @ssl_required
 def admin_site_search():
-    return render_template("admin/admin_site_search.html",
-                           admin_page=True, search_page=True,
-                           facetviews=['admin.journalarticle.facetview'])
-
+    return render_template("admin/admin_site_search.html", admin_page=True, search_page=True, facetviews=['admin.journalarticle.facetview'])
 
 @blueprint.route("/editor_groups")
 @login_required
@@ -328,17 +289,11 @@ def admin_site_search():
 def editor_group_search():
     return render_template("admin/editor_group_search.html", admin_page=True, search_page=True, facetviews=['admin.editorgroups.facetview'])
 
-@blueprint.route("/background_jobs")
-@login_required
-@ssl_required
-def background_jobs_search():
-    return render_template("admin/background_jobs_search.html", admin_page=True, search_page=True, facetviews=['admin.background_jobs.facetview'])
-
 @blueprint.route("/editor_group", methods=["GET", "POST"])
 @blueprint.route("/editor_group/<group_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def editor_group(group_id=None):
     if not current_user.has_role("modify_editor_groups"):
         abort(401)
@@ -413,7 +368,6 @@ def editor_group(group_id=None):
         else:
             return render_template("admin/editor_group.html", admin_page=True, form=form)
 
-
 @blueprint.route("/autocomplete/user")
 @login_required
 @ssl_required
@@ -447,101 +401,3 @@ def eg_associates_dropdown():
     resp = make_response(json.dumps(editors))
     resp.mimetype = "application/json"
     return resp
-
-
-class BulkAdminEndpointException(Exception):
-    pass
-
-
-@app.errorhandler(BulkAdminEndpointException)
-def bulk_admin_endpoints_bad_request(exception):
-    r = {}
-    r['error'] = exception.message
-    return make_json_resp(r, status_code=400)
-
-
-def get_bulk_edit_background_task_manager(doaj_type):
-    r = {}
-    if doaj_type == 'journals':
-        return journal_bulk_edit.journal_manage
-    elif doaj_type == 'applications':
-        return suggestion_bulk_edit.suggestion_manage
-    else:
-        raise BulkAdminEndpointException('Unsupported DOAJ type - you can currently only bulk edit journals and applications.')
-
-
-def get_query_from_request(payload):
-    q = payload['selection_query']
-    q = remove_search_limits(q)
-    return q
-
-
-@blueprint.route("/<doaj_type>/bulk/assign_editor_group", methods=["POST"])
-@login_required
-@ssl_required
-def bulk_assign_editor_group(doaj_type):
-    r = {}
-    task = get_bulk_edit_background_task_manager(doaj_type)
-
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
-
-    r['affected_' + doaj_type] = task(
-        selection_query=get_query_from_request(payload),
-        editor_group=payload['editor_group'],
-        dry_run=payload.get('dry_run', True)
-    )
-
-    return make_json_resp(r, status_code=200)
-
-
-@blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
-@login_required
-@ssl_required
-def bulk_add_note(doaj_type):
-    r = {}
-    task = get_bulk_edit_background_task_manager(doaj_type)
-
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
-
-    r['affected_' + doaj_type] = task(
-        selection_query=get_query_from_request(payload),
-        note=payload['note'],
-        dry_run=payload.get('dry_run', True)
-    )
-
-    return make_json_resp(r, status_code=200)
-
-@blueprint.route("/applications/bulk/change_status", methods=["POST"])
-@login_required
-@ssl_required
-def applications_bulk_change_status():
-    r = {}
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
-
-    q = get_query_from_request(payload)
-
-    r['affected_applications'] = get_bulk_edit_background_task_manager('applications')(
-        selection_query=q,
-        application_status=payload['application_status'],
-        dry_run=payload.get('dry_run', True)
-    )
-
-    return make_json_resp(r, status_code=200)
-
-@blueprint.route("/journals/bulk/delete", methods=['POST'])
-def bulk_journals_delete():
-    r = {}
-    payload = get_web_json_payload()
-    validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
-
-    q = get_query_from_request(payload)
-
-    r = journal_bulk_delete.journal_bulk_delete_manage(
-        selection_query=q,
-        dry_run=payload.get('dry_run', True)
-    )
-
-    return make_json_resp(r, status_code=200)
