@@ -260,8 +260,8 @@ class PrivateContext(FormContext):
             raise FormContextException("Cannot carry data on to a non-existent target - run the xwalk first")
 
         # first off, get the notes (by reference) in the target and the notes from the source
-        tnotes = self.target.notes()
-        snotes = self.source.notes()
+        tnotes = self.target.notes
+        snotes = self.source.notes
 
         # if there are no notes, we might not have the notes by reference, so later will
         # need to set them by value
@@ -1279,7 +1279,7 @@ class PublicApplication(FormContext):
 class ManEdJournalReview(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
-    admin privileges.  It will permit doing every.
+    admin privileges.  It will permit doing every action.
     """
     def make_renderer(self):
         self.renderer = render.ManEdJournalReviewRenderer()

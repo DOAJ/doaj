@@ -3,11 +3,11 @@ import md5
 import os, re, string
 from unicodedata import normalize
 from functools import wraps
-from flask import request, current_app, flash
+from flask import request, current_app, flash, make_response
 from random import choice
+import json
 
 from urlparse import urlparse, urljoin
-from datetime import datetime
 
 
 def is_safe_url(target):
@@ -140,3 +140,52 @@ def unicode_dict(d):
         return [unicode_dict(e) for e in d]
     else:
         return d
+
+
+def make_json_resp(data, status_code, json_dumps_kwargs=None):
+    if json_dumps_kwargs is None:
+        json_dumps_kwargs = {}
+    resp = make_response(json.dumps(data, **json_dumps_kwargs))
+    resp.status_code = status_code
+    resp.mimetype = "application/json"
+    return resp
+
+
+def get_web_json_payload():
+    """
+    Attempts to load JSON from request.data.
+
+    If valid, returns the decoded JSON payload to the caller.
+    If invalid returns a JSON response with a 400 Bad Request to the web user.
+    """
+    r = {}
+    try:
+        payload = json.loads(request.data)
+    except ValueError:
+        r['error'] = "Invalid JSON payload from request.data .\n{}".format(request.data)
+        return make_json_resp(r, status_code=400)
+    return payload
+
+
+def validate_json(payload, fields_must_be_present=None, fields_must_not_be_present=None, error_to_raise=None):
+    if not fields_must_be_present:
+        fields_must_be_present = []
+
+    if not fields_must_not_be_present:
+        fields_must_not_be_present = []
+
+    for f in fields_must_be_present:
+        if f not in payload:
+            if error_to_raise:
+                raise error_to_raise('Invalid JSON. The field {} was missing and is required.'.format(f))
+            else:
+                return False
+
+    for f in fields_must_not_be_present:
+        if f in payload:
+            if error_to_raise:
+                raise error_to_raise('Invalid JSON. The field {} was present and must not be present.'.format(f))
+            else:
+                return False
+
+    return True

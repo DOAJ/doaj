@@ -9,5 +9,3 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 1       5       cron.daily       nice run-parts --report /etc/cron.daily
 7       10      cron.weekly      nice run-parts --report /etc/cron.weekly
 @monthly        15      cron.monthly nice run-parts --report /etc/cron.monthly
-
-1       5     doaj-sitemap    su - cloo -c 'export NOW=`date +\%F_\%H\%M\%S` ; export DOAJENV=harvester ; echo -e "\n\nstart timestamp $NOW" >> /home/cloo/cron-logs/doaj-sitemap.log && nice -n 19 /home/cloo/repl/harvester/doaj/bin/python /home/cloo/repl/harvester/doaj/src/doaj/portality/scripts/sitemap.py >> /home/cloo/cron-logs/doaj-sitemap.log 2>&1'

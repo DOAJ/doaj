@@ -14,7 +14,7 @@ blueprint = Blueprint('doajservices', __name__)
 @blueprint.route("/unlock/<object_type>/<object_id>", methods=["POST"])
 @login_required
 @ssl_required
-@write_required
+@write_required()
 def unlock(object_type, object_id):
     # first figure out if we are allowed to even contemplate this action
     if object_type not in ["journal", "suggestion"]:

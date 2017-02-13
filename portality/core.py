@@ -11,6 +11,11 @@ from portality.error_handler import setup_error_logging
 
 login_manager = LoginManager()
 
+@login_manager.user_loader
+def load_account_for_login_manager(userid):
+    from portality import models
+    out = models.Account.pull(userid)
+    return out
 
 def create_app():
     app = Flask(__name__)

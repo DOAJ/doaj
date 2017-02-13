@@ -1,4 +1,4 @@
-from portality.datasets import language_options, main_license_options, country_options, currency_options
+from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
 from portality import lcc
 
 class Choices(object):
@@ -132,6 +132,10 @@ class Choices(object):
     @classmethod
     def currency(cls):
         return currency_options
+
+    @classmethod
+    def currency_default(cls):
+        return CURRENCY_DEFAULT
 
     @classmethod
     def language(cls):
