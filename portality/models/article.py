@@ -651,7 +651,7 @@ class ArticleBibJSON(GenericBibJSON):
             citation += "(" + iss + ")"
 
         if start or end:
-            if citation == "":
+            if citation != "":
                 citation += ":"
             if start:
                 citation += start
