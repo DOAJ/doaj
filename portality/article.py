@@ -594,7 +594,6 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
     
     if not valid: # which can happen if there was no format name or if the format name was wrong
         # look for an alternative
-        xwalk = None
         for name, x in xwalk_map.iteritems():
             if format_name is not None and format_name != name:
                 # we may have already tried validating with this one already

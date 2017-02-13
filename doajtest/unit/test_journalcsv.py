@@ -1,12 +1,9 @@
 import time
-import csv, os, codecs
+import csv
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
 from portality import models, journalcsv
 from StringIO import StringIO
-
-from portality.core import app
-from portality.tasks import journal_csv
 
 # wee function to check for differences between lists
 diff = lambda l1, l2: filter(lambda x: x not in l2, l1)
@@ -17,11 +14,6 @@ class TestJournalCSV(DoajTestCase):
 
     def tearDown(self):
         super(TestJournalCSV, self).tearDown()
-        cdir = app.config.get("CACHE_DIR")
-        csvdir = os.path.join(cdir, "csv")
-        csvs = [c for c in os.listdir(csvdir) if c.endswith(".csv")]
-        for c in csvs:
-            os.remove(os.path.join(csvdir, c))
 
     def test_01_single_row(self):
         """ Writing a CSV for a single-journal index """
@@ -231,40 +223,3 @@ class TestJournalCSV(DoajTestCase):
 
         assert len(csv_rows) == 2                     # We only expect one journal here - the second should overwrite the first
         assert csv_rows[1].pop(0) == 'The New Title'  # The title should be the second one we added
-
-    def test_04_background_task(self):
-        csv_source_journal1 = models.Journal(**JournalFixtureFactory.make_journal_source())
-        csv_source_journal1.set_in_doaj(True)
-        csv_source_journal1.save()
-
-        # add a second journal by editing the id and issn from source of the first
-        j2_source = JournalFixtureFactory.make_journal_source()
-        j2_source['id'] = 'lmnopqrstuvxyz_journal'
-        j2_source['bibjson']['identifier'][0] = {"type": "pissn", "id": "8765-4321"}
-        csv_source_journal2 = models.Journal(**j2_source)
-        csv_source_journal2.set_in_doaj(True)
-        csv_source_journal2.save()
-
-        # Wait a sec to let the index catch up
-        time.sleep(1)
-
-        user = app.config.get("SYSTEM_USERNAME")
-        job = journal_csv.JournalCSVBackgroundTask.prepare(user)
-        journal_csv.JournalCSVBackgroundTask.submit(job)
-
-        filename = models.Cache.get_latest_csv()
-        cdir = app.config.get("CACHE_DIR")
-        jcsv = os.path.join(cdir, "csv", filename)
-
-        with codecs.open(jcsv, "r", "utf-8") as f:
-            csvreader = csv.reader(f)
-            csv_rows = []
-            for row in csvreader:
-                csv_rows.append(row)
-
-            assert len(csv_rows) == 3                     # we expect 3 rows this time
-            assert csv_rows[1] != csv_rows[2]             # ID was changed, rows should differ
-
-            # check that the difference between rows is the ISSN
-
-            assert diff(csv_rows[2], csv_rows[1]) == ["8765-4321"]

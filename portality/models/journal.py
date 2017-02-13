@@ -126,7 +126,6 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def set_notes(self, notes):
         self._set_with_struct("admin.notes", notes)
 
-    @property
     def notes(self):
         return self._get_list("admin.notes")
 

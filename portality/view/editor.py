@@ -53,7 +53,7 @@ def associate_suggestions():
 @blueprint.route('/journal/<journal_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def journal_page(journal_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_journal"):
@@ -110,7 +110,7 @@ def journal_page(journal_id):
 @blueprint.route('/suggestion/<suggestion_id>', methods=["GET", "POST"])
 @login_required
 @ssl_required
-@write_required()
+@write_required
 def suggestion_page(suggestion_id):
     # user must have the role "edit_journal"
     if not current_user.has_role("edit_suggestion"):
