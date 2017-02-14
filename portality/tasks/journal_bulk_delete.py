@@ -14,9 +14,11 @@ from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundE
 
 def journal_bulk_delete_manage(selection_query, dry_run=True):
 
+    estimates = JournalBulkDeleteBackgroundTask.estimate_delete_counts(selection_query)
+
     if dry_run:
         JournalBulkDeleteBackgroundTask.check_admin_privilege(current_user.id)
-        return JournalBulkDeleteBackgroundTask.estimate_delete_counts(selection_query)
+        return estimates
 
     ids = JournalBulkDeleteBackgroundTask.resolve_selection_query(selection_query)
     job = JournalBulkDeleteBackgroundTask.prepare(
@@ -26,7 +28,7 @@ def journal_bulk_delete_manage(selection_query, dry_run=True):
     )
     JournalBulkDeleteBackgroundTask.submit(job)
 
-    return True
+    return estimates
 
 
 class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
@@ -51,6 +53,8 @@ class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):
         if not self._job_parameter_check(params):
             raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
 
+        # repeat the estimations and log what they were at the time the job ran, in addition to what the user saw
+        # when requesting the job in journal_bulk_delete_manage
         estimates = self.estimate_delete_counts(json.loads(job.reference['selection_query']))
         job.add_audit_message(u"About to delete an estimated {} journals with {} articles associated with their ISSNs."
                               .format(estimates['journals-to-be-deleted'], estimates['articles-to-be-deleted']))

@@ -545,11 +545,8 @@ def bulk_journals_delete():
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
-    if isinstance(resp, dict):
-        if 'journals-to-be-deleted' in resp:
-            r['affected_journals'] = resp['journals-to-be-deleted']
-        if 'articles-to-be-deleted' in resp:
-            r['affected_articles'] = resp['articles-to-be-deleted']
+    r['affected_journals'] = resp['journals-to-be-deleted']
+    r['affected_articles'] = resp['articles-to-be-deleted']
 
     return make_json_resp(r, status_code=200)
 
