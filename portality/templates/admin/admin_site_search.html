@@ -21,12 +21,12 @@
                             </div>
                         </div>
                         <div class="control-group" style="display: none" id="editor_group-container">
-                            <div class="controls ">
+                            <div class="controls">
                                 <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
                             </div>
                         </div>
                         <div class="control-group" style="display: none" id="note-container">
-                            <div class="controls ">
+                            <div class="controls">
                                 <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
@@ -34,6 +34,11 @@
                             <div class="controls">
                                 <button id="bulk-submit" class="btn btn-danger pull-right" disabled="disabled">Submit
                                 </button>
+                            </div>
+                        </div>
+                        <div class="control-group" style="display: none; max-width: 18em;" id="bulk_delete_note-container">
+                            <div class="controls">
+                                <p id="bulk_delete_note" class="red">You need to select an option in the "Journals vs. Articles facet" <strong>and also</strong> enter a search term to filter the journals or articles for deletion.</p>
                             </div>
                         </div>
                     </fieldset>
@@ -54,6 +59,7 @@
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
+    toggle_optional_field('bulk_action', ['#bulk_delete_note'], ['delete']);
     toggle_optional_field('bulk_action', ['#note'], ['add_note']);
 </script>
 

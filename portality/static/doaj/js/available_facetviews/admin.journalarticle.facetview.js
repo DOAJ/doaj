@@ -1,12 +1,36 @@
 jQuery(document).ready(function($) {
 
-    function adminButtons(options, context) {
-        // Disable the bulk action submit button if there is an empty query in the facetview
-        if ($.isEmptyObject(options.active_filters) && options.q == '') {
-            $('#bulk-submit').attr('disabled', 'disabled');
+    function disable_bulk_submit() {
+        $('#bulk-submit').attr('disabled', 'disabled');
+        $('#bulk_delete_note-container').show();
+    }
+
+    function enable_bulk_submit() {
+        $('#bulk-submit').removeAttr('disabled');
+        $('#bulk_delete_note-container').hide();
+    }
+
+    function bulk_action_controls(options) {
+        // When deleting, enable/disable the bulk action submit button
+        // To enable: the _type facet must be selected AND
+        // - EITHER another facet must be selected as well
+        // - OR a free text query must have been entered
+        // Otherwise, disable.
+        if ($('#bulk_action').val() === 'delete') {
+            if ($.isEmptyObject(options.active_filters._type)) {
+                disable_bulk_submit();
+            } else {
+                if (options.q == '') {
+                    disable_bulk_submit();
+                } else {
+                    enable_bulk_submit();
+                }
+            }
         } else {
-            $('#bulk-submit').removeAttr('disabled');
+            enable_bulk_submit();
         }
+
+        // todo selecting _type and another facet does not enable the button, you HAVE to type in a query. Should I actually keep this behaviour? (if so clarify the code)
     }
 
     function adminJAPostRender(options, context) {
@@ -20,6 +44,14 @@ jQuery(document).ready(function($) {
 
         ////////////////////////////////////////////////////////////
         // functions for handling the bulk form
+
+        function bulk_action_selected_handler() {
+            $('#bulk_action').change(function () {
+                bulk_action_controls(options);
+            });
+        }
+        bulk_action_selected_handler()
+
         function get_bulk_action() {
             action = $('#bulk_action').val();
             if (! action) {
@@ -30,14 +62,17 @@ jQuery(document).ready(function($) {
         }
 
         function bulk_action_type() {
-            // TODO if the action is "delete", we want to take the value of the _type facet
-            // and return "articles" or "journals" as appropriate.
-            // We also need to make disable the bulk job submit button unless an option
-            // is selected in the _type facet.
-            // if (get_bulk_action() == 'delete') {
-            //     return 'journals,articles';
-            // }
-            return 'journals'
+            if (get_bulk_action() == 'delete') {
+                if (! $.isEmptyObject(options.active_filters._type)) {
+                    if (options.active_filters._type.length != 1) {
+                        alert('Error: type facet has multiple options selected.');
+                        throw 'Error: type facet has multiple options selected.'
+                    }
+                    if (options.active_filters._type[0] === 'journal') { return 'journals'; }
+                    if (options.active_filters._type[0] === 'article') { return 'articles'; }
+                }
+            }
+            return 'journals';
         }
 
         function bulk_action_url() {
@@ -131,7 +166,7 @@ jQuery(document).ready(function($) {
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: adminJAPostRender,
-        post_search_callback: adminButtons,
+        post_search_callback: bulk_action_controls,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
