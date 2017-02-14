@@ -557,7 +557,7 @@ def bulk_articles_delete():
 
     q = get_query_from_request(payload)
 
-    r = article_bulk_delete.article_bulk_delete_manage(
+    r['affected_articles'] = article_bulk_delete.article_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )

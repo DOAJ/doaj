@@ -7,6 +7,7 @@ from portality import models
 
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
+from portality.util import batch_up
 
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
 
@@ -25,10 +26,12 @@ def article_bulk_delete_manage(selection_query, dry_run=True):
     )
     ArticleBulkDeleteBackgroundTask.submit(job)
 
-    return True
+    return len(ids)
 
 
 class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
+
+    BATCH_SIZE = 1000
 
     __action__ = "article_bulk_delete"
 
@@ -50,14 +53,14 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         if not self._job_parameter_check(params):
             raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
 
-        estimate = self.estimate_delete_counts(json.loads(job.reference['selection_query']))
-        job.add_audit_message(u"About to delete an estimated {} articles".format(estimate))
+        batches_count = len(ids) / self.BATCH_SIZE + (0 if len(ids) % self.BATCH_SIZE == 0 else 1)
+        job.add_audit_message(u"About to delete {} articles in {} batches".format(len(ids), batches_count))
 
-        # TODO this could be an issue with lots of article IDs (the should_terms being so big)
-        # Break up in batches if a problem occurs during manual testing.
-        # Might need a unit or integration test to test batching up works.
-        article_delete_q_by_ids = models.Article.make_query(should_terms={'_id': ids}, consistent_order=False)
-        models.Article.delete_selected(query=article_delete_q_by_ids, snapshot=True)
+        for batch_num, batch in enumerate(batch_up(ids, self.BATCH_SIZE), start=1):
+            article_delete_q_by_ids = models.Article.make_query(should_terms={'_id': batch}, consistent_order=False)
+            models.Article.delete_selected(query=article_delete_q_by_ids, snapshot=True)
+            job.add_audit_message(u"Deleted {} articles in batch {} of {}".format(len(batch), batch_num, batches_count))
+
         job.add_audit_message(u"Deleted {} articles".format(len(ids)))
 
     def cleanup(self):
@@ -96,7 +99,9 @@ class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
-        job.reference = {'selection_query': json.dumps(kwargs['selection_query'])}
+        refs = {}
+        cls.set_reference(refs, "selection_query", json.dumps(kwargs['selection_query']))
+        job.reference = refs
 
         params = {}
         cls.set_param(params, 'ids', kwargs['ids'])
