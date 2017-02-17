@@ -189,3 +189,10 @@ def validate_json(payload, fields_must_be_present=None, fields_must_not_be_prese
                 return False
 
     return True
+
+
+def batch_up(long_list, batch_size):
+    """Yield successive n-sized chunks from l (a list)."""
+    # http://stackoverflow.com/a/312464/1154882
+    for i in xrange(0, len(long_list), batch_size):
+        yield long_list[i:i + batch_size]

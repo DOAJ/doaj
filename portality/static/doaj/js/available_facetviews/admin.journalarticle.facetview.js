@@ -30,9 +30,13 @@ jQuery(document).ready(function($) {
         }
 
         function bulk_action_type() {
-            if (get_bulk_action() == 'delete') {
-                return 'journals,articles';
-            }
+            // TODO if the action is "delete", we want to take the value of the _type facet
+            // and return "articles" or "journals" as appropriate.
+            // We also need to make disable the bulk job submit button unless an option
+            // is selected in the _type facet.
+            // if (get_bulk_action() == 'delete') {
+            //     return 'journals,articles';
+            // }
             return 'journals'
         }
 

@@ -325,7 +325,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         return query
 
     @classmethod
-    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, **kwargs):
+    def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, raise_es_errors=False, **kwargs):
         '''Perform a query on backend.
 
         :param recid: needed if endpoint is about a record, e.g. mlt
@@ -337,11 +337,11 @@ class DomainObject(UserDict.IterableUserDict, object):
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
         '''
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
-        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp)
+        return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp, raise_es_errors=raise_es_errors)
 
 
     @classmethod
-    def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False):
+    def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False, raise_es_errors=False):
         '''Actually send a query object to the backend.'''
         r = None
         count = 0
@@ -359,11 +359,15 @@ class DomainObject(UserDict.IterableUserDict, object):
             time.sleep(0.5)
                 
         if r is not None:
+            j = r.json()
+
+            if raise_es_errors:
+                cls.check_es_raw_response(j)
 
             if return_raw_resp:
                 return r
 
-            return r.json()
+            return j
         if exception is not None:
             raise exception
         raise Exception("Couldn't get the ES query endpoint to respond.  Also, you shouldn't be seeing this.")
@@ -420,23 +424,9 @@ class DomainObject(UserDict.IterableUserDict, object):
         r = requests.delete(cls.target())
         r = requests.put(cls.target() + '_mapping', json.dumps(app.config['MAPPINGS'][cls.__type__]))
 
-    @staticmethod
-    def handle_es_raw_response(res, wrap, extra_trace_info=''):
-        """
-        Handles the JSON returned by ES, raising errors as needed. If no problems are detected it returns its input
-        unchanged.
-
-        :param res: The full ES raw response to a query in a Python dict (this method does not handle the raw JSON ES
-        outputs). Usually this parameter is the return value of the .query or .send_query methods.
-        :param wrap: Did the caller request wrapping of each ES record inside a model object? This matters for handling
-        records that have no '_source' or 'fields' keys, but do have an '_id' key. Such records should raise an error
-        if wrapping was requested, since there is nothing to wrap. If no wrapping was requested, perhaps the caller
-        simply needed the object IDs and nothing else, so we do not need to raise an error.
-        :param extra_trace_info: A string with additional diagnostic information to be put into exceptions.
-        """
-
+    @classmethod
+    def check_es_raw_response(cls, res, extra_trace_info=''):
         if 'error' in res:
-            # TODO consider retrying the query a few times with back-off timing, like the .send_query method does.
             es_resp = json.dumps(res, indent=2)
 
             error_to_raise = ESMappingMissingError if ES_MAPPING_MISSING_REGEX.match(es_resp) else ESError
@@ -460,6 +450,24 @@ class DomainObject(UserDict.IterableUserDict, object):
                     .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
                 ) + extra_trace_info
             )
+        return True
+
+    @classmethod
+    def handle_es_raw_response(cls, res, wrap, extra_trace_info=''):
+        """
+        Handles the JSON returned by ES, raising errors as needed. If no problems are detected it returns its input
+        unchanged.
+
+        :param res: The full ES raw response to a query in a Python dict (this method does not handle the raw JSON ES
+        outputs). Usually this parameter is the return value of the .query or .send_query methods.
+        :param wrap: Did the caller request wrapping of each ES record inside a model object? This matters for handling
+        records that have no '_source' or 'fields' keys, but do have an '_id' key. Such records should raise an error
+        if wrapping was requested, since there is nothing to wrap. If no wrapping was requested, perhaps the caller
+        simply needed the object IDs and nothing else, so we do not need to raise an error.
+        :param extra_trace_info: A string with additional diagnostic information to be put into exceptions.
+        """
+
+        cls.check_es_raw_response(res)
 
         rs = []
         for i, each in enumerate(res['hits']['hits']):
@@ -673,6 +681,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     @classmethod
     def hit_count(cls, query, **kwargs):
         res = cls.query(q=query, **kwargs)
+
         return res.get("hits", {}).get("total", 0)
 
     @classmethod
