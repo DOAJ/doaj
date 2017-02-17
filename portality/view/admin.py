@@ -541,10 +541,12 @@ def bulk_journals_delete():
 
     q = get_query_from_request(payload)
 
-    r = journal_bulk_delete.journal_bulk_delete_manage(
+    resp = journal_bulk_delete.journal_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
+    r['affected_journals'] = resp['journals-to-be-deleted']
+    r['affected_articles'] = resp['articles-to-be-deleted']
 
     return make_json_resp(r, status_code=200)
 

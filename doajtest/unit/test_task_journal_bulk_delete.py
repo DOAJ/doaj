@@ -57,7 +57,7 @@ class TestTaskJournalBulkDelete(DoajTestCase):
         assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM, 'articles-to-be-deleted': (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL}, r
 
         r = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
-        assert r is True, r
+        assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM, 'articles-to-be-deleted': (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL}, r
 
         sleep(3)
 
