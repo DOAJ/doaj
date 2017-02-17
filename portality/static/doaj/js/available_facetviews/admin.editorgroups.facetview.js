@@ -21,7 +21,7 @@ jQuery(document).ready(function($) {
             {'display':'Created Date','field':'created_date'},
             {'display':'Last Modified Date','field':'last_updated'},
             {'display':'Editor ID','field':'editor'},
-            {'display':'Group Name','field':'name'}
+            {'display':'Group Name','field':'name.exact'}
         ],
 
         searchbox_fieldselect: [
