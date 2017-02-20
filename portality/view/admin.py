@@ -208,14 +208,15 @@ def journal_deactivate(journal_id):
 @login_required
 @ssl_required
 def journals_bulk_withdraw():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
+    summary = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
+    return make_json_resp(summary.as_dict(), status_code=200)
 
-    return make_json_resp(r, status_code=200)
+    # r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
+    # return make_json_resp(r, status_code=200)
 
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required

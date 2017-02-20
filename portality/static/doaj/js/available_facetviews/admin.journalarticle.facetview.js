@@ -50,11 +50,11 @@ jQuery(document).ready(function($) {
                 bulk_action_controls(options);
             });
         }
-        bulk_action_selected_handler()
+        bulk_action_selected_handler();
 
         function get_bulk_action() {
-            action = $('#bulk_action').val();
-            if (! action) {
+            var action = $('#bulk_action').val();
+            if (!action) {
                 alert('Error: unknown bulk operation.');
                 throw 'Error: unknown bulk operation. The bulk action field was empty.'
             }
@@ -80,6 +80,18 @@ jQuery(document).ready(function($) {
         }
 
         function build_affected_msg(data) {
+            var mfrg = "";
+            if (data.affected) {
+                if ("journals" in data.affected && "articles" in data.affected) {
+                    mfrg += data.affected.journals + " journals and " + data.affected.articles + " articles"
+                } else if ("journals" in data.affected) {
+                    mfrg = data.affected.journals + " journals"
+                } else {
+                    mfrg = "an unknown number of records"
+                }
+            }
+            return mfrg;
+            /*
             var mfrg = undefined;
             if (data.affected_journals && data.affected_articles) {
                 mfrg = data.affected_journals + " journals and " + data.affected_articles + " articles"
@@ -94,17 +106,31 @@ jQuery(document).ready(function($) {
                 mfrg = "an unknown number of records"
             }
             return mfrg
+            */
         }
 
         function bulk_action_success_callback(data) {
-            alert('Submitted - ' + build_affected_msg(data) + ' have been queued for edit.');
+            var msg = "Your bulk edit request has been submitted and queued for execution.<br>";
+            msg += build_affected_msg(data) + " have been queued for edit.<br>";
+            msg += 'You can see your request <a href="' + bulk_job_url(data) + '" target="_blank">here</a> in the background jobs interface (opens new window).<br>';
+            msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours<br>";
+            msg += '<a href="#" id="bulk-action-feedback-dismiss">dismiss</a>';
+
+            $(".bulk-action-feedback").html(msg).show();
             $('#bulk-submit').removeAttr('disabled').html('Submit');
+            $("#bulk-action-feedback-dismiss").unbind("click").bind("click", function(event) {
+                event.preventDefault();
+                $(".bulk-action-feedback").html("").hide();
+            });
+
+            $("#bulk_action").val("");
         }
 
         function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
             alert('There was an error with your request.');
             console.error(textStatus + ': ' + errorThrown);
             $('#bulk-submit').removeAttr('disabled').html('Submit');
+            $("#bulk_action").val("");
         }
 
         function bulk_action_confirm_callback(data) {
@@ -125,7 +151,13 @@ jQuery(document).ready(function($) {
                 });
             } else {
                 $('#bulk-submit').removeAttr('disabled').html('Submit');
+                $("#bulk_action").val("");
             }
+        }
+
+        function bulk_job_url(data) {
+            var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
+            return url;
         }
 
         $('#bulk-submit').unbind('click').bind('click', function(event) {
@@ -159,6 +191,8 @@ jQuery(document).ready(function($) {
             }
         });
     }
+
+    /////////////////////////////////////////////////////////////////
 
     $('.facetview.admin_journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/journal,article/_search?',
