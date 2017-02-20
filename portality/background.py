@@ -1,7 +1,8 @@
 from flask_login import login_user
 
 from portality.core import app
-from portality import models
+from portality import models, app_email
+from portality.dao import Facetview2
 
 import traceback
 
@@ -29,6 +30,7 @@ class BackgroundApi(object):
     def execute(self, background_task):
         job = background_task.background_job
         ctx = None
+        acc = None
         if job.user is not None:
             ctx = app.test_request_context("/")
             ctx.push()
@@ -67,6 +69,28 @@ class BackgroundApi(object):
         if not job.is_failed():
             job.success()
         job.save()
+
+        # send a confirmation email to the user if the account exists
+        if acc is not None:
+            if acc.email is not None:
+                template = "email/admin_background_job_finished.txt"
+                subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
+
+                url_root = app.config.get("BASE_URL")
+                to = [acc.email]
+                fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+                query = Facetview2.make_query(job.id)
+                url = url_root + "admin/background_jobs?source=" + Facetview2.url_encode_query(query)
+
+                app_email.send_mail(to=to,
+                                    fro=fro,
+                                    subject=subject,
+                                    template_name=template,
+                                    job_id=job.id,
+                                    action=job.action,
+                                    status=job.status,
+                                    background_job_url=url
+                                    )
 
         if ctx is not None:
             ctx.pop()
