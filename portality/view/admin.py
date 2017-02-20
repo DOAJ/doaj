@@ -215,21 +215,16 @@ def journals_bulk_withdraw():
     summary = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
     return make_json_resp(summary.as_dict(), status_code=200)
 
-    # r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
-    # return make_json_resp(r, status_code=200)
-
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
 def journals_bulk_reinstate():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
-
-    return make_json_resp(r, status_code=200)
+    summary = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 #
 #####################################################################
@@ -462,7 +457,6 @@ def bulk_admin_endpoints_bad_request(exception):
 
 
 def get_bulk_edit_background_task_manager(doaj_type):
-    r = {}
     if doaj_type == 'journals':
         return journal_bulk_edit.journal_manage
     elif doaj_type == 'applications':
@@ -481,38 +475,36 @@ def get_query_from_request(payload):
 @login_required
 @ssl_required
 def bulk_assign_editor_group(doaj_type):
-    r = {}
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
 
-    r['affected_' + doaj_type] = task(
+    summary = task(
         selection_query=get_query_from_request(payload),
         editor_group=payload['editor_group'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
 @login_required
 @ssl_required
 def bulk_add_note(doaj_type):
-    r = {}
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
 
-    r['affected_' + doaj_type] = task(
+    summary = task(
         selection_query=get_query_from_request(payload),
         note=payload['note'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
@@ -536,33 +528,27 @@ def applications_bulk_change_status():
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
 def bulk_journals_delete():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
-    resp = journal_bulk_delete.journal_bulk_delete_manage(
+    summary = journal_bulk_delete.journal_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
-    r['affected_journals'] = resp['journals-to-be-deleted']
-    r['affected_articles'] = resp['articles-to-be-deleted']
-
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/articles/bulk/delete", methods=['POST'])
 def bulk_articles_delete():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
 
-    r['affected_articles'] = article_bulk_delete.article_bulk_delete_manage(
+    summary = article_bulk_delete.article_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)

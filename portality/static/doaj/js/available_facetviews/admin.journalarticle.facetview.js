@@ -83,11 +83,13 @@ jQuery(document).ready(function($) {
             var mfrg = "";
             if (data.affected) {
                 if ("journals" in data.affected && "articles" in data.affected) {
-                    mfrg += data.affected.journals + " journals and " + data.affected.articles + " articles"
+                    mfrg += data.affected.journals + " journals and " + data.affected.articles + " articles";
                 } else if ("journals" in data.affected) {
-                    mfrg = data.affected.journals + " journals"
+                    mfrg = data.affected.journals + " journals";
+                } else if ("articles" in data.affected) {
+                    mfrg = data.affected.articles + " articles";
                 } else {
-                    mfrg = "an unknown number of records"
+                    mfrg = "an unknown number of records";
                 }
             }
             return mfrg;
