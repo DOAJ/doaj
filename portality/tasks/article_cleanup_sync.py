@@ -5,7 +5,7 @@ For each article in the DOAJ index:
     * Applies the journal's information to the article metadata as needed
 """
 
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
@@ -13,8 +13,8 @@ from portality.background import BackgroundTask, BackgroundApi, BackgroundExcept
 import esprit
 import json
 from portality import models
-from portality.util import unicode_dict
 from portality.core import app
+from datetime import datetime
 
 class ArticleCleanupSyncBackgroundTask(BackgroundTask):
 
@@ -30,7 +30,7 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         prep_all = self.get_param(params, "prepall", False)
         write_changes = self.get_param(params, "write", True)
 
-        batch_size = 1000
+        batch_size = 100
         journal_cache = {}
         failed_articles = []
 
@@ -45,38 +45,50 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
         # Scroll though all articles in the index
-        for a in esprit.tasks.scroll(conn, 'article', page_size=100, keepalive='5m'):
+        i = 0
+        for a in esprit.tasks.scroll(conn, 'article', q={"query" : {"match_all" : {}}, "sort" : ["_doc"]}, page_size=100, keepalive='5m'):
             try:
                 article_model = models.Article(_source=a)
+
+                # for debugging, just print out the progress
+                i += 1
+                print i, article_model.id, len(journal_cache.keys()), len(write_batch), len(delete_batch)
 
                 # Try to find journal in our cache
                 bibjson = article_model.bibjson()
                 allissns = bibjson.issns()
 
-                assoc_journal = None
+                cache_miss = False
+                possibles = {}
                 for issn in allissns:
                     if issn in journal_cache:
-                        assoc_journal = journal_cache[issn]
-                        break
+                        inst = models.Journal(**journal_cache[issn])
+                        possibles[inst.id] = inst
+                    else:
+                        cache_miss = True
+                assoc_journal = None
+                if len(possibles.keys()) > 0:
+                    assoc_journal = self._get_best_journal(possibles.values())
 
                 # Cache miss; ask the article model to try to find its journal
-                if assoc_journal is None:
-                    assoc_journal = article_model.get_journal()
-
-                    # Add the newly found journal to our cache
-                    if assoc_journal is not None:
-                        for issn in assoc_journal.bibjson().issns():
-                            journal_cache[issn] = assoc_journal
+                if assoc_journal is None or cache_miss:
+                    journals = models.Journal.find_by_issn(allissns)
+                    if len(journals) > 0:
+                        assoc_journal = self._get_best_journal(journals)
 
                 # By the time we get to here, we still might not have a Journal, but we tried.
                 if assoc_journal is not None:
-                    # Track changes, write only if different
-                    old = unicode_dict(article_model.data.copy())
-
                     # Update the article's metadata, including in_doaj status
-                    article_model.add_journal_metadata(assoc_journal)
-                    new = unicode_dict(article_model.data)
-                    if new == old:
+                    reg = models.Journal()
+                    reg.set_id(assoc_journal.id)
+                    changed = article_model.add_journal_metadata(assoc_journal, reg)
+
+                    # cache the minified journal register
+                    for issn in reg.bibjson().issns():
+                        if issn not in journal_cache:
+                            journal_cache[issn] = reg.data
+
+                    if not changed:
                         same_count += 1
                         if prep_all:                    # This gets done below, but can override to prep unchanged ones here
                             article_model.prep()
@@ -128,6 +140,46 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
             job.add_audit_message("Failed article ids: {x}".format(x=", ".join(failed_articles)))
             job.fail()
 
+    def _get_best_journal(self, journals):
+        if len(journals) == 1:
+            return journals[0]
+
+        # in_doaj
+        # most recently updated (manual, then automatic)
+        # both issns match
+        result = { "in_doaj" : {}, "not_in_doaj" : {}}
+        for j in journals:
+            in_doaj = j.is_in_doaj()
+            lmu = j.last_manual_update_timestamp
+            lu = j.last_updated_timestamp
+
+            context = None
+            if in_doaj:
+                context = result["in_doaj"]
+            else:
+                context = result["not_in_doaj"]
+
+            if lmu is None:
+                lmu = datetime.utcfromtimestamp(0)
+            if lmu not in context:
+                context[lmu] = {}
+            context[lmu][lu] = j
+
+        context = None
+        if len(result["in_doaj"].keys()) > 0:
+            context = result["in_doaj"]
+        else:
+            context = result["not_in_doaj"]
+
+        lmus = context.keys()
+        lmus.sort()
+        context = context[lmus.pop()]
+
+        lus = context.keys()
+        lus.sort()
+        best = context[lus.pop()]
+        return best
+
     def cleanup(self):
         """
         Cleanup after a successful OR failed run of the task
@@ -175,16 +227,15 @@ class ArticleCleanupSyncBackgroundTask(BackgroundTask):
         background_job.save()
         article_cleanup_sync.schedule(args=(background_job.id,), delay=10)
 
-"""
-@main_queue.periodic_task(schedule("article_cleanup_sync"))
+
+@long_running.periodic_task(schedule("article_cleanup_sync"))
 @write_required(script=True)
 def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleCleanupSyncBackgroundTask.prepare(user)
     ArticleCleanupSyncBackgroundTask.submit(job)
-"""
 
-@main_queue.task()
+@long_running.task()
 @write_required(script=True)
 def article_cleanup_sync(job_id):
     job = models.BackgroundJob.pull(job_id)

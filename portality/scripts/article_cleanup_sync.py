@@ -36,3 +36,6 @@ if __name__ == "__main__":
 
     end = datetime.now()
     print start, "-", end
+
+    for a in job.audit:
+        print a

@@ -15,9 +15,11 @@ class ContinuationException(Exception):
 class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     @classmethod
-    def find_by_issn(cls, issn, in_doaj=None):
+    def find_by_issn(cls, issns, in_doaj=None, max=10):
+        if not isinstance(issns, list):
+            issns = [issns]
         q = JournalQuery()
-        q.find_by_issn(issn, in_doaj=in_doaj)
+        q.find_by_issn(issns, in_doaj=in_doaj, max=max)
         result = cls.query(q=q.query)
         # create an arry of objects, using cls rather than Journal, which means subclasses can use it too (i.e. Suggestion)
         records = [cls(**r.get("_source")) for r in result.get("hits", {}).get("hits", [])]
@@ -71,6 +73,10 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def last_updated(self):
         return self._get_single("last_updated")
 
+    @property
+    def last_updated_timestamp(self):
+        return self._get_single("last_updated", coerce=dataobj.to_datestamp())
+
     def bibjson(self):
         bj = self._get_single("bibjson")
         if bj is None:
@@ -94,6 +100,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     @property
     def last_manual_update_timestamp(self):
         return self._get_single("last_manual_update", coerce=dataobj.to_datestamp())
+
+    def has_been_manually_updated(self):
+        return self.last_manual_update_timestamp > datetime.utcfromtimestamp(0)
 
     def contacts(self):
         return self._get_list("admin.contact")
@@ -1240,10 +1249,10 @@ class JournalQuery(object):
     """
     issn_query = {
         "query": {
-        	"bool": {
-            	"must": [
-                	{
-                    	"term" :  { "index.issn.exact" : "<issn>" }
+            "bool": {
+                "must": [
+                    {
+                        "terms" :  { "index.issn.exact" : "<issn>" }
                     }
                 ]
             }
@@ -1251,11 +1260,11 @@ class JournalQuery(object):
     }
 
     all_doaj = {
-	    "query" : {
-        	"bool" : {
-            	"must" : [
-            	    {"term" : {"admin.in_doaj" : True}}
-            	]
+        "query" : {
+            "bool" : {
+                "must" : [
+                    {"term" : {"admin.in_doaj" : True}}
+                ]
             }
         }
     }
@@ -1267,11 +1276,12 @@ class JournalQuery(object):
         self.minified = minified
         self.sort_by_title = sort_by_title
 
-    def find_by_issn(self, issn, in_doaj=None):
+    def find_by_issn(self, issns, in_doaj=None, max=10):
         self.query = deepcopy(self.issn_query)
-        self.query["query"]["bool"]["must"][0]["term"]["index.issn.exact"] = issn
+        self.query["query"]["bool"]["must"][0]["terms"]["index.issn.exact"] = issns
         if in_doaj is not None:
             self.query["query"]["bool"]["must"].append({"term" : {"admin.in_doaj" : in_doaj}})
+        self.query["size"] = max
 
     def all_in_doaj(self):
         q = deepcopy(self.all_doaj)
