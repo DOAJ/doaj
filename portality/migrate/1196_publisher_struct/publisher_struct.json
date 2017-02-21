@@ -1,0 +1,20 @@
+{
+	"types": [
+		{
+			"type" : "suggestion",
+			"init_with_model" : false,
+			"keepalive" : "1m",
+			"functions" : [
+				"portality.migrate.1196_publisher_struct.operations.clear_suggestion_index_fields"
+			]
+		},
+		{
+			"type": "journal",
+			"init_with_model": false,
+			"keepalive": "1m",
+			"functions" : [
+				"portality.migrate.1196_publisher_struct.operations.clear_journal_index_fields"
+			]
+		}
+	]
+}
