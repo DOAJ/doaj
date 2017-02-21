@@ -131,10 +131,11 @@ class Suggestion(JournalLikeObject):
 
     def _generate_index(self):
         super(Suggestion, self)._generate_index()
+
         if self.current_journal:
-            self.data["index"]['application_type'] = 'reapplication'
+            self._set_with_struct("index.application_type", "reapplication")
         else:
-            self.data["index"]['application_type'] = 'new application'
+            self._set_with_struct("index.application_type", "new application")
 
     def prep(self):
         self._generate_index()

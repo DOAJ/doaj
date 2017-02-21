@@ -284,40 +284,41 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
             has_editor = "Yes"
 
         # build the index part of the object
-        self.data["index"] = {}
+        index = {}
         if len(issns) > 0:
-            self.data["index"]["issn"] = issns
+            index["issn"] = issns
         if len(titles) > 0:
-            self.data["index"]["title"] = titles
+            index["title"] = titles
         if len(subjects) > 0:
-            self.data["index"]["subject"] = subjects
+            index["subject"] = subjects
         if len(schema_subjects) > 0:
-            self.data["index"]["schema_subject"] = schema_subjects
+            index["schema_subject"] = schema_subjects
         if len(classification) > 0:
-            self.data["index"]["classification"] = classification
+            index["classification"] = classification
         if len(publisher) > 0:
-            self.data["index"]["publisher"] = publisher
+            index["publisher"] = publisher
         if len(license) > 0:
-            self.data["index"]["license"] = license
+            index["license"] = license
         if len(langs) > 0:
-            self.data["index"]["language"] = langs
+            index["language"] = langs
         if country is not None:
-            self.data["index"]["country"] = country
+            index["country"] = country
         if len(schema_codes) > 0:
-            self.data["index"]["schema_code"] = schema_codes
+            index["schema_code"] = schema_codes
         if len(urls.keys()) > 0:
-            self.data["index"].update(urls)
+            index.update(urls)
         if has_seal:
-            self.data["index"]["has_seal"] = has_seal
+            index["has_seal"] = has_seal
         if len(classification_paths) > 0:
-            self.data["index"]["classification_paths"] = classification_paths
+            index["classification_paths"] = classification_paths
         if unpunctitle is not None:
-            self.data["index"]["unpunctitle"] = unpunctitle
+            index["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
-            self.data["index"]["asciiunpunctitle"] = asciiunpunctitle
-        self.data["index"]["continued"] = continued
-        self.data["index"]["has_editor_group"] = has_editor_group
-        self.data["index"]["has_editor"] = has_editor
+            index["asciiunpunctitle"] = asciiunpunctitle
+        index["continued"] = continued
+        index["has_editor_group"] = has_editor_group
+        index["has_editor"] = has_editor
+        self._set_with_struct("index", index)
 
 class Journal(JournalLikeObject):
     __type__ = "journal"
@@ -678,17 +679,14 @@ class Journal(JournalLikeObject):
         institution = bj.institution
         provider = bj.provider
 
-        if "index" not in self.data:
-            self.data["index"] = {}
-
         if publisher is not None:
-            self.data["index"]["publisher_ac"] = publisher.lower()
+            self._set_with_struct("index.publisher_ac", publisher.lower())
 
         if institution is not None:
-            self.data["index"]["institution_ac"] = institution.lower()
+            self._set_with_struct("index.institution_ac", institution.lower())
 
         if provider is not None:
-            self.data["index"]["provider_ac"] = provider.lower()
+            self._set_with_struct("index.provider_ac", provider.lower())
 
     def _calculate_has_apc(self):
         # work out of the journal has an apc
@@ -699,9 +697,7 @@ class Journal(JournalLikeObject):
         elif self.is_ticked():
             has_apc = "No"
 
-        if "index" not in self.data:
-            self.data["index"] = {}
-        self.data["index"]["has_apc"] = has_apc
+        self._set_with_struct("index.has_apc", has_apc)
 
     def _ensure_in_doaj(self):
         # switching active to false takes the item out of the DOAJ
@@ -1201,7 +1197,6 @@ JOURNAL_STRUCT = {
         "index" : {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode"},
                 "homepage_url" : {"coerce" : "unicode"},
                 "waiver_policy_url" : {"coerce" : "unicode"},
                 "editorial_board_url" : {"coerce" : "unicode"},
@@ -1228,7 +1223,8 @@ JOURNAL_STRUCT = {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
         }
     }
