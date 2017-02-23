@@ -6,7 +6,6 @@ from portality.tasks import article_cleanup_sync
 
 from datetime import datetime
 import time
-import rstr
 
 
 class TestArticleCleanupSync(DoajTestCase):
@@ -69,7 +68,7 @@ class TestArticleCleanupSync(DoajTestCase):
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(3)
 
         # We now have one journal and two articles
         assert models.Journal.count() == 1
@@ -123,7 +122,7 @@ class TestArticleCleanupSync(DoajTestCase):
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(3)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
@@ -209,7 +208,7 @@ class TestArticleCleanupSync(DoajTestCase):
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
 
-        time.sleep(2)
+        time.sleep(3)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
