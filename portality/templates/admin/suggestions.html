@@ -2,6 +2,8 @@
 
 {% block admin_content %}
 
+<div class="bulk-action-feedback alert alert-success" style="display: none"></div>
+
 <div style="padding-bottom: 20px">
     <div class="row-fluid">
         <div class="span12">
@@ -11,8 +13,8 @@
                     <fieldset>
                         <div class="control-group" id="bulk_action-container">
                             <div class="controls ">
-                                <select class="" id="bulk_action" name="bulk_action" style="width: 250px;">
-                                    <option selected="" value="">Select action...</option>
+                                <select id="bulk_action" name="bulk_action" style="width: 250px;">
+                                    <option selected value="">Select action...</option>
                                     <option value="change_status">Change status...</option>
                                     <option value="assign_editor_group">Assign to editor group...</option>
                                     <option value="add_note">Add a note...</option>
@@ -36,12 +38,12 @@
                             </div>
                         </div>
                         <div class="control-group" style="display: none" id="editor_group-container">
-                            <div class="controls ">
-                                <input id="editor_group" name="editor_group" style="width: 250px" type="text" value="">
+                            <div class="controls">
+                                <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
                             </div>
                         </div>
                         <div class="control-group" style="display: none" id="note-container">
-                            <div class="controls ">
+                            <div class="controls">
                                 <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
@@ -64,10 +66,5 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
-    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
-
-    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
-    toggle_optional_field('bulk_action', ['#application_status'], ['change_status']);
-    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
 </script>
 {% endblock %}

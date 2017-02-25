@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
 
         return bulk_action_confirm_callback
     }
-    
+
     function bulk_job_url(data) {
         var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
         return url;

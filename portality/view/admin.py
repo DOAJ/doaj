@@ -511,19 +511,17 @@ def bulk_add_note(doaj_type):
 @login_required
 @ssl_required
 def applications_bulk_change_status():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
-    r['affected_applications'] = get_bulk_edit_background_task_manager('applications')(
+    summary = get_bulk_edit_background_task_manager('applications')(
         selection_query=q,
         application_status=payload['application_status'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
@@ -545,7 +543,6 @@ def bulk_articles_delete():
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
     summary = article_bulk_delete.article_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
