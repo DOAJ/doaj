@@ -3,8 +3,12 @@ from portality.core import app
 class Authorise(object):
     @classmethod
     def has_role(cls, role, reference):
+        ultra = False
+        if role.startswith("ultra_"):
+            ultra = True
+
         # if we are the super user we can do anything
-        if app.config["SUPER_USER_ROLE"] in reference:
+        if app.config["SUPER_USER_ROLE"] in reference and not ultra:
             return True
         
         # if the user's role list contains the role explicitly then do it
