@@ -6,20 +6,37 @@
 {% set heading_object_type = 'Journal' %}
 {% include 'formcontext/_lockable_header.html' %}
 
+{%  if job %}
+    {%  set job_url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + job.id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D" %}
+<div class="row-fluid">
+    <div class="span12">
+        <div class="alert alert-success">
+            Your edit request has been submitted and queued for execution.<br>
+            You can see your request <a href="{{ job_url }}" target="_blank">here</a> in the background jobs interface (opens new window).<br>
+            You will get an email when your request has been processed; this could take anything from a few minutes to a few hours<br>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 <div class="row-fluid">
   <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 
     <div class="row-fluid">
         <div class="span12">
-            <p class="centre-text-container">This button will not save any other changes on this page!</p>
-            {% if form_context.source.is_in_doaj() %}
-              <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
-                <fieldset><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></fieldset>
-              </form>
+            {% if not job %}
+                <p class="centre-text-container">This button will not save any other changes on this page!</p>
+                {% if form_context.source.is_in_doaj() %}
+                  <form method="post" action="{{ url_for('admin.journal_deactivate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_deactivate_form">
+                    <fieldset><button class="btn btn-danger" type="submit">Take journal out of the DOAJ</button></fieldset>
+                  </form>
+                {% else %}
+                  <form method="post" action="{{ url_for('admin.journal_activate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_activate_form">
+                    <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
+                  </form>
+                {% endif %}
             {% else %}
-              <form method="post" action="{{ url_for('admin.journal_activate', journal_id=form_context.source.id) }}" class="form-horizontal" id="journal_activate_form">
-                <fieldset><button class="btn btn-success" type="submit">Put journal in the DOAJ</button></fieldset>
-              </form>
+                You cannot currently withdraw or reinstate the journal, as a background job to do this is currently active
             {% endif %}
         </div>
     </div>
