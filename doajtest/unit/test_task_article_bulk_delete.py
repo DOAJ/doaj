@@ -42,11 +42,11 @@ class TestTaskJournalBulkDelete(DoajTestCase):
         # all articles with the last journal's ISSN. The articles for the other journal should remain intact.
         del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"index.issn.exact": [self.journals[-1].bibjson().first_pissn]}}]}}}
 
-        r = article_bulk_delete_manage(del_q_should_terms, dry_run=True)
-        assert r == 1 * TEST_ARTICLES_PER_JOURNAL, r
+        summary = article_bulk_delete_manage(del_q_should_terms, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("articles") == 1 * TEST_ARTICLES_PER_JOURNAL, summary.as_dict()
 
-        r = article_bulk_delete_manage(del_q_should_terms, dry_run=False)
-        assert r == TEST_ARTICLES_PER_JOURNAL
+        summary = article_bulk_delete_manage(del_q_should_terms, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("articles") == TEST_ARTICLES_PER_JOURNAL
 
         sleep(3)
 

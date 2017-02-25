@@ -45,11 +45,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=True)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=False)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, editor_group=new_eg.name, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         sleep(1)
 
@@ -66,11 +66,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
 
     def test_02_note_successful_add(self):
         # test dry run
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=True)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, note="Test note", dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         sleep(1)
 
@@ -153,11 +153,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         """Bulk set an application status on a bunch of suggestions using a background task"""
         expected_app_status = 'on hold'
         # test dry run
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         sleep(1)
 
@@ -176,11 +176,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         """Bulk set an application status on a bunch of suggestions using a background task"""
         expected_app_status = 'lalala'
         # test dry run
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         sleep(1)
 
@@ -213,11 +213,11 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         self.suggestions[-1].save(blocking=True)
 
         # test dry run
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
-        r = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
-        assert r == TEST_SUGGESTION_COUNT, r
+        summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
 
         sleep(1)
 
