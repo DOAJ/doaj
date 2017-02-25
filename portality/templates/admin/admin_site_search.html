@@ -17,9 +17,12 @@
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
-                                    <option value="delete">Delete records</option>
                                     <option value="assign_editor_group">Journal: Assign to editor group...</option>
                                     <option value="add_note">Journal: Add a note...</option>
+
+                                    {%  if current_user.has_role("ultra_bulk_delete") %}
+                                    <option value="delete">Delete records</option>
+                                    {%  endif %}
                                 </select>
                             </div>
                         </div>

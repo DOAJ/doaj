@@ -526,6 +526,8 @@ def applications_bulk_change_status():
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
 def bulk_journals_delete():
+    if not current_user.has_role("ultra_bulk_delete"):
+        abort(403)
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
@@ -539,6 +541,8 @@ def bulk_journals_delete():
 
 @blueprint.route("/articles/bulk/delete", methods=['POST'])
 def bulk_articles_delete():
+    if not current_user.has_role("ultra_bulk_delete"):
+        abort(403)
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
