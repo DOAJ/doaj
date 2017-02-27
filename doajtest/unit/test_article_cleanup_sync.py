@@ -118,6 +118,8 @@ class TestArticleCleanupSync(DoajTestCase):
         a3 = models.Article(**source4)
         a3.save(blocking=True)
 
+        time.sleep(1)
+
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
