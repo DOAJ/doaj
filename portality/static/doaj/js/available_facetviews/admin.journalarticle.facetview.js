@@ -128,8 +128,8 @@ jQuery(document).ready(function($) {
     function bulk_action_success_callback(data) {
         var msg = "Your bulk edit request has been submitted and queued for execution.<br>";
         msg += build_affected_msg(data) + " have been queued for edit.<br>";
-        msg += 'You can see your request <a href="' + bulk_job_url(data) + '" target="_blank">here</a> in the background jobs interface (opens new window).<br>';
-        msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours<br>";
+        msg += 'You can see your request <a href="' + bulk_job_url(data) + '" target="_blank">here</a> in the background jobs interface (opens new tab).<br>';
+        msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours.<br>";
         msg += '<a href="#" id="bulk-action-feedback-dismiss">dismiss</a>';
 
         $(".bulk-action-feedback").html(msg).show();
