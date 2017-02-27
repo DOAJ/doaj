@@ -122,7 +122,7 @@ class TestArticleCleanupSync(DoajTestCase):
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
 
-        time.sleep(3)
+        time.sleep(5)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
