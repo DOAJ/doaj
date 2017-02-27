@@ -133,7 +133,6 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # we expect this one not to have changed, but have been prepared anyway
         assert a1u.bibjson().data.get("journal") == a1.bibjson().data.get("journal")
-        print a1u.last_updated, a1.last_updated
         assert datetime.strptime(a1u.last_updated, "%Y-%m-%dT%H:%M:%SZ") > datetime.strptime(a1.last_updated, "%Y-%m-%dT%H:%M:%SZ")
 
         # we expect this one to have had its journal info updated
