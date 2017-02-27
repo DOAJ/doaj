@@ -122,7 +122,7 @@ class TestArticleCleanupSync(DoajTestCase):
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
         article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
 
-        time.sleep(5)
+        time.sleep(3)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
@@ -131,6 +131,7 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # we expect this one not to have changed, but have been prepared anyway
         assert a1u.bibjson().data.get("journal") == a1.bibjson().data.get("journal")
+        print a1u.last_updated, a1.last_updated
         assert datetime.strptime(a1u.last_updated, "%Y-%m-%dT%H:%M:%SZ") > datetime.strptime(a1.last_updated, "%Y-%m-%dT%H:%M:%SZ")
 
         # we expect this one to have had its journal info updated
