@@ -192,7 +192,6 @@ APPLICATION_STRUCT = {
         "index" : {
             "fields" : {
                 "country" : {"coerce" : "unicode"},
-                "publisher" : {"coerce" : "unicode"},
                 "homepage_url" : {"coerce" : "unicode"},
                 "waiver_policy_url" : {"coerce" : "unicode"},
                 "editorial_board_url" : {"coerce" : "unicode"},
@@ -217,7 +216,8 @@ APPLICATION_STRUCT = {
                 "language" : {"contains" : "field", "coerce" : "unicode"},
                 "license" : {"contains" : "field", "coerce" : "unicode"},
                 "classification_paths" : {"contains" : "field", "coerce" : "unicode"},
-                "schema_code" : {"contains" : "field", "coerce" : "unicode"}
+                "schema_code" : {"contains" : "field", "coerce" : "unicode"},
+                "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
         },
         "suggestion" : {
