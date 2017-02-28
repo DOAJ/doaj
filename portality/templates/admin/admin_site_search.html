@@ -1,6 +1,9 @@
 {% extends "admin/admin_base.html" %}
 
 {% block admin_content %}
+
+<div class="bulk-action-feedback alert alert-success" style="display: none"></div>
+
 <div style="padding-bottom: 20px">
     <div class="row-fluid">
         <div class="span12">
@@ -14,9 +17,12 @@
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
-                                    <option value="delete">Delete records</option>
                                     <option value="assign_editor_group">Journal: Assign to editor group...</option>
                                     <option value="add_note">Journal: Add a note...</option>
+
+                                    {%  if current_user.has_role("ultra_bulk_delete") %}
+                                    <option value="delete">Delete records</option>
+                                    {%  endif %}
                                 </select>
                             </div>
                         </div>
@@ -36,9 +42,10 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="control-group" style="display: none; max-width: 18em;" id="bulk_delete_note-container">
+                        <div class="control-group" style="max-width: 18em;" id="bulk_help-container">
                             <div class="controls">
-                                <p id="bulk_delete_note" class="red">You need to select an option in the "Journals vs. Articles facet" <strong>and also</strong> enter a search term to filter the journals or articles for deletion.</p>
+                                <p id="any_type_note" class="red" style="display: none">You need to select an option in the "Journals vs. Articles facet" to use this option</p>
+                                <p id="journal_type_note" class="red" style="display:none">You need to select "Journal" from the "Journals vs. Articles facet" to use this option</p>
                             </div>
                         </div>
                     </fieldset>
@@ -56,11 +63,6 @@
 
 <script type="text/javascript">
     var journal_edit_url = "{{ url_for('admin.journal_page', journal_id='') }}";
-    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
-
-    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
-    toggle_optional_field('bulk_action', ['#bulk_delete_note'], ['delete']);
-    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
 </script>
 
 {% endblock %}

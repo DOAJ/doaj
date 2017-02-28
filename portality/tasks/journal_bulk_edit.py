@@ -11,7 +11,7 @@ from portality.formcontext import formcontext
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
 
 def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
@@ -19,7 +19,7 @@ def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
     ids = JournalBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
         JournalBulkEditBackgroundTask.check_admin_privilege(current_user.id)
-        return len(ids)
+        return BackgroundSummary(None, affected={"journals" : len(ids)})
 
     job = JournalBulkEditBackgroundTask.prepare(
         current_user.id,
@@ -30,7 +30,11 @@ def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
     )
     JournalBulkEditBackgroundTask.submit(job)
 
-    return len(ids)
+    affected = len(ids)
+    job_id = None
+    if job is not None:
+        job_id = job.id
+    return BackgroundSummary(job_id, affected={"journals" : affected})
 
 
 class JournalBulkEditBackgroundTask(AdminBackgroundTask):

@@ -5,7 +5,7 @@ from portality.core import app
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi
+from portality.background import BackgroundTask, BackgroundApi, BackgroundSummary
 
 import json
 
@@ -13,15 +13,24 @@ def change_by_query(query, in_doaj_new_val, dry_run=True):
     ids = []
     sane = {}
     sane["query"] = query["query"]
+    job = None
     for j in models.Journal.iterate(sane, wrap=False):
         ids.append(j.get("id"))
     if not dry_run:
-        change_in_doaj(ids, in_doaj_new_val, selection_query=sane)
-    return len(ids)
+        job = change_in_doaj(ids, in_doaj_new_val, selection_query=sane)
+
+    affected = len(ids)
+    job_id = None
+    if job is not None:
+        job_id = job.id
+    return BackgroundSummary(job_id, affected={"journals" : affected})
+
+    # return len(ids)
 
 def change_in_doaj(journal_ids, in_doaj_new_val, **kwargs):
     job = SetInDOAJBackgroundTask.prepare(current_user.id, journal_ids=journal_ids, in_doaj=in_doaj_new_val, **kwargs)
     SetInDOAJBackgroundTask.submit(job)
+    return job
 
 
 class SetInDOAJBackgroundTask(BackgroundTask):

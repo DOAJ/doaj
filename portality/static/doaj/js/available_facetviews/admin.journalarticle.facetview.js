@@ -1,132 +1,211 @@
 jQuery(document).ready(function($) {
 
+    ////////////////////////////////////////////////////////////
+    // functions for handling the bulk form
+
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
+
+    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
+    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
+
     function disable_bulk_submit() {
-        $('#bulk-submit').attr('disabled', 'disabled');
-        $('#bulk_delete_note-container').show();
+        $('#bulk-submit').attr('disabled', 'disabled').html("Submit");
     }
 
     function enable_bulk_submit() {
-        $('#bulk-submit').removeAttr('disabled');
-        $('#bulk_delete_note-container').hide();
+        $('#bulk-submit').removeAttr('disabled').html("Submit");
+    }
+
+    function bulk_ui_reset() {
+        disable_bulk_submit();
+        $("#bulk_action").val("");
+        $("#editor_group-container").hide();
+        $("#note-container").hide();
+        $("#journal_type_note").hide();
+        $("#any_type_note").hide();
     }
 
     function bulk_action_controls(options) {
-        // When deleting, enable/disable the bulk action submit button
-        // To enable: the _type facet must be selected AND
-        // - EITHER another facet must be selected as well
-        // - OR a free text query must have been entered
-        // Otherwise, disable.
-        if ($('#bulk_action').val() === 'delete') {
-            if ($.isEmptyObject(options.active_filters._type)) {
-                disable_bulk_submit();
-            } else {
-                if (options.q == '') {
-                    disable_bulk_submit();
-                } else {
-                    enable_bulk_submit();
-                }
-            }
-        } else {
-            enable_bulk_submit();
+        var action = $('#bulk_action').val();
+        if (action === "") {
+            $("#journal_type_note").hide();
+            $("#any_type_note").hide();
+            disable_bulk_submit();
+            return;
+        }
+        var type = options.active_filters._type;
+        if (type && type.length > 0) {
+            type = type[0];
         }
 
-        // todo selecting _type and another facet does not enable the button, you HAVE to type in a query. Should I actually keep this behaviour? (if so clarify the code)
+        // all the things we need to know to validate and determine whether to allow submit
+        var requireJournalType = ["withdraw", "reinstate", "assign_editor_group", "add_note"];
+        var requireAnyType = ["delete"];
+        var requiresAdditional = ["assign_editor_group", "add_note"];
+        var additional = {
+            assign_editor_group : "#editor_group",
+            add_note : "#note"
+        };
+
+        // work out whether we enable submit
+        var enable = true;
+
+        if ($.inArray(action, requireJournalType) > -1) {
+            if (type !== "journal") {
+                $("#journal_type_note").show();
+                enable = false;
+            } else {
+                $("#journal_type_note").hide();
+            }
+        }
+
+        if ($.inArray(action, requireAnyType) > -1) {
+            if (type && type !== "") {
+                $("#any_type_note").hide();
+            } else {
+                $("#any_type_note").show();
+                enable = false;
+            }
+        }
+
+        if ($.inArray(action, requiresAdditional) > -1) {
+            var additionalVal = $(additional[action]).val();
+            if (additionalVal === "") {
+                enable = false;
+            }
+        }
+
+        if (enable) {
+            enable_bulk_submit();
+        } else {
+            disable_bulk_submit();
+        }
     }
 
-    function adminJAPostRender(options, context) {
-        doajJAPostRender(options, context);
+    function get_bulk_action() {
+        var action = $('#bulk_action').val();
+        if (!action) {
+            alert('Error: unknown bulk operation.');
+            throw 'Error: unknown bulk operation. The bulk action field was empty.'
+        }
+        return action
+    }
 
-        var query = elasticSearchQuery({
-            options: options,
-            include_facets: false,
-            include_fields: false
+    function bulk_action_type(options) {
+        if (get_bulk_action() == 'delete') {
+            if (! $.isEmptyObject(options.active_filters._type)) {
+                if (options.active_filters._type.length != 1) {
+                    alert('Error: type facet has multiple options selected.');
+                    throw 'Error: type facet has multiple options selected.'
+                }
+                if (options.active_filters._type[0] === 'journal') { return 'journals'; }
+                if (options.active_filters._type[0] === 'article') { return 'articles'; }
+            }
+        }
+        return 'journals';
+    }
+
+    function bulk_action_url(options) {
+        return '/admin/' + bulk_action_type(options) + '/bulk/' + get_bulk_action()
+    }
+
+    function build_affected_msg(data) {
+        var mfrg = "";
+        if (data.affected) {
+            if ("journals" in data.affected && "articles" in data.affected) {
+                mfrg += data.affected.journals + " journals and " + data.affected.articles + " articles";
+            } else if ("journals" in data.affected) {
+                mfrg = data.affected.journals + " journals";
+            } else if ("articles" in data.affected) {
+                mfrg = data.affected.articles + " articles";
+            } else {
+                mfrg = "an unknown number of records";
+            }
+        }
+        return mfrg;
+    }
+
+    function bulk_action_success_callback(data) {
+        var msg = "Your bulk edit request has been submitted and queued for execution.<br>";
+        msg += build_affected_msg(data) + " have been queued for edit.<br>";
+        msg += 'You can see your request <a href="' + bulk_job_url(data) + '" target="_blank">here</a> in the background jobs interface (opens new tab).<br>';
+        msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours.<br>";
+        msg += '<a href="#" id="bulk-action-feedback-dismiss">dismiss</a>';
+
+        $(".bulk-action-feedback").html(msg).show();
+        $("#bulk-action-feedback-dismiss").unbind("click").bind("click", function(event) {
+            event.preventDefault();
+            $(".bulk-action-feedback").html("").hide();
         });
 
-        ////////////////////////////////////////////////////////////
-        // functions for handling the bulk form
+        bulk_ui_reset();
+    }
 
-        function bulk_action_selected_handler() {
-            $('#bulk_action').change(function () {
-                bulk_action_controls(options);
-            });
-        }
-        bulk_action_selected_handler()
+    function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
+        alert('There was an error with your request.');
+        console.error(textStatus + ': ' + errorThrown);
+        bulk_ui_reset();
+    }
 
-        function get_bulk_action() {
-            action = $('#bulk_action').val();
-            if (! action) {
-                alert('Error: unknown bulk operation.');
-                throw 'Error: unknown bulk operation. The bulk action field was empty.'
-            }
-            return action
-        }
-
-        function bulk_action_type() {
-            if (get_bulk_action() == 'delete') {
-                if (! $.isEmptyObject(options.active_filters._type)) {
-                    if (options.active_filters._type.length != 1) {
-                        alert('Error: type facet has multiple options selected.');
-                        throw 'Error: type facet has multiple options selected.'
-                    }
-                    if (options.active_filters._type[0] === 'journal') { return 'journals'; }
-                    if (options.active_filters._type[0] === 'article') { return 'articles'; }
-                }
-            }
-            return 'journals';
-        }
-
-        function bulk_action_url() {
-            return '/admin/' + bulk_action_type() + '/bulk/' + get_bulk_action()
-        }
-
-        function build_affected_msg(data) {
-            var mfrg = undefined;
-            if (data.affected_journals && data.affected_articles) {
-                mfrg = data.affected_journals + " journals and " + data.affected_articles + " articles"
-            }
-            else if (data.affected_journals) {
-                mfrg = data.affected_journals + " journals"
-            }
-            else if (data.affected_articles) {
-                mfrg = data.affected_articles + " articles"
-            }
-            else {
-                mfrg = "an unknown number of records"
-            }
-            return mfrg
-        }
-
-        function bulk_action_success_callback(data) {
-            alert('Submitted - ' + build_affected_msg(data) + ' have been queued for edit.');
-            $('#bulk-submit').removeAttr('disabled').html('Submit');
-        }
-
-        function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
-            alert('There was an error with your request.');
-            console.error(textStatus + ': ' + errorThrown);
-            $('#bulk-submit').removeAttr('disabled').html('Submit');
-        }
-
-        function bulk_action_confirm_callback(data) {
+    function bulk_action_confirm_closure(options, query) {
+        var bulk_action_confirm_callback = function(data) {
             var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
             if (sure) {
+                var action = get_bulk_action();
+                var send = {
+                    selection_query: query,
+                    dry_run: false
+                };
+                if (action === "add_note") {
+                    send["note"] = $('#note').val();
+                } else if (action === "assign_editor_group") {
+                    send["editor_group"] = $('#editor_group').val();
+                }
                 $.ajax({
                     type: 'POST',
-                    url: bulk_action_url(),
-                    data: JSON.stringify({
-                        selection_query: query,
-                        editor_group: $('#editor_group').val(),
-                        note: $('#note').val(),
-                        dry_run: false
-                    }),
+                    url: bulk_action_url(options),
+                    data: JSON.stringify(send),
                     contentType : 'application/json',
                     success : bulk_action_success_callback,
                     error: bulk_action_error_callback
                 });
             } else {
-                $('#bulk-submit').removeAttr('disabled').html('Submit');
+                bulk_ui_reset();
             }
-        }
+        };
+
+        return bulk_action_confirm_callback
+    }
+
+    function bulk_job_url(data) {
+        var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
+        return url;
+    }
+
+    ////////////////////////////////////////////////////////
+
+    function adminJAPostRender(options, context) {
+        doajJAPostRender(options, context);
+
+        $('#bulk_action').change(function () {
+            bulk_action_controls(options);
+        });
+
+        $("#editor_group").change(function() {
+            if ($(this).val() === "") {
+                disable_bulk_submit();
+            } else {
+                enable_bulk_submit();
+            }
+        });
+
+        $("#note").keyup(function() {
+            if ($(this).val() === "") {
+                disable_bulk_submit();
+            } else {
+                enable_bulk_submit();
+            }
+        });
 
         $('#bulk-submit').unbind('click').bind('click', function(event) {
             event.preventDefault();
@@ -141,9 +220,15 @@ jQuery(document).ready(function($) {
             }
 
             if (sure) {
+                var query = elasticSearchQuery({
+                    options: options,
+                    include_facets: false,
+                    include_fields: false
+                });
+
                 $.ajax({
                     type: 'POST',
-                    url: bulk_action_url(),
+                    url: bulk_action_url(options),
                     data: JSON.stringify({
                         selection_query: query,
                         editor_group: $('#editor_group').val(),
@@ -151,14 +236,16 @@ jQuery(document).ready(function($) {
                         dry_run: true
                     }),
                     contentType : 'application/json',
-                    success : bulk_action_confirm_callback,
+                    success : bulk_action_confirm_closure(options, query),
                     error: bulk_action_error_callback
                 });
             } else {
-                $('#bulk-submit').removeAttr('disabled').html('Submit');
+                bulk_ui_reset();
             }
         });
     }
+
+    /////////////////////////////////////////////////////////////////
 
     $('.facetview.admin_journals_and_articles').facetview({
         search_url: es_scheme + '//' + es_domain + '/admin_query/journal,article/_search?',

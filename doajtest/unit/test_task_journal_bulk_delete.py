@@ -53,11 +53,13 @@ class TestTaskJournalBulkDelete(DoajTestCase):
             ids_to_delete.append(self.journals[i].id)
         del_q_should_terms = {"query": {"bool": {"must": [{"match_all": {}}, {"terms": {"_id": ids_to_delete}}]}}}
 
-        r = journal_bulk_delete_manage(del_q_should_terms, dry_run=True)
-        assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM, 'articles-to-be-deleted': (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL}, r
+        summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
+        assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
-        r = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
-        assert r == {'journals-to-be-deleted': TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM, 'articles-to-be-deleted': (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL}, r
+        summary = journal_bulk_delete_manage(del_q_should_terms, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM
+        assert summary.as_dict().get("affected", {}).get("articles") == (TEST_JOURNAL_COUNT - SPARE_JOURNALS_NUM) * TEST_ARTICLES_PER_JOURNAL
 
         sleep(3)
 

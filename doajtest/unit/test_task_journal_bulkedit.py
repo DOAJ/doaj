@@ -42,11 +42,11 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
 
         # test dry run
-        r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=True)
-        assert r == TEST_JOURNAL_COUNT, r
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
-        r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=False)
-        assert r == TEST_JOURNAL_COUNT, r
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, editor_group=new_eg.name, dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
         sleep(1)
 
@@ -62,11 +62,11 @@ class TestTaskJournalBulkEdit(DoajTestCase):
 
     def test_02_note_successful_add(self):
         # test dry run
-        r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=True)
-        assert r == TEST_JOURNAL_COUNT, r
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
-        r = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=False)
-        assert r == TEST_JOURNAL_COUNT, r
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}}, note="Test note", dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
 
         sleep(1)
 

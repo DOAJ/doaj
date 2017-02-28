@@ -14,6 +14,7 @@ from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
+from portality.background import BackgroundSummary
 
 blueprint = Blueprint('admin', __name__)
 
@@ -160,8 +161,12 @@ def journal_page(journal_id):
         return render_template("admin/journal_locked.html", journal=ap, lock=l.lock, edit_journal_page=True)
 
     if request.method == "GET":
+        job = None
+        job_id = request.values.get("job")
+        if job_id is not None and job_id != "":
+            job = models.BackgroundJob.pull(job_id)
         fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=ap)
-        return fc.render_template(edit_journal_page=True, lock=lockinfo)
+        return fc.render_template(edit_journal_page=True, lock=lockinfo, job=job)
     elif request.method == "POST":
         fc = formcontext.JournalFormFactory.get_form_context(role="admin", form_data=request.form, source=ap)
         if fc.validate():
@@ -177,9 +182,6 @@ def journal_page(journal_id):
         else:
             return fc.render_template(edit_journal_page=True, lock=lockinfo)
 
-JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page in a few minutes to see the results. The time taken depends on the size of the journal (how many articles it has in DOAJ) - for very large journals, this could take up to 30 minutes.'
-
-
 ######################################################
 # Endpoints for reinstating/withdrawing journals from the DOAJ
 #
@@ -189,9 +191,8 @@ JOURNAL_OP_MSG = 'Journal {} has been queued for processing. Refresh this page i
 @ssl_required
 @write_required()
 def journal_activate(journal_id):
-    journal_in_out_doaj.change_in_doaj([journal_id], True)
-    flash(JOURNAL_OP_MSG.format('activation'), 'success')
-    return redirect(url_for('.journal_page', journal_id=journal_id))
+    job = journal_in_out_doaj.change_in_doaj([journal_id], True)
+    return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 
 @blueprint.route("/journal/<journal_id>/deactivate", methods=["GET", "POST"])
@@ -199,36 +200,31 @@ def journal_activate(journal_id):
 @ssl_required
 @write_required()
 def journal_deactivate(journal_id):
-    journal_in_out_doaj.change_in_doaj([journal_id], False)
-    flash(JOURNAL_OP_MSG.format('deactivation'), 'success')
-    return redirect(url_for('.journal_page', journal_id=journal_id))
+    job = journal_in_out_doaj.change_in_doaj([journal_id], False)
+    return redirect(url_for('.journal_page', journal_id=journal_id, job=job.id))
 
 
 @blueprint.route("/journals/bulk/withdraw", methods=["POST"])
 @login_required
 @ssl_required
 def journals_bulk_withdraw():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
-
-    return make_json_resp(r, status_code=200)
+    summary = journal_in_out_doaj.change_by_query(q, False, dry_run=payload.get("dry_run", True))
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
 def journals_bulk_reinstate():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-    r["affected_journals"] = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
-
-    return make_json_resp(r, status_code=200)
+    summary = journal_in_out_doaj.change_by_query(q, True, dry_run=payload.get("dry_run", True))
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 #
 #####################################################################
@@ -461,7 +457,6 @@ def bulk_admin_endpoints_bad_request(exception):
 
 
 def get_bulk_edit_background_task_manager(doaj_type):
-    r = {}
     if doaj_type == 'journals':
         return journal_bulk_edit.journal_manage
     elif doaj_type == 'applications':
@@ -480,88 +475,81 @@ def get_query_from_request(payload):
 @login_required
 @ssl_required
 def bulk_assign_editor_group(doaj_type):
-    r = {}
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'editor_group'], error_to_raise=BulkAdminEndpointException)
 
-    r['affected_' + doaj_type] = task(
+    summary = task(
         selection_query=get_query_from_request(payload),
         editor_group=payload['editor_group'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
 @login_required
 @ssl_required
 def bulk_add_note(doaj_type):
-    r = {}
     task = get_bulk_edit_background_task_manager(doaj_type)
 
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'note'], error_to_raise=BulkAdminEndpointException)
 
-    r['affected_' + doaj_type] = task(
+    summary = task(
         selection_query=get_query_from_request(payload),
         note=payload['note'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
 @login_required
 @ssl_required
 def applications_bulk_change_status():
-    r = {}
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
-    r['affected_applications'] = get_bulk_edit_background_task_manager('applications')(
+    summary = get_bulk_edit_background_task_manager('applications')(
         selection_query=q,
         application_status=payload['application_status'],
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
 def bulk_journals_delete():
-    r = {}
+    if not current_user.has_role("ultra_bulk_delete"):
+        abort(403)
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
-    resp = journal_bulk_delete.journal_bulk_delete_manage(
+    summary = journal_bulk_delete.journal_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
-    r['affected_journals'] = resp['journals-to-be-deleted']
-    r['affected_articles'] = resp['articles-to-be-deleted']
-
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)
 
 
 @blueprint.route("/articles/bulk/delete", methods=['POST'])
 def bulk_articles_delete():
-    r = {}
+    if not current_user.has_role("ultra_bulk_delete"):
+        abort(403)
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
 
     q = get_query_from_request(payload)
-
-    r['affected_articles'] = article_bulk_delete.article_bulk_delete_manage(
+    summary = article_bulk_delete.article_bulk_delete_manage(
         selection_query=q,
         dry_run=payload.get('dry_run', True)
     )
 
-    return make_json_resp(r, status_code=200)
+    return make_json_resp(summary.as_dict(), status_code=200)

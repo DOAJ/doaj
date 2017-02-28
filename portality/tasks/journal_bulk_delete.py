@@ -9,7 +9,7 @@ from portality.core import app
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
 
 def journal_bulk_delete_manage(selection_query, dry_run=True):
@@ -18,7 +18,7 @@ def journal_bulk_delete_manage(selection_query, dry_run=True):
 
     if dry_run:
         JournalBulkDeleteBackgroundTask.check_admin_privilege(current_user.id)
-        return estimates
+        return BackgroundSummary(None, affected={"journals" : estimates["journals-to-be-deleted"], "articles" : estimates["articles-to-be-deleted"]})
 
     ids = JournalBulkDeleteBackgroundTask.resolve_selection_query(selection_query)
     job = JournalBulkDeleteBackgroundTask.prepare(
@@ -28,7 +28,10 @@ def journal_bulk_delete_manage(selection_query, dry_run=True):
     )
     JournalBulkDeleteBackgroundTask.submit(job)
 
-    return estimates
+    job_id = None
+    if job is not None:
+        job_id = job.id
+    return BackgroundSummary(job_id, affected={"journals" : estimates["journals-to-be-deleted"], "articles" : estimates["articles-to-be-deleted"]})
 
 
 class JournalBulkDeleteBackgroundTask(AdminBackgroundTask):

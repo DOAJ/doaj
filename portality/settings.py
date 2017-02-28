@@ -145,7 +145,7 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 SUPER_USER_ROLE = "admin"
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api"]
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
 
 ROLE_MAP = {
     "editor": [

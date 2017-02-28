@@ -9,14 +9,15 @@ from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 from portality.util import batch_up
 
-from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException
+from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
 
 def article_bulk_delete_manage(selection_query, dry_run=True):
 
     if dry_run:
         ArticleBulkDeleteBackgroundTask.check_admin_privilege(current_user.id)
-        return ArticleBulkDeleteBackgroundTask.estimate_delete_counts(selection_query)
+        estimate = ArticleBulkDeleteBackgroundTask.estimate_delete_counts(selection_query)
+        return BackgroundSummary(None, affected={"articles" : estimate})
 
     ids = ArticleBulkDeleteBackgroundTask.resolve_selection_query(selection_query)
     job = ArticleBulkDeleteBackgroundTask.prepare(
@@ -26,7 +27,11 @@ def article_bulk_delete_manage(selection_query, dry_run=True):
     )
     ArticleBulkDeleteBackgroundTask.submit(job)
 
-    return len(ids)
+    affected = len(ids)
+    job_id = None
+    if job is not None:
+        job_id = job.id
+    return BackgroundSummary(job_id, affected={"articles" : affected})
 
 
 class ArticleBulkDeleteBackgroundTask(AdminBackgroundTask):

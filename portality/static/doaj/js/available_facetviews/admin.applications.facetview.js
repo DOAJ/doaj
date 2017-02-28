@@ -1,5 +1,6 @@
 jQuery(document).ready(function($) {
 
+    /*
     function adminButtons(options, context) {
         // Disable the bulk action submit button if there is an empty query in the facetview
         if ($.isEmptyObject(options.active_filters) && options.q == "") {
@@ -8,17 +9,222 @@ jQuery(document).ready(function($) {
             $("#bulk-submit").removeAttr("disabled");
         }
     }
+    */
+
+    ////////////////////////////////////////////////////////////
+    // functions for handling the bulk form
+
+    autocomplete('#editor_group', 'name', 'editor_group', 1, false);
+
+    toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
+    toggle_optional_field('bulk_action', ['#application_status'], ['change_status']);
+    toggle_optional_field('bulk_action', ['#note'], ['add_note']);
+
+    function disable_bulk_submit() {
+        $('#bulk-submit').attr('disabled', 'disabled').html("Submit");
+    }
+
+    function enable_bulk_submit() {
+        $('#bulk-submit').removeAttr('disabled').html("Submit");
+    }
+
+    function bulk_ui_reset() {
+        disable_bulk_submit();
+        $("#bulk_action").val("");
+        $("#editor_group-container").hide();
+        $("#note-container").hide();
+        $("#application_status-container").hide();
+    }
+
+    function bulk_action_controls(options) {
+        var action = $('#bulk_action').val();
+        if (action === "") {
+            disable_bulk_submit();
+            return;
+        }
+
+        var requiresAdditional = ["assign_editor_group", "add_note", "change_status"];
+        var additional = {
+            assign_editor_group : "#editor_group",
+            add_note : "#note",
+            change_status: "#application_status"
+        };
+
+        // work out whether we enable submit
+        var enable = true;
+
+        if ($.inArray(action, requiresAdditional) > -1) {
+            var additionalVal = $(additional[action]).val();
+            if (additionalVal === "") {
+                enable = false;
+            }
+        }
+
+        if (enable) {
+            enable_bulk_submit();
+        } else {
+            disable_bulk_submit();
+        }
+    }
+
+    function get_bulk_action() {
+        var action = $('#bulk_action').val();
+        if (!action) {
+            alert('Error: unknown bulk operation.');
+            throw 'Error: unknown bulk operation. The bulk action field was empty.'
+        }
+        return action
+    }
+
+    function bulk_action_url(options) {
+        return '/admin/applications/bulk/' + get_bulk_action()
+    }
+
+    function build_affected_msg(data) {
+        var mfrg = "";
+        if (data.affected) {
+            if ("applications" in data.affected) {
+                mfrg += data.affected.applications + " applications";
+            } else {
+                mfrg = "an unknown number of records";
+            }
+        }
+        return mfrg;
+    }
+
+    function bulk_action_success_callback(data) {
+        var msg = "Your bulk edit request has been submitted and queued for execution.<br>";
+        msg += build_affected_msg(data) + " have been queued for edit.<br>";
+        msg += 'You can see your request <a href="' + bulk_job_url(data) + '" target="_blank">here</a> in the background jobs interface (opens new tab).<br>';
+        msg += "You will get an email when your request has been processed; this could take anything from a few minutes to a few hours.<br>";
+        msg += '<a href="#" id="bulk-action-feedback-dismiss">dismiss</a>';
+
+        $(".bulk-action-feedback").html(msg).show();
+        $("#bulk-action-feedback-dismiss").unbind("click").bind("click", function(event) {
+            event.preventDefault();
+            $(".bulk-action-feedback").html("").hide();
+        });
+
+        bulk_ui_reset();
+    }
+
+    function bulk_action_error_callback(jqXHR, textStatus, errorThrown) {
+        alert('There was an error with your request.');
+        console.error(textStatus + ': ' + errorThrown);
+        bulk_ui_reset();
+    }
+
+    function bulk_action_confirm_closure(options, query) {
+        var bulk_action_confirm_callback = function(data) {
+            var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
+            if (sure) {
+                var action = get_bulk_action();
+                var send = {
+                    selection_query: query,
+                    dry_run: false
+                };
+                if (action === "add_note") {
+                    send["note"] = $('#note').val();
+                } else if (action === "assign_editor_group") {
+                    send["editor_group"] = $('#editor_group').val();
+                } else if (action === "change_status") {
+                    send["application_status"] = $("#application_status").val();
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: bulk_action_url(options),
+                    data: JSON.stringify(send),
+                    contentType : 'application/json',
+                    success : bulk_action_success_callback,
+                    error: bulk_action_error_callback
+                });
+            } else {
+                bulk_ui_reset();
+            }
+        };
+
+        return bulk_action_confirm_callback
+    }
+
+    function bulk_job_url(data) {
+        var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
+        return url;
+    }
+
+    ////////////////////////////////////////////////////////
+
 
 
     function adminJAPostRender(options, context) {
         doajJAPostRender(options, context);
 
-        var query = elasticSearchQuery({
-            options: options,
-            include_facets: false,
-            include_fields: false
+        $('#bulk_action').change(function () {
+            bulk_action_controls(options);
         });
 
+        $("#editor_group").change(function() {
+            if ($(this).val() === "") {
+                disable_bulk_submit();
+            } else {
+                enable_bulk_submit();
+            }
+        });
+
+        $("#application_status").change(function() {
+            if ($(this).val() === "") {
+                disable_bulk_submit();
+            } else {
+                enable_bulk_submit();
+            }
+        });
+
+        $("#note").keyup(function() {
+            if ($(this).val() === "") {
+                disable_bulk_submit();
+            } else {
+                enable_bulk_submit();
+            }
+        });
+
+        $('#bulk-submit').unbind('click').bind('click', function(event) {
+            event.preventDefault();
+
+            $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
+
+            var sure;
+            if ($('#bulk_action').val() == 'delete') {
+                sure = confirm('Are you sure?  This operation cannot be undone!');
+            } else {
+                sure = true;
+            }
+
+            if (sure) {
+                var query = elasticSearchQuery({
+                    options: options,
+                    include_facets: false,
+                    include_fields: false
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: bulk_action_url(options),
+                    data: JSON.stringify({
+                        selection_query: query,
+                        editor_group: $('#editor_group').val(),
+                        note: $('#note').val(),
+                        application_status: $("#application_status").val(),
+                        dry_run: true
+                    }),
+                    contentType : 'application/json',
+                    success : bulk_action_confirm_closure(options, query),
+                    error: bulk_action_error_callback
+                });
+            } else {
+                bulk_ui_reset();
+            }
+        });
+
+        /*
         ////////////////////////////////////////////////////////////
         // functions for handling the bulk form
 
@@ -88,6 +294,7 @@ jQuery(document).ready(function($) {
                 error: application_error_callback
             });
         });
+        */
     }
 
     $('.facetview.suggestions').facetview({
@@ -96,7 +303,7 @@ jQuery(document).ready(function($) {
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: adminJAPostRender,
-        post_search_callback: adminButtons,
+        post_search_callback: bulk_action_controls,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
