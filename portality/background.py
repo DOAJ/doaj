@@ -77,6 +77,8 @@ class BackgroundApi(object):
                 subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
 
                 url_root = app.config.get("BASE_URL")
+                if not url_root.endswith("/"):
+                    url_root += "/"
                 to = [acc.email]
                 fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
                 query = Facetview2.make_query(job.id)

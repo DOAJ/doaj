@@ -1,4 +1,4 @@
-Your background job {{job_id}} for "{{action}}" has completed with status "{{status}}"
+Your background job {{job_id}} for "{{action}}" has finished with status "{{status}}"
 
 You can see the record of your job and its status in the background jobs interface here:
 
