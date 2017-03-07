@@ -66,9 +66,10 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
-        article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
+        job.save(blocking=True)
+        article_cleanup_sync.article_cleanup_sync(job.id)
 
-        time.sleep(3)
+        time.sleep(2)
 
         # We now have one journal and two articles
         assert models.Journal.count() == 1
@@ -122,9 +123,10 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser", prepall=True)
-        article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
+        job.save(blocking=True)
+        article_cleanup_sync.article_cleanup_sync(job.id)
 
-        time.sleep(3)
+        time.sleep(2)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
@@ -208,9 +210,10 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # run the sync/cleanup job
         job = article_cleanup_sync.ArticleCleanupSyncBackgroundTask.prepare("testuser")
-        article_cleanup_sync.ArticleCleanupSyncBackgroundTask.submit(job)
+        job.save(blocking=True)
+        article_cleanup_sync.article_cleanup_sync(job.id)
 
-        time.sleep(3)
+        time.sleep(2)
 
         # retrieve any updated records
         a1u = models.Article.pull(a1.id)
