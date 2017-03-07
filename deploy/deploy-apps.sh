@@ -6,16 +6,16 @@ ENV=$1
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 mkdir -p /home/cloo/appdata/doaj
+mkdir -p /home/cloo/appdata/doaj/s3fs
 mkdir -p /home/cloo/appdata/doaj/cache
 mkdir -p /home/cloo/appdata/doaj/cache/csv
 mkdir -p /home/cloo/appdata/doaj/cache/sitemap
-mkdir -p /home/cloo/appdata/doaj/upload
-mkdir -p /home/cloo/appdata/doaj/upload_reapplication
-mkdir -p /home/cloo/appdata/doaj/reapp_csvs
+mkdir -p /home/cloo/appdata/doaj/s3fs/upload
+mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
+mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs
 mkdir -p /home/cloo/appdata/doaj/history
 mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
-mkdir -p /home/cloo/appdata/doaj/s3fs
 
 sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
