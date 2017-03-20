@@ -91,9 +91,7 @@ SPONSORS = {
         'proquest': {'name': 'ProQuest', 'logo': 'proquest.gif', 'url': 'http://www.proquest.com/'},
         'exlibris': {'name': 'ExLibris', 'logo': 'exlibris.gif', 'url': 'http://www.exlibrisgroup.com/'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
-        'elsevier': {'name': 'Elsevier', 'logo': 'elsevier.jpg', 'url': 'http://www.elsevier.com'},
         'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
-        'dove': {'name': 'Dove Medical Press', 'logo': 'dove.jpg', 'url': 'http://dovepress.com/'},
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
         'openedition': {'name': 'OpenEdition', 'logo': 'openedition.jpg', 'url': 'http://www.openedition.org/'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.jpg', 'url': 'http://www.plos.org/'},
@@ -104,7 +102,8 @@ SPONSORS = {
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.jpg', 'url': 'http://www.springernature.com/gp/group/aboutus'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.jpg', 'url': 'https://www.aps.org/'},
         'wolters-kluwer': {'name': 'Wolters Kluwer', 'logo': 'wolters-kluwer.gif', 'url': 'http://wolterskluwer.com/'},
-        'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'}
+        'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
+        'ingenta' : {'name': 'Ingenta', 'logo': 'ingenta.png', 'url': 'http://www.ingenta.com/'}
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
