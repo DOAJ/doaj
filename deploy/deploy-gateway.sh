@@ -45,6 +45,7 @@ pip install LinkHeader==0.4.3
 pip install universal-analytics-python==0.2.4
 pip install huey==1.2.2
 pip install redis==2.10.5
+pip install rstr==2.2.5
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
