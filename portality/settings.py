@@ -172,8 +172,13 @@ RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user acco
 # ========================
 # MAPPING SETTINGS
 
-# a dict of the ES mappings. identify by name, and include name as first object name
-# and identifier for how non-analyzed fields for faceting are differentiated in the mappings
+
+# an array of DAO classes from which to retrieve the type-specific ES mappings
+# to be loaded into the index during initialisation.
+ELASTIC_SEARCH_MAPPINGS = [
+    "portality.models.Journal"
+]
+
 FACET_FIELD = ".exact"
 DEFAULT_MAPPING = {
     "dynamic_templates": [
@@ -193,35 +198,33 @@ DEFAULT_MAPPING = {
     ]
 }
 
-LEGACY_MAPPINGS = {
+# LEGACY MAPPINGS
+# a dict of the ES mappings. identify by name, and include name as first object name
+# and identifier for how non-analyzed fields for faceting are differentiated in the mappings
+
+MAPPINGS = {
     "journal": {
         "journal": {
             DEFAULT_MAPPING
         }
     }
 }
-LEGACY_MAPPINGS['account'] = {'account':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['article'] = {'article':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['suggestion'] = {'suggestion':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['upload'] = {'upload':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['cache'] = {'cache':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['toc'] = {'toc':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['lcc'] = {'lcc':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['article_history'] = {'article_history':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['editor_group'] = {'editor_group':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['news'] = {'news':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['lock'] = {'lock':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['bulk_upload'] = {'bulk_upload':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['journal_history'] = {'journal_history':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['provenance'] = {'provenance':LEGACY_MAPPINGS['journal']['journal']}
-LEGACY_MAPPINGS['background_job'] = {'background_job':LEGACY_MAPPINGS['journal']['journal']}
-
-# an array of DAO classes from which to retrieve the type-specific ES mappings
-# to be loaded into the index during initialisation.
-ELASTIC_SEARCH_MAPPINGS = [
-    "portality.models.Journal"
-]
+MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
+MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
+MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
+MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
+MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
+MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
+MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
+MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
+MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
+MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
+MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
+MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
+MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
+MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
+MAPPINGS['background_job'] = {'background_job':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS

@@ -1240,12 +1240,15 @@ JOURNAL_STRUCT = {
     }
 }
 
-
 MAPPING_OPTS = {
     "default": {app.config["DEFAULT_MAPPING"]},
     "coerces": {},  # todo at a future time
     "exceptions": {
-        "admin.notes.note": {"include_in_all": False}
+        "admin.notes.note": {
+                    "type": "string",
+                    "index": "not_analyzed",
+                    "include_in_all": False
+        }
     }
 }
 
