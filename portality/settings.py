@@ -176,7 +176,7 @@ RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user acco
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
-    "portality.models.Journal"
+    "portality.models.Journal",
 ]
 
 FACET_FIELD = ".exact"
@@ -204,27 +204,25 @@ DEFAULT_MAPPING = {
 
 MAPPINGS = {
     "journal": {
-        "journal": {
-            DEFAULT_MAPPING
-        }
+        "journal": DEFAULT_MAPPING
     }
 }
-MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
-MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
-MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
-MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
-MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
-MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
-MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
-MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
-MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
-MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
-MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
-MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
-MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
-MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
-MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
-MAPPINGS['background_job'] = {'background_job':MAPPINGS['journal']['journal']}
+MAPPINGS['account'] = {'account': DEFAULT_MAPPING}
+MAPPINGS['article'] = {'article': DEFAULT_MAPPING}
+MAPPINGS['suggestion'] = {'suggestion': DEFAULT_MAPPING}
+MAPPINGS['upload'] = {'upload': DEFAULT_MAPPING}
+MAPPINGS['cache'] = {'cache': DEFAULT_MAPPING}
+MAPPINGS['toc'] = {'toc': DEFAULT_MAPPING}
+MAPPINGS['lcc'] = {'lcc': DEFAULT_MAPPING}
+MAPPINGS['article_history'] = {'article_history': DEFAULT_MAPPING}
+MAPPINGS['editor_group'] = {'editor_group': DEFAULT_MAPPING}
+MAPPINGS['news'] = {'news': DEFAULT_MAPPING}
+MAPPINGS['lock'] = {'lock': DEFAULT_MAPPING}
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_MAPPING}
+MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_MAPPING}
+MAPPINGS['journal_history'] = {'journal_history': DEFAULT_MAPPING}
+MAPPINGS['provenance'] = {'provenance': DEFAULT_MAPPING}
+MAPPINGS['background_job'] = {'background_job': DEFAULT_MAPPING}
 
 # ========================
 # QUERY SETTINGS

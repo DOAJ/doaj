@@ -1241,7 +1241,7 @@ JOURNAL_STRUCT = {
 }
 
 MAPPING_OPTS = {
-    "default": {app.config["DEFAULT_MAPPING"]},
+    "default": app.config["DEFAULT_MAPPING"],
     "coerces": {},  # todo at a future time
     "exceptions": {
         "admin.notes.note": {
