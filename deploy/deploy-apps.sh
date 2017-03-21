@@ -9,13 +9,6 @@ mkdir -p /home/cloo/appdata/doaj
 mkdir -p /home/cloo/appdata/doaj/history
 mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
-mkdir -p /home/cloo/appdata/doaj/s3fs
-mkdir -p /home/cloo/appdata/doaj/s3fs/cache
-mkdir -p /home/cloo/appdata/doaj/s3fs/cache/csv
-mkdir -p /home/cloo/appdata/doaj/s3fs/cache/sitemap
-mkdir -p /home/cloo/appdata/doaj/s3fs/upload
-mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
-mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs
 
 sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
@@ -51,3 +44,11 @@ if [ $? -eq 0 ]; then
     echo
     DOAJENV=$1 python deploy/mount_s3fs.py
 fi
+
+mkdir -p /home/cloo/appdata/doaj/s3fs
+mkdir -p /home/cloo/appdata/doaj/s3fs/cache
+mkdir -p /home/cloo/appdata/doaj/s3fs/cache/csv
+mkdir -p /home/cloo/appdata/doaj/s3fs/cache/sitemap
+mkdir -p /home/cloo/appdata/doaj/s3fs/upload
+mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
+mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs
