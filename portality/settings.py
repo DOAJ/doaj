@@ -8,12 +8,12 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.10.14"
+DOAJ_VERSION = "2.11.0"
 
 OFFLINE_MODE = False
 
 # List the features we want to be active
-FEATURES = []
+FEATURES = ['api']
 VALID_FEATURES = ['api']
 
 # ========================
@@ -65,6 +65,23 @@ INITIALISE_INDEX = True # whether or not to try creating the index and required 
 ELASTIC_SEARCH_VERSION = "1.7.5"
 
 ES_TERMS_LIMIT = 1024
+
+# huey/redis settings
+HUEY_REDIS_HOST = '127.0.0.1'
+HUEY_REDIS_PORT = 6379
+HUEY_EAGER = False
+
+HUEY_SCHEDULE = {
+    "sitemap" : {"month" : "*", "day" : "*", "hour" : "8", "minute" : "0"},
+    "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"},
+    "journal_csv" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
+    "read_news" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
+    "article_cleanup_sync" : {"month" : "*", "day" : "2", "hour" : "0", "minute" : "0"}
+}
+
+HUEY_TASKS = {
+    "ingest_articles" : {"retries" : 3, "retry_delay" : 10}
+}
 
 # PyCharm debug settings
 DEBUG_PYCHARM = False  # do not try to connect to the PyCharm debugger by default
@@ -128,7 +145,7 @@ TICK_THRESHOLD = '2014-03-19T00:00:00Z'
 SUPER_USER_ROLE = "admin"
 
 #"api" top-level role is added to all acounts on creation; it can be revoked per account by removal of the role.
-TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api"]
+TOP_LEVEL_ROLES = ["admin", "publisher", "editor", "associate_editor", "api", "ultra_bulk_delete"]
 
 ROLE_MAP = {
     "editor": [
@@ -149,7 +166,8 @@ ROLE_MAP = {
 
 # If you change the reserved usernames, your data will likely need a migration to remove their
 # existing use in the system.
-RESERVED_USERNAMES = ['system']  # do not allow the creation of user accounts with this id
+SYSTEM_USERNAME = "system"
+RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user accounts with this id
 
 # ========================
 # MAPPING SETTINGS
@@ -193,6 +211,7 @@ MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['jour
 MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
 MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
 MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
+MAPPINGS['background_job'] = {'background_job':MAPPINGS['journal']['journal']}
 
 # ========================
 # QUERY SETTINGS
@@ -438,6 +457,9 @@ NEWS_PAGE_NEWS_ITEMS = 20
 # amount of time loading an editable page locks it for, in seconds.
 EDIT_LOCK_TIMEOUT = 1200
 
+# amount of time a background task can lock a resource for, in seconds
+BACKGROUND_TASK_LOCK_TIMEOUT = 3600
+
 
 # =====================================
 # Search query shortening settings
@@ -522,3 +544,8 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
+
+
+# =========================================
+# scheduled reports configuration
+REPORTS_BASE_DIR = "/home/cloo/reports/"

@@ -45,11 +45,16 @@ pip install LinkHeader==0.4.3
 pip install universal-analytics-python==0.2.4
 pip install huey==1.2.2
 pip install redis==2.10.5
+pip install rstr==2.2.5
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
 ln -sf $DIR/nginx/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV
 ln -sf /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-enabled/doaj-$ENV
+
+# prep sym links for the background app server
+ln -sf $DIR/supervisor/huey-main-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/huey-main-$ENV.conf
+ln -sf $DIR/supervisor/huey-long-running-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/huey-long-running-$ENV.conf
 
 # prep sym links for gateway
 if [ "$ENV" = 'harvester' ]
@@ -69,6 +74,7 @@ crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 /home/cloo/repl/replicate.sh
 /home/cloo/repl/command.sh redis-$ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-redis.sh $ENV
 /home/cloo/repl/command.sh $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
+/home/cloo/repl/command.sh $ENV-background /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-background-apps.sh $ENV
 
 # reload the config if syntax is OK
 sudo nginx -t && sudo nginx -s reload

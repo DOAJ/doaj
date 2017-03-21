@@ -7,7 +7,7 @@ from portality.models.lock import Lock
 from portality.models.journal import Journal, JournalBibJSON, JournalQuery, IssnQuery, PublisherQuery, TitleQuery, ContinuationException
 from portality.models.suggestion import Suggestion, SuggestionQuery, OwnerStatusQuery
 from portality.models.history import ArticleHistory, JournalHistory
-from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery
+from portality.models.article import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery, NoJournalException
 from portality.models.oaipmh import OAIPMHRecord, OAIPMHJournal, OAIPMHArticle
 from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalArticleQuery
@@ -16,6 +16,7 @@ from portality.models.toc import JournalVolumeToC, JournalIssueToC, VolumesToCQu
 from portality.models.reapplication import BulkReApplication, BulkUpload, OwnerBulkQuery
 from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
+from portality.models.background import BackgroundJob
 
 import sys
 

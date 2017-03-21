@@ -9,6 +9,8 @@ from portality.core import app
 import string
 from unidecode import unidecode
 
+class NoJournalException(Exception):
+    pass
 
 class Article(DomainObject):
     __type__ = "article"
@@ -83,7 +85,7 @@ class Article(DomainObject):
     def get_by_volume_issue(cls, issns, volume, issue):
         q = ArticleIssueQuery(issns=issns, volume=volume, issue=issue)
         articles = cls.query(q=q.query())
-        return _sort_articles([i['fields'] for i in articles.get('hits',{}).get('hits',[])])
+        return _sort_articles([i['fields'] for i in articles.get('hits', {}).get('hits', [])])
 
     @classmethod
     def find_by_issns(cls, issns):
@@ -154,7 +156,7 @@ class Article(DomainObject):
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        snobj = {"date" : date, "bibjson" : bibjson}
+        snobj = {"date": date, "bibjson": bibjson}
         if "history" not in self.data:
             self.data["history"] = []
         self.data["history"].append(snobj)
@@ -166,6 +168,14 @@ class Article(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["in_doaj"] = value
+
+    def has_seal(self):
+        return self.data.get("admin", {}).get("seal", False)
+
+    def set_seal(self, value):
+        if "admin" not in self.data:
+            self.data["admin"] = {}
+        self.data["admin"]["seal"] = value
 
     def publisher_record_id(self):
         return self.data.get("admin", {}).get("publisher_record_id")
@@ -206,12 +216,23 @@ class Article(DomainObject):
 
         return journal
 
-    def add_journal_metadata(self, j=None):
+    def get_associated_journals(self):
+        # find all matching journal record from the index
+        allissns = self.bibjson().issns()
+        return Journal.find_by_issn(allissns)
+
+    def add_journal_metadata(self, j=None, reg=None):
         """
         this function makes sure the article is populated
         with all the relevant info from its owning parent object
         :param j: Pass in a Journal to bypass the (slow) locating step. MAKE SURE IT'S THE RIGHT ONE!
         """
+
+        # Record the data that is copied into the article into the "reg"ister, in case the
+        # caller needs to know exactly and only which information was copied
+        if reg is None:
+            reg = Journal()
+        rbj = reg.bibjson()
 
         if j is None:
             journal = self.get_journal()
@@ -220,42 +241,104 @@ class Article(DomainObject):
 
         # we were unable to find a journal
         if journal is None:
-            return False
+            raise NoJournalException("Unable to find a journal associated with this article")
 
-        # FIXME: use the journal model API
         # if we get to here, we have a journal record we want to pull data from
         jbib = journal.bibjson()
         bibjson = self.bibjson()
 
+        # tripwire to be tripped if the journal makes changes to the article
+        trip = False
+
         for s in jbib.subjects():
             if s not in bibjson.subjects():
                 bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
+                trip = True
+            rbj.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
 
         if jbib.title is not None:
-            bibjson.journal_title = jbib.title
+            if bibjson.journal_title != jbib.title:
+                trip = True
+                bibjson.journal_title = jbib.title
+            rbj.title = jbib.title
 
         if jbib.get_license() is not None:
             lic = jbib.get_license()
-            bibjson.set_journal_license(lic.get("title"), lic.get("type"), lic.get("url"), lic.get("version"), lic.get("open_access"))
+            alic = bibjson.get_journal_license()
+
+
+            if lic is not None and (alic is None or (lic.get("title") != alic.get("title") or
+                    lic.get("type") != alic.get("type") or
+                    lic.get("url") != alic.get("url") or
+                    lic.get("version") != alic.get("version") or
+                    lic.get("open_access") != alic.get("open_access"))):
+
+                bibjson.set_journal_license(lic.get("title"),
+                                            lic.get("type"),
+                                            lic.get("url"),
+                                            lic.get("version"),
+                                            lic.get("open_access"))
+                trip = True
+
+            rbj.set_license(lic.get("title"),
+                            lic.get("type"),
+                            lic.get("url"),
+                            lic.get("version"),
+                            lic.get("open_access"))
 
         if len(jbib.language) > 0:
-            bibjson.journal_language = jbib.language
+            jlang = jbib.language
+            alang = bibjson.journal_language
+            jlang.sort()
+            alang.sort()
+            if jlang != alang:
+                bibjson.journal_language = jbib.language
+                trip = True
+            rbj.set_language(jbib.language)
 
         if jbib.country is not None:
-            bibjson.journal_country = jbib.country
+            if jbib.country != bibjson.journal_country:
+                bibjson.journal_country = jbib.country
+                trip = True
+            rbj.country = jbib.country
 
         if jbib.publisher:
-            bibjson.publisher = jbib.publisher
+            if jbib.publisher != bibjson.publisher:
+                bibjson.publisher = jbib.publisher
+                trip = True
+            rbj.publisher = jbib.publisher
 
-        # Copy the in_doaj status and the journal's ISSNs
-        self.set_in_doaj(journal.is_in_doaj())
+        # Copy the seal info, in_doaj status and the journal's ISSNs
+        if journal.is_in_doaj() != self.is_in_doaj():
+            self.set_in_doaj(journal.is_in_doaj())
+            trip = True
+        reg.set_in_doaj(journal.is_in_doaj())
+
+        if journal.has_seal() != self.has_seal():
+            self.set_seal(journal.has_seal())
+            trip = True
+        reg.set_seal(journal.has_seal())
+
         try:
-            bibjson.journal_issns = journal.bibjson().issns()
+            aissns = bibjson.journal_issns
+            jissns = jbib.issns()
+            aissns.sort()
+            jissns.sort()
+            if aissns != jissns:
+                bibjson.journal_issns = jbib.issns()
+                trip = True
+
+            eissns = jbib.get_identifiers(jbib.E_ISSN)
+            pissns = jbib.get_identifiers(jbib.P_ISSN)
+            if eissns is not None and len(eissns) > 0:
+                rbj.add_identifier(rbj.E_ISSN, eissns[0])
+            if pissns is not None and len(pissns) > 0:
+                rbj.add_identifier(rbj.P_ISSN, pissns[0])
         except KeyError:
             # No issns, don't worry about it for now
             pass
 
-        return True
+        return trip
 
     def merge(self, old, take_id=True):
         # this takes an old version of the article and brings
@@ -304,7 +387,7 @@ class Article(DomainObject):
         classification = []
         langs = []
         country = None
-        license = []
+        licenses = []
         publisher = []
         classification_paths = []
         unpunctitle = None
@@ -355,7 +438,7 @@ class Article(DomainObject):
         # get the title of the license
         lic = cbib.get_journal_license()
         if lic is not None:
-            license.append(lic.get("title"))
+            licenses.append(lic.get("title"))
 
         # copy the publisher/provider
         if cbib.publisher:
@@ -366,7 +449,7 @@ class Article(DomainObject):
         subjects = list(set(subjects))
         schema_subjects = list(set(schema_subjects))
         classification = list(set(classification))
-        license = list(set(license))
+        licenses = list(set(licenses))
         publisher = list(set(publisher))
         langs = list(set(langs))
         schema_codes = list(set(schema_codes))
@@ -375,7 +458,7 @@ class Article(DomainObject):
         date = cbib.get_publication_date()
 
         # calculate the classification paths
-        from portality.lcc import lcc # inline import since this hits the database
+        from portality.lcc import lcc  # inline import since this hits the database
         for subs in cbib.subjects():
             scheme = subs.get("scheme")
             term = subs.get("term")
@@ -394,6 +477,9 @@ class Article(DomainObject):
             except:
                 asciiunpunctitle = unpunctitle
 
+        # determine if the seal is applied
+        has_seal = "Yes" if self.has_seal() else "No"
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -409,8 +495,8 @@ class Article(DomainObject):
             self.data["index"]["classification"] = classification
         if len(publisher) > 0:
             self.data["index"]["publisher"] = publisher
-        if len(license) > 0:
-            self.data["index"]["license"] = license
+        if len(licenses) > 0:
+            self.data["index"]["license"] = licenses
         if len(langs) > 0:
             self.data["index"]["language"] = langs
         if country is not None:
@@ -423,6 +509,8 @@ class Article(DomainObject):
             self.data["index"]["unpunctitle"] = unpunctitle
         if asciiunpunctitle is not None:
             self.data["index"]["asciiunpunctitle"] = unpunctitle
+        if has_seal:
+            self.data["index"]["has_seal"] = has_seal
 
     def prep(self):
         self._generate_index()
@@ -548,7 +636,7 @@ class ArticleBibJSON(GenericBibJSON):
         self._set_with_struct("journal.publisher", value)
 
     def add_author(self, name, email=None, affiliation=None):
-        aobj = {"name" : name}
+        aobj = {"name": name}
         if email is not None:
             aobj["email"] = email
         if affiliation is not None:
@@ -560,7 +648,7 @@ class ArticleBibJSON(GenericBibJSON):
         return self._get_list("author")
 
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
-        lobj = {"title" : licence_title, "type" : licence_type}
+        lobj = {"title": licence_title, "type": licence_type}
         if url is not None:
             lobj["url"] = url
         if version is not None:
@@ -592,9 +680,9 @@ class ArticleBibJSON(GenericBibJSON):
 
                     # In the case of truncated years, assume it's this century if before the current year
                     if intyear <= int(str(datetime.utcnow().year)[:-2]):
-                        self.year = "20" + self.year             # For readability over long-lasting code, I have refrained
-                    else:                                        # from using str(datetime.utcnow().year)[:2] here.
-                        self.year = "19" + self.year             # But don't come crying to me 90-ish years from now.
+                        self.year = "20" + self.year          # For readability over long-lasting code, I have refrained
+                    else:                                     # from using str(datetime.utcnow().year)[:2] here.
+                        self.year = "19" + self.year          # But don't come crying to me 90-ish years from now.
 
                 # if we still don't have a 4 digit year, forget it
                 if len(self.year) != 4:
@@ -999,7 +1087,7 @@ class DuplicateArticleQuery(object):
         return q
 
 
-def _human_sort(things,reverse=True):
+def _human_sort(things, reverse=True):
     numeric = []
     non_numeric = []
     nmap = {}
@@ -1047,7 +1135,7 @@ def _sort_articles(articles):
         else:
             imap[sp] = [art]
 
-    sorted_keys = _human_sort(numbers,reverse=False)
+    sorted_keys = _human_sort(numbers, reverse=False)
 
     s = []
     for n in sorted_keys:
