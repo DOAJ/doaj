@@ -224,6 +224,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         path = os.path.join(upload_dir, file_upload.local_filename)
 
         if not os.path.exists(path):
+            job.add_audit_message(u"File not found at path {} . Retrying job later.".format(path))
             raise RetryException()
 
         job.add_audit_message(u"Importing from {x}".format(x=path))
