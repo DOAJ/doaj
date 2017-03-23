@@ -200,17 +200,26 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         # now we have the record in the index and on disk, we can attempt to
         # validate it
+        actual_schema = None
         try:
             with open(path) as handle:
-                actual_schema = article.check_schema(handle, file_upload.schema)
-        except:
-            # file is a dud, so remove it
+                actual_schema, xwalk, doc = article.check_schema(handle, file_upload.schema)
+        except article.IngestException as e:
+            job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
+            file_upload.failed(e.message, e.inner_message)
             try:
                 os.remove(path)
             except:
-                job.add_audit_message(u"Error cleaning up invalid file: {x}".format(x=traceback.format_exc()))
-            file_upload.failed("Unable to parse file")
-            raise
+                job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
+            return False
+        except Exception as e:
+            job.add_audit_message(u"File system error while downloading file: {x}".format(x=traceback.format_exc()))
+            file_upload.failed("File system error when downloading file")
+            try:
+                os.remove(path)
+            except:
+                job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+            return False
 
         # if we get to here then we have a successfully downloaded and validated
         # document, so we can write it to the index
@@ -228,21 +237,13 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         job.add_audit_message(u"Importing from {x}".format(x=path))
 
-        success = 0
-        fail = 0
-        update = 0
-        new = 0
-
+        result = {}
         try:
             with open(path) as handle:
                 result = article.ingest_file(handle, format_name=file_upload.schema, owner=file_upload.owner, upload_id=file_upload.id)
-                success = result["success"]
-                fail = result["fail"]
-                update = result["update"]
-                new = result["new"]
         except article.IngestException as e:
-            job.add_audit_message(u"IngestException: {x}".format(x=traceback.format_exc()))
-            file_upload.failed(e.message)
+            job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
+            file_upload.failed(e.message, e.inner_message)
             try:
                 os.remove(path)
             except:
@@ -255,12 +256,22 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
 
+        success = result.get("success", 0)
+        fail = result.get("fail", 0)
+        update = result.get("update", 0)
+        new = result.get("new", 0)
+        shared = result.get("shared", [])
+        unowned = result.get("unowned", [])
+        unmatched = result.get("unmatched", [])
+
         if success == 0 and fail > 0:
             file_upload.failed("All articles in file failed to import")
         if success > 0 and fail == 0:
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
             file_upload.partial(success, fail, update, new)
+
+        file_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
 
         try:
             os.remove(path)
@@ -365,29 +376,38 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         try:
             actual_schema = None
             with open(xml) as handle:
-                actual_schema = article.check_schema(handle, schema)
-        except:
-            # file is a dud, so remove it
+                actual_schema, xwalk, doc = article.check_schema(handle, schema)
+        except article.IngestException as e:
+            record.failed(e.message, e.inner_message)
             try:
                 os.remove(xml)
             except:
                 pass
-
-            # if we're unable to validate the file, we should record this as
-            # a file error.
-            record.failed("Unable to parse file")
             record.save()
             previous.insert(0, record)
-            raise BackgroundException("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.")
+            raise BackgroundException("Failed to parse file - it is invalid XML; please fix it before attempting to upload again: " + str(e.inner_message))
+        except Exception as e:
+            record.failed("File system error when reading file")
+            try:
+                os.remove(xml)
+            except:
+                pass
+            record.save()
+            previous.insert(0, record)
+            raise BackgroundException("Failed to upload file - please contact an administrator")
 
-        if actual_schema:
+        if actual_schema is not None:
             record.validated(actual_schema)
             record.save()
             previous.insert(0, record)
         else:
+            # This code should never get executed
             record.failed("File could not be validated against a known schema")
             record.save()
-            os.remove(xml)
+            try:
+                os.remove(xml)
+            except:
+                pass
             previous.insert(0, record)
             raise BackgroundException("File could not be validated against a known schema; please fix this before attempting to upload again")
 

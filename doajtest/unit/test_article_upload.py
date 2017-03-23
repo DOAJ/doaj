@@ -31,6 +31,9 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -58,6 +61,9 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -83,6 +89,9 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -108,6 +117,9 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -136,6 +148,10 @@ class TestArticleUpload(DoajTestCase):
         assert results["update"] == 0
         assert results["new"] == 0
 
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 1
+
         time.sleep(2)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "2345-6789"])]
@@ -143,7 +159,7 @@ class TestArticleUpload(DoajTestCase):
 
     def test_05_2_journals_different_owners_both_issns_fail(self):
         # Create 2 journals with the same issns but different owners, which match the issns on the article
-        # We epect an ingest failure
+        # We expect an ingest failure
 
         legit_fail = {"fail" : 0}
         def fail_callback_closure(register):
@@ -175,6 +191,12 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 1
         assert results["update"] == 0
         assert results["new"] == 0
+
+        assert len(results["shared"]) == 2
+        assert "1234-5678" in results["shared"]
+        assert "9876-5432" in results["shared"]
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         assert legit_fail["fail"] == 1
 
@@ -217,6 +239,11 @@ class TestArticleUpload(DoajTestCase):
         assert results["update"] == 0
         assert results["new"] == 0
 
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 1
+        assert "9876-5432" in results["unowned"]
+        assert len(results["unmatched"]) == 0
+
         assert legit_fail["fail"] == 1
 
         time.sleep(2)
@@ -251,6 +278,10 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -292,6 +323,11 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 1
         assert results["update"] == 0
         assert results["new"] == 0
+
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 1
+        assert "9876-5432" in results["unowned"]
+        assert len(results["unmatched"]) == 0
 
         assert legit_fail["fail"] == 1
 
@@ -346,6 +382,10 @@ class TestArticleUpload(DoajTestCase):
         assert results["update"] == 0
         assert results["new"] == 1
 
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
+
         time.sleep(2)
 
         found = [a for a in models.Article.find_by_issns(["1234-5678"])]
@@ -371,6 +411,10 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 0
         assert results["update"] == 0
         assert results["new"] == 1
+
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
 
         time.sleep(2)
 
@@ -405,6 +449,11 @@ class TestArticleUpload(DoajTestCase):
         assert results["fail"] == 1
         assert results["update"] == 0
         assert results["new"] == 0
+
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 1
+        assert "9876-5432" in results["unmatched"]
 
         assert legit_fail["fail"] == 1
 

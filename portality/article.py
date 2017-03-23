@@ -10,9 +10,13 @@ from lxml import etree
 from portality import models
 from portality.core import app
 from datetime import datetime
-import json
+import sys, traceback
 
 class XWalk(object):
+
+    def __init__(self):
+        self.validation_log = None
+
     @staticmethod
     def is_legitimate_owner(article, owner):
         # get all the issns for the article
@@ -53,7 +57,47 @@ class XWalk(object):
 
         # true if the found owner is the same as the desired owner, otherwise false
         return owners[0] == owner
-    
+
+    @staticmethod
+    def issn_ownership_status(article, owner):
+        # get all the issns for the article
+        b = article.bibjson()
+        issns = b.get_identifiers(b.P_ISSN)
+        issns += b.get_identifiers(b.E_ISSN)
+
+        owned = []
+        shared = []
+        unowned = []
+        unmatched = []
+
+        # check each issn against the index, and if a related journal is found
+        # record the owner of that journal
+        seen_issns = {}
+        for issn in issns:
+            journals = models.Journal.find_by_issn(issn)
+            if journals is not None and len(journals) > 0:
+                for j in journals:
+                    if issn not in seen_issns:
+                        seen_issns[issn] = set()
+                    seen_issns[issn].add(j.owner)
+
+        for issn in issns:
+            if issn not in seen_issns.keys():
+                unmatched.append(issn)
+
+        for issn, owners in seen_issns.iteritems():
+            owners = list(owners)
+            if len(owners) == 0:
+                unowned.append(issn)
+            elif len(owners) == 1 and owners[0] == owner:
+                owned.append(issn)
+            elif len(owners) == 1 and owners[0] != owner:
+                unowned.append(issn)
+            elif len(owners) > 1:
+                shared.append(issn)
+
+        return owned, shared, unowned, unmatched
+
     @staticmethod
     def get_duplicate(article, owner=None, all_duplicates=False):
         # get the owner's issns
@@ -302,17 +346,19 @@ class DOAJXWalk(XWalk):
     def __init__(self):
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
-            raise IngestException("Unable to validate for DOAJXWalk, as schema path is not set in config")
-        
+            raise IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
+
         try:
             schema_file = open(self.schema_path)
             schema_doc = etree.parse(schema_file)
             self.schema = etree.XMLSchema(schema_doc)
         except:
-            raise IngestException("There was an error attempting to load schema from " + self.schema_path)
+            raise IngestException(message="There was an error attempting to load schema from " + self.schema_path)
     
     def validate(self, doc):
         valid = self.schema.validate(doc)
+        if not valid:
+            self.validation_log = self.schema.error_log.__repr__()
         return valid
 
     # FIXME: this doesn't appear to be used anywhere, so maybe we should remove it?
@@ -326,6 +372,9 @@ class DOAJXWalk(XWalk):
         fail = 0
         update = 0
         new = 0
+        all_shared = set()
+        all_unowned = set()
+        all_unmatched = set()
         
         # go through the records in the doc and crosswalk each one individually
         last_success = None
@@ -339,6 +388,10 @@ class DOAJXWalk(XWalk):
             if limit_to_owner is not None:
                 legit = self.is_legitimate_owner(article, limit_to_owner)
                 if not legit:
+                    owned, shared, unowned, unmatched = self.issn_ownership_status(article, limit_to_owner)
+                    all_shared.update(shared)
+                    all_unowned.update(unowned)
+                    all_unmatched.update(unmatched)
                     fail += 1
                     if fail_callback:
                         fail_callback(article)
@@ -368,7 +421,7 @@ class DOAJXWalk(XWalk):
             models.Article.block(last_success.id, last_success.last_updated)
 
         # return some stats on the import
-        return {"success" : success, "fail" : fail, "update" : update, "new" : new}
+        return {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
     
     def crosswalk_article(self, record, add_journal_info=True):
         """
@@ -532,7 +585,30 @@ class DOAJXWalk(XWalk):
         return article
 
 class IngestException(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        self.stack = None
+        self.message = kwargs.get("message")
+        self.inner_message = kwargs.get("inner_message")
+        self.inner = kwargs.get("inner")
+
+        tb = sys.exc_info()[2]
+        if self.inner is not None:
+            if self.inner_message is None and hasattr(self.inner, "message"):
+                self.inner_message = self.inner.message
+
+            if tb is not None:
+                self.stack = "".join(traceback.format_exception(self.inner.__class__, self.inner, tb))
+            else:
+                self.stack = "".join(traceback.format_exception_only(self.inner.__class__, self.inner))
+        else:
+            if tb is not None:
+                self.stack = "".join(traceback.format_tb(tb))
+            else:
+                self.stack = traceback.format_exc()
+
+    def trace(self):
+        return self.stack
+
 
 ###############################################################################
 ## some convenient utilities
@@ -579,11 +655,16 @@ def article_save_callback(article):
     article.save(differentiate=True)
     
 def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fail_callback=None):
+    name, xwalk, doc = check_schema(handle, format_name)
+    """
     try:
         doc = etree.parse(handle)
-    except:
-        raise IngestException("Unable to parse XML file")
-    
+    except etree.XMLSyntaxError as e:
+        raise IngestException(message="Unable to parse XML file", inner=e)
+    except Exception as e:
+        raise IngestException(message="Unable to parse XML file", inner=e)
+
+    validation_logs = {}
     xwalk = None
     valid = False
     if format_name is not None:
@@ -591,6 +672,8 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
         if klazz is not None:
             xwalk = klazz()
             valid = xwalk.validate(doc)
+            if not valid:
+                validation_logs[format_name] = xwalk.validation_log
     
     if not valid: # which can happen if there was no format name or if the format name was wrong
         # look for an alternative
@@ -604,36 +687,50 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
             if valid:
                 xwalk = inst
                 break
+            else:
+                validation_logs[name] = inst.validation_log
+                xwalk = None
     
     # did we manage to detect a crosswalk?
     if xwalk is None:
-        raise IngestException("Unable to validate document with any available ingesters")
-    
+        msg = ""
+        for k, v in validation_logs.iteritems():
+            msg += "Validation messages from schema '{x}': \n".format(x=k)
+            msg += v + "\n\n"
+        raise IngestException(message="Unable to validate document with any available ingesters", inner_message=msg)
+    """
+
     # do the crosswalk
     try:
         cb = article_save_callback if upload_id is None else article_upload_closure(upload_id)
         results = xwalk.crosswalk_doc(doc, article_callback=cb, limit_to_owner=owner, fail_callback=article_fail_callback)
         return results
     except Exception as e:
-        # raise e
-        raise IngestException("Error occurred ingesting the records in the document")
+        raise IngestException(message="Error occurred ingesting the records in the document", inner=e)
 
 def check_schema(handle, format_name=None):
     try:
         doc = etree.parse(handle)
-    except:
-        raise IngestException("Unable to parse XML file")
-        
+    except etree.XMLSyntaxError as e:
+        raise IngestException(message="Unable to parse XML file", inner=e)
+    except Exception as e:
+        raise IngestException(message="Unable to parse XML file", inner=e)
+
     actual_format = format_name
+    validation_logs = {}
+    xwalk = None
     valid = False
     if format_name is not None:
         klazz = xwalk_map.get(format_name)
         if klazz is not None:
             xwalk = klazz()
             valid = xwalk.validate(doc)
-    
+            if not valid:
+                validation_logs[format_name] = xwalk.validation_log
+
     if not valid: # which can happen if there was no format name or if the format name was wrong
         # look for an alternative
+        xwalk = None
         for name, x in xwalk_map.iteritems():
             if format_name is not None and format_name != name:
                 # we may have already tried validating with this one already
@@ -641,17 +738,20 @@ def check_schema(handle, format_name=None):
             inst = x()
             valid = inst.validate(doc)
             if valid:
+                xwalk = inst
                 actual_format = name
                 break
-    
-    if not valid:
-        return False
-    
-    return actual_format
+            else:
+                validation_logs[name] = inst.validation_log
+                xwalk = None
 
+    # did we manage to detect a crosswalk?
+    if xwalk is None:
+        msg = ""
+        for k, v in validation_logs.iteritems():
+            msg += "Validation messages from schema '{x}': \n".format(x=k)
+            msg += v + "\n\n"
+        raise IngestException(message="Unable to validate document with any available ingesters", inner_message=msg)
 
-
-
-
-
+    return actual_format, xwalk, doc
 
