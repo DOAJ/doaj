@@ -189,67 +189,7 @@ class XWalk(object):
                     latest = a
                     latest_date = t
             return latest
-        
-        
-        # NOTE: we may choose, at this point, to do some OR matching around the prid, doi and fulltext,
-        # so we'll come back to it if the matching requirements arise.
-        
-        # final test is to do some fuzzy matching based on the following criteria:
-        # - MUST be from at least one of the ISSNs in the incoming article
-        # - MUST have the publisher record id (if the match above hit more than one item)
-        # - MUST have the doi (if the match above hit more than one item)
-        # - MUST have the fulltext url (if the match above hit more than one item)
-        # - MUST fuzzy match the title
-        # - SHOULD have X of: volume, issue, start page, fulltext url, doi (we ignore end page, it's too unreliably populated) (X=2 initially)
-        #       (if doi or fulltext matched earlier, then take them out of this list, and make X = 1)
-        """
-        #DISABLED - this code is extremely slow, so disabling it to compare to 
-        #what happens without it
-        
-        issns = b.get_identifiers(b.P_ISSN)
-        issns += b.get_identifiers(b.E_ISSN)
-        
-        prid = None
-        if use_prid:
-            prid = article.publisher_record_id()
-        
-        doi = None
-        if use_doi:
-            dois = b.get_identifiers(b.DOI)
-            if len(dois) > 0:
-                # there should only be the one
-                doi = dois[0]
-        
-        fulltexts = b.get_urls(b.FULLTEXT)
-        title = b.title
-        volume = b.volume
-        number = b.number
-        start = b.start_page
-        
-        # do we actually have enough info to make a meaningful query?
-        # this gives us the number of the optional vectors which are not None (or non zero length arrays)
-        vector_count = len([x for x in [volume, number, start, len(fulltexts) > 0, doi] if x is not None and x])
-        
-        # if there aren't enough vectors to consider, we just stop
-        if vector_count < 2:
-            return None
-        
-        should_match = 2
-        if use_doi or use_fulltext:
-            should_match = 1
-        
-        articles = models.Article.duplicates(issns=issns, 
-                                            publisher_record_id=prid,
-                                            doi=doi,
-                                            fulltexts=fulltexts,
-                                            title=title,
-                                            volume=volume,
-                                            number=number,
-                                            start=start,
-                                            should_match=should_match)
-        if len(articles) == 1:
-            return articles[0]
-        """
+
         # else, we have failed to locate
         return [] if all_duplicates else None
 
@@ -665,49 +605,6 @@ def article_save_callback(article):
     
 def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fail_callback=None):
     name, xwalk, doc = check_schema(handle, format_name)
-    """
-    try:
-        doc = etree.parse(handle)
-    except etree.XMLSyntaxError as e:
-        raise IngestException(message="Unable to parse XML file", inner=e)
-    except Exception as e:
-        raise IngestException(message="Unable to parse XML file", inner=e)
-
-    validation_logs = {}
-    xwalk = None
-    valid = False
-    if format_name is not None:
-        klazz = xwalk_map.get(format_name)
-        if klazz is not None:
-            xwalk = klazz()
-            valid = xwalk.validate(doc)
-            if not valid:
-                validation_logs[format_name] = xwalk.validation_log
-    
-    if not valid: # which can happen if there was no format name or if the format name was wrong
-        # look for an alternative
-        xwalk = None
-        for name, x in xwalk_map.iteritems():
-            if format_name is not None and format_name != name:
-                # we may have already tried validating with this one already
-                continue
-            inst = x()
-            valid = inst.validate(doc)
-            if valid:
-                xwalk = inst
-                break
-            else:
-                validation_logs[name] = inst.validation_log
-                xwalk = None
-    
-    # did we manage to detect a crosswalk?
-    if xwalk is None:
-        msg = ""
-        for k, v in validation_logs.iteritems():
-            msg += "Validation messages from schema '{x}': \n".format(x=k)
-            msg += v + "\n\n"
-        raise IngestException(message="Unable to validate document with any available ingesters", inner_message=msg)
-    """
 
     # do the crosswalk
     try:
@@ -720,7 +617,7 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
 def check_schema(handle, format_name=None):
     try:
         doc = etree.parse(handle)
-    except etree.XMLSyntaxError as e:
+    except etree.XMLSyntaxError as e:   # although the treatment is the same, pulling this out so we remember what the primary kind of exception should be
         raise IngestException(message="Unable to parse XML file", inner=e)
     except Exception as e:
         raise IngestException(message="Unable to parse XML file", inner=e)
