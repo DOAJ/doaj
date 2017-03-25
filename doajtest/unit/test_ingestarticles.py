@@ -120,6 +120,11 @@ class TestArticleUpload(DoajTestCase):
             if os.path.exists(path):
                 os.remove(path)
 
+        for id in self.cleanup_ids:
+            path = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
+            if os.path.exists(path):
+                os.remove(path)
+
         for path in self.cleanup_paths:
             if os.path.exists(path):
                 os.remove(path)
@@ -161,9 +166,13 @@ class TestArticleUpload(DoajTestCase):
         assert fu.error_details is not None and fu.error != ""
         assert fu.failure_reasons.keys() == []
 
-        # file should have been removed from disk
+        # file should have been removed from upload dir
         path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
         assert not os.path.exists(path)
+
+        # and placed into the failed dir
+        fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
+        assert os.path.exists(fad)
 
     def test_03_file_upload_fail(self):
         article.check_schema = mock_check_schema
@@ -523,6 +532,7 @@ class TestArticleUpload(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        self.cleanup_ids.append(file_upload.id)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
@@ -595,6 +605,7 @@ class TestArticleUpload(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        self.cleanup_ids.append(file_upload.id)
 
         task = ingestarticles.IngestArticlesBackgroundTask(job)
         result = task._download(file_upload)
@@ -675,6 +686,7 @@ class TestArticleUpload(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        self.cleanup_ids.append(file_upload.id)
 
         stream = ArticleFixtureFactory.invalid_schema_xml()
         with open(path, "wb") as f:
@@ -707,6 +719,7 @@ class TestArticleUpload(DoajTestCase):
         upload_dir = app.config.get("UPLOAD_DIR")
         path = os.path.join(upload_dir, file_upload.local_filename)
         self.cleanup_paths.append(path)
+        self.cleanup_ids.append(file_upload.id)
 
         stream = ArticleFixtureFactory.upload_1_issn_correct()
         with open(path, "wb") as f:
@@ -900,7 +913,7 @@ class TestArticleUpload(DoajTestCase):
         handle = ArticleFixtureFactory.upload_2_issns_correct()
         f = MockFileUpload(stream=handle)
 
-        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner", schema="doaj", upload_file=f)
+        job = ingestarticles.IngestArticlesBackgroundTask.prepare("testowner1", schema="doaj", upload_file=f)
         id = job.params.get("ingest_articles__file_upload_id")
         self.cleanup_ids.append(id)
 

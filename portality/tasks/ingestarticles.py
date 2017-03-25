@@ -6,11 +6,17 @@ from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
-import ftplib, os, requests, traceback
+import ftplib, os, requests, traceback, shutil
 from urlparse import urlparse
 
 DEFAULT_MAX_REMOTE_SIZE=262144000
 CHUNK_SIZE=1048576
+
+def file_failed(path):
+    filename = os.path.split(path)[1]
+    fad = app.config.get("FAILED_ARTICLE_DIR")
+    dest = os.path.join(fad, filename)
+    shutil.move(path, dest)
 
 def ftp_upload(job, path, parsed_url, file_upload):
     # 1. find out the file size
@@ -71,7 +77,7 @@ def ftp_upload(job, path, parsed_url, file_upload):
             file_upload.failed("The file at the URL was too large")
             job.add_audit_message("too large")
             try:
-                os.remove(path)
+                os.remove(path) # don't keep this file around
             except:
                 pass
             return False
@@ -133,7 +139,7 @@ def http_upload(job, path, file_upload):
 
     if too_large:
         try:
-            os.remove(path)
+            os.remove(path) # don't keep this file around
         except:
             pass
         return False
@@ -208,7 +214,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             try:
-                os.remove(path)
+                file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
             return False
@@ -216,7 +222,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             job.add_audit_message(u"File system error while downloading file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("File system error when downloading file")
             try:
-                os.remove(path)
+                file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
             return False
@@ -245,14 +251,14 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             try:
-                os.remove(path)
+                file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
         except Exception as e:
             job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("File system error when reading file")
             try:
-                os.remove(path)
+                file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
 
@@ -279,7 +285,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
         try:
-            os.remove(path)
+            os.remove(path) # just remove the file, no need to keep it
         except Exception as e:
             job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
 
@@ -366,7 +372,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except:
             # if we can't record either of these things, we need to back right off
             try:
-                os.remove(xml)
+                file_failed(xml)
             except:
                 pass
             try:
@@ -385,7 +391,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except article.IngestException as e:
             record.failed(e.message, e.inner_message)
             try:
-                os.remove(xml)
+                file_failed(xml)
             except:
                 pass
             record.save()
@@ -394,7 +400,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except Exception as e:
             record.failed("File system error when reading file")
             try:
-                os.remove(xml)
+                file_failed(xml)
             except:
                 pass
             record.save()
@@ -410,7 +416,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             record.failed("File could not be validated against a known schema")
             record.save()
             try:
-                os.remove(xml)
+                file_failed(xml)
             except:
                 pass
             previous.insert(0, record)
