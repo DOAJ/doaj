@@ -266,12 +266,17 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         if success == 0 and fail > 0:
             file_upload.failed("All articles in file failed to import")
+            job.add_audit_message("All articles in file failed to import")
         if success > 0 and fail == 0:
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
             file_upload.partial(success, fail, update, new)
+            job.add_audit_message("Some articles in file failed to import")
 
         file_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
+        job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
+        job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
+        job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
         try:
             os.remove(path)
@@ -385,7 +390,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 pass
             record.save()
             previous.insert(0, record)
-            raise BackgroundException("Failed to parse file - it is invalid XML; please fix it before attempting to upload again: " + str(e.inner_message))
+            raise BackgroundException("Failed to upload file: " + e.message + "; " + str(e.inner_message))
         except Exception as e:
             record.failed("File system error when reading file")
             try:

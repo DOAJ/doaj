@@ -10,7 +10,7 @@ from lxml import etree
 from portality import models
 from portality.core import app
 from datetime import datetime
-import sys, traceback
+import sys, traceback, re
 
 class XWalk(object):
 
@@ -94,7 +94,10 @@ class XWalk(object):
             elif len(owners) == 1 and owners[0] != owner:
                 unowned.append(issn)
             elif len(owners) > 1:
-                shared.append(issn)
+                if owner in owners:
+                    shared.append(issn)
+                else:
+                    unowned.append(issn)
 
         return owned, shared, unowned, unmatched
 
@@ -352,13 +355,19 @@ class DOAJXWalk(XWalk):
             schema_file = open(self.schema_path)
             schema_doc = etree.parse(schema_file)
             self.schema = etree.XMLSchema(schema_doc)
-        except:
-            raise IngestException(message="There was an error attempting to load schema from " + self.schema_path)
+        except Exception as e:
+            raise IngestException(message="There was an error attempting to load schema from " + self.schema_path, inner=e)
     
     def validate(self, doc):
         valid = self.schema.validate(doc)
         if not valid:
-            self.validation_log = self.schema.error_log.__repr__()
+            el = self.schema.error_log.__repr__()
+            # strip the filename, as we don't want to leak the path to the UI
+            rx = "[\da-f]{32}.xml:(.*)"
+            match = re.search(rx, el)
+            if match is not None:
+                el = match.group(1)
+            self.validation_log = el
         return valid
 
     # FIXME: this doesn't appear to be used anywhere, so maybe we should remove it?
