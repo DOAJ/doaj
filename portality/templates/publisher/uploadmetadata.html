@@ -59,14 +59,14 @@
 
     <div class="row-fluid">
         <div class="span12">
-            <table id="previous_files" style="width: 100%" class="tablesorter">
+            <table id="previous_files" style="width: 100%; table-layout:fixed" class="tablesorter">
                 <thead>
                     <tr>
-                        <th>Upload Date</th>
-                        <th>Filename</th>
-                        <th>Format</th>
-                        <th>Upload Status</th>
-                        <th>Notes</th>
+                        <th style="width: 17%">Upload Date</th>
+                        <th style="width: 20%">Filename</th>
+                        <th style="width: 12%">Format</th>
+                        <th style="width: 15%">Upload Status</th>
+                        <th style="width: 36%">Notes</th>
                     </tr>
                 </thead>
             {% for file in previous %}
@@ -101,10 +101,10 @@
                             <span style="color: #ff3300">partial success</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td style="word-wrap:break-word">
                         {% if file.error %}
                             {{file.error}}
-                            <a href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(explain)</a>
+                            <a href="{{ url_for('doaj.publishers', _anchor=file.error) }}">(what does this mean?)</a><br>
                         {% else %}
                             {% if file.status == "partial" or file.status == "processed" %}
                                 {{ file.imported }} articles imported 
@@ -113,9 +113,29 @@
                                 {% endif %}
                                 {% if file.failed_imports > 0 %}
                                     ; {{ file.failed_imports }} articles failed
-                                    <a href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(explain)</a>
+                                    <a href="{{ url_for('doaj.publishers', _anchor='some_articles_failed') }}">(what does this mean?)</a><br>
                                 {% endif %}
                             {% endif %}
+                        {% endif %}
+                        {%  if file.error_details or file.failure_reasons %}
+                            <div id="details_{{ file.id }}" style="display:none">
+                                {% if file.error_details %}{{ file.error_details }}{% endif %}
+                                {% if file.failure_reasons %}
+                                    {% if file.failure_reasons.shared %}
+                                        The following ISSNs in your article metadata are owned by you and another user.  This is a problem at our end, please contact us with the details:<br>
+                                        {{ file.failure_reasons.shared|join(", ") }}
+                                    {% endif %}
+                                    {% if file.failure_reasons.unowned %}
+                                        The following ISSNs in your article metadata are owned by another user, you cannot associate articles with them.  If you believe you should own these ISSNs, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unowned|join(", ") }}
+                                    {% endif %}
+                                    {% if file.failure_reasons.unmatched %}
+                                        The following ISSNs in your article metadata do not appear in DOAJ, you cannot associate articles with them.  If you believe these ISSNs should be associated with a journal you own, please contact us with the details:<br>
+                                        {{ file.failure_reasons.unmatched|join(", ") }}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <a href="#" class="show_error_details" data-id="{{ file.id }}">(show error details)</a>
                         {% endif %}
                     </td>
                 </tr>
@@ -131,7 +151,18 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#previous_files").tablesorter() 
+    $("#previous_files").tablesorter();
+
+    $(".show_error_details").click(function(event) {
+        event.preventDefault();
+        var id = $(this).attr("data-id");
+        $("#details_" + id).slideToggle();
+        if ($(this).html() === "(show error details)") {
+            $(this).html("(hide error details)")
+        } else {
+            $(this).html("(show error details)")
+        }
+    })
 })
 </script>
 
