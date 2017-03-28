@@ -1,15 +1,17 @@
 import os
-import json
 
-import requests
 from flask import Flask
 from flask.ext.login import LoginManager
 from flask.ext.cors import CORS
 
 from portality import settings
 from portality.error_handler import setup_error_logging
+from portality.lib import plugin
+
+import esprit
 
 login_manager = LoginManager()
+
 
 @login_manager.user_loader
 def load_account_for_login_manager(userid):
@@ -17,15 +19,18 @@ def load_account_for_login_manager(userid):
     out = models.Account.pull(userid)
     return out
 
+
 def create_app():
     app = Flask(__name__)
     configure_app(app)
-    if app.config['INITIALISE_INDEX']: initialise_index(app)
+    if app.config['INITIALISE_INDEX']:
+        initialise_index(app)
     setup_error_logging(app)
     setup_jinja(app)
     login_manager.init_app(app)
     CORS(app)
     return app
+
 
 def configure_app(app):
     app.config.from_object(settings)
@@ -41,6 +46,7 @@ def configure_app(app):
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
         print 'Loaded final config from ' + config_path
+
 
 def get_app_env(app):
     if not app.config.get('VALID_ENVIRONMENTS'):
@@ -73,24 +79,41 @@ application configuration (settings.py or app.cfg).
     return env
 
 
+def put_mappings(app, mappings):
+    # make a connection to the index
+    conn = esprit.raw.Connection(app.config['ELASTIC_SEARCH_HOST'], app.config['ELASTIC_SEARCH_DB'])
+
+    # get the ES version that we're working with
+    es_version = app.config.get("ELASTIC_SEARCH_VERSION", "1.7.5")
+
+    # for each mapping (a class may supply multiple), create them in the index
+    for key, mapping in mappings.iteritems():
+        if not esprit.raw.type_exists(conn, key, es_version=es_version):
+            r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
+            print "Creating ES Type+Mapping for", key, "; status:", r.status_code
+        else:
+            print "ES Type+Mapping already exists for", key
+
+
 def initialise_index(app):
     if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
         return
 
+    # LEGACY DEFAULT MAPPINGS
     mappings = app.config["MAPPINGS"]
-    i = str(app.config['ELASTIC_SEARCH_HOST']).rstrip('/')
-    i += '/' + app.config['ELASTIC_SEARCH_DB']
-    for key, mapping in mappings.iteritems():
-        # im = i + '/' + key + '/_mapping'  # es 0.x
-        im = i + "/_mapping/" + key         # es 1.x
-        typeurl = i + "/" + key
-        # exists = requests.get(im)         # es 0.x
-        exists = requests.head(typeurl)     # es 1.x
-        if exists.status_code != 200:
-            ri = requests.post(i)
-            r = requests.put(im, json.dumps(mapping))
-            print key, r.status_code
+
+    # TYPE SPECIFIC MAPPINGS
+    # get the list of classes which carry the type-specific mappings to be loaded
+    mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])
+
+    # load each class and execute the "mappings" function to get the mappings that need to be imported
+    #for cname in mapping_daos:
+    #    klazz = plugin.load_class_raw(cname)
+    #    mappings[klazz.__type__] = klazz.mappings()
+
+    # Send the mappings to ES
+    put_mappings(app, mappings)
 
 
 def setup_jinja(app):

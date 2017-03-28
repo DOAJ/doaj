@@ -1,7 +1,7 @@
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models import GenericBibJSON, shared_structs
-from portality.lib import dataobj
+from portality.lib import dataobj, es_data_mapping
 
 from copy import deepcopy
 from datetime import datetime
@@ -344,6 +344,10 @@ class Journal(JournalLikeObject):
 
     #####################################################
     ## Journal-specific data access methods
+
+    @classmethod
+    def mappings(cls):
+        return es_data_mapping.create_mapping(JOURNAL_STRUCT, MAPPING_OPTS)
 
     @classmethod
     def all_in_doaj(cls, page_size=5000):
