@@ -104,7 +104,9 @@ SPONSORS = {
         'wolters-kluwer': {'name': 'Wolters Kluwer', 'logo': 'wolters-kluwer.gif', 'url': 'http://wolterskluwer.com/'},
         'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
         'ingenta': {'name': 'Ingenta', 'logo': 'ingenta.png', 'url': 'http://www.ingenta.com/'},
-        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.png', 'url': 'http://emeraldpublishing.com/'}
+        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.png', 'url': 'http://emeraldpublishing.com/'},
+        'finnish-learned': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-learned.jpg', 'url': 'https://tsv.fi/en/frontpage'},
+        'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.png', 'url': 'http://www.vr.se/'}
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
