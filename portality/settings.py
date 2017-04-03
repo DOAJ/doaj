@@ -362,6 +362,7 @@ CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIP
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
+FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
 
 # Reapplication upload directory
 REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")

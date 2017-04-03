@@ -72,7 +72,7 @@ class BackgroundApi(object):
 
         # send a confirmation email to the user if the account exists
         if acc is not None:
-            if acc.email is not None:
+            if acc.email is not None and acc.has_role("admin"):
                 template = "email/admin_background_job_finished.txt"
                 subject = app.config.get("SERVICE_NAME", "") + " - background job finished"
 
