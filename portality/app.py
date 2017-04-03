@@ -15,7 +15,7 @@ import tzlocal
 import pytz
 
 import portality.models as models
-from portality.core import app, login_manager
+from portality.core import app, initialise_index, login_manager
 from portality import settings
 
 from portality.view.account import blueprint as account
@@ -242,4 +242,6 @@ if __name__ == "__main__":
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
+    if app.config['INITIALISE_INDEX']:
+        initialise_index(app)
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'])

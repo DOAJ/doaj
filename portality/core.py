@@ -23,8 +23,6 @@ def load_account_for_login_manager(userid):
 def create_app():
     app = Flask(__name__)
     configure_app(app)
-    if app.config['INITIALISE_INDEX']:
-        initialise_index(app)
     setup_error_logging(app)
     setup_jinja(app)
     login_manager.init_app(app)

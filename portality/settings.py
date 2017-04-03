@@ -172,6 +172,7 @@ RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user acco
 # ========================
 # MAPPING SETTINGS
 
+FACET_FIELD = ".exact"
 
 # an array of DAO classes from which to retrieve the type-specific ES mappings
 # to be loaded into the index during initialisation.
@@ -179,23 +180,48 @@ ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
 ]
 
-FACET_FIELD = ".exact"
-
-DEFAULT_STRING_MAPPING = {
-    "type": "multi_field",
-    "fields": {
-        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
-        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+# Map from dataobj coercion declarations to ES mappings
+DATAOBJ_TO_MAPPING_DEFAULTS = {
+    "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "utcdatetime": {
+        "type": "date",
+        "format": "dateOptionalTime"
+    },
+    "bool": {
+        "type": "boolean"
+    },
+    "integer": {
+        "type": "long"
+    },
+    "bigenddate": {
+        "type": "date",
+        "format": "dateOptionalTime"
     }
 }
 
-DEFAULT_MAPPING = {
+
+DEFAULT_DYNAMIC_MAPPING = {
     "dynamic_templates": [
         {
             "default": {
                 "match": "*",
                 "match_mapping_type": "string",
-                "mapping": DEFAULT_STRING_MAPPING
+                "mapping": {
+                    "type": "multi_field",
+                    "fields": {
+                        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
+                        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+                    }
+                }
             }
         }
     ]
@@ -207,25 +233,25 @@ DEFAULT_MAPPING = {
 
 MAPPINGS = {
     "journal": {
-        "journal": DEFAULT_MAPPING
+        "journal": DEFAULT_DYNAMIC_MAPPING
     }
 }
-MAPPINGS['account'] = {'account': DEFAULT_MAPPING}
-MAPPINGS['article'] = {'article': DEFAULT_MAPPING}
-MAPPINGS['suggestion'] = {'suggestion': DEFAULT_MAPPING}
-MAPPINGS['upload'] = {'upload': DEFAULT_MAPPING}
-MAPPINGS['cache'] = {'cache': DEFAULT_MAPPING}
-MAPPINGS['toc'] = {'toc': DEFAULT_MAPPING}
-MAPPINGS['lcc'] = {'lcc': DEFAULT_MAPPING}
-MAPPINGS['article_history'] = {'article_history': DEFAULT_MAPPING}
-MAPPINGS['editor_group'] = {'editor_group': DEFAULT_MAPPING}
-MAPPINGS['news'] = {'news': DEFAULT_MAPPING}
-MAPPINGS['lock'] = {'lock': DEFAULT_MAPPING}
-MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_MAPPING}
-MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_MAPPING}
-MAPPINGS['journal_history'] = {'journal_history': DEFAULT_MAPPING}
-MAPPINGS['provenance'] = {'provenance': DEFAULT_MAPPING}
-MAPPINGS['background_job'] = {'background_job': DEFAULT_MAPPING}
+MAPPINGS['account'] = {'account': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['toc'] = {'toc': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 # ========================
 # QUERY SETTINGS

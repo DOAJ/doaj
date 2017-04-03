@@ -346,10 +346,6 @@ class Journal(JournalLikeObject):
     ## Journal-specific data access methods
 
     @classmethod
-    def mappings(cls):
-        return es_data_mapping.create_mapping(JOURNAL_STRUCT, MAPPING_OPTS)
-
-    @classmethod
     def all_in_doaj(cls, page_size=5000):
         q = JournalQuery()
         return cls.iterate(q.all_in_doaj(), page_size=page_size, wrap=True)
@@ -390,6 +386,9 @@ class Journal(JournalLikeObject):
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     ############################################
     ## base property methods
@@ -1245,8 +1244,8 @@ JOURNAL_STRUCT = {
 }
 
 MAPPING_OPTS = {
-    "default": app.config["DEFAULT_MAPPING"],
-    "coerces": {},  # todo at a future time
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
     "exceptions": {
         "admin.notes.note": {
                     "type": "string",
