@@ -2,7 +2,7 @@
     {% if request.path == '/' %}
     <div class="box with-borders">
         <div class="row-fluid">
-            <div class="span12 centre-text-container" id="footer-sponsors">
+            <div class="span12 centre-text-container sponsors">
                 {% for s in sponsors.values() %}
                     <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}" alt="{{ s['name'] }}">
                         <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo'])  }}" alt="{{ s['name'] }}" />
