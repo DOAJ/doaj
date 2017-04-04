@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-{% for s in sponsors.values() %}
-
-    <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}" alt="{{ s['name'] }}"> 
-        <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
-    </a> 
-
-{% endfor %}
+<div class="sponsors">
+    {% for s in sponsors.values() %}
+        <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}" alt="{{ s['name'] }}">
+            <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
+        </a>
+    {% endfor %}
+</div>
 
 {% endblock %}
