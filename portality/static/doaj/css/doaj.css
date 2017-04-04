@@ -323,7 +323,7 @@ footer > .box + .box {
     text-decoration: none;
 }
 
-#footer-sponsors > a > img {
+.sponsors > a > img {
     max-width: 170px;
     max-height: 100px;
     margin-top: 0.5em;
@@ -387,4 +387,3 @@ button[target^="notes-"][target$="-container"] {
         left: -2px;
     }
 }
-
