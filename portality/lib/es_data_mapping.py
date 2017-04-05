@@ -1,6 +1,26 @@
 # -*- coding: UTF-8 -*-
 """ Create mappings from models """
 
+from portality.lib import plugin
+
+
+def get_mappings(app):
+    """Get the full set of mappings required for the app"""
+
+    # LEGACY DEFAULT MAPPINGS
+    mappings = app.config["MAPPINGS"]
+
+    # TYPE SPECIFIC MAPPINGS
+    # get the list of classes which carry the type-specific mappings to be loaded
+    mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])
+
+    # load each class and execute the "mappings" function to get the mappings that need to be imported
+    for cname in mapping_daos:
+        klazz = plugin.load_class_raw(cname)
+        mappings[klazz.__type__] = klazz().mappings()
+
+    return mappings
+
 
 def apply_mapping_opts(field_name, path, spec, mapping_opts):
     dot_path = '.'.join(path + (field_name,))

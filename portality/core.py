@@ -6,7 +6,7 @@ from flask.ext.cors import CORS
 
 from portality import settings
 from portality.error_handler import setup_error_logging
-from portality.lib import plugin
+from portality.lib import es_data_mapping
 
 import esprit
 
@@ -88,9 +88,9 @@ def put_mappings(app, mappings):
     for key, mapping in mappings.iteritems():
         if not esprit.raw.type_exists(conn, key, es_version=es_version):
             r = esprit.raw.put_mapping(conn, key, mapping, es_version=es_version)
-            print "Creating ES Type+Mapping for", key, "; status:", r.status_code
+            print "Creating ES Type + Mapping for", key, "; status:", r.status_code
         else:
-            print "ES Type+Mapping already exists for", key
+            print "ES Type + Mapping already exists for", key
 
 
 def initialise_index(app):
@@ -98,17 +98,8 @@ def initialise_index(app):
         app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
         return
 
-    # LEGACY DEFAULT MAPPINGS
-    mappings = app.config["MAPPINGS"]
-
-    # TYPE SPECIFIC MAPPINGS
-    # get the list of classes which carry the type-specific mappings to be loaded
-    mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])
-
-    # load each class and execute the "mappings" function to get the mappings that need to be imported
-    for cname in mapping_daos:
-        klazz = plugin.load_class_raw(cname)
-        mappings[klazz.__type__] = klazz().mappings()
+    # get the app mappings
+    mappings = es_data_mapping.get_mappings(app)
 
     # Send the mappings to ES
     put_mappings(app, mappings)
