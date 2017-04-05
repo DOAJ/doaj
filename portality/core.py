@@ -106,9 +106,9 @@ def initialise_index(app):
     mapping_daos = app.config.get("ELASTIC_SEARCH_MAPPINGS", [])
 
     # load each class and execute the "mappings" function to get the mappings that need to be imported
-    #for cname in mapping_daos:
-    #    klazz = plugin.load_class_raw(cname)
-    #    mappings[klazz.__type__] = klazz.mappings()
+    for cname in mapping_daos:
+        klazz = plugin.load_class_raw(cname)
+        mappings[klazz.__type__] = klazz().mappings()
 
     # Send the mappings to ES
     put_mappings(app, mappings)

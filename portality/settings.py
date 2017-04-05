@@ -232,11 +232,10 @@ DEFAULT_DYNAMIC_MAPPING = {
 # and identifier for how non-analyzed fields for faceting are differentiated in the mappings
 
 MAPPINGS = {
-    "journal": {
-        "journal": DEFAULT_DYNAMIC_MAPPING
+    'account': {
+        'account': DEFAULT_DYNAMIC_MAPPING
     }
 }
-MAPPINGS['account'] = {'account': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
