@@ -1,7 +1,7 @@
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models import GenericBibJSON, shared_structs
-from portality.lib import dataobj
+from portality.lib import dataobj, es_data_mapping
 
 from copy import deepcopy
 from datetime import datetime
@@ -386,6 +386,9 @@ class Journal(JournalLikeObject):
     def all_articles(self):
         from portality.models import Article
         return Article.find_by_issns(self.known_issns())
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     ############################################
     ## base property methods
@@ -1236,6 +1239,18 @@ JOURNAL_STRUCT = {
                 "schema_code" : {"contains" : "field", "coerce" : "unicode"},
                 "publisher" : {"contains" : "field", "coerce" : "unicode"}
             }
+        }
+    }
+}
+
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        "admin.notes.note": {
+                    "type": "string",
+                    "index": "not_analyzed",
+                    "include_in_all": False
         }
     }
 }
