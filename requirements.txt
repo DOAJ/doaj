@@ -4,7 +4,7 @@
 
 # first get esprit, specifically the version we know will work (+ it's
 # not on PyPI)
--e git+https://github.com/CottageLabs/esprit.git@697f67120cf84c2fe32b52ae2ec6cae2cef21db8#egg=esprit
+-e git+https://github.com/CottageLabs/esprit.git@bbe20eb18e667e4604f2cb625b10e82deb395d4e#egg=esprit
 -e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
 -e git+https://github.com/CottageLabs/flask-swagger.git@4b6cdc7f40617585a203c95166678dba228b72e8#egg=flask-swagger
 
