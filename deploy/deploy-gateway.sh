@@ -53,8 +53,8 @@ ln -sf $DIR/nginx/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV
 ln -sf /home/cloo/repl/$ENV/nginx/sites-available/doaj-$ENV /home/cloo/repl/$ENV/nginx/sites-enabled/doaj-$ENV
 
 # prep sym links for the background app server
-ln -sf $DIR/supervisor/huey-main-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/huey-main-$ENV.conf
-ln -sf $DIR/supervisor/huey-long-running-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/huey-long-running-$ENV.conf
+ln -sf $DIR/supervisor/$ENV-background/huey-main-$ENV.conf /home/cloo/repl/$ENV-background/supervisor/conf.d/huey-main-$ENV.conf
+ln -sf $DIR/supervisor/$ENV-background/huey-long-running-$ENV.conf /home/cloo/repl/$ENV-background/supervisor/conf.d/huey-long-running-$ENV.conf
 
 # prep sym links for gateway
 if [ "$ENV" = 'harvester' ]
