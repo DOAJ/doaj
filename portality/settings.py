@@ -172,46 +172,85 @@ RESERVED_USERNAMES = [SYSTEM_USERNAME]  # do not allow the creation of user acco
 # ========================
 # MAPPING SETTINGS
 
-# a dict of the ES mappings. identify by name, and include name as first object name
-# and identifier for how non-analyzed fields for faceting are differentiated in the mappings
 FACET_FIELD = ".exact"
-MAPPINGS = {
-    "journal" : {
-        "journal" : {
-            "dynamic_templates" : [
-                {
-                    "default" : {
-                        "match" : "*",
-                        "match_mapping_type": "string",
-                        "mapping" : {
-                            "type" : "multi_field",
-                            "fields" : {
-                                "{name}" : {"type" : "{dynamic_type}", "index" : "analyzed", "store" : "no"},
-                                "exact" : {"type" : "{dynamic_type}", "index" : "not_analyzed", "store" : "yes"}
-                            }
-                        }
-                    }
-                }
-            ]
+
+# an array of DAO classes from which to retrieve the type-specific ES mappings
+# to be loaded into the index during initialisation.
+ELASTIC_SEARCH_MAPPINGS = [
+    "portality.models.Journal",
+]
+
+# Map from dataobj coercion declarations to ES mappings
+DATAOBJ_TO_MAPPING_DEFAULTS = {
+    "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
         }
+    },
+    "utcdatetime": {
+        "type": "date",
+        "format": "dateOptionalTime"
+    },
+    "bool": {
+        "type": "boolean"
+    },
+    "integer": {
+        "type": "long"
+    },
+    "bigenddate": {
+        "type": "date",
+        "format": "dateOptionalTime"
     }
 }
-MAPPINGS['account'] = {'account':MAPPINGS['journal']['journal']}
-MAPPINGS['article'] = {'article':MAPPINGS['journal']['journal']}
-MAPPINGS['suggestion'] = {'suggestion':MAPPINGS['journal']['journal']}
-MAPPINGS['upload'] = {'upload':MAPPINGS['journal']['journal']}
-MAPPINGS['cache'] = {'cache':MAPPINGS['journal']['journal']}
-MAPPINGS['toc'] = {'toc':MAPPINGS['journal']['journal']}
-MAPPINGS['lcc'] = {'lcc':MAPPINGS['journal']['journal']}
-MAPPINGS['article_history'] = {'article_history':MAPPINGS['journal']['journal']}
-MAPPINGS['editor_group'] = {'editor_group':MAPPINGS['journal']['journal']}
-MAPPINGS['news'] = {'news':MAPPINGS['journal']['journal']}
-MAPPINGS['lock'] = {'lock':MAPPINGS['journal']['journal']}
-MAPPINGS['bulk_reapplication'] = {'bulk_reapplication':MAPPINGS['journal']['journal']}
-MAPPINGS['bulk_upload'] = {'bulk_upload':MAPPINGS['journal']['journal']}
-MAPPINGS['journal_history'] = {'journal_history':MAPPINGS['journal']['journal']}
-MAPPINGS['provenance'] = {'provenance':MAPPINGS['journal']['journal']}
-MAPPINGS['background_job'] = {'background_job':MAPPINGS['journal']['journal']}
+
+
+DEFAULT_DYNAMIC_MAPPING = {
+    "dynamic_templates": [
+        {
+            "default": {
+                "match": "*",
+                "match_mapping_type": "string",
+                "mapping": {
+                    "type": "multi_field",
+                    "fields": {
+                        "{name}": {"type": "{dynamic_type}", "index": "analyzed", "store": "no"},
+                        "exact": {"type": "{dynamic_type}", "index": "not_analyzed", "store": "yes"}
+                    }
+                }
+            }
+        }
+    ]
+}
+
+# LEGACY MAPPINGS
+# a dict of the ES mappings. identify by name, and include name as first object name
+# and identifier for how non-analyzed fields for faceting are differentiated in the mappings
+
+MAPPINGS = {
+    'account': {
+        'account': DEFAULT_DYNAMIC_MAPPING
+    }
+}
+MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['toc'] = {'toc': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
+MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 # ========================
 # QUERY SETTINGS
@@ -362,6 +401,7 @@ CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIP
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
+FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
 
 # Reapplication upload directory
 REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")

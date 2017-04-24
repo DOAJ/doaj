@@ -42,6 +42,18 @@ class FileUpload(DomainObject):
         return self.data.get("new", 0)
 
     @property
+    def error(self):
+        return self.data.get("error")
+
+    @property
+    def error_details(self):
+        return self.data.get("error_details")
+
+    @property
+    def failure_reasons(self):
+        return self.data.get("failure_reasons", {})
+
+    @property
     def created_timestamp(self):
         if "created_date" not in self.data:
             return None
@@ -55,9 +67,11 @@ class FileUpload(DomainObject):
         self.data["owner"] = owner
         self.data["status"] = status
 
-    def failed(self, message):
+    def failed(self, message, details=None):
         self.data["status"] = "failed"
         self.data["error"] = message
+        if details is not None:
+            self.data["error_details"] = details
 
     def validated(self, schema):
         self.data["status"] = "validated"
@@ -75,6 +89,15 @@ class FileUpload(DomainObject):
         self.data["failed"] = fail
         self.data["update"] = update
         self.data["new"] = new
+
+    def set_failure_reasons(self, shared, unowned, unmatched):
+        self.data["failure_reasons"] = {}
+        if shared is not None and len(shared) > 0:
+            self.data["failure_reasons"]["shared"] = shared
+        if unowned is not None and len(unowned) > 0:
+            self.data["failure_reasons"]["unowned"] = unowned
+        if unmatched is not None and len(unmatched) > 0:
+            self.data["failure_reasons"]["unmatched"] = unmatched
 
     def exists(self):
         self.data["status"] = "exists"
