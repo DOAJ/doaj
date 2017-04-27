@@ -347,7 +347,7 @@ def _add_email_paragraph(addr, to_name, para_string):
 
 class AsyncWorkflowBackgroundTask(BackgroundTask):
 
-    __action__ = "workflow_notifications"
+    __action__ = "async_workflow_notifications"
 
     def run(self):
         """
@@ -382,7 +382,7 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         """
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
-
+        :param username: user who called this job
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
@@ -404,16 +404,17 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         background_job.save()
         journal_csv.schedule(args=(background_job.id,), delay=10)
 
-@main_queue.periodic_task(schedule("journal_csv"))
+
+@main_queue.periodic_task(schedule("async_workflow_notifications"))
 @write_required(script=True)
 def scheduled_journal_csv():
     user = app.config.get("SYSTEM_USERNAME")
-    job = JournalCSVBackgroundTask.prepare(user)
-    JournalCSVBackgroundTask.submit(job)
+    job = AsyncWorkflowBackgroundTask.prepare(user)
+    AsyncWorkflowBackgroundTask.submit(job)
 
 @main_queue.task()
 @write_required(script=True)
 def journal_csv(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = JournalCSVBackgroundTask(job)
+    task = AsyncWorkflowBackgroundTask(job)
     BackgroundApi.execute(task)
