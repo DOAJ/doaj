@@ -1,6 +1,6 @@
-import json, UserDict, requests, uuid
+import UserDict, requests, uuid
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
 import re
 # debugging
@@ -12,15 +12,16 @@ import json
 
 import esprit
 
-'''
-All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
-You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
-'''
+
+# All models in models.py should inherit this DomainObject to know how to save themselves in the index and so on.
+# You can overwrite and add to the DomainObject functions as required. See models.py for some examples.
+
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_]+?\] in order to sort on.*', re.DOTALL)
-    
+
+
 class DomainObject(UserDict.IterableUserDict, object):
-    __type__ = None # set the type on the model that inherits this
+    __type__ = None                                                       # set the type on the model that inherits this
 
     def __init__(self, **kwargs):
         # if self.data is already set, don't do anything here
@@ -51,8 +52,7 @@ class DomainObject(UserDict.IterableUserDict, object):
     
     @classmethod
     def makeid(cls):
-        '''Create a new id for data object
-        overwrite this in specific model types if required'''
+        """Create a new id for data object overwrite this in specific model types if required"""
         return uuid.uuid4().hex
 
     @property
@@ -96,11 +96,8 @@ class DomainObject(UserDict.IterableUserDict, object):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
             return
 
-        if 'id' in self.data:
-            id_ = self.data['id'].strip()
-        else:
-            id_ = self.makeid()
-            self.data['id'] = id_
+        if 'id' not in self.data:
+            self.data['id'] = self.makeid()
 
         now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
         if (blocking or differentiate) and "last_updated" in self.data:
@@ -108,15 +105,13 @@ class DomainObject(UserDict.IterableUserDict, object):
 
             # we need the new last_updated time to be later than the new one
             if diff.total_seconds() < 1:
-                time.sleep(1 - diff.total_seconds())
-                # TODO could we just set last_updated = now + 1 second? Instead of actually sleeping 1s?
-            now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")  # update the new timestamp
+                soon = datetime.utcnow() + timedelta(seconds=1)
+                now = soon.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         self.data['last_updated'] = now
 
-
         if 'created_date' not in self.data:
-            self.data['created_date'] = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            self.data['created_date'] = now
 
         attempt = 0
         url = self.target() + self.data['id']
@@ -125,7 +120,7 @@ class DomainObject(UserDict.IterableUserDict, object):
         while attempt <= retries:
             try:
                 r = requests.post(url, data=d)
-                if r.status_code >= 400 and r.status_code < 500:
+                if 400 <= r.status_code < 500:
                     # bad request, no retry
                     print "bad request", r.json()
                     traceback.print_stack(file=sys.stdout)
@@ -150,10 +145,10 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if blocking:
             q = {
-                "query" : {
-                    "term" : {"id.exact" : self.id}
+                "query": {
+                    "term": {"id.exact": self.id}
                 },
-                "fields" : ["last_updated"]
+                "fields": ["last_updated"]
             }
             while True:
                 res = self.query(q=q, return_raw_resp=True)
@@ -179,13 +174,12 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         data = ''
         for r in bibjson_list:
-            data += json.dumps( {'index':{'_id':r[idkey]}} ) + '\n'
-            data += json.dumps( r ) + '\n'
+            data += json.dumps({'index': {'_id': r[idkey]}}) + '\n'
+            data += json.dumps(r) + '\n'
         r = requests.post(cls.target() + '_bulk', data=data)
         if refresh:
             cls.refresh()
         return r.json()
-
 
     @classmethod
     def refresh(cls):
@@ -198,7 +192,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @classmethod
     def pull(cls, id_):
-        '''Retrieve object by id.'''
+        """Retrieve object by id."""
         if id_ is None:
             return None
 
@@ -216,12 +210,11 @@ class DomainObject(UserDict.IterableUserDict, object):
         else:
             return cls(**out.json())
 
-
     @classmethod
     def pull_by_key(cls, key, value):
-        res = cls.query(q={"query":{"term":{key+app.config['FACET_FIELD']:value}}})
-        if res.get('hits',{}).get('total',0) == 1:
-            return cls.pull( res['hits']['hits'][0]['_source']['id'] )
+        res = cls.query(q={"query": {"term": {key+app.config['FACET_FIELD']: value}}})
+        if res.get('hits', {}).get('total', 0) == 1:
+            return cls.pull(res['hits']['hits'][0]['_source']['id'])
         else:
             return None
 
@@ -232,30 +225,31 @@ class DomainObject(UserDict.IterableUserDict, object):
             mapping = cls.query(endpoint='_mapping')[cls.__type__]['properties']
         keys = []
         for item in mapping:
-            if mapping[item].has_key('fields'):
-                for item in mapping[item]['fields'].keys():
-                    if item != 'exact' and not item.startswith('_'):
-                        keys.append(prefix + item + app.config['FACET_FIELD'])
+            if 'fields' in mapping[item]:
+                for itm in mapping[item]['fields'].keys():
+                    if itm != 'exact' and not itm.startswith('_'):
+                        keys.append(prefix + itm + app.config['FACET_FIELD'])
             else:
-                keys = keys + cls.es_keys(mapping=mapping[item]['properties'],prefix=prefix+item+'.')
+                keys = keys + cls.es_keys(mapping=mapping[item]['properties'], prefix=prefix+item+'.')
         keys.sort()
         return keys
         
     @staticmethod
     def make_query(recid='', endpoint='_search', theq='', terms=None, facets=None, should_terms=None, consistent_order=True, **kwargs):
-        '''
+        """
         Generate a query object based on parameters but don't send to
         backend - return it instead. Must always have the same
         parameters as the query method. See query method for explanation
         of parameters.
-        '''
+        """
         q = deepcopy(theq)
-        if recid and not recid.endswith('/'): recid += '/'
-        if isinstance(q,dict):
+        if recid and not recid.endswith('/'):
+            recid += '/'
+        if isinstance(q, dict):
             query = q
             if 'bool' not in query['query']:
-                boolean = {'bool':{'must': [] }}
-                boolean['bool']['must'].append( query['query'] )
+                boolean = {'bool': {'must': []}}
+                boolean['bool']['must'].append(query['query'])
                 query['query'] = boolean
             if 'must' not in query['query']['bool']:
                 query['query']['bool']['must'] = []
@@ -264,7 +258,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 'query': {
                     'bool': {
                         'must': [
-                            {'query_string': { 'query': q }}
+                            {'query_string': {'query': q}}
                         ]
                     }
                 }
@@ -284,30 +278,32 @@ class DomainObject(UserDict.IterableUserDict, object):
             if 'facets' not in query:
                 query['facets'] = {}
             for k, v in facets.items():
-                query['facets'][k] = {"terms":v}
+                query['facets'][k] = {"terms": v}
 
         if terms:
-            boolean = {'must': [] }
+            boolean = {'must': []}
             for term in terms:
-                if not isinstance(terms[term],list): terms[term] = [terms[term]]
+                if not isinstance(terms[term], list):
+                    terms[term] = [terms[term]]
                 for val in terms[term]:
                     obj = {'term': {}}
-                    obj['term'][ term ] = val
+                    obj['term'][term] = val
                     boolean['must'].append(obj)
-            if q and not isinstance(q,dict):
-                boolean['must'].append( {'query_string': { 'query': q } } )
+            if q and not isinstance(q, dict):
+                boolean['must'].append({'query_string': {'query': q}})
             elif q and 'query' in q:
-                boolean['must'].append( query['query'] )
+                boolean['must'].append(query['query'])
             query['query'] = {'bool': boolean}
 
         # FIXME: this may only work if a term is also supplied above - code is a bit tricky to read
         if should_terms is not None and len(should_terms) > 0:
             for s in should_terms:
-                if not isinstance(should_terms[s],list): should_terms[s] = [should_terms[s]]
-                query["query"]["bool"]["must"].append({"terms" : {s : should_terms[s]}})
+                if not isinstance(should_terms[s], list):
+                    should_terms[s] = [should_terms[s]]
+                query["query"]["bool"]["must"].append({"terms": {s: should_terms[s]}})
 
         sort_specified = False
-        for k,v in kwargs.items():
+        for k, v in kwargs.items():
             if k == '_from':
                 query['from'] = v
             elif k == 'sort':
@@ -319,14 +315,14 @@ class DomainObject(UserDict.IterableUserDict, object):
             sort_specified = True
 
         if not sort_specified and consistent_order:
-            query['sort'] = [{"id" : {"order" : "asc"}}]
+            query['sort'] = [{"id": {"order": "asc"}}]
 
         # print json.dumps(query)
         return query
 
     @classmethod
     def query(cls, recid='', endpoint='_search', q='', terms=None, facets=None, return_raw_resp=False, raise_es_errors=False, **kwargs):
-        '''Perform a query on backend.
+        """Perform a query on backend.
 
         :param recid: needed if endpoint is about a record, e.g. mlt
         :param endpoint: default is _search, but could be _mapping, _mlt, _flt etc.
@@ -335,14 +331,13 @@ class DomainObject(UserDict.IterableUserDict, object):
         :param facets: dict of facets to return from the query.
         :param kwargs: any keyword args as per
             http://www.elasticsearch.org/guide/reference/api/search/uri-request.html
-        '''
+        """
         query = cls.make_query(recid, endpoint, q, terms, facets, **kwargs)
         return cls.send_query(query, endpoint=endpoint, recid=recid, return_raw_resp=return_raw_resp, raise_es_errors=raise_es_errors)
 
-
     @classmethod
     def send_query(cls, qobj, endpoint='_search', recid='', retry=50, return_raw_resp=False, raise_es_errors=False):
-        '''Actually send a query object to the backend.'''
+        """Actually send a query object to the backend."""
         r = None
         count = 0
         exception = None
@@ -413,7 +408,7 @@ class DomainObject(UserDict.IterableUserDict, object):
             app.logger.warn("System is in READ-ONLY mode, update command cannot run")
             return
 
-        return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc" : doc}))
+        return requests.post(self.target() + self.id + "/_update", data=json.dumps({"doc": doc}))
     
     @classmethod
     def delete_all(cls):
@@ -433,9 +428,9 @@ class DomainObject(UserDict.IterableUserDict, object):
 
             raise error_to_raise(
                 (
-                "Elasticsearch returned an error:"
-                "\nES HTTP Response status: {es_status}"
-                "\nES Response:{es_resp}"
+                    "Elasticsearch returned an error:"
+                    "\nES HTTP Response status: {es_status}"
+                    "\nES Response:{es_resp}"
                     .format(es_status=res.get('status', 'unknown'), es_resp=es_resp)
                 ) + extra_trace_info
             )
@@ -443,12 +438,12 @@ class DomainObject(UserDict.IterableUserDict, object):
         if 'hits' not in res and 'hits' not in res['hits']:  # i.e. if res['hits']['hits'] does not exist
             raise ESResponseCannotBeInterpreted(
                 (
-                "Elasticsearch did not return any records. "
-                "It probably returned an error we did not understand instead."
-                "\nES HTTP Response status: {es_status}"
-                "\nES Response:{es_resp}\n"
+                    "Elasticsearch did not return any records. "
+                    "It probably returned an error we did not understand instead."
+                    "\nES HTTP Response status: {es_status}"
+                    "\nES Response:{es_resp}\n"
                     .format(es_status=res.get('status', 'unknown'), es_resp=json.dumps(res, indent=2))
-                ) + extra_trace_info
+                    ) + extra_trace_info
             )
         return True
 
@@ -493,8 +488,8 @@ class DomainObject(UserDict.IterableUserDict, object):
         theq = deepcopy(q)
         theq["size"] = page_size
         theq["from"] = 0
-        if "sort" not in theq: # to ensure complete coverage on a changing index, sort by id is our best bet
-            theq["sort"] = [{"_id" : {"order" : "asc"}}]
+        if "sort" not in theq:             # to ensure complete coverage on a changing index, sort by id is our best bet
+            theq["sort"] = [{"_id": {"order": "asc"}}]
         counter = 0
         while True:
             # apply the limit
@@ -508,7 +503,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 extra_trace_info=
                     "\nQuery sent to ES:\n{q}\n"
                     "\n\nPage #{counter} of the ES response with size {page_size}."
-                        .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
+                    .format(q=json.dumps(theq, indent=2), counter=counter, page_size=page_size)
             )
 
             if len(rs) == 0:
@@ -557,10 +552,10 @@ class DomainObject(UserDict.IterableUserDict, object):
             facet_field = facet_field + suffix
 
         q = {
-            "query": {"prefix" : { query_field : prefix.lower() } },
+            "query": {"prefix": {query_field: prefix.lower()}},
             "size": 0,
-            "facets" : {
-              field : { "terms" : {"field" : facet_field, "size": size} }
+            "facets": {
+              field: {"terms": {"field": facet_field, "size": size}}
             }
         }
 
@@ -608,13 +603,13 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         # build the query
         q = {
-            "query" : {
-                "wildcard" : {filter_field : substring}
+            "query": {
+                "wildcard": {filter_field: substring}
             },
-            "size" : 0,
-            "facets" : {
-                field : {
-                    "terms" : {"field" : facet_field, "size" : facet_size}
+            "size": 0,
+            "facets": {
+                field: {
+                    "terms": {"field": facet_field, "size": facet_size}
                 }
             }
         }
@@ -715,39 +710,43 @@ class BlockTimeOutException(Exception):
 class DAOSaveExceptionMaxRetriesReached(Exception):
     pass
 
+
 class ESResponseCannotBeInterpreted(Exception):
     pass
 
+
 class ESMappingMissingError(Exception):
     pass
+
 
 class ESError(Exception):
     pass
 
 ########################################################################
-## Some useful ES queries
+# Some useful ES queries
 ########################################################################
 
 all_query = { 
-    "query" : { 
-        "match_all" : { }
+    "query": {
+        "match_all": {}
     }
 }
 
 block_query = {
-    "query" : {
-        "bool" : {
-            "must" : [
-                {"term" : {"id.exact" : "<identifier>"}}
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"id.exact": "<identifier>"}}
             ]
         }
     },
-    "fields" : ["last_updated"]
+    "fields": ["last_updated"]
 }
 
 #########################################################################
 # A query handler that knows how to speak facetview2
 #########################################################################
+
 
 class Facetview2(object):
 
