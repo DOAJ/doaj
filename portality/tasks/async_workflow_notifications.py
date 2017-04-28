@@ -6,7 +6,6 @@ from portality.core import app
 from portality.dao import Facetview2
 
 from portality.tasks.redis_huey import main_queue, schedule
-from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 # Store all of the emails: { email_addr : (name, [paragraphs]) }
@@ -97,12 +96,14 @@ def managing_editor_notifications():
     _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
 
 
-def editor_notifications():
+def editor_notifications(limit=None):
     """
     Notify editors about two things:
         * how many records are assigned to their group which have no associate assigned.
         * how many records assigned to an associate in their group but have been idle for X_WEEKS
     Note: requires request context to render the email text from templates
+    
+    :param: limit: for the purposes of demonstration, limit the number of emails this function generates.
     """
 
     relevant_statuses = app.config.get("ED_NOTIFICATION_STATUSES")
@@ -147,6 +148,9 @@ def editor_notifications():
     # Query for editor groups which have items in the required statuses, count their numbers
     es = models.Suggestion.query(q=ed_app_query)
     group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
+
+    if limit is not None and isinstance(limit, int):
+        group_stats = group_stats[:limit]
 
     # Get the email addresses for the editor in charge of each group, Add the template to their email
     for (group_name, group_count) in group_stats:
@@ -215,6 +219,9 @@ def editor_notifications():
     es = models.Suggestion.query(q=ed_age_query)
     group_stats = [(bucket.get("key"), bucket.get("doc_count")) for bucket in es.get("aggregations", {}).get("ed_group_counts", {}).get("buckets", [])]
 
+    if limit is not None and isinstance(limit, int):
+        group_stats = group_stats[:limit]
+
     # Get the email addresses for the editor in charge of each group, Add the template to their email
     for (group_name, group_count) in group_stats:
         # get editor group object by name
@@ -230,7 +237,7 @@ def editor_notifications():
         _add_email_paragraph(ed_email, eg.editor, text)
 
 
-def associate_editor_notifications():
+def associate_editor_notifications(limit=None):
     """
     Notify associates about two things:
         * Records assigned that haven't been updated for X days
@@ -276,7 +283,7 @@ def associate_editor_notifications():
         "aggregations": {
             "assoc_ed": {
                 "terms": {
-                    "field": "editor",
+                    "field": "admin.editor.exact",
                     "size": 0
                 },
                 "aggregations": {
@@ -296,19 +303,25 @@ def associate_editor_notifications():
     url = app.config.get("BASE_URL") + "/editor/your_applications"
 
     es = models.Suggestion.query(q=assoc_age_query)
-    for bucket in es.get("aggregations", {}).get("assoc_ed", {}).get("buckets", []):    # loop through assoc_ed buckets
+    buckets = es.get("aggregations", {}).get("assoc_ed", {}).get("buckets", [])
+
+    if limit is not None and isinstance(limit, int):
+        buckets = buckets[:limit]
+
+    for bucket in buckets:    # loop through assoc_ed buckets
         assoc_id = bucket.get("key")
         idle = bucket.get("doc_count")
 
         # Get the 'older than y weeks' count from nested aggregation
-        very_idle = bucket.get("older_weeks").get("buckets")[0].get('doc_count')         # only one bucket, so take first
+        very_idle = bucket.get("older_weeks").get("buckets")[0].get('doc_count')        # only one bucket, so take first
 
         # Pull the email address for our associate editor from their account
         assoc = models.Account.pull(assoc_id)
         try:
             assoc_email = assoc.email
         except AttributeError:
-            # There isn't an account for that id todo: should we tell someone about this?
+            # There isn't an account for that id
+            app.logger.warn("No account found for ID {0}".format(assoc_id))
             continue
 
         text = render_template('email/workflow_reminder_fragments/assoc_ed_age_frag', num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
@@ -373,7 +386,6 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
     def cleanup(self):
         """
         Cleanup after a successful OR failed run of the task
-        :return:
         """
         pass
 
@@ -387,6 +399,9 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
+        if not app.config.get("ENABLE_EMAIL", False):
+            raise BackgroundException("Email has been disabled in config. Set ENABLE_EMAIL to True to run this task.")
+
         # first prepare a job record
         job = models.BackgroundJob()
         job.user = username
@@ -397,24 +412,21 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
     def submit(cls, background_job):
         """
         Submit the specified BackgroundJob to the background queue
-
         :param background_job: the BackgroundJob instance
-        :return:
         """
         background_job.save()
-        journal_csv.schedule(args=(background_job.id,), delay=10)
+        async_workflow_notifications.schedule(args=(background_job.id,), delay=10)
 
 
 @main_queue.periodic_task(schedule("async_workflow_notifications"))
-@write_required(script=True)
-def scheduled_journal_csv():
+def scheduled_async_workflow_notifications():
     user = app.config.get("SYSTEM_USERNAME")
     job = AsyncWorkflowBackgroundTask.prepare(user)
     AsyncWorkflowBackgroundTask.submit(job)
 
+
 @main_queue.task()
-@write_required(script=True)
-def journal_csv(job_id):
+def async_workflow_notifications(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = AsyncWorkflowBackgroundTask(job)
     BackgroundApi.execute(task)
