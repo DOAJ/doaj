@@ -266,5 +266,4 @@ class TestJournalCSV(DoajTestCase):
             assert csv_rows[1] != csv_rows[2]             # ID was changed, rows should differ
 
             # check that the difference between rows is the ISSN
-
             assert diff(csv_rows[2], csv_rows[1]) == ["8765-4321"]
