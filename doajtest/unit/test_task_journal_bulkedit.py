@@ -18,12 +18,23 @@ class TestTaskJournalBulkEdit(DoajTestCase):
     def setUp(self):
         super(TestTaskJournalBulkEdit, self).setUp()
 
+        self.default_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
+
+        acc = models.Account()
+        acc.set_id("0987654321")
+        acc.set_email("whatever@example.com")
+        acc.save()
+
+        egs = EditorGroupFixtureFactory.make_editor_group_source("1234567890", "0987654321")
+        egm = models.EditorGroup(**egs)
+        egm.save(blocking=True)
+
         self.journals = []
         for j_src in JournalFixtureFactory.make_many_journal_sources(count=TEST_JOURNAL_COUNT):
             self.journals.append(models.Journal(**j_src))
+            self.journals[-1].set_editor_group("1234567890")
+            self.journals[-1].set_editor("0987654321")
             self.journals[-1].save()
-
-        self.default_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
 
         self.forbidden_accounts = [
             AccountFixtureFactory.make_editor_source()['id'],
