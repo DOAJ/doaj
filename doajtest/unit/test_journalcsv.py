@@ -1,4 +1,4 @@
-import time
+import time, sys
 import csv, os, codecs
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
@@ -10,6 +10,7 @@ from portality.tasks import journal_csv
 
 # wee function to check for differences between lists
 diff = lambda l1, l2: filter(lambda x: x not in l2, l1)
+
 
 class TestJournalCSV(DoajTestCase):
     def setUp(self):
