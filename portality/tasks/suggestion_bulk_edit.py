@@ -82,8 +82,15 @@ class SuggestionBulkEditBackgroundTask(AdminBackgroundTask):
             if editor_group:
                 job.add_audit_message(
                     u"Setting editor_group to {x} for suggestion {y}".format(x=str(editor_group), y=suggestion_id))
+
+                # set the editor group
                 f = fc.form.editor_group
                 f.data = editor_group
+
+                # clear the editor
+                ed = fc.form.editor
+                ed.data = None
+
                 updated = True
 
             if note:
