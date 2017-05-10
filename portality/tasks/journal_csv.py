@@ -33,7 +33,7 @@ class JournalCSVBackgroundTask(BackgroundTask):
         out = os.path.join(csvdir, attachment_name)
 
         # write the csv file
-        with codecs.open(out, 'wb', encoding='utf8') as csvfile:
+        with codecs.open(out, 'wb', encoding='utf-8') as csvfile:
             make_journals_csv(csvfile)
 
         # update the ES record to point to the new file
