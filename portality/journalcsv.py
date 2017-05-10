@@ -25,8 +25,8 @@ def make_journals_csv(file_object):
     """
 
     cols = {}
-    for j in models.Journal.all_in_doaj(page_size=100000):  # 10x how many journals we have right now
-        assert isinstance(j, models.Journal) # for pycharm type inspection
+    for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
+        assert isinstance(j, models.Journal)                                               # for pycharm type inspection
         bj = j.bibjson()
         issn = bj.get_one_identifier(idtype=bj.P_ISSN)
         if issn is None:
@@ -244,9 +244,6 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("publisher"), forminfo.get("publisher")))
         kvs.append((cls.q("society_institution"), forminfo.get("society_institution")))
         kvs.append((cls.q("platform"), forminfo.get("platform")))
-        #kvs.append((cls.q("contact_name"), forminfo.get("contact_name")))
-        #kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
-        #kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
         kvs.append((cls.q("country"), datasets.get_country_name(forminfo.get("country"))))
         # Get the APC info from journal index, since this includes [yes / no / no information] rather than true / false
         kvs.append((cls.q("processing_charges"), journal.data.get("index", {}).get("has_apc")))
