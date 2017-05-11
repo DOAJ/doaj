@@ -6,6 +6,10 @@ from portality.background import BackgroundApi
 
 if __name__ == "__main__":
     user = app.config.get("SYSTEM_USERNAME")
-    job = async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare(user)
-    task = async_workflow_notifications.AsyncWorkflowBackgroundTask(job)
-    BackgroundApi.execute(task)
+    if user is None:
+        print "System user not specified. Set SYSTEM_USERNAME in config file to run this script."
+        exit(1)
+    else:
+        job = async_workflow_notifications.AsyncWorkflowBackgroundTask.prepare(user)
+        task = async_workflow_notifications.AsyncWorkflowBackgroundTask(job)
+        BackgroundApi.execute(task)

@@ -8,12 +8,11 @@ from portality.dao import Facetview2
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
-# Store all of the emails: { email_addr : (name, [paragraphs]) }
-emails_dict = {}
+
 
 
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
-def managing_editor_notifications():
+def managing_editor_notifications(emails_dict):
     """
     Notify managing editors about two things:
         * Summary of records assigned to associate editors but not touched for X weeks
@@ -68,7 +67,7 @@ def managing_editor_notifications():
     num_idle = idle_res.get('hits').get('total')
 
     text = render_template('email/workflow_reminder_fragments/admin_age_frag', num_idle=num_idle, x_weeks=X_WEEKS)
-    _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
+    _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
     ready_filter = Facetview2.make_term_filter('admin.application_status.exact', 'ready')
@@ -93,10 +92,10 @@ def managing_editor_notifications():
     num_ready = ready_res.get('hits').get('total')
 
     text = render_template('email/workflow_reminder_fragments/admin_ready_frag', num=num_ready, url=ready_url)
-    _add_email_paragraph(MAN_ED_EMAIL, 'Managing Editors', text)
+    _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
 
 
-def editor_notifications(limit=None):
+def editor_notifications(emails_dict, limit=None):
     """
     Notify editors about two things:
         * how many records are assigned to their group which have no associate assigned.
@@ -164,7 +163,7 @@ def editor_notifications(limit=None):
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_groupcount_frag', num=group_count, ed_group=group_name, url=ed_url)
-        _add_email_paragraph(ed_email, eg.editor, text)
+        _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
     # Second note - records within editor group not touched for so long
     X_WEEKS = app.config.get('ED_IDLE_WEEKS', 2)
@@ -234,10 +233,10 @@ def editor_notifications(limit=None):
         ed_email = editor.email
 
         text = render_template('email/workflow_reminder_fragments/editor_age_frag', num=group_count, ed_group=group_name, url=ed_age_url, x_weeks=X_WEEKS)
-        _add_email_paragraph(ed_email, eg.editor, text)
+        _add_email_paragraph(emails_dict, ed_email, eg.editor, text)
 
 
-def associate_editor_notifications(limit=None):
+def associate_editor_notifications(emails_dict, limit=None):
     """
     Notify associates about two things:
         * Records assigned that haven't been updated for X days
@@ -325,11 +324,10 @@ def associate_editor_notifications(limit=None):
             continue
 
         text = render_template('email/workflow_reminder_fragments/assoc_ed_age_frag', num_idle=idle, x_days=X_DAYS, num_very_idle=very_idle, y_weeks=Y_WEEKS, url=url)
-        _add_email_paragraph(assoc_email, assoc_id, text)
+        _add_email_paragraph(emails_dict, assoc_email, assoc_id, text)
 
 
-def send_emails():
-    global emails_dict
+def send_emails(emails_dict):
 
     for (email, (to_name, paragraphs)) in emails_dict.iteritems():
         pre = 'Dear ' + to_name + ',\n\n'
@@ -342,14 +340,14 @@ def send_emails():
                             msg_body=full_body)
 
 
-def _add_email_paragraph(addr, to_name, para_string):
+def _add_email_paragraph(emails_dict, addr, to_name, para_string):
     """
     Add a new email to the global dict which stores the email fragments, or extend an existing one.
+    :param emails_dict: target object to store the emails
     :param addr: email address for recipient
     :param to_name: name of recipient
     :param para_string: paragraph to add to the email
     """
-    global emails_dict
 
     try:
         (name, paras) = emails_dict[addr]
@@ -373,15 +371,18 @@ class AsyncWorkflowBackgroundTask(BackgroundTask):
         ctx = app.test_request_context()
         ctx.push()
 
+        # Store all of the emails: { email_addr : (name, [paragraphs]) }
+        emails_dict = {}
+
         # Gather info and build the notifications
-        managing_editor_notifications()
-        editor_notifications()
-        associate_editor_notifications()
+        managing_editor_notifications(emails_dict)
+        editor_notifications(emails_dict)
+        associate_editor_notifications(emails_dict)
 
         # Discard the context (the send mail function makes its own)
         ctx.pop()
 
-        send_emails()
+        send_emails(emails_dict)
 
     def cleanup(self):
         """
