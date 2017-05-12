@@ -1,5 +1,4 @@
-import time, sys
-import csv, os, codecs
+import time, csv, os, codecs
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
 from portality import models, journalcsv

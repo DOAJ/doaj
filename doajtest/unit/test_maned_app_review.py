@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
 
-import re, time
+import time
 from copy import deepcopy
 
 from portality import models
