@@ -1,7 +1,5 @@
 from doajtest.helpers import DoajTestCase
 
-import re
-
 from portality import models
 from portality.formcontext import formcontext
 from portality import lcc

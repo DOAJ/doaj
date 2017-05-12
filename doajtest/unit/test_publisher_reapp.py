@@ -1,5 +1,4 @@
 from doajtest.helpers import DoajTestCase
-# from flask.ext.testing import TestCase
 
 import re
 from copy import deepcopy

@@ -1,6 +1,5 @@
 from doajtest.helpers import DoajTestCase
 
-import re
 from copy import deepcopy
 
 from portality import models
