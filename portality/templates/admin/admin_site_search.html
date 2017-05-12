@@ -17,6 +17,7 @@
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
+                                    <option value="edit_metadata">Journal: edit metadata ...</option>
                                     <option value="assign_editor_group">Journal: Assign to editor group...</option>
                                     <option value="add_note">Journal: Add a note...</option>
 
@@ -35,6 +36,11 @@
                             <div class="controls">
                                 <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
+                        </div>
+                        <div style="display: none" id="edit_form_container">
+                            {% autoescape off %}
+                            {{ edit_form }}
+                            {% endautoescape %}
                         </div>
                         <div class="control-group">
                             <div class="controls">

@@ -1,12 +1,23 @@
 jQuery(document).ready(function($) {
 
     ////////////////////////////////////////////////////////////
+    // context selector for the bulk edit box
+    var CONTEXT = $("#admin-bulk-box");
+
+    ////////////////////////////////////////////////////////////
     // functions for handling the bulk form
 
     autocomplete('#editor_group', 'name', 'editor_group', 1, false);
 
     toggle_optional_field('bulk_action', ['#editor_group'], ['assign_editor_group']);
     toggle_optional_field('bulk_action', ['#note'], ['add_note']);
+    toggle_section("#edit_form_container", "#bulk_action", "edit_metadata", "#admin-bulk-box", "600px");
+
+    // setup for the journal metadata form
+    autocomplete('#publisher', 'bibjson.publisher');
+    autocomplete('#platform', 'bibjson.provider');
+    $('#country').select2();
+    autocomplete('#owner', 'id', 'account');
 
     function disable_bulk_submit() {
         $('#bulk-submit').attr('disabled', 'disabled').html("Submit");
@@ -39,13 +50,15 @@ jQuery(document).ready(function($) {
         }
 
         // all the things we need to know to validate and determine whether to allow submit
-        var requireJournalType = ["withdraw", "reinstate", "assign_editor_group", "add_note"];
+        var requireJournalType = ["withdraw", "reinstate", "assign_editor_group", "add_note", "edit_metadata"];
         var requireAnyType = ["delete"];
-        var requiresAdditional = ["assign_editor_group", "add_note"];
+        var requiresAdditional = ["assign_editor_group", "add_note", "edit_metadata"];
         var additional = {
-            assign_editor_group : "#editor_group",
-            add_note : "#note"
+            assign_editor_group : ["#editor_group"],
+            add_note : ["#note"],
+            edit_metadata: ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"]
         };
+
 
         // work out whether we enable submit
         var enable = true;
@@ -69,8 +82,14 @@ jQuery(document).ready(function($) {
         }
 
         if ($.inArray(action, requiresAdditional) > -1) {
-            var additionalVal = $(additional[action]).val();
-            if (additionalVal === "") {
+            var found = false;
+            for (var i = 0; i < additional[action].length; i++) {
+                var val = $(additional[action][i], CONTEXT).val();
+                if (val !== "") {
+                    found = true;
+                }
+            }
+            if (!found) {
                 enable = false;
             }
         }
@@ -152,19 +171,22 @@ jQuery(document).ready(function($) {
             var sure = confirm('This operation will affect ' + build_affected_msg(data) + '.');
             if (sure) {
                 var action = get_bulk_action();
-                var send = {
-                    selection_query: query,
-                    dry_run: false
-                };
+                var data = {};
                 if (action === "add_note") {
-                    send["note"] = $('#note').val();
+                    data = bulk_add_note_data();
                 } else if (action === "assign_editor_group") {
-                    send["editor_group"] = $('#editor_group').val();
+                    data = bulk_assign_editor_group_data();
+                } else if (action === "edit_metadata") {
+                    data = bulk_edit_metadata_data();
                 }
+
+                data["selection_query"] = query;
+                data["dry_run"] = false;
+
                 $.ajax({
                     type: 'POST',
                     url: bulk_action_url(options),
-                    data: JSON.stringify(send),
+                    data: JSON.stringify(data),
                     contentType : 'application/json',
                     success : bulk_action_success_callback,
                     error: bulk_action_error_callback
@@ -180,6 +202,59 @@ jQuery(document).ready(function($) {
     function bulk_job_url(data) {
         var url = "/admin/background_jobs?source=%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22" + data.job_id + "%22%2C%22default_operator%22%3A%22AND%22%7D%7D%2C%22sort%22%3A%5B%7B%22created_date%22%3A%7B%22order%22%3A%22desc%22%7D%7D%5D%2C%22from%22%3A0%2C%22size%22%3A25%7D";
         return url;
+    }
+
+    function bulk_add_note_data() {
+        var data = {
+            note: $('#note', CONTEXT).val()
+        };
+        return data;
+    }
+
+
+    function bulk_assign_editor_group_data() {
+        var data = {
+            editor_group: $('#editor_group', CONTEXT).val()
+        };
+        return data;
+    }
+
+    function bulk_edit_metadata_data() {
+        var seal = $('#doaj_seal', CONTEXT).val();
+        if (seal === "True") {
+            seal = true;
+        } else if (seal === "False") {
+            seal = false;
+        }
+        var data = {
+            metadata : {
+                publisher: $('#publisher', CONTEXT).select2("val"),
+                platform: $('#platform', CONTEXT).select2("val"),
+                country: $('#country', CONTEXT).select2("val"),
+                owner: $('#owner', CONTEXT).select2("val"),
+                contact_name: $('#contact_name', CONTEXT).val(),
+                contact_email: $('#contact_email', CONTEXT).val(),
+                doaj_seal: seal
+            }
+        };
+        return data;
+    }
+
+    function enable_via_edit_form() {
+        var hasval = false;
+        var data = bulk_edit_metadata_data();
+        var keys = Object.keys(data.metadata);
+        for (var i = 0; i < keys.length; i++) {
+            var val = data.metadata[keys[i]];
+            if (!(val === "" || val === undefined)) {
+                hasval = true;
+            }
+        }
+        if (hasval) {
+            enable_bulk_submit();
+        } else {
+            disable_bulk_submit();
+        }
     }
 
     ////////////////////////////////////////////////////////
@@ -207,13 +282,28 @@ jQuery(document).ready(function($) {
             }
         });
 
+        var editForm = $("#edit_form_container");
+        var selects = editForm.find("select");
+        selects.on("change", function(event) {
+            enable_via_edit_form();
+        });
+        var inputs = editForm.find("input");
+        inputs.on("keyup", function(event) {
+            enable_via_edit_form();
+        });
+        inputs.on("change", function(event) {
+            enable_via_edit_form();
+        });
+
         $('#bulk-submit').unbind('click').bind('click', function(event) {
             event.preventDefault();
 
             $('#bulk-submit').attr('disabled', 'disabled').html("<img src='/static/doaj/images/white-transparent-loader.gif'>&nbsp;Submitting...");
 
+            var action = get_bulk_action();
             var sure;
-            if ($('#bulk_action').val() == 'delete') {
+
+            if (action === 'delete') {
                 sure = confirm('Are you sure?  This operation cannot be undone!');
             } else {
                 sure = true;
@@ -226,15 +316,22 @@ jQuery(document).ready(function($) {
                     include_fields: false
                 });
 
+                var data = {};
+                if (action === "add_note") {
+                    data = bulk_add_note_data();
+                } else if (action === "assign_editor_group") {
+                    data = bulk_assign_editor_group_data();
+                } else if (action === "edit_metadata") {
+                    data = bulk_edit_metadata_data();
+                }
+
+                data["selection_query"] = query;
+                data["dry_run"] = true;
+
                 $.ajax({
                     type: 'POST',
                     url: bulk_action_url(options),
-                    data: JSON.stringify({
-                        selection_query: query,
-                        editor_group: $('#editor_group').val(),
-                        note: $('#note').val(),
-                        dry_run: true
-                    }),
+                    data: JSON.stringify(data),
                     contentType : 'application/json',
                     success : bulk_action_confirm_closure(options, query),
                     error: bulk_action_error_callback

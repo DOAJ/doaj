@@ -172,3 +172,7 @@ hr {
 #admin-bulk-box .control-group {
     margin: 5px 0 0 0;
 }
+
+#edit_form_container .controls {
+    margin-left: 220px;
+}
