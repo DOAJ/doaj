@@ -8,6 +8,7 @@ import uuid
 class EmailException(Exception):
     pass
 
+
 def send_contact_form(form):
     subject = "Message from contact form - " + form.email.data
     if form.subject.data is not None and form.subject.data != "":
