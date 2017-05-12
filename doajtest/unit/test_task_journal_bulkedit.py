@@ -121,7 +121,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         # ids are supplied along with editor group only
         params = {}
         JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
-        JournalBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        JournalBulkEditBackgroundTask.set_param(params, 'replacement_metadata', '{"editor_group" : "test editor group"}')
         assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
 
         # ids are supplied along with note only
@@ -133,6 +133,52 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         # everything is supplied
         params = {}
         JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
-        JournalBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
+        JournalBulkEditBackgroundTask.set_param(params, 'replacement_metadata', '{"editor_group" : "test editor group"}')
         JournalBulkEditBackgroundTask.set_param(params, 'note', 'test note')
         assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
+    def test_05_edit_metadata(self):
+        """Bulk assign an editor group to a bunch of journals using a background task"""
+        new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
+
+        # test dry run
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
+                                 publisher="my replacement publisher",
+                                 doaj_seal=True,
+                                 country="AF",
+                                 owner="test1",
+                                 platform="my platform",
+                                 contact_name="my contact",
+                                 contact_email="contact@example.com",
+                                 dry_run=True)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
+
+        summary = journal_manage({"query": {"terms": {"_id": [j.id for j in self.journals]}}},
+                                 publisher="my replacement publisher",
+                                 doaj_seal=True,
+                                 country="AF",
+                                 owner="test1",
+                                 platform="my platform",
+                                 contact_name="my contact",
+                                 contact_email="contact@example.com",
+                                 dry_run=False)
+        assert summary.as_dict().get("affected", {}).get("journals") == TEST_JOURNAL_COUNT, summary.as_dict()
+
+        sleep(1)
+
+        job = models.BackgroundJob.all()[0]
+
+        modified_journals = [j.pull(j.id) for j in self.journals]
+
+        for ix, j in enumerate(modified_journals):
+            assert j.bibjson().publisher == "my replacement publisher", \
+                "modified_journals[{}].publisher is {}" \
+                "\nHere is the BackgroundJob audit log:\n{}"\
+                    .format(ix, j.bibjson().publisher, json.dumps(job.audit, indent=2))
+
+            assert j.has_seal()
+            assert j.bibjson().country == "AF"
+            assert j.owner == "test1"
+            assert j.bibjson().provider == "my platform"
+            assert j.get_latest_contact_name() == "my contact"
+            assert j.get_latest_contact_email() == "contact@example.com"

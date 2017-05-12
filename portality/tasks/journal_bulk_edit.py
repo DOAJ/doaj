@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 
 from flask_login import current_user
+from werkzeug.datastructures import MultiDict
 
 from portality import models, lock
 from portality.core import app
@@ -14,19 +15,24 @@ from portality.decorators import write_required
 from portality.background import AdminBackgroundTask, BackgroundApi, BackgroundException, BackgroundSummary
 
 
-def journal_manage(selection_query, dry_run=True, editor_group='', note=''):
+def journal_manage(selection_query, dry_run=True, editor_group='', note='', **kwargs):
 
     ids = JournalBulkEditBackgroundTask.resolve_selection_query(selection_query)
     if dry_run:
         JournalBulkEditBackgroundTask.check_admin_privilege(current_user.id)
         return BackgroundSummary(None, affected={"journals" : len(ids)})
 
+    if kwargs is None:
+        kwargs = {}
+    if editor_group != "":
+        kwargs["editor_group"] = editor_group
+
     job = JournalBulkEditBackgroundTask.prepare(
         current_user.id,
         selection_query=selection_query,
-        editor_group=editor_group,
         note=note,
-        ids=ids
+        ids=ids,
+        replacement_metadata=kwargs
     )
     JournalBulkEditBackgroundTask.submit(job)
 
@@ -45,10 +51,17 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
     def _job_parameter_check(cls, params):
         # we definitely need "ids" defined
         # we need at least one of "editor_group" or "note" defined as well
-        return bool(
-            cls.get_param(params, 'ids') and \
-            (cls.get_param(params, 'editor_group') or cls.get_param(params, 'note'))
-        )
+        ids = cls.get_param(params, "ids")
+        ids_valid = ids is not None and len(ids) > 0
+
+        note = cls.get_param(params, "note")
+        note_valid = note is not None
+
+        metadata = cls.get_param(params, "replacement_metadata", "{}")
+        metadata = json.loads(metadata)
+        metadata_valid = len(metadata.keys()) > 0
+
+        return ids_valid and (note_valid or metadata_valid)
 
     def run(self):
         """
@@ -58,12 +71,23 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         job = self.background_job
         params = job.params
 
-        ids = self.get_param(params, 'ids')
-        editor_group = self.get_param(params, 'editor_group')
-        note = self.get_param(params, 'note')
-
         if not self._job_parameter_check(params):
             raise BackgroundException(u"{}.run run without sufficient parameters".format(self.__class__.__name__))
+
+        # get the parameters for the job
+        ids = self.get_param(params, 'ids')
+        note = self.get_param(params, 'note')
+        metadata = json.loads(self.get_param(params, 'replacement_metadata', "{}"))
+
+        # if there is metadata, validate it
+        if (len(metadata.keys()) > 0):
+            formdata = MultiDict(metadata)
+            fc = formcontext.JournalFormFactory.get_form_context(
+                role="bulk_edit",
+                form_data=formdata
+            )
+            if not fc.validate():
+                raise BackgroundException("Unable to validate replacement metadata: " + json.dumps(metadata))
 
         for journal_id in ids:
             updated = False
@@ -76,12 +100,25 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
             fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=j)
 
+            if "editor_group" in metadata:
+                fc.form.editor.data = None
+
+            if "contact_email" in metadata:
+                fc.form.confirm_contact_email.data = metadata["contact_email"]
+
+            for k, v in metadata.iteritems():
+                job.add_audit_message(u"Setting {f} to {x} for journal {y}".format(f=k, x=str(v), y=journal_id))
+                fc.form[k].data = v
+                updated = True
+
+            """
             if editor_group:
                 job.add_audit_message(u"Setting editor_group to {x} for journal {y}".format(x=str(editor_group), y=journal_id))
                 f = fc.form.editor_group
                 f.data = editor_group
                 updated = True
-                
+            """
+
             if note:
                 job.add_audit_message(u"Adding note to for journal {y}".format(y=journal_id))
                 fc.form.notes.append_entry(
@@ -154,9 +191,20 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
         job.reference = refs
 
         params = {}
+
+        # get the named parameters we know may be there
         cls.set_param(params, 'ids', kwargs['ids'])
-        cls.set_param(params, 'editor_group', kwargs.get('editor_group', ''))
-        cls.set_param(params, 'note', kwargs.get('note', ''))
+        if "note" in kwargs and kwargs["note"] is not None and kwargs["note"] != "":
+            cls.set_param(params, 'note', kwargs.get('note', ''))
+
+        # get the metadata overwrites
+        if "replacement_metadata" in kwargs:
+            metadata = {}
+            for k, v in kwargs["replacement_metadata"].iteritems():
+                if v is not None and v != "":
+                    metadata[k] = v
+            if len(metadata.keys()) > 0:
+                cls.set_param(params, 'replacement_metadata', json.dumps(metadata))
 
         if not cls._job_parameter_check(params):
             raise BackgroundException(u"{}.prepare run without sufficient parameters".format(cls.__name__))
