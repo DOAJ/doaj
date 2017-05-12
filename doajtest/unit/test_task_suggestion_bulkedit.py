@@ -21,9 +21,20 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
     def setUp(self):
         super(TestTaskSuggestionBulkEdit, self).setUp()
 
+        acc = models.Account()
+        acc.set_id("0987654321")
+        acc.set_email("whatever@example.com")
+        acc.save()
+
+        egs = EditorGroupFixtureFactory.make_editor_group_source("1234567890", "0987654321")
+        egm = models.EditorGroup(**egs)
+        egm.save(blocking=True)
+
         self.suggestions = []
         for app_src in ApplicationFixtureFactory.make_many_application_sources(count=TEST_SUGGESTION_COUNT):
             self.suggestions.append(models.Suggestion(**app_src))
+            self.suggestions[-1].set_editor_group("1234567890")
+            self.suggestions[-1].set_editor("0987654321")
             self.suggestions[-1].save()
 
         self.default_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors()
