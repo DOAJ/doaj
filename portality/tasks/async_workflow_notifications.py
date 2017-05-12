@@ -9,8 +9,6 @@ from portality.tasks.redis_huey import main_queue, schedule
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 
-
-
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
 def managing_editor_notifications(emails_dict):
     """
