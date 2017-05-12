@@ -37,3 +37,40 @@ function __init_optional_field(elem, optional_field_selectors, values_to_show_fo
         }
     }
 }
+
+function toggle_section(sectionSelector, pullDownSelector, value, container, containerWidth) {
+    var originalWidth = $(container).width();
+    var state = "closed";
+
+    $(pullDownSelector).on("change", function(event) {
+        if ($(pullDownSelector).val() ===  value) {
+            originalWidth = $(container).width();
+            $(container).animate({width: containerWidth},
+                {
+                    duration: 200,
+                    step: function() {
+                        $(container).css("overflow", "");
+                    },
+                    complete: function() {
+                        $(sectionSelector).slideDown(400);
+                    }
+                }
+            );
+            state = "open";
+        } else {
+            if (state === "open") {
+                $(sectionSelector).slideUp(400, function() {
+                    $(container).animate({width: originalWidth},
+                        {
+                            duration: 200,
+                            step: function() {
+                                $(container).css("overflow", "");
+                            }
+                        }
+                    );
+                });
+                state = "closed";
+            }
+        }
+    });
+}
