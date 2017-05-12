@@ -351,7 +351,7 @@ class ApplicationOwner(Form):
 
     owner = StringField('Owner',
         [ReservedUsernames(), OptionalIf('application_status', optvals=Choices.application_status_optional())],
-        description='DOAJ account to which the application belongs to.'
+        description='DOAJ account to which the application belongs.'
                     '<br><br>'
                     'This field is optional unless the application status is set to Accepted.'
                     '<br><br>'
@@ -528,3 +528,33 @@ class ReadOnlyJournalForm(JournalInformation, JournalSubject, JournalLegacy, Not
         * Notes - repeatable notes field
     """
     pass
+
+class ManEdBulkEditJournalForm(Form):
+    publisher = StringField('Publisher',
+        [validators.Optional()]
+    )
+    # doaj_seal = BooleanField('Qualifies for Seal', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
+    doaj_seal = DOAJSelectField('Qualifies for Seal',
+        [validators.Optional()],
+        description='How should we change the DOAJ Seal on these journals?',
+        choices=[("", "Leave unchanged"), ("True", "Yes"), ("False", "No")],
+    )
+    country = DOAJSelectField('Country',
+        [validators.Optional()],
+        description='Select the country where the publisher carries out its business activities.',
+        choices=Choices.country(),
+    )
+    owner = StringField('Owner',
+        [ReservedUsernames(), validators.Optional()],
+        description='DOAJ account to which the application belongs.'
+    )
+    platform = StringField('Platform, Host or Aggregator',
+        [validators.Optional()],
+        description='The name of the platform, host or aggregator of the journal content, e.g. OJS, HighWire Press, EBSCO etc.'
+    )
+    contact_name = StringField('Contact Name',
+        [validators.Optional()]
+    )
+    contact_email = StringField('Contact\'s email address',
+        [validators.Optional(), validators.Email(message='Invalid email address.')]
+    )
