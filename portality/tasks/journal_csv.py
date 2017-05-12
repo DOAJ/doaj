@@ -11,13 +11,14 @@ import os, sys, codecs
 from datetime import datetime
 from operator import itemgetter
 
+
 class JournalCSVBackgroundTask(BackgroundTask):
 
     __action__ = "journal_csv"
 
     def run(self):
         """
-        Execute the task as specified by the background_jon
+        Execute the task as specified by the background_job
         :return:
         """
         job = self.background_job
@@ -87,12 +88,14 @@ class JournalCSVBackgroundTask(BackgroundTask):
         background_job.save()
         journal_csv.schedule(args=(background_job.id,), delay=10)
 
+
 @main_queue.periodic_task(schedule("journal_csv"))
 @write_required(script=True)
 def scheduled_journal_csv():
     user = app.config.get("SYSTEM_USERNAME")
     job = JournalCSVBackgroundTask.prepare(user)
     JournalCSVBackgroundTask.submit(job)
+
 
 @main_queue.task()
 @write_required(script=True)

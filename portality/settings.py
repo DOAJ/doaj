@@ -72,15 +72,16 @@ HUEY_REDIS_PORT = 6379
 HUEY_EAGER = False
 
 HUEY_SCHEDULE = {
-    "sitemap" : {"month" : "*", "day" : "*", "hour" : "8", "minute" : "0"},
-    "reporting" : {"month" : "*", "day" : "1", "hour" : "0", "minute" : "0"},
-    "journal_csv" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
-    "read_news" : {"month" : "*", "day" : "*", "hour" : "*", "minute" : "30"},
-    "article_cleanup_sync" : {"month" : "*", "day" : "2", "hour" : "0", "minute" : "0"}
+    "sitemap": {"month": "*", "day": "*", "day_of_week": "*", "hour": "8", "minute": "0"},
+    "reporting": {"month": "*", "day": "1", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
+    "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
+    "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
+    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"}
 }
 
 HUEY_TASKS = {
-    "ingest_articles" : {"retries" : 10, "retry_delay" : 15}
+    "ingest_articles": {"retries": 10, "retry_delay": 15}
 }
 
 # PyCharm debug settings
