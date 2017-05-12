@@ -299,7 +299,7 @@ jQuery(document).ready(function($) {
             {'display':'Publisher','field':'index.publisher'},
 
             {'display':'Article: Abstract','field':'bibjson.abstract'},
-            {'display':'Article: Author','field':'bibjson.author'},
+            {'display':'Article: Author','field':'bibjson.author.name'},
             {'display':'Article: Year','field':'bibjson.year'},
             {'display':'Article: Journal Title','field':'bibjson.journal.title'},
 
