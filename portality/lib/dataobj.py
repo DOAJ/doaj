@@ -151,13 +151,12 @@ def to_isolang(output_format=None):
     return isolang
 
 def to_url(val):
-    if val is None:
-        return None
+    if not isinstance(val, basestring):
+        raise ValueError(u"Argument passed to to_url was not a string, but type '{t}': '{val}'".format(t=type(val),val=val))
 
-    if hasattr(val, 'strip') and callable(getattr(val, 'strip')):
-        val = val.strip()
+    val = val.strip()
 
-    if not val:
+    if val == '':
         return val
 
     # parse with urlparse
