@@ -154,6 +154,12 @@ def to_url(val):
     if val is None:
         return None
 
+    if hasattr(val, 'strip') and callable(getattr(val, 'strip')):
+        val = val.strip()
+
+    if not val:
+        return val
+
     # parse with urlparse
     url = urlparse.urlparse(val)
 
