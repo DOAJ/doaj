@@ -5,17 +5,15 @@ main_queue = RedisHuey('doaj_main_queue', host=app.config['HUEY_REDIS_HOST'], po
 
 long_running = RedisHuey('doaj_long_running', host=app.config['HUEY_REDIS_HOST'], port=app.config['HUEY_REDIS_PORT'], always_eager=app.config.get("HUEY_EAGER", False))
 
+
 def schedule(action):
     cfg = app.config.get("HUEY_SCHEDULE", {})
     action_cfg = cfg.get(action)
     if action_cfg is None:
         raise RuntimeError(u"No configuration for scheduled action '{x}'.  Define this in HUEY_SCHEDULE first then try again.".format(x=action))
 
-    month = action_cfg.get("month", "*")
-    day = action_cfg.get("day", "*")
-    hour = action_cfg.get("hour", "*")
-    minute = action_cfg.get("minute", "*")
-    return crontab(month=month, day=day, hour=hour, minute=minute)
+    return crontab(**action_cfg)
+
 
 def configure(action):
     cfg = app.config.get("HUEY_TASKS", {})
