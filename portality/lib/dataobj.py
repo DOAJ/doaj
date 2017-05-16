@@ -685,7 +685,7 @@ class DataObj(object):
         except (ValueError, TypeError):
             if accept_failure:
                 return val
-            raise DataSchemaException(u"Cast with {x} failed on {y}".format(x=cast, y=val))
+            raise DataSchemaException(u"Cast with {x} failed on '{y}' of type {z}".format(x=cast, y=val, z=type(val)))
 
     def _get_single(self, path, coerce=None, default=None, allow_coerce_failure=True):
         # get the value at the point in the object
@@ -1081,7 +1081,7 @@ def construct(obj, struct, coerce, context="", silent_prune=False, maintain_refe
         try:
             constructed._set_single(field_name, val, coerce=coerce_fn, **kwargs)
         except DataSchemaException as e:
-            raise DataStructureException(u"Schema exception at {a}, {b}".format(a=field_name, b=e.message))
+            raise DataStructureException(u"Schema exception at '{a}', {b}".format(a=context + field_name, b=e.message))
 
     # next check all the objetcs (which will involve a recursive call to this function)
     for field_name in struct.get("objects", []):
