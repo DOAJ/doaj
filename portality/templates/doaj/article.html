@@ -2,8 +2,11 @@
 
 {% block page_title %}
     {% set bibjson = article.bibjson() %}
-    {% set metatitle = bibjson.title %}
-    {% set metatitle = metatitle + ' | ' + app.config['SERVICE_NAME'] %}
+    {%  if bibjson.title %}
+        {% set metatitle = bibjson.title + ' | ' + app.config['SERVICE_NAME'] %}
+    {% else %}
+        {% set metatitle = app.config['SERVICE_NAME'] %}
+    {% endif %}
     <title>{{ metatitle }}</title>
 {% endblock %}
 
@@ -68,7 +71,11 @@ hosted on DOAJ.org) #}
 
 <div class="row-fluid">
     <div class="span12">
-        <h1>{{bibjson.title}}</h1>
+        {%  if bibjson.title %}
+            <h1>{{bibjson.title}}</h1>
+        {% else %}
+            <h1>&lt; Article title missing &gt;</h1>
+        {% endif %}
 
         <p>
         {# citation #}
