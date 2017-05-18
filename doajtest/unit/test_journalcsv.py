@@ -1,4 +1,5 @@
-import time, csv, os, codecs
+# -*- coding: UTF-8 -*-
+import csv, os, codecs
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures import JournalFixtureFactory
 from portality import models, journalcsv
@@ -319,6 +320,7 @@ class TestJournalCSV(DoajTestCase):
 
         journal1_source = JournalFixtureFactory.make_journal_source()
         journal1_source['bibjson']['title'] = u'The Title'
+        journal1_source['bibjson']['alternative_title'] = u"Заглавие на журнала"
         journal1_source['bibjson']['institution'] = u'Society Institution'
         journal1_source['bibjson']['publisher'] = u'The Publisher'
         csv_source_journal1 = models.Journal(**journal1_source)
@@ -329,7 +331,7 @@ class TestJournalCSV(DoajTestCase):
         expected_journalrow = [
             'The Title',
             'http://journal.url',
-            'Alternative Title',
+            'Заглавие на журнала',
             '1234-5678',
             '9876-5432',
             'The Publisher',
@@ -389,9 +391,13 @@ class TestJournalCSV(DoajTestCase):
         csvstream = StringIO()
         journalcsv.make_journals_csv(csvstream)
 
+        def utf_8_encoder(unicode_csv_data):
+            for line in unicode_csv_data:
+                yield line.encode('utf-8')
+
         # read back the csv and check the rows are as expected.
         csvstream.seek(0)
-        csvreader = csv.reader(csvstream)
+        csvreader = csv.reader(utf_8_encoder(csvstream))
         csv_rows = []
         for row in csvreader:
             csv_rows.append(row)
