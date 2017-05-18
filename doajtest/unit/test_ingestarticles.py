@@ -6,7 +6,7 @@ from portality import models, article
 from portality.core import app
 import os, requests, ftplib, urlparse
 from portality.background import BackgroundException, RetryException
-import uuid, time
+import time
 
 GET = requests.get
 

@@ -2,8 +2,7 @@ from doajtest.helpers import DoajTestCase
 from portality.lib import dataobj
 from portality.api.v1.data_objects import OutgoingJournal
 from portality import models
-from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory
+from doajtest.fixtures import JournalFixtureFactory
 
 class TestAPIDataObj(DoajTestCase):
 

@@ -1,9 +1,8 @@
 from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataObj, DataStructureException
+from portality.lib.dataobj import DataStructureException
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
-from datetime import datetime
 from doajtest.fixtures import ApplicationFixtureFactory
 import time
 

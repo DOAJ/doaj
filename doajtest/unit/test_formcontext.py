@@ -1,5 +1,4 @@
 from doajtest.helpers import DoajTestCase
-# from flask.ext.testing import TestCase
 
 from portality import models, core
 from portality.formcontext import formcontext, render

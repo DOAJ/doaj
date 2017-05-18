@@ -1,7 +1,7 @@
 from doajtest.helpers import DoajTestCase
 from doajtest.fixtures.article import ArticleFixtureFactory
 from portality import article, models
-import uuid, time
+import time
 
 class TestArticleUpload(DoajTestCase):
 

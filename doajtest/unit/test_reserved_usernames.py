@@ -5,8 +5,8 @@ from nose.tools import assert_raises
 from werkzeug.datastructures import MultiDict
 from wtforms import StringField, Form, validators
 
-from portality import models, core
-from portality.formcontext import formcontext, render, validate
+from portality import models
+from portality.formcontext import validate
 
 class TestReservedUsernames(DoajTestCase):
     def setUp(self):
