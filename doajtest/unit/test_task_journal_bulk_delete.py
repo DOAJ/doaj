@@ -2,12 +2,8 @@ from time import sleep
 import json
 
 from doajtest.helpers import DoajTestCase
-
-from flask_login import logout_user
-
 from portality import models
-from portality.background import BackgroundException
-from portality.tasks.journal_bulk_delete import journal_bulk_delete_manage, JournalBulkDeleteBackgroundTask
+from portality.tasks.journal_bulk_delete import journal_bulk_delete_manage
 
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ArticleFixtureFactory
 

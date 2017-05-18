@@ -1,6 +1,5 @@
-import csv
 from copy import deepcopy
-from portality import models, datasets
+from portality import models, datasets, clcsv
 from portality.formcontext import choices
 from portality.formcontext.xwalk import JournalFormXWalk
 
@@ -22,12 +21,12 @@ YES_NO = {True: 'Yes', False: 'No', None: '', '': ''}
 def make_journals_csv(file_object):
     """
     Make a CSV file of information for all journals.
-    :param file_object: a utf8 encoded file object. * System default encoding must also be utf8
+    :param file_object: a utf8 encoded file object.
     """
 
     cols = {}
-    for j in models.Journal.all_in_doaj(page_size=100000):  # 10x how many journals we have right now
-        assert isinstance(j, models.Journal) # for pycharm type inspection
+    for j in models.Journal.all_in_doaj(page_size=100000):                     # 10x how many journals we have right now
+        assert isinstance(j, models.Journal)                                               # for pycharm type inspection
         bj = j.bibjson()
         issn = bj.get_one_identifier(idtype=bj.P_ISSN)
         if issn is None:
@@ -42,7 +41,7 @@ def make_journals_csv(file_object):
     issns = cols.keys()
     issns.sort()
 
-    csvwriter = csv.writer(file_object)
+    csvwriter = clcsv.UnicodeWriter(file_object)
     qs = None
     for i in issns:
         if qs is None:
@@ -58,11 +57,12 @@ def get_doaj_meta_kvs(journal):
     :param journal: a models.Journal
     :return: a list of (key, value) tuples for our metadata
     """
-    kvs = []
-    kvs.append( ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")) )
-    kvs.append( ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")) )
-    kvs.append( ("Added on Date", journal.created_date) )
-    kvs.append( ("Subjects", ' | '.join(journal.bibjson().lcc_paths())) )
+    kvs = [
+        ("DOAJ Seal", YES_NO.get(journal.has_seal(), "")),
+        ("Tick: Accepted after March 2014", YES_NO.get(journal.is_ticked(), "")),
+        ("Added on Date", journal.created_date),
+        ("Subjects", ' | '.join(journal.bibjson().lcc_paths()))
+    ]
     return kvs
 
 #################################################################
@@ -85,9 +85,6 @@ class Journal2QuestionXwalk(object):
         ("publisher",                           "Publisher"),
         ("society_institution",                 "Society or institution"),
         ("platform",                            "Platform, host or aggregator"),
-        #("contact_name",                        "9) Name of contact for this journal EDIT ONLY IF BLANK *"),
-        #("contact_email",                       "10) Contact's email address EDIT ONLY IF BLANK *"),
-        #("confirm_contact_email",               "11) Confirm contact's email address EDIT ONLY IF BLANK *"),
         ("country",                             "Country of publisher"),
         ("processing_charges",                  "Journal article processing charges (APCs)"),
         ("processing_charges_url",              "APC information URL"),
@@ -137,10 +134,10 @@ class Journal2QuestionXwalk(object):
     ]
 
     DEGEN = {
-        "article_identifiers_other" : "article_identifiers",
-        "fulltext_format_other" : "fulltext_format",
-        "license_other" : "license",
-        "deposit_policy_other" : "deposit_policy"
+        "article_identifiers_other": "article_identifiers",
+        "fulltext_format_other": "fulltext_format",
+        "license_other": "license",
+        "deposit_policy_other": "deposit_policy"
     }
 
     @classmethod
@@ -247,9 +244,6 @@ class Journal2QuestionXwalk(object):
         kvs.append((cls.q("publisher"), forminfo.get("publisher")))
         kvs.append((cls.q("society_institution"), forminfo.get("society_institution")))
         kvs.append((cls.q("platform"), forminfo.get("platform")))
-        #kvs.append((cls.q("contact_name"), forminfo.get("contact_name")))
-        #kvs.append((cls.q("contact_email"), forminfo.get("contact_email")))
-        #kvs.append((cls.q("confirm_contact_email"), forminfo.get("confirm_contact_email")))
         kvs.append((cls.q("country"), datasets.get_country_name(forminfo.get("country"))))
         # Get the APC info from journal index, since this includes [yes / no / no information] rather than true / false
         kvs.append((cls.q("processing_charges"), journal.data.get("index", {}).get("has_apc")))
