@@ -1,5 +1,180 @@
+var doaj = {
+    active : false,
+    newMultiFormBox : function(params) {
+        params = params === undefined ? {} : params;
+        return new doaj.MultiFormBox(params);
+    },
+    MultiFormBox : function(params) {
+        this.selector = params.selector;
+        this.slideTime = params.slideTime !== undefined ? params.slideTime : 400;
+        this.widths = params.widths !== undefined ? params.widths : {};
+        this.bindings = params.bindings !== undefined ? params.bindings : {};
+
+        this.context = false;
+        this.initialContent = {};
+        this.currentField = false;
+        this.defaultWidth = false;
+        this.currentWidth = false;
+
+        this.init = function() {
+            this.context = $(this.selector);
+            this.defaultWidth = this.context.outerWidth() + "px";
+            this.currentWidth = this.defaultWidth;
+
+            var that = this;
+            var containers = this.context.find(".multiformbox-container");
+            containers.each(function(i) {
+                var content = $(this).html();
+                var id = $(this).attr("id");
+                that.initialContent[id] = content;
+                $(this).html("");
+            });
+
+            var selectBox = this.context.find(".multiformbox-selector");
+            var selectHandler = doaj.eventClosure(this, "selectChanged");
+            selectBox.unbind("change.multiformbox").bind("change.multiformbox", selectHandler);
+        };
+
+        this.selectChanged = function(element) {
+            var val = $(element).val();
+            if (val === this.currentField) {
+                return;
+            }
+
+            this.transitionPart1({
+                target: val
+            });
+        };
+
+        this.transitionPart1 = function(params) {
+            // first part of the transition is to slide the form up to cover whatever is there right now
+            if (this.currentField === false) {
+                this.transitionPart2(params);
+                return;
+            }
+            var currentContainerId = this.currentField + "-container";
+            var current = this.context.find("#" + currentContainerId);
+            if (current.length > 0) {
+                params["current"] = current;
+                var clos = doaj.objClosure(this, "transitionPart2", false, params);
+                current.slideUp(this.slideTime, clos);
+            } else {
+                this.transitionPart2(params);
+                return;
+            }
+        };
+
+        this.transitionPart2 = function(params) {
+            // get rid of the old form, now it is hidden
+            if (params.current) {
+                params.current.html("");
+            }
+
+            // second part is to adjust the width of the container
+            var val = params.target;
+            var width = this.defaultWidth;
+            if (val in this.widths) {
+                width = this.widths[val];
+            }
+            if (width === this.currentWidth) {
+                this.transitionPart3(params);
+                return;
+            }
+            this.currentWidth = width;
+
+            var clos = doaj.objClosure(this, "transitionPart3", false, params);
+            var that = this;
+            this.context.animate({width: width},
+                {
+                    duration: this.slideTime,
+                    step: function() {
+                        that.context.css("overflow", "");
+                    },
+                    complete: clos
+                }
+            );
+        };
+
+        this.transitionPart3 = function(params) {
+            this.currentField = params.target;
+
+            // final part is to slide out the new form
+            var containerId = params.target + "-container";
+            var target = this.context.find("#" + containerId);
+            if (target.length > 0) {
+                if (containerId in this.initialContent) {
+                    target.html(this.initialContent[containerId]);
+                } else {
+                    target.html("");
+                }
+            }
+
+            if (params.target in this.bindings) {
+                this.bindings[params.target](this.context);
+            }
+
+            target.slideDown(this.slideTime);
+        };
+
+        this.init();
+    },
+
+    objClosure : function(obj, fn, args, context_params) {
+        return function() {
+            if (args) {
+                var params = {};
+                for (var i = 0; i < args.length; i++) {
+                    if (arguments.length > i) {
+                        params[args[i]] = arguments[i];
+                    }
+                }
+                if (context_params) {
+                    params = $.extend(params, context_params);
+                }
+                obj[fn](params);
+            } else {
+                var slice = Array.prototype.slice;
+                var theArgs = slice.apply(arguments);
+                if (context_params) {
+                    theArgs.push(context_params);
+                }
+                obj[fn].apply(obj, theArgs);
+            }
+        }
+    },
+
+    eventClosure : function(obj, fn) {
+        return function(event) {
+            event.preventDefault();
+            obj[fn](this);
+        }
+    }
+};
+
+
+
 jQuery(document).ready(function($) {
 
+    var mfb = doaj.newMultiFormBox({
+        selector: "#admin-bulk-box",
+        widths: {
+            edit_metadata: "600px"
+        },
+        bindings : {
+            editor_group : function(context) {
+                autocomplete($('#editor_group', context), 'name', 'editor_group', 1, false);
+            },
+            edit_metadata : function(context) {
+                autocomplete($('#publisher', context), 'bibjson.publisher');
+                autocomplete($('#platform', context), 'bibjson.provider');
+                $('#country', context).select2();
+                autocomplete($('#owner', context), 'id', 'account');
+            }
+        }
+    });
+    doaj.active = mfb;
+
+    /*
     ////////////////////////////////////////////////////////////
     // context selector for the bulk edit box
     var CONTEXT = $("#admin-bulk-box");
@@ -258,10 +433,16 @@ jQuery(document).ready(function($) {
     }
 
     ////////////////////////////////////////////////////////
+    */
+
+    function adminJAPostSearch(options, context) {
+
+    }
 
     function adminJAPostRender(options, context) {
         doajJAPostRender(options, context);
 
+        /*
         $('#bulk_action').change(function () {
             bulk_action_controls(options);
         });
@@ -340,6 +521,7 @@ jQuery(document).ready(function($) {
                 bulk_ui_reset();
             }
         });
+        */
     }
 
     /////////////////////////////////////////////////////////////////
@@ -350,7 +532,7 @@ jQuery(document).ready(function($) {
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
         post_render_callback: adminJAPostRender,
-        post_search_callback: bulk_action_controls,
+        post_search_callback: adminJAPostSearch,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,

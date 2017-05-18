@@ -13,13 +13,13 @@
                     <fieldset>
                         <div class="control-group" id="bulk_action-container">
                             <div class="controls ">
-                                <select id="bulk_action" name="bulk_action" style="width: 250px;">
+                                <select class="multiformbox-selector" id="bulk_action" name="bulk_action" style="width: 250px;">
                                     <option selected value="">Select action...</option>
                                     <option value="withdraw">Withdraw from DOAJ</option>
                                     <option value="reinstate">Reinstate into DOAJ</option>
                                     <option value="edit_metadata">Journal: edit metadata ...</option>
-                                    <option value="assign_editor_group">Journal: Assign to editor group...</option>
-                                    <option value="add_note">Journal: Add a note...</option>
+                                    <option value="editor_group">Journal: Assign to editor group...</option>
+                                    <option value="note">Journal: Add a note...</option>
 
                                     {%  if current_user.has_role("ultra_bulk_delete") %}
                                     <option value="delete">Delete records</option>
@@ -27,17 +27,17 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="control-group" style="display: none" id="editor_group-container">
+                        <div class="control-group multiformbox-container" style="display: none" id="editor_group-container">
                             <div class="controls">
                                 <input id="editor_group" name="editor_group" style="width: 250px;" type="text" value="">
                             </div>
                         </div>
-                        <div class="control-group" style="display: none" id="note-container">
+                        <div class="control-group multiformbox-container" style="display: none" id="note-container">
                             <div class="controls">
                                 <textarea id="note" name="note" style="width: 240px;" placeholder="Type note here..."></textarea>
                             </div>
                         </div>
-                        <div style="display: none" id="edit_form_container">
+                        <div class="multiformbox-container" style="display: none" id="edit_metadata-container">
                             {% autoescape off %}
                             {{ edit_form }}
                             {% endautoescape %}
