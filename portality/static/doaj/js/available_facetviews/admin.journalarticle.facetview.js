@@ -1,5 +1,7 @@
 var doaj = {
+    currentFVOptions: false,
     active : false,
+    
     newMultiFormBox : function(params) {
         params = params === undefined ? {} : params;
         return new doaj.MultiFormBox(params);
@@ -9,17 +11,20 @@ var doaj = {
         this.slideTime = params.slideTime !== undefined ? params.slideTime : 400;
         this.widths = params.widths !== undefined ? params.widths : {};
         this.bindings = params.bindings !== undefined ? params.bindings : {};
+        this.validators = params.validators !== undefined ? params.validators : {};
 
         this.context = false;
         this.initialContent = {};
         this.currentField = false;
         this.defaultWidth = false;
         this.currentWidth = false;
+        this.currentError = false;
 
         this.init = function() {
             this.context = $(this.selector);
             this.defaultWidth = this.context.outerWidth() + "px";
             this.currentWidth = this.defaultWidth;
+            this.context.css("width", this.defaultWidth);
 
             var that = this;
             var containers = this.context.find(".multiformbox-container");
@@ -33,6 +38,8 @@ var doaj = {
             var selectBox = this.context.find(".multiformbox-selector");
             var selectHandler = doaj.eventClosure(this, "selectChanged");
             selectBox.unbind("change.multiformbox").bind("change.multiformbox", selectHandler);
+
+            this.validate();
         };
 
         this.selectChanged = function(element) {
@@ -44,6 +51,47 @@ var doaj = {
             this.transitionPart1({
                 target: val
             });
+        };
+
+        this.validate = function() {
+            var valid = false;
+            var error_id = false;
+            if (this.currentField === false || this.currentField === "") {
+                valid = false;
+            } else if (!(this.currentField in this.validators)) {
+                valid = true;
+            } else {
+                var result = this.validators[this.currentField](this.context);
+                valid = result.valid;
+                if ("error_id" in result) {
+                    error_id = result.error_id;
+                }
+            }
+
+            if (valid) {
+                this._enableSubmit();
+            } else {
+                this._disableSubmit();
+            }
+            this._showError(error_id);
+        };
+
+        this._enableSubmit = function() {
+            this.context.find(".multiformbox-submit").removeAttr('disabled').html("Submit");
+        };
+
+        this._disableSubmit = function() {
+            this.context.find(".multiformbox-submit").attr('disabled', 'disabled').html("Submit");
+        };
+
+        this._showError = function(error_id) {
+            if (error_id === false && this.currentError !== false) {
+                this.context.find(".multiformbox-error").hide();
+            } else if (error_id !== false && this.currentError !== error_id) {
+                this.context.find(".multiformbox-error").hide();
+                this.context.find("#" + error_id).show();
+            }
+            this.currentError = error_id;
         };
 
         this.transitionPart1 = function(params) {
@@ -113,7 +161,13 @@ var doaj = {
                 this.bindings[params.target](this.context);
             }
 
+            var validateHandler = doaj.eventClosure(this, "validate");
+            var inputs = target.find(":input");
+            inputs.unbind("keyup.multiformbox").bind("keyup.multiformbox", validateHandler);
+            inputs.unbind("change.multiformbox").bind("change.multiformbox", validateHandler);
+
             target.slideDown(this.slideTime);
+            this.validate();
         };
 
         this.init();
@@ -155,6 +209,31 @@ var doaj = {
 
 jQuery(document).ready(function($) {
 
+    function journalSelected() {
+        var type = doaj.currentFVOptions.active_filters._type;
+        if (type && type.length > 0) {
+            type = type[0];
+        }
+        if (!type || type !== "journal") {
+            return {
+                valid: false,
+                error_id: "journal_type_error"
+            }
+        }
+        return {valid : true};
+    }
+
+    function anySelected() {
+        var type = doaj.currentFVOptions.active_filters._type;
+        if (!type || type.length === 0) {
+            return {
+                valid: false,
+                error_id: "any_type_error"
+            }
+        }
+        return {valid: true};
+    }
+
     var mfb = doaj.newMultiFormBox({
         selector: "#admin-bulk-box",
         widths: {
@@ -169,6 +248,52 @@ jQuery(document).ready(function($) {
                 autocomplete($('#platform', context), 'bibjson.provider');
                 $('#country', context).select2();
                 autocomplete($('#owner', context), 'id', 'account');
+            }
+        },
+        validators : {
+            withdraw : journalSelected,
+            reinstate: journalSelected,
+            delete: anySelected,
+            note : function(context) {
+                var valid = journalSelected();
+                if (!valid.valid) {
+                    return valid;
+                }
+                var val = context.find("#note").val();
+                if (val === "") {
+                    return {valid: false};
+                }
+                return {valid: true};
+            },
+            editor_group : function(context) {
+                var valid = journalSelected();
+                if (!valid.valid) {
+                    return valid;
+                }
+                var val = context.find("#editor_group").val();
+                if (val === "") {
+                    return {valid: false};
+                }
+                return {valid: true};
+            },
+            edit_metadata : function(context) {
+                var valid = journalSelected();
+                if (!valid.valid) {
+                    return valid;
+                }
+
+                var found = false;
+                var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
+                for (var i = 0; i < fields.length; i++) {
+                    var val = context.find(fields[i]).val();
+                    if (val !== "") {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    return {valid: false};
+                }
+                return {valid: true};
             }
         }
     });
@@ -436,7 +561,8 @@ jQuery(document).ready(function($) {
     */
 
     function adminJAPostSearch(options, context) {
-
+        doaj.currentFVOptions = options;
+        doaj.active.validate();
     }
 
     function adminJAPostRender(options, context) {
