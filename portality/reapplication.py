@@ -404,7 +404,7 @@ class Suggestion2QuestionXwalk(object):
         ("plagiarism_screening_url",            "42) Enter the URL where this information can be found **"),
         ("publication_time",                    "43) What is the average number of weeks between submission and publication? *"),
         ("oa_statement_url",                    "44) What is the URL for the journal's Open Access statement? *"),
-        ("license_embedded",                    "45) Does the journal embed or display simple machine-readable CC licensing information in its articles? *"),
+        ("license_embedded",                    "45) Does the journal embed or display licensing information in its articles? *"),
         ("license_embedded_url",                "46) Please provide a URL to an example page with embedded licensing information **"),
         ("license",                             "47) Enter which type of CC license the journal uses. If it is not a CC license, enter the license's name. Or enter None. *"),
         ("license_checkbox",                    "48) If the journal has a license which is not a CC license, which of the following does the content require: Attribution, No Commercial Usage, No Derivatives, Share Alike?"),
