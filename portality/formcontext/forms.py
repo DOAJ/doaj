@@ -197,7 +197,7 @@ class JournalInformation(Form):
     oa_statement_url = URLField("What is the URL for the journal's Open Access statement?",
         [validators.DataRequired(), URLOptionalScheme()]
     )
-    license_embedded = RadioField('Does the journal embed or display simple machine-readable CC licensing information in its articles?',
+    license_embedded = RadioField('Does the journal embed or display licensing information in its articles?',
         [validators.DataRequired()],
         choices = Choices.licence_embedded(),
         description = 'For more information go to <a target="_blank" href="http://wiki.creativecommons.org/CC_REL">http://wiki.creativecommons.org/CC_REL</a><br><br>If "No" proceed to question 47.',
