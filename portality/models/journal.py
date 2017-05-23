@@ -160,6 +160,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def set_editor(self, ed):
         self._set_with_struct("admin.editor", ed)
 
+    def remove_editor(self):
+        self._delete('admin.editor')
+
     def known_issns(self):
         """
         DEPRECATED
