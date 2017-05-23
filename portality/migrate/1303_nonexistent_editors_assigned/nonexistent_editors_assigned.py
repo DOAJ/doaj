@@ -23,10 +23,6 @@ def migrate(model, valid_editors):
         model.remove_editor()
         edited = True
         
-    if model.editor == '':
-        model.remove_editor()
-        edited = True
-        
     return edited
 
 
