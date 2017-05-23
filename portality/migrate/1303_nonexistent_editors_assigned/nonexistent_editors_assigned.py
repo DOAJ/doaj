@@ -5,8 +5,7 @@ from portality import models
 from portality.lib.dataobj import DataStructureException
 
 '''
-Use a scroll search to remove some possible question responses from
-applications and journals.
+Use a scroll search to remove nonexistent editors from applications.
 '''
 
 # Connection to the ES index
