@@ -14,14 +14,16 @@ class RetryException(Exception):
     pass
 
 class BackgroundSummary(object):
-    def __init__(self, job_id, affected=None):
+    def __init__(self, job_id, affected=None, error=None):
         self.job_id = job_id
         self.affected = affected if affected is not None else {}
+        self.error = error
 
     def as_dict(self):
         return {
             "job_id" : self.job_id,
-            "affected" : self.affected
+            "affected" : self.affected,
+            "error" : self.error
         }
 
 class BackgroundApi(object):

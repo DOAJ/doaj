@@ -528,13 +528,17 @@ def bulk_edit_journal_metadata():
         form_data=formdata
     )
     if not fc.validate():
-        raise BulkAdminEndpointException("Unable to validate input")
-
-    summary = task(
-        selection_query=get_query_from_request(payload),
-        dry_run=payload.get('dry_run', True),
-        **payload["metadata"]
-    )
+        msg = "Unable to submit your request due to form validation issues: "
+        for field in fc.form:
+            if field.errors:
+                msg += field.label.text + " - " + ",".join(field.errors)
+        summary = BackgroundSummary(None, error=msg)
+    else:
+        summary = task(
+            selection_query=get_query_from_request(payload),
+            dry_run=payload.get('dry_run', True),
+            **payload["metadata"]
+        )
 
     return make_json_resp(summary.as_dict(), status_code=200)
 

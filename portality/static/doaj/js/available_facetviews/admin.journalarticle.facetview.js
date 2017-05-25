@@ -87,6 +87,12 @@ var doaj = {
         };
 
         this.confirmSubmit = function(data) {
+            if (data.error) {
+                alert("There was a problem processing your request.  " + data.error);
+                this.validate();
+                return;
+            }
+
             var sure = confirm('This operation will affect ' + this._affectedMessage(data) + '.');
 
             if (!sure) {
@@ -441,11 +447,13 @@ jQuery(document).ready(function($) {
                 return {valid: true};
             },
             edit_metadata : function(context) {
+                // first check that the journal has been selected
                 var valid = journalSelected();
                 if (!valid.valid) {
                     return valid;
                 }
 
+                // now check that at least one field has been completed
                 var found = false;
                 var fields = ["#publisher", "#platform", "#country", "#owner", "#contact_name", "#contact_email", "#doaj_seal"];
                 for (var i = 0; i < fields.length; i++) {
@@ -457,6 +465,17 @@ jQuery(document).ready(function($) {
                 if (!found) {
                     return {valid: false};
                 }
+
+                // now check for valid field contents
+                // quick and dirty email check - this will be done properly server-side
+                var email = context.find("#contact_email").val();
+                if (email !== "") {
+                    var match = email.match(/.+\@.+\..+/);
+                    if (match === null) {
+                        return {valid: false, error_id: "invalid_email"};
+                    }
+                }
+
                 return {valid: true};
             }
         },
