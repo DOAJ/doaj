@@ -1,6 +1,8 @@
 from time import sleep
 import json
 
+from werkzeug.datastructures import MultiDict
+
 from doajtest.helpers import DoajTestCase
 
 from flask_login import logout_user
@@ -8,6 +10,7 @@ from flask_login import logout_user
 from portality import models
 from portality.background import BackgroundException
 from portality.tasks.journal_bulk_edit import journal_manage, JournalBulkEditBackgroundTask
+from portality.formcontext import formcontext
 
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 
@@ -137,6 +140,12 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         JournalBulkEditBackgroundTask.set_param(params, 'note', 'test note')
         assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
 
+        # edit metadata request
+        params = {}
+        JournalBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
+        JournalBulkEditBackgroundTask.set_param(params, 'replacement_metadata', '{"publisher" : "My Publisher"}')
+        assert JournalBulkEditBackgroundTask._job_parameter_check(params) is True, JournalBulkEditBackgroundTask._job_parameter_check(params)
+
     def test_05_edit_metadata(self):
         """Bulk assign an editor group to a bunch of journals using a background task"""
         new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='Test Editor Group')
@@ -182,3 +191,25 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j.bibjson().provider == "my platform"
             assert j.get_latest_contact_name() == "my contact"
             assert j.get_latest_contact_email() == "contact@example.com"
+
+    def test_06_bulk_edit_formcontext(self):
+        source = JournalFixtureFactory.make_bulk_edit_data()
+
+        # we start by constructing it from source
+        fc = formcontext.JournalFormFactory.get_form_context(role="bulk_edit", form_data=MultiDict(source))
+        assert isinstance(fc, formcontext.ManEdBulkEdit)
+        assert fc.form is not None
+        assert fc.source is None
+        assert fc.form_data is not None
+        assert fc.template is not None
+
+        # test each of the workflow components individually ...
+
+        # pre-validate - shouldn't do anything
+        fc.pre_validate()
+
+        # run the validation itself
+        assert fc.validate(), fc.form.errors
+        assert True # gives us a place to drop a break point later if we need it
+
+        # this context doesn't get used for any more than that, so no further testing needed
