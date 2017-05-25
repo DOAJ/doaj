@@ -50,8 +50,9 @@ var doaj = {
 
         this.reset = function() {
             this.transitionPart1({
-                target: ""
+                target: false
             });
+            this._disableSubmit();
         };
 
         this.submit = function(element) {
@@ -292,6 +293,14 @@ var doaj = {
 
         this.transitionPart3 = function(params) {
             this.currentField = params.target;
+            if (this.currentField === "") {
+                this.currentField = false;
+            }
+            if (this.currentField === false) {
+                var selectBox = this.context.find(".multiformbox-selector");
+                selectBox.val("");
+                return;
+            }
 
             // final part is to slide out the new form
             var containerId = params.target + "-container";
@@ -504,8 +513,8 @@ jQuery(document).ready(function($) {
                 }
                 return null;
             },
-            note : "/admin/journals/bulk/edit_metadata",
-            editor_group : "/admin/journals/bulk/edit_metadata",
+            note : "/admin/journals/bulk/add_note",
+            editor_group : "/admin/journals/bulk/assign_editor_group",
             edit_metadata : "/admin/journals/bulk/edit_metadata"
         }
     });
