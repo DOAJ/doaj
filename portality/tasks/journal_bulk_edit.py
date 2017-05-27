@@ -100,6 +100,10 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
             fc = formcontext.JournalFormFactory.get_form_context(role="admin", source=j)
 
+            # turn on the "all fields optional" flag, so that bulk tasks don't cause errors that the user iterface
+            # would allow you to bypass
+            fc.form.make_all_fields_optional.data = True
+
             if "editor_group" in metadata:
                 fc.form.editor.data = None
 

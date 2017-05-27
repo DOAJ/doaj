@@ -38,6 +38,9 @@
                             </div>
                         </div>
                         <div class="multiformbox-container" style="display: none" id="edit_metadata-container">
+                            <p style="margin-top: 15px; font-style: italic">Note that bulk editing journals via this form behaves as if you have used the individual Journal edit form
+                            for each selected record and selected the "Allow incomplete form" checkbox.  You will NOT receive validation
+                            errors for records which are missing required fields.</p>
                             {% autoescape off %}
                             {{ edit_form }}
                             {% endautoescape %}
