@@ -1394,38 +1394,6 @@ class ManEdBulkEdit(PrivateContext):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "platform"])
 
-    """
-    def form2target(self):
-        # FIXME: how does this work in a bulk context?
-        self.target = xwalk.JournalFormXWalk.form2obj(self.form)
-
-    def patch_target(self):
-        if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existent source")
-
-        self._carry_fixed_aspects()
-
-        # NOTE: this means you can't unset an owner once it has been set.  But you can change it.
-        if (self.target.owner is None or self.target.owner == "") and (self.source.owner is not None):
-            self.target.set_owner(self.source.owner)
-
-        self._merge_notes_forward(allow_delete=True)
-
-    def finalise(self):
-        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
-        # can be carried over from the old implementation
-
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent journal")
-
-        # if we are allowed to finalise, kick this up to the superclass
-        super(ManEdBulkEdit, self).finalise()
-
-        # Save the target
-        self.target.set_last_manual_update()
-        self.target.save()
-    """
-
 class EditorJournalReview(PrivateContext):
     """
     Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group

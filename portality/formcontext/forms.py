@@ -533,7 +533,6 @@ class ManEdBulkEditJournalForm(Form):
     publisher = StringField('Publisher',
         [validators.Optional()]
     )
-    # doaj_seal = BooleanField('Qualifies for Seal', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
     doaj_seal = DOAJSelectField('Qualifies for Seal',
         [validators.Optional()],
         description='How should we change the DOAJ Seal on these journals?',
