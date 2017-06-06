@@ -491,6 +491,24 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+class ManEdJournalBulkEditRenderer(Renderer):
+    def __init__(self):
+        super(ManEdJournalBulkEditRenderer, self).__init__()
+
+        self.FIELD_GROUPS = {
+            "main" : [
+                {"publisher" : {"class": "input-xlarge"}},
+                {"platform" : {"class": "input-xlarge"}},
+                {"country" : {"class": "input-large"}},
+
+                {"owner" : {"class" : "input-large"}},
+                {"contact_name" : {}},
+                {"contact_email" : {}},
+
+                {"doaj_seal" : {}},
+            ]
+        }
+
 
 class EditorJournalReviewRenderer(JournalRenderer):
     def __init__(self):

@@ -55,6 +55,10 @@ class JournalFixtureFactory(object):
     def make_journal_apido_struct():
         return deepcopy(JOURNAL_APIDO_STRUCT)
 
+    @staticmethod
+    def make_bulk_edit_data():
+        return deepcopy(JOURNAL_BULK_EDIT)
+
 JOURNAL_SOURCE = {
     "id": "abcdefghijk_journal",
     "created_date": "2000-01-01T00:00:00Z",
@@ -466,4 +470,14 @@ JOURNAL_APIDO_STRUCT = {
             }
         }
     }
+}
+
+JOURNAL_BULK_EDIT =  {
+    "publisher": "Test Publisher",
+    "doaj_seal": True,
+    "country": "DZ",
+    "platform": "HighWire",
+    "contact_email": "richard@example.com",
+    "owner": "testuser",
+    "contact_name": "Test User"
 }
