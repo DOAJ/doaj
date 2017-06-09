@@ -9,6 +9,7 @@ from portality.formcontext import formcontext
 from portality import lcc
 
 from werkzeug.datastructures import MultiDict
+from nose.tools import assert_raises
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -459,3 +460,49 @@ class TestAssedAppReview(DoajTestCase):
         assert count == 11
 
         ctx.pop()
+
+    def test_04_associate_review_disallowed_statuses(self):
+        """ Check that associate editors can't access applications beyond their review process """
+
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("associate_editor")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        # we start by constructing it from source
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", source=models.Suggestion(**APPLICATION_SOURCE))
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is None
+        assert fc.template is not None
+
+        # check that we can render the form components
+        html = fc.render_field_group("editorial")  # these fields should not appear at all
+        assert html == ""
+
+        html = fc.render_field_group("owner")  # these fields should not appear at all
+        assert html == ""
+
+        accepted_source = APPLICATION_SOURCE
+        accepted_source['admin']['application_status'] = 'accepted'
+
+        completed_form = APPLICATION_FORM
+        completed_form['application_status'] = 'completed'
+
+        # now construct it from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="associate_editor",
+            form_data=MultiDict(APPLICATION_FORM),
+            source=models.Suggestion(**accepted_source)
+        )
+
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # Finalise the formcontext. This should raise an exception because the application has already been accepted.
+        assert_raises(formcontext.FormContextException, fc.finalise)
+        ctx.pop()
+        assert True                                         # gives us a place to drop a break point later if we need it
