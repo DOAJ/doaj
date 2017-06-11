@@ -40,6 +40,14 @@ history/journal/*
 !history/journal/.gitkeep
 
 .s3fs-credentials
+# local changes devs have made to the docker setup
+docker/docker-compose.override.yml
+
+# ipython and jupyter related files
+.ipynb_checkpoints/
+# only ignore jupyter notebooks in the root - we might want to share
+# some around in a subfolder in the future
+/*.ipynb
 
 ### OSX template
 .DS_Store
