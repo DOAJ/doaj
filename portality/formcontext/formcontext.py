@@ -758,12 +758,20 @@ class EditorApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
+        
+        src_status = self.source.application_status
 
-        if self.source.application_status == "accepted":
+        if src_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorApplicationReview, self).finalise()
+
+        # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
+        if self.target.application_status != src_status and src_status not in choices.Choices.application_status(
+                'editor'):
+            raise FormContextException(
+                "You don't have permission to change the status of applications which are {0}.".format(src_status))
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
@@ -887,11 +895,18 @@ class AssEdApplicationReview(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
-        if self.source.application_status == "accepted":
+        src_status = self.source.application_status
+
+        if src_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AssEdApplicationReview, self).finalise()
+
+        # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
+        if self.target.application_status != src_status and src_status not in choices.Choices.application_status():
+            raise FormContextException(
+                "You don't have permission to change the status of applications which are {0}.".format(src_status))
 
         # Save the target
         self.target.set_last_manual_update()

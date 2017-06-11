@@ -469,31 +469,17 @@ class TestAssedAppReview(DoajTestCase):
         acc.add_role("associate_editor")
         ctx = self._make_and_push_test_context(acc=acc)
 
-        # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="associate_editor", source=models.Suggestion(**APPLICATION_SOURCE))
-        assert isinstance(fc, formcontext.AssEdApplicationReview)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is None
-        assert fc.template is not None
-
-        # check that we can render the form components
-        html = fc.render_field_group("editorial")  # these fields should not appear at all
-        assert html == ""
-
-        html = fc.render_field_group("owner")  # these fields should not appear at all
-        assert html == ""
-
-        accepted_source = APPLICATION_SOURCE
+        # Check that an accepted application can't be regressed by an associate editor
+        accepted_source = APPLICATION_SOURCE.copy()
         accepted_source['admin']['application_status'] = 'accepted'
 
-        completed_form = APPLICATION_FORM
+        completed_form = APPLICATION_FORM.copy()
         completed_form['application_status'] = 'completed'
 
-        # now construct it from form data (with a known source)
+        # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="associate_editor",
-            form_data=MultiDict(APPLICATION_FORM),
+            form_data=MultiDict(completed_form),
             source=models.Suggestion(**accepted_source)
         )
 
@@ -504,5 +490,28 @@ class TestAssedAppReview(DoajTestCase):
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
         assert_raises(formcontext.FormContextException, fc.finalise)
+
+        # Check that an application status can't be edited by associates when on hold,
+        # since this status must have been set by a managing editor.
+        held_source = APPLICATION_SOURCE.copy()
+        held_source['admin']['application_status'] = 'on hold'
+
+        progressing_form = APPLICATION_FORM.copy()
+        progressing_form['application_status'] = 'in progress'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="associate_editor",
+            form_data=MultiDict(progressing_form),
+            source=models.Suggestion(**held_source)
+        )
+
+        assert isinstance(fc, formcontext.AssEdApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
+        assert_raises(formcontext.FormContextException, fc.finalise)
+
         ctx.pop()
-        assert True                                         # gives us a place to drop a break point later if we need it
