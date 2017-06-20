@@ -5,6 +5,14 @@ take great care running it - at minimum double check there is a recent
 backup available, there should always be one anyway.
 """
 
+"""
+New functionality for issue 1296:
+* For each article does a global check to see if there are any other articles which are "duplicate"
+* Outputs each "set" of duplicate articles, along with the criteria for which they were determined duplicate
+* Further identifies articles which are duplicate within a single user's account
+* Identifies articles which appear in more than one "set" - that is, they may be duplicate with one set of articles by DOI, and duplicate with a different set by URL, etc
+"""
+
 from portality import models
 from portality.article import XWalk
 from portality.core import app
