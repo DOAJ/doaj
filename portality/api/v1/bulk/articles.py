@@ -29,8 +29,10 @@ class ArticlesBulkApi(Api):
 
     @classmethod
     def create(cls, articles, account):
-        # we run through create twice, once as a dry-run and the second time
-        # as the real deal
+        # We run through the articles once, validating in dry-run mode
+        # and deduplicating as we go. Then we .save() everything once
+        # we know all incoming articles are valid.
+
         new_articles = []
 
         ids = []
