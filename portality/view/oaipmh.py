@@ -110,7 +110,24 @@ def make_set_spec(setspec):
     return base64.urlsafe_b64encode(setspec).replace("=", "~")
 
 def decode_set_spec(setspec):
-    return base64.urlsafe_b64decode(str(setspec).replace("~", "="))
+    # first, make sure the setspec is a string
+    try:
+        setspec = setspec.encode("utf-8")
+    except:
+        raise SetSpecException()
+
+    # switch the ~ for =
+    setspec = setspec.replace("~", "=")
+
+    # base64 decode
+    decoded = base64.urlsafe_b64decode(setspec)
+
+    try:
+        decoded = decoded.decode("utf-8")
+    except:
+        raise SetSpecException()
+
+    return decoded
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
     d = {}
@@ -129,6 +146,9 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     return b
 
 class ResumptionTokenException(Exception):
+    pass
+
+class SetSpecException(Exception):
     pass
 
 def decode_resumption_token(resumption_token):
@@ -357,7 +377,10 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
     
     # decode the oai_set to something we can query with
-    decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    try:
+        decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    except SetSpecException:
+        return BadArgument(base_url)
     
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
@@ -471,7 +494,10 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
     list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
     
     # decode the oai_set to something we can query with
-    decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    try:
+        decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
+    except SetSpecException:
+        return BadArgument(base_url)
     
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
