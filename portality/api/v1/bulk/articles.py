@@ -29,11 +29,11 @@ class ArticlesBulkApi(Api):
 
     @classmethod
     def create(cls, articles, account):
-        # we run through create twice, once as a dry-run and the second time
-        # as the real deal
-        for a in articles:
-            ArticlesCrudApi.create(a, account, dry_run=True)
-        # no formatting issues, the JSON of each article complies with required format at this point
+        # We run through the articles once, validating in dry-run mode
+        # and deduplicating as we go. Then we .save() everything once
+        # we know all incoming articles are valid.
+
+        new_articles = []
 
         ids = []
         dois_seen = set()
@@ -41,28 +41,34 @@ class ArticlesBulkApi(Api):
         for a in articles:
             duplicate = False  # skip articles if their fulltext URL or DOI is the same
 
-            for i in a['bibjson']['identifier']:
-                if i['type'] == 'doi':
-                    if i['id'] in dois_seen:
-                        duplicate = True
-                        break
-                    dois_seen.add(i['id'])
+            for i in a.get('bibjson', {}).get('identifier', []):
+                if i.get('type', '') == 'doi':
+                    if 'id' in i:
+                        if i['id'] in dois_seen:
+                            duplicate = True
+                            break
+                        dois_seen.add(i['id'])
 
             if duplicate:
                 continue
 
-            for l in a['bibjson']['link']:
-                if l['type'] == 'fulltext':
-                    if l['url'] in fulltext_urls_seen:
-                        duplicate = True
-                        break
-                    fulltext_urls_seen.add(l['url'])
+            for l in a.get('bibjson', {}).get('link', []):
+                if l.get('type', '') == 'fulltext':
+                    if 'url' in l:
+                        if l['url'] in fulltext_urls_seen:
+                            duplicate = True
+                            break
+                        fulltext_urls_seen.add(l['url'])
 
             if duplicate:
                 continue
 
-            n = ArticlesCrudApi.create(a, account)
+            n = ArticlesCrudApi.create(a, account, dry_run=True)
+            new_articles.append(n)
             ids.append(n.id)
+
+        for na in new_articles:
+            na.save()
 
         return ids
 
