@@ -767,11 +767,18 @@ class EditorApplicationReview(ApplicationContext):
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorApplicationReview, self).finalise()
 
+        editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
+        target_status = self.target.application_status
+
         # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
-        if self.target.application_status != src_status and src_status not in choices.Choices.application_status(
-                'editor'):
-            raise FormContextException(
-                "You don't have permission to change the status of applications which are {0}.".format(src_status))
+        if target_status != src_status:
+            if src_status not in editor_choices:
+                raise FormContextException(
+                    "You don't have permission to change the status of applications which are {0}.".format(src_status))
+            elif editor_choices.index(target_status) < editor_choices.index(src_status):
+                raise FormContextException(
+                    "You don't have permission to change the status of applications from {0} to {1}.".format(src_status,
+                                                                                                             target_status))
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
@@ -903,10 +910,18 @@ class AssEdApplicationReview(ApplicationContext):
         # if we are allowed to finalise, kick this up to the superclass
         super(AssEdApplicationReview, self).finalise()
 
+        associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
+        target_status = self.target.application_status
+
         # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
-        if self.target.application_status != src_status and src_status not in choices.Choices.application_status():
-            raise FormContextException(
-                "You don't have permission to change the status of applications which are {0}.".format(src_status))
+        if target_status != src_status:
+            if src_status not in associate_editor_choices:
+                raise FormContextException(
+                    "You don't have permission to change the status of applications which are {0}.".format(src_status))
+            elif associate_editor_choices.index(target_status) < associate_editor_choices.index(src_status):
+                raise FormContextException(
+                    "You don't have permission to change the status of applications from {0} to {1}.".format(src_status,
+                                                                                                             target_status))
 
         # Save the target
         self.target.set_last_manual_update()

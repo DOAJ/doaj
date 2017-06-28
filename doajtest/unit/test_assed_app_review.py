@@ -140,7 +140,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "reapplication",
+        "application_status" : "pending",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -346,7 +346,7 @@ class TestAssedAppReview(DoajTestCase):
         # now construct it from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="associate_editor",
-            form_data=MultiDict(APPLICATION_FORM) ,
+            form_data=MultiDict(APPLICATION_FORM),
             source=models.Suggestion(**APPLICATION_SOURCE))
 
         assert isinstance(fc, formcontext.AssEdApplicationReview)
@@ -512,6 +512,22 @@ class TestAssedAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
+        assert_raises(formcontext.FormContextException, fc.finalise)
+
+        # Check that an application status can't be brought backwards in the review process
+        pending_source = APPLICATION_SOURCE.copy()
+
+        progressing_form = APPLICATION_FORM.copy()
+        progressing_form['application_status'] = 'in progress'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="associate_editor",
+            form_data=MultiDict(progressing_form),
+            source=models.Suggestion(**pending_source)
+        )
+
+        # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
         assert_raises(formcontext.FormContextException, fc.finalise)
 
         ctx.pop()
