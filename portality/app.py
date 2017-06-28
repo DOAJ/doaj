@@ -88,8 +88,6 @@ SPONSORS = {
         'sage': {'name': 'SAGE Publications', 'logo': 'sage.gif', 'url': 'http://www.sagepublications.com/'},
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.gif', 'url': 'http://www.thieme.com/'},
         'brill': {'name': 'Brill', 'logo': 'brill.jpg', 'url': 'http://www.brill.com/'},
-        'proquest': {'name': 'ProQuest', 'logo': 'proquest.gif', 'url': 'http://www.proquest.com/'},
-        'exlibris': {'name': 'ExLibris', 'logo': 'exlibris.gif', 'url': 'http://www.exlibrisgroup.com/'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
         'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
