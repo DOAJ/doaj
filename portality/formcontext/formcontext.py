@@ -839,11 +839,23 @@ class EditorApplicationReview(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot set choices for a non-existent source")
 
+        editor_choices = choices.Choices.application_status('editor')
+
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
-            self.form.application_status.choices = choices.Choices.application_status("editor")
+            try:
+                # Get the full tuple of application status for the current source
+                [full_current_status] = filter(lambda x: self.source.application_status in x, editor_choices)
+
+                # Only show options forward in the editorial pipeline
+                self.form.application_status.choices = editor_choices[editor_choices.index(full_current_status):]
+            except ValueError:
+                # If the current status isn't in the editor's status list, it must be out of bounds. Show it greyed out.
+                self.form.application_status.choices = choices.Choices.application_status("admin")
+                self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
+
 
         # get the editor group from the source because it isn't in the form
         egn = self.source.editor_group
@@ -969,11 +981,22 @@ class AssEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
+        associate_editor_choices = choices.Choices.application_status()
+
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
-            self.form.application_status.choices = choices.Choices.application_status()
+            try:
+                # Get the full tuple of application status for the current source
+                [full_current_status] = filter(lambda x: self.source.application_status in x, associate_editor_choices)
+
+                # Only show options forward in the editorial pipeline
+                self.form.application_status.choices = associate_editor_choices[associate_editor_choices.index(full_current_status):]
+            except ValueError:
+                # If the current status isn't in the associate editor's status list, it must be out of bounds. Show it greyed out.
+                self.form.application_status.choices = choices.Choices.application_status("admin")
+                self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
 
 
 class PublisherCsvReApplication(ApplicationContext):
