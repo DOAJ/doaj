@@ -16,3 +16,5 @@ esprit.tasks.copy(remote, "news", local, "news")
 esprit.tasks.copy(remote, "lock", local, "lock")
 esprit.tasks.copy(remote, "bulk_reapplication", local, "bulk_reapplication")
 esprit.tasks.copy(remote, "bulk_upload", local, "bulk_upload")
+esprit.tasks.copy(remote, "background_job", local, "background_job")
+
