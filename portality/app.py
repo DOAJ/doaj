@@ -75,7 +75,7 @@ SPONSORS = {
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.gif', 'url': 'http://www.frontiersin.org/'},
-        'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.jpg', 'url': 'http://www.hindawi.com/'},
+        'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'http://www.hindawi.com/'},
         'lund-university': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'http://www.lunduniversity.lu.se/'},
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.gif', 'url': 'http://www.mdpi.com/'},
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.gif', 'url': 'http://www.taylorandfrancisgroup.com/'},
@@ -103,10 +103,10 @@ SPONSORS = {
         'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
         'ingenta': {'name': 'Ingenta', 'logo': 'ingenta.png', 'url': 'http://www.ingenta.com/'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.png', 'url': 'http://emeraldpublishing.com/'},
-        'finnish-learned': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-learned.jpg', 'url': 'https://tsv.fi/en/frontpage'},
-        'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.png', 'url': 'http://www.vr.se/'},
-        'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.png', 'url': 'http://www.mandumah.com'},
-        'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.png', 'url': 'http://p-adri.or.id/'},
+        'finnish-learned': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-learned.gif', 'url': 'https://tsv.fi/en/frontpage'},
+        'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.gif', 'url': 'http://www.vr.se/'},
+        'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.jpg', 'url': 'http://www.mandumah.com'},
+        'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://p-adri.or.id/'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
