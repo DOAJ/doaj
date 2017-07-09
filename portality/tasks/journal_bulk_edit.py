@@ -106,6 +106,18 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
 
             if "editor_group" in metadata:
                 fc.form.editor.data = None
+            elif j.editor_group is not None:
+                # FIXME: this is a bit of a stop-gap, pending a more substantial referential-integrity-like solution
+                # if the editor group is not being changed, validate that the editor is actually in the editor group,
+                # and if not, unset them
+                eg = models.EditorGroup.pull_by_key("name", j.editor_group)
+                if eg is not None:
+                    all_eds = eg.associates + [eg.editor]
+                    if j.editor not in all_eds:
+                        fc.form.editor.data = None
+                else:
+                    # if we didn't find the editor group, this is broken anyway, so reset the editor data anyway
+                    fc.form.editor.data = None
 
             if "contact_email" in metadata:
                 fc.form.confirm_contact_email.data = metadata["contact_email"]
