@@ -111,24 +111,9 @@ class JournalBulkEditBackgroundTask(AdminBackgroundTask):
                 fc.form.confirm_contact_email.data = metadata["contact_email"]
 
             for k, v in metadata.iteritems():
-                job.add_audit_message(u"Setting {f} to {x} for journal {y}".format(f=k, x=str(v), y=journal_id))
+                job.add_audit_message(u"Setting {f} to {x} for journal {y}".format(f=k, x=v, y=journal_id))
                 fc.form[k].data = v
                 updated = True
-
-            """
-            if editor_group:
-                job.add_audit_message(u"Setting editor_group to {x} for journal {y}".format(x=str(editor_group), y=journal_id))
-
-                # set the editor group
-                f = fc.form.editor_group
-                f.data = editor_group
-
-                # clear the editor
-                ed = fc.form.editor
-                ed.data = None
-
-                updated = True
-            """
 
             if note:
                 job.add_audit_message(u"Adding note to for journal {y}".format(y=journal_id))
