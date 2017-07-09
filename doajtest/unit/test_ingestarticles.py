@@ -103,6 +103,7 @@ class TestArticleUpload(DoajTestCase):
         self.ftp = ftplib.FTP
 
         self.upload_dir = app.config["UPLOAD_DIR"]
+        self.ingest_articles_retries = app.config.get("HUEY_TASKS").get("ingest_articles").get("retries")
 
     def tearDown(self):
         super(TestArticleUpload, self).tearDown()
@@ -114,6 +115,7 @@ class TestArticleUpload(DoajTestCase):
         ftplib.FTP = self.ftp
 
         app.config["UPLOAD_DIR"] = self.upload_dir
+        app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = self.ingest_articles_retries
 
         for id in self.cleanup_ids:
             path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
@@ -838,6 +840,8 @@ class TestArticleUpload(DoajTestCase):
         assert fu.status == "processed"
 
     def test_30_submit_retry(self):
+        app.config["HUEY_TASKS"]["ingest_articles"]["retries"] = 1
+
         fu = models.FileUpload()
         fu.validated("doaj")
         fu.save()
@@ -845,6 +849,7 @@ class TestArticleUpload(DoajTestCase):
         job = models.BackgroundJob()
         params = {}
         params["ingest_articles__file_upload_id"] = fu.id
+        params["ingest_articles__attempts"] = 0
         job.params = params
         job.save(blocking=True)
 
@@ -852,6 +857,18 @@ class TestArticleUpload(DoajTestCase):
         # which in turn calls execute, which ultimately calls run
         with self.assertRaises(RetryException):
             ingestarticles.IngestArticlesBackgroundTask.submit(job)
+
+        job = models.BackgroundJob.pull(job.id)
+        assert job.params.get("ingest_articles__attempts") == 1
+        assert job.status == "processing"
+
+        # now do it again, to see the retry cause the job to fail on the second attempt as per the config
+        with self.assertRaises(RetryException):
+            ingestarticles.IngestArticlesBackgroundTask.submit(job)
+
+        job = models.BackgroundJob.pull(job.id)
+        assert job.params.get("ingest_articles__attempts") == 2
+        assert job.status == "error"
 
     def test_31_run_fail_unmatched_issn(self):
         # Create a journal with 2 issns, one of which is the same as an issn on the

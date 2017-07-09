@@ -240,6 +240,14 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         if not os.path.exists(path):
             job.add_audit_message(u"File not found at path {} . Retrying job later.".format(path))
+            count = self.get_param(job.params, "attempts")
+            retry_limit = app.config.get("HUEY_TASKS", {}).get("ingest_articles", {}).get("retries")
+            self.set_param(job.params, "attempts", count + 1)
+
+            if retry_limit <= count:
+                job.add_audit_message(u"File still not found at path {} . Giving up.".format(path))
+                job.fail()
+
             raise RetryException()
 
         job.add_audit_message(u"Importing from {x}".format(x=path))
@@ -338,6 +346,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         params = {}
         cls.set_param(params, "file_upload_id", file_upload_id)
+        cls.set_param(params, "attempts", 0)
         job.params = params
 
         return job
