@@ -45,16 +45,21 @@ class News(DomainObject):
     def updated(self, date): self.data["updated"] = date
 
     @property
+    def published(self): return self.data.get("published")
+    @published.setter
+    def published(self, date): self.data["published"] = date
+
+    @property
     def summary(self): return self.data.get("summary")
     @summary.setter
     def summary(self, s): self.data["summary"] = s
 
-    def updated_formatted(self, format="%a, %d %b %Y at %H:%M"):
+    def published_formatted(self, format="%a, %d %b %Y at %H:%M"):
         try:
-            dt = datetime.strptime(self.updated, "%Y-%m-%dT%H:%M:%SZ")
+            dt = datetime.strptime(self.published, "%Y-%m-%dT%H:%M:%SZ")
             return dt.strftime(format)
         except:
-            return self.updated
+            return self.published
 
 class NewsQuery(object):
     _remote_term =  { "term" : { "remote_id.exact" : "<remote id>" } }
@@ -64,7 +69,7 @@ class NewsQuery(object):
         self.size = size
 
     def query(self):
-        q = {"query" : {}, "size" : self.size, "sort" : {"updated" : {"order" : "desc"}}}
+        q = {"query" : {}, "size" : self.size, "sort" : {"published" : {"order" : "desc"}}}
         if self.remote_id is not None:
             rt = deepcopy(self._remote_term)
             rt["term"]["remote_id.exact"] = self.remote_id
@@ -104,5 +109,6 @@ def save_entry(entry):
     news.title = entry.title
     news.updated = entry.updated
     news.summary = entry.summary
+    news.published = entry.published
 
     news.save()
