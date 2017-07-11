@@ -44,7 +44,7 @@
                 <div style="border-bottom: 1px dotted #cccccc; padding: 15px">
                     <strong><a href="{{n.url}}" target="_blank">{% autoescape off%}{{n.title}}{% endautoescape %}</a></strong><br>
                     <p>{% autoescape off%}{{n.summary}}{% endautoescape %}&nbsp;<a href="{{n.url}}" target="_blank">Read More...</a></p>
-                    <em>{{n.updated_formatted()}}</em>
+                    <em>Published {{n.published_formatted()}}</em>
                 </div>
 
             {% endfor %}
