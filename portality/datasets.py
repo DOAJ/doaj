@@ -542,6 +542,7 @@ languages_iso639_2 = [
 # ok, but we don't care about the Aramaic Empire ... we only want the ISO639-1 subset of those (the ones with 2-char codes)
 languages = {}
 languages_fullname_to_3char_code = {}
+languages_3char_code_index = []
 for l in languages_iso639_2:
     if l[2]:
         twochar_code = l[2].upper()
@@ -552,6 +553,7 @@ for l in languages_iso639_2:
             "name": l[3]
         }
         languages[twochar_code] = lobj
+        languages_3char_code_index.append(l[0].upper())
 
     if l[3] and l[0]:  # if a name and a 3-char code exist for this lang
         languages_fullname_to_3char_code[l[3]] = l[0]
