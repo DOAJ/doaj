@@ -103,7 +103,7 @@ class TestArticleUpload(DoajTestCase):
         self.ftp = ftplib.FTP
 
         self.upload_dir = app.config["UPLOAD_DIR"]
-        self.ingest_articles_retries = app.config.get("HUEY_TASKS").get("ingest_articles").get("retries")
+        self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
     def tearDown(self):
         super(TestArticleUpload, self).tearDown()

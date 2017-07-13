@@ -241,7 +241,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         if not os.path.exists(path):
             job.add_audit_message(u"File not found at path {} . Retrying job later.".format(path))
             count = self.get_param(job.params, "attempts")
-            retry_limit = app.config.get("HUEY_TASKS", {}).get("ingest_articles", {}).get("retries")
+            retry_limit = app.config.get("HUEY_TASKS", {}).get("ingest_articles", {}).get("retries", 0)
             self.set_param(job.params, "attempts", count + 1)
 
             if retry_limit <= count:
