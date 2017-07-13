@@ -1209,7 +1209,7 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         if jlangs:
             if isinstance(jlangs, list):
                 jlangs = jlangs[0]
-            jlangs = datasets.languages_fullname_to_3char_code.get(jlangs)
+            jlangs = datasets.languages_fullname_to_3char_code.get(jlangs, jlangs)
 
         # if the language code lookup was successful, add it to the
         # result
