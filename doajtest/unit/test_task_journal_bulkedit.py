@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from time import sleep
 import json
 
@@ -167,7 +169,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                                  doaj_seal=True,
                                  country="AF",
                                  owner="test1",
-                                 platform="my platform",
+                                 platform=u"my platfo®m",   # stick in a weird character for good measure
                                  contact_name="my contact",
                                  contact_email="contact@example.com",
                                  dry_run=True)
@@ -178,7 +180,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
                                  doaj_seal=True,
                                  country="AF",
                                  owner="test1",
-                                 platform="my platform",
+                                 platform=u"my platfo®m",   # stick in a weird character for good measure
                                  contact_name="my contact",
                                  contact_email="contact@example.com",
                                  dry_run=False)
@@ -199,7 +201,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             assert j.has_seal()
             assert j.bibjson().country == "AF"
             assert j.owner == "test1"
-            assert j.bibjson().provider == "my platform"
+            assert j.bibjson().provider == u"my platfo®m"
             assert j.get_latest_contact_name() == "my contact"
             assert j.get_latest_contact_email() == "contact@example.com"
 
@@ -224,3 +226,25 @@ class TestTaskJournalBulkEdit(DoajTestCase):
         assert True # gives us a place to drop a break point later if we need it
 
         # this context doesn't get used for any more than that, so no further testing needed
+
+    def test_07_unmatched_editor(self):
+        """Bulk assign an editor group to a bunch of journals using a background task"""
+        new_eg = EditorGroupFixtureFactory.setup_editor_group_with_editors(group_name='editorgroup')
+
+        source = JournalFixtureFactory.make_journal_source()
+        source["admin"]["editor"] = "random_editor"
+        journal = models.Journal(**source)
+        journal.save(blocking=True)
+
+        # test dry run
+        summary = journal_manage({"query": {"terms": {"_id": [journal.id]}}},
+                                 doaj_seal=True,
+                                 dry_run=False)
+
+        sleep(2)
+        job = models.BackgroundJob.all()[0]
+        assert job.status == "complete", json.dumps(job.data, indent=2)
+
+        journal2 = models.Journal.pull(journal.id)
+        assert journal2.editor_group == "editorgroup"
+        assert journal2.editor is None
