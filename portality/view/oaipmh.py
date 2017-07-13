@@ -1206,16 +1206,24 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         jlangs = bibjson.journal_language
         # first, if there are any languages recorded, get the 3-char code
         # corresponding to the first language
+        language = None
         if jlangs:
             if isinstance(jlangs, list):
                 jlangs = jlangs[0]
-            jlangs = datasets.languages_fullname_to_3char_code.get(jlangs)
+            if jlangs in datasets.languages_3char_code_index:
+                language = jlangs.lower()
+            else:
+                char3 = datasets.languages_fullname_to_3char_code.get(jlangs)
+                if char3 is None:
+                    char3 = datasets.languages_dict.get(jlangs, {}).get("iso639-3_code")
+                if char3 is not None:
+                    language = char3.lower()
 
         # if the language code lookup was successful, add it to the
         # result
-        if jlangs:
+        if language:
             langel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "language")
-            set_text(langel, jlangs)
+            set_text(langel, language)
 
         if bibjson.publisher:
             publel = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "publisher")
