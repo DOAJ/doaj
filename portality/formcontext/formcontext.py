@@ -9,6 +9,10 @@ from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
 
+ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
+SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
+            'account permissions to edit applications which are {0}.'
+
 
 class FormContextException(Exception):
     pass
@@ -24,6 +28,7 @@ class FormContext(object):
         self._renderer = None
         self._template = None
         self._alert = []
+        self._info = ''
 
         # initialise the renderer (falling back to a default if necessary)
         self.make_renderer()
@@ -95,6 +100,14 @@ class FormContext(object):
 
     def add_alert(self, val):
         self._alert.append(val)
+
+    @property
+    def info(self):
+        return self._info
+
+    @info.setter
+    def info(self, val):
+        self._info = val
 
     ############################################################
     # Lifecycle functions that subclasses should implement
@@ -346,7 +359,6 @@ class PrivateContext(FormContext):
             pass
 
 
-
 class ApplicationContext(PrivateContext):
     ERROR_MSG_TEMPLATE = \
         """Problem while creating account while turning suggestion into journal.
@@ -559,6 +571,8 @@ class ManEdApplicationReview(ApplicationContext):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        if self.source.application_status == "accepted":
+            self.info = ACC_MSG
 
     def pre_validate(self):
         # Editor field is populated in JS after page load - check the selected editor is actually in that editor group
@@ -734,6 +748,12 @@ class EditorApplicationReview(ApplicationContext):
         self.form = forms.EditorApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+        editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
+        if self.source.application_status not in editor_choices:
+            self.info = SCOPE_MSG.format(self.source.application_status)
+
+        if self.source.application_status == "accepted":
+            self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         self.form.editor_group.data = self.source.editor_group
@@ -770,15 +790,15 @@ class EditorApplicationReview(ApplicationContext):
         editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
         target_status = self.target.application_status
 
-        # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
-        if target_status != src_status:
-            if src_status not in editor_choices:
-                raise FormContextException(
-                    "You don't have permission to change the status of applications which are {0}.".format(src_status))
-            elif editor_choices.index(target_status) < editor_choices.index(src_status):
-                raise FormContextException(
-                    "You don't have permission to change the status of applications from {0} to {1}.".format(src_status,
-                                                                                                             target_status))
+        # Don't allow edits to application when status is beyond this editor's permissions in the pipeline
+        if src_status not in editor_choices:
+            raise FormContextException(
+                "You don't have permission to edit applications which are in status {0}.".format(src_status))
+
+        # Don't permit changes to status in reverse of the editorial process
+        if editor_choices.index(target_status) < editor_choices.index(src_status):
+            raise FormContextException(
+                "You are not permitted to revert the application status from {0} to {1}.".format(src_status, target_status))
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
@@ -856,7 +876,6 @@ class EditorApplicationReview(ApplicationContext):
                 self.form.application_status.choices = choices.Choices.application_status("admin")
                 self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
 
-
         # get the editor group from the source because it isn't in the form
         egn = self.source.editor_group
         self._populate_editor_field(egn)
@@ -888,6 +907,13 @@ class AssEdApplicationReview(ApplicationContext):
         self.form = forms.AssEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
+
+        associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
+        if self.source.application_status not in associate_editor_choices:
+            self.info = SCOPE_MSG.format(self.source.application_status)
+
+        if self.source.application_status == "accepted":
+            self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         if "application_status" in self.renderer.disabled_fields:
@@ -925,18 +951,17 @@ class AssEdApplicationReview(ApplicationContext):
         associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
         target_status = self.target.application_status
 
-        # Don't allow status change when source application status is beyond this editor's permissions in the pipeline
-        if target_status != src_status:
-            if src_status not in associate_editor_choices:
-                raise FormContextException(
-                    "You don't have permission to change the status of applications which are {0}.".format(src_status))
-            elif associate_editor_choices.index(target_status) < associate_editor_choices.index(src_status):
-                raise FormContextException(
-                    "You don't have permission to change the status of applications from {0} to {1}.".format(src_status,
-                                                                                                             target_status))
+        # Don't allow edits to application when status is beyond this editor's permissions in the pipeline
+        if src_status not in associate_editor_choices:
+            raise FormContextException(
+                "You don't have permission to edit applications which are in status {0}.".format(src_status))
+
+        # Don't permit changes to status in reverse of the editorial process
+        if associate_editor_choices.index(target_status) < associate_editor_choices.index(src_status):
+            raise FormContextException(
+                "You are not permitted to revert the application status from {0} to {1}.".format(src_status, target_status))
 
         # Save the target
-        self.target.set_last_manual_update()
         self.target.set_last_manual_update()
         self.target.save()
 
