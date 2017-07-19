@@ -20,6 +20,6 @@
 
 {% if form_context.info != '' %}
     {% autoescape off %}
-        <h4 class="form-status">{{ form_context.info }}</h4>
+        <h4 id="info_header" class="form-status">{{ form_context.info }}</h4>
     {% endautoescape %}
 {% endif %}
