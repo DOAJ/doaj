@@ -94,6 +94,10 @@ def put_mappings(app, mappings):
 
 
 def initialise_index(app):
+    if not app.config['INITIALISE_INDEX']:
+        app.logger.warn('INITIALISE_INDEX config var is not True, initialise_index command cannot run')
+        return
+
     if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         app.logger.warn("System is in READ-ONLY mode, initialise_index command cannot run")
         return
