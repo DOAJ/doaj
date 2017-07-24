@@ -52,6 +52,12 @@ app.register_blueprint(openurl)
 app.register_blueprint(atom)
 app.register_blueprint(doaj)
 
+# initialise the index - don't put into if __name__ == '__main__' block,
+# because that does not run if gunicorn is loading the app, as opposed
+# to the app being run directly by python portality/app.py
+# putting it here ensures it will run under any web server
+initialise_index(app)
+
 from datetime import datetime
 """
 FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
@@ -244,6 +250,4 @@ if __name__ == "__main__":
         import pydevd
         pydevd.settrace(app.config.get('DEBUG_PYCHARM_SERVER', 'localhost'), port=app.config.get('DEBUG_PYCHARM_PORT', 6000), stdoutToServer=True, stderrToServer=True)
 
-    if app.config['INITIALISE_INDEX']:
-        initialise_index(app)
     app.run(host='0.0.0.0', debug=app.config['DEBUG'], port=app.config['PORT'])
