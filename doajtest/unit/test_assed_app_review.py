@@ -9,7 +9,6 @@ from portality.formcontext import formcontext
 from portality import lcc
 
 from werkzeug.datastructures import MultiDict
-from nose.tools import assert_raises
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -140,7 +139,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "pending",
+        "application_status" : "reapplication",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -346,7 +345,7 @@ class TestAssedAppReview(DoajTestCase):
         # now construct it from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="associate_editor",
-            form_data=MultiDict(APPLICATION_FORM),
+            form_data=MultiDict(APPLICATION_FORM) ,
             source=models.Suggestion(**APPLICATION_SOURCE))
 
         assert isinstance(fc, formcontext.AssEdApplicationReview)
@@ -458,76 +457,5 @@ class TestAssedAppReview(DoajTestCase):
             if prov.action == "status:completed":
                 count += 10
         assert count == 11
-
-        ctx.pop()
-
-    def test_04_associate_review_disallowed_statuses(self):
-        """ Check that associate editors can't access applications beyond their review process """
-
-        acc = models.Account()
-        acc.set_id("contextuser")
-        acc.add_role("associate_editor")
-        ctx = self._make_and_push_test_context(acc=acc)
-
-        # Check that an accepted application can't be regressed by an associate editor
-        accepted_source = APPLICATION_SOURCE.copy()
-        accepted_source['admin']['application_status'] = 'accepted'
-
-        completed_form = APPLICATION_FORM.copy()
-        completed_form['application_status'] = 'completed'
-
-        # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="associate_editor",
-            form_data=MultiDict(completed_form),
-            source=models.Suggestion(**accepted_source)
-        )
-
-        assert isinstance(fc, formcontext.AssEdApplicationReview)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
-
-        # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(formcontext.FormContextException, fc.finalise)
-
-        # Check that an application status can't be edited by associates when on hold,
-        # since this status must have been set by a managing editor.
-        held_source = APPLICATION_SOURCE.copy()
-        held_source['admin']['application_status'] = 'on hold'
-
-        progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
-
-        # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="associate_editor",
-            form_data=MultiDict(progressing_form),
-            source=models.Suggestion(**held_source)
-        )
-
-        assert isinstance(fc, formcontext.AssEdApplicationReview)
-        assert fc.form is not None
-        assert fc.source is not None
-        assert fc.form_data is not None
-
-        # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
-        assert_raises(formcontext.FormContextException, fc.finalise)
-
-        # Check that an application status can't be brought backwards in the review process
-        pending_source = APPLICATION_SOURCE.copy()
-
-        progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
-
-        # Construct the formcontext from form data (with a known source)
-        fc = formcontext.ApplicationFormFactory.get_form_context(
-            role="associate_editor",
-            form_data=MultiDict(progressing_form),
-            source=models.Suggestion(**pending_source)
-        )
-
-        # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
-        assert_raises(formcontext.FormContextException, fc.finalise)
 
         ctx.pop()

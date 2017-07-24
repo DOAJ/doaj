@@ -260,7 +260,6 @@ class BasicJournalInformationRenderer(Renderer):
             if found:
                 break
 
-
 class ApplicationRenderer(BasicJournalInformationRenderer):
     def __init__(self):
         super(ApplicationRenderer, self).__init__()
@@ -360,7 +359,6 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
-
 class EditorApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
         super(EditorApplicationReviewRenderer, self).__init__()
@@ -392,7 +390,6 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
         self.number_questions()
 
         self.check_field_groups()
-
 
 class AssEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):

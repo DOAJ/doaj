@@ -13,6 +13,12 @@
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
 
+    {# FIXME: would be best if this was something more formal on the formcontext level #}
+    {% if form_context.source.application_status == 'accepted' %}
+    <h4 class="form-status">Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.</h4>
+    {% endif %}
+
+
     <fieldset>
 
         <div class="row-fluid">
@@ -112,10 +118,5 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var notes_deletable = false;
-
-    // When the header says the form can't be edited, disable the save buttons.
-    if ($("#info_header").text()) {
-        $(".btn-success").prop('disabled', true);
-    }
 </script>
 {% endblock extra_js_bottom %}
