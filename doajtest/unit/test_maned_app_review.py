@@ -9,6 +9,7 @@ from portality.formcontext import formcontext
 from portality import lcc
 
 from werkzeug.datastructures import MultiDict
+from nose.tools import assert_raises
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -530,5 +531,75 @@ class TestManEdAppReview(DoajTestCase):
             if prov.action == "status:rejected":
                 count += 10
         assert count == 11
+
+        ctx.pop()
+
+    def test_07_disallowed_statuses(self):
+        """ Check that managing editors can access applications in any status """
+
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("admin")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        # Check that an accepted application can't be regressed by a managing editor
+        accepted_source = APPLICATION_SOURCE.copy()
+        accepted_source['admin']['application_status'] = 'accepted'
+
+        completed_form = APPLICATION_FORM.copy()
+        completed_form['application_status'] = 'completed'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(completed_form),
+            source=models.Suggestion(**accepted_source)
+        )
+
+        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # Finalise the formcontext. This should raise an exception because the application has already been accepted.
+        assert_raises(formcontext.FormContextException, fc.finalise)
+
+        # Check that an application status can when on hold.
+        held_source = APPLICATION_SOURCE.copy()
+        held_source['admin']['application_status'] = 'on hold'
+
+        progressing_form = APPLICATION_FORM.copy()
+        progressing_form['application_status'] = 'in progress'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(progressing_form),
+            source=models.Suggestion(**held_source)
+        )
+
+        assert isinstance(fc, formcontext.ManEdApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # Finalise the formcontext. This should not raise an exception.
+        fc.finalise()
+
+        # Check that an application status can be brought backwards in the review process
+        pending_source = APPLICATION_SOURCE.copy()
+
+        progressing_form = APPLICATION_FORM.copy()
+        progressing_form['application_status'] = 'in progress'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            form_data=MultiDict(progressing_form),
+            source=models.Suggestion(**pending_source)
+        )
+
+        # Finalise the formcontext. This should not raise an exception.
+        fc.finalise()
 
         ctx.pop()
