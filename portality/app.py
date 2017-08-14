@@ -1,10 +1,12 @@
-'''
+# -*- coding: UTF-8 -*-
+
+"""
 This is the default app controller for portality.
 For inclusion in your own project you should make your own version of this controller
-and include the views you require, as well as writing new ones. Of course, views must 
-also be backed up by models, so have a look at the example models and use them / write 
+and include the views you require, as well as writing new ones. Of course, views must
+also be backed up by models, so have a look at the example models and use them / write
 new ones as required too.
-'''
+"""
 import os
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
@@ -113,6 +115,7 @@ SPONSORS = {
         'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.gif', 'url': 'http://www.vr.se/'},
         'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.jpg', 'url': 'http://www.mandumah.com'},
         'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://p-adri.or.id/'},
+        'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
