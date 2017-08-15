@@ -544,6 +544,8 @@ class JournalFormFactory(object):
             return AssEdJournalReview(source=source, form_data=form_data)
         elif role == "readonly":
             return ReadOnlyJournal(source=source, form_data=form_data)
+        elif role == "bulk_edit":
+            return ManEdBulkEdit(source=source, form_data=form_data)
 
 
 class ManEdApplicationReview(ApplicationContext):
@@ -1452,6 +1454,23 @@ class ManEdJournalReview(PrivateContext):
 
         return super(ManEdJournalReview, self).validate()
 
+class ManEdBulkEdit(PrivateContext):
+    """
+    Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
+    admin privileges.  It will permit doing every action.
+    """
+    def make_renderer(self):
+        self.renderer = render.ManEdJournalBulkEditRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/maned_journal_bulk_edit.html"
+
+    def blank_form(self):
+        self.form = forms.ManEdBulkEditJournalForm()
+
+    def data2form(self):
+        self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
+        self._expand_descriptions(["publisher", "platform"])
 
 class EditorJournalReview(PrivateContext):
     """

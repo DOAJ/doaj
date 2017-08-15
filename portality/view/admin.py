@@ -4,6 +4,8 @@ from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
 from flask.ext.login import current_user, login_required
 
+from werkzeug.datastructures import MultiDict
+
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
 from portality.formcontext import formcontext
@@ -313,9 +315,13 @@ def suggestion_page(suggestion_id):
 @login_required
 @ssl_required
 def admin_site_search():
+    edit_formcontext = formcontext.ManEdBulkEdit()
+    edit_form = edit_formcontext.render_template()
+
     return render_template("admin/admin_site_search.html",
                            admin_page=True, search_page=True,
-                           facetviews=['admin.journalarticle.facetview'])
+                           facetviews=['admin.journalarticle.facetview'],
+                           edit_form=edit_form)
 
 
 @blueprint.route("/editor_groups")
@@ -503,6 +509,36 @@ def bulk_add_note(doaj_type):
         note=payload['note'],
         dry_run=payload.get('dry_run', True)
     )
+
+    return make_json_resp(summary.as_dict(), status_code=200)
+
+@blueprint.route("/journals/bulk/edit_metadata", methods=["POST"])
+@login_required
+@ssl_required
+def bulk_edit_journal_metadata():
+    task = get_bulk_edit_background_task_manager("journals")
+
+    payload = get_web_json_payload()
+    if not "metadata" in payload:
+        raise BulkAdminEndpointException("key 'metadata' not present in request json")
+
+    formdata = MultiDict(payload["metadata"])
+    fc = formcontext.JournalFormFactory.get_form_context(
+        role="bulk_edit",
+        form_data=formdata
+    )
+    if not fc.validate():
+        msg = "Unable to submit your request due to form validation issues: "
+        for field in fc.form:
+            if field.errors:
+                msg += field.label.text + " - " + ",".join(field.errors)
+        summary = BackgroundSummary(None, error=msg)
+    else:
+        summary = task(
+            selection_query=get_query_from_request(payload),
+            dry_run=payload.get('dry_run', True),
+            **payload["metadata"]
+        )
 
     return make_json_resp(summary.as_dict(), status_code=200)
 
