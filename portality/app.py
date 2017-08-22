@@ -82,7 +82,7 @@ SPONSORS = {
         # consistency - no code should rely on this though
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
-        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.gif', 'url': 'http://www.frontiersin.org/'},
+        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'http://www.frontiersin.org/'},
         'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'http://www.hindawi.com/'},
         'lund-university': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'http://www.lunduniversity.lu.se/'},
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.gif', 'url': 'http://www.mdpi.com/'},
