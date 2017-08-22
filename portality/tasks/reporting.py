@@ -59,9 +59,7 @@ def content_reports(fr, to, outdir):
 
     table = _tabulate_time_entity_group(report, "Country")
 
-    ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-    ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-    filename = "applications_by_year_by_country__" + ref_fr + "_to_" + ref_to + "__on_" + dates.today() + ".csv"
+    filename = "applications_by_year_by_country__" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
@@ -98,6 +96,11 @@ def _tabulate_time_entity_group(group, entityKey):
     table.sort(key=lambda user: user[0])
     table = [[entityKey] + date_keys] + table
     return table
+
+
+def _fft(timestamp):
+    """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
+    return dates.reformat(timestamp, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
 
 
 class ReportCounter(object):
@@ -150,9 +153,7 @@ class ActionCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-        ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-        return self.action + "_by_" + self.period + "__from_" + ref_fr + "_to_" + ref_to + "__on_" + dates.today() + ".csv"
+        return self.action + "_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
 
     def _count_down(self, p):
         if p is None:
@@ -213,9 +214,7 @@ class StatusCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-        ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-        return "completion_by_" + self.period + "__from_" + ref_fr + "_to_" + ref_to + "__on_" + dates.today() + ".csv"
+        return "completion_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
 
     def _count_down(self, p):
         if p is None:
