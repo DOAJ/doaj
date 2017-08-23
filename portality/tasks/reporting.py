@@ -59,7 +59,7 @@ def content_reports(fr, to, outdir):
 
     table = _tabulate_time_entity_group(report, "Country")
 
-    filename = "applications_by_year_by_country__" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
+    filename = "applications_by_year_by_country__" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
     outfiles = []
     outfile = os.path.join(outdir, filename)
     outfiles.append(outfile)
@@ -96,6 +96,11 @@ def _tabulate_time_entity_group(group, entityKey):
     table.sort(key=lambda user: user[0])
     table = [[entityKey] + date_keys] + table
     return table
+
+
+def _fft(timestamp):
+    """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
+    return dates.reformat(timestamp, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
 
 
 class ReportCounter(object):
@@ -148,7 +153,7 @@ class ActionCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        return self.action + "_by_" + self.period + "__from_" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
+        return self.action + "_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
 
     def _count_down(self, p):
         if p is None:
@@ -209,7 +214,7 @@ class StatusCounter(ReportCounter):
         return _tabulate_time_entity_group(self.report, "User")
 
     def filename(self, fr, to):
-        return "completion_by_" + self.period + "__from_" + fr + "_to_" + to + "__on_" + dates.now() + ".csv"
+        return "completion_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
 
     def _count_down(self, p):
         if p is None:
@@ -270,6 +275,7 @@ class ContentByDate(object):
             }
         }
 
+
 def email(data_dir, archv_name):
     """
     Compress and email the reports to the specified email address.
@@ -297,8 +303,9 @@ def email(data_dir, archv_name):
     # Clean up the archive
     os.remove(archv)
 
+
 #########################################################
-## Background task implementation
+# Background task implementation
 
 class ReportingBackgroundTask(BackgroundTask):
 
@@ -332,7 +339,9 @@ class ReportingBackgroundTask(BackgroundTask):
 
         send_email = self.get_param(params, "email", False)
         if send_email:
-            archive_name = "reports_" + fr + "_to_" + to
+            ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+            ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+            archive_name = "reports_" + ref_fr + "_to_" + ref_to
             email(outdir, archive_name)
             job.add_audit_message("email alert sent")
         else:
@@ -389,14 +398,17 @@ class ReportingBackgroundTask(BackgroundTask):
         background_job.save()
         run_reports.schedule(args=(background_job.id,), delay=10)
 
+
 @main_queue.periodic_task(schedule("reporting"))
 @write_required(script=True)
 def scheduled_reports():
     user = app.config.get("SYSTEM_USERNAME")
+    mail = bool(app.config.get("REPORTS_EMAIL_TO", False))                          # Send email if recipient configured
     outdir = app.config.get("REPORTS_BASE_DIR")
-    outdir = os.path.join(outdir, dates.now())
-    job = ReportingBackgroundTask.prepare(user, outdir=outdir)
+    outdir = os.path.join(outdir, dates.today())
+    job = ReportingBackgroundTask.prepare(user, outdir=outdir, email=mail)
     ReportingBackgroundTask.submit(job)
+
 
 @main_queue.task()
 @write_required(script=True)

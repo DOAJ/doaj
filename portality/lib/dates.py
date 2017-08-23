@@ -3,6 +3,7 @@ from portality.core import app
 from datetime import datetime, timedelta
 from random import randint
 
+
 def parse(s, format=None, guess=True):
     s = s.strip()
 
@@ -21,19 +22,28 @@ def parse(s, format=None, guess=True):
 
     raise ValueError("Unable to parse {x} with any known format".format(x=s))
 
+
 def format(d, format=None):
     if format is None:
         format = app.config.get("DEFAULT_DATE_FORMAT")
     return unicode(d.strftime(format))
 
+
 def reformat(s, in_format=None, out_format=None):
     return format(parse(s, format=in_format), format=out_format)
+
 
 def now():
     return format(datetime.utcnow())
 
+
 def now_with_microseconds():
     return format(datetime.utcnow(), format="%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+def today():
+    return format(datetime.utcnow(), format="%Y-%m-%d")
+
 
 def random_date(fro=None, to=None):
     if fro is None:

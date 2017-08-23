@@ -19,7 +19,7 @@ if __name__ == "__main__":
                         default=dates.now())
     parser.add_argument("-o", "--out",
                         help="Output directory into which reports should be made (will be created if it doesn't exist)",
-                        default="report_" + dates.now())
+                        default="report_" + dates.today())
     parser.add_argument("-e", "--email",
                         help="Send zip archived reports to email addresses configured via REPORTS_EMAIL_TO in settings",
                         action='store_true')
