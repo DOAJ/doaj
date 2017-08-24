@@ -97,6 +97,7 @@ SPONSORS = {
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.gif', 'url': 'http://www.thieme.com/'},
         'brill': {'name': 'Brill', 'logo': 'brill.jpg', 'url': 'http://www.brill.com/'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
+        'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
         'openedition': {'name': 'OpenEdition', 'logo': 'openedition.jpg', 'url': 'http://www.openedition.org/'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.jpg', 'url': 'http://www.plos.org/'},
@@ -113,7 +114,7 @@ SPONSORS = {
         'finnish-learned': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-learned.gif', 'url': 'https://tsv.fi/en/frontpage'},
         'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.gif', 'url': 'http://www.vr.se/'},
         'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.jpg', 'url': 'http://www.mandumah.com'},
-        'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://ejournal.p-adri.org/'},
+        'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://p-adri.or.id/'},
         'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
