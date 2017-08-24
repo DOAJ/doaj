@@ -97,6 +97,7 @@ SPONSORS = {
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.gif', 'url': 'http://www.thieme.com/'},
         'brill': {'name': 'Brill', 'logo': 'brill.jpg', 'url': 'http://www.brill.com/'},
         'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
+        'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
         'openedition': {'name': 'OpenEdition', 'logo': 'openedition.jpg', 'url': 'http://www.openedition.org/'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.jpg', 'url': 'http://www.plos.org/'},
