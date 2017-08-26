@@ -42,10 +42,14 @@ if __name__ == "__main__":
     dry_run = args.dry_run
 
     start = datetime.now()
-    count = 0
-    print 'Starting {0} {snapshot} in 5 seconds, Ctrl+C to exit.'.format(start.isoformat(), snapshot=snapshot_report)
+
+    if dry_run:
+        print 'Starting {0} dry run in 5 seconds, Ctrl+C to exit.'.format(start.isoformat())
+    else:
+        print 'Starting {0} {snapshot} in 5 seconds, Ctrl+C to exit.'.format(start.isoformat(), snapshot=snapshot_report)
     time.sleep(5)
 
+    count = 0
     originals = []  # make sure we only delete FORWARD. So, if articles
     # A, B and C are duplicates, we stumble upon A first, and delete B and C.cat
     # We must then ensure we do not delete A if we chance upon B or C
