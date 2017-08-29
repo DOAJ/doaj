@@ -113,7 +113,7 @@ class TestArticleMatch(DoajTestCase):
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
         xwalk = article.XWalk()
-        l = xwalk.get_duplicate(z, all_duplicates=True)
+        l = xwalk.get_duplicates(z)
         assert isinstance(l, list), l
         assert l
         l.sort()
@@ -166,7 +166,7 @@ class TestArticleMatch(DoajTestCase):
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
         xwalk = article.XWalk()
-        l = xwalk.get_duplicate(z, all_duplicates=True)
+        l = xwalk.get_duplicates(z)
         assert isinstance(l, list)
         assert l
         assert len(l) == 2
@@ -215,44 +215,8 @@ class TestArticleMatch(DoajTestCase):
         assert a3.id == a2.id == a.id
         assert a3.bibjson().title == "Example C article with a fulltext url"
         assert a3.bibjson().abstract == "a newer bunch of text"
-        
-    def test_06_test_that_get_duplicates_makes_no_sense(self):
-        """Test the weird behaviour that get_duplicates has..."""
-        # make ourselves a couple of example articles
-        a = models.Article()
-        b = a.bibjson()
-        b.title = "Example A article with a fulltext url"
-        b.add_url("http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf", urltype="fulltext")
-        a.save(blocking=True)
 
-        # create an article which should not be caught by the duplicate detection
-        not_duplicate = models.Article()
-        not_duplicate_bibjson = not_duplicate.bibjson()
-        not_duplicate_bibjson.title = "Example C article with a fulltext url"
-        not_duplicate_bibjson.add_url("http://this.is/a/different/url", urltype="fulltext")
-        not_duplicate.save(blocking=True)
-
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(a)
-
-        # TODO: This is complete nonsense, we must refactor get_duplicate
-        # so it doesn't return the article that is being passed in when
-        # requesting a single duplicate!
-        # This may have implications for XML upload ingestion and could be non-trivial.
-        # If you request multiple duplicates with all_duplicates=True it
-        # will act intuitively and not return the article you asked for.
-        assert d is not None  # current behaviour, but should be changed!
-        assert d.id == a.id  # current behaviour, but should be changed!
-
-        # get the xwalk to determine all duplicates - they do not include
-        # the original
-        xwalk = article.XWalk()
-        l = xwalk.get_duplicate(a, all_duplicates=True)
-        assert isinstance(l, list)
-        assert l == []
-
-    def test_07_many_issns(self):
+    def test_06_many_issns(self):
         """Test that a query with a LOT of ISSNs is still successful."""
         a = models.Article()
         b = a.bibjson()

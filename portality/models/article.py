@@ -9,8 +9,10 @@ from portality.core import app
 import string
 from unidecode import unidecode
 
+
 class NoJournalException(Exception):
     pass
+
 
 class Article(DomainObject):
     __type__ = "article"

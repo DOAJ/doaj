@@ -12,6 +12,7 @@ from portality.core import app
 from datetime import datetime
 import sys, traceback, re
 
+
 class XWalk(object):
 
     def __init__(self):
@@ -102,21 +103,22 @@ class XWalk(object):
         return owned, shared, unowned, unmatched
 
     @staticmethod
-    def get_duplicate(article, owner=None, all_duplicates=False):
-        # get the owner's issns
+    def get_duplicate(article, owner=None):
+        """Get the most recent duplicate article."""
+        d = XWalk.get_duplicates(article, owner)
+        return d[0] if d else None
+
+    @staticmethod
+    def get_duplicates(article, owner=None):
+        """Get all duplicates (or previous versions) of an article."""
+        # Get the owner's ISSNs
         issns = []
         if owner is not None:
             issns = models.Journal.issns_by_owner(owner)
         
-        # we'll need the article bibjson a few times
+        # We'll need the article bibjson a few times
         b = article.bibjson()
-        
-        # some useful flags that we may or may not use later, depending on how
-        # well this matcher goes
-        use_prid = False
-        use_doi = False
-        use_fulltext = False
-        
+
         # if we get more than one result, we'll record them here, and then at the end
         # if we haven't got a definitive match we'll pick the most likely candidate
         # (this isn't as bad as it sounds - the identifiers are pretty reliable, this catches
@@ -124,74 +126,25 @@ class XWalk(object):
         # of them propagates the issue)
         # additionally if all_duplicates has been set to True we will return them all to the caller
         possible_articles = []
-        possible_article_ids = []
 
-        # look by doi
+        # Checking by DOI is our first step
         dois = b.get_identifiers(b.DOI)
         if len(dois) > 0:
             # there should only be the one
             doi = dois[0]
             articles = models.Article.duplicates(issns=issns, doi=doi)
-            if len(articles) == 1:
-                if all_duplicates:
-                    if articles[0].id not in possible_article_ids:
-                        possible_articles.append(articles[0])
-                        possible_article_ids.append(articles[0].id)
-                else:
-                    return articles[0]
-            if len(articles) > 1:
-                possible_articles += articles
-                possible_article_ids += [a.id for a in articles]
-                use_doi = True # we don't have a definitive answer, but we do have options
-        
-        # third test is to look by fulltext url
+            possible_articles += [a for a in articles if a.id != article.id]
+
+        # Second test is to look by fulltext url
         urls = b.get_urls(b.FULLTEXT)
         if len(urls) > 0:
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
-            if len(articles) == 1:
-                if all_duplicates:
-                    if articles[0].id not in possible_article_ids:
-                        possible_articles.append(articles[0])
-                        possible_article_ids.append(articles[0].id)
-                else:
-                    return articles[0]
-            if len(articles) > 1:
-                possible_articles += articles
-                possible_article_ids += [a.id for a in articles]
-                use_fulltext = True # we don't have a definitive answer, but we do have options
+            possible_articles += [a for a in articles if a.id != article.id]
+        possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
 
-        if all_duplicates:
-            if article.id in possible_article_ids:
-                idx = None
-                for i in range(len(possible_articles)):
-                    if possible_articles[i].id == article.id:
-                        idx = i
-                        break
-                del possible_articles[idx]
-                    # if the Elasticsearch ID is the same then
-                    # this is the actual record we are trying to get duplicates for - don't return it
-                    # note that when called with a single article, it will return the article itself
-                    # that seems to have been the behaviour from the beginning
-                    # TODO this needs refactoring.
-                    # It makes 0 sense that XWalk().get_duplicate(article) returns article if no
-                    # duplicates are found. Especially now with XWalk().get_duplicate(article, all_duplicates=True)
-                    # returning [] if there are no duplicates.
-            return possible_articles
+        return possible_articles
 
-        # now we need to try to do something about multiple hits one one or more of the above if needed
-        if not all_duplicates and len(possible_articles) > 0:
-            latest = possible_articles[0]
-            latest_date = datetime.strptime(latest.last_updated, "%Y-%m-%dT%H:%M:%SZ")
-            for a in possible_articles:
-                t = datetime.strptime(a.last_updated, "%Y-%m-%dT%H:%M:%SZ")
-                if t > latest_date:
-                    latest = a
-                    latest_date = t
-            return latest
-
-        # else, we have failed to locate
-        return [] if all_duplicates else None
 
 class FormXWalk(XWalk):
     format_name = "form"
@@ -281,6 +234,7 @@ class FormXWalk(XWalk):
             article.merge(duplicate) # merge will take the old id, so this will overwrite
         
         return article
+
 
 class DOAJXWalk(XWalk):
     format_name = "doaj"
@@ -533,6 +487,7 @@ class DOAJXWalk(XWalk):
             
         return article
 
+
 class IngestException(Exception):
     def __init__(self, *args, **kwargs):
         self.stack = None
@@ -594,15 +549,18 @@ def _element(xml, field):
 
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
 
+
 def article_upload_closure(upload_id):
     def article_callback(article):
         article.set_upload_id(upload_id)
         article.save(differentiate=True)
     return article_callback
 
+
 def article_save_callback(article):
     article.save(differentiate=True)
-    
+
+
 def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fail_callback=None):
     name, xwalk, doc = check_schema(handle, format_name)
 
@@ -613,6 +571,7 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
         return results
     except Exception as e:
         raise IngestException(message="Error occurred ingesting the records in the document", inner=e)
+
 
 def check_schema(handle, format_name=None):
     try:
@@ -660,4 +619,3 @@ def check_schema(handle, format_name=None):
         raise IngestException(message="Unable to validate document with any available ingesters", inner_message=msg)
 
     return actual_format, xwalk, doc
-
