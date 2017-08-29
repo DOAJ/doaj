@@ -252,7 +252,7 @@ class TestArticleMatch(DoajTestCase):
         assert isinstance(l, list)
         assert l == []
 
-    def test_08_many_issns(self):
+    def test_07_many_issns(self):
         """Test that a query with a LOT of ISSNs is still successful."""
         a = models.Article()
         b = a.bibjson()
