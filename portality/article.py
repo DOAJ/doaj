@@ -111,11 +111,33 @@ class XWalk(object):
     @staticmethod
     def get_duplicates(article, owner=None):
         """Get all duplicates (or previous versions) of an article."""
+
+        possible_articles_dict = XWalk.discover_duplicates(article, owner)
+
+        # We don't need the details of duplicate types, so flatten the lists.
+        all_possible_articles = [article for dup_type in possible_articles_dict.values() for article in dup_type]
+
+        # An article may fulfil more than one duplication criteria, so needs to be de-duplicated
+        ids = []
+        possible_articles = []
+        for a in all_possible_articles:
+            if a.id not in ids:
+                ids.append(a.id)
+                possible_articles.append(a)
+
+        # Sort the articles newest -> oldest by last_updated so we can get the most recent at [0]
+        possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
+
+        return possible_articles
+
+    @staticmethod
+    def discover_duplicates(article, owner=None):
+        """Identify duplicate articles, separated by duplication criteria"""
         # Get the owner's ISSNs
         issns = []
         if owner is not None:
             issns = models.Journal.issns_by_owner(owner)
-        
+
         # We'll need the article bibjson a few times
         b = article.bibjson()
 
@@ -124,8 +146,7 @@ class XWalk(object):
         # (this isn't as bad as it sounds - the identifiers are pretty reliable, this catches
         # issues like where there are already duplicates in the data, and not matching one
         # of them propagates the issue)
-        # additionally if all_duplicates has been set to True we will return them all to the caller
-        possible_articles = []
+        possible_articles = {}
 
         # Checking by DOI is our first step
         dois = b.get_identifiers(b.DOI)
@@ -133,15 +154,14 @@ class XWalk(object):
             # there should only be the one
             doi = dois[0]
             articles = models.Article.duplicates(issns=issns, doi=doi)
-            possible_articles += [a for a in articles if a.id != article.id]
+            possible_articles['doi'] = [a for a in articles if a.id != article.id]
 
         # Second test is to look by fulltext url
         urls = b.get_urls(b.FULLTEXT)
         if len(urls) > 0:
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
-            possible_articles += [a for a in articles if a.id != article.id]
-        possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
+            possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
 
         return possible_articles
 

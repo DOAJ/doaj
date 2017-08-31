@@ -216,7 +216,35 @@ class TestArticleMatch(DoajTestCase):
         assert a3.bibjson().title == "Example C article with a fulltext url"
         assert a3.bibjson().abstract == "a newer bunch of text"
 
-    def test_06_many_issns(self):
+    def test_06_both_duplication_criteria(self):
+        """Check that an article is only reported once if it is duplicated by both DOI and fulltext URL"""
+        # make ourselves an example article
+        ftu = "http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf"
+        doi = "10.doi"
+
+        a = models.Article()
+        b = a.bibjson()
+        b.title = "Example article with a fulltext url and a DOI"
+        b.add_url(ftu, urltype="fulltext")
+        b.add_identifier('doi', doi)
+        a.save(blocking=True)
+
+        # create another article
+        z = models.Article()
+        y = z.bibjson()
+        y.title = "Replacement article for fulltext url and a DOI"
+        y.add_url(ftu, urltype="fulltext")
+        y.add_identifier('doi', doi)
+
+        # get the xwalk to determine if there is a duplicate
+        xwalk = article.XWalk()
+        d = xwalk.get_duplicates(z)
+
+        assert len(d) == 1
+        print len(d)
+        assert d[0].bibjson().title == "Example article with a fulltext url and a DOI"
+
+    def test_07_many_issns(self):
         """Test that a query with a LOT of ISSNs is still successful."""
         a = models.Article()
         b = a.bibjson()
