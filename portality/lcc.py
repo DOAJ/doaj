@@ -1,5 +1,6 @@
 from portality.models import LCC
 
+
 def loadLCC(source=None):
     # use delayed imports, as this code will only rarely be run
     import os
@@ -12,7 +13,7 @@ def loadLCC(source=None):
     root = doc.getroot()
 
     nodes = {}
-    tree = {"name" : "LCC", "children" : []}
+    tree = {"name": "LCC", "children": []}
     cpmap = {}
 
     for element in root.findall("subject"):
@@ -31,7 +32,7 @@ def loadLCC(source=None):
         if pel is not None:
             parent = pel.text
 
-        node = {"name" : name}
+        node = {"name": name}
         if code is not None:
             node["code"] = code
 
@@ -54,13 +55,14 @@ def loadLCC(source=None):
     lcc = LCC(**tree)
     lcc.save()
 
+
 def lcc2choices(thelcc, level=-2):
     level += 1
     level_indicator = '--'
     if 'children' in thelcc:
         results = []
         if thelcc['name'] != 'LCC':
-        # don't want the root + it doesn't have a code
+            # don't want the root + it doesn't have a code
             results += [(thelcc['code'], level_indicator * level + thelcc['name'])]
         for child in thelcc['children']:
             results += lcc2choices(child, level=level)
@@ -69,8 +71,8 @@ def lcc2choices(thelcc, level=-2):
         # this is a leaf
         if 'code' not in thelcc:
             if thelcc['name'] == 'TMP':
-            # some weird leaf element at 1st level of the tree
-            # don't want to generate a choice for it, just ignore
+                # some weird leaf element at 1st level of the tree
+                # don't want to generate a choice for it, just ignore
                 return []
         return [(thelcc['code'], level_indicator * level + thelcc['name'])]
 
@@ -82,7 +84,7 @@ def lcc2jstree(thelcc):
             for child in thelcc['children']:
                 results += lcc2jstree(child)
         else:
-        # don't want the root + it doesn't have a code
+            # don't want the root + it doesn't have a code
             newnode = {
                 "id": thelcc['code'],
                 "text": thelcc['name'],
@@ -97,8 +99,8 @@ def lcc2jstree(thelcc):
         # this is a leaf
         if 'code' not in thelcc:
             if thelcc['name'] == 'TMP':
-            # some weird leaf element at 1st level of the tree
-            # don't want to generate a choice for it, just ignore
+                # some weird leaf element at 1st level of the tree
+                # don't want to generate a choice for it, just ignore
                 return []
         return [
             {
@@ -113,7 +115,7 @@ def lcc2flat_code_index(thelcc):
     if 'children' in thelcc:
         results = {}
         if thelcc['name'] != 'LCC':
-        # don't want the root + it doesn't have a code
+            # don't want the root + it doesn't have a code
             results.update({thelcc['code']: thelcc['name']})
         for child in thelcc['children']:
             results.update(lcc2flat_code_index(child))
@@ -122,8 +124,8 @@ def lcc2flat_code_index(thelcc):
         # this is a leaf
         if 'code' not in thelcc:
             if thelcc['name'] == 'TMP':
-            # some weird leaf element at 1st level of the tree
-            # don't want to generate a choice for it, just ignore
+                # some weird leaf element at 1st level of the tree
+                # don't want to generate a choice for it, just ignore
                 return {}
         return {thelcc['code']: thelcc['name']}
 

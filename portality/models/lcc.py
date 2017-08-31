@@ -1,5 +1,6 @@
 from portality.dao import DomainObject
 
+
 class LCC(DomainObject):
     __type__ = "lcc"
 
@@ -7,6 +8,7 @@ class LCC(DomainObject):
         """
         Convert the given term into a string containing the path from the root via the parents to the term
         :param term:
+        :param path_separator:
         :return:
         """
 

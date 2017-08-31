@@ -1094,7 +1094,7 @@
     <parent>Literature (General)</parent>
   </subject>
   <subject>
-    <name>Protection of buildings. Including proctection from dampness, fire, burglary</name>
+    <name>Protection of buildings. Including protection from dampness, fire, burglary</name>
     <code>TH9025-9745</code>
     <parent>Building construction</parent>
   </subject>
@@ -1244,12 +1244,12 @@
     <parent>History (General) and history of Europe</parent>
   </subject>
   <subject>
-    <name>Petroleum refining. Petrolueum products</name>
+    <name>Petroleum refining. Petroleum products</name>
     <code>TP690-692.5</code>
     <parent>Oils, fats, and waxes</parent>
   </subject>
   <subject>
-    <name>Finnnish</name>
+    <name>Finnish</name>
     <code>PH101-405</code>
     <parent>Ural-Altaic languages</parent>
   </subject>
@@ -1274,7 +1274,7 @@
     <parent>Language and Literature</parent>
   </subject>
   <subject>
-    <name>Japanese language and litterature</name>
+    <name>Japanese language and literature</name>
     <code>PL501-889</code>
     <parent>Languages and literature of Eastern Asia, Africa, Oceania</parent>
   </subject>
@@ -1964,7 +1964,7 @@
     <parent>Business</parent>
   </subject>
   <subject>
-    <name>Seconhand trade</name>
+    <name>Secondhand trade</name>
     <code>HF5482-5482.4</code>
     <parent>Business</parent>
   </subject>
@@ -1974,7 +1974,7 @@
     <parent>Business</parent>
   </subject>
   <subject>
-    <name>Warhouses. Storage</name>
+    <name>Warehouses. Storage</name>
     <code>HF5484-5495</code>
     <parent>Business</parent>
   </subject>
@@ -2294,7 +2294,7 @@
     <parent>Special industries and trades</parent>
   </subject>
   <subject>
-    <name>Engery industries. Energy policy. Fuel trade</name>
+    <name>Energy industries. Energy policy. Fuel trade</name>
     <code>HD9502-9502.5</code>
     <parent>Special industries and trades</parent>
   </subject>
@@ -2719,7 +2719,7 @@
     <parent>Mechanical engineering and machinery</parent>
   </subject>
   <subject>
-    <name>Control engineering systems. Automatic machinerey (General)</name>
+    <name>Control engineering systems. Automatic machinery (General)</name>
     <code>TJ212-225</code>
     <parent>Mechanical engineering and machinery</parent>
   </subject>
@@ -2819,7 +2819,7 @@
     <parent>Home economics</parent>
   </subject>
   <subject>
-    <name>Harbors and coast protective works. Costal engineering. Lighthouses</name>
+    <name>Harbors and coast protective works. Coastal engineering. Lighthouses</name>
     <code>TC203-380</code>
     <parent>Hydraulic engineering</parent>
   </subject>
