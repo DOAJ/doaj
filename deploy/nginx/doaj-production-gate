@@ -129,6 +129,11 @@ server {
 
     location / {
         limit_req zone=mylimit burst=5 nodelay;
+
+        if ($block_ua) {
+            return 403;
+        }
+
         proxy_pass http://apps;
         proxy_redirect off;
         proxy_set_header Host $host;
