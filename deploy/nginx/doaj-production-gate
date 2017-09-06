@@ -76,12 +76,7 @@ server {
 
     location / {
         proxy_pass http://testapps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
+        include includes/proxy_pass_settings;
     }
 
     access_log /var/log/nginx/doaj.access.log;
@@ -127,16 +122,26 @@ server {
         expires max;
     }
 
+    location /search/ {
+        if ($block_ua) {return 403;}
+        limit_req zone=mylimit burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
+    location /query/ {
+        if ($block_ua) {return 403;}
+        limit_req zone=mylimit burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
     location / {
         limit_req zone=mylimit burst=5 nodelay;
         proxy_pass http://apps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
+        include includes/proxy_pass_settings;
     }
+
 }
 
 # the test app
@@ -168,11 +173,6 @@ server {
 
     location / {
         proxy_pass http://testapps;
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_buffering off;
+        include includes/proxy_pass_settings;
     }
 }
