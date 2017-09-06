@@ -122,14 +122,14 @@ server {
         expires max;
     }
 
-    location /search/ {
+    location /search {
         if ($block_ua) {return 403;}
         limit_req zone=mylimit burst=5 nodelay;
         proxy_pass http://apps;
         include includes/proxy_pass_settings;
     }
 
-    location /query/ {
+    location /query {
         if ($block_ua) {return 403;}
         limit_req zone=mylimit burst=5 nodelay;
         proxy_pass http://apps;
