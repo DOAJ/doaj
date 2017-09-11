@@ -113,6 +113,8 @@ class XWalk(object):
         """Get all duplicates (or previous versions) of an article."""
 
         possible_articles_dict = XWalk.discover_duplicates(article, owner)
+        if not possible_articles_dict:
+            return []
 
         # We don't need the details of duplicate types, so flatten the lists.
         all_possible_articles = [article for dup_type in possible_articles_dict.values() for article in dup_type]
@@ -147,6 +149,7 @@ class XWalk(object):
         # issues like where there are already duplicates in the data, and not matching one
         # of them propagates the issue)
         possible_articles = {}
+        found = False
 
         # Checking by DOI is our first step
         dois = b.get_identifiers(b.DOI)
@@ -155,6 +158,8 @@ class XWalk(object):
             doi = dois[0]
             articles = models.Article.duplicates(issns=issns, doi=doi)
             possible_articles['doi'] = [a for a in articles if a.id != article.id]
+            if possible_articles['doi']:
+                found = True
 
         # Second test is to look by fulltext url
         urls = b.get_urls(b.FULLTEXT)
@@ -162,8 +167,10 @@ class XWalk(object):
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
             possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
+            if possible_articles['fulltext']:
+                found = True
 
-        return possible_articles
+        return possible_articles if found else None
 
 
 class FormXWalk(XWalk):
