@@ -5,15 +5,7 @@ take great care running it - at minimum double check there is a recent
 backup available, there should always be one anyway.
 """
 
-"""
-New functionality for issue 1296:
-* For each article does a global check to see if there are any other articles which are "duplicate"
-* Outputs each "set" of duplicate articles, along with the criteria for which they were determined duplicate
-* Further identifies articles which are duplicate within a single user's account
-* Identifies articles which appear in more than one "set" - that is, they may be duplicate with one set of articles by DOI, and duplicate with a different set by URL, etc
-"""
-
-from portality.models import Article
+from portality.models import Article, Journal, Account
 from portality.article import XWalk
 from portality.core import app
 from datetime import datetime
@@ -21,15 +13,18 @@ import time
 import esprit
 
 
-def duplicates_per_article(connection, delete, snapshot):
+def duplicates_per_article(connection, delete, snapshot, query_override=None):
     """Scroll through all articles, finding (and deleting if set) duplicates for each."""
     dupcount = 0
     delcount = 0
 
-    scroll_query = {                                                                      # scroll from newest to oldest
-        "query": {"match_all": {}},
-        "sort": [{"last_updated": {"order": "desc"}}]
-    }
+    if query_override:
+        scroll_query = query_override
+    else:
+        scroll_query = {                                                                  # scroll from newest to oldest
+            "query": {"match_all": {}},
+            "sort": [{"last_updated": {"order": "desc"}}]
+        }
 
     for a in esprit.tasks.scroll(connection, 'article', q=scroll_query):
         article = Article(_source=a)
@@ -56,6 +51,40 @@ def duplicates_per_article(connection, delete, snapshot):
     return dupcount, delcount
 
 
+def duplicates_per_account(connection, delete, snapshot):
+    dupcount = 0
+    delcount = 0
+
+    for acc in esprit.tasks.scroll(connection, 'account'):
+        account = Account(**acc)
+
+        js = Journal.all(terms={"admin.owner": [account.id]})
+        if js:
+            print "Account {0}".format(account.id)
+
+            for j in js:
+                issns = j.bibjson().issns()
+                scroll_query = {
+                    "query": {
+                        "filtered": {
+                            "filter": {
+                                "bool": {
+                                    "must": [
+                                        {"terms": {"index.issn.exact": issns}}
+                                     ]
+                                }
+                            },
+                            "query": {"match_all": {}}
+                        }
+                    },
+                    "sort": [{"last_updated": {"order": "desc"}}]
+                }
+                j_dupcount, j_delcount = duplicates_per_article(conn, delete, snapshot, query_override=scroll_query)
+                dupcount += j_dupcount
+                delcount += j_delcount
+    return dupcount, delcount
+
+
 if __name__ == "__main__":
     if app.config.get("SCRIPTS_READ_ONLY_MODE", False):
         print "System is in READ-ONLY mode, script cannot run"
@@ -64,6 +93,7 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
 
+    parser.add_argument("-a", "--account", help="search for duplicates per account, rather than globally.", action="store_true")
     parser.add_argument("-g", "--ghost", help="specify if you want the articles being deleted not to be snapshot.", action="store_true")
     parser.add_argument("-d", "--delete", help="delete articles detected as duplicates. Unspecified, this script returns the report only.", action="store_true")
     parser.add_argument("-y", "--yes", help="are you running this script with output redirection e.g. DOAJENV=production python portality/scripts/article_duplicates_report_remove.py >> ~/dedupe_`date +\%%F_\%%H\%%M\%%S`.log 2>&1 ? You really should.", action="store_true")
@@ -86,11 +116,15 @@ if __name__ == "__main__":
         print 'Starting {0} report-only.'.format(start.isoformat())
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-    dupcount, delcount = duplicates_per_article(conn, args.delete, snapshot)
+
+    if args.account:
+        dupcount, delcount = duplicates_per_account(conn, args.delete, snapshot)
+    else:
+        dupcount, delcount = duplicates_per_article(conn, args.delete, snapshot)
 
     end = datetime.now()
     length = end - start
     if args.delete:
         print "Ended {0}. {1} articles duplicated, {2} duplicates deleted. Took {3}.".format(end.isoformat(), dupcount, delcount, str(length))
     else:
-        print "Ended {0}. {1} articles duplicated, {2} would be deleted. Took {3}.".format(end.isoformat(), dupcount, delcount, str(length))
+        print "Ended {0}. {1} articles duplicated, {2} duplicates would be deleted. Took {3}.".format(end.isoformat(), dupcount, delcount, str(length))
