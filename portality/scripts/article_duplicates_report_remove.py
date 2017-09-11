@@ -42,10 +42,12 @@ def duplicates_per_article(connection, delete, snapshot, query_override=None):
 
             if delete:
                 for dup in set(doi_dups + fulltext_dups):
-                    if snapshot:
-                        dup.snapshot()
-                    dup.delete()
-                    delcount += 1
+                    dup_art = article.pull(dup)
+                    if dup_art is not None:
+                        if snapshot:
+                            dup_art.snapshot()
+                        dup_art.delete()
+                        delcount += 1
             else:
                 delcount += len(set(doi_dups + fulltext_dups))
     return dupcount, delcount
@@ -101,8 +103,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.yes:
-        raise Exception('Please run this script with output redirection, see --help if needed, \
-        and also confirm you are running it with output redirection by passing -y on run.')
+        raise Exception('Please run this script with output redirection, see --help if needed, and also confirm you are running it with output redirection by passing -y on run.')
 
     snapshot = not args.ghost
     snapshot_report = "with snapshotting" if snapshot else "without snapshotting"
