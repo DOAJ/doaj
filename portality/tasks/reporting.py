@@ -173,24 +173,8 @@ class StatusCounter(ReportCounter):
         if not prov.action.startswith("status:"):
             return
 
-        role_precedence = ["associate_editor", "editor", "admin"]
-        best_role = None
-        for r in prov.roles:
-            try:
-                if best_role is None:
-                    best_role = r
-                if role_precedence.index(r) > role_precedence.index(best_role):
-                    best_role = r
-            except ValueError:
-                pass                            # The user has a role not in our precedence list (e.g. api) - ignore it.
-
-        countable = False
-        if best_role == "admin" and (prov.action == "status:accepted" or prov.action == "status:rejected"):
-            countable = True
-        elif best_role == "editor" and prov.action == "status:ready":
-            countable = True
-        elif best_role == "associate_editor" and prov.action == "status:completed":
-            countable = True
+        best_role = self._get_best_role(prov.roles)
+        countable = self._is_countable(prov, best_role)
 
         if not countable:
             return
@@ -208,6 +192,35 @@ class StatusCounter(ReportCounter):
         if p != self._last_period:
             self._count_down(self._last_period)
             self._last_period = p
+
+
+    def _get_best_role(self, roles):
+        role_precedence = ["associate_editor", "editor", "admin"]
+        best_role = None
+        for r in roles:
+            try:
+                if best_role is None and r in role_precedence:
+                    best_role = r
+                if role_precedence.index(r) > role_precedence.index(best_role):
+                    best_role = r
+            except ValueError:
+                pass                            # The user has a role not in our precedence list (e.g. api) - ignore it.
+
+        return best_role
+
+
+    def _is_countable(self, prov, role):
+        countable = False
+
+        if role == "admin" and (prov.action == "status:accepted" or prov.action == "status:rejected"):
+            countable = True
+        elif role == "editor" and prov.action == "status:ready":
+            countable = True
+        elif role == "associate_editor" and prov.action == "status:completed":
+            countable = True
+
+        return countable
+
 
     def tabulate(self):
         self._count_down(self._last_period)
