@@ -182,3 +182,64 @@ class TestReporting(DoajTestCase):
         assert len(prov_outfiles) == 4
         assert len(cont_outfiles) == 1
 
+    def test_05_status_role(self):
+        counter = reporting.StatusCounter("month")
+
+        roles = ["admin"]
+        best = counter._get_best_role(roles)
+        assert best == "admin"
+
+        roles = ["associate_editor", "editor", "admin"]
+        best = counter._get_best_role(roles)
+        assert best == "admin"
+
+        roles = ["api"]
+        best = counter._get_best_role(roles)
+        assert best is None
+
+        roles = ["api", "whatever", "another"]
+        best = counter._get_best_role(roles)
+        assert best is None
+
+        roles = ["associate_editor", "api", "editor"]
+        best = counter._get_best_role(roles)
+        assert best == "editor"
+
+        roles = ["api", "associate_editor", "editor"]
+        best = counter._get_best_role(roles)
+        assert best == "editor"
+
+    def test_06_status_is_countable(self):
+        counter = reporting.StatusCounter("month")
+
+        admin_accepted = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:accepted")
+        assert counter._is_countable(admin_accepted, "admin")
+        assert not counter._is_countable(admin_accepted, "editor")
+        assert not counter._is_countable(admin_accepted, "associate_editor")
+        assert not counter._is_countable(admin_accepted, "api")
+
+        admin_rejected = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:rejected")
+        assert counter._is_countable(admin_rejected, "admin")
+        assert not counter._is_countable(admin_rejected, "editor")
+        assert not counter._is_countable(admin_rejected, "associate_editor")
+        assert not counter._is_countable(admin_rejected, "api")
+
+        editor_ready = models.Provenance(user="testuser", roles=["editor", "associate_editor"], action="status:ready")
+        assert counter._is_countable(editor_ready, "editor")
+        assert not counter._is_countable(editor_ready, "admin")
+        assert not counter._is_countable(editor_ready, "associate_editor")
+        assert not counter._is_countable(editor_ready, "api")
+
+        assed_completed = models.Provenance(user="testuser", roles=["associate_editor"], action="status:completed")
+        assert counter._is_countable(assed_completed, "associate_editor")
+        assert not counter._is_countable(assed_completed, "admin")
+        assert not counter._is_countable(assed_completed, "editor")
+        assert not counter._is_countable(assed_completed, "api")
+
+        other = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:other")
+        assert not counter._is_countable(other, "associate_editor")
+        assert not counter._is_countable(other, "admin")
+        assert not counter._is_countable(other, "editor")
+        assert not counter._is_countable(other, "api")
+
+
