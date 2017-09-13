@@ -74,9 +74,9 @@ crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 
 # replicate across servers
 /home/cloo/repl/replicate.sh
-/home/cloo/repl/command.sh redis-$ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-redis.sh $ENV
-/home/cloo/repl/command.sh $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
-/home/cloo/repl/command.sh $ENV-background /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-background-apps.sh $ENV
+/home/cloo/repl/command.sh -v redis-$ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-redis.sh $ENV
+/home/cloo/repl/command.sh -v $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
+/home/cloo/repl/command.sh -v $ENV-background /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-background-apps.sh $ENV
 
 # reload the config if syntax is OK
 sudo nginx -t && sudo nginx -s reload
