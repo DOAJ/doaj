@@ -8,6 +8,8 @@ from portality import models
 
 from esprit.raw import make_connection
 
+import time
+
 
 class TestArticleMatch(DoajTestCase):
 
@@ -24,7 +26,7 @@ class TestArticleMatch(DoajTestCase):
         article1 = models.Article(**ArticleFixtureFactory.make_article_source(
             eissn='1111-1111',
             pissn='2222-2222',
-            with_id=True,
+            with_id=False,
             in_doaj=True,
             with_journal_info=True
         ))
@@ -35,7 +37,7 @@ class TestArticleMatch(DoajTestCase):
         article2 = models.Article(**ArticleFixtureFactory.make_article_source(
             eissn='1111-1111',
             pissn='2222-2222',
-            with_id=True,
+            with_id=False,
             in_doaj=True,
             with_journal_info=True
         ))
@@ -47,14 +49,18 @@ class TestArticleMatch(DoajTestCase):
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
         dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=False, snapshot=False)
 
-        assert dupcount == 1
-        assert delcount == 0
+        assert dupcount == 2
+        assert delcount == 1        # Script reports how many would be deleted
+        time.sleep(0.5)
+        # Check no deletes occurred
+        assert len(models.Article.all()) == 2
 
         # Run with deletes
         dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=True, snapshot=False)
-        assert dupcount == 1
+        assert dupcount == 2
         assert delcount == 1
 
+        time.sleep(0.5)
         # Check it's gone from index
         assert len(models.Article.all()) == 1
 
