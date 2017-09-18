@@ -50,7 +50,7 @@ class TestArticleMatch(DoajTestCase):
         dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=False, snapshot=False)
 
         assert dupcount == 2
-        assert delcount == 1        # Script reports how many would be deleted
+        assert delcount == 1                                                  # Script reports how many would be deleted
         time.sleep(0.5)
         # Check no deletes occurred
         assert len(models.Article.all()) == 2

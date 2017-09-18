@@ -16,7 +16,7 @@ import esprit
 def duplicates_per_article(connection, delete, snapshot, query_override=None):
     """Scroll through all articles, finding (and deleting if set) duplicates for each."""
     dupcount = 0
-    delcount = 0
+    deleted_ids = set()
 
     if query_override:
         scroll_query = query_override
@@ -40,17 +40,19 @@ def duplicates_per_article(connection, delete, snapshot, query_override=None):
             if fulltext_dups:
                 print "\t{0} fulltext duplicates: {1}".format(len(fulltext_dups), ", ".join(fulltext_dups))
 
-            if delete:
+            if delete and article.id not in deleted_ids:            # only delete its duplicates if it isn't a duplicate
                 for dup in set(doi_dups + fulltext_dups):
                     dup_art = article.pull(dup)
                     if dup_art is not None:
                         if snapshot:
                             dup_art.snapshot()
                         dup_art.delete()
-                        delcount += 1
+                        deleted_ids.add(dup)
             else:
-                delcount += len(set(doi_dups + fulltext_dups))
-    return dupcount, delcount
+                if article.id not in deleted_ids:
+                    deleted_ids = deleted_ids | set(doi_dups + fulltext_dups)
+
+    return dupcount, len(deleted_ids)
 
 
 def duplicates_per_account(connection, delete, snapshot):
