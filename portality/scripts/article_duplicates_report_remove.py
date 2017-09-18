@@ -83,9 +83,10 @@ def duplicates_per_account(connection, delete, snapshot):
                     },
                     "sort": [{"last_updated": {"order": "desc"}}]
                 }
-                j_dupcount, j_delcount = duplicates_per_article(conn, delete, snapshot, query_override=scroll_query)
+                j_dupcount, j_delcount = duplicates_per_article(connection, delete, snapshot, query_override=scroll_query)
                 dupcount += j_dupcount
                 delcount += j_delcount
+
     return dupcount, delcount
 
 
