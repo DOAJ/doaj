@@ -103,7 +103,7 @@ class TestArticleMatch(DoajTestCase):
         # We should delete 9 of these duplicates - 3 fully overlap with the original (i=1, i=5, i=7, i=11) and can't be
         # deleted twice.
         assert delcount == 9, delcount
-        time.sleep(1)
+        time.sleep(1.5)
 
         # Check how many deletes we actually had. There should be 3 left. - one with dup_doi, one with dup_fulltext and
         # the remaining is not a duplicate from i=(6,12).
@@ -117,59 +117,59 @@ class TestArticleMatch(DoajTestCase):
         pub_account.save()
 
         # The publisher has 2 journals, one in, one out of DOAJ
-        in_journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        [j1, j2] = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
+        in_journal = models.Journal(**j1)
         in_journal.set_owner(pub_account.id)
         in_journal.save()
-        out_journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+        out_journal = models.Journal(**j2)
         out_journal.set_owner(pub_account.id)
-        out_journal.save()
+        out_journal.set_in_doaj(False)
+        out_journal.save(blocking=True)
 
-        # Add some articles to the journals. First, duplicates for the in_doaj journal
+        # Add some articles to the journals. First, 3 duplicates for the in_doaj journal
         for i in range(0, 3):
             article = models.Article(**ArticleFixtureFactory.make_article_source(
-                eissn=in_journal.known_issns()[0],
-                pissn=in_journal.known_issns()[1],
                 with_id=False,
                 in_doaj=True,
                 with_journal_info=False
             ))
-            article.add_journal_metadata(in_journal)
-            article.save(blocking=True, differentiate=True)
+            article.add_journal_metadata(in_journal)                                           # Copies the ISSNs across
+            article.save(differentiate=True)
 
         # and a not-duplicate in the in_doaj journal which should not be deleted
         art_src = ArticleFixtureFactory.make_article_source(
-            eissn=in_journal.known_issns()[0],
-            pissn=in_journal.known_issns()[1],
             with_id=False,
             in_doaj=True,
             with_journal_info=False
         )
-        issns = [t for t in art_src['bibjson']['identifier'] if t['type'] != 'doi']
-        art_src['bibjson']['identifier'] = issns
         del art_src['bibjson']['link']
+        del art_src['bibjson']['identifier']
         article_diff = models.Article(**art_src)
         article_diff.bibjson().add_url('http://not_duplicate/fulltext/_DIFFERENT', 'fulltext', 'html')
-        article_diff.add_journal_metadata(in_journal)
+        article_diff.add_journal_metadata(in_journal)                                          # Copies the ISSNs across
         article_diff.save(blocking=True, differentiate=True)
 
-        # Next, some duplicates for the not-in_doaj journals which we also expect to be taken out
+        # Next, 2 duplicates for the not-in_doaj journals which we also expect to be taken out. They have different
+        # fulltext URLs as those in the other journal.
         for i in range(0, 2):
-            article = models.Article(**ArticleFixtureFactory.make_article_source(
-                eissn=out_journal.known_issns()[0],
-                pissn=out_journal.known_issns()[1],
+            src = ArticleFixtureFactory.make_article_source(
                 with_id=False,
                 in_doaj=False,
                 with_journal_info=False
-            ))
+            )
+            del src['bibjson']['link']
+            del src['bibjson']['identifier']
+            article = models.Article(**src)
+            article.bibjson().add_url('http://same_fulltext.url', 'fulltext', 'html')
             article.add_journal_metadata(out_journal)
             article.save(blocking=True, differentiate=True)
 
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=True, snapshot=False)
+        dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=False, snapshot=False)
 
-        assert dupcount == 5                                        # The 5 duplicates we have created across 2 journals
-        assert delcount == 4
+        assert dupcount == 5, dupcount                              # The 5 duplicates we have created across 2 journals
+        assert delcount == 3, delcount                              # delete 2 from in_journal, 1 from out_journal
 
     def test_04_duplicates_per_account_more_publishers(self):
         """ Check duplication reporting only within a publisher's account. """
@@ -187,11 +187,12 @@ class TestArticleMatch(DoajTestCase):
         pub_account3.save()
 
         pubs = [pub_account1, pub_account2, pub_account3]
+        journs = JournalFixtureFactory.make_many_journal_sources(3, True)
 
         # Add a journal and a pair of duplicate articles per account
-        for p in pubs:
-            journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-            journal.set_owner(p.id)
+        for i in range(0, 3):
+            journal = models.Journal(**journs[i])
+            journal.set_owner(pubs[i].id)
             journal.save()
 
             for i in range(0, 2):
@@ -208,7 +209,7 @@ class TestArticleMatch(DoajTestCase):
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
         dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=True, snapshot=False)
 
-        assert dupcount == 6                                                      # 3 accounts, 2 duplicates per account
+        assert dupcount == 6, dupcount                                            # 3 accounts, 2 duplicates per account
         assert delcount == 3, delcount
 
     def test_05_duplicates_per_account_check_separation(self):
@@ -230,39 +231,39 @@ class TestArticleMatch(DoajTestCase):
         journal1.save()
 
         journal2 = models.Journal(**journal2_src)
-        journal2.set_owner(pub_account1.id)
-        journal2.save()
+        journal2.set_owner(pub_account2.id)
+        journal2.save(blocking=True)
 
+        assert journal1.owner != journal2.owner
         assert journal1.known_issns() != journal2.known_issns()
 
         # Assign duplicate articles to 2 separate journals in 2 accounts.
         article1 = models.Article(**ArticleFixtureFactory.make_article_source(
-            eissn=journal1.known_issns()[0],
-            pissn=journal1.known_issns()[1],
             with_id=False,
             in_doaj=False,
             with_journal_info=True
         ))
+        article1.add_journal_metadata(journal1)
         article1.save(blocking=True)
 
         article2 = models.Article(**ArticleFixtureFactory.make_article_source(
-            eissn=journal2.known_issns()[0],
-            pissn=journal2.known_issns()[1],
             with_id=False,
             in_doaj=False,
             with_journal_info=True
         ))
+        article2.add_journal_metadata(journal2)
         article2.save(blocking=True)
 
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
         dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=False, snapshot=False)
 
-        assert dupcount == 0
-        assert delcount == 0
+        # We expect no duplicates, since they are checked per account.
+        assert dupcount == 0, dupcount
+        assert delcount == 0, delcount
 
         # Verify we find them using the global search
         dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=False, snapshot=False)
 
-        assert dupcount == 2  # 3 accounts, 2 duplicates per account
-        assert delcount == 1
+        assert dupcount == 2, dupcount
+        assert delcount == 1, delcount

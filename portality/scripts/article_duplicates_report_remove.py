@@ -13,7 +13,7 @@ import time
 import esprit
 
 
-def duplicates_per_article(connection, delete, snapshot, query_override=None):
+def duplicates_per_article(connection, delete, snapshot, owner=None, query_override=None):
     """Scroll through all articles, finding (and deleting if set) duplicates for each."""
     dupcount = 0
     deleted_ids = set()
@@ -28,9 +28,12 @@ def duplicates_per_article(connection, delete, snapshot, query_override=None):
 
     for a in esprit.tasks.scroll(connection, 'article', q=scroll_query):
         article = Article(_source=a)
-        duplicates = XWalk.discover_duplicates(article)
+
+        if article.id in deleted_ids:                               # only delete its duplicates if it isn't a duplicate
+            continue
+
+        duplicates = XWalk.discover_duplicates(article, owner)
         if duplicates:
-            dupcount += 1
             doi_dups = [d.id for d in duplicates.get('doi', [])]
             fulltext_dups = [d.id for d in duplicates.get('fulltext', [])]
             doi_dups.sort(), fulltext_dups.sort()                            # Sort so we can visually compare the lists
@@ -40,8 +43,11 @@ def duplicates_per_article(connection, delete, snapshot, query_override=None):
             if fulltext_dups:
                 print "\t{0} fulltext duplicates: {1}".format(len(fulltext_dups), ", ".join(fulltext_dups))
 
-            if delete and article.id not in deleted_ids:            # only delete its duplicates if it isn't a duplicate
-                for dup in set(doi_dups + fulltext_dups):
+            set_of_duplicates = set(doi_dups + fulltext_dups)
+            dupcount += len(set_of_duplicates) + 1                     # The detected duplicates plus the article itself
+
+            if delete:
+                for dup in set_of_duplicates:
                     dup_art = article.pull(dup)
                     if dup_art is not None:
                         if snapshot:
@@ -49,8 +55,7 @@ def duplicates_per_article(connection, delete, snapshot, query_override=None):
                         dup_art.delete()
                         deleted_ids.add(dup)
             else:
-                if article.id not in deleted_ids:
-                    deleted_ids = deleted_ids | set(doi_dups + fulltext_dups)
+                deleted_ids = deleted_ids | set_of_duplicates
 
     return dupcount, len(deleted_ids)
 
@@ -83,7 +88,7 @@ def duplicates_per_account(connection, delete, snapshot):
                     },
                     "sort": [{"last_updated": {"order": "desc"}}]
                 }
-                j_dupcount, j_delcount = duplicates_per_article(connection, delete, snapshot, query_override=scroll_query)
+                j_dupcount, j_delcount = duplicates_per_article(connection, delete, snapshot, owner=account.id, query_override=scroll_query)
                 dupcount += j_dupcount
                 delcount += j_delcount
 
