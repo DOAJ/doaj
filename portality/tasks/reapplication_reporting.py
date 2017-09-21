@@ -4,32 +4,27 @@ will be discarded in time as reapplications were a one-off. """
 from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
-from portality import datasets
-from portality.core import app
 
 from portality.background import BackgroundApi, BackgroundTask
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
 import codecs, os, shutil
 
 
-def provenance_reports(fr, to, outdir):
-    pipeline = []
-    pipeline.append(ActionCounter("edit", "month"))
-    pipeline.append(ActionCounter("edit", "year"))
-    pipeline.append(StatusCounter("month"))
-    pipeline.append(StatusCounter("year"))
+def reapplication_reports(outdir):
+    pipeline = [
+        TickReporter()
+    ]
 
-    q = ProvenanceList(fr, to)
-    for prov in models.Provenance.iterate(q.query()):
+    for j in models.Journal.all_in_doaj(page_size=1000):
         for filt in pipeline:
-            filt.count(prov)
+            filt.test(j)
 
     outfiles = []
     for p in pipeline:
         table = p.tabulate()
-        outfile = os.path.join(outdir, p.filename(fr, to))
+        outfile = os.path.join(outdir, p.filename())
         outfiles.append(outfile)
         with codecs.open(outfile, "wb", "utf-8") as f:
             writer = UnicodeWriter(f)
@@ -39,257 +34,52 @@ def provenance_reports(fr, to, outdir):
     return outfiles
 
 
-def content_reports(fr, to, outdir):
-    report = {}
+def _tabulate_journal(report, entity_key):
+    categories = report.values()[0].keys()
+    categories.sort()
+    table = [[entity_key] + categories]
 
-    q = ContentByDate(fr, to)
-    res = models.Suggestion.query(q=q.query())
-    year_buckets = res.get("aggregations", {}).get("years", {}).get("buckets", [])
-    for years in year_buckets:
-        ds = years.get("key_as_string")
-        do = dates.parse(ds)
-        year = do.year
-        if year not in report:
-            report[year] = {}
-        country_buckets = years.get("countries", {}).get("buckets", [])
-        for country in country_buckets:
-            cc = country.get("key")
-            cn = datasets.get_country_name(cc)
-            if cn not in report[year]:
-                report[year][cn] = {}
-            count = country.get("doc_count")
-            report[year][cn]["count"] = count
-
-    table = _tabulate_time_entity_group(report, "Country")
-
-    filename = "applications_by_year_by_country__" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
-    outfiles = []
-    outfile = os.path.join(outdir, filename)
-    outfiles.append(outfile)
-    with codecs.open(outfile, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
-        for row in table:
-            writer.writerow(row)
-
-    return outfiles
-
-
-def _tabulate_time_entity_group(group, entityKey):
-    date_keys = group.keys()
-    date_keys.sort()
-    table = []
-    padding = []
-    for db in date_keys:
-        users = group[db].keys()
-        for u in users:
-            c = group[db][u]["count"]
-            existing = False
-            for row in table:
-                if row[0] == u:
-                    row.append(c)
-                    existing = True
-            if not existing:
-                table.append([u] + padding + [c])
-        padding.append(0)
-
-    for row in table:
-        if len(row) < len(date_keys) + 1:
-            row += [0] * (len(date_keys) - len(row) + 1)
-
-    table.sort(key=lambda user: user[0])
-    table = [[entityKey] + date_keys] + table
+    for k, v in report.iteritems():
+        row = [k]
+        for c in categories:
+            row.append(v[c])
+        table.append(row)
     return table
 
 
-def _fft(timestamp):
-    """File Friendly Timestamp - Windows doesn't appreciate : / etc in filenames; strip these out"""
-    return dates.reformat(timestamp, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
+class JournalReporter(object):
 
-
-class ReportCounter(object):
-    def __init__(self, period):
-        self.period = period
-
-    def _flatten_timestamp(self, ts):
-        if self.period == "month":
-            return ts.strftime("%Y-%m")
-        elif self.period == "year":
-            return ts.strftime("%Y")
-
-    def count(self, prov):
-        raise NotImplementedError()
-
-    def tabulate(self):
-        raise NotImplementedError()
-
-    def filename(self, fr, to):
-        raise NotImplementedError()
-
-
-class ActionCounter(ReportCounter):
-    def __init__(self, action, period):
-        self.action = action
+    def __init__(self):
         self.report = {}
-        self._last_period = None
-        super(ActionCounter, self).__init__(period)
 
-    def count(self, prov):
-        if prov.action != self.action:
-            return
-
-        p = self._flatten_timestamp(prov.created_timestamp)
-        if p not in self.report:
-            self.report[p] = {}
-
-        if prov.user not in self.report[p]:
-            self.report[p][prov.user] = {"ids" : []}
-
-        if prov.resource_id not in self.report[p][prov.user]["ids"]:
-            self.report[p][prov.user]["ids"].append(prov.resource_id)
-
-        if p != self._last_period:
-            self._count_down(self._last_period)
-            self._last_period = p
-
-    def tabulate(self):
-        self._count_down(self._last_period)
-        return _tabulate_time_entity_group(self.report, "User")
-
-    def filename(self, fr, to):
-        return self.action + "_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
-
-    def _count_down(self, p):
-        if p is None:
-            return
-        for k in self.report[p].keys():
-            self.report[p][k]["count"] = len(self.report[p][k]["ids"])
-            del self.report[p][k]["ids"]
-
-
-class StatusCounter(ReportCounter):
-    def __init__(self, period):
-        self.report = {}
-        self._last_period = None
-        super(StatusCounter, self).__init__(period)
-
-    def count(self, prov):
-        if not prov.action.startswith("status:"):
-            return
-
-        best_role = self._get_best_role(prov.roles)
-        countable = self._is_countable(prov, best_role)
-
-        if not countable:
-            return
-
-        p = self._flatten_timestamp(prov.created_timestamp)
-        if p not in self.report:
-            self.report[p] = {}
-
-        if prov.user not in self.report[p]:
-            self.report[p][prov.user] = {"ids" : []}
-
-        if prov.resource_id not in self.report[p][prov.user]["ids"]:
-            self.report[p][prov.user]["ids"].append(prov.resource_id)
-
-        if p != self._last_period:
-            self._count_down(self._last_period)
-            self._last_period = p
-
-
-    def _get_best_role(self, roles):
-        role_precedence = ["associate_editor", "editor", "admin"]
-        best_role = None
-        for r in roles:
-            try:
-                if best_role is None and r in role_precedence:
-                    best_role = r
-                if role_precedence.index(r) > role_precedence.index(best_role):
-                    best_role = r
-            except ValueError:
-                pass                            # The user has a role not in our precedence list (e.g. api) - ignore it.
-
-        return best_role
-
-
-    def _is_countable(self, prov, role):
-        countable = False
-
-        if role == "admin" and (prov.action == "status:accepted" or prov.action == "status:rejected"):
-            countable = True
-        elif role == "editor" and prov.action == "status:ready":
-            countable = True
-        elif role == "associate_editor" and prov.action == "status:completed":
-            countable = True
-
-        return countable
-
-
-    def tabulate(self):
-        self._count_down(self._last_period)
-        return _tabulate_time_entity_group(self.report, "User")
-
-    def filename(self, fr, to):
-        return "completion_by_" + self.period + "__from_" + _fft(fr) + "_to_" + _fft(to) + "__on_" + dates.today() + ".csv"
-
-    def _count_down(self, p):
-        if p is None:
-            return
-        for k in self.report[p].keys():
-            self.report[p][k]["count"] = len(self.report[p][k]["ids"])
-            del self.report[p][k]["ids"]
-
-
-class ProvenanceList(object):
-    def __init__(self, fr, to):
-        self.fr = fr
-        self.to = to
-
-    def query(self):
-        return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"range" : {"created_date" : {"gt" : self.fr, "lte" : self.to}}}
-                    ]
-                }
-            },
-            "sort" : [{"created_date" : {"order" : "asc"}}]
+    def include(self, j):
+        self.report[j.id] = {
+            'Title': j.bibjson().title,
+            'EISSN': j.bibjson().get_one_identifier('eissn') or '',
+            'PISSN': j.bibjson().get_one_identifier('pissn') or ''
         }
 
+    def test(self, j):
+        raise NotImplementedError()
 
-class ContentByDate(object):
-    def __init__(self, fr, to):
-        self.fr = fr
-        self.to = to
+    def tabulate(self):
+        raise NotImplementedError()
 
-    def query(self):
-        return {
-            "query" : {
-                "bool" : {
-                    "must" : [
-                        {"range" : {"created_date" : {"gt" : self.fr, "lte" : self.to}}}
-                    ]
-                }
-            },
-            "size" : 0,
-            "aggs" : {
-                "years" : {
-                    "date_histogram" : {
-                        "field" : "created_date",
-                        "interval" : "year"
-                    },
-                    "aggs" : {
-                        "countries" : {
-                            "terms" : {
-                                "field" : "bibjson.country.exact",
-                                "size" : 1000
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    def filename(self):
+        raise NotImplementedError()
+
+
+class TickReporter(JournalReporter):
+
+    def test(self, j):
+        if not j.is_ticked():
+            self.include(j)
+
+    def tabulate(self):
+        return _tabulate_journal(self.report, "Journal ID")
+
+    def filename(self):
+        return 'unticked_journals_on_' + dates.today() + '.csv'
 
 
 def email(data_dir, archv_name):
@@ -325,39 +115,33 @@ def email(data_dir, archv_name):
 
 class ReportingBackgroundTask(BackgroundTask):
 
-    __action__ = "reporting"
+    __action__ = "reapplication_reporting"
 
     def run(self):
         """
-        Execute the task as specified by the background_jon
+        Execute the task as specified by the background_job
         :return:
         """
         job = self.background_job
         params = job.params
 
-        outdir = self.get_param(params, "outdir", "report_" + dates.now())
-        fr = self.get_param(params, "from", "1970-01-01T00:00:00Z")
-        to = self.get_param(params, "to", dates.now())
+        outdir = self.get_param(params, "outdir", "reapplication_report_" + dates.today())
 
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        prov_outfiles = provenance_reports(fr, to, outdir)
-        cont_outfiles = content_reports(fr, to, outdir)
+        reapp_outfiles = reapplication_reports(outdir)
         refs = {}
-        self.set_reference(refs, "provenance_outfiles", prov_outfiles)
-        self.set_reference(refs, "content_outfiles", cont_outfiles)
+        self.set_reference(refs, "reapplication_outfiles", reapp_outfiles)
         job.reference = refs
 
-        msg = u"Generated reports for period {x} to {y}".format(x=fr, y=to)
+        msg = u"Generated reapplication reports as of {0}".format(dates.now())
         job.add_audit_message(msg)
 
         send_email = self.get_param(params, "email", False)
         if send_email:
-            ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-            ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
-            archive_name = "reports_" + ref_fr + "_to_" + ref_to
+            archive_name = "reapplication_reports_" + dates.today()
             email(outdir, archive_name)
             job.add_audit_message("email alert sent")
         else:
