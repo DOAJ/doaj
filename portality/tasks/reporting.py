@@ -332,7 +332,7 @@ class ReportingBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        outdir = self.get_param(params, "outdir", "report_" + dates.now())
+        outdir = self.get_param(params, "outdir", "report_" + dates.today())
         fr = self.get_param(params, "from", "1970-01-01T00:00:00Z")
         to = self.get_param(params, "to", dates.now())
 
@@ -392,7 +392,7 @@ class ReportingBackgroundTask(BackgroundTask):
         job.action = cls.__action__
 
         params = {}
-        cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.now()))
+        cls.set_param(params, "outdir", kwargs.get("outdir", "report_" + dates.today()))
         cls.set_param(params, "from", kwargs.get("from_date", "1970-01-01T00:00:00Z"))
         cls.set_param(params, "to", kwargs.get("to_date", dates.now()))
         cls.set_param(params, "email", kwargs.get("email", False))
