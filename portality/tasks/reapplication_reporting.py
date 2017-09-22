@@ -14,6 +14,7 @@ import codecs, os, shutil, re
 
 def reapplication_reports(outdir):
     pipeline = [
+        RejectedReapplicationReporter(),
         NoReapplicationReporter(),
         ContinuationNoteReporter(),
         TickReporter()
@@ -69,6 +70,19 @@ class JournalReporter(object):
 
     def filename(self):
         raise NotImplementedError()
+
+
+class RejectedReapplicationReporter(JournalReporter):
+
+    def test(self, j):
+        if j.current_application is not None:
+            cur_app = models.Suggestion.pull(j.current_application)
+            if cur_app is not None:
+                if cur_app.current_journal and cur_app.application_status == 'rejected':        # rejected reapplication
+                    self.include(j)
+
+    def filename(self):
+        return '1_journals_with_rejected_reapplication_on_' + dates.today() + '.csv'
 
 
 class NoReapplicationReporter(JournalReporter):
