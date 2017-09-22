@@ -9,11 +9,12 @@ from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue
 from portality.decorators import write_required
 
-import codecs, os, shutil
+import codecs, os, shutil, re
 
 
 def reapplication_reports(outdir):
     pipeline = [
+        ContinuationNoteReporter(),
         TickReporter()
     ]
 
@@ -59,14 +60,27 @@ class JournalReporter(object):
             'PISSN': j.bibjson().get_one_identifier('pissn') or ''
         }
 
-    def test(self, j):
-        raise NotImplementedError()
-
     def tabulate(self):
+        return _tabulate_journal(self.report, "Journal ID")
+
+    def test(self, j):
         raise NotImplementedError()
 
     def filename(self):
         raise NotImplementedError()
+
+
+class ContinuationNoteReporter(JournalReporter):
+
+    notes_regex = re.compile('^Continuation automatically extracted from journal .* during migration$', re.IGNORECASE)
+
+    def test(self, j):
+        for n in j.notes:
+            if self.notes_regex.match(n['note']):
+                self.include(j)
+
+    def filename(self):
+        return '3_continued_journals_on_' + dates.today() + '.csv'
 
 
 class TickReporter(JournalReporter):
@@ -75,11 +89,8 @@ class TickReporter(JournalReporter):
         if not j.is_ticked():
             self.include(j)
 
-    def tabulate(self):
-        return _tabulate_journal(self.report, "Journal ID")
-
     def filename(self):
-        return 'unticked_journals_on_' + dates.today() + '.csv'
+        return '4_unticked_journals_on_' + dates.today() + '.csv'
 
 
 def email(data_dir, archv_name):
