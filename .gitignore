@@ -5,6 +5,7 @@ src*
 .Python
 build/*
 dist/*
+tmp/*
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea

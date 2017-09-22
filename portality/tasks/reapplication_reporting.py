@@ -14,6 +14,7 @@ import codecs, os, shutil, re
 
 def reapplication_reports(outdir):
     pipeline = [
+        NoReapplicationReporter(),
         ContinuationNoteReporter(),
         TickReporter()
     ]
@@ -70,6 +71,16 @@ class JournalReporter(object):
         raise NotImplementedError()
 
 
+class NoReapplicationReporter(JournalReporter):
+
+    def test(self, j):
+        if j.current_application is None and not j.is_ticked():
+            self.include(j)
+
+    def filename(self):
+        return '2_journals_without_reapplications_on_' + dates.today() + '.csv'
+
+
 class ContinuationNoteReporter(JournalReporter):
 
     notes_regex = re.compile('^Continuation automatically extracted from journal .* during migration$', re.IGNORECASE)
@@ -80,7 +91,7 @@ class ContinuationNoteReporter(JournalReporter):
                 self.include(j)
 
     def filename(self):
-        return '3_continued_journals_on_' + dates.today() + '.csv'
+        return '3_journals_with_continued_note_on_' + dates.today() + '.csv'
 
 
 class TickReporter(JournalReporter):
@@ -90,7 +101,7 @@ class TickReporter(JournalReporter):
             self.include(j)
 
     def filename(self):
-        return '4_unticked_journals_on_' + dates.today() + '.csv'
+        return '4_journals_without_tick_on_' + dates.today() + '.csv'
 
 
 def email(data_dir, archv_name):
