@@ -67,19 +67,20 @@ def duplicates_per_account(connection, delete, snapshot):
     for acc in esprit.tasks.scroll(connection, 'account'):
         account = Account(**acc)
 
-        js = Journal.all(terms={"admin.owner": [account.id]})
-        if js:
+        # Get all articles belonging to an account via ISSNs
+        issns = Journal.issns_by_owner(account.id)
+        if issns:
             print "Account {0}".format(account.id)
 
-            for j in js:
-                issns = j.bibjson().issns()
+            # Term limit of ES is 1024 by default, split up the queries.
+            for i in range(0, len(issns), 1000):
                 scroll_query = {
                     "query": {
                         "filtered": {
                             "filter": {
                                 "bool": {
                                     "must": [
-                                        {"terms": {"index.issn.exact": issns}}
+                                        {"terms": {"index.issn.exact": issns[i:i+1000]}}
                                      ]
                                 }
                             },
@@ -88,9 +89,13 @@ def duplicates_per_account(connection, delete, snapshot):
                     },
                     "sort": [{"last_updated": {"order": "desc"}}]
                 }
-                j_dupcount, j_delcount = duplicates_per_article(connection, delete, snapshot, owner=account.id, query_override=scroll_query)
-                dupcount += j_dupcount
-                delcount += j_delcount
+                acc_dupcount, acc_delcount = duplicates_per_article(connection,
+                                                                    delete,
+                                                                    snapshot,
+                                                                    owner=account.id,
+                                                                    query_override=scroll_query)
+                dupcount += acc_dupcount
+                delcount += acc_delcount
 
     return dupcount, delcount
 
