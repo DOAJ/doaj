@@ -139,7 +139,7 @@ class BackgroundTask(object):
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
 
-        :param user: the user creating the job
+        :param username: the user creating the job
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
