@@ -4,6 +4,7 @@ will be discarded in time as reapplications were a one-off. """
 from portality import models
 from portality.clcsv import UnicodeWriter
 from portality.lib import dates
+from portality.lib.dataobj import DataStructureException
 
 from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue
@@ -25,16 +26,18 @@ def reapplication_reports(outdir):
             filt.test(j)
 
     outfiles = []
+    all_errors = {}
     for p in pipeline:
         table = p.tabulate()
         outfile = os.path.join(outdir, p.filename())
         outfiles.append(outfile)
+        merge_errors(all_errors, p.errors)
         with codecs.open(outfile, "wb", "utf-8") as f:
             writer = UnicodeWriter(f)
             for row in table:
                 writer.writerow(row)
 
-    return outfiles
+    return outfiles, all_errors
 
 
 def _tabulate_journal(report, entity_key):
@@ -54,6 +57,7 @@ class JournalReporter(object):
 
     def __init__(self):
         self.report = {}
+        self.errors = {}
 
     def include(self, j):
         self.report[j.id] = {
@@ -76,10 +80,13 @@ class RejectedReapplicationReporter(JournalReporter):
 
     def test(self, j):
         if j.current_application is not None:
-            cur_app = models.Suggestion.pull(j.current_application)
-            if cur_app is not None:
-                if cur_app.current_journal and cur_app.application_status == 'rejected':        # rejected reapplication
-                    self.include(j)
+            try:
+                cur_app = models.Suggestion.pull(j.current_application)
+                if cur_app is not None:
+                    if cur_app.current_journal and cur_app.application_status == 'rejected':    # rejected reapplication
+                        self.include(j)
+            except DataStructureException as e:
+                self.errors[j.id] = '1_journals_with_rejected_reapplication: Reapp {0} - DataStructureException: {1}'.format(j.current_application, e)
 
     def filename(self):
         return '1_journals_with_rejected_reapplication_on_' + dates.today() + '.csv'
@@ -146,6 +153,15 @@ def email(data_dir, archv_name):
     os.remove(archv)
 
 
+def merge_errors(base, update):
+    """ Copy the errors from update into base. """
+    for k, v in update.iteritems():
+        try:
+            base[k].append(v)
+        except KeyError:
+            base[k] = [v]
+
+
 #########################################################
 # Background task implementation
 
@@ -167,10 +183,11 @@ class ReportingBackgroundTask(BackgroundTask):
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        reapp_outfiles = reapplication_reports(outdir)
+        reapp_outfiles, errors = reapplication_reports(outdir)
         refs = {}
         self.set_reference(refs, "reapplication_outfiles", reapp_outfiles)
         job.reference = refs
+        [job.add_audit_message('Journal {0} errors: {1}'.format(k, ', '.join(v))) for k, v in errors.iteritems()]
 
         msg = u"Generated reapplication reports as of {0}".format(dates.now())
         job.add_audit_message(msg)
