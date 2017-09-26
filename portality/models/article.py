@@ -463,7 +463,9 @@ class Article(DomainObject):
             scheme = subs.get("scheme")
             term = subs.get("term")
             if scheme == "LCC":
-                classification_paths.append(lcc.pathify(term))
+                path = lcc.pathify(term)
+                if path is not None:
+                    classification_paths.append(path)
 
         # normalise the classification paths, so we only store the longest ones
         classification_paths = lcc.longest(classification_paths)

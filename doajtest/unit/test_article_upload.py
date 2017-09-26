@@ -461,3 +461,35 @@ class TestArticleUpload(DoajTestCase):
 
         found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
         assert len(found) == 0
+
+    def test_12_lcc_spelling_error(self):
+        # create a journal with a broken subject classification
+        j1 = models.Journal()
+        j1.set_owner("testowner1")
+        bj1 = j1.bibjson()
+        bj1.add_identifier(bj1.P_ISSN, "1234-5678")
+        bj1.add_identifier(bj1.P_ISSN, "9876-5432")
+        bj1.add_subject("LCC", "Whatever", "WHATEVA")
+        bj1.add_subject("LCC", "Aquaculture. Fisheries. Angling", "SH1-691")
+        j1.save(blocking=True)
+
+        handle = ArticleFixtureFactory.upload_2_issns_correct()
+        results = article.ingest_file(handle, format_name="doaj", owner="testowner1", upload_id=None)
+
+        assert results["success"] == 1
+        assert results["fail"] == 0
+        assert results["update"] == 0
+        assert results["new"] == 1
+        assert len(results["shared"]) == 0
+        assert len(results["unowned"]) == 0
+        assert len(results["unmatched"]) == 0
+
+        time.sleep(2)
+
+        found = [a for a in models.Article.find_by_issns(["1234-5678", "9876-5432"])]
+        assert len(found) == 1
+
+        cpaths = found[0].data["index"]["classification_paths"]
+        assert len(cpaths) == 1
+        assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+
