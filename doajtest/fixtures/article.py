@@ -66,7 +66,7 @@ class ArticleFixtureFactory(object):
                     delete.append(i)
             elif ident.get("type") == "eissn":
                 if eissn is not None:
-                    ident["id"] = pissn
+                    ident["id"] = eissn
                 else:
                     delete.append(i)
 
