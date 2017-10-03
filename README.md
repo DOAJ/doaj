@@ -1,4 +1,4 @@
-#The Directory of Open Access Journals (DOAJ)
+# The Directory of Open Access Journals (DOAJ)
 
 This repository provides the software which drives the DOAJ website and the DOAJ directory.
 
