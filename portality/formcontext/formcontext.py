@@ -797,8 +797,8 @@ class EditorApplicationReview(ApplicationContext):
             raise FormContextException(
                 "You don't have permission to edit applications which are in status {0}.".format(src_status))
 
-        # Don't permit changes to status in reverse of the editorial process
-        if editor_choices.index(target_status) < editor_choices.index(src_status):
+        # Don't permit changes to status in reverse of the editorial process for statuses other than 'in progress'
+        if target_status != 'in progress' and editor_choices.index(target_status) < editor_choices.index(src_status):
             raise FormContextException(
                 "You are not permitted to revert the application status from {0} to {1}.".format(src_status, target_status))
 
@@ -871,8 +871,16 @@ class EditorApplicationReview(ApplicationContext):
                 # Get the full tuple of application status for the current source
                 [full_current_status] = filter(lambda x: self.source.application_status in x, editor_choices)
 
-                # Only show options forward in the editorial pipeline
-                self.form.application_status.choices = editor_choices[editor_choices.index(full_current_status):]
+                # Show options forward in the editorial pipeline
+                forward_choices = editor_choices[editor_choices.index(full_current_status):]
+
+                # But allow an exception: reverts to 'in progress' from 'completed'
+                if self.source.application_status == 'completed':
+                    forward_choices = [('in progress', 'In Progress')] + forward_choices
+
+                # Assign the choices to the form
+                self.form.application_status.choices = forward_choices
+
             except ValueError:
                 # If the current status isn't in the editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
