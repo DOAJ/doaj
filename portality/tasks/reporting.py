@@ -12,11 +12,12 @@ import codecs, os, shutil
 
 
 def provenance_reports(fr, to, outdir):
-    pipeline = []
-    pipeline.append(ActionCounter("edit", "month"))
-    pipeline.append(ActionCounter("edit", "year"))
-    pipeline.append(StatusCounter("month"))
-    pipeline.append(StatusCounter("year"))
+    pipeline = [
+        ActionCounter("edit", "month"),
+        ActionCounter("edit", "year"),
+        StatusCounter("month"),
+        StatusCounter("year")
+    ]
 
     q = ProvenanceList(fr, to)
     for prov in models.Provenance.iterate(q.query()):
@@ -193,8 +194,8 @@ class StatusCounter(ReportCounter):
             self._count_down(self._last_period)
             self._last_period = p
 
-
-    def _get_best_role(self, roles):
+    @staticmethod
+    def _get_best_role(roles):
         role_precedence = ["associate_editor", "editor", "admin"]
         best_role = None
         for r in roles:
@@ -208,8 +209,12 @@ class StatusCounter(ReportCounter):
 
         return best_role
 
+    @staticmethod
+    def _is_countable(prov, role):
+        """ Determine whether to include this provenance record in the report"""
 
-    def _is_countable(self, prov, role):
+        """
+        # We now disregard role and count all completion events per user https://github.com/DOAJ/doaj/issues/1385
         countable = False
 
         if role == "admin" and (prov.action == "status:accepted" or prov.action == "status:rejected"):
@@ -218,9 +223,9 @@ class StatusCounter(ReportCounter):
             countable = True
         elif role == "associate_editor" and prov.action == "status:completed":
             countable = True
+        """
 
-        return countable
-
+        return prov.action in ["status:accepted", "status:rejected", "status:ready", "status:completed"]
 
     def tabulate(self):
         self._count_down(self._last_period)
