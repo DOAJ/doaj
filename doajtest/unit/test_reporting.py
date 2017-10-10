@@ -47,6 +47,7 @@ APPLICATION_YEAR_OUTPUT = [
 
 TMP_DIR = paths.rel2abs(__file__, "resources/reports")
 
+
 class TestReporting(DoajTestCase):
     def setUp(self):
         super(TestReporting, self).setUp()
@@ -212,34 +213,33 @@ class TestReporting(DoajTestCase):
     def test_06_status_is_countable(self):
         counter = reporting.StatusCounter("month")
 
+        # We now disregard role and count all completion events per user https://github.com/DOAJ/doaj/issues/1385
         admin_accepted = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:accepted")
         assert counter._is_countable(admin_accepted, "admin")
-        assert not counter._is_countable(admin_accepted, "editor")
-        assert not counter._is_countable(admin_accepted, "associate_editor")
-        assert not counter._is_countable(admin_accepted, "api")
+        assert counter._is_countable(admin_accepted, "editor")
+        assert counter._is_countable(admin_accepted, "associate_editor")
+        assert counter._is_countable(admin_accepted, "api")
 
         admin_rejected = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:rejected")
         assert counter._is_countable(admin_rejected, "admin")
-        assert not counter._is_countable(admin_rejected, "editor")
-        assert not counter._is_countable(admin_rejected, "associate_editor")
-        assert not counter._is_countable(admin_rejected, "api")
+        assert counter._is_countable(admin_rejected, "editor")
+        assert counter._is_countable(admin_rejected, "associate_editor")
+        assert counter._is_countable(admin_rejected, "api")
 
         editor_ready = models.Provenance(user="testuser", roles=["editor", "associate_editor"], action="status:ready")
         assert counter._is_countable(editor_ready, "editor")
-        assert not counter._is_countable(editor_ready, "admin")
-        assert not counter._is_countable(editor_ready, "associate_editor")
-        assert not counter._is_countable(editor_ready, "api")
+        assert counter._is_countable(editor_ready, "admin")
+        assert counter._is_countable(editor_ready, "associate_editor")
+        assert counter._is_countable(editor_ready, "api")
 
         assed_completed = models.Provenance(user="testuser", roles=["associate_editor"], action="status:completed")
         assert counter._is_countable(assed_completed, "associate_editor")
-        assert not counter._is_countable(assed_completed, "admin")
-        assert not counter._is_countable(assed_completed, "editor")
-        assert not counter._is_countable(assed_completed, "api")
+        assert counter._is_countable(assed_completed, "admin")
+        assert counter._is_countable(assed_completed, "editor")
+        assert counter._is_countable(assed_completed, "api")
 
         other = models.Provenance(user="testuser", roles=["admin", "editor", "associate_editor"], action="status:other")
         assert not counter._is_countable(other, "associate_editor")
         assert not counter._is_countable(other, "admin")
         assert not counter._is_countable(other, "editor")
         assert not counter._is_countable(other, "api")
-
-
