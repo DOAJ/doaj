@@ -1,4 +1,5 @@
 from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
+from portality.formcontext import excepts
 from portality import lcc
 
 class Choices(object):
@@ -380,3 +381,19 @@ class Choices(object):
         all_s = [v[0] for v in cls._application_status_admin]
         disallowed_statuses = {'accepted', 'ready', 'completed'}
         return list(set(all_s).difference(disallowed_statuses))
+
+    @classmethod
+    def validate_status_change(cls, role, source_status, target_status):
+        """ Check whether the editorial pipeline permits a change to the target status for a role. """
+        choices_for_role = list(sum(cls.application_status(role), ()))                     # flattens the list of tuples
+
+        # Don't allow edits to application when status is beyond this user's permissions in the pipeline
+        if source_status not in choices_for_role:
+            raise excepts.FormContextException(
+                "You don't have permission to edit applications which are in status {0}.".format(source_status))
+
+        # Don't permit changes to status in reverse of the editorial process for statuses other than 'in progress'
+        if choices_for_role.index(target_status) < choices_for_role.index(source_status):
+            raise excepts.FormContextException(
+                "You are not permitted to revert the application status from {0} to {1}.".format(source_status,
+                                                                                                 target_status))
