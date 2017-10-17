@@ -92,3 +92,12 @@ class TestXwalk(DoajTestCase):
     def test_03_old_style_to_new_style(self):
         forminfo = xwalk.SuggestionFormXWalk.obj2form(models.Suggestion(**OLD_STYLE_APP))
         # assert forminfo.get("article_identifiers") != "None"
+
+    def test_04_application_license_other_text_broken(self):
+        af = APPLICATION_FORM
+        af["license_other"] = "None",
+
+        form = forms.ManEdApplicationReviewForm(formdata=MultiDict(af))
+        obj = xwalk.SuggestionFormXWalk.form2obj(form)
+
+        assert obj.bibjson().get_license_type() == "None"

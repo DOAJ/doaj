@@ -302,34 +302,33 @@ class SuggestionFormXWalk(JournalGenericXWalk):
         bibjson.add_url(form.oa_statement_url.data, urltype='oa_statement')
 
         license_type = interpret_other(form.license.data, form.license_other.data)
-        if interpret_special(license_type):
-        # "None" and "False" as strings like they come out of the WTForms processing)
-        # would get interpreted correctly by this check, so "None" licenses should not appear
-            if license_type in licenses:
-                by = licenses[license_type]['BY']
-                nc = licenses[license_type]['NC']
-                nd = licenses[license_type]['ND']
-                sa = licenses[license_type]['SA']
-                license_title = licenses[license_type]['title']
-            elif form.license_checkbox.data:
-                by = True if 'BY' in form.license_checkbox.data else False
-                nc = True if 'NC' in form.license_checkbox.data else False
-                nd = True if 'ND' in form.license_checkbox.data else False
-                sa = True if 'SA' in form.license_checkbox.data else False
-                license_title = license_type
-            else:
-                by = None; nc = None; nd = None; sa = None;
-                license_title = license_type
+        license_title = license_type
 
-            bibjson.set_license(
-                license_title,
-                license_type,
-                url=form.license_url.data,
-                open_access=interpret_special(form.open_access.data),
-                by=by, nc=nc, nd=nd, sa=sa,
-                embedded=interpret_special(form.license_embedded.data),
-                embedded_example_url=form.license_embedded_url.data
-            )
+        if license_type in licenses:
+            by = licenses[license_type]['BY']
+            nc = licenses[license_type]['NC']
+            nd = licenses[license_type]['ND']
+            sa = licenses[license_type]['SA']
+            license_title = licenses[license_type]['title']
+        elif form.license_checkbox.data:
+            by = True if 'BY' in form.license_checkbox.data else False
+            nc = True if 'NC' in form.license_checkbox.data else False
+            nd = True if 'ND' in form.license_checkbox.data else False
+            sa = True if 'SA' in form.license_checkbox.data else False
+            license_title = license_type
+        else:
+            by = None; nc = None; nd = None; sa = None
+            license_title = license_type
+
+        bibjson.set_license(
+            license_title,
+            license_type,
+            url=form.license_url.data,
+            open_access=interpret_special(form.open_access.data),
+            by=by, nc=nc, nd=nd, sa=sa,
+            embedded=interpret_special(form.license_embedded.data),
+            embedded_example_url=form.license_embedded_url.data
+        )
 
         # checkboxes
         deposit_policies = interpret_special(form.deposit_policy.data)  # need empty list if it's just "None"
