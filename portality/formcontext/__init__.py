@@ -1,1 +1,3 @@
 
+class FormContextException(Exception):
+    pass

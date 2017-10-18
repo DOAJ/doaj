@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 import json, uuid
 from datetime import datetime
 
-from portality.formcontext import forms, xwalk, render, choices, emails, excepts
+from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
@@ -221,7 +221,7 @@ class PrivateContext(FormContext):
 
     def _carry_fixed_aspects(self):
         if self.source is None:
-            raise excepts.FormContextException("Cannot carry data from a non-existent source")
+            raise FormContextException("Cannot carry data from a non-existent source")
 
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -264,9 +264,9 @@ class PrivateContext(FormContext):
 
     def _merge_notes_forward(self, allow_delete=False):
         if self.source is None:
-            raise excepts.FormContextException("Cannot carry data from a non-existent source")
+            raise FormContextException("Cannot carry data from a non-existent source")
         if self.target is None:
-            raise excepts.FormContextException("Cannot carry data on to a non-existent target - run the xwalk first")
+            raise FormContextException("Cannot carry data on to a non-existent target - run the xwalk first")
 
         # first off, get the notes (by reference) in the target and the notes from the source
         tnotes = self.target.notes
@@ -333,13 +333,13 @@ class PrivateContext(FormContext):
                     all_eds = eg.associates + [eg.editor]
                     if editor in all_eds:
                         return  # success - an editor group was found and our editor was in it
-                raise excepts.FormContextException("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
+                raise FormContextException("Editor '{0}' not found in editor group '{1}'".format(editor, editor_group_name))
             else:
-                raise excepts.FormContextException("An editor has been assigned without an editor group")
+                raise FormContextException("An editor has been assigned without an editor group")
 
     def _carry_continuations(self):
         if self.source is None:
-            raise excepts.FormContextException("Cannot carry data from a non-existent source")
+            raise FormContextException("Cannot carry data from a non-existent source")
 
         try:
             sbj = self.source.bibjson()
@@ -581,7 +581,7 @@ class ManEdApplicationReview(ApplicationContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward(allow_delete=True)
@@ -595,10 +595,9 @@ class ManEdApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
 
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
-
+            raise FormContextException("You cannot edit a not-existent application")
         if self.source.application_status == "accepted":
-            raise excepts.FormContextException("You cannot edit applications which have been accepted into DOAJ.")
+            raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdApplicationReview, self).finalise()
@@ -704,7 +703,7 @@ class ManEdApplicationReview(ApplicationContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -712,7 +711,7 @@ class ManEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        self.form.application_status.choices = choices.Choices.application_status("admin")
+        self.form.application_status.choices = choices.Choices.choices_for_status('admin', self.source.application_status)
 
         # The first time the form is rendered, it needs to populate the editor drop-down from saved group
         egn = self.form.editor_group.data
@@ -763,7 +762,7 @@ class EditorApplicationReview(ApplicationContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -775,18 +774,15 @@ class EditorApplicationReview(ApplicationContext):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
-        
-        src_status = self.source.application_status
-
-        if src_status == "accepted":
-            raise excepts.FormContextException("You cannot edit applications which have been accepted into DOAJ.")
+            raise FormContextException("You cannot edit a not-existent application")
+        if self.source.application_status == "accepted":
+            raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorApplicationReview, self).finalise()
 
         # Check the status change is valid
-        choices.Choices.validate_status_change('editor', src_status, self.target.application_status)
+        choices.Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
@@ -836,7 +832,7 @@ class EditorApplicationReview(ApplicationContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(EditorApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -845,28 +841,14 @@ class EditorApplicationReview(ApplicationContext):
 
     def _set_choices(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot set choices for a non-existent source")
-
-        editor_choices = choices.Choices.application_status('editor')
-
+            raise FormContextException("You cannot set choices for a non-existent source")
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             try:
-                # Get the full tuple of application status for the current source
-                [full_current_status] = filter(lambda x: self.source.application_status in x, editor_choices)
-
-                # Show options forward in the editorial pipeline
-                forward_choices = editor_choices[editor_choices.index(full_current_status):]
-
-                # But allow an exception: reverts to 'in progress' from 'completed'
-                if self.source.application_status == 'completed':
-                    forward_choices = [('in progress', 'In Progress')] + forward_choices
-
                 # Assign the choices to the form
-                self.form.application_status.choices = forward_choices
-
+                self.form.application_status.choices = choices.Choices.choices_for_status('editor', self.source.application_status)
             except ValueError:
                 # If the current status isn't in the editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
@@ -920,7 +902,7 @@ class AssEdApplicationReview(ApplicationContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -934,18 +916,15 @@ class AssEdApplicationReview(ApplicationContext):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
-
-        src_status = self.source.application_status
-
-        if src_status == "accepted":
-            raise excepts.FormContextException("You cannot edit applications which have been accepted into DOAJ.")
+            raise FormContextException("You cannot edit a not-existent application")
+        if self.source.application_status == "accepted":
+            raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AssEdApplicationReview, self).finalise()
 
         # Check the status change is valid
-        choices.Choices.validate_status_change('associate', src_status, self.target.application_status)
+        choices.Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -984,7 +963,7 @@ class AssEdApplicationReview(ApplicationContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(AssEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -992,18 +971,13 @@ class AssEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        associate_editor_choices = choices.Choices.application_status()
-
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             try:
-                # Get the full tuple of application status for the current source
-                [full_current_status] = filter(lambda x: self.source.application_status in x, associate_editor_choices)
-
-                # Only show options forward in the editorial pipeline
-                self.form.application_status.choices = associate_editor_choices[associate_editor_choices.index(full_current_status):]
+                # Assign the choices to the form
+                self.form.application_status.choices = choices.Choices.choices_for_status('associate_editor', self.source.application_status)
             except ValueError:
                 # If the current status isn't in the associate editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
@@ -1038,7 +1012,7 @@ class PublisherCsvReApplication(ApplicationContext):
 
     def pre_validate(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot validate a form from a non-existent source")
+            raise FormContextException("You cannot validate a form from a non-existent source")
 
         bj = self.source.bibjson()
         contacts = self.source.contacts()
@@ -1070,7 +1044,7 @@ class PublisherCsvReApplication(ApplicationContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -1095,7 +1069,7 @@ class PublisherCsvReApplication(ApplicationContext):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherCsvReApplication, self).finalise()
@@ -1113,7 +1087,7 @@ class PublisherCsvReApplication(ApplicationContext):
 
     def _carry_fields(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot carry fields on a not-existent application")
+            raise FormContextException("You cannot carry fields on a not-existent application")
         contacts = self.source.contacts()
         if len(contacts) > 0:
             c = contacts[0]
@@ -1146,7 +1120,7 @@ class PublisherReApplication(ApplicationContext):
 
     def pre_validate(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot validate a form from a non-existent source")
+            raise FormContextException("You cannot validate a form from a non-existent source")
 
         bj = self.source.bibjson()
         contacts = self.source.contacts()
@@ -1178,7 +1152,7 @@ class PublisherReApplication(ApplicationContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -1203,7 +1177,7 @@ class PublisherReApplication(ApplicationContext):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherReApplication, self).finalise()
@@ -1223,13 +1197,13 @@ class PublisherReApplication(ApplicationContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent application")
+            raise FormContextException("You cannot edit a not-existent application")
 
         return super(PublisherReApplication, self).render_template(**kwargs)
 
     def _disable_fields(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot disable fields on a not-existent application")
+            raise FormContextException("You cannot disable fields on a not-existent application")
 
         disable = ["pissn", "eissn"] # these are always disabled
 
@@ -1353,7 +1327,7 @@ class ManEdJournalReview(PrivateContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         return super(ManEdJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -1383,7 +1357,7 @@ class ManEdJournalReview(PrivateContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
 
@@ -1403,7 +1377,7 @@ class ManEdJournalReview(PrivateContext):
         # can be carried over from the old implementation
 
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(ManEdJournalReview, self).finalise()
@@ -1438,6 +1412,7 @@ class ManEdJournalReview(PrivateContext):
 
         return super(ManEdJournalReview, self).validate()
 
+
 class ManEdBulkEdit(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
@@ -1456,6 +1431,7 @@ class ManEdBulkEdit(PrivateContext):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "platform"])
 
+
 class EditorJournalReview(PrivateContext):
     """
     Editors Journal Review form.  This should be used in a context where an editor who owns an editorial group
@@ -1471,7 +1447,7 @@ class EditorJournalReview(PrivateContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         return super(EditorJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -1497,7 +1473,7 @@ class EditorJournalReview(PrivateContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self.target.set_owner(self.source.owner)
@@ -1510,7 +1486,7 @@ class EditorJournalReview(PrivateContext):
 
     def _set_choices(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot set choices for a non-existent source")
+            raise FormContextException("You cannot set choices for a non-existent source")
 
         # get the editor group from the source because it isn't in the form
         egn = self.source.editor_group
@@ -1521,7 +1497,7 @@ class EditorJournalReview(PrivateContext):
         # can be carried over from the old implementation
 
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorJournalReview, self).finalise()
@@ -1572,7 +1548,7 @@ class AssEdJournalReview(PrivateContext):
 
     def patch_target(self):
         if self.source is None:
-            raise excepts.FormContextException("You cannot patch a target from a non-existent source")
+            raise FormContextException("You cannot patch a target from a non-existent source")
 
         self._carry_fixed_aspects()
         self._merge_notes_forward()
@@ -1585,7 +1561,7 @@ class AssEdJournalReview(PrivateContext):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AssEdJournalReview, self).finalise()
@@ -1596,7 +1572,7 @@ class AssEdJournalReview(PrivateContext):
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot edit a not-existent journal")
+            raise FormContextException("You cannot edit a not-existent journal")
 
         return super(AssEdJournalReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
@@ -1641,11 +1617,11 @@ class ReadOnlyJournal(PrivateContext):
         pass  # you can't edit objects using this form
 
     def finalise(self):
-        raise excepts.FormContextException("You cannot edit journals using the read-only form")
+        raise FormContextException("You cannot edit journals using the read-only form")
 
     def render_template(self, **kwargs):
         if self.source is None:
-            raise excepts.FormContextException("You cannot view a not-existent journal")
+            raise FormContextException("You cannot view a not-existent journal")
 
         return super(ReadOnlyJournal, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
