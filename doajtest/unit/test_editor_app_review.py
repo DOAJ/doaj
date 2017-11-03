@@ -5,7 +5,7 @@ import re, time
 from copy import deepcopy
 
 from portality import models
-from portality.formcontext import formcontext
+from portality.formcontext import formcontext, FormContextException
 from portality import lcc
 
 from werkzeug.datastructures import MultiDict
@@ -27,6 +27,7 @@ mock_lcc_choices = [
     (u'H', u'Social Sciences'),
     (u'HB1-3840', u'--Economic theory. Demography')
 ]
+
 
 def mock_lookup_code(code):
     if code == "H": return "Social Sciences"
@@ -290,6 +291,7 @@ for n in notes:
 
 del APPLICATION_FORM["editor_group"]
 
+
 ######################################################
 # Main test class
 ######################################################
@@ -315,7 +317,6 @@ class TestEditorAppReview(DoajTestCase):
         lcc.lcc_choices = self.old_lcc_choices
 
         lcc.lookup_code = self.old_lookup_code
-
 
     ###########################################################
     # Tests on the editor's reapplication form
@@ -391,7 +392,7 @@ class TestEditorAppReview(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
 
-        time.sleep(2)
+        time.sleep(1.5)
 
         # now check that a provenance record was recorded
         prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
@@ -438,7 +439,7 @@ class TestEditorAppReview(DoajTestCase):
         eg.set_editor("contextuser")
         eg.save()
 
-        time.sleep(2)
+        time.sleep(1.5)
 
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
@@ -450,7 +451,7 @@ class TestEditorAppReview(DoajTestCase):
             source=models.Suggestion(**APPLICATION_SOURCE))
 
         fc.finalise()
-        time.sleep(2)
+        time.sleep(1.5)
 
         # now check that a provenance record was recorded
         count = 0
@@ -491,7 +492,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application has already been accepted.
-        assert_raises(formcontext.FormContextException, fc.finalise)
+        assert_raises(FormContextException, fc.finalise)
 
         # Check that an application status can't be edited by editors when on hold,
         # since this status must have been set by a managing editor.
@@ -514,7 +515,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.form_data is not None
 
         # Finalise the formcontext. This should raise an exception because the application status is out of bounds.
-        assert_raises(formcontext.FormContextException, fc.finalise)
+        assert_raises(FormContextException, fc.finalise)
 
         # Check that an application status can't be brought backwards in the review process
         pending_source = APPLICATION_SOURCE.copy()
@@ -530,6 +531,44 @@ class TestEditorAppReview(DoajTestCase):
         )
 
         # Finalise the formcontext. This should raise an exception because the application status can't go backwards.
-        assert_raises(formcontext.FormContextException, fc.finalise)
+        assert_raises(FormContextException, fc.finalise)
+
+        ctx.pop()
+
+    def test_05_editor_revert_to_in_progress(self):
+        """ Check that editors are permitted to revert applications from 'completed' to 'in progress' """
+
+        acc = models.Account()
+        acc.set_id("contextuser")
+        acc.add_role("editor")
+        ctx = self._make_and_push_test_context(acc=acc)
+
+        # Check that an accepted application can't be regressed by an editor
+        completed_source = APPLICATION_SOURCE.copy()
+        completed_source['admin']['application_status'] = 'completed'
+
+        ready_form = APPLICATION_FORM.copy()
+        ready_form['application_status'] = 'in progress'
+
+        # Construct the formcontext from form data (with a known source)
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="editor",
+            form_data=MultiDict(ready_form),
+            source=models.Suggestion(**completed_source)
+        )
+
+        assert isinstance(fc, formcontext.EditorApplicationReview)
+        assert fc.form is not None
+        assert fc.source is not None
+        assert fc.form_data is not None
+
+        # Finalise the formcontext. This should raise an exception because the application has already been accepted.
+        fc.finalise()
+
+        time.sleep(1.5)
+
+        # now check that a provenance record was recorded
+        prov = models.Provenance.get_latest_by_resource_id(fc.target.id)
+        assert prov is not None
 
         ctx.pop()
