@@ -4,7 +4,7 @@ from flask.ext.login import current_user
 import json, uuid
 from datetime import datetime
 
-from portality.formcontext import forms, xwalk, render, choices, emails
+from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
@@ -12,10 +12,6 @@ from portality.core import app
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
             'account permissions to edit applications which are {0}.'
-
-
-class FormContextException(Exception):
-    pass
 
 
 class FormContext(object):
@@ -600,7 +596,6 @@ class ManEdApplicationReview(ApplicationContext):
 
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-
         if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
@@ -716,7 +711,7 @@ class ManEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        self.form.application_status.choices = choices.Choices.application_status("admin")
+        self.form.application_status.choices = choices.Choices.choices_for_status('admin', self.source.application_status)
 
         # The first time the form is rendered, it needs to populate the editor drop-down from saved group
         egn = self.form.editor_group.data
@@ -780,27 +775,14 @@ class EditorApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        
-        src_status = self.source.application_status
-
-        if src_status == "accepted":
+        if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(EditorApplicationReview, self).finalise()
 
-        editor_choices = list(sum(choices.Choices.application_status('editor'), ()))       # flattens the list of tuples
-        target_status = self.target.application_status
-
-        # Don't allow edits to application when status is beyond this editor's permissions in the pipeline
-        if src_status not in editor_choices:
-            raise FormContextException(
-                "You don't have permission to edit applications which are in status {0}.".format(src_status))
-
-        # Don't permit changes to status in reverse of the editorial process
-        if editor_choices.index(target_status) < editor_choices.index(src_status):
-            raise FormContextException(
-                "You are not permitted to revert the application status from {0} to {1}.".format(src_status, target_status))
+        # Check the status change is valid
+        choices.Choices.validate_status_change('editor', self.source.application_status, self.target.application_status)
 
         # FIXME: may want to factor this out of the suggestionformxwalk
         new_associate_assigned = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
@@ -860,19 +842,13 @@ class EditorApplicationReview(ApplicationContext):
     def _set_choices(self):
         if self.source is None:
             raise FormContextException("You cannot set choices for a non-existent source")
-
-        editor_choices = choices.Choices.application_status('editor')
-
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             try:
-                # Get the full tuple of application status for the current source
-                [full_current_status] = filter(lambda x: self.source.application_status in x, editor_choices)
-
-                # Only show options forward in the editorial pipeline
-                self.form.application_status.choices = editor_choices[editor_choices.index(full_current_status):]
+                # Assign the choices to the form
+                self.form.application_status.choices = choices.Choices.choices_for_status('editor', self.source.application_status)
             except ValueError:
                 # If the current status isn't in the editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
@@ -941,27 +917,14 @@ class AssEdApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-
-        src_status = self.source.application_status
-
-        if src_status == "accepted":
+        if self.source.application_status == "accepted":
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
         super(AssEdApplicationReview, self).finalise()
 
-        associate_editor_choices = list(sum(choices.Choices.application_status(), ()))     # flattens the list of tuples
-        target_status = self.target.application_status
-
-        # Don't allow edits to application when status is beyond this editor's permissions in the pipeline
-        if src_status not in associate_editor_choices:
-            raise FormContextException(
-                "You don't have permission to edit applications which are in status {0}.".format(src_status))
-
-        # Don't permit changes to status in reverse of the editorial process
-        if associate_editor_choices.index(target_status) < associate_editor_choices.index(src_status):
-            raise FormContextException(
-                "You are not permitted to revert the application status from {0} to {1}.".format(src_status, target_status))
+        # Check the status change is valid
+        choices.Choices.validate_status_change('associate', self.source.application_status, self.target.application_status)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1008,18 +971,13 @@ class AssEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        associate_editor_choices = choices.Choices.application_status()
-
         if self.form.application_status.data == "accepted":
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
             try:
-                # Get the full tuple of application status for the current source
-                [full_current_status] = filter(lambda x: self.source.application_status in x, associate_editor_choices)
-
-                # Only show options forward in the editorial pipeline
-                self.form.application_status.choices = associate_editor_choices[associate_editor_choices.index(full_current_status):]
+                # Assign the choices to the form
+                self.form.application_status.choices = choices.Choices.choices_for_status('associate_editor', self.source.application_status)
             except ValueError:
                 # If the current status isn't in the associate editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
@@ -1454,6 +1412,7 @@ class ManEdJournalReview(PrivateContext):
 
         return super(ManEdJournalReview, self).validate()
 
+
 class ManEdBulkEdit(PrivateContext):
     """
     Managing Editor's Journal Review form.  Should be used in a context where the form warrants full
@@ -1471,6 +1430,7 @@ class ManEdBulkEdit(PrivateContext):
     def data2form(self):
         self.form = forms.ManEdBulkEditJournalForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "platform"])
+
 
 class EditorJournalReview(PrivateContext):
     """

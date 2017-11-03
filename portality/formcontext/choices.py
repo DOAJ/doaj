@@ -1,5 +1,7 @@
 from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
+from portality.formcontext import FormContextException
 from portality import lcc
+
 
 class Choices(object):
     NONE = "None"
@@ -107,7 +109,7 @@ class Choices(object):
 
     @classmethod
     def basic(cls, val):
-        return (val, val)
+        return val, val
 
     @classmethod
     def binary(cls):
@@ -173,7 +175,6 @@ class Choices(object):
     def processing_charges_currency_optional(cls):
         return [cls.FALSE]
 
-
     @classmethod
     def submission_charges(cls):
         return cls.binary()
@@ -190,7 +191,6 @@ class Choices(object):
     def submission_charges_currency_optional(cls):
         return [cls.FALSE]
 
-
     @classmethod
     def waiver_policy(cls):
         return cls.binary()
@@ -198,7 +198,6 @@ class Choices(object):
     @classmethod
     def waiver_policy_url_optional(cls):
         return [cls.FALSE]
-
 
     @classmethod
     def digital_archiving_policy(cls):
@@ -231,11 +230,9 @@ class Choices(object):
     def digital_archiving_policy_url_optional(cls):
         return cls._digital_archiving_policy[0]
 
-
     @classmethod
     def crawl_permission(cls):
         return cls.binary()
-
 
     @classmethod
     def article_identifiers(cls):
@@ -253,7 +250,6 @@ class Choices(object):
     @classmethod
     def download_statistics(cls):
         return cls.binary()
-
 
     @classmethod
     def fulltext_format(cls):
@@ -280,7 +276,6 @@ class Choices(object):
     def review_process_url_optional(cls):
         return ["", cls.NONE]
 
-
     @classmethod
     def plagiarism_screening(cls):
         return cls.binary()
@@ -288,7 +283,6 @@ class Choices(object):
     @classmethod
     def plagiarism_screening_url_optional(cls):
         return [cls.FALSE]
-
 
     @classmethod
     def licence_embedded(cls):
@@ -307,7 +301,6 @@ class Choices(object):
     def licence_checkbox(cls):
         return cls._license_checkbox
 
-
     @classmethod
     def open_access(cls):
         return cls.binary()
@@ -316,7 +309,6 @@ class Choices(object):
     def open_access_val(cls, type):
         if type == "other":
             return cls.OTHER
-
 
     @classmethod
     def deposit_policy(cls):
@@ -347,11 +339,9 @@ class Choices(object):
     def publishing_rights_url_optional(cls):
         return [cls.FALSE]
 
-
     @classmethod
     def metadata_provision(cls):
         return cls.binary()
-
 
     @classmethod
     def author_pays(cls):
@@ -380,3 +370,46 @@ class Choices(object):
         all_s = [v[0] for v in cls._application_status_admin]
         disallowed_statuses = {'accepted', 'ready', 'completed'}
         return list(set(all_s).difference(disallowed_statuses))
+
+    @classmethod
+    def validate_status_change(cls, role, source_status, target_status):
+        """ Check whether the editorial pipeline permits a change to the target status for a role.
+        Don't run this for admins, since they can change to any role at any time. """
+        choices_for_role = list(sum(cls.application_status(role), ()))                     # flattens the list of tuples
+
+        # Don't allow edits to application when status is beyond this user's permissions in the pipeline
+        if source_status not in choices_for_role:
+            raise FormContextException(
+                "You don't have permission to edit applications which are in status {0}.".format(source_status))
+
+        # Don't permit changes to status in reverse of the editorial process
+        if choices_for_role.index(target_status) < choices_for_role.index(source_status):
+            # Except that editors can revert 'completed' to 'in progress'
+            if role == 'editor' and source_status == 'completed' and target_status == 'in progress':
+                pass
+            else:
+                raise FormContextException(
+                    "You are not permitted to revert the application status from {0} to {1}.".format(source_status,
+                                                                                                     target_status))
+
+    @classmethod
+    def choices_for_status(cls, role, status):
+        """ :raises ValueError if status is outwith role's permitted statuses """
+
+        role_choices = cls.application_status(role)
+
+        # Get the full tuple of application status for the current source
+        [full_current_status] = filter(lambda x: status in x, role_choices)
+
+        # Admins can set any role at any time
+        if role == 'admin':
+            return role_choices
+        else:
+            # Show options forward in the editorial pipeline for users other than admins
+            forward_choices = role_choices[role_choices.index(full_current_status):]
+
+            # But allow an exception: Editors can revert to 'in progress' from 'completed'
+            if role == 'editor' and status == 'completed':
+                forward_choices = [('in progress', 'In Progress')] + forward_choices
+
+            return forward_choices
