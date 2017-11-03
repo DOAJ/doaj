@@ -8,10 +8,10 @@ from portality.dao import Facetview2
 
 def send_admin_ready_email(application, editor_id):
     """ send email to the managing editors when an application is ready """
-    journal_name = application.bibjson().title #.encode('utf-8', 'replace')
+    journal_name = application.bibjson().title
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
     url_for_application = url_root + url_for("admin.suggestions", source=string_id_query)
 
     # This is to the managing editor email list
@@ -25,8 +25,7 @@ def send_admin_ready_email(application, editor_id):
                         template_name="email/admin_application_ready.txt",
                         application_title=journal_name,
                         editor=editor_id,
-                        url_for_application=url_for_application
-    )
+                        url_for_application=url_for_application)
 
 
 def send_editor_group_email(obj):
@@ -53,10 +52,9 @@ def send_editor_group_email(obj):
                         fro=fro,
                         subject=subject,
                         template_name=template,
-                        editor=editor.id, #.encode('utf-8', 'replace'),
-                        journal_name=obj.bibjson().title, #.encode('utf-8', 'replace'),
-                        url_root=url_root
-                        )
+                        editor=editor.id,
+                        journal_name=obj.bibjson().title,
+                        url_root=url_root)
 
 
 def send_assoc_editor_email(obj):
@@ -82,11 +80,10 @@ def send_assoc_editor_email(obj):
                         fro=fro,
                         subject=subject,
                         template_name=template,
-                        associate_editor=assoc_editor.id, #.encode('utf-8', 'replace'),
-                        journal_name=obj.bibjson().title, #.encode('utf-8', 'replace'),
-                        group_name=eg.name, #.encode("utf-8", "replace"),
-                        url_root=url_root
-                        )
+                        associate_editor=assoc_editor.id,
+                        journal_name=obj.bibjson().title,
+                        group_name=eg.name,
+                        url_root=url_root)
 
 
 def send_publisher_editor_assigned_email(application):
@@ -103,17 +100,16 @@ def send_publisher_editor_assigned_email(application):
                         fro=fro,
                         subject=subject,
                         template_name="email/publisher_application_editor_assigned.txt",
-                        application_title=application.bibjson().title, #.encode('utf-8', 'replace'),
-                        publisher_name=publisher_name
-                        )
+                        application_title=application.bibjson().title,
+                        publisher_name=publisher_name)
 
 
 def send_editor_inprogress_email(application):
     """ Inform editor in charge of an application that the status is has been reverted from ready by a ManEd """
-    journal_name = application.bibjson().title #.encode('utf-8', 'replace')
+    journal_name = application.bibjson().title
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
     url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
 
     # This is to the editor in charge of this AssEd's group
@@ -129,7 +125,7 @@ def send_editor_inprogress_email(application):
         raise
 
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - 'Ready' application marked 'In Progress' by Managing Editor"
+    subject = app.config.get("SERVICE_NAME", "") + " - Application reverted to 'In Progress' by Managing Editor"
 
     app_email.send_mail(to=to,
                         fro=fro,
@@ -137,16 +133,39 @@ def send_editor_inprogress_email(application):
                         template_name="email/editor_application_inprogress.txt",
                         editor=editor_id,
                         application_title=journal_name,
-                        url_for_application=url_for_application
-    )
+                        url_for_application=url_for_application)
+
+
+def send_assoc_editor_inprogress_email(application):
+    """ Inform the associate editor assigned to application that the status has been reverted by an Ed or ManEd """
+    journal_name = application.bibjson().title
+    url_root = app.config.get("BASE_URL")
+    query_for_id = Facetview2.make_query(query_string=application.id)
+    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
+    url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
+
+    # This is to the associate editor assigned to this application
+    assoc_editor = models.Account.pull(application.editor)
+    to = [assoc_editor.email]
+
+    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
+    subject = app.config.get("SERVICE_NAME", "") + " - an application assigned to you has not passed review."
+
+    app_email.send_mail(to=to,
+                        fro=fro,
+                        subject=subject,
+                        template_name="email/assoc_editor_application_inprogress.txt",
+                        assoc_editor=assoc_editor.id,
+                        application_title=journal_name,
+                        url_for_application=url_for_application)
 
 
 def send_editor_completed_email(application):
     """ inform the editor in charge of an application that it has been completed by an associate editor """
-    journal_name = application.bibjson().title #.encode('utf-8', 'replace')
+    journal_name = application.bibjson().title
     url_root = app.config.get("BASE_URL")
     query_for_id = Facetview2.make_query(query_string=application.id)
-    string_id_query = json.dumps(query_for_id).replace(' ', '')   # Avoid '+' being added to URLs by removing spaces
+    string_id_query = json.dumps(query_for_id).replace(' ', '')       # Avoid '+' being added to URLs by removing spaces
     url_for_application = url_root + url_for("editor.group_suggestions", source=string_id_query)
 
     # This is to the editor in charge of this application's assigned editor group
@@ -170,13 +189,12 @@ def send_editor_completed_email(application):
                         editor=editor_id,
                         associate_editor=assoc_id,
                         application_title=journal_name,
-                        url_for_application=url_for_application
-    )
+                        url_for_application=url_for_application)
 
 
 def send_publisher_inprogress_email(application):
     """Tell the publisher the application is underway"""
-    journal_title = application.bibjson().title #.encode('utf-8', 'replace')
+    journal_title = application.bibjson().title
 
     # This is to the publisher contact on the application
     publisher_name = application.get_latest_contact_name()
@@ -191,8 +209,7 @@ def send_publisher_inprogress_email(application):
                         subject=subject,
                         template_name="email/publisher_application_inprogress.txt",
                         publisher_name=publisher_name,
-                        journal_title=journal_title,
-    )
+                        journal_title=journal_title)
 
 
 def send_received_email(application):
@@ -209,5 +226,4 @@ def send_received_email(application):
                         template_name="email/publisher_application_received.txt",
                         # suggestion=self.target,
                         title=application.bibjson().title,
-                        url=application.bibjson().get_single_url(urltype="homepage")
-                        )
+                        url=application.bibjson().get_single_url(urltype="homepage"))
