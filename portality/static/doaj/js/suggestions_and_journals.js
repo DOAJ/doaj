@@ -156,7 +156,7 @@ jQuery(document).ready(function($) {
         $("#editor").html("<option val='' selected='selected'></option>")
     });
 
-    $(".application_journal_form").bind("submit", function(event) {
+    $(".application_journal_form").on("submit", function(event) {
         $(".save-record").attr("disabled", "disabled");
     });
 });
