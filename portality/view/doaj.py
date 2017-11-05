@@ -70,7 +70,8 @@ def search_post():
             filters.append(dao.Facetview2.make_term_filter("_type", "article"))
 
     query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
-    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
+    ref = request.form.get("ref")
+    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)) + "&ref=" + urllib.quote(ref))
 
 
 @blueprint.route("/subjects")
