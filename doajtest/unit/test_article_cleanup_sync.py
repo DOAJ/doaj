@@ -37,7 +37,7 @@ class TestArticleCleanupSync(DoajTestCase):
         # a journal from which we will sync metadata
         source = fixtures.JournalFixtureFactory.make_journal_source(in_doaj=True)
         j = models.Journal(**source)
-        j.save()
+        j.save(blocking=True)
 
         # the identifiers to allow us to connect articles to the journal
         eissn = j.bibjson().get_identifiers(j.bibjson().E_ISSN)[0]
@@ -47,12 +47,12 @@ class TestArticleCleanupSync(DoajTestCase):
         source2 = fixtures.ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, with_journal_info=False, with_id=False)
         a1 = models.Article(**source2)
         a1.add_journal_metadata(j)
-        a1.save()
+        a1.save(blocking=True)
 
         # do not add any journal metadata
         source3 = fixtures.ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, with_journal_info=False, with_id=False)
         a2 = models.Article(**source3)
-        a2.save()
+        a2.save(blocking=True)
 
         # a record which is not connected to an existing journal
         source4 = fixtures.ArticleFixtureFactory.make_article_source(eissn="xxxx-xxxx", pissn="xxxx-xxxx", with_journal_info=False, with_id=False)

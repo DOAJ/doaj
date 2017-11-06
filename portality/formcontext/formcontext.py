@@ -672,8 +672,9 @@ class ManEdApplicationReview(ApplicationContext):
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
 
-        # inform editor if this application was previously set to 'ready', but has been changed to 'in progress'
-        if self.source.application_status == 'ready' and self.target.application_status == 'in progress':
+        # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
+        if (self.source.application_status == 'ready' or self.source.application_status == 'completed') and self.target.application_status == 'in progress':
+            # First, the editor
             try:
                 emails.send_editor_inprogress_email(self.target)
                 self.add_alert('An email has been sent to notify the editor of the change in status.')
@@ -684,7 +685,22 @@ class ManEdApplicationReview(ApplicationContext):
                 raise e
             except app_email.EmailException as e:
                 magic = str(uuid.uuid1())
-                self.add_alert('Hm, sending the ready status to editor email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                self.add_alert('Sending the failed review email to editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.error(magic + "\n" + repr(e))
+                raise e
+
+            # Then the associate
+            try:
+                emails.send_assoc_editor_inprogress_email(self.target)
+                self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
+            except AttributeError as e:
+                magic = str(uuid.uuid1())
+                self.add_alert('Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.error(magic + "\n" + repr(e))
+                raise e
+            except app_email.EmailException as e:
+                magic = str(uuid.uuid1())
+                self.add_alert('Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
                 app.logger.error(magic + "\n" + repr(e))
                 raise e
 
@@ -794,7 +810,7 @@ class EditorApplicationReview(ApplicationContext):
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
 
-        # if we need to email the associate, handle that here.
+        # if we need to email the associate because they have just been assigned, handle that here.
         if new_associate_assigned:
             try:
                 emails.send_assoc_editor_email(self.target)
@@ -808,6 +824,22 @@ class EditorApplicationReview(ApplicationContext):
                 emails.send_publisher_editor_assigned_email(self.target)
             except app_email.EmailException as e:
                 self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
+
+        # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
+        if self.source.application_status == 'completed' and self.target.application_status == 'in progress':
+            try:
+                emails.send_assoc_editor_inprogress_email(self.target)
+                self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
+            except AttributeError as e:
+                magic = str(uuid.uuid1())
+                self.add_alert('Couldn\'t find a recipient for this email - check an associate editor is assigned. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.error(magic + "\n" + repr(e))
+                raise e
+            except app_email.EmailException as e:
+                magic = str(uuid.uuid1())
+                self.add_alert('Sending the failed review email to associate editor didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+                app.logger.error(magic + "\n" + repr(e))
+                raise e
 
         # email managing editors if the application was newly set to 'ready'
         if self.source.application_status != 'ready' and self.target.application_status == 'ready':
