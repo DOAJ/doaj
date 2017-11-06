@@ -20,6 +20,7 @@ JOURNAL_SOURCE_TEST_2 = JournalFixtureFactory.make_journal_source()
 
 EDITOR_GROUP_SOURCE = EditorGroupFixtureFactory.make_editor_group_source()
 EDITOR_SOURCE = AccountFixtureFactory.make_editor_source()
+ASSED1_SOURCE = AccountFixtureFactory.make_assed1_source()
 ASSED2_SOURCE = AccountFixtureFactory.make_assed2_source()
 ASSED3_SOURCE = AccountFixtureFactory.make_assed3_source()
 
@@ -40,6 +41,8 @@ def editor_group_pull(self, _id):
 def editor_account_pull(self, _id):
     if _id == 'eddie':
         return models.Account(**EDITOR_SOURCE)
+    if _id == 'associate':
+        return models.Account(**ASSED1_SOURCE)
     if _id == 'associate_2':
         return models.Account(**ASSED2_SOURCE)
     if _id == 'associate_3':
@@ -152,7 +155,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
-        # If an application has been set to 'ready' but is returned to 'in progress', an email is sent to the editor
+        # If an application has been set to 'ready' but is returned to 'in progress',
+        # an email is sent to the editor and assigned associate editor
         ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
         ready_application.set_application_status("ready")
 
@@ -176,16 +180,76 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert fc.source.application_status == "ready"
         assert fc.target.application_status == "in progress"
 
-        # We expect one email sent:
+        # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
+        #   * to the associate editor, informing them the same
         editor_template = re.escape('editor_application_inprogress.txt')
         editor_to = re.escape('eddie@example.com')
-        editor_subject = "'Ready' application marked 'In Progress' by Managing Editor"
+        editor_subject = "Application reverted to 'In Progress' by Managing Editor"
         editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
                                          info_stream_contents,
                                          re.DOTALL)
         assert bool(editor_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_to = re.escape('associate@example.com')
+        assoc_editor_subject = "an application assigned to you has not passed review."
+        assoc_editor_email_matched = re.search(email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+                                               info_stream_contents,
+                                               re.DOTALL)
+        assert bool(assoc_editor_email_matched)
+
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # If our ManEd is doing an editor's job - setting from 'completed' but is returned to 'in progress',
+        # an email is sent to the editor in charge of the application's group and assigned associate editor
+        completed_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
+        completed_application.set_application_status("completed")
+
+        # Construct an application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="admin",
+            source=completed_application
+        )
+        assert isinstance(fc, formcontext.ManEdApplicationReview)
+
+        # Make changes to the application status via the form
+        fc.form.application_status.data = "in progress"
+
+        # Emails are sent during the finalise stage, and requires the app context to build URLs
+        fc.finalise()
+
+        # Use the captured info stream to get email send logs
+        info_stream_contents = self.info_stream.getvalue()
+
+        # Prove we went from to and from the right statuses
+        assert fc.source.application_status == "completed"
+        assert fc.target.application_status == "in progress"
+
+        # We expect two emails sent:
+        #   * to the editor, informing them an application has been bounced from completed back to in progress.
+        #   * to the associate editor, informing them the same
+        editor_template = re.escape('editor_application_inprogress.txt')
+        editor_to = re.escape('eddie@example.com')
+        editor_subject = "Application reverted to 'In Progress' by Managing Editor"
+        editor_email_matched = re.search(email_log_regex % (editor_template, editor_to, editor_subject),
+                                         info_stream_contents,
+                                         re.DOTALL)
+        assert bool(editor_email_matched)
+
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_to = re.escape('associate@example.com')
+        assoc_editor_subject = "an application assigned to you has not passed review."
+        assoc_editor_email_matched = re.search(
+            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+            info_stream_contents,
+            re.DOTALL)
+        assert bool(assoc_editor_email_matched)
+
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -337,8 +401,6 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         assert len(re.findall(email_count_string, info_stream_contents)) == 3
 
-
-
         ctx.pop()
 
     def test_02_ed_review_emails(self):
@@ -442,6 +504,46 @@ class TestApplicationReviewEmails(DoajTestCase):
                                         info_stream_contents,
                                         re.DOTALL)
         assert bool(assEd_email_matched)
+        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+
+        # Clear the stream for the next part
+        self.info_stream.truncate(0)
+
+        # When an editor changes the state from 'completed' to 'in progress', the assigned associate is emailed.
+        completed_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+        completed_application.set_application_status("completed")
+
+        # Construct an application form
+        fc = formcontext.ApplicationFormFactory.get_form_context(
+            role="editor",
+            source=completed_application
+        )
+        assert isinstance(fc, formcontext.EditorApplicationReview)
+
+        # Make changes to the application status via the form
+        fc.form.application_status.data = "in progress"
+
+        # Emails are sent during the finalise stage, and requires the app context to build URLs
+        fc.finalise()
+
+        # Use the captured info stream to get email send logs
+        info_stream_contents = self.info_stream.getvalue()
+
+        # Prove we went from to and from the right statuses
+        assert fc.source.application_status == "completed"
+        assert fc.target.application_status == "in progress"
+
+        # We expect one email to be sent:
+        #   * to the associate editor, informing them the application has been bounced back to in progress.
+        assoc_editor_template = re.escape('assoc_editor_application_inprogress.txt')
+        assoc_editor_to = re.escape('associate@example.com')
+        assoc_editor_subject = "an application assigned to you has not passed review."
+        assoc_editor_email_matched = re.search(
+            email_log_regex % (assoc_editor_template, assoc_editor_to, assoc_editor_subject),
+            info_stream_contents,
+            re.DOTALL)
+        assert bool(assoc_editor_email_matched)
+
         assert len(re.findall(email_count_string, info_stream_contents)) == 1
 
         ctx.pop()

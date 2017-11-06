@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
 
 import re, time
 from copy import deepcopy
@@ -543,17 +543,21 @@ class TestEditorAppReview(DoajTestCase):
         acc.add_role("editor")
         ctx = self._make_and_push_test_context(acc=acc)
 
-        # Check that an accepted application can't be regressed by an editor
+        # There should be an associate editor to receive an email when the status is changed
+        associate_account = models.Account(**AccountFixtureFactory.make_assed1_source())
+        associate_account.save(blocking=True)
+
+        # Check that an editor can change from 'completed' to 'in progress' after a failed review
         completed_source = APPLICATION_SOURCE.copy()
         completed_source['admin']['application_status'] = 'completed'
 
-        ready_form = APPLICATION_FORM.copy()
-        ready_form['application_status'] = 'in progress'
+        in_progress_form = APPLICATION_FORM.copy()
+        in_progress_form['application_status'] = 'in progress'
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="editor",
-            form_data=MultiDict(ready_form),
+            form_data=MultiDict(in_progress_form),
             source=models.Suggestion(**completed_source)
         )
 
