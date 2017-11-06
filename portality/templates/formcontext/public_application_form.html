@@ -23,7 +23,7 @@ where a single publisher has submitted more than 5 applications with false infor
 all of the publisher's journals and to not accept any more applications for a maximum period of 3 years, depending on 
 the number of journals for which false information was provided and the eventual number of repeated incidents.</p>
 
-<form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
     {% if form_context.errors %}
         <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
@@ -43,7 +43,7 @@ the number of journals for which false information was provided and the eventual
 
                 <div class="control-group">
                     <div class="controls">
-                        <button class="btn btn-success" type="submit">
+                        <button class="btn btn-success save-record" type="submit">
                             SUBMIT
                         </button>
                     </div>

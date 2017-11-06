@@ -43,7 +43,7 @@
   </div>
 </div>
 
-<form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
+<form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>
     {% endif %}
@@ -66,7 +66,7 @@
                     <div class="span12 with-borders form-section" style="margin-left: 0;">
                         <div class="control-group">
                             <div class="controls">
-                                <button class="btn btn-success" type="submit">SAVE</button>
+                                <button class="btn btn-success save-record" type="submit">SAVE</button>
                             </div>
                             
                             {% autoescape off %}
@@ -140,7 +140,7 @@
             <div class="span6 with-borders form-section">
                 <div class="control-group">
                     <div class="controls">
-                        <button class="btn btn-success" type="submit">
+                        <button class="btn btn-success save-record" type="submit">
                             SAVE
                         </button>
                     </div>
