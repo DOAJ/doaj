@@ -147,7 +147,7 @@ function searchOptions(options) {
     if (options.search_button) {
         corners = "border-radius:0px 0px 0px 0px; -moz-border-radius:0px 0px 0px 0px; -webkit-border-radius:0px 0px 0px 0px;"
     }
-    thefacetview += '<input type="text" class="facetview_freetext span4" style="display:inline-block; margin:0 0 21px 0; background:#ecf4ff; ' + corners + '" name="q" \
+    thefacetview += '<input type="text" class="facetview_freetext span4" style="display:inline-block; margin:1px 0 21px 0; background:#ecf4ff; ' + corners + '" name="q" \
         value="" placeholder="search term" />';
 
     // search button
