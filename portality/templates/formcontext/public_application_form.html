@@ -8,20 +8,18 @@
 Read our <a href="{{ url_for('doaj.publishers') }}">information for publishers</a>, review your website and make sure
 that your journal fulfills all the criteria.</p>
 
-<!--<p>DO NOT SUBMIT REAPPLICATIONS WITH THIS FORM. You must do that from <a href="https://doaj.org/publisher/progress">
-    the Reapplications tab</a> in your account.</p> -->
+<p>If you know of a peer-reviewed journal that should be included in DOAJ, please ask its publisher or editor to complete this form.</p>
 
-<p>Guides to completing the form are also <a href="{{ url_for('doaj.translated') }}">available in other languages
-(العربية, 中文, فارسی, Français, Italiano, Polski, Português, Русский, Română, Español, Türkçe, Українська)</a>.</p>
+<p>We provide some <a href="{{ url_for('doaj.faq', _anchor='procedure') }}">guidance on the information we are looking for</a> but
+that list is by no means exhaustive. Applicants are encouraged to complete the form clearly and honestly. If you
+do not understand a question, you can ask for help by contacting us.</p>
 
-<p><b><i>DISCLAIMER</i></b><br>
-<p>The applicant is responsible for providing accurate information when submitting an application for consideration. 
-If the information provided is not sufficient or is incomplete, the application will not be considered. In cases where 
-the information provided is found to be untrue—either during reviewing or even after admission—we reserve the right to 
-reject or remove the journal with immediate effect and to not accept new applications for a period of 1 year. In cases
-where a single publisher has submitted more than 5 applications with false information, we reserve the right to remove 
-all of the publisher's journals and to not accept any more applications for a maximum period of 3 years, depending on 
-the number of journals for which false information was provided and the eventual number of repeated incidents.</p>
+<p>It is not possible to save your progress or for us to send you a confirmation email (although we will show you a confirmation 
+    screen if the application has been submitted successfully) so, we recommend you gather the information you need first. We have
+<a href="{{ url_for('doaj.faq', _anchor='application') }}">created a spreadsheet guide of the form</a>, and provided some other
+tips, to help you. Guides are also available in <a href="{{ url_for('doaj.translated') }}">
+are available in other languages (العربية, 中文, فارسی, français, Bahasa Indonesia, Italiano, Polski, Português, Română, Русский, 
+    Español, Türkçe, Українська)</a>.</p>
 
 <form method="post" action="#first_problem" class="form-horizontal wide" id="suggest_form">
     {% if form_context.errors %}
