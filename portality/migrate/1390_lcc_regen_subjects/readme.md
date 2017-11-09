@@ -6,4 +6,4 @@ Refresh the subject name saved on journals, applications, article bibjson.
 
 Run
 
-    python portality/upgrade.py -u portality/migrate/1390_lcc_regen_subjects/publisher_struct.json
+    python portality/upgrade.py -u portality/migrate/1390_lcc_regen_subjects/regen_subjects.json

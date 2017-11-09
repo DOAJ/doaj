@@ -1,4 +1,4 @@
-from portality import models
+from portality import models, lcc
 
 
 def refresh_subjects(record):
@@ -10,6 +10,14 @@ def refresh_subjects(record):
 
     new_subjects = []
     for s in old_subjects:
-        # Do stuff
-        new_subjects.append(s)
+        try:
+            sobj = {"scheme": u'LCC', "term": lcc.lookup_code(s['code']), "code": s['code']}
+            new_subjects.append(sobj)
+        except KeyError:
+            # Subject has no code, that's fine, let's have a look at it
+            print "Missing code:", s
+
+    bj.set_subjects(new_subjects)
+    if bj.subjects() != record.bibjson().subjects():
+        print 'WHAT', bj.subjects()
     return record

@@ -3,6 +3,7 @@ from collections import OrderedDict
 from portality.core import app
 from portality import models
 from portality.lib import plugin
+from portality.lib.dataobj import DataStructureException
 
 MODELS = {
     "journal" : models.Journal,
@@ -53,7 +54,11 @@ def do_upgrade(definition, verbose):
 
             if tdef.get("init_with_model", True):
                 # instantiate an object with the data
-                result = model_class(**result)
+                try:
+                    result = model_class(**result)
+                except DataStructureException as e:
+                    print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
+                    continue
 
             for function_path in tdef.get("functions", []):
                 fn = plugin.load_function(function_path)
