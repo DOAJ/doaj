@@ -1,4 +1,5 @@
 import json, os, esprit
+from datetime import datetime
 from collections import OrderedDict
 from portality.core import app
 from portality import models
@@ -6,16 +7,18 @@ from portality.lib import plugin
 from portality.lib.dataobj import DataStructureException
 
 MODELS = {
-    "journal" : models.Journal,
-    "article" : models.Article,
-    "suggestion" : models.Suggestion,
-    "account" : models.Account
+    "journal": models.Journal,
+    "article": models.Article,
+    "suggestion": models.Suggestion,
+    "account": models.Account
 }
+
 
 class UpgradeTask(object):
 
     def upgrade_article(self, article):
         pass
+
 
 def do_upgrade(definition, verbose):
     # get the source and target es definitions
@@ -116,11 +119,14 @@ if __name__ == "__main__":
         print args.upgrade, "does not exist or is not a file"
         exit()
 
+    print 'Starting {0}.'.format(datetime.now())
+
     with open(args.upgrade) as f:
         try:
-            definition = json.loads(f.read(), object_pairs_hook=OrderedDict)
+            instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
+            do_upgrade(instructions, args.verbose)
         except:
             print args.upgrade, "does not parse as JSON"
             exit()
 
-        do_upgrade(definition, args.verbose)
+    print 'Finished {0}.'.format(datetime.now())
