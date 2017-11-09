@@ -14,10 +14,13 @@ def refresh_subjects(record):
             sobj = {"scheme": u'LCC', "term": lcc.lookup_code(s['code']), "code": s['code']}
             new_subjects.append(sobj)
         except KeyError:
-            # Subject has no code, that's fine, let's have a look at it
-            print "Missing code:", s
+            # Carry over the DOAJ schema subjects
+            if 'scheme' in s and s['scheme'] is 'DOAJ':
+                new_subjects.append(s)
+            else:
+                print "Missing code:", s
 
     bj.set_subjects(new_subjects)
-    if bj.subjects() != record.bibjson().subjects():
-        print 'WHAT', bj.subjects()
+    if old_subjects != record.bibjson().subjects():
+        print '{0} Changed.\nold: {1}\nnew: {2}'.format(record['id'], old_subjects, record.bibjson().subjects())
     return record
