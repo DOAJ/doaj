@@ -124,9 +124,10 @@ if __name__ == "__main__":
     with open(args.upgrade) as f:
         try:
             instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
-            do_upgrade(instructions, args.verbose)
         except:
             print args.upgrade, "does not parse as JSON"
             exit()
+
+        do_upgrade(instructions, args.verbose)
 
     print 'Finished {0}.'.format(datetime.now())
