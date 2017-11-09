@@ -27,15 +27,15 @@ def do_upgrade(definition, verbose):
 
     if source is None:
         source = {
-            "host" : app.config.get("ELASTIC_SEARCH_HOST"),
-            "index" : app.config.get("ELASTIC_SEARCH_DB")
+            "host": app.config.get("ELASTIC_SEARCH_HOST"),
+            "index": app.config.get("ELASTIC_SEARCH_DB")
         }
 
     if target is None:
         target = {
-            "host" : app.config.get("ELASTIC_SEARCH_HOST"),
-            "index" : app.config.get("ELASTIC_SEARCH_DB"),
-            "mappings" : False
+            "host": app.config.get("ELASTIC_SEARCH_HOST"),
+            "index": app.config.get("ELASTIC_SEARCH_DB"),
+            "mappings": False
         }
 
     sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
@@ -68,7 +68,7 @@ def do_upgrade(definition, verbose):
                 result = fn(result)
 
             data = result
-            id = result.get("id", "id not specified")
+            _id = result.get("id", "id not specified")
             if isinstance(result, model_class):
                 # run the tasks specified with this object type
                 tasks = tdef.get("tasks", None)
@@ -85,12 +85,12 @@ def do_upgrade(definition, verbose):
                     pass
 
                 data = result.data
-                id = result.id
+                _id = result.id
 
             # add the data to the batch
             batch.append(data)
             if verbose:
-                print "added", tdef.get("type"), id, "to batch update"
+                print "added", tdef.get("type"), _id, "to batch update"
 
             # When we have enough, do some writing
             if len(batch) >= batch_size:
