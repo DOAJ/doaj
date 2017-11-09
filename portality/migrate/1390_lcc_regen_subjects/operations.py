@@ -15,7 +15,7 @@ def refresh_subjects(record):
             new_subjects.append(sobj)
         except KeyError:
             # Carry over the DOAJ schema subjects
-            if 'scheme' in s and s['scheme'] is 'DOAJ':
+            if 'scheme' in s and s['scheme'] == 'DOAJ':
                 new_subjects.append(s)
             else:
                 print "Missing code:", s
