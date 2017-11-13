@@ -1,20 +1,24 @@
 import json, os, esprit
+from datetime import datetime
 from collections import OrderedDict
 from portality.core import app
 from portality import models
 from portality.lib import plugin
+from portality.lib.dataobj import DataStructureException
 
 MODELS = {
-    "journal" : models.Journal,
-    "article" : models.Article,
-    "suggestion" : models.Suggestion,
-    "account" : models.Account
+    "journal": models.Journal,
+    "article": models.Article,
+    "suggestion": models.Suggestion,
+    "account": models.Account
 }
+
 
 class UpgradeTask(object):
 
     def upgrade_article(self, article):
         pass
+
 
 def do_upgrade(definition, verbose):
     # get the source and target es definitions
@@ -23,15 +27,15 @@ def do_upgrade(definition, verbose):
 
     if source is None:
         source = {
-            "host" : app.config.get("ELASTIC_SEARCH_HOST"),
-            "index" : app.config.get("ELASTIC_SEARCH_DB")
+            "host": app.config.get("ELASTIC_SEARCH_HOST"),
+            "index": app.config.get("ELASTIC_SEARCH_DB")
         }
 
     if target is None:
         target = {
-            "host" : app.config.get("ELASTIC_SEARCH_HOST"),
-            "index" : app.config.get("ELASTIC_SEARCH_DB"),
-            "mappings" : False
+            "host": app.config.get("ELASTIC_SEARCH_HOST"),
+            "index": app.config.get("ELASTIC_SEARCH_DB"),
+            "mappings": False
         }
 
     sconn = esprit.raw.Connection(source.get("host"), source.get("index"))
@@ -53,14 +57,18 @@ def do_upgrade(definition, verbose):
 
             if tdef.get("init_with_model", True):
                 # instantiate an object with the data
-                result = model_class(**result)
+                try:
+                    result = model_class(**result)
+                except DataStructureException as e:
+                    print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
+                    continue
 
             for function_path in tdef.get("functions", []):
                 fn = plugin.load_function(function_path)
                 result = fn(result)
 
             data = result
-            id = result.get("id", "id not specified")
+            _id = result.get("id", "id not specified")
             if isinstance(result, model_class):
                 # run the tasks specified with this object type
                 tasks = tdef.get("tasks", None)
@@ -77,12 +85,12 @@ def do_upgrade(definition, verbose):
                     pass
 
                 data = result.data
-                id = result.id
+                _id = result.id
 
             # add the data to the batch
             batch.append(data)
             if verbose:
-                print "added", tdef.get("type"), id, "to batch update"
+                print "added", tdef.get("type"), _id, "to batch update"
 
             # When we have enough, do some writing
             if len(batch) >= batch_size:
@@ -111,11 +119,15 @@ if __name__ == "__main__":
         print args.upgrade, "does not exist or is not a file"
         exit()
 
+    print 'Starting {0}.'.format(datetime.now())
+
     with open(args.upgrade) as f:
         try:
-            definition = json.loads(f.read(), object_pairs_hook=OrderedDict)
+            instructions = json.loads(f.read(), object_pairs_hook=OrderedDict)
         except:
             print args.upgrade, "does not parse as JSON"
             exit()
 
-        do_upgrade(definition, args.verbose)
+        do_upgrade(instructions, args.verbose)
+
+    print 'Finished {0}.'.format(datetime.now())
