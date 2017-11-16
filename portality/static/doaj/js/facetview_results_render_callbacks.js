@@ -354,7 +354,7 @@ fv_make_continuation = (function (resultobj) {
             result += journal_edit_url;
             result += resultobj['id'];
             result += '/continue?type=replaces" target="_blank"';
-            result += '>Make a preceeding continuation</a>';
+            result += '>Make a preceding continuation</a>';
 
             return result;
         }
