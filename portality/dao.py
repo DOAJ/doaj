@@ -3,8 +3,6 @@ from copy import deepcopy
 from datetime import datetime, timedelta
 import time
 import re
-# debugging
-import traceback, sys
 
 from portality.core import app
 import urllib2
@@ -18,6 +16,10 @@ import esprit
 
 
 ES_MAPPING_MISSING_REGEX = re.compile(r'.*No mapping found for \[[a-zA-Z0-9-_]+?\] in order to sort on.*', re.DOTALL)
+
+
+class ElasticSearchWriteException(Exception):
+    pass
 
 
 class DomainObject(UserDict.IterableUserDict, object):
@@ -120,19 +122,29 @@ class DomainObject(UserDict.IterableUserDict, object):
         while attempt <= retries:
             try:
                 r = requests.post(url, data=d)
-                if 400 <= r.status_code < 500:
-                    # bad request, no retry
-                    print "bad request", r.json()
-                    traceback.print_stack(file=sys.stdout)
-                    break
-                elif r.status_code >= 500:
-                    print "server error", r.json()
-                    attempt += 1
+                if r.status_code > 400:
+                    raise ElasticSearchWriteException(u"Error on ES save. Response code {0}".format(r.status_code))
                 else:
                     break  # everything is OK, so r should now be assigned to the result
 
             except requests.exceptions.ConnectionError:
+                app.logger.exception(u"Failed to connect to ES")
                 attempt += 1
+            except ElasticSearchWriteException:
+                try:
+                    error_details = r.json()
+                except (ValueError, AttributeError):
+                    error_details = None
+
+                # Retries depend on which end the error lies.
+                if 400 <= r.status_code < 500:
+                    # Bad request, do not retry as it won't work
+                    app.logger.exception(u"Bad Request to ES, save failed. Details: {0}".format(error_details))
+                    break
+                elif r.status_code >= 500:
+                    # Server error, this could be temporary so we may want to retry
+                    app.logger.exception(u"Server Error from ES, retrying. Details: {0}".format(error_details))
+                    attempt += 1
 
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
