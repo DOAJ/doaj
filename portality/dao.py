@@ -134,7 +134,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                 try:
                     error_details = r.json()
                 except (ValueError, AttributeError):
-                    error_details = None
+                    error_details = r.text
 
                 # Retries depend on which end the error lies.
                 if 400 <= r.status_code < 500:
