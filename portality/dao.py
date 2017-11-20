@@ -138,9 +138,9 @@ class DomainObject(UserDict.IterableUserDict, object):
 
                 # Retries depend on which end the error lies.
                 if 400 <= r.status_code < 500:
-                    # Bad request, do not retry as it won't work
+                    # Bad request, do not retry as it won't work. Fail with ElasticSearchWriteException.
                     app.logger.exception(u"Bad Request to ES, save failed. Details: {0}".format(error_details))
-                    break
+                    raise
                 elif r.status_code >= 500:
                     # Server error, this could be temporary so we may want to retry
                     app.logger.exception(u"Server Error from ES, retrying. Details: {0}".format(error_details))
