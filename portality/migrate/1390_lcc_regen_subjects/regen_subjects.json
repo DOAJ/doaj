@@ -3,7 +3,7 @@
 		{
 			"type" : "suggestion",
 			"init_with_model" : true,
-			"keepalive" : "1m",
+			"keepalive" : "20m",
 			"functions" : [
 				"portality.migrate.1390_lcc_regen_subjects.operations.refresh_subjects"
 			]
@@ -11,7 +11,7 @@
 		{
 			"type": "journal",
 			"init_with_model": true,
-			"keepalive": "1m",
+			"keepalive": "20m",
 			"functions" : [
 				"portality.migrate.1390_lcc_regen_subjects.operations.refresh_subjects"
 			]
@@ -19,7 +19,7 @@
         {
             "type": "article",
 			"init_with_model": true,
-			"keepalive": "1m",
+			"keepalive": "20m",
 			"functions" : [
 				"portality.migrate.1390_lcc_regen_subjects.operations.refresh_subjects"
 			]
