@@ -145,6 +145,10 @@ class DomainObject(UserDict.IterableUserDict, object):
                     # Server error, this could be temporary so we may want to retry
                     app.logger.exception(u"Server Error from ES, retrying. Details: {0}".format(error_details))
                     attempt += 1
+            except Exception:
+                # if any other exception occurs, make sure it's at least logged.
+                app.logger.exception(u"Unhandled exception in save method of DAO")
+                raise
 
             # wait before retrying
             time.sleep((2**attempt) * back_off_factor)
