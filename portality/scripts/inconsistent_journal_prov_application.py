@@ -3,13 +3,15 @@ Script which attempts to identify journals, applications and provenance records 
 
 1. All suggestions where there are provenance records from a later time
 
-2. All journals for which the created_date is inconsistent with the application's last_updated date, and for which there are edit and/or accepted provenance records
+2. All accepted suggestions where the journal hasn't been created
+
+3. All journals for which the created_date is inconsistent with the application's last_updated date, and for which there are edit and/or accepted provenance records
 """
 
 from portality.core import app
 from portality.models import Suggestion, Provenance, Journal
-from portality.models.provenance import ResourceIDQuery
-import esprit, codecs, csv, requests
+from portality.clcsv import UnicodeWriter
+import esprit, codecs, csv
 from datetime import datetime
 from copy import deepcopy
 
@@ -21,25 +23,27 @@ source = {
 }
 local = esprit.raw.Connection(source.get("host"), source.get("index"))
 
-# live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
+#live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
+
 
 # looks for applications where the provenance dates are later than the last updated dates
-def applications_with_later_provenance(outfile, conn):
-    with codecs.open(outfile, "wb", "utf-8") as f:
-        out = csv.writer(f)
-        out.writerow(["Application ID", "Application Last Updated", "Latest Provenance Recorded", "Difference"])
+def applications_inconsistencies(outfile_later, outfile_missing, conn):
+    with codecs.open(outfile_later, "wb", "utf-8") as f, codecs.open(outfile_missing, "wb", "utf-8") as g:
+
+        out_later = csv.writer(f)
+        out_later.writerow(["Application ID", "Application Last Updated", "Latest Provenance Recorded", "Difference"])
+
+        out_missing = UnicodeWriter(g)
+        out_missing.writerow(["Application ID", "Application Last Updated", "ISSNs", "Title"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "suggestion", keepalive="45m"):
             counter += 1
             application = Suggestion(**result)
             print counter, application.id
+
+            # Part 1 - later provenance records exist
             latest_prov = Provenance.get_latest_by_resource_id(application.id)
-            #query = ResourceIDQuery(application.id)
-            #res = esprit.raw.search(conn, "provenance", query.query())
-            #obs = esprit.raw.unpack_result(res)
-            #if len(obs) > 0:
-            #    latest_prov = Provenance(**obs[0])
             if latest_prov is not None:
                 lustamp = application.last_updated_timestamp
                 created = latest_prov.created_date
@@ -49,14 +53,24 @@ def applications_with_later_provenance(outfile, conn):
                 if diff > 2.0:
                     if lustamp < TIMEZONE_CUTOFF:
                         if diff > 3602.0:
-                            out.writerow([application.id, application.last_updated, created, diff])
+                            out_later.writerow([application.id, application.last_updated, created, diff])
                     else:
-                        out.writerow([application.id, application.last_updated, created, diff])
+                        out_later.writerow([application.id, application.last_updated, created, diff])
+
+            # Part 2 - missing journals
+            if application.application_status == "accepted":
+                matching_journal = Journal.find_by_issn(application.bibjson().issns())
+                if not matching_journal:
+                    # Have another go, find by title
+                    matching_journal = Journal.find_by_title(application.bibjson().title)
+                    if not matching_journal:
+                        # No journal found - add it to our list
+                        out_missing.writerow([application.id, application.last_manual_update, " ".join(application.bibjson().issns()), application.bibjson().title])
 
         print "processed", counter, "suggestions"
 
 
-# looks for journals that were created after the last update on an application (implying the application was not updated)
+# looks for journals that were created after the last update on an application, implying the application was not updated
 def journals_applications_provenance(outfile, conn):
     with codecs.open(outfile, "wb", "utf-8") as f:
         out = csv.writer(f)
@@ -88,7 +102,7 @@ def journals_applications_provenance(outfile, conn):
 
             td = jcreated - latest.last_updated_timestamp
             diff = td.total_seconds()
-            if diff > 2.0: # or diff < -2.0:
+            if diff > 2.0:
                 last_edit = ""
                 last_accept = ""
 
@@ -110,18 +124,21 @@ def journals_applications_provenance(outfile, conn):
 
         print "processed", counter, "journals"
 
+
 PROV_QUERY = {
-    "query" : {
-        "bool" : {
-            "must" : [
-                {"term" : {"resource_id.exact" : None}},
-                {"term" : {"action.exact" : None}}
+    "query": {
+        "bool": {
+            "must": [
+                {"term": {"resource_id.exact": None}},
+                {"term": {"action.exact": None}}
             ]
         }
     },
-    "sort" : [{"created_date" : {"order" : "desc"}}]
+    "sort": [{"created_date": {"order": "desc"}}]
 }
 
 if __name__ == "__main__":
-    applications_with_later_provenance("apps_with_prov.csv", local)
+    print 'Starting {0}.'.format(datetime.now())
+    applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
     journals_applications_provenance("journals_applications_provenance.csv", local)
+    print 'Finished {0}.'.format(datetime.now())
