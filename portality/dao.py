@@ -155,7 +155,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
-                u"After the max {attempts} attempts the record with "
+                u"After {attempts} attempts the record with "
                 u"id {id} failed to save.".format(
                     attempts=attempt, id=self.data['id']))
 
