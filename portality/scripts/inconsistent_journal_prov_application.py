@@ -6,6 +6,8 @@ Script which attempts to identify journals, applications and provenance records 
 2. All accepted suggestions where the journal hasn't been created
 
 3. All journals for which the created_date is inconsistent with the application's last_updated date, and for which there are edit and/or accepted provenance records
+
+4. All journals for which the related account is missing
 """
 
 from portality.core import app
@@ -71,6 +73,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
 
 # looks for journals that were created after the last update on an application, implying the application was not updated
+# also looks for missing accounts
 def journals_applications_provenance(outfile_applications, outfile_accounts, conn):
     with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g:
         out_applications = csv.writer(f)
@@ -153,5 +156,5 @@ PROV_QUERY = {
 if __name__ == "__main__":
     print 'Starting {0}.'.format(datetime.now())
     applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
-    journals_applications_provenance("journals_applications_provenance.csv", local)
+    journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", local)
     print 'Finished {0}.'.format(datetime.now())
