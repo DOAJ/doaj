@@ -9,7 +9,7 @@ Script which attempts to identify journals, applications and provenance records 
 """
 
 from portality.core import app
-from portality.models import Suggestion, Provenance, Journal
+from portality.models import Suggestion, Provenance, Journal, Account
 from portality.clcsv import UnicodeWriter
 import esprit, codecs, csv
 from datetime import datetime
@@ -71,10 +71,13 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
 
 # looks for journals that were created after the last update on an application, implying the application was not updated
-def journals_applications_provenance(outfile, conn):
-    with codecs.open(outfile, "wb", "utf-8") as f:
-        out = csv.writer(f)
-        out.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
+def journals_applications_provenance(outfile_applications, outfile_accounts, conn):
+    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g:
+        out_applications = csv.writer(f)
+        out_applications.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
+
+        out_accounts = csv.writer(g)
+        out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Missing Account ID"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "journal", keepalive="45m"):
@@ -82,6 +85,7 @@ def journals_applications_provenance(outfile, conn):
             journal = Journal(**result)
             print counter, journal.id
 
+            # first figure out if there is a broken related application
             issns = journal.bibjson().issns()
             applications = Suggestion.find_by_issn(issns)
             latest = None
@@ -120,7 +124,16 @@ def journals_applications_provenance(outfile, conn):
                 if len(provs) > 0:
                     last_accept = provs[0].last_updated
 
-                out.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
+                out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
+
+            # now figure out if the account is missing
+            owner = journal.owner
+            if owner is None:
+                out_accounts.writerow([journal.id, journal.created_date, journal.last_reapplication, "NO OWNER"])
+            else:
+                acc = Account.pull(owner)
+                if acc is None:
+                    out_accounts.writerow([journal.id, journal.created_date, journal.last_reapplication, owner])
 
         print "processed", counter, "journals"
 
