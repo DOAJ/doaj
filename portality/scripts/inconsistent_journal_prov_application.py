@@ -8,6 +8,8 @@ Script which attempts to identify journals, applications and provenance records 
 3. All journals for which the created_date is inconsistent with the application's last_updated date, and for which there are edit and/or accepted provenance records
 
 4. All journals for which the related account is missing
+
+5. All journals which were published earlier than their related application was last updated (suggesting a failure to reapply)
 """
 
 from portality.core import app
@@ -81,13 +83,16 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
 # looks for journals that were created after the last update on an application, implying the application was not updated
 # also looks for missing accounts
-def journals_applications_provenance(outfile_applications, outfile_accounts, conn):
-    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g:
+def journals_applications_provenance(outfile_applications, outfile_accounts, outfile_reapps, conn):
+    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g, codecs.open(outfile_reapps, "wb", "utf-8") as h:
         out_applications = csv.writer(f)
         out_applications.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
 
         out_accounts = csv.writer(g)
         out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Missing Account ID"])
+
+        out_reapps = csv.writer(h)
+        out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Published Diff"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "journal", keepalive="45m"):
@@ -140,8 +145,8 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
                 out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
 
             # was the journal created before the application by greater than the threshold
-            if diff < THRESHOLD:
-                pass
+            if diff < -1 * THRESHOLD:
+                out_reapps.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.created_date, latest.last_updated, diff])
 
             # now figure out if the account is missing
             owner = journal.owner
@@ -170,5 +175,5 @@ PROV_QUERY = {
 if __name__ == "__main__":
     print 'Starting {0}.'.format(datetime.now())
     applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
-    journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", local)
+    journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", "journals_reapp_fails.csv", local)
     print 'Finished {0}.'.format(datetime.now())
