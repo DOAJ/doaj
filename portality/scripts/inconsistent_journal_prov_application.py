@@ -17,7 +17,8 @@ import esprit, codecs, csv
 from datetime import datetime
 from copy import deepcopy
 
-TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T08:14:46Z", "%Y-%m-%dT%H:%M:%SZ")
+TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
+THRESHOLD = 20.0
 
 source = {
     "host": app.config.get("ELASTIC_SEARCH_HOST"),
@@ -29,6 +30,7 @@ local = esprit.raw.Connection(source.get("host"), source.get("index"))
 
 
 # looks for applications where the provenance dates are later than the last updated dates
+# also looks for applications where there is not a corresponding journal
 def applications_inconsistencies(outfile_later, outfile_missing, conn):
     with codecs.open(outfile_later, "wb", "utf-8") as f, codecs.open(outfile_missing, "wb", "utf-8") as g:
 
@@ -52,12 +54,14 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
                 pstamp = latest_prov.created_timestamp
                 td = pstamp - lustamp
                 diff = td.total_seconds()
-                if diff > 2.0:
-                    if lustamp < TIMEZONE_CUTOFF:
-                        if diff > 3602.0:
-                            out_later.writerow([application.id, application.last_updated, created, diff])
-                    else:
-                        out_later.writerow([application.id, application.last_updated, created, diff])
+
+                thresh = THRESHOLD
+                if lustamp < TIMEZONE_CUTOFF:
+                    thresh = 3600.0 + THRESHOLD
+                    diff = diff - 3600
+
+                if diff > thresh:
+                    out_later.writerow([application.id, application.last_updated, created, diff])
 
             # Part 2 - missing journals
             if application.application_status == "accepted":
@@ -107,9 +111,16 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
             if reapp is not None:
                 jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
 
-            td = jcreated - latest.last_updated_timestamp
+            lustamp = latest.last_updated_timestamp
+            td = jcreated - lustamp
             diff = td.total_seconds()
-            if diff > 2.0:
+
+            thresh = THRESHOLD
+            if lustamp < TIMEZONE_CUTOFF:
+                thresh = 3600.0 + THRESHOLD
+                diff = diff - 3600
+
+            if diff > thresh:
                 last_edit = ""
                 last_accept = ""
 
