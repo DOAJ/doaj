@@ -14,10 +14,12 @@ from portality.core import app
 from portality.models import Suggestion, Provenance, Journal, Account
 from portality.clcsv import UnicodeWriter
 import esprit, codecs, csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from copy import deepcopy
 
-TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
+
+APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
+JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-08-16T10:56:42Z", "%Y-%m-%dT%H:%M:%SZ")
 THRESHOLD = 20.0
 
 source = {
@@ -27,6 +29,12 @@ source = {
 local = esprit.raw.Connection(source.get("host"), source.get("index"))
 
 #live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
+
+
+def adjust_timestamp(stamp, cutoff):
+    if stamp < cutoff:
+        return stamp + timedelta(seconds=3600)
+    return stamp
 
 
 # looks for applications where the provenance dates are later than the last updated dates
@@ -49,18 +57,13 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
             # Part 1 - later provenance records exist
             latest_prov = Provenance.get_latest_by_resource_id(application.id)
             if latest_prov is not None:
-                lustamp = application.last_updated_timestamp
+                lustamp = adjust_timestamp(application.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
                 created = latest_prov.created_date
                 pstamp = latest_prov.created_timestamp
                 td = pstamp - lustamp
                 diff = td.total_seconds()
 
-                thresh = THRESHOLD
-                if lustamp < TIMEZONE_CUTOFF:
-                    thresh = 3600.0 + THRESHOLD
-                    diff = diff - 3600
-
-                if diff > thresh:
+                if diff > THRESHOLD:
                     out_later.writerow([application.id, application.last_updated, created, diff])
 
             # Part 2 - missing journals
@@ -111,16 +114,12 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
             if reapp is not None:
                 jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
 
-            lustamp = latest.last_updated_timestamp
-            td = jcreated - lustamp
+            app_lustamp = adjust_timestamp(latest.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
+            td = jcreated - app_lustamp
             diff = td.total_seconds()
 
-            thresh = THRESHOLD
-            if lustamp < TIMEZONE_CUTOFF:
-                thresh = 3600.0 + THRESHOLD
-                diff = diff - 3600
-
-            if diff > thresh:
+            # was the journal created after the application by greater than the threshold?
+            if diff > THRESHOLD:
                 last_edit = ""
                 last_accept = ""
 
@@ -139,6 +138,10 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
                     last_accept = provs[0].last_updated
 
                 out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
+
+            # was the journal created before the application by greater than the threshold
+            if diff < THRESHOLD:
+                pass
 
             # now figure out if the account is missing
             owner = journal.owner
