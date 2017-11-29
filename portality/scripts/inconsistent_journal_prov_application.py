@@ -8,16 +8,21 @@ Script which attempts to identify journals, applications and provenance records 
 3. All journals for which the created_date is inconsistent with the application's last_updated date, and for which there are edit and/or accepted provenance records
 
 4. All journals for which the related account is missing
+
+5. All journals which were published earlier than their related application was last updated (suggesting a failure to reapply)
 """
 
 from portality.core import app
 from portality.models import Suggestion, Provenance, Journal, Account
 from portality.clcsv import UnicodeWriter
 import esprit, codecs, csv
-from datetime import datetime
+from datetime import datetime, timedelta
 from copy import deepcopy
 
-TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T08:14:46Z", "%Y-%m-%dT%H:%M:%SZ")
+
+APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
+JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-08-16T10:56:42Z", "%Y-%m-%dT%H:%M:%SZ")
+THRESHOLD = 20.0
 
 source = {
     "host": app.config.get("ELASTIC_SEARCH_HOST"),
@@ -28,7 +33,14 @@ local = esprit.raw.Connection(source.get("host"), source.get("index"))
 #live = esprit.raw.Connection(app.config.get("DOAJGATE_URL"), "doaj", auth=requests.auth.HTTPBasicAuth(app.config.get("DOAJGATE_UN"), app.config.get("DOAJGATE_PW")), verify_ssl=False, port=app.config.get("DOAJGATE_PORT"))
 
 
+def adjust_timestamp(stamp, cutoff):
+    if stamp < cutoff:
+        return stamp + timedelta(seconds=3600)
+    return stamp
+
+
 # looks for applications where the provenance dates are later than the last updated dates
+# also looks for applications where there is not a corresponding journal
 def applications_inconsistencies(outfile_later, outfile_missing, conn):
     with codecs.open(outfile_later, "wb", "utf-8") as f, codecs.open(outfile_missing, "wb", "utf-8") as g:
 
@@ -47,17 +59,14 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
             # Part 1 - later provenance records exist
             latest_prov = Provenance.get_latest_by_resource_id(application.id)
             if latest_prov is not None:
-                lustamp = application.last_updated_timestamp
+                lustamp = adjust_timestamp(application.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
                 created = latest_prov.created_date
                 pstamp = latest_prov.created_timestamp
                 td = pstamp - lustamp
                 diff = td.total_seconds()
-                if diff > 2.0:
-                    if lustamp < TIMEZONE_CUTOFF:
-                        if diff > 3602.0:
-                            out_later.writerow([application.id, application.last_updated, created, diff])
-                    else:
-                        out_later.writerow([application.id, application.last_updated, created, diff])
+
+                if diff > THRESHOLD:
+                    out_later.writerow([application.id, application.last_updated, created, diff])
 
             # Part 2 - missing journals
             if application.application_status == "accepted":
@@ -74,13 +83,16 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
 # looks for journals that were created after the last update on an application, implying the application was not updated
 # also looks for missing accounts
-def journals_applications_provenance(outfile_applications, outfile_accounts, conn):
-    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g:
+def journals_applications_provenance(outfile_applications, outfile_accounts, outfile_reapps, conn):
+    with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g, codecs.open(outfile_reapps, "wb", "utf-8") as h:
         out_applications = csv.writer(f)
         out_applications.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Last Updated", "Application Status", "Published Diff", "Latest Edit Recorded", "Latest Accepted Recorded"])
 
         out_accounts = csv.writer(g)
         out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Missing Account ID"])
+
+        out_reapps = csv.writer(h)
+        out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Published Diff"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "journal", keepalive="45m"):
@@ -107,9 +119,12 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
             if reapp is not None:
                 jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
 
-            td = jcreated - latest.last_updated_timestamp
+            app_lustamp = adjust_timestamp(latest.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
+            td = jcreated - app_lustamp
             diff = td.total_seconds()
-            if diff > 2.0:
+
+            # was the journal created after the application by greater than the threshold?
+            if diff > THRESHOLD:
                 last_edit = ""
                 last_accept = ""
 
@@ -128,6 +143,10 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, con
                     last_accept = provs[0].last_updated
 
                 out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
+
+            # was the journal created before the application by greater than the threshold
+            if diff < -1 * THRESHOLD:
+                out_reapps.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.created_date, latest.last_updated, diff])
 
             # now figure out if the account is missing
             owner = journal.owner
@@ -156,5 +175,5 @@ PROV_QUERY = {
 if __name__ == "__main__":
     print 'Starting {0}.'.format(datetime.now())
     applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
-    journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", local)
+    journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", "journals_reapp_fails.csv", local)
     print 'Finished {0}.'.format(datetime.now())
