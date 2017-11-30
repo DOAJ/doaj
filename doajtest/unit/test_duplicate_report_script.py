@@ -100,14 +100,13 @@ class TestArticleMatch(DoajTestCase):
         # 12 articles duplicated, minus i=(6,12), which was false for both criteria. So 10 duplicates.
         assert dupcount == 10
 
-        # We should delete 9 of these duplicates - 3 fully overlap with the original (i=1, i=5, i=7, i=11) and can't be
-        # deleted twice.
-        assert delcount == 9, delcount
+        # We should delete 3 of these duplicates, the 3 that fully overlap with the original (i=1, i=5, i=7, i=11)
+        # because we only delete those that feature in both categories.
+        assert delcount == 3, delcount
         time.sleep(1.5)
 
-        # Check how many deletes we actually had. There should be 3 left. - one with dup_doi, one with dup_fulltext and
-        # the remaining is not a duplicate from i=(6,12).
-        assert len(models.Article.all()) == 3
+        # Check how many deletes we actually had. There should be 9 left.
+        assert len(models.Article.all()) == 9
 
     def test_03_duplicates_per_account(self):
         """ Check duplication reporting only within a publisher's account. """
@@ -149,18 +148,14 @@ class TestArticleMatch(DoajTestCase):
         article_diff.add_journal_metadata(in_journal)                                          # Copies the ISSNs across
         article_diff.save(blocking=True, differentiate=True)
 
-        # Next, 2 duplicates for the not-in_doaj journals which we also expect to be taken out. They have different
-        # fulltext URLs as those in the other journal.
+        # Next, 2 duplicates for the not-in_doaj journals which we also expect to be taken out.
         for i in range(0, 2):
             src = ArticleFixtureFactory.make_article_source(
                 with_id=False,
                 in_doaj=False,
                 with_journal_info=False
             )
-            del src['bibjson']['link']
-            del src['bibjson']['identifier']
             article = models.Article(**src)
-            article.bibjson().add_url('http://same_fulltext.url', 'fulltext', 'html')
             article.add_journal_metadata(out_journal)
             article.save(blocking=True, differentiate=True)
 
@@ -169,7 +164,7 @@ class TestArticleMatch(DoajTestCase):
         dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=False, snapshot=False)
 
         assert dupcount == 5, dupcount                              # The 5 duplicates we have created across 2 journals
-        assert delcount == 3, delcount                              # delete 2 from in_journal, 1 from out_journal
+        assert delcount == 4, delcount                              # delete 2 from in_journal, 2 from out_journal
 
     def test_04_duplicates_per_account_more_publishers(self):
         """ Check duplication reporting only within a publisher's account. """
