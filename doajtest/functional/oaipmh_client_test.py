@@ -1,5 +1,6 @@
-import requests
+import requests, time
 from lxml import etree
+from datetime import datetime, timedelta
 
 # FIXME: in an ideal world, the functional tests would also be wrapped by doaj.helpers.DoajTestCase
 # Plus, this test requires a non-empty index, so providing it with a blank index isn't useful
@@ -11,25 +12,46 @@ NS = "{http://www.openarchives.org/OAI/2.0/}"
 JOURNAL_BASE_URL = "http://localhost:5004/oai"
 ARTICLE_BASE_URL = "http://localhost:5004/oai.article"
 
-def harvest(base_url, resToken=None):
+# Rate limit the requests (number per second or 0 to disable)
+RATE_LIMIT = 0
+
+if RATE_LIMIT > 0:
+    req_period = timedelta(seconds=1 / RATE_LIMIT)
+else:
+    req_period = timedelta()
+last_req = datetime.min
+
+
+def harvest(base_url, res_token=None):
     url = base_url + "?verb=ListRecords"
-    if resToken is not None:
-        url += "&resumptionToken=" + resToken
+    if res_token is not None:
+        url += "&resumptionToken=" + res_token
     else:
         url += "&metadataPrefix=oai_dc"
 
+    # Apply our rate limiting for requests
+    now = datetime.utcnow()
+    global last_req
+    if now - last_req < req_period:
+        time.sleep((req_period - (now - last_req)).total_seconds())
+
     print "harvesting " + url
+    last_req = now
     resp = requests.get(url)
     assert resp.status_code == 200, resp.text
 
     xml = etree.fromstring(resp.text[39:])
     rtel = xml.find(".//" + NS + "resumptionToken")
-    if rtel is not None and (rtel.text is not None and rtel.text != ""):
-        print "resumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
-        return rtel.text
+    if rtel is not None:
+        if rtel.text is not None and rtel.text != "":
+            print "\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
+            return rtel.text
+        else:
+            print "\tno resumption token, complete. cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
+    else:
+        print "no results"
+        return None
 
-    print "no resumption token, complete"
-    return None
 
 # journals
 rt = None
