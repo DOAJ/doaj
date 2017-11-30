@@ -21,7 +21,7 @@ from copy import deepcopy
 
 
 APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
-JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-08-16T10:56:42Z", "%Y-%m-%dT%H:%M:%SZ")
+JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-09-21T08:54:05Z", "%Y-%m-%dT%H:%M:%SZ")
 THRESHOLD = 20.0
 
 source = {
@@ -83,6 +83,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
 # looks for journals that were created after the last update on an application, implying the application was not updated
 # also looks for missing accounts
+# also looks for journals created (or reapplied) significantly before the last manual update on an application
 def journals_applications_provenance(outfile_applications, outfile_accounts, outfile_reapps, conn):
     with codecs.open(outfile_applications, "wb", "utf-8") as f, codecs.open(outfile_accounts, "wb", "utf-8") as g, codecs.open(outfile_reapps, "wb", "utf-8") as h:
         out_applications = csv.writer(f)
@@ -92,7 +93,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
         out_accounts.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Missing Account ID"])
 
         out_reapps = csv.writer(h)
-        out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Published Diff"])
+        out_reapps.writerow(["Journal ID", "Journal Created", "Journal Reapplied", "Application ID", "Application Created", "Application Last Updated", "Application Last Manual Update", "Application Status", "Published Diff"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "journal", keepalive="45m"):
@@ -118,10 +119,15 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
             print counter, journal.id, reapp
             if reapp is not None:
                 jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
+            jcreated = adjust_timestamp(jcreated, JOURNAL_TIMEZONE_CUTOFF)
 
             app_lustamp = adjust_timestamp(latest.last_updated_timestamp, APP_TIMEZONE_CUTOFF)
+            # app_man_lustamp = latest.last_manual_update_timestamp # no need to adjust this one
+            app_man_lustamp = adjust_timestamp(latest.last_manual_update_timestamp, APP_TIMEZONE_CUTOFF)
             td = jcreated - app_lustamp
+            mtd = jcreated - app_man_lustamp
             diff = td.total_seconds()
+            mdiff = mtd.total_seconds()
 
             # was the journal created after the application by greater than the threshold?
             if diff > THRESHOLD:
@@ -144,9 +150,9 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
 
                 out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
 
-            # was the journal created before the application by greater than the threshold
-            if diff < -1 * THRESHOLD:
-                out_reapps.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.created_date, latest.last_updated, diff])
+            # was the journal (in doaj) created before the application by greater than the threshold, and is it in a state other than rejected
+            if mdiff < -1 * THRESHOLD and latest.application_status != "rejected" and journal.is_in_doaj():
+                out_reapps.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.created_date, latest.last_updated, latest.last_manual_update, latest.application_status, mdiff])
 
             # now figure out if the account is missing
             owner = journal.owner
@@ -174,6 +180,6 @@ PROV_QUERY = {
 
 if __name__ == "__main__":
     print 'Starting {0}.'.format(datetime.now())
-    applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
+    # applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
     journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", "journals_reapp_fails.csv", local)
     print 'Finished {0}.'.format(datetime.now())
