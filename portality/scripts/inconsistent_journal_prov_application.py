@@ -180,6 +180,6 @@ PROV_QUERY = {
 
 if __name__ == "__main__":
     print 'Starting {0}.'.format(datetime.now())
-    # applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
+    applications_inconsistencies("apps_with_prov.csv", "apps_accepted_without_journals.csv", local)
     journals_applications_provenance("journals_applications_provenance.csv", "journals_no_accounts.csv", "journals_reapp_fails.csv", local)
     print 'Finished {0}.'.format(datetime.now())
