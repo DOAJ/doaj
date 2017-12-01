@@ -156,10 +156,12 @@ class XWalk(object):
         if len(dois) > 0:
             # there should only be the one
             doi = dois[0]
-            articles = models.Article.duplicates(issns=issns, doi=doi)
-            possible_articles['doi'] = [a for a in articles if a.id != article.id]
-            if possible_articles['doi']:
-                found = True
+            # Only perform de-duplication on genuine DOIs
+            if isinstance(doi, basestring) and doi.startswith('10.'):
+                articles = models.Article.duplicates(issns=issns, doi=doi)
+                possible_articles['doi'] = [a for a in articles if a.id != article.id]
+                if len(possible_articles['doi']) > 0:
+                    found = True
 
         # Second test is to look by fulltext url
         urls = b.get_urls(b.FULLTEXT)
