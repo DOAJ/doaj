@@ -43,8 +43,12 @@ def duplicates_per_article(connection, delete, snapshot, owner=None, query_overr
             if fulltext_dups:
                 print "\t{0} fulltext duplicates: {1}".format(len(fulltext_dups), ", ".join(fulltext_dups))
 
-            set_of_duplicates = set(doi_dups + fulltext_dups)
+            # Only consider duplicates that appear in both lists (we should be cautious with deletes)
+            set_of_duplicates = set(doi_dups).intersection(set(fulltext_dups))
             dupcount += len(set_of_duplicates) + 1                     # The detected duplicates plus the article itself
+
+            if set_of_duplicates:
+                print "\t{0} in intersection: {1}".format(len(set_of_duplicates), ", ".join(set_of_duplicates))
 
             if delete:
                 for dup in set_of_duplicates:
