@@ -82,7 +82,7 @@ class TestArticleCleanupSync(DoajTestCase):
 
         # we expect this one not to have changed
         assert a1u.bibjson().data.get("journal") == a1.bibjson().data.get("journal")
-        assert a1u.last_updated == a1.last_updated
+        assert a1u.last_updated == a1.last_updated, (a1u.last_updated, a1.last_updated)
 
         # we expect this one to have had its journal info updated
         assert a2u.bibjson().data.get("journal") is not None

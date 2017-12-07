@@ -255,7 +255,7 @@ class Article(DomainObject):
         if bibjson.subjects() != jbib.subjects():
             trip = True
             bibjson.set_subjects(jbib.subjects())
-            rbj.set_subjects(jbib.subjects())
+        rbj.set_subjects(jbib.subjects())
 
         if jbib.title is not None:
             if bibjson.journal_title != jbib.title:
