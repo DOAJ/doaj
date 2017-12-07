@@ -252,11 +252,10 @@ class Article(DomainObject):
         # tripwire to be tripped if the journal makes changes to the article
         trip = False
 
-        for s in jbib.subjects():
-            if s not in bibjson.subjects():
-                bibjson.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
-                trip = True
-            rbj.add_subject(s.get("scheme"), s.get("term"), code=s.get("code"))
+        if bibjson.subjects() != jbib.subjects():
+            trip = True
+            bibjson.set_subjects(jbib.subjects())
+            rbj.set_subjects(jbib.subjects())
 
         if jbib.title is not None:
             if bibjson.journal_title != jbib.title:
@@ -267,7 +266,6 @@ class Article(DomainObject):
         if jbib.get_license() is not None:
             lic = jbib.get_license()
             alic = bibjson.get_journal_license()
-
 
             if lic is not None and (alic is None or (lic.get("title") != alic.get("title") or
                     lic.get("type") != alic.get("type") or
