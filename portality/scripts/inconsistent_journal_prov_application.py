@@ -40,7 +40,7 @@ def adjust_timestamp(stamp, cutoff):
 
 
 # looks for applications where the provenance dates are later than the last updated dates
-# also looks for applications where there is not a corresponding journal
+# also looks for applications where there is not a corresponding journal (in_doaj=True)
 def applications_inconsistencies(outfile_later, outfile_missing, conn):
     with codecs.open(outfile_later, "wb", "utf-8") as f, codecs.open(outfile_missing, "wb", "utf-8") as g:
 
@@ -48,7 +48,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
         out_later.writerow(["Application ID", "Application Last Updated", "Latest Provenance Recorded", "Difference"])
 
         out_missing = UnicodeWriter(g)
-        out_missing.writerow(["Application ID", "Application Last Updated", "ISSNs", "Title"])
+        out_missing.writerow(["Application ID", "Application Last Manual Update", "Latest Provenance Record", "ISSNs", "Title"])
 
         counter = 0
         for result in esprit.tasks.scroll(conn, "suggestion", keepalive="45m"):
@@ -70,13 +70,29 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
 
             # Part 2 - missing journals
             if application.application_status == "accepted":
-                matching_journal = Journal.find_by_issn(application.bibjson().issns())
-                if not matching_journal:
+                missing = False
+
+                # find the matching journals by issn or by title
+                matching_journals = Journal.find_by_issn(application.bibjson().issns())
+                if len(matching_journals) == 0:
                     # Have another go, find by title
-                    matching_journal = Journal.find_by_title(application.bibjson().title)
-                    if not matching_journal:
-                        # No journal found - add it to our list
-                        out_missing.writerow([application.id, application.last_manual_update, " ".join(application.bibjson().issns()), application.bibjson().title])
+                    matching_journals = Journal.find_by_title(application.bibjson().title)
+
+                # if there are no matching journals, it is missing.
+                if len(matching_journals) == 0:
+                    missing = True
+                else:
+                    # if there are matching journals, find out if any of them are in the doaj.  If none, then journal is still missing
+                    those_in_doaj = len([j for j in matching_journals if j.is_in_doaj()])
+                    if those_in_doaj == 0:
+                        missing = True
+
+                # if the journal is missing, record it
+                if missing:
+                    created = ""
+                    if latest_prov is not None:
+                        created = latest_prov.created_date
+                    out_missing.writerow([application.id, application.last_manual_update, created, " ".join(application.bibjson().issns()), application.bibjson().title])
 
         print "processed", counter, "suggestions"
 
