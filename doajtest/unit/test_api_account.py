@@ -6,7 +6,8 @@ from portality import models
 from portality.core import load_account_for_login_manager
 from portality.decorators import api_key_required, api_key_optional
 
-class TestClient(DoajTestCase):
+
+class TestAPIClient(DoajTestCase):
     @classmethod
     def setUpClass(cls):
         @cls.app_test.route('/hello')
@@ -23,10 +24,10 @@ class TestClient(DoajTestCase):
         cls.app_test.login_manager.user_loader(load_account_for_login_manager)
 
     def setUp(self):
-        super(TestClient, self).setUp()
+        super(TestAPIClient, self).setUp()
 
     def tearDown(self):
-        super(TestClient, self).tearDown()
+        super(TestAPIClient, self).tearDown()
 
     def test_01_api_role(self):
         """test the new roles added for the API"""
