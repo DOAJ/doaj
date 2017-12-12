@@ -522,8 +522,6 @@ class ApplicationFormFactory(object):
             return AssEdApplicationReview(source=source, form_data=form_data)
         elif role == "publisher":
             return PublisherReApplication(source=source, form_data=form_data)
-        elif role == "csv":
-            return PublisherCsvReApplication(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -1007,120 +1005,6 @@ class AssEdApplicationReview(ApplicationContext):
                 # If the current status isn't in the associate editor's status list, it must be out of bounds. Show it greyed out.
                 self.form.application_status.choices = choices.Choices.application_status("admin")
                 self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
-
-
-class PublisherCsvReApplication(ApplicationContext):
-    def __init__(self, form_data=None, source=None):
-        self.carry = ["contact_name", "contact_email", "confirm_contact_email"]
-        super(PublisherCsvReApplication, self).__init__(form_data=form_data, source=source)
-
-    def make_renderer(self):
-        # this form does not have a UI expression, so no renderer required
-        pass
-
-    def set_template(self):
-        # this form does not have a UI expression, so no template required
-        self.template = None
-
-    def blank_form(self):
-        # this uses the same form as the UI for the publisher reapplication, since the requirements
-        # are identical
-        self.form = forms.PublisherReApplicationForm()
-
-    def data2form(self):
-        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
-        self._carry_fields()
-
-    def source2form(self):
-        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-        self._carry_fields()
-
-    def pre_validate(self):
-        if self.source is None:
-            raise FormContextException("You cannot validate a form from a non-existent source")
-
-        bj = self.source.bibjson()
-        contacts = self.source.contacts()
-
-        pissn = bj.get_one_identifier(bj.P_ISSN)
-        if pissn == "": pissn = None
-        self.form.pissn.data = pissn
-
-        eissn = bj.get_one_identifier(bj.E_ISSN)
-        if eissn == "": eissn = None
-        self.form.eissn.data = eissn
-
-        if len(contacts) == 0:
-            # this will cause a validation failure if the form does not provide them
-            return
-
-        # we copy across the contacts if they are necessary.  The fields are registered in self.carry
-        # if they are already present in the source data
-        contact = contacts[0]
-        if "contact_name" in self.carry:
-            self.form.contact_name.data = contact.get("name")
-        if "contact_email" in self.carry:
-            self.form.contact_email.data = contact.get("email")
-        if "confirm_contact_email" in self.carry:
-            self.form.confirm_contact_email.data = contact.get("email")
-
-    def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
-
-    def patch_target(self):
-        if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existent source")
-
-        self._carry_fixed_aspects()
-        self._merge_notes_forward()
-        self.target.set_owner(self.source.owner)
-        self.target.set_editor_group(self.source.editor_group)
-        self.target.set_editor(self.source.editor)
-        self._carry_continuations()
-
-        # If the source object has the suggester set, it must have been edited via the UI
-        # - do not override that information.
-        if self.source.suggester.get("name") or self.source.suggester.get("email"):
-            self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
-        else:
-        # but if the source object has no suggester set, then this reapplication is being
-        # created via CSV upload now, for the first time, so copy over the contact info
-            self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
-
-        # we carry this over for completeness, although it will be overwritten in the finalise() method
-        self.target.set_application_status(self.source.application_status)
-
-    def finalise(self):
-        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
-        # can be carried over from the old implementation
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent application")
-
-        # if we are allowed to finalise, kick this up to the superclass
-        super(PublisherCsvReApplication, self).finalise()
-
-        # set the status to updated
-        self.target.set_application_status('submitted')
-
-        # Save the target
-        self.target.set_last_manual_update()
-        self.target.save()
-
-    def render_template(self, **kwargs):
-        # there is no template to render
-        return ""
-
-    def _carry_fields(self):
-        if self.source is None:
-            raise FormContextException("You cannot carry fields on a not-existent application")
-        contacts = self.source.contacts()
-        if len(contacts) > 0:
-            c = contacts[0]
-            if c.get("name") is None or c.get("name") == "":
-                self.carry.remove("contact_name")
-            if c.get("email") is None or c.get("email") == "":
-                self.carry.remove("contact_email")
-                self.carry.remove("confirm_contact_email")
 
 
 class PublisherReApplication(ApplicationContext):

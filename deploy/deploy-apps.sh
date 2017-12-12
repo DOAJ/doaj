@@ -47,5 +47,4 @@ mkdir -p /home/cloo/appdata/doaj/s3fs/cache
 mkdir -p /home/cloo/appdata/doaj/s3fs/cache/csv
 mkdir -p /home/cloo/appdata/doaj/s3fs/cache/sitemap
 mkdir -p /home/cloo/appdata/doaj/s3fs/upload
-mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
 mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs

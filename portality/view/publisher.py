@@ -35,9 +35,6 @@ def index():
 @ssl_required
 @write_required()
 def reapplication_page(reapplication_id):
-    if not app.config.get("REAPPLICATION_ACTIVE", False):
-        return render_template("publisher/reapps_shutdown.html")
-
     ap = models.Suggestion.pull(reapplication_id)
 
     if ap is None:
@@ -70,8 +67,6 @@ def reapplication_page(reapplication_id):
 @login_required
 @ssl_required
 def updates_in_progress():
-    if not app.config.get("REAPPLICATION_ACTIVE", False):
-        return render_template("publisher/reapps_shutdown.html")
     return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.reapplications.facetview"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
@@ -336,96 +331,6 @@ def metadata():
 def help():
     return render_template("publisher/help.html")
 
-@blueprint.route("/reapply", methods=["GET", "POST"])
-@login_required
-@ssl_required
-@write_required()
-def bulk_reapply():
-    if not app.config.get("REAPPLICATION_ACTIVE", False):
-        if request.method == "GET":
-            return render_template("publisher/reapps_shutdown.html")
-        else:
-            abort(404)
-
-    # User must have bulk reapplications to access this tab
-    if not pub_filter_bulk(current_user.id):
-        abort(404)
-
-    # Get the download details for reapplication CSVs
-    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
-
-    # all responses involve getting the previous uploads
-    previous = models.BulkUpload.by_owner(current_user.id)
-
-    if request.method == "GET":
-        return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
-
-    # otherwise we are dealing with a POST - file upload
-    f = request.files.get("file")
-
-    if f.filename != "":
-        return _bulk_upload(f)
-
-    flash("No file provided - select a file to upload and try again.", "error")
-    return render_template("publisher/bulk_reapplication.html", csv_downloads=csv_downloads, previous=previous)
-
-@blueprint.route('/bulk_download/<filename>')
-@login_required
-@ssl_required
-def bulk_download(filename):
-    if not app.config.get("REAPPLICATION_ACTIVE", False):
-        abort(404)
-
-    csv_downloads = models.BulkReApplication.by_owner(current_user.id)
-    allowed = False
-    for c in csv_downloads:
-        if c.spreadsheet_name == filename:
-            allowed = True
-            break
-
-    if allowed:
-        try:
-            return send_from_directory(app.config.get("BULK_REAPP_PATH"), filename, as_attachment=True)
-        except:
-            abort(404)
-    else:
-        abort(404)
-
-def _bulk_upload(f):
-    # prep a record to go into the index, to record this upload
-    record = models.BulkUpload()
-    record.upload(current_user.id, f.filename)
-    record.set_id()
-
-    # the file path that we are going to write to
-    csv = os.path.join(app.config.get("REAPPLICATION_UPLOAD_DIR", "."), record.local_filename)
-
-    # it's critical here that no errors cause files to get left behind unrecorded
-    try:
-        # write the incoming file out to the csv file
-        f.save(csv)
-
-        # save the index entry
-        record.save()
-
-        sleep(2)  # let ES catch up so people can see their file is "in submission" on redirect/refresh
-        flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return redirect(url_for('publisher.bulk_reapply'))
-    except:
-        # if we can't record either of these things, we need to back right off
-        try:
-            os.remove(csv)
-        except:
-            pass
-        try:
-            record.delete()
-        except:
-            pass
-
-        flash("Failed to upload file - please contact an administrator", "error")
-        return redirect(url_for('publisher.bulk_reapply'))
-
-
 def _validate_authors(form, require=1):
     counted = 0
     for entry in form.authors.entries:
@@ -434,17 +339,3 @@ def _validate_authors(form, require=1):
             counted += 1
     return counted >= require
 
-@blueprint.app_template_filter()
-def pub_filter_note(user_id):
-    # Only show sticky note if set in config and if user has reapplications
-    has_reapps_q = models.OwnerStatusQuery(owner=user_id, statuses=["reapplication", "submitted"], size=0)
-    res = models.Suggestion.query(q=has_reapps_q.query())
-    count = res.get("hits", {}).get("total", 0)
-
-    return app.config.get("REAPPLICATION_ACTIVE", False) and count > 0
-
-@blueprint.app_template_filter()
-def pub_filter_bulk(user_id):
-    # only show bulk upload tab if 10+ reapplications
-    has_bulk = models.BulkReApplication.count_by_owner(user_id)
-    return has_bulk > 0

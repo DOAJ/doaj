@@ -251,8 +251,6 @@ MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
@@ -391,25 +389,12 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
 # =================================
-# Settings for reapplication process
-
-# Whether reactivation is ongoing; when False, reapplication pages will be hidden.
-REAPPLICATION_ACTIVE = False
-
-# The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
-CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
-
-
-# =================================
 # File Upload and crosswalk settings
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
 FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
-
-# Reapplication upload directory
-REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
 
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available

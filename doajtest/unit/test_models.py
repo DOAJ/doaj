@@ -38,7 +38,6 @@ class TestClient(DoajTestCase):
         from portality.models import JournalIssueToC, JournalVolumeToC, ToCQuery, VolumesToCQuery
         from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
         from portality.models import ObjectDict
-        from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
         from portality.models import Provenance
         from portality.models.background import BackgroundJob
 
@@ -174,38 +173,6 @@ class TestClient(DoajTestCase):
 
         s.save()
 
-    def test_05_bulk_reapplication_rw(self):
-        """Read and write properties into the BulkReapplication Model"""
-        br = models.BulkReApplication()
-        br.set_owner("richard")
-        br.set_spreadsheet_name("richard.csv")
-
-        assert br.owner == "richard"
-        assert br.spreadsheet_name == "richard.csv"
-
-    def test_06_bulk_upload(self):
-        """Read and write properties into the BulkUpload model"""
-        br = models.BulkUpload()
-        br.upload("richard", "reapplication.csv")
-
-        assert br.owner == "richard"
-        assert br.filename == "reapplication.csv"
-        assert br.status == "incoming"
-
-        br.failed("Broke, innit")
-
-        assert br.status == "failed"
-        assert br.error == "Broke, innit"
-        assert br.processed_date is not None
-        assert br.processed_timestamp is not None
-
-        br.processed(10, 5)
-
-        assert br.status == "processed"
-        assert br.reapplied == 10
-        assert br.skipped == 5
-        assert br.processed_date is not None
-        assert br.processed_timestamp is not None
 
     def test_07_make_journal(self):
         s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
