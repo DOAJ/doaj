@@ -219,7 +219,6 @@ def standard_authentication():
                 login_user(user, remember=False)
 
 if 'api' in app.config['FEATURES']:
-    @app.route('/api')
     @app.route('/api/')
     def api_directory():
         return jsonify(
