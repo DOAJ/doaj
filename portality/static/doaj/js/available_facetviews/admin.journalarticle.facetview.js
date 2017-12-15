@@ -164,7 +164,7 @@ var doaj = {
             $.ajax({
                 type: 'POST',
                 url: url,
-                data: JSON.stringify(data),
+                data: serialiseQueryObject(data),
                 contentType : 'application/json',
                 success : success,
                 error: error

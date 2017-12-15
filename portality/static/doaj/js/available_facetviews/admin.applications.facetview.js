@@ -133,7 +133,7 @@ jQuery(document).ready(function($) {
                 $.ajax({
                     type: 'POST',
                     url: bulk_action_url(options),
-                    data: JSON.stringify(send),
+                    data: serialiseQueryObject(send),
                     contentType : 'application/json',
                     success : bulk_action_success_callback,
                     error: bulk_action_error_callback
@@ -208,7 +208,7 @@ jQuery(document).ready(function($) {
                 $.ajax({
                     type: 'POST',
                     url: bulk_action_url(options),
-                    data: JSON.stringify({
+                    data: serialiseQueryObject({
                         selection_query: query,
                         editor_group: $('#editor_group').val(),
                         note: $('#note').val(),
