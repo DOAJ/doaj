@@ -1,3 +1,30 @@
+"""
+Script to allow us to re-queue background jobs of certain kinds.
+
+To use, do:
+
+python portality/scripts/requeue_background_job.py -a [action] -s [status] -f [from date] -t [do date]
+
+-s, -f and -t are optional, with the following default values:
+
+-s : queued
+-f : 1970-01-01T00:00:00Z
+-t : the current timestamp
+
+Currently this script supports re-queuing the following background job types:
+
+ingest_articles
+suggestion_bulk_edit
+sitemap
+read_news
+journal_csv
+
+If you need to re-queue any other kind of job, you need to add it here.
+
+FIXME: in the longer term this needs to live inside a business logic layer which has a fuller understanding
+of manipulating jobs, and the script should just call that functionality.
+
+"""
 from portality import models
 from portality.lib import dates
 
