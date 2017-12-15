@@ -72,6 +72,9 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
     def is_failed(self):
         return self._get_single("status") == u"error"
 
+    def queue(self):
+        self._set_with_struct("status", u"queued")
+
     def add_audit_message(self, msg, timestamp=None):
         if timestamp is None:
             timestamp = dates.now_with_microseconds()
