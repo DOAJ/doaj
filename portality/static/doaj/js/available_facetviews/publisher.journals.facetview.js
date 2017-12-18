@@ -48,7 +48,8 @@ jQuery(document).ready(function($) {
             "links" : fv_links,
             "issns" : fv_issns,
             "in_doaj": fv_in_doaj,
-            "country_name": fv_country_name
+            "country_name": fv_country_name,
+            "make_update_request" : fv_make_update_request
         },
         result_display: [
             // Journals
@@ -145,6 +146,11 @@ jQuery(document).ready(function($) {
                 {
                     "pre": "<strong>Language</strong>: ",
                     "field": "bibjson.language"
+                }
+            ],
+            [
+                {
+                    "field" : "make_update_request"
                 }
             ]
         ]

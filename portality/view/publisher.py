@@ -1,21 +1,20 @@
-from flask import Blueprint, request, send_from_directory
+from flask import Blueprint, request
 from flask import render_template, abort, redirect, url_for, flash
 from flask.ext.login import current_user, login_required
 
 from portality.core import app
-from portality.decorators import ssl_required, restrict_to_role, write_required
-
 from portality import models, article
-from portality.view.forms import ArticleForm
+from portality.bll import DOAJ
+from portality.bll.exceptions import AuthoriseException
+from portality.decorators import ssl_required, restrict_to_role, write_required
 from portality.formcontext import formcontext
-from portality.util import flash_with_url
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
-
+from portality.view.forms import ArticleForm
+from portality.ui.messages import Messages
 from huey.exceptions import QueueWriteException
 
 import os, uuid
 from time import sleep
-
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -30,6 +29,58 @@ def restrict():
 def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
+
+@blueprint.route("/update_request/<journal_or_suggestion_id>")
+@login_required
+@ssl_required
+@write_required()
+def update_request(journal_or_suggestion_id):
+    # DOAJ BLL for this request
+    dbl = DOAJ()
+
+    # load the application either directly or by crosswalking the journal object
+    source = request.values.get("source")
+    application = None
+    if source == "journal":
+        journal = dbl.journal(journal_id=journal_or_suggestion_id)
+        try:
+            application = dbl.journal_2_application(journal=journal, account=current_user)
+        except AuthoriseException as e:
+            abort(404)
+    else:
+        application = dbl.application(application_id=journal_or_suggestion_id)
+
+    # if we didn't find an application or journal, 404 the user
+    if application is None:
+        abort(404)
+
+    # check to see if the application is editable by the user
+    if not dbl.can_edit_update_request(current_user, application):
+        return render_template("publisher/application_already_submitted.html", suggestion=application)
+
+    # if we are requesting the page with a GET, we just want to show the form
+    if request.method == "GET":
+        fc = dbl.formcontext(type="application", role="publisher", source=application)
+        return fc.render_template(edit_suggestion_page=True)
+
+    # if we are requesting the page with a POST, we need to accept the data and handle it
+    elif request.method == "POST":
+        fc = dbl.formcontext(type="application", role="publisher", form_data=request.form, source=application)
+        if fc.validate():
+            try:
+                fc.finalise()
+                Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
+                for a in fc.alert:
+                    Messages.flash_with_url(a, "success")
+                Messages.flash(Messages.APPLICATION_UPDATE_CLOSE_TAB_FLASH)
+                return redirect(url_for("publisher.update_request", journal_or_suggestion_id=application.id, _anchor='done'))
+            except formcontext.FormContextException as e:
+                Messages.flash(e.message)
+                return redirect(url_for("publisher.update_request", journal_or_suggestion_id=application.id, _anchor='cannot_edit'))
+        else:
+            return fc.render_template(edit_suggestion_page=True)
+
+"""
 @blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
@@ -62,6 +113,7 @@ def reapplication_page(reapplication_id):
                 return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True)
+"""
 
 @blueprint.route('/progress')
 @login_required
@@ -109,162 +161,6 @@ def upload_file():
     
     flash("No file or URL provided", "error")
     return render_template('publisher/uploadmetadata.html', previous=previous)
-
-"""
-def _file_upload(f, schema, previous):
-    # prep a record to go into the index, to record this upload
-    record = models.FileUpload()
-    record.upload(current_user.id, f.filename)
-    record.set_id()
-    
-    # the file path that we are going to write to
-    xml = os.path.join(app.config.get("UPLOAD_DIR", "."), record.local_filename)
-    
-    # it's critical here that no errors cause files to get left behind unrecorded
-    try:
-        # write the incoming file out to the XML file
-        f.save(xml)
-        
-        # save the index entry
-        record.save()
-    except:
-        # if we can't record either of these things, we need to back right off
-        try:
-            os.remove(xml)
-        except:
-            pass
-        try:
-            record.delete()
-        except:
-            pass
-        
-        flash("Failed to upload file - please contact an administrator", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-        
-    # now we have the record in the index and on disk, we can attempt to
-    # validate it
-    try:
-        actual_schema = None
-        with open(xml) as handle:
-            actual_schema = article.check_schema(handle, schema)
-    except:
-        # file is a dud, so remove it
-        try:
-            os.remove(xml)
-        except:
-            pass
-        
-        # if we're unable to validate the file, we should record this as
-        # a file error.
-        record.failed("Unable to parse file")
-        record.save()
-        previous = [record] + previous
-        flash("Failed to parse file - it is invalid XML; please fix it before attempting to upload again.", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-    
-    if actual_schema:
-        record.validated(actual_schema)
-        record.save()
-        # trigger the background task
-        process_file_upload(record)
-        previous = [record] + previous # add the new record to the previous records
-        flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-    else:
-        record.failed("File could not be validated against a known schema")
-        record.save()
-        os.remove(xml)
-        previous = [record] + previous
-        flash("File could not be validated against a known schema; please fix this before attempting to upload again", "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-
-
-def _url_upload(url, schema, previous):
-    # first define a few functions
-    def __http_upload(record, previous, url):
-        # first thing to try is a head request, supporting redirects
-        head = requests.head(url, allow_redirects=True)
-        if head.status_code == requests.codes.ok:
-            return __ok(record, previous)
-
-        # if we get to here, the head request failed.  This might be because the file
-        # isn't there, but it might also be that the server doesn't support HEAD (a lot
-        # of webapps [including this one] don't implement it)
-        #
-        # so we do an interruptable get request instead, so we don't download too much
-        # unnecessary content
-        get = requests.get(url, stream=True)
-        get.close()
-        if get.status_code == requests.codes.ok:
-            return __ok(previous, record)
-        return __fail(record, previous, error='error while checking submitted file reference: {0}'.format(get.status_code))
-
-
-    def __ftp_upload(record, previous, parsed_url):
-        # 1. find out whether the file exists
-        # 2. that's it, return OK
-
-        # We might as well check if the file exists using the SIZE command.
-        # If the FTP server does not support SIZE, our article ingestion
-        # script is going to refuse to process the file anyway, so might as
-        # well get a failure now.
-        # Also it's more of a faff to check file existence using LIST commands.
-        try:
-            f = ftplib.FTP(parsed_url.hostname, parsed_url.username, parsed_url.password)
-            r = f.sendcmd('TYPE I')  # SIZE is not usually allowed in ASCII mode, so set to binary mode
-            if not r.startswith('2'):
-                return __fail(record, previous, error='could not set binary '
-                    'mode in target FTP server while checking file exists')
-            if f.size(parsed_url.path) < 0:
-                # this will either raise an error which will get caught below
-                # or, very rarely, will return an invalid size
-                return __fail(record, previous, error='file does not seem to exist on FTP server')
-
-        except Exception as e:
-            return __fail(record, previous, error='error during FTP file existence check: ' + str(e.args))
-
-        return __ok(record, previous)
-
-
-    def __ok(record, previous):
-        record.exists()
-        record.save()
-        # trigger the background task
-        process_file_upload(record)
-        previous = [record] + previous
-        flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-
-
-    def __fail(record, previous, error):
-        message = 'The URL could not be accessed; ' + error
-        record.failed(message)
-        record.save()
-        previous = [record] + previous
-        flash(message, "error")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
-
-
-    # prep a record to go into the index, to record this upload.  The filename is the url
-    record = models.FileUpload()
-    record.upload(current_user.id, url)
-    record.set_id()
-    record.set_schema(schema) # although it could be wrong, this will get checked later
-
-    # now we attempt to verify that the file is retrievable
-    try:
-        # first, determine if ftp or http
-        parsed_url = urlparse(url)
-        if parsed_url.scheme in ['http', "https"]:
-            return __http_upload(record, previous, url)
-        elif parsed_url.scheme == 'ftp':
-            return __ftp_upload(record, previous, parsed_url)
-        else:
-            return __fail(record, previous, error='unsupported URL scheme "{0}". Only HTTP and FTP are supported.'.format(parsed_url.scheme))
-
-    except Exception as e:
-        return __fail(record, previous, error="please check it before submitting again; " + e.message)
-"""
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required

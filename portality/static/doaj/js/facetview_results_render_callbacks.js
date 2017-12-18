@@ -501,3 +501,23 @@ fv_view_reapplication = (function (resultobj) {
     };
     return that;
 })();
+
+fv_make_update_request = (function (resultobj) {
+    var that = function(resultobj) {
+        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+            // if it's not a suggestion or an article .. (it's a
+            // journal!)
+            // we really need to expose _type ...
+            var result = '<a class="edit_journal_link pull-right" href="';
+            result += journal_update_url;
+            result += resultobj['id'];
+            result += '?source=journal"';
+            result += '>Submit updated information</a>';
+
+            return result;
+        }
+        return false;
+    };
+    return that;
+})();
+

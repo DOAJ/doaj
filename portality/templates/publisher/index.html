@@ -4,3 +4,6 @@
 <div class="facetview publisher"></div>
 {% endblock %}
 
+{% block extra_js_bottom %}
+<script type="text/javascript">var journal_update_url = "{{ url_for('publisher.update_request', journal_or_suggestion_id="") }}";</script>
+{% endblock %}
