@@ -85,7 +85,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return JournalBibJSON(bj)
 
     def set_bibjson(self, bibjson):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        bibjson = bibjson.data if isinstance(bibjson, JournalBibJSON) else bibjson
         self._set_with_struct("bibjson", bibjson)
 
     def set_last_manual_update(self, date=None):
