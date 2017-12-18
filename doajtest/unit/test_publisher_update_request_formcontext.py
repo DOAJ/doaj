@@ -13,7 +13,7 @@ from werkzeug.datastructures import MultiDict
 #####################################################################
 
 
-REAPPLICATION_SOURCE = {
+UPDATE_REQUEST_SOURCE = {
     "id" : "abcdefghijk",
     "created_date" : "2000-01-01T00:00:00Z",
     "bibjson" : {
@@ -113,7 +113,7 @@ REAPPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "reapplication",
+        "application_status" : "update_request",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -237,28 +237,28 @@ WORKFLOW = {
     "application_status" : "pending"
 }
 
-REAPPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
-REAPPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
+UPDATE_REQUEST_FORMINFO = deepcopy(JOURNAL_INFO)
+UPDATE_REQUEST_FORMINFO.update(deepcopy(SUGGESTION))
 
-REAPPLICATION_FORM = deepcopy(REAPPLICATION_FORMINFO)
-REAPPLICATION_FORM["keywords"] = ",".join(REAPPLICATION_FORM["keywords"])
-del REAPPLICATION_FORM["pissn"]
-del REAPPLICATION_FORM["eissn"]
-del REAPPLICATION_FORM["contact_name"]
-del REAPPLICATION_FORM["contact_email"]
-del REAPPLICATION_FORM["confirm_contact_email"]
+UPDATE_REQUEST_FORM = deepcopy(UPDATE_REQUEST_FORMINFO)
+UPDATE_REQUEST_FORM["keywords"] = ",".join(UPDATE_REQUEST_FORM["keywords"])
+del UPDATE_REQUEST_FORM["pissn"]
+del UPDATE_REQUEST_FORM["eissn"]
+del UPDATE_REQUEST_FORM["contact_name"]
+del UPDATE_REQUEST_FORM["contact_email"]
+del UPDATE_REQUEST_FORM["confirm_contact_email"]
 
 ######################################################
 # Main test class
 ######################################################
 
-class TestPublisherReApplication(DoajTestCase):
+class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
     def setUp(self):
-        super(TestPublisherReApplication, self).setUp()
+        super(TestPublisherUpdateRequestFormContext, self).setUp()
 
     def tearDown(self):
-        super(TestPublisherReApplication, self).tearDown()
+        super(TestPublisherUpdateRequestFormContext, self).tearDown()
 
 
     ###########################################################
@@ -269,7 +269,7 @@ class TestPublisherReApplication(DoajTestCase):
         """Give the publisher reapplication a full workout"""
 
         # we start by constructing it from source
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=models.Suggestion(**REAPPLICATION_SOURCE))
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
         assert isinstance(fc, formcontext.PublisherReApplication)
         assert fc.form is not None
         assert fc.source is not None
@@ -301,8 +301,8 @@ class TestPublisherReApplication(DoajTestCase):
         # now construct it from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="publisher",
-            form_data=MultiDict(REAPPLICATION_FORM) ,
-            source=models.Suggestion(**REAPPLICATION_SOURCE))
+            form_data=MultiDict(UPDATE_REQUEST_FORM) ,
+            source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
 
         assert isinstance(fc, formcontext.PublisherReApplication)
         assert fc.form is not None
@@ -334,7 +334,7 @@ class TestPublisherReApplication(DoajTestCase):
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
-        assert fc.target.application_status == "reapplication" # because it hasn't been finalised yet
+        assert fc.target.application_status == "update_request" # because it hasn't been finalised yet
         assert fc.target.suggester['name'] == fc.form.contact_name.data
         assert fc.target.suggester['email'] == fc.form.contact_email.data
         assert fc.target.bibjson().replaces == ["1111-1111"]
@@ -346,7 +346,7 @@ class TestPublisherReApplication(DoajTestCase):
         assert fc.target.application_status == "submitted"
 
     def test_02_conditional_disabled(self):
-        s = models.Suggestion(**deepcopy(REAPPLICATION_SOURCE))
+        s = models.Suggestion(**deepcopy(UPDATE_REQUEST_SOURCE))
 
         # source only, all fields disabled
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s)
@@ -370,8 +370,8 @@ class TestPublisherReApplication(DoajTestCase):
         assert not fc.validate()
 
         # source + form data, everything complete from source, so all fields disabled
-        s = models.Suggestion(**deepcopy(REAPPLICATION_SOURCE))
-        fd = MultiDict(deepcopy(REAPPLICATION_FORM))
+        s = models.Suggestion(**deepcopy(UPDATE_REQUEST_SOURCE))
+        fd = MultiDict(deepcopy(UPDATE_REQUEST_FORM))
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s, form_data=fd)
         assert "pissn" in fc.renderer.disabled_fields
         assert "eissn" in fc.renderer.disabled_fields
@@ -383,7 +383,7 @@ class TestPublisherReApplication(DoajTestCase):
 
         # source + form data, both source and form missing some values, but disabled fields only draw from source
         del s.data["admin"]["contact"]
-        rf = deepcopy(REAPPLICATION_FORM)
+        rf = deepcopy(UPDATE_REQUEST_FORM)
         rf["contact_name"] = "Contact Name"
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=s, form_data=fd)
         assert "pissn" in fc.renderer.disabled_fields
