@@ -51,15 +51,17 @@ def setup_error_logging(app):
 
     send_to = app.config.get('ERROR_LOGGING_EMAIL', app.config.get('ADMIN_EMAIL'))
     if send_to and not app.config.get('SUPPRESS_ERROR_EMAILS'):
-        if 'ERROR_MAIL_USERNAME' in app.config and 'ERROR_MAIL_PASSWORD' in app.config:
+        if 'ERROR_MAIL_USERNAME' in app.config and 'ERROR_MAIL_PASSWORD' in app.config and 'ERROR_MAIL_HOSTNAME' in app.config:
             import platform
             hostname = platform.uname()[1]
+
+            # We have to duplicate our email config here as we can't import app_email at this point
             mail_handler = TlsSMTPHandler(
-                ('smtp.gmail.com', 587),
-               'server-error@' + hostname,
-               send_to,
-               'DOAJ Flask Error',
-               credentials=(app.config['ERROR_MAIL_USERNAME'], app.config['ERROR_MAIL_PASSWORD'])
+                (app.config['ERROR_MAIL_HOSTNAME'], 587),
+                'server-error@' + hostname,
+                send_to,
+                'DOAJ Flask Error',
+                credentials=(app.config['ERROR_MAIL_USERNAME'], app.config['ERROR_MAIL_PASSWORD'])
             )
             mail_handler.setLevel(logging.ERROR)
             mail_handler.setFormatter(formatter)
