@@ -1,8 +1,12 @@
+from portality.core import app
+from portality.lib.argvalidate import argvalidate
+
 from portality import models
 from portality.formcontext import formcontext
 
-
 from portality.bll import exceptions
+
+from werkzeug.datastructures import MultiDict
 
 class DOAJ(object):
 
@@ -25,10 +29,19 @@ class DOAJ(object):
         :param account: an account doing the action - optional, if specified the application will only be created if the account is allowed to
         :return: Suggestion object
         """
+
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("journal_2_application", [
+            {"arg": journal, "instance" : models.Journal, "allow_none" : False, "arg_name" : "journal"},
+            {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
+        ], exceptions.ArgumentException)
+
+        # if an account is specified, check that it is allowed to perform this action
         if account is not None:
             if not self.can_create_update_request(account, journal):
                 raise exceptions.AuthoriseException("User " + account.id + " cannot create update requests for journal " + journal.id)
 
+        # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
         contacts = journal.contacts()
         notes = journal.notes
@@ -59,6 +72,12 @@ class DOAJ(object):
         :param application_id: the id of the application
         :return: Suggestion object
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("application", [
+            {"arg": application_id, "allow_none" : False, "arg_name" : "application_id"}
+        ], exceptions.ArgumentException)
+
+        # pull the application from the database
         return models.Suggestion.pull(application_id)
 
     def journal(self, journal_id):
@@ -68,6 +87,11 @@ class DOAJ(object):
         :param journal_id: the id of the journal
         :return: Journal object
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("journal", [
+            {"arg": journal_id, "allow_none" : False, "arg_name" : "journal_id"}
+        ], exceptions.ArgumentException)
+
         return models.Journal.pull(journal_id)
 
     def can_create_update_request(self, account, journal):
@@ -78,8 +102,17 @@ class DOAJ(object):
         :param journal: the journal the account wants to create an update request from
         :return:
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("can_create_update_request", [
+            {"arg": account, "instance": models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg": journal, "instance": models.Journal, "allow_none" : False, "arg_name" : "journal"},
+        ], exceptions.ArgumentException)
+
+        # if this is the super user, they have all rights
         if account.is_super:
             return True
+
+        # allowed if the role publisher is set, and they account id is the journal owner
         return account.has_role("publisher") and account.id == journal.owner
 
     def can_edit_update_request(self, account, application):
@@ -90,8 +123,17 @@ class DOAJ(object):
         :param application: the application the account wants to edit
         :return:
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("can_edit_update_request", [
+            {"arg": account, "instance": models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg": application, "instance": models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+        ], exceptions.ArgumentException)
+
+        # if this is the super user, they have all rights
         if account.is_super:
             return True
+
+        # allowed if the role publisher is set, the account owns the application, and the application is in an editable status
         return account.has_role("publisher") and account.id == application.owner and application.application_status in ["update_request", "submitted"]
 
     def formcontext(self, type, role, source=None, form_data=None):
@@ -103,6 +145,14 @@ class DOAJ(object):
         :param source: model object
         :return: FormContext instance
         """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("can_edit_update_request", [
+            {"arg": type, "instance": basestring, "allow_none" : False, "arg_name" : "type"},
+            {"arg": role, "instance": basestring, "allow_none" : False, "arg_name" : "role"},
+            {"arg": source, "instance": object, "allow_none" : True, "arg_name" : "source"},
+            {"arg": form_data, "instace" : MultiDict, "allow_none" : True, "arg_name" : "form_data"},
+        ], exceptions.ArgumentException)
+
         if type not in self.FORMCONTEXT_FACTORIES:
             raise exceptions.NoSuchFormContext()
         return self.FORMCONTEXT_FACTORIES[type].get_form_context(role=role, source=source, form_data=form_data)
