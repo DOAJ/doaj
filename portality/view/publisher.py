@@ -80,40 +80,6 @@ def update_request(journal_or_suggestion_id):
         else:
             return fc.render_template(edit_suggestion_page=True)
 
-"""
-@blueprint.route("/reapply/<reapplication_id>", methods=["GET", "POST"])
-@login_required
-@ssl_required
-@write_required()
-def reapplication_page(reapplication_id):
-    ap = models.Suggestion.pull(reapplication_id)
-
-    if ap is None:
-        abort(404)
-    if current_user.id != ap.owner:
-        abort(404)
-    if not ap.application_status in ["reapplication", "submitted"]:
-        return render_template("publisher/application_already_submitted.html", suggestion=ap)
-
-    if request.method == "GET":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=ap)
-        return fc.render_template(edit_suggestion_page=True)
-    elif request.method == "POST":
-        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=ap)
-        if fc.validate():
-            try:
-                fc.finalise()
-                flash('Your reapplication has been submitted but it is editable until the DOAJ editorial team picks it up for review.', 'success')
-                for a in fc.alert:
-                    flash_with_url(a, "success")
-                flash("Close this tab to return to your Publisher's Area.", 'success')
-                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='done'))
-            except formcontext.FormContextException as e:
-                flash(e.message)
-                return redirect(url_for("publisher.reapplication_page", reapplication_id=ap.id, _anchor='cannot_edit'))
-        else:
-            return fc.render_template(edit_suggestion_page=True)
-"""
 
 @blueprint.route('/progress')
 @login_required

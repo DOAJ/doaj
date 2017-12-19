@@ -390,7 +390,7 @@ class TestFormContext(DoajTestCase):
         assert fc.source is not None
 
         fc = formcontext.ApplicationFormFactory.get_form_context("publisher", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
-        assert isinstance(fc, formcontext.PublisherReApplication)
+        assert isinstance(fc, formcontext.PublisherUpdateRequest)
         assert fc.form is not None
         assert fc.form_data is not None
         assert fc.source is not None

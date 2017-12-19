@@ -19,8 +19,8 @@ def load_formcontext_cases():
     form_data = MultiDict(application_form)
 
     # generate the comparison functions
-    application_publisher_source = comparator_closure(formcontext.PublisherReApplication, True, True, False)
-    application_publisher_form_data = comparator_closure(formcontext.PublisherReApplication, True, True, True)
+    application_publisher_source = comparator_closure(formcontext.PublisherUpdateRequest, True, True, False)
+    application_publisher_form_data = comparator_closure(formcontext.PublisherUpdateRequest, True, True, True)
 
     return [
         param("unnown_type", "unknown", "publisher", raises=exceptions.NoSuchFormContext),

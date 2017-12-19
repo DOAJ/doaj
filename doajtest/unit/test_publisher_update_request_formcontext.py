@@ -270,7 +270,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
-        assert isinstance(fc, formcontext.PublisherReApplication)
+        assert isinstance(fc, formcontext.PublisherUpdateRequest)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is None
@@ -304,7 +304,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
             form_data=MultiDict(UPDATE_REQUEST_FORM) ,
             source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
 
-        assert isinstance(fc, formcontext.PublisherReApplication)
+        assert isinstance(fc, formcontext.PublisherUpdateRequest)
         assert fc.form is not None
         assert fc.source is not None
         assert fc.form_data is not None

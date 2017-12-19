@@ -303,9 +303,9 @@ class PublicApplicationRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
-class PublisherReApplicationRenderer(ApplicationRenderer):
+class PublisherUpdateRequestRenderer(ApplicationRenderer):
     def __init__(self):
-        super(PublisherReApplicationRenderer, self).__init__()
+        super(PublisherUpdateRequestRenderer, self).__init__()
 
         self.NUMBERING_ORDER.remove("submitter_info")
         self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)

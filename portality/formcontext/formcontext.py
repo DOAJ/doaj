@@ -521,7 +521,7 @@ class ApplicationFormFactory(object):
         elif role == "associate_editor":
             return AssEdApplicationReview(source=source, form_data=form_data)
         elif role == "publisher":
-            return PublisherReApplication(source=source, form_data=form_data)
+            return PublisherUpdateRequest(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -1007,12 +1007,12 @@ class AssEdApplicationReview(ApplicationContext):
                 self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
 
 
-class PublisherReApplication(ApplicationContext):
+class PublisherUpdateRequest(ApplicationContext):
     def make_renderer(self):
-        self.renderer = render.PublisherReApplicationRenderer()
+        self.renderer = render.PublisherUpdateRequestRenderer()
 
     def set_template(self):
-        self.template = "formcontext/publisher_reapplication.html"
+        self.template = "formcontext/publisher_update_request.html"
 
     def blank_form(self):
         self.form = forms.PublisherReApplicationForm()
@@ -1089,7 +1089,7 @@ class PublisherReApplication(ApplicationContext):
             raise FormContextException("You cannot edit a not-existent application")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PublisherReApplication, self).finalise()
+        super(PublisherUpdateRequest, self).finalise()
 
         # set the status to updated
         self.target.set_application_status('submitted')
@@ -1109,7 +1109,7 @@ class PublisherReApplication(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
-        return super(PublisherReApplication, self).render_template(**kwargs)
+        return super(PublisherUpdateRequest, self).render_template(**kwargs)
 
     def _disable_fields(self):
         if self.source is None:

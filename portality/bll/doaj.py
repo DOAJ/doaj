@@ -36,9 +36,12 @@ class DOAJ(object):
             {"arg" : account, "instance" : models.Account, "arg_name" : "account"}
         ], exceptions.ArgumentException)
 
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering journal_2_application")
+
         # if an account is specified, check that it is allowed to perform this action
         if account is not None:
             if not self.can_create_update_request(account, journal):
+                app.logger.info("Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id))
                 raise exceptions.AuthoriseException("User " + account.id + " cannot create update requests for journal " + journal.id)
 
         # copy all the relevant information from the journal to the application
@@ -63,6 +66,7 @@ class DOAJ(object):
         application.set_bibjson(bj)
         application.set_suggester(first_contact.get("name"), first_contact.get("email"))
 
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
     def application(self, application_id):
