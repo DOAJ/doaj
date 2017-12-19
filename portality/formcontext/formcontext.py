@@ -228,7 +228,8 @@ class PrivateContext(FormContext):
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
         self.target.set_created(created_date)
-        self.target.data['id'] = self.source.data['id']
+        if "id" in self.source.data:
+            self.target.data['id'] = self.source.data['id']
 
         try:
             if self.source.current_application:
@@ -1031,8 +1032,12 @@ class PublisherUpdateRequest(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot validate a form from a non-existent source")
 
+        # carry forward the disabled fields
         bj = self.source.bibjson()
         contacts = self.source.contacts()
+
+        self.form.title.data = bj.title
+        self.form.alternative_title.data = bj.alternative_title
 
         pissn = bj.get_one_identifier(bj.P_ISSN)
         if pissn == "": pissn = None
@@ -1115,7 +1120,7 @@ class PublisherUpdateRequest(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot disable fields on a not-existent application")
 
-        disable = ["pissn", "eissn"] # these are always disabled
+        disable = ["title", "alternative_title", "pissn", "eissn"] # these are always disabled
 
         # contact fields are only disabled if they already have content in source
         contacts = self.source.contacts()
@@ -1138,22 +1143,23 @@ class PublisherUpdateRequest(ApplicationContext):
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - reapplication received"
+        subject = app.config.get("SERVICE_NAME","") + " - update request received"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/publisher_reapplication_received.txt",
+                                    template_name="email/publisher_update_request_received.txt",
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
                 self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
-        except app_email.EmailException:
+        except app_email.EmailException as e:
             magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.exception('Error sending reapplication received email - ' + magic)
+            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 
 class PublicApplication(FormContext):

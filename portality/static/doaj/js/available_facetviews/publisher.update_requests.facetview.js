@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
 
-    $('.facetview.reapplications').facetview({
+    $('.facetview.update_requests').facetview({
         search_url: es_scheme + '//' + es_domain + '/publisher_reapp_query/suggestion/_search?',
 
         render_results_metadata: doajPager,
@@ -55,6 +55,7 @@ jQuery(document).ready(function ($) {
 
         page_size : 10,
         from : 0,
+        sort : [{"created_date" : {"order" : "desc"}}],
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
@@ -67,7 +68,7 @@ jQuery(document).ready(function ($) {
             "issns": fv_issns,
             "country_name": fv_country_name,
             'suggested_on': fv_suggested_on,
-            "view_reapplication": fv_view_reapplication
+            "edit_update_request": fv_edit_update_request
         },
         result_display: [
             [
@@ -197,7 +198,7 @@ jQuery(document).ready(function ($) {
             ],
             [
                 {
-                    "field": "view_reapplication"
+                    "field": "edit_update_request"
                 }
             ]
         ]

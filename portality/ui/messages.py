@@ -1,8 +1,10 @@
 from flask import flash
 
 class Messages(object):
-    APPLICATION_UPDATE_SUBMITTED_FLASH = ('Your update request has been submitted and it is editable until the DOAJ editorial team picks it up for review.', 'success')
-    APPLICATION_UPDATE_CLOSE_TAB_FLASH = ("Close this tab to return to your Publisher's Area.", 'success')
+    APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
+        Your update request has been submitted and it is editable until the DOAJ editorial team picks it up for review.
+        You will find your update request in your list of updates below.  Select 'edit this update request' to make changes
+        """, 'success')
 
     @classmethod
     def flash(cls, tup):

@@ -30,7 +30,7 @@ def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
 
-@blueprint.route("/update_request/<journal_or_suggestion_id>")
+@blueprint.route("/update_request/<journal_or_suggestion_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
 @write_required()
@@ -72,8 +72,7 @@ def update_request(journal_or_suggestion_id):
                 Messages.flash(Messages.APPLICATION_UPDATE_SUBMITTED_FLASH)
                 for a in fc.alert:
                     Messages.flash_with_url(a, "success")
-                Messages.flash(Messages.APPLICATION_UPDATE_CLOSE_TAB_FLASH)
-                return redirect(url_for("publisher.update_request", journal_or_suggestion_id=application.id, _anchor='done'))
+                return redirect(url_for("publisher.updates_in_progress"))
             except formcontext.FormContextException as e:
                 Messages.flash(e.message)
                 return redirect(url_for("publisher.update_request", journal_or_suggestion_id=application.id, _anchor='cannot_edit'))
@@ -85,7 +84,7 @@ def update_request(journal_or_suggestion_id):
 @login_required
 @ssl_required
 def updates_in_progress():
-    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.reapplications.facetview"])
+    return render_template("publisher/updates_in_progress.html", search_page=True, facetviews=["publisher.update_requests.facetview"])
 
 @blueprint.route("/uploadFile", methods=["GET", "POST"])
 @blueprint.route("/uploadfile", methods=["GET", "POST"])
