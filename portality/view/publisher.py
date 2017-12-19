@@ -44,7 +44,7 @@ def update_request(journal_or_suggestion_id):
     if source == "journal":
         journal = dbl.journal(journal_id=journal_or_suggestion_id)
         try:
-            application = dbl.journal_2_application(journal=journal, account=current_user)
+            application = dbl.journal_2_application(journal=journal, account=current_user._get_current_object())
         except AuthoriseException as e:
             abort(404)
     else:
@@ -55,7 +55,7 @@ def update_request(journal_or_suggestion_id):
         abort(404)
 
     # check to see if the application is editable by the user
-    if not dbl.can_edit_update_request(current_user, application):
+    if not dbl.can_edit_update_request(current_user._get_current_object(), application):
         return render_template("publisher/application_already_submitted.html", suggestion=application)
 
     # if we are requesting the page with a GET, we just want to show the form
