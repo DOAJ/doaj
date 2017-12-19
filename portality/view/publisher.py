@@ -30,25 +30,20 @@ def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
 
-@blueprint.route("/update_request/<journal_or_suggestion_id>", methods=["GET", "POST"])
+@blueprint.route("/update_request/<journal_id>", methods=["GET", "POST"])
 @login_required
 @ssl_required
 @write_required()
-def update_request(journal_or_suggestion_id):
+def update_request(journal_id):
     # DOAJ BLL for this request
     dbl = DOAJ()
 
     # load the application either directly or by crosswalking the journal object
-    source = request.values.get("source")
     application = None
-    if source == "journal":
-        journal = dbl.journal(journal_id=journal_or_suggestion_id)
-        try:
-            application = dbl.journal_2_application(journal=journal, account=current_user._get_current_object())
-        except AuthoriseException as e:
-            abort(404)
-    else:
-        application = dbl.application(application_id=journal_or_suggestion_id)
+    try:
+        application = dbl.update_request_for_journal(journal_id)
+    except AuthoriseException as e:
+        abort(404)
 
     # if we didn't find an application or journal, 404 the user
     if application is None:
@@ -75,7 +70,7 @@ def update_request(journal_or_suggestion_id):
                 return redirect(url_for("publisher.updates_in_progress"))
             except formcontext.FormContextException as e:
                 Messages.flash(e.message)
-                return redirect(url_for("publisher.update_request", journal_or_suggestion_id=application.id, _anchor='cannot_edit'))
+                return redirect(url_for("publisher.update_request", journal_id=application.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True)
 

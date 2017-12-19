@@ -14,6 +14,43 @@ class DOAJ(object):
         "application" : formcontext.ApplicationFormFactory
     }
 
+    def update_request_for_journal(self, journal_id, account=None):
+        """
+        Obtain an update request application object for the journal with the given journal_id
+
+        An update request may either be loaded from the database, if it already exists, or created
+        in-memory if it has not previously been created.
+
+        If an account is provided, this will validate that the account holder is allowed to make
+        the conversion from journal to application, if a conversion is required.
+
+        :param journal_id:
+        :param account:
+        :return:
+        """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("update_request_for_journal", [
+            {"arg": journal_id, "instance" : basestring, "allow_none" : False, "arg_name" : "journal_id"},
+            {"arg" : account, "instance" : models.Account, "allow_none" : True, "arg_name" : "account"}
+        ], exceptions.ArgumentException)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering update_request_for_journal")
+
+        journal = self.journal(journal_id)
+        if journal is None:
+            app.logger.info("Request for journal {x} did not find anything in the database".format(x=journal.id))
+            return None
+
+        application = models.Suggestion.find_latest_by_current_journal(journal_id)
+        if application is None:
+            app.logger.info("No existing update request for journal {x}; creating one".format(x=journal.id))
+            application = self.journal_2_application(journal, account=account)
+        else:
+            app.logger.info("Using existing application {y} as update request for journal {x}".format(y=application.id, x=journal.id))
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed update_request_for_journal; return application object")
+        return application
+
     def journal_2_application(self, journal, account=None):
         """
         Function to convert a given journal into an application object.

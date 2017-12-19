@@ -32,6 +32,14 @@ class Suggestion(JournalLikeObject):
         q = StatusQuery(status)
         return cls.iterate(q=q.query())
 
+    @classmethod
+    def find_latest_by_current_journal(cls, journal_id):
+        q = CurrentJournalQuery(journal_id)
+        results = cls.q2obj(q=q.query())
+        if len(results) > 0:
+            return results[0]
+        return None
+
     def make_journal(self):
         # first make a raw copy of the content into a journal
         journal_data = deepcopy(self.data)
@@ -320,3 +328,22 @@ class StatusQuery(object):
             }
         }
 
+class CurrentJournalQuery(object):
+
+    def __init__(self, journal_id):
+        self.journal_id = journal_id
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"admin.current_journal.exact" : self.journal_id}}
+                    ]
+                }
+            },
+            "sort" : [
+                {"created_date" : {"order" : "desc"}}
+            ],
+            "size" : 1
+        }

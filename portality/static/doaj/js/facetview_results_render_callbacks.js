@@ -510,8 +510,7 @@ fv_make_update_request = (function (resultobj) {
             // we really need to expose _type ...
             var result = '<a class="edit_journal_link pull-right" href="';
             result += journal_update_url;
-            result += resultobj['id'];
-            result += '?source=journal"';
+            result += resultobj['id'] + '"';
             result += '>Submit updated information</a>';
 
             return result;
