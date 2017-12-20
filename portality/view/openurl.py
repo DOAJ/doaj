@@ -1,10 +1,12 @@
 import re
 from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
+from portality.lib.analytics import google_analytics_event
 from portality.core import app
 from urllib import unquote
 
 blueprint = Blueprint('openurl', __name__)
+
 
 @blueprint.route("/openurl", methods=["GET", "POST"])
 def openurl():
@@ -13,7 +15,7 @@ def openurl():
         abort(404)
 
     # Validate the query syntax version and build an object representing it
-    parser_response = parse_query()
+    parser_response = parse_query(request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -30,24 +32,26 @@ def openurl():
     else:
         abort(404)
 
-def parse_query():
+
+@google_analytics_event('OpenURL', 'Retrieve', record_value_of_which_arg='req.query_string')
+def parse_query(req):
     """
     Create the model which holds the query
-    :param url_query_string: The query part of an incoming OpenURL request
-    :return: an object representing the query
+    :param req: an incoming OpenURL request
+    :return: an object representing the query, or a redirect to the reissued query, or None if failed.
     """
     # Check if this is new or old syntax, translate if necessary
-    if "url_ver=Z39.88-2004" not in request.query_string:
-        app.logger.info("Legacy OpenURL 0.1 request: " + unquote(request.url))
+    if "url_ver=Z39.88-2004" not in req.query_string:
+        app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
         return old_to_new()
 
-    app.logger.info("OpenURL 1.0 request: " + unquote(request.url))
+    app.logger.info("OpenURL 1.0 request: " + unquote(req.url))
 
-    # Wee function to strip of the referent namespace prefix from paramaters
+    # Wee function to strip of the referent namespace prefix from parameters
     rem_ns = lambda x: re.sub('rft.', '', x)
 
     # Pack the list of parameters into a dictionary, while un-escaping the string.
-    dict_params = {rem_ns(key): value for (key, value) in request.values.iteritems()}
+    dict_params = {rem_ns(key): value for (key, value) in req.values.iteritems()}
 
     # Create an object to represent this OpenURL request.
     try:
@@ -57,6 +61,7 @@ def parse_query():
         app.logger.info("Failed to create OpenURLRequest object")
 
     return query_object
+
 
 def old_to_new():
     """
@@ -79,9 +84,11 @@ def old_to_new():
 
     return url_for('.openurl', **params)
 
+
 @blueprint.route("/openurl/help")
 def help():
     return render_template("openurl/help.html")
+
 
 @blueprint.errorhandler(404)
 def bad_request(e):
