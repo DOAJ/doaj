@@ -15,7 +15,7 @@ def openurl():
         abort(404)
 
     # Validate the query syntax version and build an object representing it
-    parser_response = parse_query(request.query_string, request)
+    parser_response = parse_query(query=unquote(request.query_string), req=request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -44,7 +44,7 @@ def parse_query(query, req):
     # Check if this is new or old syntax, translate if necessary
     if "url_ver=Z39.88-2004" not in query:
         app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
-        return old_to_new()
+        return old_to_new(req)
 
     app.logger.info("OpenURL 1.0 request: " + unquote(req.url))
 
@@ -64,21 +64,21 @@ def parse_query(query, req):
     return query_object
 
 
-def old_to_new():
+def old_to_new(req):
     """
     Translate the OpenURL 0.1 syntax to 1.0, to provide a redirect.
-    :param url_query_string: An incoming OpenURL request
+    :param req: An incoming OpenURL request
     :return: An OpenURL 1.0 query string
     """
 
     # The meta parameters in the preamble.
-    params = {'url_ver': 'Z39.88-2004', 'url_ctx_fmt': 'info:ofi/fmt:kev:mtx:ctx','rft_val_fmt': 'info:ofi/fmt:kev:mtx:journal'}
+    params = {'url_ver': 'Z39.88-2004', 'url_ctx_fmt': 'info:ofi/fmt:kev:mtx:ctx', 'rft_val_fmt': 'info:ofi/fmt:kev:mtx:journal'}
 
     # In OpenURL 0.1, jtitle is just title. This function substitutes them.
     sub_title = lambda x: re.sub('^title', 'jtitle', x)
 
-    # Add referrent tags to each parameter, and change title tag using above function
-    rewritten_params = {"rft." + sub_title(key): value for (key, value) in request.values.iteritems()}
+    # Add referent tags to each parameter, and change title tag using above function
+    rewritten_params = {"rft." + sub_title(key): value for (key, value) in req.values.iteritems()}
 
     # Add the rewritten parameters to the meta params
     params.update(rewritten_params)
