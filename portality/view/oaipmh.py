@@ -4,20 +4,22 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
+from portality.lib.analytics import google_analytics_event
 from portality import datasets
 from copy import deepcopy
 
 blueprint = Blueprint('oaipmh', __name__)
 
 #####################################################################
-## Web API endpoints
+# Web API endpoints
 #####################################################################
+
 
 @blueprint.route("/oai", methods=["GET", "POST"])
 @blueprint.route("/oai.<specified>", methods=["GET", "POST"])
+@google_analytics_event('OAI-PMH', 'Retrieve', record_value_of_which_arg='specified')
 def oaipmh(specified=None):
     # work out which endpoint we're going to
-    dao = None
     if specified is None:
         dao = OAIPMHJournal()
     else:
@@ -27,9 +29,7 @@ def oaipmh(specified=None):
     # work out the verb and associated parameters
     verb = request.values.get("verb")
     
-    # call the appropriate protocol operation
-    result = None
-    
+    # call the appropriate protocol operation:
     # if no verb supplied
     if verb is None:
         result = BadVerb(request.base_url)

@@ -1,8 +1,8 @@
-from functools import wraps
-
 import UniversalAnalytics
-
+from functools import wraps
 from portality.core import app
+
+# FIXME: A decorator isn't always the most appropriate way to send events. Sometimes we need data from within functions.
 
 
 def google_analytics_event(event_category, event_action, event_label='',
@@ -94,7 +94,6 @@ def google_analytics_event(event_category, event_action, event_label='',
                 if event_value:
                     analytics_args.append(event_value)
 
-                tracker.send('pageview', path='/openurl')
                 tracker.send('event', *analytics_args)
             return fn(*args, **kwargs)
 
