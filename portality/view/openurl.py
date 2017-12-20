@@ -15,7 +15,7 @@ def openurl():
         abort(404)
 
     # Validate the query syntax version and build an object representing it
-    parser_response = parse_query(request)
+    parser_response = parse_query(request.query_string, request)
 
     # theoretically this can return None, so catch it
     if parser_response is None:
@@ -33,15 +33,16 @@ def openurl():
         abort(404)
 
 
-@google_analytics_event('OpenURL', 'Retrieve', record_value_of_which_arg='req.query_string')
-def parse_query(req):
+@google_analytics_event('OpenURL', 'Retrieve', record_value_of_which_arg='query')
+def parse_query(query, req):
     """
     Create the model which holds the query
+    :param query: The query string from the request URL (separated for the sake of analytics)
     :param req: an incoming OpenURL request
     :return: an object representing the query, or a redirect to the reissued query, or None if failed.
     """
     # Check if this is new or old syntax, translate if necessary
-    if "url_ver=Z39.88-2004" not in req.query_string:
+    if "url_ver=Z39.88-2004" not in query:
         app.logger.info("Legacy OpenURL 0.1 request: " + unquote(req.url))
         return old_to_new()
 
