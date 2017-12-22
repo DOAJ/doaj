@@ -51,6 +51,7 @@ class DOAJ(object):
             return None, None, None
 
         # retrieve the latest application attached to this journal
+
         application_lock = None
         application = models.Suggestion.find_latest_by_current_journal(journal_id)
 
@@ -134,14 +135,17 @@ class DOAJ(object):
             if first_contact is None:
                 first_contact = c
         application.set_current_journal(journal.id)
-        application.set_editor(journal.editor)
-        application.set_editor_group(journal.editor_group)
+        if journal.editor is not None:
+            application.set_editor(journal.editor)
+        if journal.editor_group is not None:
+            application.set_editor_group(journal.editor_group)
         for n in notes:
             application.add_note(n.get("note"), n.get("date"))
         application.set_owner(journal.owner)
         application.set_seal(journal.has_seal())
         application.set_bibjson(bj)
-        application.set_suggester(first_contact.get("name"), first_contact.get("email"))
+        if first_contact is not None:
+            application.set_suggester(first_contact.get("name"), first_contact.get("email"))
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
         return application
