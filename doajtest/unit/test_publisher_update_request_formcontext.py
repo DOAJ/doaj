@@ -1,10 +1,12 @@
 from doajtest.helpers import DoajTestCase
+from doajtest.fixtures import JournalFixtureFactory
 
 import re
 from copy import deepcopy
 
 from portality import models
 from portality.formcontext import formcontext
+
 
 from werkzeug.datastructures import MultiDict
 
@@ -127,6 +129,7 @@ UPDATE_REQUEST_SOURCE = {
         "owner" : "Owner",
         "editor_group" : "editorgroup",
         "editor" : "associate",
+        "current_journal" : "123456789_journal"
     }
 }
 
@@ -267,6 +270,9 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
     def test_01_publisher_reapplication_success(self):
         """Give the publisher reapplication a full workout"""
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id("123456789_journal")
+        journal.save(blocking=True)
 
         # we start by constructing it from source
         fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
@@ -344,6 +350,10 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
         assert fc.target.application_status == "submitted"
+
+        j2 = models.Journal.pull(journal.id)
+        assert j2.current_application == fc.target.id
+        assert fc.target.current_journal == j2.id
 
     def test_02_conditional_disabled(self):
         s = models.Suggestion(**deepcopy(UPDATE_REQUEST_SOURCE))

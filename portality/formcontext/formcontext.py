@@ -1110,10 +1110,13 @@ class PublisherUpdateRequest(ApplicationContext):
         doaj = DOAJ()
         if journal_id is not None:
             journal, _ = doaj.journal(journal_id)
-            journal.set_current_application(self.target.id)
-            saved = journal.save()
-            if saved is None:
-                raise FormContextException("Save on journal failed")
+            if journal is not None:
+                journal.set_current_application(self.target.id)
+                saved = journal.save()
+                if saved is None:
+                    raise FormContextException("Save on journal failed")
+            else:
+                self.target.remove_current_journal()
 
         # email the publisher to tell them we received their reapplication
         try:
