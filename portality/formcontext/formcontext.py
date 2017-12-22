@@ -8,6 +8,7 @@ from portality.formcontext import forms, xwalk, render, choices, emails, FormCon
 from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
+from portality import lock
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -1105,6 +1106,7 @@ class PublisherUpdateRequest(ApplicationContext):
         if saved is None:
             raise FormContextException("Save on application failed")
 
+        # obtain the related journal, and attach the current application id to it
         journal_id = self.target.current_journal
         from portality.bll.doaj import DOAJ
         doaj = DOAJ()

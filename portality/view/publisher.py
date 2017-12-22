@@ -43,6 +43,8 @@ def update_request(journal_id):
 
     # load the application either directly or by crosswalking the journal object
     application = None
+    jlock = None
+    alock = None
     try:
         application, jlock, alock = dbl.update_request_for_journal(journal_id, account=current_user._get_current_object())
     except AuthoriseException as e:
@@ -57,6 +59,8 @@ def update_request(journal_id):
 
     # if we didn't find an application or journal, 404 the user
     if application is None:
+        if jlock is not None: jlock.delete()
+        if alock is not None: alock.delete()
         abort(404)
 
     # if we are requesting the page with a GET, we just want to show the form
@@ -77,6 +81,9 @@ def update_request(journal_id):
             except formcontext.FormContextException as e:
                 Messages.flash(e.message)
                 return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
+            finally:
+                if jlock is not None: jlock.delete()
+                if alock is not None: alock.delete()
         else:
             return fc.render_template(edit_suggestion_page=True)
 
