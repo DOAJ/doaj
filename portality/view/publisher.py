@@ -63,6 +63,14 @@ def update_request(journal_id):
         if alock is not None: alock.delete()
         abort(404)
 
+    # if we have a live application and cancel was hit, then cancel the operation and redirect
+    # first determine if this is a cancel request on the form
+    cancelled = request.values.get("cancel")
+    if cancelled is not None:
+        if jlock is not None: jlock.delete()
+        if alock is not None: alock.delete()
+        return redirect(url_for("publisher.index"))
+
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
         fc = dbl.formcontext(type="application", role="publisher", source=application)
