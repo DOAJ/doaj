@@ -992,3 +992,26 @@ class TestClient(DoajTestCase):
 
         changed = a.add_journal_metadata(j)
         assert changed is False
+
+    def test_31_application_latest_by_current_journal(self):
+        j = models.Journal()
+        j.set_id(j.makeid())
+
+        app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app1.set_current_journal(j.id)
+        app1.set_created("1970-01-01T00:00:00Z")
+        app1.save()
+
+        app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app2.set_current_journal(j.id)
+        app2.set_created("1971-01-01T00:00:00Z")
+        app2.save(blocking=True)
+
+        # check that we find the right application when we search
+        app3 = models.Suggestion.find_latest_by_current_journal(j.id)
+        assert app3 is not None
+        assert app3.id == app2.id
+
+        # make sure we get a None response when there's no application
+        app0 = models.Suggestion.find_latest_by_current_journal("whatever")
+        assert app0 is None
