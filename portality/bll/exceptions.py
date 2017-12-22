@@ -2,7 +2,15 @@ class AuthoriseException(Exception):
     """
     Exception to raise if an action is not authorised
     """
-    pass
+
+    # standardised reasons why an action might not be allowed
+    NOT_OWNER = "not_owner"
+    WRONG_ROLE = "wrong_role"
+    WRONG_STATUS = "wrong_status"
+
+    def __init__(self, message=None, reason=None):
+        super(AuthoriseException, self).__init__(message)
+        self.reason = reason
 
 class NoSuchFormContext(Exception):
     """
