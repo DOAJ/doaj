@@ -11,10 +11,13 @@ from portality.formcontext import formcontext
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
+from portality import lock
+
 from huey.exceptions import QueueWriteException
 
 import os, uuid
 from time import sleep
+
 
 blueprint = Blueprint('publisher', __name__)
 
@@ -41,17 +44,20 @@ def update_request(journal_id):
     # load the application either directly or by crosswalking the journal object
     application = None
     try:
-        application = dbl.update_request_for_journal(journal_id)
+        application, jlock, alock = dbl.update_request_for_journal(journal_id, account=current_user._get_current_object())
     except AuthoriseException as e:
-        abort(404)
+        if e.reason == AuthoriseException.WRONG_STATUS:
+            journal = dbl.journal(journal_id)
+            return render_template("publisher/application_already_submitted.html", journal=journal)
+        else:
+            abort(404)
+    except lock.Locked as e:
+        journal = dbl.journal(journal_id)
+        return render_template("publisher/locked.html", journal=journal)
 
     # if we didn't find an application or journal, 404 the user
     if application is None:
         abort(404)
-
-    # check to see if the application is editable by the user
-    if not dbl.can_edit_update_request(current_user._get_current_object(), application):
-        return render_template("publisher/application_already_submitted.html", suggestion=application)
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
@@ -70,7 +76,7 @@ def update_request(journal_id):
                 return redirect(url_for("publisher.updates_in_progress"))
             except formcontext.FormContextException as e:
                 Messages.flash(e.message)
-                return redirect(url_for("publisher.update_request", journal_id=application.id, _anchor='cannot_edit'))
+                return redirect(url_for("publisher.update_request", journal_id=journal_id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True)
 

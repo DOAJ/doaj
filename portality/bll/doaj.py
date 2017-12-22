@@ -3,6 +3,7 @@ from portality.lib.argvalidate import argvalidate
 
 from portality import models
 from portality.formcontext import formcontext
+from portality import lock
 
 from portality.bll import exceptions
 
@@ -14,7 +15,7 @@ class DOAJ(object):
         "application" : formcontext.ApplicationFormFactory
     }
 
-    def update_request_for_journal(self, journal_id, account=None):
+    def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """
         Obtain an update request application object for the journal with the given journal_id
 
@@ -24,32 +25,67 @@ class DOAJ(object):
         If an account is provided, this will validate that the account holder is allowed to make
         the conversion from journal to application, if a conversion is required.
 
+        When this request runs, the journal will be locked to the provided account if an account is
+        given.  If the application is loaded from the database, this will also be locked for the account
+        holder.
+
         :param journal_id:
         :param account:
-        :return:
+        :return: a tuple of (Application Object, Journal Lock, Application Lock)
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("update_request_for_journal", [
             {"arg": journal_id, "instance" : basestring, "allow_none" : False, "arg_name" : "journal_id"},
-            {"arg" : account, "instance" : models.Account, "allow_none" : True, "arg_name" : "account"}
+            {"arg" : account, "instance" : models.Account, "allow_none" : True, "arg_name" : "account"},
+            {"arg" : lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Entering update_request_for_journal")
 
-        journal = self.journal(journal_id)
+        # first retrieve the journal, and return empty if there isn't one.
+        # We don't attempt to obtain a lock at this stage, as we want to check that the user is authorised first
+        journal_lock = None
+        journal, _ = self.journal(journal_id)
         if journal is None:
-            app.logger.info("Request for journal {x} did not find anything in the database".format(x=journal.id))
-            return None
+            app.logger.info("Request for journal {x} did not find anything in the database".format(x=journal_id))
+            return None, None, None
 
+        # retrieve the latest application attached to this journal
+        application_lock = None
         application = models.Suggestion.find_latest_by_current_journal(journal_id)
+
+        # if no such application exists, create one in memory (this will check that the user is permitted to create one)
+        # at the same time, create the lock for the journal.  This will throw an AuthorisedException or a Locked exception
+        # (in that order of preference) if any problems arise.
         if application is None:
             app.logger.info("No existing update request for journal {x}; creating one".format(x=journal.id))
             application = self.journal_2_application(journal, account=account)
-        else:
+            if account is not None:
+                journal_lock = lock.lock("journal", journal_id, account.id)
+
+        # otherwise check that the user (if given) has the rights to edit the application
+        # then lock the application and journal to the account.
+        # If a lock cannot be obtained, unlock the journal and application before we return
+        elif account is not None:
+            try:
+                self.can_edit_update_request(account, application)
+                application_lock = lock.lock("suggestion", application.id, account.id)
+                journal_lock = lock.lock("journal", journal_id, account.id)
+            except lock.Locked as e:
+                if application_lock is not None: application_lock.delete()
+                if journal_lock is not None: journal_lock.delete()
+                raise
+            except exceptions.AuthoriseException as e:
+                msg = "Account {x} is not permitted to edit the current update request on journal {y}".format(x=account.id, y=journal.id)
+                app.logger.info(msg)
+                e.message = msg
+                raise
+
             app.logger.info("Using existing application {y} as update request for journal {x}".format(y=application.id, x=journal.id))
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed update_request_for_journal; return application object")
-        return application
+
+        return application, journal_lock, application_lock
 
     def journal_2_application(self, journal, account=None):
         """
@@ -77,9 +113,13 @@ class DOAJ(object):
 
         # if an account is specified, check that it is allowed to perform this action
         if account is not None:
-            if not self.can_create_update_request(account, journal):
-                app.logger.info("Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id))
-                raise exceptions.AuthoriseException("User " + account.id + " cannot create update requests for journal " + journal.id)
+            try:
+                self.can_create_update_request(account, journal)    # throws exception if not allowed
+            except exceptions.AuthoriseException as e:
+                msg = "Account {x} is not permitted to create an update request on journal {y}".format(x=account.id, y=journal.id)
+                app.logger.info(msg)
+                e.message = msg
+                raise
 
         # copy all the relevant information from the journal to the application
         bj = journal.bibjson()
@@ -121,19 +161,38 @@ class DOAJ(object):
         # pull the application from the database
         return models.Suggestion.pull(application_id)
 
-    def journal(self, journal_id):
+    def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
         """
-        Function to retrieve a journal by its id
+        Function to retrieve a journal by its id, and to optionally lock the resource
+
+        May raise a Locked exception, if a lock is requested but can't be obtained.
 
         :param journal_id: the id of the journal
-        :return: Journal object
+        :param: lock_journal: should we lock the resource on retrieval
+        :param: lock_account: which account is doing the locking?  Must be present if lock_journal=True
+        :param: lock_timeout: how long to lock the resource for.  May be none, in which case it will default
+        :return: Tuple of (Journal Object, Lock Object)
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("journal", [
-            {"arg": journal_id, "allow_none" : False, "arg_name" : "journal_id"}
+            {"arg": journal_id, "allow_none" : False, "arg_name" : "journal_id"},
+            {"arg": lock_journal, "instance" : bool, "allow_none" : False, "arg_name" : "lock_journal"},
+            {"arg": lock_account, "instance" : models.Account, "allow_none" : True, "arg_name" : "lock_account"},
+            {"arg": lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
 
-        return models.Journal.pull(journal_id)
+        # retrieve the journal
+        journal = models.Journal.pull(journal_id)
+
+        # if we've retrieved the journal, and a lock is requested, request it
+        the_lock = None
+        if journal is not None and lock_journal:
+            if lock_account is not None:
+                the_lock = lock.lock("journal", journal_id, lock_account.id, lock_timeout)
+            else:
+                raise exceptions.ArgumentException("If you specify lock_journal on journal retrieval, you must also provide lock_account")
+
+        return journal, the_lock
 
     def can_create_update_request(self, account, journal):
         """
@@ -153,8 +212,13 @@ class DOAJ(object):
         if account.is_super:
             return True
 
-        # allowed if the role publisher is set, and they account id is the journal owner
-        return account.has_role("publisher") and account.id == journal.owner
+        if not account.has_role("publisher"):
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+        if account.id != journal.owner:
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
+
+        return True
+
 
     def can_edit_update_request(self, account, application):
         """
@@ -174,8 +238,15 @@ class DOAJ(object):
         if account.is_super:
             return True
 
-        # allowed if the role publisher is set, the account owns the application, and the application is in an editable status
-        return account.has_role("publisher") and account.id == application.owner and application.application_status in ["update_request", "submitted"]
+        if not account.has_role("publisher"):
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
+        if account.id != application.owner:
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
+        if application.application_status not in ["update_request", "submitted"]:
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
+
+        return True
+
 
     def formcontext(self, type, role, source=None, form_data=None):
         """
