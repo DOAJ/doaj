@@ -1101,7 +1101,19 @@ class PublisherUpdateRequest(ApplicationContext):
 
         # Save the target
         self.target.set_last_manual_update()
-        self.target.save()
+        saved = self.target.save()
+        if saved is None:
+            raise FormContextException("Save on application failed")
+
+        journal_id = self.target.current_journal
+        from portality.bll.doaj import DOAJ
+        doaj = DOAJ()
+        if journal_id is not None:
+            journal, _ = doaj.journal(journal_id)
+            journal.set_current_application(self.target.id)
+            saved = journal.save()
+            if saved is None:
+                raise FormContextException("Save on journal failed")
 
         # email the publisher to tell them we received their reapplication
         try:
