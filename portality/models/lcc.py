@@ -62,4 +62,4 @@ class LCC(DomainObject):
 
     def save(self, **kwargs):
         self.set_id("lcc")
-        super(LCC, self).save(**kwargs)
+        return super(LCC, self).save(**kwargs)

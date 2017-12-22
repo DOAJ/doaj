@@ -682,9 +682,10 @@ class Journal(JournalLikeObject):
         self.check_construct()
         if sync_owner:
             self._sync_owner_to_application()
-        super(Journal, self).save(**kwargs)
+        res = super(Journal, self).save(**kwargs)
         if snapshot:
             self.snapshot()
+        return res
 
     ######################################################
     ## internal utility methods

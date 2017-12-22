@@ -78,7 +78,7 @@ class Provenance(dataobj.DataObj, DomainObject):
     def save(self, **kwargs):
         # self.prep()
         self.check_construct()
-        super(Provenance, self).save(**kwargs)
+        return super(Provenance, self).save(**kwargs)
 
     @classmethod
     def make(cls, account, action, obj, subtype=None, save=True):

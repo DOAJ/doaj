@@ -154,7 +154,7 @@ class Suggestion(JournalLikeObject):
         self.check_construct()
         if sync_owner:
             self._sync_owner_to_journal()
-        super(Suggestion, self).save(**kwargs)
+        return super(Suggestion, self).save(**kwargs)
 
 APPLICATION_STRUCT = {
     "fields" : {

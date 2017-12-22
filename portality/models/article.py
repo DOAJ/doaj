@@ -520,7 +520,7 @@ class Article(DomainObject):
 
     def save(self, *args, **kwargs):
         self._generate_index()
-        super(Article, self).save(*args, **kwargs)
+        return super(Article, self).save(*args, **kwargs)
 
 
 class ArticleBibJSON(GenericBibJSON):
