@@ -508,11 +508,16 @@ fv_make_update_request = (function (resultobj) {
             // if it's not a suggestion or an article .. (it's a
             // journal!)
             // we really need to expose _type ...
-            var result = '<a class="edit_journal_link pull-right" href="';
-            result += journal_update_url;
-            result += resultobj['id'] + '"';
-            result += '>Submit updated information</a>';
-
+            var result = "";
+            if (resultobj.admin && resultobj.admin.current_application) {
+                var idquery = '%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22' + resultobj['id'] + '%22%7D%7D%7D';
+                result = '<a class="edit_journal_link pull-right" href="' + journal_update_requests_url + "?source=" + idquery + '">View current update request</a>';
+            } else {
+                result = '<a class="edit_journal_link pull-right" href="';
+                result += journal_update_url;
+                result += resultobj['id'] + '"';
+                result += '>Submit updated information</a>';
+            }
             return result;
         }
         return false;
