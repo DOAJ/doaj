@@ -30,8 +30,8 @@ def create_update_cases():
         param("no_journal_with_account", None, owner_account, raises=exceptions.ArgumentException),
         param("journal_no_account", journal, None, raises=exceptions.ArgumentException),
         param("journal_matching_account", journal, owner_account, expected=True),
-        param("journal_unmatched_account", journal, non_owner_publisher, expected=False),
-        param("journal_non_publisher_account", journal, non_publisher, expected=False),
+        param("journal_unmatched_account", journal, non_owner_publisher, raises=exceptions.AuthoriseException),
+        param("journal_non_publisher_account", journal, non_publisher, raises=exceptions.AuthoriseException),
         param("journal_admin_account", journal, admin, expected=True)
     ]
 
@@ -61,12 +61,12 @@ def create_edit_cases():
         param("no_app_with_account", None, owner_account, raises=exceptions.ArgumentException),
         param("app_no_account", editable_application, None, raises=exceptions.ArgumentException),
         param("editable_app_owning_account", editable_application, owner_account, expected=True),
-        param("editable_app_nonowning_account", editable_application, non_owner_publisher, expected=False),
-        param("editable_app_non_publisher_account", editable_application, non_publisher, expected=False),
+        param("editable_app_nonowning_account", editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
+        param("editable_app_non_publisher_account", editable_application, non_publisher, raises=exceptions.AuthoriseException),
         param("editable_app_admin_account", editable_application, admin, expected=True),
-        param("non_editable_app_owning_account", non_editable_application, owner_account, expected=False),
-        param("non_editable_app_nonowning_account", non_editable_application, non_owner_publisher, expected=False),
-        param("non_editable_app_non_publisher_account", non_editable_application, non_publisher, expected=False),
+        param("non_editable_app_owning_account", non_editable_application, owner_account, raises=exceptions.AuthoriseException),
+        param("non_editable_app_nonowning_account", non_editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
+        param("non_editable_app_non_publisher_account", non_editable_application, non_publisher, raises=exceptions.AuthoriseException),
         param("non_editable_app_admin_account", non_editable_application, admin, expected=True)
     ]
 

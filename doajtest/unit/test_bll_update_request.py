@@ -91,7 +91,7 @@ class TestBLLUpdateRequest(DoajTestCase):
 
         if application_status != "n/a":
             latest_app.set_application_status(application_status)
-            latest_app.save()
+            latest_app.save(blocking=True)
 
         # finally save the journal record, ensuring we get a blocking save, so everything
         # above here should be synchronised with the repo
