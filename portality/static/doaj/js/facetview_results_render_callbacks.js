@@ -496,8 +496,8 @@ fv_edit_update_request = (function (resultobj) {
                 if (status === "update_request" || status == "submitted") {
                     result = '<a class="edit_suggestion_link pull-right" href="';
                     result += update_request_edit_url;
-                    result += resultobj['id'];
-                    result += '" target="_blank"';
+                    result += resultobj.admin.current_journal;
+                    result += '"';
                     result += '>Edit this update request</a>';
                 } else  if (status !== "rejected" && status !== "accepted") {
                     result = '<span class="pull-right">This update request is currently being reviewed by an Editor.</span>';
