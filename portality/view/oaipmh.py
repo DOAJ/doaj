@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from flask import Blueprint, request, make_response
 from portality.core import app
 from portality.models import OAIPMHJournal, OAIPMHArticle
-from portality.lib.analytics import google_analytics_event
+from portality.lib import analytics
 from portality import datasets
 from copy import deepcopy
 
@@ -17,7 +17,7 @@ blueprint = Blueprint('oaipmh', __name__)
 
 @blueprint.route("/oai", methods=["GET", "POST"])
 @blueprint.route("/oai.<specified>", methods=["GET", "POST"])
-@google_analytics_event('OAI-PMH', 'Retrieve', record_value_of_which_arg='specified')
+@analytics.Google.sends_ga_event('OAI-PMH', 'Retrieve', record_value_of_which_arg='specified')
 def oaipmh(specified=None):
     # work out which endpoint we're going to
     if specified is None:
@@ -73,8 +73,9 @@ def oaipmh(specified=None):
     return resp
 
 #####################################################################
-## Utility methods/objects
+# Utility methods/objects
 #####################################################################
+
 
 class DateFormat(object):
     @classmethod
@@ -106,8 +107,10 @@ class DateFormat(object):
                 pass
         return success
 
+
 def make_set_spec(setspec):
     return base64.urlsafe_b64encode(setspec).replace("=", "~")
+
 
 def decode_set_spec(setspec):
     # first, make sure the setspec is a string
@@ -128,6 +131,7 @@ def decode_set_spec(setspec):
         raise SetSpecException()
 
     return decoded
+
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
     d = {}

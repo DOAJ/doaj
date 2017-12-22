@@ -1,7 +1,7 @@
 import re
 from flask import Blueprint, request, redirect, url_for, render_template, abort
 from portality.models import OpenURLRequest
-from portality.lib.analytics import google_analytics_event
+from portality.lib import analytics
 from portality.core import app
 from urllib import unquote
 
@@ -33,7 +33,7 @@ def openurl():
         abort(404)
 
 
-@google_analytics_event('OpenURL', 'Retrieve', record_value_of_which_arg='query')
+@analytics.Google.sends_ga_event('OpenURL', 'Retrieve', record_value_of_which_arg='query')
 def parse_query(query, req):
     """
     Create the model which holds the query
