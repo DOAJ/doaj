@@ -283,7 +283,7 @@ QUERY_ROUTE = {
     "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
     "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
     "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
-    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : True}
+    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : False}
 }
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {

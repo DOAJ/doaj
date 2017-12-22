@@ -490,12 +490,24 @@ fv_delete_editor_group = (function (resultobj) {
 fv_edit_update_request = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
-            var result = '<a class="edit_suggestion_link pull-right" href="';
-            result += update_request_edit_url;
-            result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this update request</a>';
-            return result;
+            if (resultobj.admin && resultobj.admin.application_status) {
+                var status = resultobj.admin.application_status;
+                var result = "";
+                if (status === "update_request" || status == "submitted") {
+                    result = '<a class="edit_suggestion_link pull-right" href="';
+                    result += update_request_edit_url;
+                    result += resultobj['id'];
+                    result += '" target="_blank"';
+                    result += '>Edit this update request</a>';
+                } else  if (status !== "rejected" && status !== "accepted") {
+                    result = '<span class="pull-right">This update request is currently being reviewed by an Editor.</span>';
+                } else if (status === "rejected") {
+                    result = '<span class="pull-right">This update request has been rejected.</span>';
+                } else if (status === "accepted") {
+                    result = '<span class="pull-right">This update request has been accepted, and your journal in DOAJ updated.</span>';
+                }
+                return result;
+            }
         }
         return false;
     };

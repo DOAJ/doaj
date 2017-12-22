@@ -18,26 +18,14 @@ jQuery(document).ready(function ($) {
             {
                 'field': 'admin.application_status.exact',
                 'display': 'Status',
-                value_function: publisherStatusMap
-            },
-            {'field': 'index.classification.exact', 'display': 'Subject'},
-            {'field': 'index.language.exact', 'display': 'Journal Language'},
-            {'field': 'index.country.exact', 'display': 'Country of publisher'},
-            {'field': 'index.subject.exact', 'display': 'Subject'},
-            {'field': 'bibjson.provider.exact', 'display': 'Provider'},
-            {
-                'field': 'bibjson.author_pays.exact',
-                'display': 'Publication charges?',
-                value_function: authorPaysMap
-            },
-            {'field': 'index.license.exact', 'display': 'Journal License'},
-            {'field': 'bibjson.oa_start.exact', 'display': 'Started publishing OA content (year)'},
-            {'field': 'bibjson.oa_end.exact', 'display': 'Stopped publishing OA content (year)'}
+                value_function: publisherStatusMap,
+                open: true
+            }
         ],
 
         search_sortby: [
-            {'display': 'Date added to DOAJ', 'field': 'created_date'},
-            {'display': 'Last updated', 'field': 'last_updated'},
+            {'display': 'Date created', 'field': 'created_date'},
+            {'display': 'Last updated', 'field': 'last_manual_update'},
             {'display': 'Title', 'field': 'index.unpunctitle.exact'}
         ],
 
@@ -55,7 +43,7 @@ jQuery(document).ready(function ($) {
 
         page_size : 10,
         from : 0,
-        sort : [{"created_date" : {"order" : "desc"}}],
+        sort : [{"last_manual_update" : {"order" : "desc"}}],
 
         results_render_callbacks: {
             'bibjson.author_pays': fv_author_pays,
@@ -92,7 +80,7 @@ jQuery(document).ready(function ($) {
             [
                 {
                     "pre": "<strong>Last updated</strong>: ",
-                    "field": "last_updated"
+                    "field": "last_manual_update"
                 }
             ],
             [
