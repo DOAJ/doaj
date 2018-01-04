@@ -102,7 +102,6 @@ SPONSORS = {
         'openedition': {'name': 'OpenEdition', 'logo': 'openedition.jpg', 'url': 'http://www.openedition.org/'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.jpg', 'url': 'http://www.plos.org/'},
         'degruyter': {'name': 'De Gruyter Open', 'logo': 'degruyter.jpg', 'url': 'http://www.degruyteropen.com/'},
-        'aaas': {'name': 'AAAS (American Association for the Advancement of Science)', 'logo': 'aaas.png', 'url': 'http://www.aaas.org/'},
         'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
         'iop': {'name': 'IOP Publishing', 'logo': 'iop.jpg', 'url': 'http://ioppublishing.org/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.jpg', 'url': 'http://www.springernature.com/gp/group/aboutus'},
