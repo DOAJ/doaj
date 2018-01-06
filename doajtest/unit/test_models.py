@@ -141,6 +141,7 @@ class TestClient(DoajTestCase):
         """Read and write properties into the suggestion model"""
         s = models.Suggestion()
         s.set_current_journal("9876543")
+        s.set_related_journal("123456789")
         s.set_bulk_upload_id("abcdef")
         s.set_application_status("rejected")
         s.suggested_on = "2001-01-01T00:00:00Z"
@@ -150,6 +151,7 @@ class TestClient(DoajTestCase):
 
         assert s.data.get("admin", {}).get("current_journal") == "9876543"
         assert s.current_journal == "9876543"
+        assert s.related_journal == "123456789"
         assert s.bulk_upload_id == "abcdef"
         assert s.application_status == "rejected"
         assert s.suggested_on == "2001-01-01T00:00:00Z"
@@ -172,6 +174,12 @@ class TestClient(DoajTestCase):
         assert s['index']['application_type'] == 'new application'
 
         s.save()
+
+        s.remove_current_journal()
+        s.remove_related_journal()
+
+        assert s.current_journal is None
+        assert s.related_journal is None
 
 
     def test_07_make_journal(self):

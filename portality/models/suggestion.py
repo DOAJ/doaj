@@ -88,6 +88,16 @@ class Suggestion(JournalLikeObject):
         self._delete("admin.current_journal")
 
     @property
+    def related_journal(self):
+        return self._get_single("admin.related_journal")
+
+    def set_related_journal(self, journal_id):
+        self._set_with_struct("admin.related_journal", journal_id)
+
+    def remove_related_journal(self):
+        self._delete("admin.related_journal")
+
+    @property
     def application_status(self):
         return self._get_single("admin.application_status")
 
@@ -176,6 +186,7 @@ APPLICATION_STRUCT = {
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
+                "related_journal" : {"coerce" : "unicode"},
                 "application_status" : {"coerce" : "unicode"}
             },
             "lists" : {
