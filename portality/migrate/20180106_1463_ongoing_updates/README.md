@@ -1,0 +1,13 @@
+# 2018-01-06; Issue 1463 - Ongoing Updates
+
+This migration covers the deployment of code to support the ongoing update
+by publishers of their journal records.
+
+This migration will carry out the following actions:
+
+* Remove any "current_journal" field on applications which are in status "accepted" or "rejected"
+
+
+## Execution
+
+    python portality/upgrade.py -u portality/migrate/20180106_1463_ongoing_updates/migrate.json
