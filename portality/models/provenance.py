@@ -105,7 +105,9 @@ class Provenance(dataobj.DataObj, DomainObject):
 
         p = Provenance(**d)
         if save:
-            p.save()
+            saved = p.save()
+            if saved is None:
+                raise ProvenanceException("Failed to save provenance record")
         return p
 
     @classmethod
@@ -150,3 +152,6 @@ class ResourceIDQuery(object):
             },
             "sort" : [{"created_date" : {"order" : "desc"}}]
         }
+
+class ProvenanceException(Exception):
+    pass
