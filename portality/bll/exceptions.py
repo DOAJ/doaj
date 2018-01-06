@@ -23,3 +23,9 @@ class ArgumentException(Exception):
     Exception to raise if an expected argument is not present
     """
     pass
+
+class SaveException(Exception):
+    """
+    Exception to raise if a save operation did not work as expected
+    """
+    pass

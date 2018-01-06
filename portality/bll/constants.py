@@ -1,0 +1,3 @@
+APPLICATION_STATUS_REJECTED = "rejected"
+
+PROVENANCE_STATUS_REJECTED = "status:rejected"
