@@ -1,8 +1,8 @@
 Dear {{ publisher_name }},
 
-Congratulations! The reapplication for {{ journal_title }} has been accepted and the journal's profile has been updated with all the most recent information. Please go to the new journal record in your Publisher Area: {{ url_root }}/publisher/ and review it, checking that it is accurate. In particular, please check that the ISSN information is correct.
+Congratulations! The update request for {{ journal_title }} has been accepted and the journal's profile has been updated with all the most recent information. Please go to the new journal record in your Publisher Area: {{ url_root }}/publisher/ and review it, checking that it is accurate. In particular, please check that the ISSN information is correct.
 
-An email has also been sent to {{ journal_contact }} who is listed as the Journal Contact in the reapplication.
+An email has also been sent to {{ journal_contact }} who is listed as the Journal Contact in the update request.
 
 To increase the visibility, impact, distribution and usage* of your journal content, we urge you to upload the article metadata for this journal as soon as possible. You may do this from the Publisher Area in three ways:
 

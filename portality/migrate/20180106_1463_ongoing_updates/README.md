@@ -6,6 +6,7 @@ by publishers of their journal records.
 This migration will carry out the following actions:
 
 * Remove any "current_journal" field on applications which are in status "accepted" or "rejected"
+* Calls prep() on every suggestion, so that index.application_type is set correctly for faceting
 
 
 ## Execution
