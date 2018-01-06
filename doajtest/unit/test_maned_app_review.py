@@ -140,7 +140,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "reapplication",
+        "application_status" : "update_request",
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -318,7 +318,7 @@ class TestManEdAppReview(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     def test_01_maned_review_success(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
@@ -475,7 +475,7 @@ class TestManEdAppReview(DoajTestCase):
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
 
     def test_05_maned_review_accept(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
@@ -505,7 +505,7 @@ class TestManEdAppReview(DoajTestCase):
         ctx.pop()
 
     def test_06_maned_review_reject(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
