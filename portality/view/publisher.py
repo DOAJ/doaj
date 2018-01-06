@@ -49,13 +49,13 @@ def update_request(journal_id):
         application, jlock, alock = dbl.update_request_for_journal(journal_id, account=current_user._get_current_object())
     except AuthoriseException as e:
         if e.reason == AuthoriseException.WRONG_STATUS:
-            journal = dbl.journal(journal_id)
+            journal, _ = dbl.journal(journal_id)
             return render_template("publisher/application_already_submitted.html", journal=journal)
         else:
             abort(404)
     except lock.Locked as e:
-        journal = dbl.journal(journal_id)
-        return render_template("publisher/locked.html", journal=journal)
+        journal, _ = dbl.journal(journal_id)
+        return render_template("publisher/locked.html", journal=journal, lock=e.lock)
 
     # if we didn't find an application or journal, 404 the user
     if application is None:
@@ -69,7 +69,7 @@ def update_request(journal_id):
     if cancelled is not None:
         if jlock is not None: jlock.delete()
         if alock is not None: alock.delete()
-        return redirect(url_for("publisher.index"))
+        return redirect(url_for("publisher.updates_in_progress"))
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
