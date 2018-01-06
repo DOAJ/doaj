@@ -606,10 +606,14 @@ class ManEdApplicationReview(ApplicationContext):
 
         # Save the target
         self.target.set_last_manual_update()
-        self.target.save()
+        # self.target.save()
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
+
+        # delayed import of the DOAJ BLL
+        from portality.bll import doaj
+        dbl = doaj.DOAJ()
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == 'accepted':
@@ -646,9 +650,14 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception("Acceptance email to owner failed.")
 
         # if the application was instead rejected, record a provenance event against it
-        if self.source.application_status != "rejected" and self.target.application_status == "rejected":
+        elif self.source.application_status != "rejected" and self.target.application_status == "rejected":
             # record the event in the provenance tracker
-            models.Provenance.make(current_user, "status:rejected", self.target)
+            # models.Provenance.make(current_user, "status:rejected", self.target)
+            dbl.reject_application(self.target, current_user._get_current_object())
+
+        # the application was neither accepted or rejected, so just save it
+        else:
+            self.target.save()
 
         # if we need to email the editor and/or the associate, handle those here
         if is_editor_group_changed:

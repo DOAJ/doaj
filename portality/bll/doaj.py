@@ -5,7 +5,7 @@ from portality import models
 from portality.formcontext import formcontext
 from portality import lock
 
-from portality.bll import exceptions
+from portality.bll import exceptions, constants
 
 from werkzeug.datastructures import MultiDict
 
@@ -14,6 +14,67 @@ class DOAJ(object):
     FORMCONTEXT_FACTORIES = {
         "application" : formcontext.ApplicationFormFactory
     }
+
+    def reject_application(self, application, account, provenance=True):
+        """
+        Reject an application.  This will:
+        * set the application status to "rejected" (if not already)
+        * remove the current_journal field, and move it to related_journal (if needed)
+        * save the application
+        * write a provenance record for the rejection (if requested)
+
+        :param application:
+        :param account:
+        :param provenance:
+        :return:
+        """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("reject_application", [
+            {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+            {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"}
+        ], exceptions.ArgumentException)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering reject_application")
+
+        # check we're allowed to carry out this action
+        if not account.has_role("reject_application"):
+            raise exceptions.AuthoriseException(message="This user is not allowed to reject applications", reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+        # ensure the application status is "rejected"
+        if application.application_status != constants.APPLICATION_STATUS_REJECTED:
+            application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
+
+        # retrieve the id of the current journal if there is one
+        cj = application.current_journal
+
+        # if there is a current_journal record, remove it, and record
+        # it as a related journal.  This will let us come back later and know
+        # which journal record this was intended as an update against if needed.
+        if cj is not None:
+            application.remove_current_journal()
+            application.set_related_journal(cj)
+
+        saved = application.save()
+        if saved is None:
+            raise exceptions.SaveException("Save on application in reject_application failed")
+
+        # record a provenance record that this action took place
+        if provenance:
+            models.Provenance.make(account, constants.PROVENANCE_STATUS_REJECTED, application)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed reject_application")
+
+    def accept_application(self, application, account, manual_update=True, provenance=True):
+        j = application.make_journal()
+        j.set_in_doaj(True)
+        if manual_update:
+            j.set_last_manual_update()
+        j.save()
+
+        if provenance:
+            # record the event in the provenance tracker
+            models.Provenance.make(account, "status:accepted", application)
 
     def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """
@@ -223,7 +284,6 @@ class DOAJ(object):
 
         return True
 
-
     def can_edit_update_request(self, account, application):
         """
         Is the given account allowed to edit the update request application
@@ -250,7 +310,6 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
         return True
-
 
     def formcontext(self, type, role, source=None, form_data=None):
         """
