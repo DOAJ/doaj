@@ -127,6 +127,7 @@ APPLICATION_SOURCE = {
         "editor_group" : "editorgroup",
         "editor" : "associate",
         "seal" : True,
+        "current_journal" : "123456789987654321"
     }
 }
 
