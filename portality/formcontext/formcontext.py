@@ -456,7 +456,7 @@ class ApplicationContext(PrivateContext):
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/publisher_application_accepted.txt"
                 if reapplication:
-                    template = "email/publisher_reapplication_accepted.txt"
+                    template = "email/publisher_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -490,7 +490,7 @@ class ApplicationContext(PrivateContext):
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/contact_application_accepted.txt"
                 if reapplication:
-                    template = "email/contact_reapplication_accepted.txt"
+                    template = "email/contact_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,

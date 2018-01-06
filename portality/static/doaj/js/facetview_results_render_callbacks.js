@@ -42,8 +42,8 @@ fv_application_status = (function(resultobj) {
 
 // This must be updated in line with the list in formcontext/choices.py
 fv_application_status.mapping = {
-    'reapplication' : 'Reapplication Pending',
-    'submitted' : 'Reapplication Submitted',
+    'update_request' : 'Update Request Pending',
+    'submitted' : 'Update Request Submitted',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',

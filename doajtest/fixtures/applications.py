@@ -270,7 +270,7 @@ REAPP1_SOURCE = {
                 "name":"Contact Name"
             }
         ],
-        "application_status":"reapplication",
+        "application_status":"update_request",
         "owner":"Owner",
         "editor_group":"editorgroup",
         "current_journal":"abcdefghijk_journal",
@@ -481,7 +481,7 @@ REAPP2_UNICODE_SOURCE = {
                 u"name":u"Contact Name"
             }
         ],
-        u"application_status":u"reapplication",
+        u"application_status":u"update_request",
         u"owner":u"Owner",
         u"editor_group":u"editorgroup",
         u"current_journal":u"abcdefghijk_journal",

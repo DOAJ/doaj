@@ -93,8 +93,8 @@ class Choices(object):
     ]
 
     _application_status_admin = _application_status_base + [
-        ('reapplication', 'Reapplication Pending'),
-        ('submitted', 'Reapplication Submitted'),
+        ('update_request', 'Update Request Pending'),
+        ('submitted', 'Update Request Submitted'),
         ('on hold', 'On Hold'),
         ('ready', 'Ready'),
         ('rejected', 'Rejected'),

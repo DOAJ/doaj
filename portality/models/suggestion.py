@@ -141,7 +141,7 @@ class Suggestion(JournalLikeObject):
         super(Suggestion, self)._generate_index()
 
         if self.current_journal:
-            self._set_with_struct("index.application_type", "reapplication")
+            self._set_with_struct("index.application_type", "update request")
         else:
             self._set_with_struct("index.application_type", "new application")
 

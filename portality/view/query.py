@@ -176,7 +176,7 @@ def _editor_filter():
     return {"admin.editor_group.exact" : gnames}
 
 def _reapp_filter():
-    return {"admin.application_status" : ["reapplication", "submitted"]}
+    return {"admin.application_status" : ["update_request", "submitted"]}
 
 def _owner_filter():
     return {"admin.owner.exact" : current_user.id}

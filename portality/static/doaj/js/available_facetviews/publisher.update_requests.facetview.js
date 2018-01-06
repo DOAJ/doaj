@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
-        render_not_found: publisherReapplicationNotFound,
+        render_not_found: publisherUpdateRequestNotFound,
         post_render_callback: doajScrollTop,
 
         sharesave_link: false,
