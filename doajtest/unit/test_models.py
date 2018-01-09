@@ -54,7 +54,6 @@ class TestClient(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_bibjson({"title" : "test"})
-        j.set_last_reapplication("2003-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
         j.set_in_doaj(True)
         j.add_contact("richard", "richard@email.com")
@@ -66,14 +65,13 @@ class TestClient(DoajTestCase):
         j.set_ticked(True)
         j.set_bulk_upload_id("abcdef")
         j.set_seal(True)
+        j.add_related_application("123456789", "2003-01-01T00:00:00Z")
+        j.add_related_application("987654321", "2002-01-01T00:00:00Z")
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
         assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
         assert j.last_updated == "2002-01-01T00:00:00Z"
-        # assert len(j.bibjson().data.keys()) == 1
-        #assert j.bibjson().data["title"] == "test"
-        assert j.last_reapplication == "2003-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
         assert j.is_in_doaj() is True
@@ -89,6 +87,8 @@ class TestClient(DoajTestCase):
         assert j.has_seal() is True
         assert j.bulk_upload_id == "abcdef"
 
+        assert j.last_update_request == "2003-01-01T00:00:00Z"
+
         notes = j.notes
         j.remove_note(notes[0])
         assert len(j.notes) == 0
@@ -99,9 +99,12 @@ class TestClient(DoajTestCase):
         j.remove_current_application()
         assert j.current_application is None
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        j.set_last_reapplication()
-        assert j.last_reapplication == now # should work, since this ought to take less than a second, but it might sometimes fail
+        related = j.related_applications
+        assert related is not None
+        j.remove_related_applications()
+        assert len(j.related_applications) == 0
+        j.set_related_applications(related)
+        assert len(j.related_applications) == 2
 
         # do a quick by-reference check on the bibjson object
         bj = j.bibjson()
@@ -180,15 +183,6 @@ class TestClient(DoajTestCase):
 
         assert s.current_journal is None
         assert s.related_journal is None
-
-
-    def test_07_make_journal(self):
-        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        j = s.make_journal()
-
-        assert j.id != s.id
-        assert "suggestion" not in j.data
-        assert j.data.get("bibjson", {}).get("active")
 
     def test_08_sync_owners(self):
         # suggestion with no current_journal

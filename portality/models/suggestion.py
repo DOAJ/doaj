@@ -40,43 +40,6 @@ class Suggestion(JournalLikeObject):
             return results[0]
         return None
 
-    def make_journal(self):
-        # first make a raw copy of the content into a journal
-        journal_data = deepcopy(self.data)
-        if "suggestion" in journal_data:
-            del journal_data['suggestion']
-        if "index" in journal_data:
-            del journal_data['index']
-        if "admin" in journal_data and "application_status" in journal_data["admin"]:
-            del journal_data['admin']['application_status']
-        if "admin" in journal_data and "current_journal" in journal_data["admin"]:
-            del journal_data["admin"]["current_journal"]
-        if "id" in journal_data:
-            del journal_data['id']
-        if "created_date" in journal_data:
-            del journal_data['created_date']
-        if "last_updated" in journal_data:
-            del journal_data['last_updated']
-        if "bibjson" not in journal_data:
-            journal_data["bibjson"] = {}
-        journal_data['bibjson']['active'] = True
-
-        new_j = Journal(**journal_data)
-
-        # now deal with the fact that this could be a replacement of an existing journal
-        if self.current_journal is not None:
-            cj = Journal.pull(self.current_journal)
-
-            # carry the id and the created date
-            new_j.set_id(self.current_journal)
-            new_j.set_created(cj.created_date)
-
-            # set a reapplication date
-            new_j.set_last_reapplication()
-
-        return new_j
-
-
     @property
     def current_journal(self):
         return self._get_single("admin.current_journal")
