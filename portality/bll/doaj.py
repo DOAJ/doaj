@@ -1,5 +1,6 @@
 from portality.core import app
 from portality.lib.argvalidate import argvalidate
+from portality.lib import dates
 
 from portality import models
 from portality.formcontext import formcontext
@@ -66,15 +67,54 @@ class DOAJ(object):
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed reject_application")
 
     def accept_application(self, application, account, manual_update=True, provenance=True):
-        j = application.make_journal()
-        j.set_in_doaj(True)
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("accept_application", [
+            {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+            {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"},
+            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"}
+        ], exceptions.ArgumentException)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering accept_application")
+
+        # ensure that the account holder has a suitable role
+        if not account.has_role("accept_application"):
+            raise exceptions.AuthoriseException(
+                message="User {x} is not permitted to accept application {y}".format(x=account.id, y=application.id),
+                reason=exceptions.AuthoriseException.WRONG_ROLE)
+
+        # ensure the application status is "accepted"
+        if application.application_status != constants.APPLICATION_STATUS_ACCEPTED:
+            application.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
+
+        # make the resulting journal
+        j = self.application_2_journal(application, manual_update=manual_update)
+        saved = j.save()
+        if saved is None:
+            raise exceptions.SaveException("Save of resulting journal in accept_application failed")
+
+        # retrieve the id of the current journal if there is one
+        cj = application.current_journal
+
+        # if there is a current_journal record, remove it
+        if cj is not None:
+            application.remove_current_journal()
+
+        # set the relationship with the journal
+        application.set_related_journal(j.id)
+
+        # if we were asked to record this as a manual update, record that on the application
+        # (the journal is done implicitly above)
         if manual_update:
-            j.set_last_manual_update()
-        j.save()
+            application.set_last_manual_update()
 
         if provenance:
             # record the event in the provenance tracker
-            models.Provenance.make(account, "status:accepted", application)
+            models.Provenance.make(account, constants.PROVENANCE_STATUS_ACCEPTED, application)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Completed accept_application")
+
+        return j
 
     def update_request_for_journal(self, journal_id, account=None, lock_timeout=None):
         """
@@ -148,6 +188,54 @@ class DOAJ(object):
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed update_request_for_journal; return application object")
 
         return application, journal_lock, application_lock
+
+    def application_2_journal(self, application, manual_update=True):
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("application_2_journal", [
+            {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+            {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"}
+        ], exceptions.ArgumentException)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Entering application_2_journal")
+
+        abj = application.bibjson()
+        journal = models.Journal()
+        journal.set_bibjson(abj)
+        jbj = journal.bibjson()
+        jbj.active = True
+
+        contacts = application.contacts()
+        notes = application.notes
+
+        for contact in contacts:
+            journal.add_contact(contact.get("name"), contact.get("email"))
+        if application.editor is not None:
+            journal.set_editor(application.editor)
+        if application.editor_group is not None:
+            journal.set_editor_group(application.editor_group)
+        for note in notes:
+            journal.add_note(note.get("note"), note.get("date"))
+        if application.owner is not None:
+            journal.set_owner(application.owner)
+        journal.set_seal(application.has_seal())
+
+        journal.add_related_application(application.id, dates.now())
+        journal.set_in_doaj(True)
+
+        if manual_update:
+            journal.set_last_manual_update()
+
+        if application.current_journal is not None:
+            cj = models.Journal.pull(application.current_journal)
+
+            # carry the id and the created date
+            if cj is not None:
+                journal.set_id(cj.id)
+                journal.set_created(cj.created_date)
+
+        if app.logger.isEnabledFor("debug"): app.logger.debug("Completing application_2_journal")
+
+        return journal
 
     def journal_2_application(self, journal, account=None):
         """
