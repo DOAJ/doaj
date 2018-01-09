@@ -240,17 +240,26 @@ class PrivateContext(FormContext):
             pass
 
         try:
-            if self.source.last_reapplication:
-                self.target.set_last_reapplication(self.source.last_reapplication)
-        except AttributeError:
-            # this means that the source doesn't know about last_reapplication, which is fine
-            pass
-
-        try:
             if self.source.current_journal:
                 self.target.set_current_journal(self.source.current_journal)
         except AttributeError:
             # this means that the source doesn't know about current_journals, which is fine
+            pass
+
+        try:
+            if self.source.related_journal:
+                self.target.set_related_journal(self.source.related_journal)
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.related_applications:
+                related = self.source.related_applications
+                for rel in related:
+                    self.target.add_related_application(rel.get("application_id"), rel.get("date_accepted"))
+        except AttributeError:
+            # this means that the source doesn't know about related_applications, which is fine
             pass
 
         # if the source is a journal, we need to carry the in_doaj flag
@@ -617,6 +626,8 @@ class ManEdApplicationReview(ApplicationContext):
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == 'accepted':
+            j = dbl.accept_application(self.target, current_user._get_current_object())
+            """
             # this suggestion is just getting accepted
             j = self.target.make_journal()
             j.set_in_doaj(True)
@@ -625,7 +636,7 @@ class ManEdApplicationReview(ApplicationContext):
 
             # record the event in the provenance tracker
             models.Provenance.make(current_user, "status:accepted", self.target)
-
+            """
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:

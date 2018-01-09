@@ -131,7 +131,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
                 continue
 
             jcreated = journal.created_timestamp
-            reapp = journal.last_reapplication
+            reapp = journal.last_update_request
             print counter, journal.id, reapp
             if reapp is not None:
                 jcreated = datetime.strptime(reapp, "%Y-%m-%dT%H:%M:%SZ")
@@ -164,20 +164,20 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
                 if len(provs) > 0:
                     last_accept = provs[0].last_updated
 
-                out_applications.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
+                out_applications.writerow([journal.id, journal.created_date, journal.last_update_request, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
 
             # was the journal (in doaj) created before the application by greater than the threshold, and is it in a state other than rejected
             if mdiff < -1 * THRESHOLD and latest.application_status != "rejected" and journal.is_in_doaj():
-                out_reapps.writerow([journal.id, journal.created_date, journal.last_reapplication, latest.id, latest.created_date, latest.last_updated, latest.last_manual_update, latest.application_status, mdiff])
+                out_reapps.writerow([journal.id, journal.created_date, journal.last_update_request, latest.id, latest.created_date, latest.last_updated, latest.last_manual_update, latest.application_status, mdiff])
 
             # now figure out if the account is missing
             owner = journal.owner
             if owner is None:
-                out_accounts.writerow([journal.id, journal.created_date, journal.last_reapplication, "NO OWNER"])
+                out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, "NO OWNER"])
             else:
                 acc = Account.pull(owner)
                 if acc is None:
-                    out_accounts.writerow([journal.id, journal.created_date, journal.last_reapplication, owner])
+                    out_accounts.writerow([journal.id, journal.created_date, journal.last_update_request, owner])
 
         print "processed", counter, "journals"
 
