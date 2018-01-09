@@ -103,6 +103,13 @@ class TestManEdJournalReview(DoajTestCase):
         fc.patch_target()
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk_journal"
+        assert fc.target.current_application == "qwertyuiop"
+        related = fc.target.related_applications
+        assert len(related) == 2
+        assert related[0].get("application_id") == "asdfghjkl"
+        assert related[0].get("date_accepted") == "2018-01-01T00:00:00Z"
+        assert related[1].get("application_id") == "zxcvbnm"
+        assert related[1].get("date_accepted") is None
         # everything else is overridden by the form, so no need to check it has patched
 
         # now do finalise (which will also re-run all of the steps above)

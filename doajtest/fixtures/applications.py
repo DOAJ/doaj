@@ -35,8 +35,23 @@ class ApplicationFixtureFactory(object):
         return application_sources
 
     @staticmethod
-    def make_application_form():
-        return deepcopy(APPLICATION_FORM)
+    def make_application_form(role="maned"):
+        form = deepcopy(APPLICATION_FORM)
+        if role == "assed" or role == "editor":
+            del form["editor_group"]
+        elif role == "publisher":
+            UPDATE_REQUEST_FORMINFO = deepcopy(JOURNAL_INFO)
+            UPDATE_REQUEST_FORMINFO.update(deepcopy(SUGGESTION))
+
+            form = deepcopy(UPDATE_REQUEST_FORMINFO)
+            form["keywords"] = ",".join(form["keywords"])
+            del form["pissn"]
+            del form["eissn"]
+            del form["contact_name"]
+            del form["contact_email"]
+            del form["confirm_contact_email"]
+
+        return form
 
     @staticmethod
     def make_application_form_info():
@@ -127,7 +142,8 @@ APPLICATION_SOURCE = {
         "editor_group" : "editorgroup",
         "editor" : "associate",
         "seal" : True,
-        "current_journal" : "123456789987654321"
+        "current_journal" : "123456789987654321",
+        "related_journal" : "987654321123456789"
     }
 }
 

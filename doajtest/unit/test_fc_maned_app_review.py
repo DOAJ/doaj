@@ -37,259 +37,8 @@ def mock_lookup_code(code):
 # Source objects to be used for testing
 #####################################################################
 
-APPLICATION_SOURCE = {
-    "id" : "abcdefghijk",
-    "created_date" : "2000-01-01T00:00:00Z",
-    "bibjson" : {
-        # "active" : true|false,
-        "title" : "The Title",
-        "alternative_title" : "Alternative Title",
-        "identifier": [
-            {"type" : "pissn", "id" : "1234-5678"},
-            {"type" : "eissn", "id" : "9876-5432"},
-        ],
-        "keywords" : ["word", "key"],
-        "language" : ["EN", "FR"],
-        "country" : "US",
-        "publisher" : "The Publisher",
-        "provider" : "Platform Host Aggregator",
-        "institution" : "Society Institution",
-        "replaces" : ["1111-1111"],
-        "is_replaced_by" : ["2222-2222"],
-        "discontinued_date" : "2001-01-01",
-        "link": [
-            {"type" : "homepage", "url" : "http://journal.url"},
-            {"type" : "waiver_policy", "url" : "http://waiver.policy"},
-            {"type" : "editorial_board", "url" : "http://editorial.board"},
-            {"type" : "aims_scope", "url" : "http://aims.scope"},
-            {"type" : "author_instructions", "url" : "http://author.instructions"},
-            {"type" : "oa_statement", "url" : "http://oa.statement"}
-        ],
-        "subject" : [
-            {"scheme" : "LCC", "term" : "Economic theory. Demography", "code" : "HB1-3840"},
-            {"scheme" : "LCC", "term" : "Social Sciences", "code" : "H"}
-        ],
-
-        "oa_start" : {
-            "year" : 1980,
-        },
-        "apc" : {
-            "currency" : "GBP",
-            "average_price" : 2
-        },
-        "submission_charges" : {
-            "currency" : "USD",
-            "average_price" : 4
-        },
-        "archiving_policy" : {
-            "known" : ["LOCKSS", "CLOCKSS"],
-            "nat_lib" : "Trinity",
-            "other" : "A safe place",
-            "url" : "http://digital.archiving.policy"
-        },
-        "editorial_review" : {
-            "process" : "Open peer review",
-            "url" : "http://review.process"
-        },
-        "plagiarism_detection" : {
-            "detection": True,
-            "url" : "http://plagiarism.screening"
-        },
-        "article_statistics" : {
-            "statistics" : True,
-            "url" : "http://download.stats"
-        },
-        "deposit_policy" : ["Sherpa/Romeo", "Store it"],
-        "author_copyright" : {
-            "copyright" : "True",
-            "url" : "http://copyright"
-        },
-        "author_publishing_rights" : {
-            "publishing_rights" : "True",
-            "url" : "http://publishing.rights"
-        },
-        "allows_fulltext_indexing" : True,
-        "persistent_identifier_scheme" : ["DOI", "ARK", "PURL"],
-        "format" : ["HTML", "XML", "Wordperfect"],
-        "publication_time" : 8,
-        "license" : [
-            {
-                "title" : "CC MY",
-                "type" : "CC MY",
-                "url" : "http://licence.url",
-                "open_access": True,
-                "BY": True,
-                "NC": True,
-                "ND": False,
-                "SA": False,
-                "embedded" : True,
-                "embedded_example_url" : "http://licence.embedded"
-            }
-        ]
-    },
-    "suggestion" : {
-        "suggested_on": "2014-04-09T20:43:18Z",
-        "suggester": {
-            "name": "Suggester Name",
-            "email": "suggester@email.com"
-        },
-        "articles_last_year" : {
-            "count" : 16,
-            "url" : "http://articles.last.year"
-        },
-        "article_metadata" : True
-    },
-    "admin" : {
-        "application_status" : "update_request",
-        "notes" : [
-            {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
-        ],
-        "contact" : [
-            {
-                "email" : "contact@email.com",
-                "name" : "Contact Name"
-            }
-        ],
-        "owner" : "Owner",
-        "editor_group" : "editorgroup",
-        "editor" : "associate",
-    }
-}
-
-JOURNAL_SOURCE = JournalFixtureFactory.make_journal_source(in_doaj=True)
-
-######################################################################
-# Complete, populated, form components
-######################################################################
-
-JOURNAL_INFO = {
-    "title" : "The Title",
-    "url" : "http://journal.url",
-    "alternative_title" : "Alternative Title",
-    "pissn" : "1234-5678",
-    "eissn" : "9876-5432",
-    "publisher" : "The Publisher",
-    "society_institution" : "Society Institution",
-    "platform" : "Platform Host Aggregator",
-    "contact_name" : "Contact Name",
-    "contact_email" : "contact@email.com",
-    "confirm_contact_email" : "contact@email.com",
-    "country" : "US",
-    "processing_charges" : "True",
-    "processing_charges_url" : "http://apc.com",
-    "processing_charges_amount" : 2,
-    "processing_charges_currency" : "GBP",
-    "submission_charges" : "True",
-    "submission_charges_url" : "http://submission.com",
-    "submission_charges_amount" : 4,
-    "submission_charges_currency" : "USD",
-    "waiver_policy" : "True",
-    "waiver_policy_url" : "http://waiver.policy",
-    "digital_archiving_policy" : ["LOCKSS", "CLOCKSS", "A national library", "Other"],
-    "digital_archiving_policy_other" : "A safe place",
-    "digital_archiving_policy_library" : "Trinity",
-    "digital_archiving_policy_url" : "http://digital.archiving.policy",
-    "crawl_permission" : "True",
-    "article_identifiers" : ["DOI", "ARK", "Other"],
-    "article_identifiers_other" : "PURL",
-    "download_statistics" : "True",
-    "download_statistics_url" : "http://download.stats",
-    "first_fulltext_oa_year" : 1980,
-    "fulltext_format" : ["HTML", "XML", "Other"],
-    "fulltext_format_other" : "Wordperfect",
-    "keywords" : ["word", "key"],
-    "languages" : ["EN", "FR"],
-    "editorial_board_url" : "http://editorial.board",
-    "review_process" : "Open peer review",
-    "review_process_url" : "http://review.process",
-    "aims_scope_url" : "http://aims.scope",
-    "instructions_authors_url" : "http://author.instructions.com",
-    "plagiarism_screening" : "True",
-    "plagiarism_screening_url" : "http://plagiarism.screening",
-    "publication_time" : 8,
-    "oa_statement_url" : "http://oa.statement",
-    "license_embedded" : "True",
-    "license_embedded_url" : "http://licence.embedded",
-    "license" : "Other",
-    "license_other" : "CC MY",
-    "license_checkbox" : ["BY", "NC"],
-    "license_url" : "http://licence.url",
-    "open_access" : "True",
-    "deposit_policy" : ["Sherpa/Romeo", "Other"],
-    "deposit_policy_other" : "Store it",
-    "copyright" : "True",
-    "copyright_url" : "http://copyright.com",
-    "publishing_rights" : "True",
-    "publishing_rights_url" : "http://publishing.rights",
-    "replaces" : ["1111-1111"],
-    "is_replaced_by" : ["2222-2222"],
-    "discontinued_date" : "2001-01-01"
-}
-
-SUGGESTION = {
-    "articles_last_year" : 16,
-    "articles_last_year_url" : "http://articles.last.year",
-    "metadata_provision" : "True"
-}
-
-SUGGESTER = {
-    "suggester_name" : "Suggester",
-    "suggester_email" : "suggester@email.com",
-    "suggester_email_confirm" : "suggester@email.com"
-}
-
-NOTES = {
-    'notes': [
-        {'date': '2014-05-21T14:02:45Z', 'note': 'First Note'},
-        {'date': '2014-05-22T00:00:00Z', 'note': 'Second Note'}
-    ]
-}
-
-SUBJECT = {
-    "subject" : ['HB1-3840', 'H']
-}
-
-JOURNAL_LEGACY = {
-    "author_pays" : "Y",
-    "author_pays_url" : "http://author.pays",
-    "oa_end_year" : 1991
-}
-
-OWNER = {
-    "owner" : "Owner"
-}
-
-EDITORIAL = {
-    "editor_group" : "editorgroup",
-    "editor" : "associate"
-}
-
-WORKFLOW = {
-    "application_status" : "pending"
-}
-
-APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)
-APPLICATION_FORMINFO.update(deepcopy(SUGGESTION))
-APPLICATION_FORMINFO.update(EDITORIAL)
-APPLICATION_FORMINFO.update(WORKFLOW)
-APPLICATION_FORMINFO.update(SUBJECT)
-APPLICATION_FORMINFO.update(SUGGESTER)
-APPLICATION_FORMINFO.update(NOTES)
-APPLICATION_FORMINFO.update(OWNER)
-
-APPLICATION_FORM = deepcopy(APPLICATION_FORMINFO)
-APPLICATION_FORM["keywords"] = ",".join(APPLICATION_FORM["keywords"])
-
-notes = APPLICATION_FORM["notes"]
-del APPLICATION_FORM["notes"]
-i = 0
-for n in notes:
-    notekey = "notes-" + str(i) + "-note"
-    datekey = "notes-" + str(i) + "-date"
-    APPLICATION_FORM[notekey] = n.get("note")
-    APPLICATION_FORM[datekey] = n.get("date")
-    i += 1
+APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
+APPLICATION_FORM = ApplicationFixtureFactory.make_application_form(role="maned")
 
 ######################################################
 # Main test class
@@ -363,6 +112,8 @@ class TestManEdAppReview(DoajTestCase):
         fc.patch_target()
         assert fc.target.created_date == "2000-01-01T00:00:00Z"
         assert fc.target.id == "abcdefghijk"
+        assert fc.target.current_journal == "123456789987654321"
+        assert fc.target.related_journal == "987654321123456789"
         # everything else is overridden by the form, so no need to check it has patched
 
         # now do finalise (which will also re-run all of the steps above)
@@ -376,15 +127,15 @@ class TestManEdAppReview(DoajTestCase):
 
         ctx.pop()
 
-    def test_02_reapplication(self):
+    def test_02_update_request(self):
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
         # There needs to be an existing journal in the index for this test to work
-        extant_j = models.Journal(**JOURNAL_SOURCE)
-        assert extant_j.last_reapplication is None
+        extant_j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        assert extant_j.last_update_request is None
         extant_j_created_date = extant_j.created_date
         extant_j.save()
         time.sleep(1)
@@ -416,7 +167,7 @@ class TestManEdAppReview(DoajTestCase):
         j = models.Journal.pull("abcdefghijk_journal")
         assert j is not None
         assert j.created_date == extant_j_created_date
-        assert j.last_reapplication is not None
+        assert j.last_update_request is not None
         assert models.Journal.count() == 1
 
         h = self.list_today_journal_history_files()

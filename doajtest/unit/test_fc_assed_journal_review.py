@@ -119,6 +119,13 @@ class TestAssociateEditorJournalReview(DoajTestCase):
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
+        assert fc.target.current_application == "qwertyuiop"
+        related = fc.target.related_applications
+        assert len(related) == 2
+        assert related[0].get("application_id") == "asdfghjkl"
+        assert related[0].get("date_accepted") == "2018-01-01T00:00:00Z"
+        assert related[1].get("application_id") == "zxcvbnm"
+        assert related[1].get("date_accepted") is None
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
