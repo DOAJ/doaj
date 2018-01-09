@@ -42,6 +42,10 @@ jQuery(document).ready(function($) {
             {'display':'Title','field':'index.unpunctitle.exact'}
         ],
 
+        sort : [
+            {"suggestion.suggested_on" : {"order" : "asc"}}
+        ],
+
         searchbox_fieldselect: [
             {'display':'Title','field':'index.title'},
             {'display':'Keywords','field':'bibjson.keywords'},
