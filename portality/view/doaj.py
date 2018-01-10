@@ -388,3 +388,9 @@ def google_webmaster_tools():
 @blueprint.route('/rights')
 def rights():
     return render_template('doaj/rights.html')
+
+
+# A page about the SCOSS partnership
+@blueprint.route('/scoss')
+def scoss():
+    return render_template('doaj/scoss.html')
