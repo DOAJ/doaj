@@ -381,16 +381,16 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
         assert bool(publisher_email_matched)
 
-        publisher_template = 'publisher_application_accepted.txt'
+        publisher_template = 'publisher_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'journal accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
 
-        publisher_template = 'contact_application_accepted.txt'
+        publisher_template = 'contact_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'journal accepted'
 

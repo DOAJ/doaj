@@ -1134,6 +1134,7 @@ JOURNAL_STRUCT = {
         "id" : {"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
+        "last_reapplication" : {"coerce" : "utcdatetime"},
         "last_manual_update" : {"coerce" : "utcdatetime"}
     },
     "objects" : [

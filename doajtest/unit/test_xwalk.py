@@ -61,6 +61,8 @@ class TestXwalk(DoajTestCase):
         # the model object is not going to have an id or created_date since it's not been saved yet
         del csource['id']
         del csource['created_date']
+        del csource["admin"]["current_application"]
+        del csource["admin"]["related_applications"]
         assert obj == csource, diff_dicts(csource, obj, 'csource', 'modelobj')
 
     def test_02_application(self):
@@ -86,7 +88,9 @@ class TestXwalk(DoajTestCase):
         # the model object is not going to have an id or created_date since it's not been saved yet
         del csource['id']
         del csource['created_date']
-        #diff_dicts(csource, obj, 'csource', 'modelobj')
+        del csource["admin"]["current_journal"]
+        del csource["admin"]["related_journal"]
+        diff_dicts(csource, obj, 'csource', 'modelobj')
         assert obj == csource
 
     def test_03_old_style_to_new_style(self):

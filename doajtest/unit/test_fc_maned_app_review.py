@@ -134,7 +134,9 @@ class TestManEdAppReview(DoajTestCase):
         ctx = self._make_and_push_test_context(acc=acc)
 
         # There needs to be an existing journal in the index for this test to work
-        extant_j = models.Journal(**JournalFixtureFactory.make_journal_source())
+        jsource = JournalFixtureFactory.make_journal_source()
+        del jsource["admin"]["related_applications"]
+        extant_j = models.Journal(**jsource)
         assert extant_j.last_update_request is None
         extant_j_created_date = extant_j.created_date
         extant_j.save()
