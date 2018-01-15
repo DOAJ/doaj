@@ -11,8 +11,9 @@ from portality.formcontext import formcontext
 from portality.util import flash_with_url
 from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, BackgroundException
 
-import os, requests, ftplib
-from urlparse import urlparse
+from huey.exceptions import QueueWriteException
+
+import os, uuid
 from time import sleep
 
 
@@ -97,8 +98,10 @@ def upload_file():
     try:
         job = IngestArticlesBackgroundTask.prepare(current_user.id, upload_file=f, schema=schema, url=url, previous=previous)
         IngestArticlesBackgroundTask.submit(job)
-    except BackgroundException as e:
-        flash(e.message, "error")
+    except (BackgroundException, QueueWriteException) as e:
+        magic = str(uuid.uuid1())
+        flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
+        app.logger.exception('File upload error. ' + magic)
         return render_template('publisher/uploadmetadata.html', previous=previous)
 
     if f.filename != "":
