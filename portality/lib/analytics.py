@@ -12,7 +12,7 @@ class Google:
         if ga_id:
             self.tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=app.config['BASE_DOMAIN'])
 
-    def send_event(self, event_category, event_action, event_label='', event_value=None):
+    def send_event(self, category, action, label='', value=None, fieldsobject=None):
         """
         Send event data to Google Analytics.
         (supposedly supporting other analytics providers as well,
@@ -33,20 +33,24 @@ class Google:
         split your analytics reports into two: before and after the
         change of the event strings you use.
 
-        :param event_category:
-        :param event_action:
-        :param event_label:
-        :param event_value:
+        :param category: Typically the object that was interacted with (e.g. 'Video')
+        :param action: The type of interaction (e.g. 'play')
+        :param label: Useful for categorizing events (e.g. 'Fall Campaign')
+        :param value: A non-negative numeric value associated with the event (e.g. 42)
+        :param fieldsobject: Key, value pairs which don't fit into the above categories
         """
 
         if self.tracker is not None:
-            analytics_args = [event_category, event_action]
+            analytics_args = [category, action]
 
-            if event_label != '':
-                analytics_args.append(event_label)
+            if label != '':
+                analytics_args.append(label)
 
-            if event_value is not None:
-                analytics_args.append(event_value)
+            if value is not None:
+                analytics_args.append(value)
+
+            if fieldsobject is not None:
+                analytics_args.append(fieldsobject)
 
             self.tracker.send('event', *analytics_args)
 

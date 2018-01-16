@@ -47,17 +47,10 @@
       function gtag(){dataLayer.push(arguments)}
       gtag('js', new Date());
 
-      gtag('config', '{{ config.get('GOOGLE_ANALYTICS_ID') }}');
+      gtag('config', '{{ config.get('GOOGLE_ANALYTICS_ID') }}', {
+          'custom_map': {'dimension1': 'OAI:Action'}
+      });
     </script>
-
-    <!-- Google Analytics -->
-    <script>
-        window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-        ga('create', '{{ config.get('GOOGLE_ANALYTICS_ID') }}', '{{ config['BASE_DOMAIN'] }}');
-        ga('require', 'linkid', 'linkid.js');
-        ga('send', 'pageview');
-    </script>
-    <script async src='//www.google-analytics.com/analytics.js'></script>
 
     {% if edit_suggestion_page or edit_journal_page or subject_page %}
 
