@@ -162,7 +162,7 @@ class FormContext(object):
         """
         pass
 
-    def finalise(self):
+    def finalise(self, *args, **kwargs):
         """
         Finish up with the FormContext.  Carry out any final workflow tasks, etc.
         """
@@ -1108,7 +1108,7 @@ class PublisherUpdateRequest(ApplicationContext):
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
 
-    def finalise(self):
+    def finalise(self, save_target=True, email_alert=True):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
@@ -1122,9 +1122,10 @@ class PublisherUpdateRequest(ApplicationContext):
 
         # Save the target
         self.target.set_last_manual_update()
-        saved = self.target.save()
-        if saved is None:
-            raise FormContextException("Save on application failed")
+        if save_target:
+            saved = self.target.save()
+            if saved is None:
+                raise FormContextException("Save on application failed")
 
         # obtain the related journal, and attach the current application id to it
         journal_id = self.target.current_journal
@@ -1134,18 +1135,20 @@ class PublisherUpdateRequest(ApplicationContext):
             journal, _ = doaj.journal(journal_id)
             if journal is not None:
                 journal.set_current_application(self.target.id)
-                saved = journal.save()
-                if saved is None:
-                    raise FormContextException("Save on journal failed")
+                if save_target:
+                    saved = journal.save()
+                    if saved is None:
+                        raise FormContextException("Save on journal failed")
             else:
                 self.target.remove_current_journal()
 
         # email the publisher to tell them we received their reapplication
-        try:
-            self._send_received_email()
-        except app_email.EmailException:
-            self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
-            app.logger.exception('Error sending reapplication received email to publisher')
+        if email_alert:
+            try:
+                self._send_received_email()
+            except app_email.EmailException as e:
+                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
+                app.logger.exception('Error sending reapplication received email to publisher')
 
     def render_template(self, **kwargs):
         if self.source is None:
@@ -1242,11 +1245,10 @@ class PublicApplication(FormContext):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
-        # no need to patch the target, there is no source for this kind of form, and no complexity
-        # in how it is handled
-        pass
+        if self.source is not None:
+            self.target.set_owner(self.source.owner)
 
-    def finalise(self):
+    def finalise(self, save_target=True, email_alert=True):
         super(PublicApplication, self).finalise()
 
         # set some administrative data
@@ -1256,13 +1258,15 @@ class PublicApplication(FormContext):
 
         # Finally save the target
         self.target.set_last_manual_update()
-        self.target.save()
+        if save_target:
+            self.target.save()
 
-        try:
-            emails.send_received_email(self.target)
-        except app_email.EmailException:
-            self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
-            app.logger.exception('Error sending application received email.')
+        if email_alert:
+            try:
+                emails.send_received_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
+                app.logger.exception('Error sending application received email.')
 
 
 ### Journal form contexts ###
