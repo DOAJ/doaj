@@ -180,11 +180,97 @@ class ApplicationsCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
+        # next thing to do is a structural validation of the replacement data, by instantiating the object
+        try:
+            ia = IncomingApplication(data)
+        except dataobj.DataStructureException as e:
+            raise Api400Error(e.message)
+
         # now see if there's something for us to update
         ap = models.Suggestion.pull(id)
         if ap is None:
             raise Api404Error()
 
+        # if that works, convert it to a Suggestion object
+        new_ap = ia.to_application_model()
+
+        # now augment the suggestion object with all the additional information it requires
+        #
+        # suggester name and email from the user account
+        new_ap.set_suggester(account.name, account.email)
+
+        # they are not allowed to set "subject"
+        new_ap.bibjson().remove_subjects()
+
+        # DOAJ BLL for this request
+        dbl = DOAJ()
+
+        # if a current_journal is specified on the incoming data
+        if new_ap.current_journal is not None:
+            # once an application has a current_journal specified, you can't change it
+            if new_ap.current_journal != ap.current_journal:
+                raise Api400Error()
+
+            # load the update_request application either directly or by crosswalking the journal object
+            vanilla_ap = None
+            jlock = None
+            alock = None
+            try:
+                vanilla_ap, jlock, alock = dbl.update_request_for_journal(new_ap.current_journal, account=account)
+            except AuthoriseException as e:
+                if e.reason == AuthoriseException.WRONG_STATUS:
+                    raise Api403Error()
+                else:
+                    raise Api404Error()
+            except lock.Locked as e:
+                raise Api409Error()
+
+            # if we didn't find an application or journal, 404 the user
+            if vanilla_ap is None:
+                if jlock is not None: jlock.delete()
+                if alock is not None: alock.delete()
+                raise Api404Error()
+
+            # convert the incoming application into the web form
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(new_ap))
+
+            fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
+            if fc.validate():
+                try:
+                    fc.finalise(email_alert=False)
+                    return fc.target
+                except formcontext.FormContextException as e:
+                    raise Api400Error()
+                finally:
+                    if jlock is not None: jlock.delete()
+                    if alock is not None: alock.delete()
+            else:
+                if jlock is not None: jlock.delete()
+                if alock is not None: alock.delete()
+                raise Api400Error()
+        else:
+            try:
+                dbl.can_edit_application(account, ap)
+            except AuthoriseException as e:
+                if e.reason == e.WRONG_STATUS:
+                    raise Api403Error()
+                else:
+                    raise Api404Error()
+
+            # convert the incoming application into the web form
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(new_ap))
+
+            fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=ap)
+            if fc.validate():
+                try:
+                    fc.finalise(email_alert=False)
+                    return fc.target
+                except formcontext.FormContextException as e:
+                    raise Api400Error()
+            else:
+                raise Api400Error()
+
+        """
         # is the current account the owner of the application
         # if not we raise a 404 because that id does not exist for that user account.
         if ap.owner != account.id:
@@ -195,15 +281,9 @@ class ApplicationsCrudApi(CrudApi):
         if ap.application_status not in ["rejected", "submitted", "pending"]:
             raise Api403Error()
 
-        # next thing to do is a structural validation of the replacement data, by instantiating the object
-        try:
-            ia = IncomingApplication(data)
-        except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
 
-        # if that works, convert it to a Suggestion object bringing over everything outside the
-        # incoming application from the original application
-        new_ap = ia.to_application_model(ap)
+
+
 
         # we need to ensure that any properties of the existing application that aren't allowed to change
         # are copied over
@@ -220,6 +300,7 @@ class ApplicationsCrudApi(CrudApi):
         # finally save the new application, and return to the caller
         new_ap.save()
         return new_ap
+        """
 
     @classmethod
     def delete_swag(cls):
