@@ -85,6 +85,12 @@ class Api403Error(Exception):
 class Api404Error(Exception):
     pass
 
+class Api409Error(Exception):
+    """
+    API error to throw if a resource being edited is locked
+    """
+    pass
+
 
 class DataObjectJsonEncoder(json.JSONEncoder):
     def default(self, o):
