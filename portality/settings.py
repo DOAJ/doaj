@@ -183,11 +183,22 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
+    "portality.models.Suggestion"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "unicode_upper": {
         "type": "string",
         "fields": {
             "exact": {

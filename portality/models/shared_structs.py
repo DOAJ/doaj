@@ -61,7 +61,7 @@ JOURNAL_BIBJSON_EXTENSION = {
                 "discontinued_date" : {"coerce" : "bigenddate"}
             },
             "lists" : {
-                "language" : {"contains" : "field", "coerce" : "unicode"},
+                "language" : {"contains" : "field", "coerce" : "unicode_upper"},
                 "deposit_policy" : {"contains" : "field", "coerce" : "unicode"},
                 "persistent_identifier_scheme" : {"contains" : "field", "coerce" : "unicode"},
                 "format" : {"contains" : "field", "coerce" : "unicode"},

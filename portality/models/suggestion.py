@@ -1,5 +1,7 @@
-from portality.models.journal import Journal, JournalLikeObject
+from portality.models.journal import JournalLikeObject
 from portality.models import shared_structs
+from portality.core import app
+from portality.lib import dataobj, es_data_mapping
 
 from copy import deepcopy
 
@@ -39,6 +41,14 @@ class Suggestion(JournalLikeObject):
         if len(results) > 0:
             return results[0]
         return None
+
+    @classmethod
+    def find_all_by_related_journal(cls, journal_id):
+        q = RelatedJournalQuery(journal_id, size=1000)
+        return cls.q2obj(q=q.query())
+
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     @property
     def current_journal(self):
@@ -229,6 +239,18 @@ APPLICATION_STRUCT = {
     }
 }
 
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        "admin.notes.note": {
+                    "type": "string",
+                    "index": "not_analyzed",
+                    "include_in_all": False
+        }
+    }
+}
+
 
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
@@ -304,8 +326,9 @@ class StatusQuery(object):
 
 class CurrentJournalQuery(object):
 
-    def __init__(self, journal_id):
+    def __init__(self, journal_id, size=1):
         self.journal_id = journal_id
+        self.size = size
 
     def query(self):
         return {
@@ -319,5 +342,26 @@ class CurrentJournalQuery(object):
             "sort" : [
                 {"created_date" : {"order" : "desc"}}
             ],
-            "size" : 1
+            "size" : self.size
+        }
+
+class RelatedJournalQuery(object):
+
+    def __init__(self, journal_id, size=1):
+        self.journal_id = journal_id
+        self.size = size
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"admin.related_journal.exact" : self.journal_id}}
+                    ]
+                }
+            },
+            "sort" : [
+                {"created_date" : {"order" : "asc"}}
+            ],
+            "size" : self.size
         }
