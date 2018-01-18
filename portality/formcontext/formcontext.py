@@ -1202,7 +1202,7 @@ class PublisherUpdateRequest(ApplicationContext):
             raise e
 
 
-class PublicApplication(FormContext):
+class PublicApplication(ApplicationContext):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
     one, so it will do unnecessary things like override methods that don't actually need to be overridden.
@@ -1246,7 +1246,15 @@ class PublicApplication(FormContext):
 
     def patch_target(self):
         if self.source is not None:
+            self._carry_fixed_aspects()
+            self._merge_notes_forward()
             self.target.set_owner(self.source.owner)
+            self.target.set_editor_group(self.source.editor_group)
+            self.target.set_editor(self.source.editor)
+            self._carry_continuations()
+
+            # we carry this over for completeness, although it will be overwritten in the finalise() method
+            self.target.set_application_status(self.source.application_status)
 
     def finalise(self, save_target=True, email_alert=True):
         super(PublicApplication, self).finalise()
