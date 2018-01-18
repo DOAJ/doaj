@@ -15,6 +15,7 @@ class TestCrudApplication(DoajTestCase):
     def test_01_create_applications_success(self):
         # set up all the bits we need - 10 applications
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create an account that we'll do the create as
@@ -41,6 +42,7 @@ class TestCrudApplication(DoajTestCase):
         # if the account is dud
         with self.assertRaises(Api401Error):
             data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
             dataset = [data] * 10
             ids = ApplicationsBulkApi.create(dataset, None)
 
@@ -64,6 +66,7 @@ class TestCrudApplication(DoajTestCase):
     def test_03_delete_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create the account we're going to work as
@@ -95,6 +98,7 @@ class TestCrudApplication(DoajTestCase):
     def test_04_delete_applications_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create the account we're going to work as

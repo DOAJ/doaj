@@ -88,8 +88,8 @@ class TestBLLAuthorisations(DoajTestCase):
         doaj = DOAJ()
         if raises is not None:
             with self.assertRaises(raises):
-                doaj.can_edit_update_request(account, application)
+                doaj.can_edit_application(account, application)
         elif expected is not None:
-            assert doaj.can_edit_update_request(account, application) is expected
+            assert doaj.can_edit_application(account, application) is expected
         else:
             assert False, "Specify either raises or expected"
