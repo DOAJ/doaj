@@ -12,10 +12,6 @@ from werkzeug.datastructures import MultiDict
 
 class DOAJ(object):
 
-    FORMCONTEXT_FACTORIES = {
-        "application" : formcontext.ApplicationFormFactory
-    }
-
     def reject_application(self, application, account, provenance=True):
         """
         Reject an application.  This will:
@@ -295,6 +291,7 @@ class DOAJ(object):
         application.set_bibjson(bj)
         if first_contact is not None:
             application.set_suggester(first_contact.get("name"), first_contact.get("email"))
+        application.suggested_on = dates.now()
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
         return application
@@ -398,24 +395,3 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
         return True
-
-    def formcontext(self, type, role, source=None, form_data=None):
-        """
-        Method to retrieve the formcontext for the given type, role and to pass in the given source object
-
-        :param type: supported types: "application"
-        :param role: supported roles: "publisher"
-        :param source: model object
-        :return: FormContext instance
-        """
-        # first validate the incoming arguments to ensure that we've got the right thing
-        argvalidate("can_edit_update_request", [
-            {"arg": type, "instance": basestring, "allow_none" : False, "arg_name" : "type"},
-            {"arg": role, "instance": basestring, "allow_none" : False, "arg_name" : "role"},
-            {"arg": source, "instance": object, "allow_none" : True, "arg_name" : "source"},
-            {"arg": form_data, "instace" : MultiDict, "allow_none" : True, "arg_name" : "form_data"},
-        ], exceptions.ArgumentException)
-
-        if type not in self.FORMCONTEXT_FACTORIES:
-            raise exceptions.NoSuchFormContext()
-        return self.FORMCONTEXT_FACTORIES[type].get_form_context(role=role, source=source, form_data=form_data)
