@@ -530,6 +530,7 @@ class Journal(JournalLikeObject):
 
     def add_related_application(self, application_id, date_accepted=None):
         obj = {"application_id" : application_id}
+        self._delete_from_list("admin.replated_applications", matchsub=obj)
         if date_accepted is not None:
             obj["date_accepted"] = date_accepted
         self._add_to_list_with_struct("admin.related_applications", obj)
