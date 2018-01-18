@@ -166,7 +166,7 @@ class DOAJ(object):
         # If a lock cannot be obtained, unlock the journal and application before we return
         elif account is not None:
             try:
-                self.can_edit_update_request(account, application)
+                self.can_edit_application(account, application)
                 application_lock = lock.lock("suggestion", application.id, account.id)
                 journal_lock = lock.lock("journal", journal_id, account.id)
             except lock.Locked as e:
@@ -369,7 +369,7 @@ class DOAJ(object):
 
         return True
 
-    def can_edit_update_request(self, account, application):
+    def can_edit_application(self, account, application):
         """
         Is the given account allowed to edit the update request application
 
@@ -391,7 +391,7 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
         if account.id != application.owner:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
-        if application.application_status not in ["update_request", "submitted"]:
+        if application.application_status not in ["pending", "update_request", "submitted"]:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
         return True
