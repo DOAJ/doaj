@@ -73,12 +73,12 @@ def update_request(journal_id):
 
     # if we are requesting the page with a GET, we just want to show the form
     if request.method == "GET":
-        fc = dbl.formcontext(type="application", role="publisher", source=application)
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", source=application)
         return fc.render_template(edit_suggestion_page=True)
 
     # if we are requesting the page with a POST, we need to accept the data and handle it
     elif request.method == "POST":
-        fc = dbl.formcontext(type="application", role="publisher", form_data=request.form, source=application)
+        fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=request.form, source=application)
         if fc.validate():
             try:
                 fc.finalise()
