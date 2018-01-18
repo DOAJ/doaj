@@ -41,6 +41,12 @@ def to_unicode():
 
     return to_utf8_unicode
 
+
+def to_unicode_upper(val):
+    ufn = to_unicode()
+    val = ufn(val)
+    return val.upper()
+
 def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
@@ -235,6 +241,7 @@ class DataObj(object):
         # to the swagger translation table as well, in the same way you
         # extend the coerce map.
         "unicode": to_unicode(),
+        "unicode_upper" : to_unicode_upper,
         "utcdatetime": date_str(),
         "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
