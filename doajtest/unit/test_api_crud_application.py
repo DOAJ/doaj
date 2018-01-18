@@ -3,7 +3,7 @@ from portality.lib.dataobj import DataStructureException
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 import time
 
 class TestCrudApplication(DoajTestCase):
@@ -100,6 +100,7 @@ class TestCrudApplication(DoajTestCase):
     def test_02_create_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -158,6 +159,7 @@ class TestCrudApplication(DoajTestCase):
     def test_03a_create_application_dryrun(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -261,6 +263,10 @@ class TestCrudApplication(DoajTestCase):
         assert oa.data.get("admin", {}).get("editor_group") is None
         assert oa.data.get("admin", {}).get("editor") is None
         assert oa.data.get("admin", {}).get("seal") is None
+        assert oa.data.get("admin", {}).get("related_journal") is None
+
+        # check that it does contain admin information that it should
+        assert oa.data.get("admin", {}).get("current_journal") is not None
 
     def test_06_retrieve_application_success(self):
         # set up all the bits we need
@@ -470,4 +476,111 @@ class TestCrudApplication(DoajTestCase):
 
         ap = models.Suggestion.pull(a.id)
         assert ap is not None
+
+    def test_13_create_application_update_request_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # check that it got created with the right properties
+        assert isinstance(a, models.Suggestion)
+        assert a.id != "ignore_me"
+        assert a.created_date != "2001-01-01T00:00:00Z"
+        assert a.last_updated != "2001-01-01T00:00:00Z"
+        assert a.suggester.get("name") == "Contact Name"
+        assert a.suggester.get("email") == "contact@email.com"
+        assert a.owner == "test"
+        assert a.suggested_on is not None
+        assert a.bibjson().issns() == ["9999-8888", "7777-6666"] or a.bibjson().issns() == ["7777-6666", "9999-8888"]
+        assert a.bibjson().title == "not changed"
+
+        # also, because it's a special case, check the archiving_policy
+        archiving_policy = a.bibjson().archiving_policy
+        assert len(archiving_policy.get("policy")) == 4
+        lcount = 0
+        scount = 0
+        for ap in archiving_policy.get("policy"):
+            if isinstance(ap, list):
+                lcount += 1
+                assert ap[0] in ["A national library", "Other"]
+                assert ap[1] in ["Trinity", "A safe place"]
+            else:
+                scount += 1
+        assert lcount == 2
+        assert scount == 2
+        assert "CLOCKSS" in archiving_policy.get("policy")
+        assert "LOCKSS" in archiving_policy.get("policy")
+
+        time.sleep(2)
+
+        s = models.Suggestion.pull(a.id)
+        assert s is not None
+
+    def test_14_create_application_update_request_fail(self):
+        data = ApplicationFixtureFactory.incoming_application()
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner("test")
+        journal.save(blocking=True)
+
+        # if the account is dud
+        with self.assertRaises(Api401Error):
+            a = ApplicationsCrudApi.create(data, None)
+
+        # if the data is bust
+        with self.assertRaises(Api400Error):
+            account = models.Account()
+            account.set_id("test")
+            account.set_name("Tester")
+            account.set_email("test@test.com")
+            data = {"some" : {"junk" : "data"}}
+            a = ApplicationsCrudApi.create(data, account)
+
+    def test_15_create_application_update_request_dryrun(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object, with the dry_run flag set
+        a = ApplicationsCrudApi.create(data, account, dry_run=True)
+
+        time.sleep(2)
+
+        # now check that the application index remains empty
+        ss = [x for x in models.Suggestion.iterall()]
+        assert len(ss) == 0
 

@@ -181,7 +181,8 @@ INCOMING_SOURCE = {
                 "email" : "contact@email.com",
                 "name" : "Contact Name"
             }
-        ]
+        ],
+        "current_journal" : "1234567890"
     }
 }
 
