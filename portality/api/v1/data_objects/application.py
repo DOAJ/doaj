@@ -19,7 +19,8 @@ BASE_APPLICATION_STRUCT = {
         "admin" : {
             "fields" : {
                 "application_status" : {"coerce" : "unicode"},   # note we don't limit this to the allowed values, as this just gives us maintenance requirements
-                "owner" : {"coerce" : "unicode"}
+                "owner" : {"coerce" : "unicode"},
+                "current_journal" : {"coerce" : "unicode"}
             },
 
             "lists" : {

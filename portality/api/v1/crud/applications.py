@@ -1,9 +1,15 @@
 from portality.api.v1.crud.common import CrudApi
-from portality.api.v1 import Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.v1 import Api401Error, Api400Error, Api404Error, Api403Error, Api409Error
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.lib import dataobj
 from datetime import datetime
 from portality import models
+
+from portality.bll import DOAJ
+from portality.bll.exceptions import AuthoriseException
+from portality import lock
+from portality.formcontext import formcontext, xwalk
+from werkzeug.datastructures import MultiDict
 
 from copy import deepcopy
 
@@ -51,32 +57,78 @@ class ApplicationsCrudApi(CrudApi):
         # if that works, convert it to a Suggestion object
         ap = ia.to_application_model()
 
-        # if the caller set the id, created_date or last_updated, then can the data, and apply our
-        # own values (note that last_updated will get overwritten anyway)
-        ap.set_id()
-        ap.set_created()
-
         # now augment the suggestion object with all the additional information it requires
         #
         # suggester name and email from the user account
         ap.set_suggester(account.name, account.email)
 
-        # suggested_on right now
-        ap.suggested_on = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        # initial application status for workflow
-        ap.set_application_status('pending')
-
-        # set the owner to the current account
-        ap.set_owner(account.id)
-
         # they are not allowed to set "subject"
         ap.bibjson().remove_subjects()
 
-        # finally save the new application, and return to the caller
-        if not dry_run:
-            ap.save()
-        return ap
+        # if this is an update request on an existing journal
+        if ap.current_journal is not None:
+            # DOAJ BLL for this request
+            dbl = DOAJ()
+
+            # load the update_request application either directly or by crosswalking the journal object
+            vanilla_ap = None
+            jlock = None
+            alock = None
+            try:
+                vanilla_ap, jlock, alock = dbl.update_request_for_journal(ap.current_journal, account=account)
+            except AuthoriseException as e:
+                if e.reason == AuthoriseException.WRONG_STATUS:
+                    raise Api403Error()
+                else:
+                    raise Api404Error()
+            except lock.Locked as e:
+                raise Api409Error()
+
+            # if we didn't find an application or journal, 404 the user
+            if vanilla_ap is None:
+                if jlock is not None: jlock.delete()
+                if alock is not None: alock.delete()
+                raise Api404Error()
+
+            # convert the incoming application into the web form
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))
+
+            fc = formcontext.ApplicationFormFactory.get_form_context(role="publisher", form_data=form, source=vanilla_ap)
+            if fc.validate():
+                try:
+                    save_target = not dry_run
+                    fc.finalise(save_target=save_target, email_alert=False)
+                    return fc.target
+                except formcontext.FormContextException as e:
+                    raise Api400Error()
+                finally:
+                    if jlock is not None: jlock.delete()
+                    if alock is not None: alock.delete()
+            else:
+                if jlock is not None: jlock.delete()
+                if alock is not None: alock.delete()
+                raise Api400Error()
+
+        # otherwise, this is a brand-new application
+        else:
+            # convert the incoming application into the web form
+            form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))
+
+            # create a template that will hold all the values we want to persist across the form submission
+            template = models.Suggestion()
+            template.set_owner(account.id)
+
+            fc = formcontext.ApplicationFormFactory.get_form_context(form_data=form, source=template)
+            if fc.validate():
+                try:
+                    save_target = not dry_run
+                    fc.finalise(save_target=save_target, email_alert=False)
+                    return fc.target
+                except formcontext.FormContextException as e:
+                    raise Api400Error()
+            else:
+                raise Api400Error()
+
 
     @classmethod
     def retrieve_swag(cls):
