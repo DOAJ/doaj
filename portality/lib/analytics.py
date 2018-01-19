@@ -12,7 +12,8 @@ class Google:
         if ga_id:
             self.tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=app.config['BASE_DOMAIN'])
 
-    def send_event(self, category, action, label='', value=None, fieldsobject=None):
+    @classmethod
+    def send_event(cls, category, action, label='', value=None, fieldsobject=None):
         """
         Send event data to Google Analytics.
         (supposedly supporting other analytics providers as well,
@@ -40,7 +41,7 @@ class Google:
         :param fieldsobject: Key, value pairs which don't fit into the above categories
         """
 
-        if self.tracker is not None:
+        if cls.tracker is not None:
             analytics_args = [category, action]
 
             if label != '':
@@ -52,7 +53,7 @@ class Google:
             if fieldsobject is not None:
                 analytics_args.append(fieldsobject)
 
-            self.tracker.send('event', *analytics_args)
+            cls.tracker.send('event', *analytics_args)
 
     @classmethod
     def sends_ga_event(cls, event_category, event_action, event_label='',
@@ -118,7 +119,7 @@ class Google:
                 if record_value_of_which_arg in kwargs:
                     el = kwargs[record_value_of_which_arg]
 
-                Google.send_event(Google(), event_category, event_action, el, event_value)
+                Google.send_event(event_category, event_action, el, event_value)
 
                 return fn(*args, **kwargs)
 
