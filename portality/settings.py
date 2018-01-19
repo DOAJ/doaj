@@ -595,3 +595,9 @@ GOOGLE_ANALYTICS_ID = ''
 # scheduled reports configuration
 REPORTS_BASE_DIR = "/home/cloo/reports/"
 REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+
+# =========================================
+# Google Analytics custom dimensions. These are configured in the GA interface.
+GA_DIMENSIONS = {
+    'oai_res_id': 'dimension1'
+}
