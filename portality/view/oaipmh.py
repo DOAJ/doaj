@@ -23,16 +23,16 @@ def oaipmh(specified=None):
     # work out which endpoint we're going to
     if specified is None:
         dao = OAIPMHJournal()
-        event.label = 'Journal'
+        event['label'] = 'Journal'
     else:
         specified = specified.lower()
         dao = OAIPMHArticle()
-        event.label = 'Article'
-        event.fieldsoject = {app.config.get('GA_DIMENSIONS').oai_res_id: specified}
+        event['label'] = 'Article'
+        event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: specified}
     
     # work out the verb and associated parameters
     verb = request.values.get("verb")
-    event.action = verb
+    event['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
     analytics.Google.send_event(**event)
