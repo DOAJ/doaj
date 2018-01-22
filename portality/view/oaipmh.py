@@ -30,7 +30,9 @@ def oaipmh(specified=None):
         event['label'] = 'Article'
 
     # Add the identifier to the event if there is one
-    event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: request.values.get('identifier', 'none')}
+    ident = request.values.get('identifier', None)
+    if ident is not None:
+        event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: ident}
     
     # work out the verb and associated parameters
     verb = request.values.get("verb")
