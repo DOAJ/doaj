@@ -28,7 +28,9 @@ def oaipmh(specified=None):
         specified = specified.lower()
         dao = OAIPMHArticle()
         event['label'] = 'Article'
-        event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: specified}
+
+    # Add the identifier to the event if there is one
+    event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: request.values.get('identifier', 'none')}
     
     # work out the verb and associated parameters
     verb = request.values.get("verb")
@@ -157,11 +159,14 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
     b = base64.urlsafe_b64encode(j)
     return b
 
+
 class ResumptionTokenException(Exception):
     pass
 
+
 class SetSpecException(Exception):
     pass
+
 
 def decode_resumption_token(resumption_token):
     # attempt to parse the resumption token out of base64 encoding and as a json object
@@ -183,16 +188,20 @@ def decode_resumption_token(resumption_token):
     if "n" in d: params["start_number"] = d.get("n")
     return params
 
+
 def make_oai_identifier(identifier, qualifier):
     return "oai:" + app.config.get("OAIPMH_IDENTIFIER_NAMESPACE") + "/" + qualifier + ":" + identifier
-    
+
+
 def extract_internal_id(oai_identifier):
     # most of the identifier is for show - we only care about the hex string at the end
     return oai_identifier.split(":")[-1]
 
+
 def get_response_date():
     # return datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     return DateFormat.now()
+
 
 def normalise_date(date):
     # FIXME: do we need a more powerful date normalisation routine?
@@ -202,8 +211,10 @@ def normalise_date(date):
     except:
         return "T".join(date.split(" ")) + "Z"
 
+
 def get_crosswalk(prefix, datatype):
     return CROSSWALKS.get(prefix, {}).get(datatype)()
+
 
 def list_metadata_formats_params(req):
     identifier = req.values.get("identifier")
@@ -211,16 +222,19 @@ def list_metadata_formats_params(req):
         identifier = extract_internal_id(identifier)
     return {"identifier" : identifier}
 
+
 def get_record_params(req):
     identifier = req.values.get("identifier")
     metadata_prefix = req.values.get("metadataPrefix")
     if identifier is not None:
         identifier = extract_internal_id(identifier)
-    return {"identifier" : identifier, "metadata_prefix" : metadata_prefix}
+    return {"identifier": identifier, "metadata_prefix": metadata_prefix}
+
 
 def list_sets_params(req):
     resumption = req.values.get("resumptionToken")
     return {"resumption_token" : resumption}
+
 
 def list_records_params(req):
     from_date = req.values.get("from")
@@ -229,12 +243,13 @@ def list_records_params(req):
     resumption_token = req.values.get("resumptionToken")
     metadata_prefix = req.values.get("metadataPrefix")
     return {
-        "from_date" : from_date,
-        "until_date" : until_date,
-        "oai_set" : oai_set,
-        "resumption_token" : resumption_token,
-        "metadata_prefix" : metadata_prefix
+        "from_date": from_date,
+        "until_date": until_date,
+        "oai_set": oai_set,
+        "resumption_token": resumption_token,
+        "metadata_prefix": metadata_prefix
     }
+
 
 def list_identifiers_params(req):
     from_date = req.values.get("from")
@@ -243,11 +258,11 @@ def list_identifiers_params(req):
     resumption_token = req.values.get("resumptionToken")
     metadata_prefix = req.values.get("metadataPrefix")
     return {
-        "from_date" : from_date,
-        "until_date" : until_date,
-        "oai_set" : oai_set,
-        "resumption_token" : resumption_token,
-        "metadata_prefix" : metadata_prefix
+        "from_date": from_date,
+        "until_date": until_date,
+        "oai_set": oai_set,
+        "resumption_token": resumption_token,
+        "metadata_prefix": metadata_prefix
     }
 
 ###########################################################
@@ -271,6 +286,7 @@ _illegal_ranges = ["%s-%s" % (unichr(low), unichr(high))
                    for (low, high) in _illegal_unichrs]
 _illegal_xml_chars_RE = re.compile(u'[%s]' % u''.join(_illegal_ranges))
 
+
 def valid_XML_char_ordinal(i):
     return ( # conditions ordered by presumed frequency
         0x20 <= i <= 0xD7FF
@@ -279,6 +295,7 @@ def valid_XML_char_ordinal(i):
         or 0x10000 <= i <= 0x10FFFF
         )
 
+
 def clean_unreadable(input_string):
     try:
         return _illegal_xml_chars_RE.sub("", input_string)
@@ -286,9 +303,11 @@ def clean_unreadable(input_string):
         app.logger.error("Unable to strip illegal XML chars from: {x}, {y}".format(x=input_string, y=type(input_string)))
         return None
 
+
 def xml_clean(input_string):
     cleaned_string = ''.join(c for c in input_string if valid_XML_char_ordinal(ord(c)))
     return cleaned_string
+
 
 def set_text(element, input_string):
     if input_string is None:
@@ -299,8 +318,9 @@ def set_text(element, input_string):
     except ValueError:
         element.text = xml_clean(input_string)
 
+
 #####################################################################
-## OAI-PMH protocol operations implemented
+# OAI-PMH protocol operations implemented
 #####################################################################
 
 def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_prefix=None):
@@ -334,13 +354,15 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
+
 def identify(dao, base_url):
     repo_name = app.config.get("SERVICE_NAME")
     admin_email = app.config.get("ADMIN_EMAIL")
     idobj = Identify(base_url, repo_name, admin_email)
     idobj.earliest_datestamp = dao.earliest_datestamp()
     return idobj
-    
+
+
 def list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, resumption_token=None):
     if resumption_token is None:
         # do an initial list records
@@ -355,6 +377,7 @@ def list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None
                 or oai_set is not None):
             return BadArgument(base_url)
         return _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
+
 
 def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
     # metadata prefix is required
@@ -432,12 +455,14 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
+
 def _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=None):
     try:
         params = decode_resumption_token(resumption_token)
     except ResumptionTokenException:
         return BadResumptionToken(base_url)
     return _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, **params)
+
 
 def list_metadata_formats(dao, base_url, specified_oai_endpoint, identifier=None):
     # if we are given an identifier, it has to be valid
@@ -460,6 +485,7 @@ def list_metadata_formats(dao, base_url, specified_oai_endpoint, identifier=None
         lmf.add_format(f.get("metadataPrefix"), f.get("schema"), f.get("metadataNamespace"))
     return lmf
 
+
 def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, resumption_token=None):
     
     if resumption_token is None:
@@ -471,6 +497,7 @@ def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, fr
                 or oai_set is not None):
             return BadArgument(base_url)
         return _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
+
 
 def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
     # metadata prefix is required
@@ -549,13 +576,15 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
     
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
-    
+
+
 def _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=None):
     try:
         params = decode_resumption_token(resumption_token)
     except ResumptionTokenException:
         return BadResumptionToken(base_url)
     return _parameterised_list_records(dao, base_url, specified_oai_endpoint, **params)
+
 
 def list_sets(dao, base_url, resumption_token=None):
     # This implementation does not support resumption tokens for this operation
@@ -570,8 +599,9 @@ def list_sets(dao, base_url, resumption_token=None):
         ls.add_set(make_set_spec(s), s)
     return ls
 
+
 #####################################################################
-## Objects
+# Objects
 #####################################################################
 
 class OAI_PMH(object):
@@ -618,6 +648,7 @@ class OAI_PMH(object):
     def add_request_attributes(self, element):
         return
 
+
 class GetRecord(OAI_PMH):
     def __init__(self, base_url, identifier, metadata_prefix):
         super(GetRecord, self).__init__(base_url)
@@ -641,6 +672,7 @@ class GetRecord(OAI_PMH):
             element.set("identifier", self.identifier)
         if self.metadata_prefix is not None:
             element.set("metadataPrefix", self.metadata_prefix)
+
 
 class Identify(OAI_PMH):
     def __init__(self, base_url, repo_name, admin_email):
@@ -680,6 +712,7 @@ class Identify(OAI_PMH):
         granularity.text = DateFormat.granularity()
         
         return identify
+
 
 class ListIdentifiers(OAI_PMH):
     def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
@@ -734,6 +767,7 @@ class ListIdentifiers(OAI_PMH):
         
         return lr
 
+
 class ListMetadataFormats(OAI_PMH):
     def __init__(self, base_url, identifier=None):
         super(ListMetadataFormats, self).__init__(base_url)
@@ -744,9 +778,9 @@ class ListMetadataFormats(OAI_PMH):
     def add_format(self, metadata_prefix, schema, metadata_namespace):
         self.formats.append(
             {
-                "metadataPrefix" : metadata_prefix,
-                "schema" : schema,
-                "metadataNamespace" : metadata_namespace
+                "metadataPrefix": metadata_prefix,
+                "schema": schema,
+                "metadataNamespace": metadata_namespace
             }
         )
     
@@ -770,6 +804,7 @@ class ListMetadataFormats(OAI_PMH):
             mdn.text = f.get("metadataNamespace")
         
         return lmf
+
 
 class ListRecords(OAI_PMH):
     def __init__(self, base_url, from_date=None, until_date=None, oai_set=None, metadata_prefix=None):
@@ -827,6 +862,7 @@ class ListRecords(OAI_PMH):
         
         return lr
 
+
 class ListSets(OAI_PMH):
     def __init__(self, base_url):
         super(ListSets, self).__init__(base_url)
@@ -850,7 +886,7 @@ class ListSets(OAI_PMH):
         
 
 #####################################################################
-## Error Handling
+# Error Handling
 #####################################################################
 
 class OAIPMHError(OAI_PMH):
@@ -870,11 +906,13 @@ class OAIPMHError(OAI_PMH):
         
         return error
 
+
 class BadArgument(OAIPMHError):
     def __init__(self, base_url):
         super(BadArgument, self).__init__(base_url)
         self.code = "badArgument"
         self.description = "The request includes illegal arguments, is missing required arguments, includes a repeated argument, or values for arguments have an illegal syntax."
+
 
 class BadResumptionToken(OAIPMHError):
     def __init__(self, base_url):
@@ -882,11 +920,13 @@ class BadResumptionToken(OAIPMHError):
         self.code = "badResumptionToken"
         self.description = "The value of the resumptionToken argument is invalid or expired."
 
+
 class BadVerb(OAIPMHError):
     def __init__(self, base_url):
         super(BadVerb, self).__init__(base_url)
         self.code = "badVerb"
         self.description = "Value of the verb argument is not a legal OAI-PMH verb, the verb argument is missing, or the verb argument is repeated."
+
 
 class CannotDisseminateFormat(OAIPMHError):
     def __init__(self, base_url):
@@ -894,11 +934,13 @@ class CannotDisseminateFormat(OAIPMHError):
         self.code = "cannotDisseminateFormat"
         self.description = "The metadata format identified by the value given for the metadataPrefix argument is not supported by the item or by the repository."
 
+
 class IdDoesNotExist(OAIPMHError):
     def __init__(self, base_url):
         super(IdDoesNotExist, self).__init__(base_url)
         self.code = "idDoesNotExist"
         self.description = "The value of the identifier argument is unknown or illegal in this repository."
+
 
 class NoRecordsMatch(OAIPMHError):
     def __init__(self, base_url):
@@ -906,11 +948,13 @@ class NoRecordsMatch(OAIPMHError):
         self.code = "noRecordsMatch"
         self.description = "The combination of the values of the from, until, set and metadataPrefix arguments results in an empty list."
 
+
 class NoMetadataFormats(OAIPMHError):
     def __init__(self, base_url):
         super(NoMetadataFormats, self).__init__(base_url)
         self.code = "noMetadataFormats"
         self.description = "There are no metadata formats available for the specified item."
+
 
 class NoSetHierarchy(OAIPMHError):
     def __init__(self, base_url):
@@ -918,8 +962,9 @@ class NoSetHierarchy(OAIPMHError):
         self.code = "noSetHierarchy"
         self.description = "The repository does not support sets."
 
+
 #####################################################################
-## Crosswalks
+# Crosswalks
 #####################################################################
 
 class OAI_Crosswalk(object):
@@ -1125,6 +1170,7 @@ class OAI_DC_Article(OAI_DC):
             citation += "(" + cyear + ")"
 
         return citation if citation != "" else None
+
 
 class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
@@ -1364,9 +1410,9 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
 
 
 CROSSWALKS = {
-    "oai_dc" : {
-        "article" : OAI_DC_Article,
-        "journal" : OAI_DC_Journal
+    "oai_dc": {
+        "article": OAI_DC_Article,
+        "journal": OAI_DC_Journal
     },
     'oai_doaj': {
         "article": OAI_DOAJ_Article
