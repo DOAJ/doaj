@@ -35,7 +35,7 @@ def oaipmh(specified=None):
     event['action'] = verb
 
     # Now we have enough information about the request to send to analytics.
-    analytics.Google.send_event(**event)
+    analytics.ga_send_event(**event)
     
     # call the appropriate protocol operation:
     # if no verb supplied
