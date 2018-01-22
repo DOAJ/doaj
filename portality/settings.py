@@ -599,5 +599,5 @@ REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 # =========================================
 # Google Analytics custom dimensions. These are configured in the GA interface.
 GA_DIMENSIONS = {
-    'oai_res_id': 'dimension1'
+    'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
 }

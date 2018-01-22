@@ -1,17 +1,18 @@
-from flask import Blueprint, request, make_response, flash
+from flask import Blueprint, request, flash
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
 
 from portality import dao
 from portality import models
+from portality import blog
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality import blog
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
+from portality.lib import analytics
 
 import json
 import os
@@ -118,6 +119,7 @@ def suggestion_thanks():
     
 
 @blueprint.route("/csv")
+@analytics.sends_ga_event(event_category="JournalCSV", event_action="Download")
 def csv_data():
     """
     with futures.ProcessPoolExecutor(max_workers=1) as executor:

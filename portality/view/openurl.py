@@ -25,6 +25,9 @@ def openurl():
     if type(parser_response) != OpenURLRequest:
         return redirect(parser_response, 301)
 
+    # Log this request to analytics
+    analytics.ga_send_event(category="OpenURL", action=parser_response.genre, label=unquote(request.query_string))
+
     # Get the OpenURLRequest object to issue a query and supply a url for the result
     result_url = parser_response.get_result_url()
     if result_url:
@@ -33,7 +36,6 @@ def openurl():
         abort(404)
 
 
-@analytics.sends_ga_event('OpenURL', 'Retrieve', record_value_of_which_arg='query')
 def parse_query(query, req):
     """
     Create the model which holds the query
