@@ -70,6 +70,41 @@ def create_edit_cases():
         param("non_editable_app_admin_account", non_editable_application, admin, expected=True)
     ]
 
+def create_view_applications_cases():
+    application_source = ApplicationFixtureFactory.make_application_source()
+    account_source = AccountFixtureFactory.make_publisher_source()
+
+    editable_application = Suggestion(**application_source)
+    editable_application.set_application_status("update_request")
+
+    non_editable_application = Suggestion(**application_source)
+    non_editable_application.set_application_status("ready")
+
+    owner_account = Account(**deepcopy(account_source))
+    owner_account.set_id(editable_application.owner)
+
+    non_owner_publisher = Account(**deepcopy(account_source))
+
+    non_publisher = Account(**deepcopy(account_source))
+    non_publisher.remove_role("publisher")
+
+    admin = Account(**deepcopy(account_source))
+    admin.add_role("admin")
+
+    return [
+        param("no_app_no_account", None, None, raises=exceptions.ArgumentException),
+        param("no_app_with_account", None, owner_account, raises=exceptions.ArgumentException),
+        param("app_no_account", editable_application, None, raises=exceptions.ArgumentException),
+        param("editable_app_owning_account", editable_application, owner_account, expected=True),
+        param("editable_app_nonowning_account", editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
+        param("editable_app_non_publisher_account", editable_application, non_publisher, raises=exceptions.AuthoriseException),
+        param("editable_app_admin_account", editable_application, admin, expected=True),
+        param("non_editable_app_owning_account", non_editable_application, owner_account, raises=exceptions.AuthoriseException),
+        param("non_editable_app_nonowning_account", non_editable_application, non_owner_publisher, raises=exceptions.AuthoriseException),
+        param("non_editable_app_non_publisher_account", non_editable_application, non_publisher, raises=exceptions.AuthoriseException),
+        param("non_editable_app_admin_account", non_editable_application, admin, expected=True)
+    ]
+
 class TestBLLAuthorisations(DoajTestCase):
 
     @parameterized.expand(create_update_cases)
@@ -93,3 +128,16 @@ class TestBLLAuthorisations(DoajTestCase):
             assert doaj.can_edit_application(account, application) is expected
         else:
             assert False, "Specify either raises or expected"
+
+    """
+    @parameterized.expand(create_view_applications_cases)
+    def test_02_view_application(self, name, application, account, raises=None, expected=None):
+        doaj = DOAJ()
+        if raises is not None:
+            with self.assertRaises(raises):
+                doaj.can_view_application(account, application)
+        elif expected is not None:
+            assert doaj.can_view_application(account, application) is expected
+        else:
+            assert False, "Specify either raises or expected"
+    """

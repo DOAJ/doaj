@@ -74,6 +74,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the objects (which will save it to the index)
         ids = ApplicationsBulkApi.create(dataset, account)

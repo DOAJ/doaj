@@ -3,12 +3,10 @@ from parameterized import parameterized, param
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
 import uuid, time
 
-from copy import deepcopy
-
 from portality.models import Journal, Suggestion, Account
 
 from portality.bll import DOAJ
-from portality.bll import exceptions
+from portality.bll import exceptions, constants
 from portality import lock
 
 
@@ -33,17 +31,24 @@ def load_journal_cases():
 
 
 def load_application_cases():
+    account = Account(**AccountFixtureFactory.make_publisher_source())
+    account.set_id(account.makeid())
+
     application = Suggestion(**ApplicationFixtureFactory.make_application_source())
     application.makeid()
 
     wrong_id = uuid.uuid4()
 
     return [
-        param("no_app_no_id", None, None, raises=exceptions.ArgumentException),
-        param("no_app", None, application.id),
-        param("app_wrong_id", application, wrong_id),
-        param("app_right_id", application, application.id)
+        param("a_id_acc_lock", application, application.id, account, True, raises=lock.Locked),
+        param("a_id_acc_nolock", application, application.id, account, False),
+        param("a_id_noacc_nolock", application, application.id, None, False),
+        param("a_noid_noacc_nolock", application, None, None, False, raises=exceptions.ArgumentException),
+        param("a_wid_noacc_nolock", application, wrong_id, None, False),
+        param("noa_id_noacc_nolock", None, application.id, None, False),
+        param("noa_noid_noacc_nolock", None, None, None, False, raises=exceptions.ArgumentException)
     ]
+
 
 class TestBLLGetters(DoajTestCase):
 
@@ -83,7 +88,10 @@ class TestBLLGetters(DoajTestCase):
                 assert lock.has_lock("journal", journal_id, account.id)
 
     @parameterized.expand(load_application_cases)
-    def test_02_get_application(self, name, application, application_id, raises=None):
+    def test_02_get_application(self, name, application, application_id, account, lock_application, raises=None):
+        if lock_application:
+            lock.lock(constants.LOCK_APPLICATION, application.id, "someoneelse", blocking=True)
+
         doaj = DOAJ()
 
         if application is not None:
@@ -91,10 +99,24 @@ class TestBLLGetters(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                retrieved = doaj.application(application_id)
+                if account is None:
+                    retrieved, _ = doaj.application(application_id)
+                else:
+                    retrieved, jlock = doaj.application(application_id, lock_application=True, lock_account=account)
         else:
-            retrieved = doaj.application(application_id)
-            if retrieved is not None:
-                assert retrieved.data == application.data
+            if account is None:
+                retrieved, _ = doaj.application(application_id)
+                if retrieved is not None:
+                    assert retrieved.data == application.data
+                else:
+                    assert retrieved is None
             else:
-                assert retrieved is None
+                retrieved, jlock = doaj.application(application_id, lock_application=True, lock_account=account)
+                if retrieved is not None:
+                    assert retrieved.data == application.data
+                else:
+                    assert retrieved is None
+
+                time.sleep(2)
+
+                assert lock.has_lock(constants.LOCK_APPLICATION, application_id, account.id)

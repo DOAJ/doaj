@@ -404,6 +404,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -428,6 +429,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -452,7 +454,7 @@ class TestCrudApplication(DoajTestCase):
         # on the wrong id
         account.set_id("test")
         with self.assertRaises(Api404Error):
-            ApplicationsCrudApi.delete("adfasdfhwefwef", account)
+            ApplicationsCrudApi.delete(u"adfasdfhwefwef", account)
 
         # on one with a disallowed workflow status
         created.set_application_status("accepted")
@@ -470,6 +472,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
