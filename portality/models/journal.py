@@ -528,11 +528,13 @@ class Journal(JournalLikeObject):
     def related_applications(self):
         return self._get_list("admin.related_applications")
 
-    def add_related_application(self, application_id, date_accepted=None):
+    def add_related_application(self, application_id, date_accepted=None, status=None):
         obj = {"application_id" : application_id}
-        self._delete_from_list("admin.replated_applications", matchsub=obj)
+        self._delete_from_list("admin.related_applications", matchsub=obj)
         if date_accepted is not None:
             obj["date_accepted"] = date_accepted
+        if status is not None:
+            obj["status"] = status
         self._add_to_list_with_struct("admin.related_applications", obj)
 
     def set_related_applications(self, related_applications_records):
@@ -540,6 +542,12 @@ class Journal(JournalLikeObject):
 
     def remove_related_applications(self):
         self._delete("admin.related_applications")
+
+    def related_application_record(self, application_id):
+        for record in self.related_applications:
+            if record.get("application_id") == application_id:
+                return record
+        return None
 
     def is_ticked(self):
         return self._get_single("admin.ticked", default=False)
@@ -1175,7 +1183,8 @@ JOURNAL_STRUCT = {
                 "related_applications" : {
                     "fields" : {
                         "application_id" : {"coerce" : "unicode"},
-                        "date_accepted" : {"coerce" : "utcdatetime"}
+                        "date_accepted" : {"coerce" : "utcdatetime"},
+                        "status" : {"coerce" : "unicode"}
                     }
                 }
             }

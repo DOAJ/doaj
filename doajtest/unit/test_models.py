@@ -99,12 +99,23 @@ class TestClient(DoajTestCase):
         j.remove_current_application()
         assert j.current_application is None
 
+        # check over the related_applications management functions
         related = j.related_applications
         assert related is not None
         j.remove_related_applications()
         assert len(j.related_applications) == 0
         j.set_related_applications(related)
         assert len(j.related_applications) == 2
+        j.add_related_application("123456789", "2005-01-01T00:00:00Z")  # duplicate id, should be overwritten
+        assert len(j.related_applications) == 2
+        rar = j.related_application_record("123456789")
+        assert rar.get("application_id") == "123456789"
+        assert rar.get("date_accepted") == "2005-01-01T00:00:00Z"
+        j.add_related_application("123456789", "2005-01-01T00:00:00Z", "deleted")  # update as if being deleted
+        rar = j.related_application_record("123456789")
+        assert rar.get("application_id") == "123456789"
+        assert rar.get("date_accepted") == "2005-01-01T00:00:00Z"
+        assert rar.get("status") == "deleted"
 
         # do a quick by-reference check on the bibjson object
         bj = j.bibjson()
@@ -1000,11 +1011,13 @@ class TestClient(DoajTestCase):
         j.set_id(j.makeid())
 
         app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app1.set_id(app1.makeid())
         app1.set_current_journal(j.id)
         app1.set_created("1970-01-01T00:00:00Z")
         app1.save()
 
         app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app2.set_id(app2.makeid())
         app2.set_current_journal(j.id)
         app2.set_created("1971-01-01T00:00:00Z")
         app2.save(blocking=True)
@@ -1017,3 +1030,26 @@ class TestClient(DoajTestCase):
         # make sure we get a None response when there's no application
         app0 = models.Suggestion.find_latest_by_current_journal("whatever")
         assert app0 is None
+
+    def test_32_application_all_by_related_journal(self):
+        j = models.Journal()
+        j.set_id(j.makeid())
+
+        app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app1.set_id(app1.makeid())
+        app1.set_related_journal(j.id)
+        app1.set_created("1970-01-01T00:00:00Z")
+        app1.save()
+
+        app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app2.set_id(app2.makeid())
+        app2.set_related_journal(j.id)
+        app2.set_created("1971-01-01T00:00:00Z")
+        app2.save(blocking=True)
+
+        # check that we find all the applications when we search, and that they're in the right order
+        all = models.Suggestion.find_all_by_related_journal(j.id)
+        assert len(all) == 2
+        assert all[0].id == app1.id
+        assert all[1].id == app2.id
+
