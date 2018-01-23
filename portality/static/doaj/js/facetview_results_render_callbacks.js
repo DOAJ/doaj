@@ -493,18 +493,18 @@ fv_edit_update_request = (function (resultobj) {
             if (resultobj.admin && resultobj.admin.application_status) {
                 var status = resultobj.admin.application_status;
                 var result = "";
+                var view = '(<a href="' + update_request_readonly_url + resultobj['id'] + '">view request</a>)';
                 if (status === "update_request" || status == "submitted") {
-                    result = '<a class="edit_suggestion_link pull-right" href="';
-                    result += update_request_edit_url;
-                    result += resultobj.admin.current_journal;
+                    var actionUrl = update_request_edit_url + resultobj.admin.current_journal;
+                    result = '<span class="pull-right"><a class="edit_suggestion_link" href="' + actionUrl;
                     result += '"';
-                    result += '>Edit this update request</a>';
+                    result += '>Edit this update request</a> | <a href="' + actionUrl + '" class="delete_suggestion_link">Delete this update request</a></span>';
                 } else  if (status !== "rejected" && status !== "accepted") {
-                    result = '<span class="pull-right">This update request is currently being reviewed by an Editor.</span>';
+                    result = '<span class="pull-right">This update request is currently being reviewed by an Editor ' + view + '.</span>';
                 } else if (status === "rejected") {
-                    result = '<span class="pull-right">This update request has been rejected.</span>';
+                    result = '<span class="pull-right">This update request has been rejected ' + view + '.</span>';
                 } else if (status === "accepted") {
-                    result = '<span class="pull-right">This update request has been accepted, and your journal in DOAJ updated.</span>';
+                    result = '<span class="pull-right">This update request has been accepted, and your journal in DOAJ updated ' + view + '.</span>';
                 }
                 return result;
             }

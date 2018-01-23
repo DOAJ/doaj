@@ -1,12 +1,42 @@
 jQuery(document).ready(function ($) {
 
+    function doajUpdateRequestPostRender(options, context) {
+        // first run the basic post render
+        doajScrollTop(options, context);
+
+        // now add the handlers for the application delete
+        $(".delete_suggestion_link").unbind("click").click(function(event) {
+            event.preventDefault();
+
+            function success_callback(data) {
+                alert("The update request was successfully deleted");
+                $(".facetview_freetext").trigger("keyup"); // cause a search
+            }
+
+            function error_callback() {
+                alert("There was an error deleting the update request")
+            }
+
+            var c = confirm("Are you really really sure?  You can't undo this operation!");
+            if (c) {
+                var href = $(this).attr("href");
+                $.ajax({
+                    type: "DELETE",
+                    url: href,
+                    success : success_callback,
+                    error: error_callback
+                })
+            }
+        });
+    }
+
     $('.facetview.update_requests').facetview({
-        search_url: es_scheme + '//' + es_domain + '/publisher_reapp_query/suggestion/_search?',
+        search_url: es_scheme + '//' + es_domain + '/publisher_query/suggestion/_search?',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
         render_not_found: publisherUpdateRequestNotFound,
-        post_render_callback: doajScrollTop,
+        post_render_callback: doajUpdateRequestPostRender,
 
         sharesave_link: false,
         freetext_submit_delay: 1000,
