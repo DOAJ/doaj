@@ -288,14 +288,64 @@ DEFAULT_SORT = {
     # "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
 }
 
+"""
 QUERY_ROUTE = {
     "query" : {"role": None, "default_filter": True, "public_result_filter" : True},
     "admin_query" : {"role" : "admin", "default_filter": False},
     "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
     "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
     "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
-    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : False}
+    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "update_request_filter" : True}
 }
+"""
+
+QUERY_ROUTE = {
+    "query" : {
+        "journal,article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.search.JournalArticle"
+        }
+    },
+    "publisher_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner", "update_request"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Suggestion"
+        }
+    },
+    "admin_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Journal"
+        }
+    }
+}
+
+QUERY_FILTERS = {
+    # query filters
+    "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
+    "owner" : "portality.lib.query_filters.owner",
+    "update_request" : "portality.lib.query_filters.update_request",
+
+    # result filters
+    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
+    "publisher_result_filter" : "portality.lib.query_filters.publisher_result_filter"
+}
+
+UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
     "bibjson.publisher" : "index.publisher_ac",
