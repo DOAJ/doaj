@@ -8,6 +8,7 @@ class Renderer(object):
         self.fh = FormHelper()
         self._error_fields = []
         self._disabled_fields = []
+        self._disable_all_fields = False
 
     def check_field_group_exists(self, field_group_name):
         """ Return true if the field group exists in this form """
@@ -35,7 +36,7 @@ class Renderer(object):
             config = self._rewrite_extra_fields(form_context, config)
             field = form_context.form[field_name]
 
-            if field_name in self.disabled_fields:
+            if field_name in self.disabled_fields or self._disable_all_fields is True:
                 config = deepcopy(config)
                 config["disabled"] = "disabled"
 
@@ -56,6 +57,9 @@ class Renderer(object):
 
     def set_disabled_fields(self, fields):
         self._disabled_fields = fields
+
+    def disable_all_fields(self, disable):
+        self._disable_all_fields = disable
 
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
@@ -303,6 +307,7 @@ class PublicApplicationRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+
 class PublisherUpdateRequestRenderer(ApplicationRenderer):
     def __init__(self):
         super(PublisherUpdateRequestRenderer, self).__init__()
@@ -316,6 +321,17 @@ class PublisherUpdateRequestRenderer(ApplicationRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+class PublisherUpdateRequestReadOnlyRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(PublisherUpdateRequestReadOnlyRenderer, self).__init__()
+
+        self.ERROR_CHECK_ORDER = []
+
+        self.number_questions()
+
+        self.check_field_groups()
+
 
 class ManEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -493,6 +509,7 @@ class ManEdJournalReviewRenderer(JournalRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
 
 class ManEdJournalBulkEditRenderer(Renderer):
     def __init__(self):

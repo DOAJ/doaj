@@ -533,6 +533,8 @@ class ApplicationFormFactory(object):
             return AssEdApplicationReview(source=source, form_data=form_data)
         elif role == "publisher":
             return PublisherUpdateRequest(source=source, form_data=form_data)
+        elif role == "update_request_readonly":
+            return PublisherUpdateRequestReadOnly(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -1037,15 +1039,15 @@ class PublisherUpdateRequest(ApplicationContext):
         self.template = "formcontext/publisher_update_request.html"
 
     def blank_form(self):
-        self.form = forms.PublisherReApplicationForm()
+        self.form = forms.PublisherUpdateRequestForm()
 
     def data2form(self):
-        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "society_institution", "platform"])
         self._disable_fields()
 
     def source2form(self):
-        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._expand_descriptions(["publisher", "society_institution", "platform"])
         self._disable_fields()
 
@@ -1276,6 +1278,61 @@ class PublicApplication(ApplicationContext):
                 self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
                 app.logger.exception('Error sending application received email.')
 
+
+class PublisherUpdateRequestReadOnly(PrivateContext):
+    """
+    Read Only Application form for publishers. Nothing can be changed. Useful to show publishers what they
+    currently have submitted for review
+    """
+    def make_renderer(self):
+        self.renderer = render.PublisherUpdateRequestReadOnlyRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/readonly_application.html"
+
+    def blank_form(self):
+        self.form = forms.PublisherUpdateRequestForm()
+        self.renderer.disable_all_fields(False)
+        # self._set_choices()
+
+    def data2form(self):
+        self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
+        # self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self.renderer.disable_all_fields(False)
+
+    def source2form(self):
+        self.form = forms.PublisherUpdateRequestForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        # self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self.renderer.set_disabled_fields(["digital_archiving_policy"])
+        # self.renderer.disable_all_fields(True)
+
+    def form2target(self):
+        pass  # you can't edit objects using this form
+
+    def patch_target(self):
+        pass  # you can't edit objects using this form
+
+    def finalise(self):
+        raise FormContextException("You cannot edit applications using the read-only form")
+
+    """
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot view a not-existent journal")
+
+        return super(ReadOnlyJournal, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs
+        )
+    """
+    """
+    def _set_choices(self):
+        # no application status (this is a journal) or editorial info (it's not even in the form) to set
+        pass
+    """
 
 ### Journal form contexts ###
 

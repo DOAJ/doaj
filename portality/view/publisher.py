@@ -33,13 +33,23 @@ def index():
     return render_template("publisher/index.html", search_page=True, facetviews=["publisher.journals.facetview"])
 
 
-@blueprint.route("/update_request/<journal_id>", methods=["GET", "POST"])
+@blueprint.route("/update_request/<journal_id>", methods=["GET", "POST", "DELETE"])
 @login_required
 @ssl_required
 @write_required()
 def update_request(journal_id):
     # DOAJ BLL for this request
     dbl = DOAJ()
+
+    # if this is a delete request, deal with it first and separately from the below logic
+    if request.method == "DELETE":
+        journal, _ = dbl.journal(journal_id)
+        application_id = journal.current_application
+        if application_id is not None:
+            dbl.delete_application(application_id, current_user._get_current_object())
+        else:
+            abort(404)
+        return ""
 
     # load the application either directly or by crosswalking the journal object
     application = None
@@ -95,6 +105,23 @@ def update_request(journal_id):
         else:
             return fc.render_template(edit_suggestion_page=True)
 
+
+@blueprint.route("/view_update_request/<application_id>", methods=["GET", "POST"])
+@login_required
+@ssl_required
+@write_required()
+def update_request_readonly(application_id):
+    # DOAJ BLL for this request
+    dbl = DOAJ()
+
+    application, _ = dbl.application(application_id)
+    try:
+        dbl.can_view_application(current_user._get_current_object(), application)
+    except AuthoriseException as e:
+        abort(404)
+
+    fc = formcontext.ApplicationFormFactory.get_form_context(role="update_request_readonly", source=application)
+    return fc.render_template(no_sidebar=True)
 
 @blueprint.route('/progress')
 @login_required

@@ -471,9 +471,18 @@ class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Sugge
     pass
 
 
-class PublisherReApplicationForm(JournalInformation, Suggestion):
+class PublisherUpdateRequestForm(JournalInformation, Suggestion):
     """
     Publisher's reapplication form.  It consists of:
+        * JournalInformation - journal bibliographic data
+        * Suggestion - additional application metadata
+    """
+    pass
+
+
+class PublisherUpdateRequestReadOnlyForm(JournalInformation, Suggestion):
+    """
+    Read-only application form.  It consists of:
         * JournalInformation - journal bibliographic data
         * Suggestion - additional application metadata
     """

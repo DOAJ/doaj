@@ -1,3 +1,5 @@
+from wtforms.fields.core import UnboundField
+
 class FormHelper(object):
 
     def render_field(self, field, **kwargs):
@@ -185,7 +187,9 @@ class FormHelper(object):
         frag += '<label for="' + field.short_name + '">' + field.label.text + '</label>'
 
         if field.label.text in extra_input_fields.keys():
-            frag += "&nbsp;" + extra_input_fields[field.label.text](**{"class" : "extra_input_field"})
+            eif = extra_input_fields[field.label.text]
+            if not isinstance(eif, UnboundField):
+                frag += "&nbsp;" + extra_input_fields[field.label.text](**{"class" : "extra_input_field"})
 
         frag += "</li>"
         return frag
