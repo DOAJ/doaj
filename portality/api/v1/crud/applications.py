@@ -6,7 +6,7 @@ from datetime import datetime
 from portality import models
 
 from portality.bll import DOAJ
-from portality.bll.exceptions import AuthoriseException
+from portality.bll.exceptions import AuthoriseException, NoSuchObjectException
 from portality import lock
 from portality.formcontext import formcontext, xwalk
 from werkzeug.datastructures import MultiDict
@@ -270,38 +270,6 @@ class ApplicationsCrudApi(CrudApi):
             else:
                 raise Api400Error()
 
-        """
-        # is the current account the owner of the application
-        # if not we raise a 404 because that id does not exist for that user account.
-        if ap.owner != account.id:
-            raise Api404Error()
-
-        # now we need to determine whether the records is in an editable state, which means its application_status
-        # must be from an allowed list
-        if ap.application_status not in ["rejected", "submitted", "pending"]:
-            raise Api403Error()
-
-
-
-
-
-        # we need to ensure that any properties of the existing application that aren't allowed to change
-        # are copied over
-        new_ap.set_id(id)
-        new_ap.set_created(ap.created_date)
-        new_ap.set_owner(ap.owner)
-        new_ap.set_suggester(ap.suggester['name'], ap.suggester['email'])
-        new_ap.suggested_on = ap.suggested_on
-        new_ap.bibjson().set_subjects(ap.bibjson().subjects())
-
-        # reset the status on the application
-        new_ap.set_application_status('pending')
-
-        # finally save the new application, and return to the caller
-        new_ap.save()
-        return new_ap
-        """
-
     @classmethod
     def delete_swag(cls):
         template = deepcopy(cls.SWAG_TEMPLATE)
@@ -319,6 +287,31 @@ class ApplicationsCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
+        dbl = DOAJ()
+
+        if dry_run:
+            application, _ = dbl.application(id)
+            if application is not None:
+                try:
+                    dbl.can_edit_application(account, application)
+                except AuthoriseException as e:
+                    if e.reason == e.WRONG_STATUS:
+                        raise Api403Error()
+                    raise Api404Error()
+            else:
+                raise Api404Error()
+        else:
+            try:
+                dbl.delete_application(id, account)
+            except AuthoriseException as e:
+                if e.reason == e.WRONG_STATUS:
+                    raise Api403Error()
+                raise Api404Error()
+            except NoSuchObjectException as e:
+                raise Api404Error()
+
+
+        """
         # now see if there's something for us to delete
         ap = models.Suggestion.pull(id)
         if ap is None:
@@ -337,3 +330,4 @@ class ApplicationsCrudApi(CrudApi):
         # issue the delete (no record of the delete required)
         if not dry_run:
             ap.delete()
+        """
