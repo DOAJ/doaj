@@ -148,7 +148,6 @@ class DOAJ(object):
             return None, None, None
 
         # retrieve the latest application attached to this journal
-
         application_lock = None
         application = models.Suggestion.find_latest_by_current_journal(journal_id)
 
@@ -296,20 +295,115 @@ class DOAJ(object):
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed journal_2_application; return application object")
         return application
 
-    def application(self, application_id):
+    def application(self, application_id, lock_application=False, lock_account=None, lock_timeout=None):
         """
         Function to retrieve an application by its id
 
         :param application_id: the id of the application
-        :return: Suggestion object
+        :param: lock_application: should we lock the resource on retrieval
+        :param: lock_account: which account is doing the locking?  Must be present if lock_journal=True
+        :param: lock_timeout: how long to lock the resource for.  May be none, in which case it will default
+        :return: Tuple of (Suggestion Object, Lock Object)
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("application", [
-            {"arg": application_id, "allow_none" : False, "arg_name" : "application_id"}
+            {"arg": application_id, "allow_none" : False, "arg_name" : "application_id"},
+            {"arg": lock_application, "instance" : bool, "allow_none" : False, "arg_name" : "lock_journal"},
+            {"arg": lock_account, "instance" : models.Account, "allow_none" : True, "arg_name" : "lock_account"},
+            {"arg": lock_timeout, "instance" : int, "allow_none" : True, "arg_name" : "lock_timeout"}
         ], exceptions.ArgumentException)
 
         # pull the application from the database
-        return models.Suggestion.pull(application_id)
+        application = models.Suggestion.pull(application_id)
+
+        # if we've retrieved the journal, and a lock is requested, request it
+        the_lock = None
+        if application is not None and lock_application:
+            if lock_account is not None:
+                the_lock = lock.lock(constants.LOCK_APPLICATION, application_id, lock_account.id, lock_timeout)
+            else:
+                raise exceptions.ArgumentException("If you specify lock_application on application retrieval, you must also provide lock_account")
+
+        return application, the_lock
+
+    def delete_application(self, application_id, account):
+        """
+        Function to delete an application, and all references to it in other objects (current and related journals)
+
+        The application and all related journals need to be locked before this process can proceed, so you may get a
+        lock.Locked exception
+
+        :param application_id:
+        :param account:
+        :return:
+        """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("delete_application", [
+            {"arg": application_id, "instance" : unicode, "allow_none" : False, "arg_name" : "application_id"},
+            {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"}
+        ], exceptions.ArgumentException)
+
+        # get hold of a copy of the application.  If there isn't one, our work here is done
+        # (note the application could be locked, in which case this will raise a lock.Locked exception)
+
+        # get the application
+        application, _ = self.application(application_id)
+        if application is None:
+            raise exceptions.NoSuchObjectException
+
+        # determine if the user can edit the application
+        self.can_edit_application(account, application)
+
+        # attempt to lock the record (this may raise a Locked exception)
+        alock = lock.lock(constants.LOCK_APPLICATION, application_id, account.id)
+
+        # obtain the current journal, with associated lock
+        current_journal = None
+        cjlock = None
+        if application.current_journal is not None:
+            try:
+                current_journal, cjlock = self.journal(application.current_journal, lock_journal=True, lock_account=account)
+            except lock.Locked as e:
+                # if the resource is locked, we have to back out
+                if alock is not None: alock.delete()
+                raise
+
+        # obtain the related journal, with associated lock
+        related_journal = None
+        rjlock = None
+        if application.related_journal is not None:
+            try:
+                related_journal, rjlock = self.journal(application.related_journal, lock_journal=True, lock_account=account)
+            except lock.Locked as e:
+                # if the resource is locked, we have to back out
+                if alock is not None: alock.delete()
+                if cjlock is not None: cjlock.delete()
+                raise
+
+        try:
+            if current_journal is not None:
+                current_journal.remove_current_application()
+                saved = current_journal.save()
+                if saved is None:
+                    raise exceptions.SaveException("Unable to save journal record")
+
+            if related_journal is not None:
+                relation_record = related_journal.related_application_record(application_id)
+                if relation_record is None:
+                    relation_record = {}
+                related_journal.add_related_application(application_id, relation_record.get("date_accepted"), "deleted")
+                saved = related_journal.save()
+                if saved is None:
+                    raise exceptions.SaveException("Unable to save journal record")
+
+            application.delete()
+
+        finally:
+            if alock is not None: alock.delete()
+            if cjlock is not None: cjlock.delete()
+            if rjlock is not None: rjlock.delete()
+
+        return
 
     def journal(self, journal_id, lock_journal=False, lock_account=None, lock_timeout=None):
         """
@@ -393,5 +487,28 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
         if application.application_status not in ["pending", "update_request", "submitted"]:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
+
+        return True
+
+    def can_view_application(self, account, application):
+        """
+        Is the given account allowed to view the update request application
+
+        :param account: the account doing the action
+        :param application: the application the account wants to edit
+        :return:
+        """
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("can_edit_update_request", [
+            {"arg": account, "instance": models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg": application, "instance": models.Suggestion, "allow_none" : False, "arg_name" : "application"},
+        ], exceptions.ArgumentException)
+
+        # if this is the super user, they have all rights
+        if account.is_super:
+            return True
+
+        if account.id != application.owner:
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
 
         return True

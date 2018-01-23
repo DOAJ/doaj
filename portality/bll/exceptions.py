@@ -29,3 +29,10 @@ class SaveException(Exception):
     Exception to raise if a save operation did not work as expected
     """
     pass
+
+class NoSuchObjectException(Exception):
+    """
+    Exception to raise if the object id given does not correspond to an actual object
+    in the datastore
+    """
+    pass
