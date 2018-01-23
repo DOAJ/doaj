@@ -812,14 +812,16 @@ class DataObj(object):
         type, struct, instructions = construct_lookup(path, self._struct)
         if type == "field":
             kwargs = construct_kwargs(type, "set", instructions)
-            self._set_single(path, val, **kwargs)
+            coerce_fn = self._coerce_map.get(instructions.get("coerce", "unicode"))
+            self._set_single(path, val, coerce=coerce_fn, **kwargs)
         elif type == "list":
             if not isinstance(val, list):
                 val = [val]
             if struct is not None:
                 val = [construct(x, struct, self._coerce_map) for x in val]
             kwargs = construct_kwargs(type, "set", instructions)
-            self._set_list(path, val, **kwargs)
+            coerce_fn = self._coerce_map.get(instructions.get("coerce"))
+            self._set_list(path, val, coerce=coerce_fn, **kwargs)
         elif type == "object":
             if struct is not None:
                 val = construct(val, struct, self._coerce_map)
