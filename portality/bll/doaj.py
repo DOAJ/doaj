@@ -507,7 +507,8 @@ class DOAJ(object):
         # if this is the super user, they have all rights
         if account.is_super:
             return True
-
+        if not account.has_role("publisher"):
+            raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
         if account.id != application.owner:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
 
