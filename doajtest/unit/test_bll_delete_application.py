@@ -1,31 +1,17 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, load_test_cases_from_matrix
 from parameterized import parameterized
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
-import csv, time
+import time
 
-from portality.models import Journal, Account, Suggestion, Provenance
+from portality.models import Journal, Account, Suggestion
 
 from portality.bll import DOAJ
 from portality.bll import exceptions, constants
-from portality.lib import paths
 from portality import lock
 
-RUN_SINGLE = None
-
 def load_test_cases():
-    with open(paths.rel2abs(__file__, "..", "matrices", "delete_application.csv")) as f:
-        reader = csv.reader(f)
-        cases = []
-        first = True
-        for row in reader:
-            if first:
-                first = False
-                continue
-            if RUN_SINGLE is None or (RUN_SINGLE is not None and row[0] == RUN_SINGLE):
-                row[0] = "row_id_" + row[0]
-                cases.append(tuple(row))
-        return cases
+    return load_test_cases_from_matrix("delete_application.csv", test_ids=[])
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,

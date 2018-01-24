@@ -8,7 +8,8 @@ import time
 import dictdiffer
 from datetime import datetime
 from glob import glob
-import os
+import os, csv
+from portality.lib import paths
 
 prepare_for_test()
 
@@ -77,3 +78,19 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     if print_unchanged:
         print 'Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label)
         print differ.unchanged()
+
+def load_test_cases_from_matrix(filename, test_ids):
+    if test_ids is None:
+        test_ids = []
+    with open(paths.rel2abs(__file__, "matrices", filename)) as f:
+        reader = csv.reader(f)
+        cases = []
+        first = True
+        for row in reader:
+            if first:
+                first = False
+                continue
+            if row[0] in test_ids or len(test_ids) == 0:
+                row[0] = "row_id_" + row[0]
+                cases.append(tuple(row))
+        return cases
