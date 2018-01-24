@@ -13,11 +13,8 @@ mkdir -p /home/cloo/appdata/doaj/history/journal
 sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
 
-sudo supervisorctl reread doaj-$ENV
-sudo supervisorctl update doaj-$ENV
-kill -HUP $(sudo supervisorctl pid doaj-$ENV)
-
-sudo nginx -t && sudo nginx -s reload
+# Restart apps services
+/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart_apps.sh $ENV
 
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-apps

@@ -78,5 +78,5 @@ crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 /home/cloo/repl/command.sh -v $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
 /home/cloo/repl/command.sh -v $ENV-background /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-background-apps.sh $ENV
 
-# reload the config if syntax is OK
-sudo nginx -t && sudo nginx -s reload
+# Restart gateway services
+/home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/restart-gateway.sh
