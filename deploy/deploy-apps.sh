@@ -14,7 +14,7 @@ sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
 
 # Restart apps services
-/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart_apps.sh $ENV
+/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart-apps.sh $ENV
 
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-apps

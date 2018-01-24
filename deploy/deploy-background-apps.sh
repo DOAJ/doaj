@@ -44,7 +44,7 @@ mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
 mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs
 
 # Restart background apps services
-/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart_backgound_apps.sh $ENV
+/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart-backgound-apps.sh $ENV
 
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-background-apps
