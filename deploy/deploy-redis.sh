@@ -25,30 +25,5 @@ echo "Installing Docker Compose, version information should be displayed below"
 curl -L https://github.com/docker/compose/releases/download/1.9.0/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose > /dev/null && sudo chmod a+x /usr/local/bin/docker-compose
 docker-compose --version
 
-cd /home/cloo/repl/$ENV/doaj/src/doaj/docker
-docker-compose down || true  # it's fine to fail to bring down redis if it is not started yet
-# for the line below:
-# --build to pick up docker/redis/Dockerfile changes
-# --remove-orphans to remove all containers that are not defined in the docker/docker-compose.yml (allows us to change service names and configuration just by editing that file and deploying
-# -d for detached mode rather than run in foreground
-docker-compose up --build --remove-orphans -d
-
-aip=$(cat /home/cloo/repl/ips/${ENV})
-
-. /home/cloo/repl/$ENV/doaj/src/doaj/app.cfg > /dev/null 2>&1
-
-DEFAULT_REDIS_PORT=6379
-
-if [ -z "$HUEY_REDIS_PORT" ]; then
-    HUEY_REDIS_PORT=${DEFAULT_REDIS_PORT}
-    echo "HUEY_REDIS_PORT not set, defaulting to $DEFAULT_REDIS_PORT"
-else
-    echo "HUEY_REDIS_PORT read in from app.cfg: '$HUEY_REDIS_PORT'"
-fi
-
-echo "Opening firewall port for Redis"
-echo "sudo ufw deny in on eth1 to any port ${HUEY_REDIS_PORT}"
-echo "sudo ufw allow in on eth1 from $aip to any port $HUEY_REDIS_PORT"
-sudo ufw deny in on eth1 to any port ${HUEY_REDIS_PORT}
-sudo ufw allow in on eth1 from ${aip} to any port ${HUEY_REDIS_PORT}
-sudo ufw status verbose
+# Restart redis
+/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart-redis.sh $ENV
