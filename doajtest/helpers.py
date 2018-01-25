@@ -79,7 +79,7 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
         print 'Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label)
         print differ.unchanged()
 
-def load_test_cases_from_matrix(filename, test_ids):
+def load_from_matrix(filename, test_ids):
     if test_ids is None:
         test_ids = []
     with open(paths.rel2abs(__file__, "matrices", filename)) as f:

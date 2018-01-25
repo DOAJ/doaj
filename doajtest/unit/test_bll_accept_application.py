@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase, load_test_cases_from_matrix
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from parameterized import parameterized
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
@@ -11,7 +11,7 @@ from portality.bll import exceptions, constants
 
 
 def load_test_cases():
-    return load_test_cases_from_matrix("accept_application.csv", test_ids=[])
+    return load_from_matrix("accept_application.csv", test_ids=[])
 
 
 EXCEPTIONS = {

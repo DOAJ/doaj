@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase, load_test_cases_from_matrix
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from parameterized import parameterized, param
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
@@ -15,7 +15,7 @@ EXCEPTIONS = {
 }
 
 def load_can_view_application_cases():
-    return load_test_cases_from_matrix("can_view_application.csv", test_ids=[])
+    return load_from_matrix("can_view_application.csv", test_ids=[])
 
 
 def create_update_cases():
@@ -82,7 +82,6 @@ def create_edit_cases():
 
 class TestBLLAuthorisations(DoajTestCase):
 
-    """
     @parameterized.expand(create_update_cases)
     def test_01_create_update_request(self, name, journal, account, raises=None, expected=None):
         doaj = DOAJ()
@@ -104,7 +103,6 @@ class TestBLLAuthorisations(DoajTestCase):
             assert doaj.can_edit_application(account, application) is expected
         else:
             assert False, "Specify either raises or expected"
-    """
 
     @parameterized.expand(load_can_view_application_cases)
     def test_03_view_application(self, name, account_type, role, owner, application_type, raises=None, returns=None, auth_reason=None):

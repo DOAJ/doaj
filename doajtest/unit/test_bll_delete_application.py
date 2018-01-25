@@ -1,4 +1,4 @@
-from doajtest.helpers import DoajTestCase, load_test_cases_from_matrix
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from parameterized import parameterized
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
@@ -11,12 +11,13 @@ from portality.bll import exceptions, constants
 from portality import lock
 
 def load_test_cases():
-    return load_test_cases_from_matrix("delete_application.csv", test_ids=[])
+    return load_from_matrix("delete_application.csv", test_ids=[])
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
     "Locked" : lock.Locked,
-    "AuthoriseException" : exceptions.AuthoriseException
+    "AuthoriseException" : exceptions.AuthoriseException,
+    "NoSuchObjectException" : exceptions.NoSuchObjectException
 }
 
 def check_locks(application, cj, rj, account):
@@ -48,7 +49,7 @@ class TestBLLDeleteApplication(DoajTestCase):
         Journal.save = self.old_journal_save
 
     @parameterized.expand(load_test_cases)
-    def test_01_delete_application(self, name, application_type, account_type, current_journal, related_journal, raises, notes):
+    def test_01_delete_application(self, name, application_type, account_type, current_journal, related_journal, raises):
 
         ###############################################
         ## set up
