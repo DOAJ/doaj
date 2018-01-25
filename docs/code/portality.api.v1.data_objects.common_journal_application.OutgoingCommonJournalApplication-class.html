@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.api-module.html">Package&nbsp;api</a> ::
+        <a href="portality.api.v1-module.html">Package&nbsp;v1</a> ::
+        <a href="portality.api.v1.data_objects-module.html">Package&nbsp;data_objects</a> ::
+        <a href="portality.api.v1.data_objects.common_journal_application-module.html">Module&nbsp;common_journal_application</a> ::
+        Class&nbsp;OutgoingCommonJournalApplication
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class OutgoingCommonJournalApplication</h1><p class="nomargin-top"><span class="codelink"><a href="portality.api.v1.data_objects.common_journal_application-pysrc.html#OutgoingCommonJournalApplication">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit_19" name="uml_class_diagram_for_portalit_19">
+<area shape="rect" id="node1_15" href="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html#from_model" title="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication.from_model" alt="" coords="923,333,1136,353"/>
+<area shape="rect" id="node1" href="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication-class.html" title="portality.api.v1.data_objects.common_journal_application.OutgoingCommonJournalApplication" alt="" coords="911,299,1148,359"/>
+<area shape="rect" id="node2_16" href="portality.lib.dataobj.DataObj-class.html#SCHEMA" title="hash(x)" alt="" coords="17,31,1211,51"/>
+<area shape="rect" id="node2_17" href="portality.lib.dataobj.DataObj-class.html#DEFAULT_COERCE" title="portality.lib.dataobj.DataObj.DEFAULT_COERCE" alt="" coords="17,51,1211,71"/>
+<area shape="rect" id="node2_18" href="portality.lib.dataobj.DataObj-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,73,1211,93"/>
+<area shape="rect" id="node2_19" href="portality.lib.dataobj.DataObj-class.html#__getattr__" title="portality.lib.dataobj.DataObj.__getattr__" alt="" coords="17,93,1211,113"/>
+<area shape="rect" id="node2_20" href="portality.lib.dataobj.DataObj-class.html#__setattr__" title="x.__setattr__(&#39;name&#39;, value) &lt;==&gt; x.name = value" alt="" coords="17,113,1211,133"/>
+<area shape="rect" id="node2_21" href="portality.lib.dataobj.DataObj-class.html#check_construct" title="Apply the construct to the internal data and throw errors if it is not validated" alt="" coords="17,133,1211,153"/>
+<area shape="rect" id="node2_22" href="portality.lib.dataobj.DataObj-class.html#validate" title="DEPRECATED &#45; use &#39;check_construct&#39; instead." alt="" coords="17,153,1211,173"/>
+<area shape="rect" id="node2_23" href="portality.lib.dataobj.DataObj-class.html#custom_validate" title="portality.lib.dataobj.DataObj.custom_validate" alt="" coords="17,173,1211,193"/>
+<area shape="rect" id="node2_24" href="portality.lib.dataobj.DataObj-class.html#populate" title="portality.lib.dataobj.DataObj.populate" alt="" coords="17,193,1211,213"/>
+<area shape="rect" id="node2_25" href="portality.lib.dataobj.DataObj-class.html#clone" title="portality.lib.dataobj.DataObj.clone" alt="" coords="17,213,1211,233"/>
+<area shape="rect" id="node2_26" href="portality.lib.dataobj.DataObj-class.html#json" title="portality.lib.dataobj.DataObj.json" alt="" coords="17,233,1211,253"/>
+<area shape="rect" id="node2_27" href="portality.lib.dataobj.DataObj-class.html#get_struct" title="portality.lib.dataobj.DataObj.get_struct" alt="" coords="17,253,1211,273"/>
+<area shape="rect" id="node2" href="portality.lib.dataobj.DataObj-class.html" title="Class which provides services to other classes which store their internal data as a python data structure in the self.data field." alt="" coords="5,5,1222,280"/>
+<area shape="rect" id="node3_28" href="portality.lib.swagger.SwaggerSupport-class.html#DEFAULT_SWAGGER_TRANS" title="portality.lib.swagger.SwaggerSupport.DEFAULT_SWAGGER_TRANS" alt="" coords="1264,131,1625,151"/>
+<area shape="rect" id="node3_29" href="portality.lib.swagger.SwaggerSupport-class.html#struct_to_swag" title="portality.lib.swagger.SwaggerSupport.struct_to_swag" alt="" coords="1264,153,1625,173"/>
+<area shape="rect" id="node3" href="portality.lib.swagger.SwaggerSupport-class.html" title="portality.lib.swagger.SwaggerSupport" alt="" coords="1251,105,1637,180"/>
+</map>
+  <img src="uml_class_diagram_for_portalit_19.gif" alt='' usemap="#uml_class_diagram_for_portalit_19" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.lib.dataobj.DataObj-class.html">lib.dataobj.DataObj</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__getattr__"></a><span class="summary-sig-name">__getattr__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">name</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.__getattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.lib.dataobj.DataObj-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">raw</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">struct</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">construct_raw</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">expose_data</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">properties</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">coerce_map</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">construct_silent_prune</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">construct_maintain_reference</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.lib.dataobj.DataObj-class.html#__setattr__" class="summary-sig-name">__setattr__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">key</span>,
+        <span class="summary-sig-arg">value</span>)</span><br />
+      x.__setattr__('name', value) &lt;==&gt; x.name = value</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.__setattr__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_struct"></a><span class="summary-sig-name">_add_struct</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">struct</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._add_struct">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_to_list"></a><span class="summary-sig-name">_add_to_list</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>,
+        <span class="summary-sig-arg">coerce</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allow_coerce_failure</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">allow_none</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">ignore_none</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">unique</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._add_to_list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_to_list_with_struct"></a><span class="summary-sig-name">_add_to_list_with_struct</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._add_to_list_with_struct">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_coerce"></a><span class="summary-sig-name">_coerce</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">val</span>,
+        <span class="summary-sig-arg">cast</span>,
+        <span class="summary-sig-arg">accept_failure</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._coerce">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_date_str"></a><span class="summary-sig-name">_date_str</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">in_format</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">out_format</span>=<span class="summary-sig-default">None</span>)</span><br />
+      DEPRECATED - use dataobj.date_str instead</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._date_str">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_delete"></a><span class="summary-sig-name">_delete</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">prune</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._delete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.lib.dataobj.DataObj-class.html#_delete_from_list" class="summary-sig-name" onclick="show_private();">_delete_from_list</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">matchsub</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">prune</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">apply_struct_on_matchsub</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Note that matchsub will be coerced with the struct if it exists, to ensure
+that the match is done correctly</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._delete_from_list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_float"></a><span class="summary-sig-name">_float</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      DEPRECATED - use dataobj.to_float() instead</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._float">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_internal_property"></a><span class="summary-sig-name">_get_internal_property</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._get_internal_property">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_list"></a><span class="summary-sig-name">_get_list</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">coerce</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">by_reference</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">allow_coerce_failure</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._get_list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_path"></a><span class="summary-sig-name">_get_path</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">default</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._get_path">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_get_single"></a><span class="summary-sig-name">_get_single</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">coerce</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">default</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allow_coerce_failure</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._get_single">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_int"></a><span class="summary-sig-name">_int</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      DEPRECATED - use dataobj.to_int() instead</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._int">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_list_dynamic_properties"></a><span class="summary-sig-name">_list_dynamic_properties</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._list_dynamic_properties">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_prune_stack"></a><span class="summary-sig-name">_prune_stack</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">stack</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._prune_stack">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_internal_property"></a><span class="summary-sig-name">_set_internal_property</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">value</span>,
+        <span class="summary-sig-arg">wrapper</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._set_internal_property">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_list"></a><span class="summary-sig-name">_set_list</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>,
+        <span class="summary-sig-arg">coerce</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allow_coerce_failure</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">allow_none</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">ignore_none</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._set_list">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_path"></a><span class="summary-sig-name">_set_path</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._set_path">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_single"></a><span class="summary-sig-name">_set_single</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>,
+        <span class="summary-sig-arg">coerce</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allow_coerce_failure</span>=<span class="summary-sig-default">False</span>,
+        <span class="summary-sig-arg">allowed_values</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allowed_range</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">allow_none</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">ignore_none</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._set_single">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_set_with_struct"></a><span class="summary-sig-name">_set_with_struct</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">path</span>,
+        <span class="summary-sig-arg">val</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._set_with_struct">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_utf8_unicode"></a><span class="summary-sig-name">_utf8_unicode</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      DEPRECATED - use dataobj.to_unicode() instead</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj._utf8_unicode">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.lib.dataobj.DataObj-class.html#check_construct" class="summary-sig-name">check_construct</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Apply the construct to the internal data and throw errors if it is not validated</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.check_construct">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="clone"></a><span class="summary-sig-name">clone</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.clone">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="custom_validate"></a><span class="summary-sig-name">custom_validate</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.custom_validate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_struct"></a><span class="summary-sig-name">get_struct</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.get_struct">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="json"></a><span class="summary-sig-name">json</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.json">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="populate"></a><span class="summary-sig-name">populate</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">fields_and_values</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.populate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.lib.dataobj.DataObj-class.html#validate" class="summary-sig-name">validate</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      DEPRECATED - use 'check_construct' instead.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.dataobj-pysrc.html#DataObj.validate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.lib.swagger.SwaggerSupport-class.html">lib.swagger.SwaggerSupport</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="struct_to_swag"></a><span class="summary-sig-name">struct_to_swag</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">struct</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">schema_title</span>=<span class="summary-sig-default">''</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.lib.swagger-pysrc.html#SwaggerSupport.struct_to_swag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="from_model"></a><span class="summary-sig-name">from_model</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">journal_or_app</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.data_objects.common_journal_application-pysrc.html#OutgoingCommonJournalApplication.from_model">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.lib.dataobj.DataObj-class.html">lib.dataobj.DataObj</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.lib.dataobj.DataObj-class.html#DEFAULT_COERCE" class="summary-name">DEFAULT_COERCE</a> = <code title="{&quot;unicode&quot;: to_unicode(), &quot;unicode_upper&quot;: to_unicode_upper, &quot;utcdatet\
+ime&quot;: date_str(), &quot;utcdatetimemicros&quot;: date_str(out_format= &quot;%Y-%m-%dT\
+%H:%M:%S.%fZ&quot;), &quot;bigenddate&quot;: date_str(out_format= &quot;%Y-%m-%d&quot;), &quot;integ\
+er&quot;: to_int(), &quot;float&quot;: to_float(), &quot;isolang&quot;: to_isolang(), &quot;url&quot;: to\
+_url, &quot;bool&quot;: to_bool, &quot;isolang_2letter&quot;: to_isolang(output_format= &quot;a\
+lpha2&quot;), &quot;country_code&quot;: to_country_code, &quot;currency_code&quot;: to_currency\
+_code, &quot;license&quot;: string_canonicalise([&quot;CC BY&quot;, &quot;CC BY-NC&quot;, &quot;CC BY-NC-\
+ND&quot;, &quot;CC BY-NC-SA&quot;, &quot;CC BY-ND&quot;, &quot;CC BY-SA&quot;, &quot;Not CC-like&quot;], allow_fail\
+...">{&quot;unicode&quot;: to_unicode(), &quot;unicode_upper&quot;: to<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SCHEMA"></a><span class="summary-name">SCHEMA</span> = <code title="None">None</code><br />
+      hash(x)
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.lib.swagger.SwaggerSupport-class.html">lib.swagger.SwaggerSupport</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.lib.swagger.SwaggerSupport-class.html#DEFAULT_SWAGGER_TRANS" class="summary-name">DEFAULT_SWAGGER_TRANS</a> = <code title="{&quot;unicode&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;utcdatetime&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;for\
+mat&quot;: &quot;date-time&quot;}, &quot;integer&quot;: {&quot;type&quot;: &quot;integer&quot;}, &quot;bool&quot;: {&quot;type&quot;: &quot;\
+boolean&quot;}, &quot;float&quot;: {&quot;type&quot;: &quot;float&quot;}, &quot;isolang&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;\
+format&quot;: &quot;isolang&quot;}, &quot;url&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;url&quot;}, &quot;isol\
+ang_2letter&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;isolang-alpha2&quot;}, &quot;country\
+_code&quot;: {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;country_code&quot;}, &quot;currency_code&quot;:\
+ {&quot;type&quot;: &quot;string&quot;, &quot;format&quot;: &quot;currency_code&quot;}, &quot;license&quot;: {&quot;type&quot;: &quot;s\
+tring&quot;, &quot;format&quot;: &quot;license_type&quot;}, &quot;persistent_identifier_scheme&quot;: {&quot;t\
+...">{&quot;unicode&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;utcda<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:40:58 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

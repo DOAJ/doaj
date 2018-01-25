@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.view.openurl</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.view-module.html">Package&nbsp;view</a> ::
+        Module&nbsp;openurl
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.view.openurl-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.view.openurl-module.html">Module portality.view.openurl</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">request</tt><tt class="py-op">,</tt> <tt id="link-0" class="py-name" targets="Method portality.view.account.RedirectForm.redirect()=portality.view.account.RedirectForm-class.html#redirect"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-0', 'redirect', 'link-0');">redirect</a></tt><tt class="py-op">,</tt> <tt class="py-name">url_for</tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Method portality.formcontext.formcontext.AssEdApplicationReview.render_template()=portality.formcontext.formcontext.AssEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.AssEdJournalReview.render_template()=portality.formcontext.formcontext.AssEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.EditorApplicationReview.render_template()=portality.formcontext.formcontext.EditorApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.EditorJournalReview.render_template()=portality.formcontext.formcontext.EditorJournalReview-class.html#render_template,Method portality.formcontext.formcontext.FormContext.render_template()=portality.formcontext.formcontext.FormContext-class.html#render_template,Method portality.formcontext.formcontext.ManEdApplicationReview.render_template()=portality.formcontext.formcontext.ManEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.ManEdJournalReview.render_template()=portality.formcontext.formcontext.ManEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.PublisherUpdateRequest.render_template()=portality.formcontext.formcontext.PublisherUpdateRequest-class.html#render_template,Method portality.formcontext.formcontext.ReadOnlyJournal.render_template()=portality.formcontext.formcontext.ReadOnlyJournal-class.html#render_template"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-1', 'render_template', 'link-1');">render_template</a></tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Function portality.scripts.sync_doaj_records.abort()=portality.scripts.sync_doaj_records-module.html#abort"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-2', 'abort', 'link-2');">abort</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-3');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-4', 'models', 'link-4');">models</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Class portality.models.openurl.OpenURLRequest=portality.models.openurl.OpenURLRequest-class.html"><a title="portality.models.openurl.OpenURLRequest" class="py-name" href="#" onclick="return doclink('link-5', 'OpenURLRequest', 'link-5');">OpenURLRequest</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-6" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-6', 'portality', 'link-3');">portality</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-7', 'core', 'link-7');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-8', 'app', 'link-8');">app</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">urllib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">unquote</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable portality.view.account.blueprint=portality.view.account-module.html#blueprint,Variable portality.view.admin.blueprint=portality.view.admin-module.html#blueprint,Variable portality.view.api_v1.blueprint=portality.view.api_v1-module.html#blueprint,Variable portality.view.atom.blueprint=portality.view.atom-module.html#blueprint,Variable portality.view.doaj.blueprint=portality.view.doaj-module.html#blueprint,Variable portality.view.doajservices.blueprint=portality.view.doajservices-module.html#blueprint,Variable portality.view.editor.blueprint=portality.view.editor-module.html#blueprint,Variable portality.view.hooks.blueprint=portality.view.hooks-module.html#blueprint,Variable portality.view.media.blueprint=portality.view.media-module.html#blueprint,Variable portality.view.oaipmh.blueprint=portality.view.oaipmh-module.html#blueprint,Variable portality.view.openurl.blueprint=portality.view.openurl-module.html#blueprint,Variable portality.view.publisher.blueprint=portality.view.publisher-module.html#blueprint,Variable portality.view.query.blueprint=portality.view.query-module.html#blueprint,Variable portality.view.stream.blueprint=portality.view.stream-module.html#blueprint"><a title="portality.view.account.blueprint
+portality.view.admin.blueprint
+portality.view.api_v1.blueprint
+portality.view.atom.blueprint
+portality.view.doaj.blueprint
+portality.view.doajservices.blueprint
+portality.view.editor.blueprint
+portality.view.hooks.blueprint
+portality.view.media.blueprint
+portality.view.oaipmh.blueprint
+portality.view.openurl.blueprint
+portality.view.publisher.blueprint
+portality.view.query.blueprint
+portality.view.stream.blueprint" class="py-name" href="#" onclick="return doclink('link-9', 'blueprint', 'link-9');">blueprint</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">(</tt><tt class="py-string">'openurl'</tt><tt class="py-op">,</tt> <tt class="py-name">__name__</tt><tt class="py-op">)</tt> </tt>
+<a name="openurl"></a><div id="openurl-def"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">"/openurl"</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"GET"</tt><tt class="py-op">,</tt> <tt class="py-string">"POST"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt> <a class="py-toggle" href="#" id="openurl-toggle" onclick="return toggle('openurl');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.openurl-module.html#openurl">openurl</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="openurl-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="openurl-expanded"><a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">    <tt class="py-comment"># check that we've been given some arguments at all</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.ordereddict.OrderedDict.values()=portality.ordereddict.OrderedDict-class.html#values"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-10', 'values', 'link-10');">values</a></tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-11', 'abort', 'link-2');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">    <tt class="py-comment"># Validate the query syntax version and build an object representing it</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">    <tt class="py-name">parser_response</tt> <tt class="py-op">=</tt> <tt id="link-12" class="py-name" targets="Function portality.view.openurl.parse_query()=portality.view.openurl-module.html#parse_query"><a title="portality.view.openurl.parse_query" class="py-name" href="#" onclick="return doclink('link-12', 'parse_query', 'link-12');">parse_query</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">    <tt class="py-comment"># theoretically this can return None, so catch it</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">parser_response</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">        <tt id="link-13" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-13', 'abort', 'link-2');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">    <tt class="py-comment"># If it's not parsed to an OpenURLRequest, it's a redirect URL to try again.</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-14" class="py-name" targets="Method portality.models.lock.Lock.type()=portality.models.lock.Lock-class.html#type,Method portality.models.provenance.Provenance.type()=portality.models.provenance.Provenance-class.html#type,Variable portality.view.forms.MakeContinuation.type=portality.view.forms.MakeContinuation-class.html#type"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-14', 'type', 'link-14');">type</a></tt><tt class="py-op">(</tt><tt class="py-name">parser_response</tt><tt class="py-op">)</tt> <tt class="py-op">!=</tt> <tt id="link-15" class="py-name"><a title="portality.models.openurl.OpenURLRequest" class="py-name" href="#" onclick="return doclink('link-15', 'OpenURLRequest', 'link-5');">OpenURLRequest</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-16" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-16', 'redirect', 'link-0');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">parser_response</tt><tt class="py-op">,</tt> <tt class="py-number">301</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">    <tt class="py-comment"># Get the OpenURLRequest object to issue a query and supply a url for the result</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt class="py-name">result_url</tt> <tt class="py-op">=</tt> <tt class="py-name">parser_response</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method portality.models.openurl.OpenURLRequest.get_result_url()=portality.models.openurl.OpenURLRequest-class.html#get_result_url"><a title="portality.models.openurl.OpenURLRequest.get_result_url" class="py-name" href="#" onclick="return doclink('link-17', 'get_result_url', 'link-17');">get_result_url</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">result_url</tt><tt class="py-op">:</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-18" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-18', 'redirect', 'link-0');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">result_url</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt id="link-19" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-19', 'abort', 'link-2');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"> </tt>
+<a name="parse_query"></a><div id="parse_query-def"><a name="L33"></a><tt class="py-lineno">33</tt> <a class="py-toggle" href="#" id="parse_query-toggle" onclick="return toggle('parse_query');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.openurl-module.html#parse_query">parse_query</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="parse_query-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="parse_query-expanded"><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"><tt class="py-docstring">    Create the model which holds the query</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"><tt class="py-docstring">    :param url_query_string: The query part of an incoming OpenURL request</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line"><tt class="py-docstring">    :return: an object representing the query</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">    <tt class="py-comment"># Check if this is new or old syntax, translate if necessary</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-string">"url_ver=Z39.88-2004"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">query_string</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt id="link-20" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-20', 'app', 'link-8');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.info()=portality.formcontext.formcontext.FormContext-class.html#info"><a title="portality.formcontext.formcontext.FormContext.info" class="py-name" href="#" onclick="return doclink('link-21', 'info', 'link-21');">info</a></tt><tt class="py-op">(</tt><tt class="py-string">"Legacy OpenURL 0.1 request: "</tt> <tt class="py-op">+</tt> <tt class="py-name">unquote</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method portality.blog.News.url()=portality.blog.News-class.html#url,Variable portality.formcontext.forms.JournalInformation.url=portality.formcontext.forms.JournalInformation-class.html#url"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-22', 'url', 'link-22');">url</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-23" class="py-name" targets="Function portality.view.openurl.old_to_new()=portality.view.openurl-module.html#old_to_new"><a title="portality.view.openurl.old_to_new" class="py-name" href="#" onclick="return doclink('link-23', 'old_to_new', 'link-23');">old_to_new</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">    <tt id="link-24" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-24', 'app', 'link-8');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="portality.formcontext.formcontext.FormContext.info" class="py-name" href="#" onclick="return doclink('link-25', 'info', 'link-21');">info</a></tt><tt class="py-op">(</tt><tt class="py-string">"OpenURL 1.0 request: "</tt> <tt class="py-op">+</tt> <tt class="py-name">unquote</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-26', 'url', 'link-22');">url</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">    <tt class="py-comment"># Wee function to strip of the referent namespace prefix from paramaters</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt class="py-name">rem_ns</tt> <tt class="py-op">=</tt> <tt class="py-keyword">lambda</tt> <tt class="py-name">x</tt><tt class="py-op">:</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">sub</tt><tt class="py-op">(</tt><tt class="py-string">'rft.'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-name">x</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">    <tt class="py-comment"># Pack the list of parameters into a dictionary, while un-escaping the string.</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">    <tt class="py-name">dict_params</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-name">rem_ns</tt><tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-27', 'values', 'link-10');">values</a></tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method portality.ordereddict.OrderedDict.iteritems()=portality.ordereddict.OrderedDict-class.html#iteritems"><a title="portality.ordereddict.OrderedDict.iteritems" class="py-name" href="#" onclick="return doclink('link-28', 'iteritems', 'link-28');">iteritems</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">}</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">    <tt class="py-comment"># Create an object to represent this OpenURL request.</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-name">query_object</tt> <tt class="py-op">=</tt> <tt id="link-29" class="py-name"><a title="portality.models.openurl.OpenURLRequest" class="py-name" href="#" onclick="return doclink('link-29', 'OpenURLRequest', 'link-5');">OpenURLRequest</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">dict_params</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line">        <tt class="py-name">query_object</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">        <tt id="link-30" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-30', 'app', 'link-8');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="portality.formcontext.formcontext.FormContext.info" class="py-name" href="#" onclick="return doclink('link-31', 'info', 'link-21');">info</a></tt><tt class="py-op">(</tt><tt class="py-string">"Failed to create OpenURLRequest object"</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">query_object</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
+<a name="old_to_new"></a><div id="old_to_new-def"><a name="L61"></a><tt class="py-lineno">61</tt> <a class="py-toggle" href="#" id="old_to_new-toggle" onclick="return toggle('old_to_new');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.openurl-module.html#old_to_new">old_to_new</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="old_to_new-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="old_to_new-expanded"><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"><tt class="py-docstring">    Translate the OpenURL 0.1 syntax to 1.0, to provide a redirect.</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"><tt class="py-docstring">    :param url_query_string: An incoming OpenURL request</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt class="py-docstring">    :return: An OpenURL 1.0 query string</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line"> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">    <tt class="py-comment"># The meta parameters in the preamble.</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">    <tt id="link-32" class="py-name" targets="Method portality.models.background.BackgroundJob.params()=portality.models.background.BackgroundJob-class.html#params"><a title="portality.models.background.BackgroundJob.params" class="py-name" href="#" onclick="return doclink('link-32', 'params', 'link-32');">params</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'url_ver'</tt><tt class="py-op">:</tt> <tt class="py-string">'Z39.88-2004'</tt><tt class="py-op">,</tt> <tt class="py-string">'url_ctx_fmt'</tt><tt class="py-op">:</tt> <tt class="py-string">'info:ofi/fmt:kev:mtx:ctx'</tt><tt class="py-op">,</tt><tt class="py-string">'rft_val_fmt'</tt><tt class="py-op">:</tt> <tt class="py-string">'info:ofi/fmt:kev:mtx:journal'</tt><tt class="py-op">}</tt> </tt>
+<a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line">    <tt class="py-comment"># In OpenURL 0.1, jtitle is just title. This function substitutes them.</tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line">    <tt class="py-name">sub_title</tt> <tt class="py-op">=</tt> <tt class="py-keyword">lambda</tt> <tt class="py-name">x</tt><tt class="py-op">:</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">sub</tt><tt class="py-op">(</tt><tt class="py-string">'^title'</tt><tt class="py-op">,</tt> <tt class="py-string">'jtitle'</tt><tt class="py-op">,</tt> <tt class="py-name">x</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line">    <tt class="py-comment"># Add referrent tags to each parameter, and change title tag using above function</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">    <tt class="py-name">rewritten_params</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">"rft."</tt> <tt class="py-op">+</tt> <tt class="py-name">sub_title</tt><tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-name">value</tt> <tt class="py-keyword">for</tt> <tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">,</tt> <tt class="py-name">value</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-33', 'values', 'link-10');">values</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="portality.ordereddict.OrderedDict.iteritems" class="py-name" href="#" onclick="return doclink('link-34', 'iteritems', 'link-28');">iteritems</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">}</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line">    <tt class="py-comment"># Add the rewritten parameters to the meta params</tt> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line">    <tt id="link-35" class="py-name"><a title="portality.models.background.BackgroundJob.params" class="py-name" href="#" onclick="return doclink('link-35', 'params', 'link-32');">params</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Class Method portality.api.v1.crud.applications.ApplicationsCrudApi.update()=portality.api.v1.crud.applications.ApplicationsCrudApi-class.html#update,Class Method portality.api.v1.crud.articles.ArticlesCrudApi.update()=portality.api.v1.crud.articles.ArticlesCrudApi-class.html#update,Method portality.dao.DomainObject.update()=portality.dao.DomainObject-class.html#update,Method portality.ordereddict.OrderedDict.update()=portality.ordereddict.OrderedDict-class.html#update"><a title="portality.api.v1.crud.applications.ApplicationsCrudApi.update
+portality.api.v1.crud.articles.ArticlesCrudApi.update
+portality.dao.DomainObject.update
+portality.ordereddict.OrderedDict.update" class="py-name" href="#" onclick="return doclink('link-36', 'update', 'link-36');">update</a></tt><tt class="py-op">(</tt><tt class="py-name">rewritten_params</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno">79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">'.openurl'</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt id="link-37" class="py-name"><a title="portality.models.background.BackgroundJob.params" class="py-name" href="#" onclick="return doclink('link-37', 'params', 'link-32');">params</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line"> </tt>
+<a name="help"></a><div id="help-def"><a name="L82"></a><tt class="py-lineno">82</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">"/openurl/help"</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno">83</tt> <a class="py-toggle" href="#" id="help-toggle" onclick="return toggle('help');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.openurl-module.html#help">help</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="help-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="help-expanded"><a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-38" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-38', 'render_template', 'link-1');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"openurl/help.html"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line"> </tt>
+<a name="bad_request"></a><div id="bad_request-def"><a name="L86"></a><tt class="py-lineno">86</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">errorhandler</tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno">87</tt> <a class="py-toggle" href="#" id="bad_request-toggle" onclick="return toggle('bad_request');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.openurl-module.html#bad_request">bad_request</a><tt class="py-op">(</tt><tt class="py-param">e</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="bad_request-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="bad_request-expanded"><a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-39" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-39', 'render_template', 'link-1');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"openurl/404.html"</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">404</tt> </tt>
+</div><a name="L89"></a><tt class="py-lineno">89</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:22 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

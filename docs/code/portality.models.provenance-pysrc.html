@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.models.provenance</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.models-module.html">Package&nbsp;models</a> ::
+        Module&nbsp;provenance
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.models.provenance-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.models.provenance-module.html">Module portality.models.provenance</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module portality.dao=portality.dao-module.html"><a title="portality.dao" class="py-name" href="#" onclick="return doclink('link-1', 'dao', 'link-1');">dao</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Class portality.dao.DomainObject=portality.dao.DomainObject-class.html"><a title="portality.dao.DomainObject" class="py-name" href="#" onclick="return doclink('link-2', 'DomainObject', 'link-2');">DomainObject</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Package portality.lib=portality.lib-module.html"><a title="portality.lib" class="py-name" href="#" onclick="return doclink('link-4', 'lib', 'link-4');">lib</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Module portality.lib.dataobj=portality.lib.dataobj-module.html"><a title="portality.lib.dataobj" class="py-name" href="#" onclick="return doclink('link-5', 'dataobj', 'link-5');">dataobj</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-6" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-6', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-7', 'models', 'link-7');">models</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Class portality.models.editors.EditorGroup=portality.models.editors.EditorGroup-class.html"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-8', 'EditorGroup', 'link-8');">EditorGroup</a></tt> </tt>
+<a name="Provenance"></a><div id="Provenance-def"><a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt> <a class="py-toggle" href="#" id="Provenance-toggle" onclick="return toggle('Provenance');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html">Provenance</a><tt class="py-op">(</tt><tt class="py-base-class">dataobj</tt><tt class="py-op">.</tt><tt class="py-base-class">DataObj</tt><tt class="py-op">,</tt> <tt class="py-base-class">DomainObject</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Provenance-expanded"><a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-docstring">    {</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-docstring">        "id" : "&lt;provenance record id&gt;",</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-docstring">        "created_date" : "&lt;when this action took place&gt;",</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-docstring">        "last_updated" : "&lt;when this record was last updated&gt;",</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-docstring">        "user": "&lt;user that carried out the action&gt;",</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-docstring">        "roles" : ["&lt;roles this user has at the time of the event&gt;"],</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-docstring">        "editor_group": ["&lt;list of editor groups the user was in at the time&gt;"],</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"><tt class="py-docstring">        "type" : "&lt;type being acted on: suggestion, journal, etc&gt;",</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">        "subtype" : "&lt;inner type being acted on, in case you want to distinguish between applications/reapplications, etc&gt;",</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">        "action" : "&lt;string denoting the action taken on the object&gt;",</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring">        "resource_id" : "&lt;id of the type being acted on&gt;"</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    }</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">    <tt id="link-9" class="py-name" targets="Variable portality.blog.News.__type__=portality.blog.News-class.html#__type__,Variable portality.dao.DomainObject.__type__=portality.dao.DomainObject-class.html#__type__,Variable portality.models.account.Account.__type__=portality.models.account.Account-class.html#__type__,Variable portality.models.article.Article.__type__=portality.models.article.Article-class.html#__type__,Variable portality.models.background.BackgroundJob.__type__=portality.models.background.BackgroundJob-class.html#__type__,Variable portality.models.cache.Cache.__type__=portality.models.cache.Cache-class.html#__type__,Variable portality.models.editors.EditorGroup.__type__=portality.models.editors.EditorGroup-class.html#__type__,Variable portality.models.history.ArticleHistory.__type__=portality.models.history.ArticleHistory-class.html#__type__,Variable portality.models.history.JournalHistory.__type__=portality.models.history.JournalHistory-class.html#__type__,Variable portality.models.journal.Journal.__type__=portality.models.journal.Journal-class.html#__type__,Variable portality.models.lcc.LCC.__type__=portality.models.lcc.LCC-class.html#__type__,Variable portality.models.lock.Lock.__type__=portality.models.lock.Lock-class.html#__type__,Variable portality.models.provenance.Provenance.__type__=portality.models.provenance.Provenance-class.html#__type__,Variable portality.models.search.JournalArticle.__type__=portality.models.search.JournalArticle-class.html#__type__,Variable portality.models.suggestion.Suggestion.__type__=portality.models.suggestion.Suggestion-class.html#__type__,Variable portality.models.toc.JournalVolumeToC.__type__=portality.models.toc.JournalVolumeToC-class.html#__type__,Variable portality.models.uploads.FileUpload.__type__=portality.models.uploads.FileUpload-class.html#__type__"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.background.BackgroundJob.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.provenance.Provenance.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-9', '__type__', 'link-9');">__type__</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"provenance"</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="Provenance.__init__"></a><div id="Provenance.__init__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="Provenance.__init__-toggle" onclick="return toggle('Provenance.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.__init__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-comment"># FIXME: hack, to deal with ES integration layer being improperly abstracted</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"_source"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">            <tt class="py-name">kwargs</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">"_source"</tt><tt class="py-op">]</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.lib.dataobj.DataObj._add_struct()=portality.lib.dataobj.DataObj-class.html#_add_struct"><a title="portality.lib.dataobj.DataObj._add_struct" class="py-name" href="#" onclick="return doclink('link-10', '_add_struct', 'link-10');">_add_struct</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name" targets="Variable portality.models.provenance.PROVENANCE_STRUCT=portality.models.provenance-module.html#PROVENANCE_STRUCT"><a title="portality.models.provenance.PROVENANCE_STRUCT" class="py-name" href="#" onclick="return doclink('link-11', 'PROVENANCE_STRUCT', 'link-11');">PROVENANCE_STRUCT</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name" targets="Class portality.models.provenance.Provenance=portality.models.provenance.Provenance-class.html"><a title="portality.models.provenance.Provenance" class="py-name" href="#" onclick="return doclink('link-12', 'Provenance', 'link-12');">Provenance</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method portality.api.v1.data_objects.application.IncomingApplication.__init__()=portality.api.v1.data_objects.application.IncomingApplication-class.html#__init__,Method portality.api.v1.data_objects.application.OutgoingApplication.__init__()=portality.api.v1.data_objects.application.OutgoingApplication-class.html#__init__,Method portality.api.v1.data_objects.article.IncomingArticleDO.__init__()=portality.api.v1.data_objects.article.IncomingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.article.OutgoingArticleDO.__init__()=portality.api.v1.data_objects.article.OutgoingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.journal.OutgoingJournal.__init__()=portality.api.v1.data_objects.journal.OutgoingJournal-class.html#__init__,Method portality.api.v1.discovery.ApplicationQuery.__init__()=portality.api.v1.discovery.ApplicationQuery-class.html#__init__,Method portality.api.v1.discovery.SearchQuery.__init__()=portality.api.v1.discovery.SearchQuery-class.html#__init__,Method portality.api.v1.discovery.SearchResult.__init__()=portality.api.v1.discovery.SearchResult-class.html#__init__,Method portality.article.DOAJXWalk.__init__()=portality.article.DOAJXWalk-class.html#__init__,Method portality.article.IngestException.__init__()=portality.article.IngestException-class.html#__init__,Method portality.article.XWalk.__init__()=portality.article.XWalk-class.html#__init__,Method portality.background.BackgroundSummary.__init__()=portality.background.BackgroundSummary-class.html#__init__,Method portality.background.BackgroundTask.__init__()=portality.background.BackgroundTask-class.html#__init__,Method portality.bll.exceptions.AuthoriseException.__init__()=portality.bll.exceptions.AuthoriseException-class.html#__init__,Method portality.blog.NewsQuery.__init__()=portality.blog.NewsQuery-class.html#__init__,Method portality.clcsv.ClCsv.__init__()=portality.clcsv.ClCsv-class.html#__init__,Method portality.clcsv.UTF8Recoder.__init__()=portality.clcsv.UTF8Recoder-class.html#__init__,Method portality.clcsv.UnicodeReader.__init__()=portality.clcsv.UnicodeReader-class.html#__init__,Method portality.clcsv.UnicodeWriter.__init__()=portality.clcsv.UnicodeWriter-class.html#__init__,Method portality.dao.DomainObject.__init__()=portality.dao.DomainObject-class.html#__init__,Method portality.formcontext.fields.DOAJSelectField.__init__()=portality.formcontext.fields.DOAJSelectField-class.html#__init__,Method portality.formcontext.fields.DOAJSelectMultipleField.__init__()=portality.formcontext.fields.DOAJSelectMultipleField-class.html#__init__,Method portality.formcontext.formcontext.FormContext.__init__()=portality.formcontext.formcontext.FormContext-class.html#__init__,Method portality.formcontext.formcontext.PublicApplication.__init__()=portality.formcontext.formcontext.PublicApplication-class.html#__init__,Method portality.formcontext.render.ApplicationRenderer.__init__()=portality.formcontext.render.ApplicationRenderer-class.html#__init__,Method portality.formcontext.render.AssEdApplicationReviewRenderer.__init__()=portality.formcontext.render.AssEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.AssEdJournalReviewRenderer.__init__()=portality.formcontext.render.AssEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.BasicJournalInformationRenderer.__init__()=portality.formcontext.render.BasicJournalInformationRenderer-class.html#__init__,Method portality.formcontext.render.EditorApplicationReviewRenderer.__init__()=portality.formcontext.render.EditorApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.EditorJournalReviewRenderer.__init__()=portality.formcontext.render.EditorJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.JournalRenderer.__init__()=portality.formcontext.render.JournalRenderer-class.html#__init__,Method portality.formcontext.render.ManEdApplicationReviewRenderer.__init__()=portality.formcontext.render.ManEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__()=portality.formcontext.render.ManEdJournalBulkEditRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalReviewRenderer.__init__()=portality.formcontext.render.ManEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.PublicApplicationRenderer.__init__()=portality.formcontext.render.PublicApplicationRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestRenderer-class.html#__init__,Method portality.formcontext.render.ReadOnlyJournalRenderer.__init__()=portality.formcontext.render.ReadOnlyJournalRenderer-class.html#__init__,Method portality.formcontext.render.Renderer.__init__()=portality.formcontext.render.Renderer-class.html#__init__,Method portality.formcontext.validate.DataOptional.__init__()=portality.formcontext.validate.DataOptional-class.html#__init__,Method portality.formcontext.validate.ExclusiveCheckbox.__init__()=portality.formcontext.validate.ExclusiveCheckbox-class.html#__init__,Method portality.formcontext.validate.ExtraFieldRequiredIf.__init__()=portality.formcontext.validate.ExtraFieldRequiredIf-class.html#__init__,Method portality.formcontext.validate.MaxLen.__init__()=portality.formcontext.validate.MaxLen-class.html#__init__,Method portality.formcontext.validate.OptionalIf.__init__()=portality.formcontext.validate.OptionalIf-class.html#__init__,Method portality.formcontext.validate.RegexpOnTagList.__init__()=portality.formcontext.validate.RegexpOnTagList-class.html#__init__,Method portality.formcontext.validate.RequiredIfRole.__init__()=portality.formcontext.validate.RequiredIfRole-class.html#__init__,Method portality.formcontext.validate.ReservedUsernames.__init__()=portality.formcontext.validate.ReservedUsernames-class.html#__init__,Method portality.formcontext.validate.ThisOrThat.__init__()=portality.formcontext.validate.ThisOrThat-class.html#__init__,Method portality.formcontext.validate.URLOptionalScheme.__init__()=portality.formcontext.validate.URLOptionalScheme-class.html#__init__,Method portality.lib.dataobj.DataObj.__init__()=portality.lib.dataobj.DataObj-class.html#__init__,Method portality.lib.swagger.SwaggerSupport.__init__()=portality.lib.swagger.SwaggerSupport-class.html#__init__,Method portality.lock.LockQuery.__init__()=portality.lock.LockQuery-class.html#__init__,Method portality.lock.Locked.__init__()=portality.lock.Locked-class.html#__init__,Method portality.models.ObjectDict.__init__()=portality.models.ObjectDict-class.html#__init__,Method portality.models.account.Account.__init__()=portality.models.account.Account-class.html#__init__,Method portality.models.article.ArticleBibJSON.__init__()=portality.models.article.ArticleBibJSON-class.html#__init__,Method portality.models.article.ArticleIssueQuery.__init__()=portality.models.article.ArticleIssueQuery-class.html#__init__,Method portality.models.article.ArticleQuery.__init__()=portality.models.article.ArticleQuery-class.html#__init__,Method portality.models.article.ArticleVolumesIssuesQuery.__init__()=portality.models.article.ArticleVolumesIssuesQuery-class.html#__init__,Method portality.models.article.ArticleVolumesQuery.__init__()=portality.models.article.ArticleVolumesQuery-class.html#__init__,Method portality.models.article.DuplicateArticleQuery.__init__()=portality.models.article.DuplicateArticleQuery-class.html#__init__,Method portality.models.background.BackgroundJob.__init__()=portality.models.background.BackgroundJob-class.html#__init__,Method portality.models.bibjson.GenericBibJSON.__init__()=portality.models.bibjson.GenericBibJSON-class.html#__init__,Method portality.models.editors.EditorGroupMemberQuery.__init__()=portality.models.editors.EditorGroupMemberQuery-class.html#__init__,Method portality.models.editors.EditorGroupQuery.__init__()=portality.models.editors.EditorGroupQuery-class.html#__init__,Method portality.models.journal.ContinuationQuery.__init__()=portality.models.journal.ContinuationQuery-class.html#__init__,Method portality.models.journal.IssnQuery.__init__()=portality.models.journal.IssnQuery-class.html#__init__,Method portality.models.journal.Journal.__init__()=portality.models.journal.Journal-class.html#__init__,Method portality.models.journal.JournalBibJSON.__init__()=portality.models.journal.JournalBibJSON-class.html#__init__,Method portality.models.journal.JournalQuery.__init__()=portality.models.journal.JournalQuery-class.html#__init__,Method portality.models.journal.PublisherQuery.__init__()=portality.models.journal.PublisherQuery-class.html#__init__,Method portality.models.journal.TitleQuery.__init__()=portality.models.journal.TitleQuery-class.html#__init__,Method portality.models.openurl.OpenURLRequest.__init__()=portality.models.openurl.OpenURLRequest-class.html#__init__,Method portality.models.provenance.Provenance.__init__()=portality.models.provenance.Provenance-class.html#__init__,Method portality.models.provenance.ResourceIDQuery.__init__()=portality.models.provenance.ResourceIDQuery-class.html#__init__,Method portality.models.suggestion.CurrentJournalQuery.__init__()=portality.models.suggestion.CurrentJournalQuery-class.html#__init__,Method portality.models.suggestion.OwnerStatusQuery.__init__()=portality.models.suggestion.OwnerStatusQuery-class.html#__init__,Method portality.models.suggestion.RelatedJournalQuery.__init__()=portality.models.suggestion.RelatedJournalQuery-class.html#__init__,Method portality.models.suggestion.StatusQuery.__init__()=portality.models.suggestion.StatusQuery-class.html#__init__,Method portality.models.suggestion.Suggestion.__init__()=portality.models.suggestion.Suggestion-class.html#__init__,Method portality.models.suggestion.SuggestionQuery.__init__()=portality.models.suggestion.SuggestionQuery-class.html#__init__,Method portality.models.toc.JournalIssueToC.__init__()=portality.models.toc.JournalIssueToC-class.html#__init__,Method portality.models.toc.ToCQuery.__init__()=portality.models.toc.ToCQuery-class.html#__init__,Method portality.models.toc.VolumesToCQuery.__init__()=portality.models.toc.VolumesToCQuery-class.html#__init__,Method portality.models.uploads.ExistsFileQuery.__init__()=portality.models.uploads.ExistsFileQuery-class.html#__init__,Method portality.models.uploads.OwnerFileQuery.__init__()=portality.models.uploads.OwnerFileQuery-class.html#__init__,Method portality.models.uploads.ValidFileQuery.__init__()=portality.models.uploads.ValidFileQuery-class.html#__init__,Method portality.ordereddict.OrderedDict.__init__()=portality.ordereddict.OrderedDict-class.html#__init__,Method portality.tasks.reporting.ActionCounter.__init__()=portality.tasks.reporting.ActionCounter-class.html#__init__,Method portality.tasks.reporting.ContentByDate.__init__()=portality.tasks.reporting.ContentByDate-class.html#__init__,Method portality.tasks.reporting.ProvenanceList.__init__()=portality.tasks.reporting.ProvenanceList-class.html#__init__,Method portality.tasks.reporting.ReportCounter.__init__()=portality.tasks.reporting.ReportCounter-class.html#__init__,Method portality.tasks.reporting.StatusCounter.__init__()=portality.tasks.reporting.StatusCounter-class.html#__init__,Method portality.view.account.RedirectForm.__init__()=portality.view.account.RedirectForm-class.html#__init__,Method portality.view.atom.AtomFeed.__init__()=portality.view.atom.AtomFeed-class.html#__init__,Method portality.view.forms.ArticleForm.__init__()=portality.view.forms.ArticleForm-class.html#__init__,Method portality.view.forms.NotRole.__init__()=portality.view.forms.NotRole-class.html#__init__,Method portality.view.forms.UniqueGroupName.__init__()=portality.view.forms.UniqueGroupName-class.html#__init__,Method portality.view.oaipmh.BadArgument.__init__()=portality.view.oaipmh.BadArgument-class.html#__init__,Method portality.view.oaipmh.BadResumptionToken.__init__()=portality.view.oaipmh.BadResumptionToken-class.html#__init__,Method portality.view.oaipmh.BadVerb.__init__()=portality.view.oaipmh.BadVerb-class.html#__init__,Method portality.view.oaipmh.CannotDisseminateFormat.__init__()=portality.view.oaipmh.CannotDisseminateFormat-class.html#__init__,Method portality.view.oaipmh.GetRecord.__init__()=portality.view.oaipmh.GetRecord-class.html#__init__,Method portality.view.oaipmh.IdDoesNotExist.__init__()=portality.view.oaipmh.IdDoesNotExist-class.html#__init__,Method portality.view.oaipmh.Identify.__init__()=portality.view.oaipmh.Identify-class.html#__init__,Method portality.view.oaipmh.ListIdentifiers.__init__()=portality.view.oaipmh.ListIdentifiers-class.html#__init__,Method portality.view.oaipmh.ListMetadataFormats.__init__()=portality.view.oaipmh.ListMetadataFormats-class.html#__init__,Method portality.view.oaipmh.ListRecords.__init__()=portality.view.oaipmh.ListRecords-class.html#__init__,Method portality.view.oaipmh.ListSets.__init__()=portality.view.oaipmh.ListSets-class.html#__init__,Method portality.view.oaipmh.NoMetadataFormats.__init__()=portality.view.oaipmh.NoMetadataFormats-class.html#__init__,Method portality.view.oaipmh.NoRecordsMatch.__init__()=portality.view.oaipmh.NoRecordsMatch-class.html#__init__,Method portality.view.oaipmh.NoSetHierarchy.__init__()=portality.view.oaipmh.NoSetHierarchy-class.html#__init__,Method portality.view.oaipmh.OAIPMHError.__init__()=portality.view.oaipmh.OAIPMHError-class.html#__init__,Method portality.view.oaipmh.OAI_PMH.__init__()=portality.view.oaipmh.OAI_PMH-class.html#__init__,Method portality.view.query.Query.__init__()=portality.view.query.Query-class.html#__init__"><a title="portality.api.v1.data_objects.application.IncomingApplication.__init__
+portality.api.v1.data_objects.application.OutgoingApplication.__init__
+portality.api.v1.data_objects.article.IncomingArticleDO.__init__
+portality.api.v1.data_objects.article.OutgoingArticleDO.__init__
+portality.api.v1.data_objects.journal.OutgoingJournal.__init__
+portality.api.v1.discovery.ApplicationQuery.__init__
+portality.api.v1.discovery.SearchQuery.__init__
+portality.api.v1.discovery.SearchResult.__init__
+portality.article.DOAJXWalk.__init__
+portality.article.IngestException.__init__
+portality.article.XWalk.__init__
+portality.background.BackgroundSummary.__init__
+portality.background.BackgroundTask.__init__
+portality.bll.exceptions.AuthoriseException.__init__
+portality.blog.NewsQuery.__init__
+portality.clcsv.ClCsv.__init__
+portality.clcsv.UTF8Recoder.__init__
+portality.clcsv.UnicodeReader.__init__
+portality.clcsv.UnicodeWriter.__init__
+portality.dao.DomainObject.__init__
+portality.formcontext.fields.DOAJSelectField.__init__
+portality.formcontext.fields.DOAJSelectMultipleField.__init__
+portality.formcontext.formcontext.FormContext.__init__
+portality.formcontext.formcontext.PublicApplication.__init__
+portality.formcontext.render.ApplicationRenderer.__init__
+portality.formcontext.render.AssEdApplicationReviewRenderer.__init__
+portality.formcontext.render.AssEdJournalReviewRenderer.__init__
+portality.formcontext.render.BasicJournalInformationRenderer.__init__
+portality.formcontext.render.EditorApplicationReviewRenderer.__init__
+portality.formcontext.render.EditorJournalReviewRenderer.__init__
+portality.formcontext.render.JournalRenderer.__init__
+portality.formcontext.render.ManEdApplicationReviewRenderer.__init__
+portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__
+portality.formcontext.render.ManEdJournalReviewRenderer.__init__
+portality.formcontext.render.PublicApplicationRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestRenderer.__init__
+portality.formcontext.render.ReadOnlyJournalRenderer.__init__
+portality.formcontext.render.Renderer.__init__
+portality.formcontext.validate.DataOptional.__init__
+portality.formcontext.validate.ExclusiveCheckbox.__init__
+portality.formcontext.validate.ExtraFieldRequiredIf.__init__
+portality.formcontext.validate.MaxLen.__init__
+portality.formcontext.validate.OptionalIf.__init__
+portality.formcontext.validate.RegexpOnTagList.__init__
+portality.formcontext.validate.RequiredIfRole.__init__
+portality.formcontext.validate.ReservedUsernames.__init__
+portality.formcontext.validate.ThisOrThat.__init__
+portality.formcontext.validate.URLOptionalScheme.__init__
+portality.lib.dataobj.DataObj.__init__
+portality.lib.swagger.SwaggerSupport.__init__
+portality.lock.LockQuery.__init__
+portality.lock.Locked.__init__
+portality.models.ObjectDict.__init__
+portality.models.account.Account.__init__
+portality.models.article.ArticleBibJSON.__init__
+portality.models.article.ArticleIssueQuery.__init__
+portality.models.article.ArticleQuery.__init__
+portality.models.article.ArticleVolumesIssuesQuery.__init__
+portality.models.article.ArticleVolumesQuery.__init__
+portality.models.article.DuplicateArticleQuery.__init__
+portality.models.background.BackgroundJob.__init__
+portality.models.bibjson.GenericBibJSON.__init__
+portality.models.editors.EditorGroupMemberQuery.__init__
+portality.models.editors.EditorGroupQuery.__init__
+portality.models.journal.ContinuationQuery.__init__
+portality.models.journal.IssnQuery.__init__
+portality.models.journal.Journal.__init__
+portality.models.journal.JournalBibJSON.__init__
+portality.models.journal.JournalQuery.__init__
+portality.models.journal.PublisherQuery.__init__
+portality.models.journal.TitleQuery.__init__
+portality.models.openurl.OpenURLRequest.__init__
+portality.models.provenance.Provenance.__init__
+portality.models.provenance.ResourceIDQuery.__init__
+portality.models.suggestion.CurrentJournalQuery.__init__
+portality.models.suggestion.OwnerStatusQuery.__init__
+portality.models.suggestion.RelatedJournalQuery.__init__
+portality.models.suggestion.StatusQuery.__init__
+portality.models.suggestion.Suggestion.__init__
+portality.models.suggestion.SuggestionQuery.__init__
+portality.models.toc.JournalIssueToC.__init__
+portality.models.toc.ToCQuery.__init__
+portality.models.toc.VolumesToCQuery.__init__
+portality.models.uploads.ExistsFileQuery.__init__
+portality.models.uploads.OwnerFileQuery.__init__
+portality.models.uploads.ValidFileQuery.__init__
+portality.ordereddict.OrderedDict.__init__
+portality.tasks.reporting.ActionCounter.__init__
+portality.tasks.reporting.ContentByDate.__init__
+portality.tasks.reporting.ProvenanceList.__init__
+portality.tasks.reporting.ReportCounter.__init__
+portality.tasks.reporting.StatusCounter.__init__
+portality.view.account.RedirectForm.__init__
+portality.view.atom.AtomFeed.__init__
+portality.view.forms.ArticleForm.__init__
+portality.view.forms.NotRole.__init__
+portality.view.forms.UniqueGroupName.__init__
+portality.view.oaipmh.BadArgument.__init__
+portality.view.oaipmh.BadResumptionToken.__init__
+portality.view.oaipmh.BadVerb.__init__
+portality.view.oaipmh.CannotDisseminateFormat.__init__
+portality.view.oaipmh.GetRecord.__init__
+portality.view.oaipmh.IdDoesNotExist.__init__
+portality.view.oaipmh.Identify.__init__
+portality.view.oaipmh.ListIdentifiers.__init__
+portality.view.oaipmh.ListMetadataFormats.__init__
+portality.view.oaipmh.ListRecords.__init__
+portality.view.oaipmh.ListSets.__init__
+portality.view.oaipmh.NoMetadataFormats.__init__
+portality.view.oaipmh.NoRecordsMatch.__init__
+portality.view.oaipmh.NoSetHierarchy.__init__
+portality.view.oaipmh.OAIPMHError.__init__
+portality.view.oaipmh.OAI_PMH.__init__
+portality.view.query.Query.__init__" class="py-name" href="#" onclick="return doclink('link-13', '__init__', 'link-13');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-name">raw</tt><tt class="py-op">=</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.type"></a><div id="Provenance.type-def"><a name="L31"></a><tt class="py-lineno"> 31</tt> <a class="py-toggle" href="#" id="Provenance.type-toggle" onclick="return toggle('Provenance.type');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#type">type</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.type-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.type-expanded"><a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method portality.lib.dataobj.DataObj._get_single()=portality.lib.dataobj.DataObj-class.html#_get_single"><a title="portality.lib.dataobj.DataObj._get_single" class="py-name" href="#" onclick="return doclink('link-14', '_get_single', 'link-14');">_get_single</a></tt><tt class="py-op">(</tt><tt class="py-string">"type"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">type</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="Provenance.type"></a><div id="Provenance.type-def"><a name="L35"></a><tt class="py-lineno"> 35</tt> <a class="py-toggle" href="#" id="Provenance.type-toggle" onclick="return toggle('Provenance.type');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#type">type</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.type-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.type-expanded"><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Method portality.lib.dataobj.DataObj._set_with_struct()=portality.lib.dataobj.DataObj-class.html#_set_with_struct"><a title="portality.lib.dataobj.DataObj._set_with_struct" class="py-name" href="#" onclick="return doclink('link-15', '_set_with_struct', 'link-15');">_set_with_struct</a></tt><tt class="py-op">(</tt><tt class="py-string">"type"</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.user"></a><div id="Provenance.user-def"><a name="L39"></a><tt class="py-lineno"> 39</tt> <a class="py-toggle" href="#" id="Provenance.user-toggle" onclick="return toggle('Provenance.user');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#user">user</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.user-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.user-expanded"><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="portality.lib.dataobj.DataObj._get_single" class="py-name" href="#" onclick="return doclink('link-16', '_get_single', 'link-14');">_get_single</a></tt><tt class="py-op">(</tt><tt class="py-string">"user"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">user</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="Provenance.user"></a><div id="Provenance.user-def"><a name="L43"></a><tt class="py-lineno"> 43</tt> <a class="py-toggle" href="#" id="Provenance.user-toggle" onclick="return toggle('Provenance.user');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#user">user</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.user-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.user-expanded"><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="portality.lib.dataobj.DataObj._set_with_struct" class="py-name" href="#" onclick="return doclink('link-17', '_set_with_struct', 'link-15');">_set_with_struct</a></tt><tt class="py-op">(</tt><tt class="py-string">"user"</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.roles"></a><div id="Provenance.roles-def"><a name="L47"></a><tt class="py-lineno"> 47</tt> <a class="py-toggle" href="#" id="Provenance.roles-toggle" onclick="return toggle('Provenance.roles');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#roles">roles</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.roles-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.roles-expanded"><a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Method portality.lib.dataobj.DataObj._get_list()=portality.lib.dataobj.DataObj-class.html#_get_list"><a title="portality.lib.dataobj.DataObj._get_list" class="py-name" href="#" onclick="return doclink('link-18', '_get_list', 'link-18');">_get_list</a></tt><tt class="py-op">(</tt><tt class="py-string">"roles"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">roles</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="Provenance.roles"></a><div id="Provenance.roles-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="Provenance.roles-toggle" onclick="return toggle('Provenance.roles');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#roles">roles</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.roles-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.roles-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.lib.dataobj.DataObj._set_with_struct" class="py-name" href="#" onclick="return doclink('link-19', '_set_with_struct', 'link-15');">_set_with_struct</a></tt><tt class="py-op">(</tt><tt class="py-string">"roles"</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.editor_group"></a><div id="Provenance.editor_group-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="Provenance.editor_group-toggle" onclick="return toggle('Provenance.editor_group');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#editor_group">editor_group</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.editor_group-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.editor_group-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="portality.lib.dataobj.DataObj._get_list" class="py-name" href="#" onclick="return doclink('link-20', '_get_list', 'link-18');">_get_list</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor_group"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line"> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.subtype"></a><div id="Provenance.subtype-def"><a name="L59"></a><tt class="py-lineno"> 59</tt> <a class="py-toggle" href="#" id="Provenance.subtype-toggle" onclick="return toggle('Provenance.subtype');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#subtype">subtype</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.subtype-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.subtype-expanded"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="portality.lib.dataobj.DataObj._get_single" class="py-name" href="#" onclick="return doclink('link-21', '_get_single', 'link-14');">_get_single</a></tt><tt class="py-op">(</tt><tt class="py-string">"subtype"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.action"></a><div id="Provenance.action-def"><a name="L63"></a><tt class="py-lineno"> 63</tt> <a class="py-toggle" href="#" id="Provenance.action-toggle" onclick="return toggle('Provenance.action');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#action">action</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.action-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.action-expanded"><a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="portality.lib.dataobj.DataObj._get_single" class="py-name" href="#" onclick="return doclink('link-22', '_get_single', 'link-14');">_get_single</a></tt><tt class="py-op">(</tt><tt class="py-string">"action"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line"> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">action</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="Provenance.action"></a><div id="Provenance.action-def"><a name="L67"></a><tt class="py-lineno"> 67</tt> <a class="py-toggle" href="#" id="Provenance.action-toggle" onclick="return toggle('Provenance.action');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#action">action</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.action-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.action-expanded"><a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="portality.lib.dataobj.DataObj._set_with_struct" class="py-name" href="#" onclick="return doclink('link-23', '_set_with_struct', 'link-15');">_set_with_struct</a></tt><tt class="py-op">(</tt><tt class="py-string">"action"</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Provenance.resource_id"></a><div id="Provenance.resource_id-def"><a name="L71"></a><tt class="py-lineno"> 71</tt> <a class="py-toggle" href="#" id="Provenance.resource_id-toggle" onclick="return toggle('Provenance.resource_id');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#resource_id">resource_id</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.resource_id-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.resource_id-expanded"><a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="portality.lib.dataobj.DataObj._get_single" class="py-name" href="#" onclick="return doclink('link-24', '_get_single', 'link-14');">_get_single</a></tt><tt class="py-op">(</tt><tt class="py-string">"resource_id"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">resource_id</tt><tt class="py-op">.</tt><tt class="py-name">setter</tt> </tt>
+<a name="Provenance.resource_id"></a><div id="Provenance.resource_id-def"><a name="L75"></a><tt class="py-lineno"> 75</tt> <a class="py-toggle" href="#" id="Provenance.resource_id-toggle" onclick="return toggle('Provenance.resource_id');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#resource_id">resource_id</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.resource_id-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.resource_id-expanded"><a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="portality.lib.dataobj.DataObj._set_with_struct" class="py-name" href="#" onclick="return doclink('link-25', '_set_with_struct', 'link-15');">_set_with_struct</a></tt><tt class="py-op">(</tt><tt class="py-string">"resource_id"</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="Provenance.save"></a><div id="Provenance.save-def"><a name="L78"></a><tt class="py-lineno"> 78</tt> <a class="py-toggle" href="#" id="Provenance.save-toggle" onclick="return toggle('Provenance.save');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#save">save</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.save-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.save-expanded"><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-comment"># self.prep()</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method portality.lib.dataobj.DataObj.check_construct()=portality.lib.dataobj.DataObj-class.html#check_construct"><a title="portality.lib.dataobj.DataObj.check_construct" class="py-name" href="#" onclick="return doclink('link-26', 'check_construct', 'link-26');">check_construct</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-27" class="py-name"><a title="portality.models.provenance.Provenance" class="py-name" href="#" onclick="return doclink('link-27', 'Provenance', 'link-12');">Provenance</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method portality.clcsv.ClCsv.save()=portality.clcsv.ClCsv-class.html#save,Method portality.dao.DomainObject.save()=portality.dao.DomainObject-class.html#save,Method portality.models.article.Article.save()=portality.models.article.Article-class.html#save,Method portality.models.history.History.save()=portality.models.history.History-class.html#save,Method portality.models.journal.Journal.save()=portality.models.journal.Journal-class.html#save,Method portality.models.lcc.LCC.save()=portality.models.lcc.LCC-class.html#save,Method portality.models.provenance.Provenance.save()=portality.models.provenance.Provenance-class.html#save,Method portality.models.suggestion.Suggestion.save()=portality.models.suggestion.Suggestion-class.html#save,Function portality.scripts.prepare_delete_request.save()=portality.scripts.prepare_delete_request-module.html#save"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-28', 'save', 'link-28');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Provenance.make"></a><div id="Provenance.make-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="Provenance.make-toggle" onclick="return toggle('Provenance.make');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#make">make</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">account</tt><tt class="py-op">,</tt> <tt class="py-param">action</tt><tt class="py-op">,</tt> <tt class="py-param">obj</tt><tt class="py-op">,</tt> <tt class="py-param">subtype</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">save</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.make-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.make-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">egs1</tt> <tt class="py-op">=</tt> <tt id="link-29" class="py-name"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-29', 'EditorGroup', 'link-8');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Class Method portality.models.editors.EditorGroup.groups_by_editor()=portality.models.editors.EditorGroup-class.html#groups_by_editor"><a title="portality.models.editors.EditorGroup.groups_by_editor" class="py-name" href="#" onclick="return doclink('link-30', 'groups_by_editor', 'link-30');">groups_by_editor</a></tt><tt class="py-op">(</tt><tt id="link-31" class="py-name" targets="Module portality.models.account=portality.models.account-module.html,Module portality.view.account=portality.view.account-module.html"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-31', 'account', 'link-31');">account</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-32', 'id', 'link-32');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-name">egs2</tt> <tt class="py-op">=</tt> <tt id="link-33" class="py-name"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-33', 'EditorGroup', 'link-8');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-34" class="py-name" targets="Class Method portality.models.editors.EditorGroup.groups_by_associate()=portality.models.editors.EditorGroup-class.html#groups_by_associate"><a title="portality.models.editors.EditorGroup.groups_by_associate" class="py-name" href="#" onclick="return doclink('link-34', 'groups_by_associate', 'link-34');">groups_by_associate</a></tt><tt class="py-op">(</tt><tt id="link-35" class="py-name"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-35', 'account', 'link-31');">account</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-36', 'id', 'link-32');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">egs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">eg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">egs1</tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-37', 'id', 'link-32');">id</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">egs</tt><tt class="py-op">:</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                <tt class="py-name">egs</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-38', 'id', 'link-32');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">eg</tt> <tt class="py-keyword">in</tt> <tt class="py-name">egs2</tt><tt class="py-op">:</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-39', 'id', 'link-32');">id</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">egs</tt><tt class="py-op">:</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                <tt class="py-name">egs</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-40', 'id', 'link-32');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">d</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-string">"user"</tt> <tt class="py-op">:</tt> <tt id="link-41" class="py-name"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-41', 'account', 'link-31');">account</a></tt><tt class="py-op">.</tt><tt id="link-42" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-42', 'id', 'link-32');">id</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt class="py-string">"roles"</tt> <tt class="py-op">:</tt> <tt id="link-43" class="py-name"><a title="portality.models.account
+portality.view.account" class="py-name" href="#" onclick="return doclink('link-43', 'account', 'link-31');">account</a></tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Method portality.models.account.Account.role()=portality.models.account.Account-class.html#role"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-44', 'role', 'link-44');">role</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">            <tt class="py-string">"type"</tt> <tt class="py-op">:</tt> <tt class="py-name">obj</tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.background.BackgroundJob.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.provenance.Provenance.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-45', '__type__', 'link-9');">__type__</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">            <tt class="py-string">"action"</tt> <tt class="py-op">:</tt> <tt id="link-46" class="py-name" targets="Method portality.models.background.BackgroundJob.action()=portality.models.background.BackgroundJob-class.html#action,Method portality.models.provenance.Provenance.action()=portality.models.provenance.Provenance-class.html#action"><a title="portality.models.background.BackgroundJob.action
+portality.models.provenance.Provenance.action" class="py-name" href="#" onclick="return doclink('link-46', 'action', 'link-46');">action</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">            <tt class="py-string">"resource_id"</tt> <tt class="py-op">:</tt> <tt class="py-name">obj</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-47', 'id', 'link-32');">id</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt class="py-string">"editor_group"</tt> <tt class="py-op">:</tt> <tt class="py-name">egs</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-48" class="py-name" targets="Method portality.models.provenance.Provenance.subtype()=portality.models.provenance.Provenance-class.html#subtype"><a title="portality.models.provenance.Provenance.subtype" class="py-name" href="#" onclick="return doclink('link-48', 'subtype', 'link-48');">subtype</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-name">d</tt><tt class="py-op">[</tt><tt class="py-string">"subtype"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-49" class="py-name"><a title="portality.models.provenance.Provenance.subtype" class="py-name" href="#" onclick="return doclink('link-49', 'subtype', 'link-48');">subtype</a></tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt id="link-50" class="py-name"><a title="portality.models.provenance.Provenance" class="py-name" href="#" onclick="return doclink('link-50', 'Provenance', 'link-12');">Provenance</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">d</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-51" class="py-name"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-51', 'save', 'link-28');">save</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-name">saved</tt> <tt class="py-op">=</tt> <tt class="py-name">p</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-52', 'save', 'link-28');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">saved</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt id="link-53" class="py-name" targets="Class portality.models.provenance.ProvenanceException=portality.models.provenance.ProvenanceException-class.html"><a title="portality.models.provenance.ProvenanceException" class="py-name" href="#" onclick="return doclink('link-53', 'ProvenanceException', 'link-53');">ProvenanceException</a></tt><tt class="py-op">(</tt><tt class="py-string">"Failed to save provenance record"</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">p</tt> </tt>
+</div><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Provenance.get_latest_by_resource_id"></a><div id="Provenance.get_latest_by_resource_id-def"><a name="L114"></a><tt class="py-lineno">114</tt> <a class="py-toggle" href="#" id="Provenance.get_latest_by_resource_id-toggle" onclick="return toggle('Provenance.get_latest_by_resource_id');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.Provenance-class.html#get_latest_by_resource_id">get_latest_by_resource_id</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">resource_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Provenance.get_latest_by_resource_id-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Provenance.get_latest_by_resource_id-expanded"><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt id="link-54" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.q()=portality.journalcsv.Journal2QuestionXwalk-class.html#q"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-54', 'q', 'link-54');">q</a></tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name" targets="Class portality.models.provenance.ResourceIDQuery=portality.models.provenance.ResourceIDQuery-class.html"><a title="portality.models.provenance.ResourceIDQuery" class="py-name" href="#" onclick="return doclink('link-55', 'ResourceIDQuery', 'link-55');">ResourceIDQuery</a></tt><tt class="py-op">(</tt><tt id="link-56" class="py-name" targets="Method portality.models.provenance.Provenance.resource_id()=portality.models.provenance.Provenance-class.html#resource_id"><a title="portality.models.provenance.Provenance.resource_id" class="py-name" href="#" onclick="return doclink('link-56', 'resource_id', 'link-56');">resource_id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-57" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.lock.LockQuery.query()=portality.lock.LockQuery-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.provenance.ResourceIDQuery.query()=portality.models.provenance.ResourceIDQuery-class.html#query,Method portality.models.suggestion.CurrentJournalQuery.query()=portality.models.suggestion.CurrentJournalQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.RelatedJournalQuery.query()=portality.models.suggestion.RelatedJournalQuery-class.html#query,Method portality.models.suggestion.StatusQuery.query()=portality.models.suggestion.StatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Method portality.tasks.reporting.ContentByDate.query()=portality.tasks.reporting.ContentByDate-class.html#query,Method portality.tasks.reporting.ProvenanceList.query()=portality.tasks.reporting.ProvenanceList-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-57', 'query', 'link-57');">query</a></tt><tt class="py-op">(</tt><tt id="link-58" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-58', 'q', 'link-54');">q</a></tt><tt class="py-op">=</tt><tt id="link-59" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-59', 'q', 'link-54');">q</a></tt><tt class="py-op">.</tt><tt id="link-60" class="py-name"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-60', 'query', 'link-57');">query</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-name">obs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">hit</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"_source"</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">hit</tt> <tt class="py-keyword">in</tt> <tt class="py-name">resp</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"hits"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"hits"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">obs</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-61" class="py-name"><a title="portality.models.provenance.Provenance" class="py-name" href="#" onclick="return doclink('link-61', 'Provenance', 'link-12');">Provenance</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">obs</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"><tt id="link-62" class="py-name"><a title="portality.models.provenance.PROVENANCE_STRUCT" class="py-name" href="#" onclick="return doclink('link-62', 'PROVENANCE_STRUCT', 'link-11');">PROVENANCE_STRUCT</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">    <tt class="py-string">"fields"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-string">"id"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-string">"created_date"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"utcdatetime"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-string">"last_updated"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"utcdatetime"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-string">"user"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-string">"type"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-string">"subtype"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-string">"action"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-string">"resource_id"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt class="py-string">"lists"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-string">"roles"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"contains"</tt> <tt class="py-op">:</tt> <tt class="py-string">"field"</tt><tt class="py-op">,</tt> <tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-string">"editor_group"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"contains"</tt> <tt class="py-op">:</tt> <tt class="py-string">"field"</tt><tt class="py-op">,</tt> <tt class="py-string">"coerce"</tt> <tt class="py-op">:</tt> <tt class="py-string">"unicode"</tt><tt class="py-op">}</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-op">}</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-op">}</tt> </tt>
+<a name="ResourceIDQuery"></a><div id="ResourceIDQuery-def"><a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt> <a class="py-toggle" href="#" id="ResourceIDQuery-toggle" onclick="return toggle('ResourceIDQuery');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.provenance.ResourceIDQuery-class.html">ResourceIDQuery</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ResourceIDQuery-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ResourceIDQuery-expanded"><a name="ResourceIDQuery.__init__"></a><div id="ResourceIDQuery.__init__-def"><a name="L141"></a><tt class="py-lineno">141</tt> <a class="py-toggle" href="#" id="ResourceIDQuery.__init__-toggle" onclick="return toggle('ResourceIDQuery.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.ResourceIDQuery-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">resource_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ResourceIDQuery.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ResourceIDQuery.__init__-expanded"><a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-63" class="py-name"><a title="portality.models.provenance.Provenance.resource_id" class="py-name" href="#" onclick="return doclink('link-63', 'resource_id', 'link-56');">resource_id</a></tt> <tt class="py-op">=</tt> <tt id="link-64" class="py-name"><a title="portality.models.provenance.Provenance.resource_id" class="py-name" href="#" onclick="return doclink('link-64', 'resource_id', 'link-56');">resource_id</a></tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="ResourceIDQuery.query"></a><div id="ResourceIDQuery.query-def"><a name="L144"></a><tt class="py-lineno">144</tt> <a class="py-toggle" href="#" id="ResourceIDQuery.query-toggle" onclick="return toggle('ResourceIDQuery.query');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.provenance.ResourceIDQuery-class.html#query">query</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ResourceIDQuery.query-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ResourceIDQuery.query-expanded"><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">{</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">            <tt class="py-string">"query"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">                <tt class="py-string">"bool"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">                    <tt class="py-string">"must"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">                        <tt class="py-op">{</tt><tt class="py-string">"term"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"resource_id.exact"</tt> <tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-65" class="py-name"><a title="portality.models.provenance.Provenance.resource_id" class="py-name" href="#" onclick="return doclink('link-65', 'resource_id', 'link-56');">resource_id</a></tt><tt class="py-op">}</tt><tt class="py-op">}</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">                    <tt class="py-op">]</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">                <tt class="py-op">}</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt class="py-op">}</tt><tt class="py-op">,</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-string">"sort"</tt> <tt class="py-op">:</tt> <tt class="py-op">[</tt><tt class="py-op">{</tt><tt class="py-string">"created_date"</tt> <tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"order"</tt> <tt class="py-op">:</tt> <tt class="py-string">"desc"</tt><tt class="py-op">}</tt><tt class="py-op">}</tt><tt class="py-op">]</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+</div></div><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt>
+<a name="ProvenanceException"></a><div id="ProvenanceException-def"><a name="L156"></a><tt class="py-lineno">156</tt> <a class="py-toggle" href="#" id="ProvenanceException-toggle" onclick="return toggle('ProvenanceException');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.provenance.ProvenanceException-class.html">ProvenanceException</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ProvenanceException-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ProvenanceException-expanded"><a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:15 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

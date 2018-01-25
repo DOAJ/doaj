@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.util</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        Module&nbsp;util
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.util-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.util-module.html">Module portality.util</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">urllib</tt> <tt class="py-keyword">import</tt> <tt class="py-name">urlopen</tt><tt class="py-op">,</tt> <tt class="py-name">urlencode</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">md5</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">os</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">,</tt> <tt class="py-name">string</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">unicodedata</tt> <tt class="py-keyword">import</tt> <tt class="py-name">normalize</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">functools</tt> <tt class="py-keyword">import</tt> <tt class="py-name">wraps</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">request</tt><tt class="py-op">,</tt> <tt class="py-name">current_app</tt><tt class="py-op">,</tt> <tt id="link-0" class="py-name" targets="Class Method portality.ui.messages.Messages.flash()=portality.ui.messages.Messages-class.html#flash"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-0', 'flash', 'link-0');">flash</a></tt><tt class="py-op">,</tt> <tt class="py-name">make_response</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">random</tt> <tt class="py-keyword">import</tt> <tt class="py-name">choice</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Method portality.dao.DomainObject.json()=portality.dao.DomainObject-class.html#json,Method portality.lib.dataobj.DataObj.json()=portality.lib.dataobj.DataObj-class.html#json"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-1', 'json', 'link-1');">json</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">urlparse</tt> <tt class="py-keyword">import</tt> <tt class="py-name">urlparse</tt><tt class="py-op">,</tt> <tt class="py-name">urljoin</tt> </tt>
+<a name="is_safe_url"></a><div id="is_safe_url-def"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt> <a class="py-toggle" href="#" id="is_safe_url-toggle" onclick="return toggle('is_safe_url');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#is_safe_url">is_safe_url</a><tt class="py-op">(</tt><tt class="py-param">target</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="is_safe_url-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="is_safe_url-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-name">ref_url</tt> <tt class="py-op">=</tt> <tt class="py-name">urlparse</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">host_url</tt><tt class="py-op">)</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">    <tt class="py-name">test_url</tt> <tt class="py-op">=</tt> <tt class="py-name">urlparse</tt><tt class="py-op">(</tt><tt class="py-name">urljoin</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">host_url</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Class Method portality.dao.DomainObject.target()=portality.dao.DomainObject-class.html#target,Method portality.formcontext.formcontext.FormContext.target()=portality.formcontext.formcontext.FormContext-class.html#target"><a title="portality.dao.DomainObject.target
+portality.formcontext.formcontext.FormContext.target" class="py-name" href="#" onclick="return doclink('link-2', 'target', 'link-2');">target</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-op">(</tt> <tt class="py-name">test_url</tt><tt class="py-op">.</tt><tt class="py-name">scheme</tt> <tt class="py-keyword">in</tt> <tt class="py-op">(</tt><tt class="py-string">'http'</tt><tt class="py-op">,</tt> <tt class="py-string">'https'</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt>  </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">            <tt class="py-name">ref_url</tt><tt class="py-op">.</tt><tt class="py-name">netloc</tt> <tt class="py-op">==</tt> <tt class="py-name">test_url</tt><tt class="py-op">.</tt><tt class="py-name">netloc</tt> <tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-3" class="py-name"><a title="portality.dao.DomainObject.target
+portality.formcontext.formcontext.FormContext.target" class="py-name" href="#" onclick="return doclink('link-3', 'target', 'link-2');">target</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">'/'</tt> </tt>
+</div><a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="jsonp"></a><div id="jsonp-def"><a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="jsonp-toggle" onclick="return toggle('jsonp');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#jsonp">jsonp</a><tt class="py-op">(</tt><tt class="py-param">f</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="jsonp-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="jsonp-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">    <tt class="py-docstring">"""Wraps JSONified output for JSONP"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">wraps</tt><tt class="py-op">(</tt><tt id="link-4" class="py-name" targets="Variable portality.datasets.f=portality.datasets-module.html#f,Variable portality.migrate.st2cl.cluster.f=portality.migrate.st2cl.cluster-module.html#f,Variable portality.migrate.st2cl.cluster2.f=portality.migrate.st2cl.cluster2-module.html#f,Variable portality.migrate.st2cl.emails.f=portality.migrate.st2cl.emails-module.html#f"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-4', 'f', 'link-4');">f</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-keyword">def</tt> <tt class="py-def-name">decorated_function</tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-name">callback</tt> <tt class="py-op">=</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">args</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'callback'</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">callback</tt><tt class="py-op">:</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">            <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">callback</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">'('</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt id="link-5" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-5', 'f', 'link-4');">f</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">')'</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">current_app</tt><tt class="py-op">.</tt><tt class="py-name">response_class</tt><tt class="py-op">(</tt><tt class="py-name">content</tt><tt class="py-op">,</tt> <tt class="py-name">mimetype</tt><tt class="py-op">=</tt><tt class="py-string">'application/javascript'</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-6" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-6', 'f', 'link-4');">f</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">decorated_function</tt> </tt>
+</div><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="request_wants_json"></a><div id="request_wants_json-def"><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-comment"># derived from http://flask.pocoo.org/snippets/45/ (pd) and customised</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt> <a class="py-toggle" href="#" id="request_wants_json-toggle" onclick="return toggle('request_wants_json');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#request_wants_json">request_wants_json</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="request_wants_json-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="request_wants_json-expanded"><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-name">best</tt> <tt class="py-op">=</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">accept_mimetypes</tt><tt class="py-op">.</tt><tt class="py-name">best_match</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt class="py-string">'application/json'</tt><tt class="py-op">,</tt> <tt class="py-string">'text/html'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">best</tt> <tt class="py-op">==</tt> <tt class="py-string">'application/json'</tt> <tt class="py-keyword">and</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">accept_mimetypes</tt><tt class="py-op">[</tt><tt class="py-name">best</tt><tt class="py-op">]</tt> <tt class="py-op">&gt;</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">accept_mimetypes</tt><tt class="py-op">[</tt><tt class="py-string">'text/html'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-name">best</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">best</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Method portality.ordereddict.OrderedDict.values()=portality.ordereddict.OrderedDict-class.html#values"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-7', 'values', 'link-7');">values</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'format'</tt><tt class="py-op">,</tt><tt class="py-string">''</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-string">'json'</tt> <tt class="py-keyword">or</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-string">".json"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">best</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">best</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">         </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-comment"># derived from http://flask.pocoo.org/snippets/5/ (public domain)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-comment"># changed delimiter to _ instead of - due to ES search problem on the -</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable portality.util._punct_re=portality.util-module.html#_punct_re"><a title="portality.util._punct_re" class="py-name" href="#" onclick="return doclink('link-8', '_punct_re', 'link-8');">_punct_re</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">r'[\t !"#$%&amp;\'()*\-/&lt;=&gt;?@\[\\\]^_`{|},.]+'</tt><tt class="py-op">)</tt> </tt>
+<a name="slugify"></a><div id="slugify-def"><a name="L51"></a><tt class="py-lineno"> 51</tt> <a class="py-toggle" href="#" id="slugify-toggle" onclick="return toggle('slugify');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#slugify">slugify</a><tt class="py-op">(</tt><tt class="py-param">text</tt><tt class="py-op">,</tt> <tt class="py-param">delim</tt><tt class="py-op">=</tt><tt class="py-string">u'_'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="slugify-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="slugify-expanded"><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">    <tt class="py-docstring">"""Generates an slightly worse ASCII-only slug."""</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">    <tt class="py-name">result</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">word</tt> <tt class="py-keyword">in</tt> <tt id="link-9" class="py-name"><a title="portality.util._punct_re" class="py-name" href="#" onclick="return doclink('link-9', '_punct_re', 'link-8');">_punct_re</a></tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-name">text</tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">word</tt> <tt class="py-op">=</tt> <tt class="py-name">normalize</tt><tt class="py-op">(</tt><tt class="py-string">'NFKD'</tt><tt class="py-op">,</tt> <tt class="py-name">word</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">encode</tt><tt class="py-op">(</tt><tt class="py-string">'ascii'</tt><tt class="py-op">,</tt> <tt class="py-string">'ignore'</tt><tt class="py-op">)</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">word</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">result</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">word</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">unicode</tt><tt class="py-op">(</tt><tt class="py-name">delim</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">result</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="get_gravatar"></a><div id="get_gravatar-def"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-comment"># get gravatar for email address</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt> <a class="py-toggle" href="#" id="get_gravatar-toggle" onclick="return toggle('get_gravatar');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#get_gravatar">get_gravatar</a><tt class="py-op">(</tt><tt class="py-param">email</tt><tt class="py-op">,</tt> <tt class="py-param">size</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">default</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">border</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_gravatar-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_gravatar-expanded"><a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt id="link-10" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Function portality.tasks.reporting.email()=portality.tasks.reporting-module.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-10', 'email', 'link-10');">email</a></tt> <tt class="py-op">=</tt> <tt id="link-11" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-11', 'email', 'link-10');">email</a></tt><tt class="py-op">.</tt><tt class="py-name">lower</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-name">hash</tt> <tt class="py-op">=</tt> <tt class="py-name">md5</tt><tt class="py-op">.</tt><tt class="py-name">md5</tt><tt class="py-op">(</tt><tt id="link-12" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-12', 'email', 'link-10');">email</a></tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">hexdigest</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt class="py-name">args</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">'gravatar_id'</tt><tt class="py-op">:</tt><tt class="py-name">hash</tt><tt class="py-op">}</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">size</tt> <tt class="py-keyword">and</tt> <tt class="py-number">1</tt> <tt class="py-op">&lt;=</tt> <tt class="py-name">int</tt><tt class="py-op">(</tt><tt class="py-name">size</tt><tt class="py-op">)</tt> <tt class="py-op">&lt;=</tt> <tt class="py-number">512</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">args</tt><tt class="py-op">[</tt><tt class="py-string">'size'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">size</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-13" class="py-name" targets="Method portality.api.v1.common.DataObjectJsonEncoder.default()=portality.api.v1.common.DataObjectJsonEncoder-class.html#default,Method portality.api.v1.common.ModelJsonEncoder.default()=portality.api.v1.common.ModelJsonEncoder-class.html#default"><a title="portality.api.v1.common.DataObjectJsonEncoder.default
+portality.api.v1.common.ModelJsonEncoder.default" class="py-name" href="#" onclick="return doclink('link-13', 'default', 'link-13');">default</a></tt><tt class="py-op">:</tt> <tt class="py-name">args</tt><tt class="py-op">[</tt><tt class="py-string">'default'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="portality.api.v1.common.DataObjectJsonEncoder.default
+portality.api.v1.common.ModelJsonEncoder.default" class="py-name" href="#" onclick="return doclink('link-14', 'default', 'link-13');">default</a></tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">border</tt><tt class="py-op">:</tt> <tt class="py-name">args</tt><tt class="py-op">[</tt><tt class="py-string">'border'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">border</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">    <tt id="link-15" class="py-name" targets="Method portality.blog.News.url()=portality.blog.News-class.html#url,Variable portality.formcontext.forms.JournalInformation.url=portality.formcontext.forms.JournalInformation-class.html#url"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-15', 'url', 'link-15');">url</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'http://www.gravatar.com/avatar.php?'</tt> <tt class="py-op">+</tt> <tt class="py-name">urlencode</tt><tt class="py-op">(</tt><tt class="py-name">args</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-name">response</tt> <tt class="py-op">=</tt> <tt class="py-name">urlopen</tt><tt class="py-op">(</tt><tt id="link-16" class="py-name"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-16', 'url', 'link-15');">url</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-name">image</tt> <tt class="py-op">=</tt> <tt class="py-name">response</tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt class="py-name">response</tt><tt class="py-op">.</tt><tt class="py-name">close</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">image</tt> </tt>
+</div><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"> </tt>
+<a name="generate_password"></a><div id="generate_password-def"><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt> <a class="py-toggle" href="#" id="generate_password-toggle" onclick="return toggle('generate_password');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#generate_password">generate_password</a><tt class="py-op">(</tt><tt class="py-param">length</tt><tt class="py-op">=</tt><tt class="py-number">8</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="generate_password-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="generate_password-expanded"><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">    <tt class="py-name">chars</tt> <tt class="py-op">=</tt> <tt class="py-name">string</tt><tt class="py-op">.</tt><tt class="py-name">letters</tt> <tt class="py-op">+</tt> <tt class="py-name">string</tt><tt class="py-op">.</tt><tt class="py-name">digits</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">    <tt class="py-name">pw</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">choice</tt><tt class="py-op">(</tt><tt class="py-name">chars</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">_</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">length</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">pw</tt> </tt>
+</div><a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="flash_with_url"></a><div id="flash_with_url-def"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle" href="#" id="flash_with_url-toggle" onclick="return toggle('flash_with_url');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#flash_with_url">flash_with_url</a><tt class="py-op">(</tt><tt class="py-param">message</tt><tt class="py-op">,</tt> <tt class="py-param">category</tt><tt class="py-op">=</tt><tt class="py-string">''</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="flash_with_url-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="flash_with_url-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">    <tt id="link-17" class="py-name"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-17', 'flash', 'link-0');">flash</a></tt><tt class="py-op">(</tt><tt id="link-18" class="py-name" targets="Variable portality.view.forms.ContactUs.message=portality.view.forms.ContactUs-class.html#message"><a title="portality.view.forms.ContactUs.message" class="py-name" href="#" onclick="return doclink('link-18', 'message', 'link-18');">message</a></tt><tt class="py-op">,</tt> <tt class="py-name">category</tt> <tt class="py-op">+</tt> <tt class="py-string">'+contains-url'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="listpop"></a><div id="listpop-def"><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="listpop-toggle" onclick="return toggle('listpop');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#listpop">listpop</a><tt class="py-op">(</tt><tt class="py-param">l</tt><tt class="py-op">,</tt> <tt class="py-param">default</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="listpop-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="listpop-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-19" class="py-name" targets="Variable portality.datasets.l=portality.datasets-module.html#l"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-19', 'l', 'link-19');">l</a></tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt id="link-20" class="py-name"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-20', 'l', 'link-19');">l</a></tt> <tt class="py-keyword">else</tt> <tt id="link-21" class="py-name"><a title="portality.api.v1.common.DataObjectJsonEncoder.default
+portality.api.v1.common.ModelJsonEncoder.default" class="py-name" href="#" onclick="return doclink('link-21', 'default', 'link-13');">default</a></tt> </tt>
+</div><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="parse_date"></a><div id="parse_date-def"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="parse_date-toggle" onclick="return toggle('parse_date');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#parse_date">parse_date</a><tt class="py-op">(</tt><tt class="py-param">s</tt><tt class="py-op">,</tt> <tt class="py-param">format</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">guess</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="parse_date-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="parse_date-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">    <tt id="link-22" class="py-name" targets="Variable portality.view.account.RegisterForm.s=portality.view.account.RegisterForm-class.html#s"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-22', 's', 'link-22');">s</a></tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-23', 's', 'link-22');">s</a></tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-24" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-24', 'format', 'link-24');">format</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strptime</tt><tt class="py-op">(</tt><tt id="link-25" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-25', 's', 'link-22');">s</a></tt><tt class="py-op">,</tt> <tt id="link-26" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-26', 'format', 'link-24');">format</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">ValueError</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">guess</tt><tt class="py-op">:</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt class="py-name">e</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-27" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-27', 'f', 'link-4');">f</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">current_app</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-28', 'config', 'link-28');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"DATE_FORMATS"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strptime</tt><tt class="py-op">(</tt><tt id="link-29" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-29', 's', 'link-22');">s</a></tt><tt class="py-op">,</tt> <tt id="link-30" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-30', 'f', 'link-4');">f</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">ValueError</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-keyword">pass</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">    <tt class="py-keyword">raise</tt> <tt class="py-name">ValueError</tt><tt class="py-op">(</tt><tt class="py-string">"Unable to parse {x} with any known format"</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-31', 'format', 'link-24');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt id="link-32" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-32', 's', 'link-22');">s</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="normalise_issn"></a><div id="normalise_issn-def"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt> <a class="py-toggle" href="#" id="normalise_issn-toggle" onclick="return toggle('normalise_issn');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#normalise_issn">normalise_issn</a><tt class="py-op">(</tt><tt class="py-param">issn</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="normalise_issn-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="normalise_issn-expanded"><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">    <tt id="link-33" class="py-name" targets="Method portality.models.openurl.OpenURLRequest.issn()=portality.models.openurl.OpenURLRequest-class.html#issn,Method portality.models.toc.JournalVolumeToC.issn()=portality.models.toc.JournalVolumeToC-class.html#issn"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-33', 'issn', 'link-33');">issn</a></tt> <tt class="py-op">=</tt> <tt id="link-34" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-34', 'issn', 'link-33');">issn</a></tt><tt class="py-op">.</tt><tt class="py-name">upper</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-35" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-35', 'issn', 'link-33');">issn</a></tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">8</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-36" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-36', 'issn', 'link-33');">issn</a></tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-37" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-37', 'issn', 'link-33');">issn</a></tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">8</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"-"</tt> <tt class="py-keyword">in</tt> <tt id="link-38" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-38', 'issn', 'link-33');">issn</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">"0"</tt> <tt class="py-op">+</tt> <tt id="link-39" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-39', 'issn', 'link-33');">issn</a></tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt id="link-40" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-40', 'issn', 'link-33');">issn</a></tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">"-"</tt> <tt class="py-op">+</tt> <tt id="link-41" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-41', 'issn', 'link-33');">issn</a></tt><tt class="py-op">[</tt><tt class="py-number">4</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-42" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-42', 'issn', 'link-33');">issn</a></tt><tt class="py-op">)</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">8</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"-"</tt> <tt class="py-keyword">in</tt> <tt id="link-43" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-43', 'issn', 'link-33');">issn</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-op">(</tt><tt class="py-string">"0"</tt> <tt class="py-op">*</tt> <tt class="py-op">(</tt><tt class="py-number">9</tt> <tt class="py-op">-</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-44" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-44', 'issn', 'link-33');">issn</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt id="link-45" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-45', 'issn', 'link-33');">issn</a></tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">            <tt id="link-46" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-46', 'issn', 'link-33');">issn</a></tt> <tt class="py-op">=</tt> <tt class="py-op">(</tt><tt class="py-string">"0"</tt> <tt class="py-op">*</tt> <tt class="py-op">(</tt><tt class="py-number">8</tt> <tt class="py-op">-</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-47" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-47', 'issn', 'link-33');">issn</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt id="link-48" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-48', 'issn', 'link-33');">issn</a></tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-49" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-49', 'issn', 'link-33');">issn</a></tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">4</tt><tt class="py-op">]</tt> <tt class="py-op">+</tt> <tt class="py-string">"-"</tt> <tt class="py-op">+</tt> <tt id="link-50" class="py-name"><a title="portality.models.openurl.OpenURLRequest.issn
+portality.models.toc.JournalVolumeToC.issn" class="py-name" href="#" onclick="return doclink('link-50', 'issn', 'link-33');">issn</a></tt><tt class="py-op">[</tt><tt class="py-number">4</tt><tt class="py-op">:</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="load_file"></a><div id="load_file-def"><a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt> <a class="py-toggle" href="#" id="load_file-toggle" onclick="return toggle('load_file');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#load_file">load_file</a><tt class="py-op">(</tt><tt class="py-param">filename</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="load_file-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="load_file-expanded"><a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">    <tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-51" class="py-name" targets="Method portality.models.uploads.FileUpload.filename()=portality.models.uploads.FileUpload-class.html#filename,Method portality.tasks.reporting.ActionCounter.filename()=portality.tasks.reporting.ActionCounter-class.html#filename,Method portality.tasks.reporting.ReportCounter.filename()=portality.tasks.reporting.ReportCounter-class.html#filename,Method portality.tasks.reporting.StatusCounter.filename()=portality.tasks.reporting.StatusCounter-class.html#filename"><a title="portality.models.uploads.FileUpload.filename
+portality.tasks.reporting.ActionCounter.filename
+portality.tasks.reporting.ReportCounter.filename
+portality.tasks.reporting.StatusCounter.filename" class="py-name" href="#" onclick="return doclink('link-51', 'filename', 'link-51');">filename</a></tt><tt class="py-op">,</tt> <tt class="py-string">'rb'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt id="link-52" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-52', 'f', 'link-4');">f</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt id="link-53" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-53', 'f', 'link-4');">f</a></tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">content</tt> </tt>
+</div><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"> </tt>
+<a name="unicode_dict"></a><div id="unicode_dict-def"><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt> <a class="py-toggle" href="#" id="unicode_dict-toggle" onclick="return toggle('unicode_dict');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#unicode_dict">unicode_dict</a><tt class="py-op">(</tt><tt class="py-param">d</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="unicode_dict-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="unicode_dict-expanded"><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-docstring">""" Recursively convert dictionary keys to unicode """</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt> <tt class="py-name">dict</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">dict</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-name">unicode</tt><tt class="py-op">(</tt><tt class="py-name">k</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt id="link-54" class="py-name" targets="Function portality.util.unicode_dict()=portality.util-module.html#unicode_dict"><a title="portality.util.unicode_dict" class="py-name" href="#" onclick="return doclink('link-54', 'unicode_dict', 'link-54');">unicode_dict</a></tt><tt class="py-op">(</tt><tt class="py-name">v</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">k</tt><tt class="py-op">,</tt> <tt class="py-name">v</tt> <tt class="py-keyword">in</tt> <tt class="py-name">d</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name" targets="Method portality.ordereddict.OrderedDict.items()=portality.ordereddict.OrderedDict-class.html#items"><a title="portality.ordereddict.OrderedDict.items" class="py-name" href="#" onclick="return doclink('link-55', 'items', 'link-55');">items</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">d</tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt id="link-56" class="py-name"><a title="portality.util.unicode_dict" class="py-name" href="#" onclick="return doclink('link-56', 'unicode_dict', 'link-54');">unicode_dict</a></tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">e</tt> <tt class="py-keyword">in</tt> <tt class="py-name">d</tt><tt class="py-op">]</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">d</tt> </tt>
+</div><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"> </tt>
+<a name="make_json_resp"></a><div id="make_json_resp-def"><a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt> <a class="py-toggle" href="#" id="make_json_resp-toggle" onclick="return toggle('make_json_resp');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#make_json_resp">make_json_resp</a><tt class="py-op">(</tt><tt class="py-param">data</tt><tt class="py-op">,</tt> <tt class="py-param">status_code</tt><tt class="py-op">,</tt> <tt class="py-param">json_dumps_kwargs</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="make_json_resp-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="make_json_resp-expanded"><a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">json_dumps_kwargs</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-name">json_dumps_kwargs</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">make_response</tt><tt class="py-op">(</tt><tt id="link-57" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-57', 'json', 'link-1');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">data</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">json_dumps_kwargs</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">    <tt class="py-name">resp</tt><tt class="py-op">.</tt><tt class="py-name">status_code</tt> <tt class="py-op">=</tt> <tt class="py-name">status_code</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">    <tt class="py-name">resp</tt><tt class="py-op">.</tt><tt class="py-name">mimetype</tt> <tt class="py-op">=</tt> <tt class="py-string">"application/json"</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">resp</tt> </tt>
+</div><a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"> </tt>
+<a name="get_web_json_payload"></a><div id="get_web_json_payload-def"><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt> <a class="py-toggle" href="#" id="get_web_json_payload-toggle" onclick="return toggle('get_web_json_payload');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#get_web_json_payload">get_web_json_payload</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_web_json_payload-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_web_json_payload-expanded"><a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"><tt class="py-docstring">    Attempts to load JSON from request.data.</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"><tt class="py-docstring">    If valid, returns the decoded JSON payload to the caller.</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"><tt class="py-docstring">    If invalid returns a JSON response with a 400 Bad Request to the web user.</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">    <tt class="py-name">r</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-name">payload</tt> <tt class="py-op">=</tt> <tt id="link-58" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-58', 'json', 'link-1');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">ValueError</tt><tt class="py-op">:</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">r</tt><tt class="py-op">[</tt><tt class="py-string">'error'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">"Invalid JSON payload from request.data .\n{}"</tt><tt class="py-op">.</tt><tt id="link-59" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-59', 'format', 'link-24');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-60" class="py-name" targets="Function portality.util.make_json_resp()=portality.util-module.html#make_json_resp"><a title="portality.util.make_json_resp" class="py-name" href="#" onclick="return doclink('link-60', 'make_json_resp', 'link-60');">make_json_resp</a></tt><tt class="py-op">(</tt><tt class="py-name">r</tt><tt class="py-op">,</tt> <tt class="py-name">status_code</tt><tt class="py-op">=</tt><tt class="py-number">400</tt><tt class="py-op">)</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">payload</tt> </tt>
+</div><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"> </tt>
+<a name="validate_json"></a><div id="validate_json-def"><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt> <a class="py-toggle" href="#" id="validate_json-toggle" onclick="return toggle('validate_json');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#validate_json">validate_json</a><tt class="py-op">(</tt><tt class="py-param">payload</tt><tt class="py-op">,</tt> <tt class="py-param">fields_must_be_present</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">fields_must_not_be_present</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">error_to_raise</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="validate_json-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="validate_json-expanded"><a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">fields_must_be_present</tt><tt class="py-op">:</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-name">fields_must_be_present</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">fields_must_not_be_present</tt><tt class="py-op">:</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-name">fields_must_not_be_present</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-61" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-61', 'f', 'link-4');">f</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">fields_must_be_present</tt><tt class="py-op">:</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-62" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-62', 'f', 'link-4');">f</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">payload</tt><tt class="py-op">:</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">error_to_raise</tt><tt class="py-op">:</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt class="py-name">error_to_raise</tt><tt class="py-op">(</tt><tt class="py-string">'Invalid JSON. The field {} was missing and is required.'</tt><tt class="py-op">.</tt><tt id="link-63" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-63', 'format', 'link-24');">format</a></tt><tt class="py-op">(</tt><tt id="link-64" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-64', 'f', 'link-4');">f</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line"> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-65" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-65', 'f', 'link-4');">f</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">fields_must_not_be_present</tt><tt class="py-op">:</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-66" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-66', 'f', 'link-4');">f</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">payload</tt><tt class="py-op">:</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">error_to_raise</tt><tt class="py-op">:</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">                <tt class="py-keyword">raise</tt> <tt class="py-name">error_to_raise</tt><tt class="py-op">(</tt><tt class="py-string">'Invalid JSON. The field {} was present and must not be present.'</tt><tt class="py-op">.</tt><tt id="link-67" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-67', 'format', 'link-24');">format</a></tt><tt class="py-op">(</tt><tt id="link-68" class="py-name"><a title="portality.datasets.f
+portality.migrate.st2cl.cluster.f
+portality.migrate.st2cl.cluster2.f
+portality.migrate.st2cl.emails.f" class="py-name" href="#" onclick="return doclink('link-68', 'f', 'link-4');">f</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">False</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">True</tt> </tt>
+</div><a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line"> </tt>
+<a name="batch_up"></a><div id="batch_up-def"><a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line"> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt> <a class="py-toggle" href="#" id="batch_up-toggle" onclick="return toggle('batch_up');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.util-module.html#batch_up">batch_up</a><tt class="py-op">(</tt><tt class="py-param">long_list</tt><tt class="py-op">,</tt> <tt class="py-param">batch_size</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="batch_up-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="batch_up-expanded"><a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">    <tt class="py-docstring">"""Yield successive n-sized chunks from l (a list)."""</tt> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line">    <tt class="py-comment"># http://stackoverflow.com/a/312464/1154882</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt id="link-69" class="py-name" targets="Variable portality.migrate.st2cl.cluster2.i=portality.migrate.st2cl.cluster2-module.html#i"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-69', 'i', 'link-69');">i</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">xrange</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">long_list</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">batch_size</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line">        <tt class="py-keyword">yield</tt> <tt class="py-name">long_list</tt><tt class="py-op">[</tt><tt id="link-70" class="py-name"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-70', 'i', 'link-69');">i</a></tt><tt class="py-op">:</tt><tt id="link-71" class="py-name"><a title="portality.migrate.st2cl.cluster2.i" class="py-name" href="#" onclick="return doclink('link-71', 'i', 'link-69');">i</a></tt> <tt class="py-op">+</tt> <tt class="py-name">batch_size</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:21 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.article.DOAJXWalk</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.article-module.html">Module&nbsp;article</a> ::
+        Class&nbsp;DOAJXWalk
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.article.DOAJXWalk-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class DOAJXWalk</h1><p class="nomargin-top"><span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit_27" name="uml_class_diagram_for_portalit_27">
+<area shape="rect" id="node1_12" href="portality.article.DOAJXWalk-class.html#format_name" title="portality.article.DOAJXWalk.format_name" alt="" coords="17,192,705,212"/>
+<area shape="rect" id="node1_13" href="portality.article.DOAJXWalk-class.html#schema_path" title="portality.article.DOAJXWalk.schema_path" alt="" coords="17,212,705,232"/>
+<area shape="rect" id="node1_14" href="portality.article.DOAJXWalk-class.html#__init__" title="x.__init__(...) initializes x; see help(type(x)) for signature" alt="" coords="17,235,705,255"/>
+<area shape="rect" id="node1_15" href="portality.article.DOAJXWalk-class.html#validate" title="portality.article.DOAJXWalk.validate" alt="" coords="17,255,705,275"/>
+<area shape="rect" id="node1_16" href="portality.article.DOAJXWalk-class.html#crosswalk_file" title="portality.article.DOAJXWalk.crosswalk_file" alt="" coords="17,275,705,295"/>
+<area shape="rect" id="node1_17" href="portality.article.DOAJXWalk-class.html#crosswalk_doc" title="portality.article.DOAJXWalk.crosswalk_doc" alt="" coords="17,295,705,315"/>
+<area shape="rect" id="node1_18" href="portality.article.DOAJXWalk-class.html#crosswalk_article" title="Example record: &lt;record&gt; &#160;&#160;&lt;language&gt;eng&lt;/language&gt; &#160;&#160;&lt;publisher&gt;Co&#45;Action Publishing&lt;/publisher&gt; &#160;&#160;&lt;journalTitle&gt;Tellus A&lt;/journalTitle&gt; &#160;&#160;&lt;issn&gt;0280&#45;6495&lt;/issn&gt; &#160;&#160;&lt;eissn&gt;1600&#45;0870&lt;/eissn&gt; &#160;&#160;&lt;publicationDate&gt;2014&#45;02&#45;05&lt;/publicationDate&gt; &#160;&#160;&lt;volume&gt;66&lt;/volume&gt; &#160;&#160;&lt;issue&gt;0&lt;/issue&gt; &#160;&#160;&lt;startPage&gt;1&lt;/startPage&gt; &#160;&#160;&lt;endPage&gt;18&lt;/endPage&gt; &#160;&#160;&lt;doi&gt;10.3402/tellusa.v66.21390&lt;/doi&gt; &#160;&#160;&lt;publisherRecordId&gt;21390&lt;/publisherRecordId&gt; &#160;&#160;&lt;documentType&gt;Original&lt;/documentType&gt; &#160;&#160;&lt;title language=&quot;eng&quot;&gt;LakeMIP Kivu...&lt;/title&gt; &#160;&#160;&lt;authors&gt; &#160;&#160;&#160;&#160;&#160;&lt;author&gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&lt;name&gt;WIM Thiery&lt;/name&gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&lt;email&gt;wim.thiery@ees.kuleuven.be&lt;/email&gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&lt;affiliationId&gt;1&lt;/affiliationId&gt; &#160;&#160;&#160;&#160;&lt;/author&gt; &#160;&lt;/authors&gt; &#160;&#160;&lt;affiliationsList&gt; &#160;&#160;&#160;&#160;&#160;&lt;affiliationName affiliationId=&quot;1&quot;&gt; &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;Department of Earth and Environmental Sciences...&lt;/affiliationName&gt; &#160;&lt;/affiliationsList&gt;" alt="" coords="17,315,705,335"/>
+<area shape="rect" id="node1" href="portality.article.DOAJXWalk-class.html" title="portality.article.DOAJXWalk" alt="" coords="5,166,717,341"/>
+<area shape="rect" id="node2_19" href="portality.article.XWalk-class.html#is_legitimate_owner" title="portality.article.XWalk.is_legitimate_owner" alt="" coords="237,40,485,60"/>
+<area shape="rect" id="node2_20" href="portality.article.XWalk-class.html#issn_ownership_status" title="portality.article.XWalk.issn_ownership_status" alt="" coords="237,60,485,80"/>
+<area shape="rect" id="node2_21" href="portality.article.XWalk-class.html#get_duplicate" title="Get the most recent duplicate article." alt="" coords="237,80,485,100"/>
+<area shape="rect" id="node2_22" href="portality.article.XWalk-class.html#get_duplicates" title="Get all duplicates (or previous versions) of an article." alt="" coords="237,100,485,120"/>
+<area shape="rect" id="node2_23" href="portality.article.XWalk-class.html#discover_duplicates" title="Identify duplicate articles, separated by duplication criteria" alt="" coords="237,120,485,140"/>
+<area shape="rect" id="node2" href="portality.article.XWalk-class.html" title="portality.article.XWalk" alt="" coords="225,6,497,146"/>
+</map>
+  <img src="uml_class_diagram_for_portalit_27.gif" alt='' usemap="#uml_class_diagram_for_portalit_27" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.article.DOAJXWalk-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="validate"></a><span class="summary-sig-name">validate</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">doc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.validate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="crosswalk_file"></a><span class="summary-sig-name">crosswalk_file</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">handle</span>,
+        <span class="summary-sig-arg">add_journal_info</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">article_callback</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">limit_to_owner</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">fail_callback</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.crosswalk_file">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="crosswalk_doc"></a><span class="summary-sig-name">crosswalk_doc</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">doc</span>,
+        <span class="summary-sig-arg">add_journal_info</span>=<span class="summary-sig-default">True</span>,
+        <span class="summary-sig-arg">article_callback</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">limit_to_owner</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">fail_callback</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.crosswalk_doc">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="portality.article.DOAJXWalk-class.html#crosswalk_article" class="summary-sig-name">crosswalk_article</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">record</span>,
+        <span class="summary-sig-arg">add_journal_info</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Example record:
+&lt;record&gt;
+  &lt;language&gt;eng&lt;/language&gt;
+  &lt;publisher&gt;Co-Action Publishing&lt;/publisher&gt;
+  &lt;journalTitle&gt;Tellus A&lt;/journalTitle&gt;
+  &lt;issn&gt;0280-6495&lt;/issn&gt;
+  &lt;eissn&gt;1600-0870&lt;/eissn&gt;
+  &lt;publicationDate&gt;2014-02-05&lt;/publicationDate&gt;
+  &lt;volume&gt;66&lt;/volume&gt;
+  &lt;issue&gt;0&lt;/issue&gt;
+  &lt;startPage&gt;1&lt;/startPage&gt;
+  &lt;endPage&gt;18&lt;/endPage&gt;
+  &lt;doi&gt;10.3402/tellusa.v66.21390&lt;/doi&gt;
+  &lt;publisherRecordId&gt;21390&lt;/publisherRecordId&gt;
+  &lt;documentType&gt;Original&lt;/documentType&gt;
+  &lt;title language=&quot;eng&quot;&gt;LakeMIP Kivu...&lt;/title&gt;
+  &lt;authors&gt;
+     &lt;author&gt;
+        &lt;name&gt;WIM Thiery&lt;/name&gt;
+        &lt;email&gt;wim.thiery@ees.kuleuven.be&lt;/email&gt;
+        &lt;affiliationId&gt;1&lt;/affiliationId&gt;
+    &lt;/author&gt;
+ &lt;/authors&gt;
+  &lt;affiliationsList&gt;
+     &lt;affiliationName affiliationId=&quot;1&quot;&gt;
+                    Department of Earth and Environmental Sciences...&lt;/affiliationName&gt;
+ &lt;/affiliationsList&gt;</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.crosswalk_article">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== STATIC METHODS ==================== -->
+<a name="section-StaticMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Static Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-StaticMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.article.XWalk-class.html">XWalk</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="discover_duplicates"></a><span class="summary-sig-name">discover_duplicates</span>(<span class="summary-sig-arg">article</span>,
+        <span class="summary-sig-arg">owner</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Identify duplicate articles, separated by duplication criteria</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#XWalk.discover_duplicates">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_duplicate"></a><span class="summary-sig-name">get_duplicate</span>(<span class="summary-sig-arg">article</span>,
+        <span class="summary-sig-arg">owner</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Get the most recent duplicate article.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#XWalk.get_duplicate">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_duplicates"></a><span class="summary-sig-name">get_duplicates</span>(<span class="summary-sig-arg">article</span>,
+        <span class="summary-sig-arg">owner</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Get all duplicates (or previous versions) of an article.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#XWalk.get_duplicates">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_legitimate_owner"></a><span class="summary-sig-name">is_legitimate_owner</span>(<span class="summary-sig-arg">article</span>,
+        <span class="summary-sig-arg">owner</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#XWalk.is_legitimate_owner">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="issn_ownership_status"></a><span class="summary-sig-name">issn_ownership_status</span>(<span class="summary-sig-arg">article</span>,
+        <span class="summary-sig-arg">owner</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.article-pysrc.html#XWalk.issn_ownership_status">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="format_name"></a><span class="summary-name">format_name</span> = <code title="&quot;doaj&quot;">&quot;doaj&quot;</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="schema_path"></a><span class="summary-name">schema_path</span> = <code title="app.config.get(&quot;SCHEMAS&quot;, {}).get(&quot;doaj&quot;)">app.config.get(&quot;SCHEMAS&quot;, {}).get(&quot;doaj&quot;)</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  x.__init__(...) initializes x; see help(type(x)) for signature
+  <dl class="fields">
+    <dt>Overrides:
+        object.__init__
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="crosswalk_article"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">crosswalk_article</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">record</span>,
+        <span class="sig-arg">add_journal_info</span>=<span class="sig-default">True</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="portality.article-pysrc.html#DOAJXWalk.crosswalk_article">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+Example record:
+&lt;record&gt;
+  &lt;language&gt;eng&lt;/language&gt;
+  &lt;publisher&gt;Co-Action Publishing&lt;/publisher&gt;
+  &lt;journalTitle&gt;Tellus A&lt;/journalTitle&gt;
+  &lt;issn&gt;0280-6495&lt;/issn&gt;
+  &lt;eissn&gt;1600-0870&lt;/eissn&gt;
+  &lt;publicationDate&gt;2014-02-05&lt;/publicationDate&gt;
+  &lt;volume&gt;66&lt;/volume&gt;
+  &lt;issue&gt;0&lt;/issue&gt;
+  &lt;startPage&gt;1&lt;/startPage&gt;
+  &lt;endPage&gt;18&lt;/endPage&gt;
+  &lt;doi&gt;10.3402/tellusa.v66.21390&lt;/doi&gt;
+  &lt;publisherRecordId&gt;21390&lt;/publisherRecordId&gt;
+  &lt;documentType&gt;Original&lt;/documentType&gt;
+  &lt;title language=&quot;eng&quot;&gt;LakeMIP Kivu...&lt;/title&gt;
+  &lt;authors&gt;
+     &lt;author&gt;
+        &lt;name&gt;WIM Thiery&lt;/name&gt;
+        &lt;email&gt;wim.thiery@ees.kuleuven.be&lt;/email&gt;
+        &lt;affiliationId&gt;1&lt;/affiliationId&gt;
+    &lt;/author&gt;
+ &lt;/authors&gt;
+  &lt;affiliationsList&gt;
+     &lt;affiliationName affiliationId=&quot;1&quot;&gt;
+                    Department of Earth and Environmental Sciences...&lt;/affiliationName&gt;
+ &lt;/affiliationsList&gt;
+  
+  &lt;abstract language=&quot;eng&quot;&gt;The African great...&lt;/abstract&gt;
+  &lt;fullTextUrl format=&quot;pdf&quot;&gt;http://www.tellusa.net/index.php/tellusa/article/download/21390/pdf_1&lt;/fullTextUrl&gt;
+  &lt;keywords language=&quot;eng&quot;&gt;
+     &lt;keyword&gt;lake modelling&lt;/keyword&gt;
+ &lt;/keywords&gt;
+&lt;/record&gt;
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:40:59 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

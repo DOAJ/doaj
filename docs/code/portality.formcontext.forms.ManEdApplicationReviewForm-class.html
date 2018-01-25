@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.formcontext.forms.ManEdApplicationReviewForm</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.formcontext-module.html">Package&nbsp;formcontext</a> ::
+        <a href="portality.formcontext.forms-module.html">Module&nbsp;forms</a> ::
+        Class&nbsp;ManEdApplicationReviewForm
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.formcontext.forms.ManEdApplicationReviewForm-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class ManEdApplicationReviewForm</h1><p class="nomargin-top"><span class="codelink"><a href="portality.formcontext.forms-pysrc.html#ManEdApplicationReviewForm">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit_95" name="uml_class_diagram_for_portalit_95">
+<area shape="rect" id="node1" href="portality.formcontext.forms.ManEdApplicationReviewForm-class.html" title="Editorial &#45; ability to add editorial groups (but ability to add editors individually will be disabled)" alt="" coords="704,485,909,531"/>
+<area shape="rect" id="node2_32" href="portality.formcontext.forms.ApplicationOwner-class.html#owner" title="portality.formcontext.forms.ApplicationOwner.owner" alt="" coords="17,412,121,432"/>
+<area shape="rect" id="node2" href="portality.formcontext.forms.ApplicationOwner-class.html" title="An Owner field which is optional under certain conditions. For use in some admin forms" alt="" coords="5,386,133,446"/>
+<area shape="rect" id="node3_33" href="portality.formcontext.forms.Editorial-class.html#editor_group" title="portality.formcontext.forms.Editorial.editor_group" alt="" coords="176,401,255,421"/>
+<area shape="rect" id="node3_34" href="portality.formcontext.forms.Editorial-class.html#editor" title="portality.formcontext.forms.Editorial.editor" alt="" coords="176,421,255,441"/>
+<area shape="rect" id="node3" href="portality.formcontext.forms.Editorial-class.html" title="Editorial group fields" alt="" coords="163,376,266,456"/>
+<area shape="rect" id="node4_35" href="portality.formcontext.forms.Notes-class.html#notes" title="portality.formcontext.forms.Notes.notes" alt="" coords="308,412,348,432"/>
+<area shape="rect" id="node4" href="portality.formcontext.forms.Notes-class.html" title="Multiple notes form for inclusion into admin forms" alt="" coords="296,386,360,446"/>
+<area shape="rect" id="node5_36" href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html#processing_charges_url" title="portality.formcontext.forms.JournalInfoOptionalPaymentURLs.processing_charges_url" alt="" coords="401,401,601,421"/>
+<area shape="rect" id="node5_37" href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html#submission_charges_url" title="portality.formcontext.forms.JournalInfoOptionalPaymentURLs.submission_charges_url" alt="" coords="401,421,601,441"/>
+<area shape="rect" id="node5" href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html" title="Overrides fields in the JournalInfo form that are not required for ManEds" alt="" coords="389,376,613,456"/>
+<area shape="rect" id="node6_38" href="portality.formcontext.forms.Suggestion-class.html#articles_last_year" title="portality.formcontext.forms.Suggestion.articles_last_year" alt="" coords="655,392,785,412"/>
+<area shape="rect" id="node6_39" href="portality.formcontext.forms.Suggestion-class.html#articles_last_year_url" title="portality.formcontext.forms.Suggestion.articles_last_year_url" alt="" coords="655,412,785,432"/>
+<area shape="rect" id="node6_40" href="portality.formcontext.forms.Suggestion-class.html#metadata_provision" title="portality.formcontext.forms.Suggestion.metadata_provision" alt="" coords="655,432,785,452"/>
+<area shape="rect" id="node6" href="portality.formcontext.forms.Suggestion-class.html" title="Additional bibliographic metadata required when suggesting a journal to the DOAJ" alt="" coords="643,366,797,466"/>
+<area shape="rect" id="node7_41" href="portality.formcontext.forms.Continuations-class.html#replaces" title="portality.formcontext.forms.Continuations.replaces" alt="" coords="839,392,951,412"/>
+<area shape="rect" id="node7_42" href="portality.formcontext.forms.Continuations-class.html#is_replaced_by" title="portality.formcontext.forms.Continuations.is_replaced_by" alt="" coords="839,412,951,432"/>
+<area shape="rect" id="node7_43" href="portality.formcontext.forms.Continuations-class.html#discontinued_date" title="portality.formcontext.forms.Continuations.discontinued_date" alt="" coords="839,432,951,452"/>
+<area shape="rect" id="node7" href="portality.formcontext.forms.Continuations-class.html" title="Fields to manage continuation of journals, and discontinuations" alt="" coords="827,366,963,466"/>
+<area shape="rect" id="node8_44" href="portality.formcontext.forms.JournalInformation-class.html#title" title="portality.formcontext.forms.JournalInformation.title" alt="" coords="432,32,571,52"/>
+<area shape="rect" id="node8_45" href="portality.formcontext.forms.JournalInformation-class.html#url" title="portality.formcontext.forms.JournalInformation.url" alt="" coords="432,52,571,72"/>
+<area shape="rect" id="node8_46" href="portality.formcontext.forms.JournalInformation-class.html#alternative_title" title="portality.formcontext.forms.JournalInformation.alternative_title" alt="" coords="432,72,571,92"/>
+<area shape="rect" id="node8_47" href="portality.formcontext.forms.JournalInformation-class.html#pissn" title="portality.formcontext.forms.JournalInformation.pissn" alt="" coords="432,92,571,112"/>
+<area shape="rect" id="node8_48" href="portality.formcontext.forms.JournalInformation-class.html#eissn" title="portality.formcontext.forms.JournalInformation.eissn" alt="" coords="432,112,571,132"/>
+<area shape="rect" id="node8_49" href="portality.formcontext.forms.JournalInformation-class.html#publisher" title="portality.formcontext.forms.JournalInformation.publisher" alt="" coords="432,132,571,152"/>
+<area shape="rect" id="node8_50" href="portality.formcontext.forms.JournalInformation-class.html#society_institution" title="portality.formcontext.forms.JournalInformation.society_institution" alt="" coords="432,152,571,172"/>
+<area shape="rect" id="node8_51" href="portality.formcontext.forms.JournalInformation-class.html#platform" title="portality.formcontext.forms.JournalInformation.platform" alt="" coords="432,172,571,192"/>
+<area shape="rect" id="node8_52" href="portality.formcontext.forms.JournalInformation-class.html#contact_name" title="portality.formcontext.forms.JournalInformation.contact_name" alt="" coords="432,192,571,212"/>
+<area shape="rect" id="node8_53" href="portality.formcontext.forms.JournalInformation-class.html#contact_email" title="portality.formcontext.forms.JournalInformation.contact_email" alt="" coords="432,212,571,232"/>
+<area shape="rect" id="node8_54" href="portality.formcontext.forms.JournalInformation-class.html#confirm_contact_email" title="portality.formcontext.forms.JournalInformation.confirm_contact_email" alt="" coords="432,232,571,252"/>
+<area shape="rect" id="node8_55" href="portality.formcontext.forms.JournalInformation-class.html#country" title="portality.formcontext.forms.JournalInformation.country" alt="" coords="432,252,571,272"/>
+<area shape="rect" id="node8_56" href="portality.formcontext.forms.JournalInformation-class.html#processing_charges" title="portality.formcontext.forms.JournalInformation.processing_charges" alt="" coords="432,272,571,292"/>
+<area shape="rect" id="node8_57" href="portality.formcontext.forms.JournalInformation-class.html#publishing_rights_url" title="portality.formcontext.forms.JournalInformation.publishing_rights_url" alt="" coords="432,312,571,332"/>
+<area shape="rect" id="node8" href="portality.formcontext.forms.JournalInformation-class.html" title="All the bibliographic metadata associated with a journal in the DOAJ" alt="" coords="420,6,583,346"/>
+<area shape="rect" id="node9_58" href="portality.formcontext.forms.AdminSuggester-class.html#suggester_name" title="portality.formcontext.forms.AdminSuggester.suggester_name" alt="" coords="1004,392,1156,412"/>
+<area shape="rect" id="node9_59" href="portality.formcontext.forms.AdminSuggester-class.html#suggester_email" title="portality.formcontext.forms.AdminSuggester.suggester_email" alt="" coords="1004,412,1156,432"/>
+<area shape="rect" id="node9_60" href="portality.formcontext.forms.AdminSuggester-class.html#suggester_email_confirm" title="portality.formcontext.forms.AdminSuggester.suggester_email_confirm" alt="" coords="1004,432,1156,452"/>
+<area shape="rect" id="node9" href="portality.formcontext.forms.AdminSuggester-class.html" title="Suggester&#39;s contact details as presented to administrators/editors in the DOAJ workflow" alt="" coords="992,366,1168,466"/>
+<area shape="rect" id="node10_61" href="portality.formcontext.forms.Seal-class.html#doaj_seal" title="portality.formcontext.forms.Seal.doaj_seal" alt="" coords="1211,412,1273,432"/>
+<area shape="rect" id="node10" href="portality.formcontext.forms.Seal-class.html" title="Field to set the DOAJ Seal" alt="" coords="1198,386,1285,446"/>
+<area shape="rect" id="node11_62" href="portality.formcontext.forms.Workflow-class.html#application_status" title="portality.formcontext.forms.Workflow.application_status" alt="" coords="1327,412,1439,432"/>
+<area shape="rect" id="node11" href="portality.formcontext.forms.Workflow-class.html" title="Administrator workflow field" alt="" coords="1315,386,1451,446"/>
+<area shape="rect" id="node12_63" href="portality.formcontext.forms.ApplicationSubject-class.html#subject" title="portality.formcontext.forms.ApplicationSubject.subject" alt="" coords="1493,412,1604,432"/>
+<area shape="rect" id="node12" href="portality.formcontext.forms.ApplicationSubject-class.html" title="Subject classification entry &#45; with workflow validation" alt="" coords="1481,386,1615,446"/>
+</map>
+  <img src="uml_class_diagram_for_portalit_95.gif" alt='' usemap="#uml_class_diagram_for_portalit_95" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<dl class="rst-docutils">
+<dt>Managing Editor's Application Review form.  It consists of:</dt>
+<dd><ul class="rst-first rst-last rst-simple">
+<li>Editorial - ability to add editorial groups (but ability to add editors individually will be disabled)</li>
+<li>Workflow - ability to change application status</li>
+<li>ApplicationOwner - able to set the owner, and for the owner assignment to be optional except under certain circumstances</li>
+<li>JournalInfoOptionalPaymentURLs - journal bibliographic data, with custom validation for managing editors</li>
+<li>Suggestion - additional application metadata</li>
+<li>Subject - ability to use subject hierarchy browser</li>
+<li>AdminSuggester - suggester's contact details, from an administrator's perspective</li>
+<li>Notes - repeatable notes field</li>
+<li>Seal - checkbox for DOAJ seal</li>
+</ul>
+</dd>
+</dl>
+
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Editorial-class.html">Editorial</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="editor"></a><span class="summary-name">editor</span> = <code title="PermissiveSelectField(&quot;Assigned to&quot;, default= &quot;&quot;)">PermissiveSelectField(&quot;Assigned to&quot;, default= &quot;&quot;)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Editorial-class.html#editor_group" class="summary-name">editor_group</a> = <code title="StringField(&quot;Editor Group&quot;, [validators.Optional()])">StringField(&quot;Editor Group&quot;, [validators.Optiona<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Workflow-class.html">Workflow</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Workflow-class.html#application_status" class="summary-name">application_status</a> = <code title="DOAJSelectField('Application Status', [validators.DataRequired()], des\
+cription= 'Setting the status to In Progress will tell others' ' that \
+you have started your review. Setting the status' ' to Ready will aler\
+t the Managing Editors that you have' ' completed your review.')">DOAJSelectField('Application Status', [va<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.ApplicationOwner-class.html">ApplicationOwner</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.ApplicationOwner-class.html#owner" class="summary-name">owner</a> = <code title="StringField('Owner', [ReservedUsernames(), OptionalIf('application_sta\
+tus', optvals= Choices.application_status_optional())], description= '\
+DOAJ account to which the application belongs.' '&lt;br&gt;&lt;br&gt;' 'This field\
+ is optional unless the application status is set to Accepted.' '&lt;br&gt;&lt;\
+br&gt;' 'Entering a non-existent account and setting the application stat\
+us to Accepted will automatically create the account using the Contact\
+ information in Questions 9 &amp; 10, and send an email containing the Con\
+tact\'s username + password.')">StringField('Owner', [ReservedUsernames(), OptionalIf(<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html">JournalInfoOptionalPaymentURLs</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html#processing_charges_url" class="summary-name">processing_charges_url</a> = <code title="URLField('Enter the URL where this information can be found', [validat\
+ors.Optional()],)">URLField('Enter the URL where this in<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInfoOptionalPaymentURLs-class.html#submission_charges_url" class="summary-name">submission_charges_url</a> = <code title="URLField('Enter the URL where this information can be found', [validat\
+ors.Optional()],)">URLField('Enter the URL where this in<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.JournalInformation-class.html">JournalInformation</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#aims_scope_url" class="summary-name">aims_scope_url</a> = <code title="URLField(&quot;What is the URL for the journal's Aims &amp; Scope&quot;, [validators\
+.DataRequired(), URLOptionalScheme()])">URLField(&quot;What is the URL for the journal's A<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#alternative_title" class="summary-name">alternative_title</a> = <code title="StringField('Alternative Title', [validators.Optional()])">StringField('Alternative Title', [validato<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#article_identifiers" class="summary-name">article_identifiers</a> = <code title="DOAJSelectMultipleField('Which article identifiers does the journal us\
+e?', [validators.DataRequired(), ExtraFieldRequiredIf('article_identif\
+iers_other', reqval= Choices.article_identifiers_val(&quot;other&quot;)), Exclus\
+iveCheckbox()], choices= Choices.article_identifiers(), option_widget=\
+ widgets.CheckboxInput(), widget= widgets.ListWidget(prefix_label= Fal\
+se),)">DOAJSelectMultipleField('Which article i<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="article_identifiers_other"></a><span class="summary-name">article_identifiers_other</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#confirm_contact_email" class="summary-name">confirm_contact_email</a> = <code title="StringField('Confirm contact\'s email address', [validators.DataRequir\
+ed(), validators.Email(message= 'Invalid email address.'), validators.\
+EqualTo('contact_email', EMAIL_CONFIRM_ERROR)])">StringField('Confirm contact\'s email <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#contact_email" class="summary-name">contact_email</a> = <code title="StringField('Contact\'s email address', [validators.DataRequired(), va\
+lidators.Email(message= 'Invalid email address.')])">StringField('Contact\'s email address', [valid<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#contact_name" class="summary-name">contact_name</a> = <code title="StringField('Name of contact for this journal', [validators.DataRequir\
+ed()], description= 'Somebody who DOAJ can contact about this journal.\
+',)">StringField('Name of contact for this journal',<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#copyright" class="summary-name">copyright</a> = <code title="RadioField('Does the journal allow the author(s) to hold the copyright\
+ without restrictions?', [validators.DataRequired()], choices= Choices\
+.copyright())">RadioField('Does the journal allow the author(s) t<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#copyright_url" class="summary-name">copyright_url</a> = <code title="URLField('Enter the URL where this information can be found', [Optiona\
+lIf('copyright', optvals= Choices.copyright_url_optional()), URLOption\
+alScheme()])">URLField('Enter the URL where this information<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#country" class="summary-name">country</a> = <code title="DOAJSelectField('In which country is the publisher of the journal base\
+d?', [validators.DataRequired()], description= 'Select the country whe\
+re the publishing company carries out its business activities. Address\
+es registered via a registered agent are not allowed.', choices= Choic\
+es.country(),)">DOAJSelectField('In which country is the publisher o<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#crawl_permission" class="summary-name">crawl_permission</a> = <code title="RadioField('Does the journal allow software/spiders to automatically c\
+rawl the journal content (also known as text mining)?', [validators.Da\
+taRequired()], choices= Choices.crawl_permission())">RadioField('Does the journal allow software<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#deposit_policy" class="summary-name">deposit_policy</a> = <code title="DOAJSelectMultipleField('With which deposit policy directory does the \
+journal have a registered deposit policy?', [validators.DataRequired()\
+, ExtraFieldRequiredIf('deposit_policy_other', reqval= Choices.deposit\
+_policy_other_val(&quot;other&quot;)), ExclusiveCheckbox()], description= 'Selec\
+t all that apply.', choices= Choices.deposit_policy(), option_widget= \
+widgets.CheckboxInput(), widget= widgets.ListWidget(prefix_label= Fals\
+e))">DOAJSelectMultipleField('With which deposit p<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="deposit_policy_other"></a><span class="summary-name">deposit_policy_other</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#digital_archiving_policy" class="summary-name">digital_archiving_policy</a> = <code title="DOAJSelectMultipleField('What digital archiving policy does the journa\
+l use?', [validators.DataRequired(), ExclusiveCheckbox(Choices.digital\
+_archiving_policy_val(&quot;none&quot;)), ExtraFieldRequiredIf('digital_archivin\
+g_policy_library', reqval= Choices.digital_archiving_policy_val(&quot;libra\
+ry&quot;)), ExtraFieldRequiredIf('digital_archiving_policy_other', reqval= \
+Choices.digital_archiving_policy_val(&quot;other&quot;)),], description= &quot;Select\
+ all that apply. Institutional archives and publishers' own online arc\
+hives are not valid.&quot;, choices= Choices.digital_archiving_policy(), op\
+...">DOAJSelectMultipleField('What digit<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="digital_archiving_policy_library"></a><span class="summary-name">digital_archiving_policy_library</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="digital_archiving_policy_other"></a><span class="summary-name">digital_archiving_policy_other</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#digital_archiving_policy_url" class="summary-name">digital_archiving_policy_url</a> = <code title="URLField('Enter the URL where this information can be found', [Optiona\
+lIf('digital_archiving_policy', optvals= Choices.digital_archiving_pol\
+icy_url_optional()), URLOptionalScheme()], description= 'This field is\
+ optional if you selected &quot;No policy in place&quot;.',)">URLField('Enter the URL where t<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#download_statistics" class="summary-name">download_statistics</a> = <code title="RadioField('Does the journal provide article download statistics?', [v\
+alidators.DataRequired()], description= 'If &quot;No&quot; proceed to question 3\
+2.', choices= Choices.download_statistics())">RadioField('Does the journal provide art<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#download_statistics_url" class="summary-name">download_statistics_url</a> = <code title="StringField('Enter the URL where this information can be found', [vali\
+dators.Optional(), URLOptionalScheme()],)">StringField('Enter the URL where thi<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#editorial_board_url" class="summary-name">editorial_board_url</a> = <code title="URLField('What is the URL for the Editorial Board page?', [validators.\
+DataRequired(), URLOptionalScheme()], description= 'A journal must hav\
+e an editor and an editorial board. Only in the case of Arts and Human\
+ities journals we will accept a form of editorial review using only tw\
+o editors and no editorial board. Where an editorial board is present,\
+ members must be clearly identifiable with their names and affiliation\
+ information.')">URLField('What is the URL for the Editor<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#eissn" class="summary-name">eissn</a> = <code title="StringField('Journal ISSN (online version)', [OptionalIf('pissn'), val\
+idators.Regexp(regex= ISSN_REGEX, message= ISSN_ERROR)], description= \
+'Cannot be the same as the P-ISSN. Write the EISSN with the hyphen &quot;-&quot;\
+ e.g. 1234-4321.',)">StringField('Journal ISSN (online version)', [Optional<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#first_fulltext_oa_year" class="summary-name">first_fulltext_oa_year</a> = <code title="IntegerField('What was the first calendar year in which a complete vol\
+ume of the journal provided online Open Access content to the Full Tex\
+t of all articles? (Full Text may be provided as PDFs. Does not apply \
+for new journals.)', [validators.DataRequired(), validators.NumberRang\
+e(min= 1600, max= (datetime.now().year))], description= 'Use 4 digits \
+for the year, i.e. YYYY format.')">IntegerField('What was the first cale<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#fulltext_format" class="summary-name">fulltext_format</a> = <code title="DOAJSelectMultipleField('Please indicate which formats of full text ar\
+e available', [validators.DataRequired(), ExtraFieldRequiredIf('fullte\
+xt_format_other', reqval= Choices.fulltext_format_val(&quot;other&quot;))], desc\
+ription= 'Tick all that apply.', choices= Choices.fulltext_format(), o\
+ption_widget= widgets.CheckboxInput(), widget= widgets.ListWidget(pref\
+ix_label= False))">DOAJSelectMultipleField('Please indicate whi<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="fulltext_format_other"></a><span class="summary-name">fulltext_format_other</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#instructions_authors_url" class="summary-name">instructions_authors_url</a> = <code title="URLField(&quot;What is the URL for the journal's instructions for authors?&quot;\
+, [validators.DataRequired(), URLOptionalScheme()])">URLField(&quot;What is the URL for the j<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#keywords" class="summary-name">keywords</a> = <code title="TagListField('Add keyword(s) that best describe the journal (comma del\
+imited)', [validators.DataRequired(), MaxLen(6, message= 'You can only\
+ enter up to {max_len} keywords.')], description= 'Maximum 6. Keywords\
+ must be in English.')">TagListField('Add keyword(s) that best describe the<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#languages" class="summary-name">languages</a> = <code title="DOAJSelectMultipleField('Select the language(s) that the Full Text of \
+the articles is published in', [validators.DataRequired()], choices= C\
+hoices.language(), description= &quot;You can select multiple languages.&quot;)">DOAJSelectMultipleField('Select the language(s) th<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#license" class="summary-name">license</a> = <code title="RadioField(&quot;Does the journal allow reuse and remixing of content in ac\
+cordance with a Creative Commons license or &lt;em&gt;other&lt;/em&gt; type of lic\
+ense with similar conditions (Select 'Other')?&quot;, [validators.DataRequi\
+red(), ExtraFieldRequiredIf('license_other', reqval= Choices.licence_v\
+al(&quot;other&quot;))], choices= Choices._licence, description= 'For more infor\
+mation go to &lt;a href=&quot;http://creativecommons.org/licenses/&quot; target=&quot;_b\
+lank&quot;&gt;http://creativecommons.org/licenses/&lt;/a&gt;')">RadioField(&quot;Does the journal allow reuse and remixin<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#license_checkbox" class="summary-name">license_checkbox</a> = <code title="DOAJSelectMultipleField('Which of the following does the content requi\
+re? (Tick all that apply.)', choices= Choices.licence_checkbox(), opti\
+on_widget= widgets.CheckboxInput(), widget= widgets.ListWidget(prefix_\
+label= False),)">DOAJSelectMultipleField('Which of the follo<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#license_embedded" class="summary-name">license_embedded</a> = <code title="RadioField('Does the journal embed or display licensing information in\
+ its articles?', [validators.DataRequired()], choices= Choices.licence\
+_embedded(), description= 'For more information go to &lt;a target=&quot;_blan\
+k&quot; href=&quot;http://wiki.creativecommons.org/CC_REL&quot;&gt;http://wiki.creativec\
+ommons.org/CC_REL&lt;/a&gt;&lt;br&gt;&lt;br&gt;If &quot;No&quot; proceed to question 47.',)">RadioField('Does the journal embed or displ<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#license_embedded_url" class="summary-name">license_embedded_url</a> = <code title="URLField(&quot;Please provide a URL to an example page with embedded licens\
+ing information&quot;, [OptionalIf('license_embedded', optvals= Choices.lic\
+ence_embedded_url_optional()), URLOptionalScheme()])">URLField(&quot;Please provide a URL to an ex<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="license_other"></a><span class="summary-name">license_other</span> = <code title="StringField('',)">StringField('',)</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#license_url" class="summary-name">license_url</a> = <code title="URLField(&quot;Enter the URL on your site where your license terms are stat\
+ed&quot;, [validators.Optional(), URLOptionalScheme()])">URLField(&quot;Enter the URL on your site where your <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#oa_statement_url" class="summary-name">oa_statement_url</a> = <code title="URLField(&quot;What is the URL for the journal's Open Access statement?&quot;, [\
+validators.DataRequired(), URLOptionalScheme()])">URLField(&quot;What is the URL for the journal's<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#open_access" class="summary-name">open_access</a> = <code title="RadioField(&quot;Does the journal allow readers to &lt;em&gt;read, download, copy\
+, distribute, print, search, or link to the full texts of its articles\
+&lt;/em&gt; and allow readers to &lt;em&gt;use them for any other lawful purpose&lt;/\
+em&gt;?&quot;, [validators.DataRequired()], choices= Choices.open_access(), de\
+scription= 'From the &lt;a href=&quot;http://www.budapestopenaccessinitiative.\
+org/read&quot; target=&quot;_blank&quot;&gt;Budapest Open Access Initiative\'s definitio\
+n of Open Access&lt;/a&gt;.',)">RadioField(&quot;Does the journal allow readers to &lt;e<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#pissn" class="summary-name">pissn</a> = <code title="StringField('Journal ISSN (print version)', [OptionalIf('eissn'), vali\
+dators.Regexp(regex= ISSN_REGEX, message= ISSN_ERROR)], description= '\
+Only provide the print ISSN if your journal has one, otherwise leave t\
+his field blank. Write the ISSN with the hyphen &quot;-&quot; e.g. 1234-4321.',)">StringField('Journal ISSN (print version)', [OptionalI<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#plagiarism_screening" class="summary-name">plagiarism_screening</a> = <code title="RadioField('Does the journal have a policy of screening for plagiarism\
+?', [validators.DataRequired()], description= 'If &quot;No&quot; proceed to ques\
+tion 43.', choices= Choices.plagiarism_screening())">RadioField('Does the journal have a pol<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#plagiarism_screening_url" class="summary-name">plagiarism_screening_url</a> = <code title="URLField(&quot;Enter the URL where this information can be found&quot;, [Optiona\
+lIf('plagiarism_screening', optvals= Choices.plagiarism_screening_url_\
+optional()), URLOptionalScheme()], description= &quot;The URL should state \
+that the journal actively checks for plagiarism and detail how this is\
+ done.&quot;)">URLField(&quot;Enter the URL where this <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#platform" class="summary-name">platform</a> = <code title="StringField('Platform, Host or Aggregator', [validators.Optional()], d\
+escription= 'The name of the platform, host or aggregator of the journ\
+al content, e.g. OJS, HighWire Press, EBSCO etc.')">StringField('Platform, Host or Aggregator', [valida<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#processing_charges" class="summary-name">processing_charges</a> = <code title="RadioField('Does the journal have article processing charges (APCs)?',\
+ [validators.DataRequired()], choices= Choices.processing_charges())">RadioField('Does the journal have article<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#processing_charges_amount" class="summary-name">processing_charges_amount</a> = <code title="IntegerField('Amount', [OptionalIf('processing_charges', optvals= Choi\
+ces.processing_charges_amount_optional())],)">IntegerField('Amount', [OptionalIf<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#processing_charges_currency" class="summary-name">processing_charges_currency</a> = <code title="DOAJSelectField('Currency', [OptionalIf('processing_charges', optvals=\
+ Choices.processing_charges_currency_optional())], choices= Choices.cu\
+rrency())">DOAJSelectField('Currency', [Opt<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#publication_time" class="summary-name">publication_time</a> = <code title="IntegerField('What is the average number of weeks between submission a\
+nd publication?', [validators.DataRequired(), validators.NumberRange(m\
+in= 0, max= 53)])">IntegerField('What is the average number of<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="publisher"></a><span class="summary-name">publisher</span> = <code title="StringField('Publisher', [validators.DataRequired()])">StringField('Publisher', [validators.DataRequired()])</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#publishing_rights" class="summary-name">publishing_rights</a> = <code title="RadioField('Will the journal allow the author(s) to retain publishing \
+rights without restrictions?', [validators.DataRequired()], choices= C\
+hoices.publishing_rights())">RadioField('Will the journal allow the aut<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#publishing_rights_url" class="summary-name">publishing_rights_url</a> = <code title="URLField('Enter the URL where this information can be found', [Optiona\
+lIf('publishing_rights', optvals= Choices.publishing_rights_url_option\
+al()), URLOptionalScheme()])">URLField('Enter the URL where this inf<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#review_process" class="summary-name">review_process</a> = <code title="DOAJSelectField('Please select the review process for papers', [valida\
+tors.DataRequired()], choices= Choices.review_process(), default= Choi\
+ces.review_process_default(),)">DOAJSelectField('Please select the review pro<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#review_process_url" class="summary-name">review_process_url</a> = <code title="URLField('Enter the URL where this information can be found', [Optiona\
+lIf('review_process', optvals= Choices.review_process_url_optional()),\
+ URLOptionalScheme()], description= 'This field is optional if you hav\
+e selected &quot;None&quot; above.')">URLField('Enter the URL where this inform<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#society_institution" class="summary-name">society_institution</a> = <code title="StringField('Society or Institution', [validators.Optional()], descrip\
+tion= 'The name of the Society or Institution that the journal belongs\
+ to.',)">StringField('Society or Institution', [v<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#submission_charges" class="summary-name">submission_charges</a> = <code title="RadioField('Does the journal have article submission charges?', [valid\
+ators.DataRequired()], choices= Choices.submission_charges())">RadioField('Does the journal have article<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#submission_charges_amount" class="summary-name">submission_charges_amount</a> = <code title="IntegerField('Amount', [OptionalIf('submission_charges', optvals= Choi\
+ces.submission_charges_amount_optional())],)">IntegerField('Amount', [OptionalIf<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#submission_charges_currency" class="summary-name">submission_charges_currency</a> = <code title="DOAJSelectField('Currency', [OptionalIf('submission_charges', optvals=\
+ Choices.submission_charges_amount_optional())], choices= Choices.curr\
+ency())">DOAJSelectField('Currency', [Opt<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="title"></a><span class="summary-name">title</span> = <code title="StringField('Journal Title', [validators.DataRequired()])">StringField('Journal Title', [validators.DataRequired()])</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#url" class="summary-name">url</a> = <code title="URLField('URL', [validators.DataRequired(), URLOptionalScheme()])">URLField('URL', [validators.DataRequired(), URLOptionalS<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#waiver_policy" class="summary-name">waiver_policy</a> = <code title="RadioField('Does the journal have a waiver policy (for developing coun\
+try authors etc)?', [validators.DataRequired()], choices= Choices.waiv\
+er_policy())">RadioField('Does the journal have a waiver pol<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.JournalInformation-class.html#waiver_policy_url" class="summary-name">waiver_policy_url</a> = <code title="URLField('Enter the URL where this information can be found', [Optiona\
+lIf('waiver_policy', optvals= Choices.waiver_policy_url_optional()), U\
+RLOptionalScheme()])">URLField('Enter the URL where this informa<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Suggestion-class.html">Suggestion</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Suggestion-class.html#articles_last_year" class="summary-name">articles_last_year</a> = <code title="IntegerField('How many research and review articles did the journal pu\
+blish in the last calendar year?', [validators.DataRequired(), validat\
+ors.NumberRange(min= 0)], description= 'A journal must publish at leas\
+t 5 articles per year to stay in the DOAJ.',)">IntegerField('How many research and revie<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Suggestion-class.html#articles_last_year_url" class="summary-name">articles_last_year_url</a> = <code title="URLField('Enter the URL where this information can be found', [validat\
+ors.DataRequired(), URLOptionalScheme()])">URLField('Enter the URL where this in<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Suggestion-class.html#metadata_provision" class="summary-name">metadata_provision</a> = <code title="RadioField('Does the journal provide, or intend to provide, article le\
+vel metadata to DOAJ?', [validators.DataRequired()], description= 'If \
+yes, metadata must be provided within 3 months of acceptance into DOAJ\
+.', choices= Choices.metadata_provision())">RadioField('Does the journal provide, or <code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.ApplicationSubject-class.html">ApplicationSubject</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.ApplicationSubject-class.html#subject" class="summary-name">subject</a> = <code title="DOAJSelectMultipleField('Subjects', [OptionalIf('application_status', \
+optvals= Choices.application_status_subject_optional())], choices= Cho\
+ices.subjects())">DOAJSelectMultipleField('Subjects', [OptionalIf('app<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.AdminSuggester-class.html">AdminSuggester</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.AdminSuggester-class.html#suggester_email" class="summary-name">suggester_email</a> = <code title="StringField(&quot;Email address&quot;, [validators.DataRequired(), validators.Em\
+ail(message= 'Invalid email address.')])">StringField(&quot;Email address&quot;, [validators.Dat<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.AdminSuggester-class.html#suggester_email_confirm" class="summary-name">suggester_email_confirm</a> = <code title="StringField(&quot;Confirm email address&quot;, [validators.DataRequired(), valid\
+ators.Email(message= 'Invalid email address.'), validators.EqualTo('su\
+ggester_email', EMAIL_CONFIRM_ERROR)])">StringField(&quot;Confirm email address&quot;,<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="suggester_name"></a><span class="summary-name">suggester_name</span> = <code title="StringField(&quot;Name&quot;, [validators.DataRequired()])">StringField(&quot;Name&quot;, [validators.DataRequired()])</code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Notes-class.html">Notes</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="notes"></a><span class="summary-name">notes</span> = <code title="FieldList(FormField(Note))">FieldList(FormField(Note))</code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Seal-class.html">Seal</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Seal-class.html#doaj_seal" class="summary-name">doaj_seal</a> = <code title="BooleanField('&lt;b&gt;Qualifies for Seal&lt;/b&gt;', [validators.Optional()], fal\
+se_values= (BooleanField.false_values+(False,)))">BooleanField('&lt;b&gt;Qualifies for Seal&lt;/b&gt;', [validat<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.formcontext.forms.Continuations-class.html">Continuations</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Continuations-class.html#discontinued_date" class="summary-name">discontinued_date</a> = <code title="StringField(&quot;Discontinued Date&quot;, [validators.Optional(), validators.Re\
+gexp(regex= BIG_END_DATE_REGEX, message= DATE_ERROR)], description= &quot;D\
+ate this Journal was discontinued or ceased publication, YYYY-MM-DD.  \
+If the day of the month is not know, please use '01'&quot;)">StringField(&quot;Discontinued Date&quot;, [validato<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Continuations-class.html#is_replaced_by" class="summary-name">is_replaced_by</a> = <code title="TagListField('This journal is continued by (add ISSN(s))', [validators\
+.Optional(), RegexpOnTagList(regex= ISSN_REGEX, message= ISSN_ERROR)],\
+ description= &quot;Enter the ISSN(s) of the Journal which this Journal is \
+immediately replaced by (i.e. don't include even newer Journals here)&quot;\
+)">TagListField('This journal is continued by (a<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.formcontext.forms.Continuations-class.html#replaces" class="summary-name">replaces</a> = <code title="TagListField('This journal continues (add ISSN(s))', [validators.Optio\
+nal(), RegexpOnTagList(regex= ISSN_REGEX, message= ISSN_ERROR)], descr\
+iption= &quot;Enter the ISSN(s) of the Journal which this Journal immediate\
+ly replaces (i.e. don't include even older Journals here)&quot;)">TagListField('This journal continues (add ISSN(s))'<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:01 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

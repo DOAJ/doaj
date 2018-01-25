@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.migrate.continuations.extract_continuations</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.migrate-module.html">Package&nbsp;migrate</a> ::
+        <a href="portality.migrate.continuations-module.html">Package&nbsp;continuations</a> ::
+        Module&nbsp;extract_continuations
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.migrate.continuations.extract_continuations-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.migrate.continuations.extract_continuations-module.html">Module portality.migrate.continuations.extract_continuations</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-1" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-1', 'models', 'link-1');">models</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"> </tt>
+<a name="migrate"></a><div id="migrate-def"><a name="L3"></a><tt class="py-lineno"> 3</tt> <a class="py-toggle" href="#" id="migrate-toggle" onclick="return toggle('migrate');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.migrate.continuations.extract_continuations-module.html#migrate">migrate</a><tt class="py-op">(</tt><tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="migrate-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="migrate-expanded"><a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-string">"history"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">data</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line">    <tt id="link-2" class="py-name" targets="Module portality.view.admin=portality.view.admin-module.html"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-2', 'admin', 'link-2');">admin</a></tt> <tt class="py-op">=</tt> <tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"admin"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">    <tt id="link-3" class="py-name" targets="Method portality.models.bibjson.GenericBibJSON.issns()=portality.models.bibjson.GenericBibJSON-class.html#issns"><a title="portality.models.bibjson.GenericBibJSON.issns" class="py-name" href="#" onclick="return doclink('link-3', 'issns', 'link-3');">issns</a></tt> <tt class="py-op">=</tt> <tt id="link-4" class="py-name" targets="Function portality.migrate.continuations.extract_continuations._get_issns()=portality.migrate.continuations.extract_continuations-module.html#_get_issns"><a title="portality.migrate.continuations.extract_continuations._get_issns" class="py-name" href="#" onclick="return doclink('link-4', '_get_issns', 'link-4');">_get_issns</a></tt><tt class="py-op">(</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt id="link-5" class="py-name" targets="Variable portality.formcontext.forms.Continuations.replaces=portality.formcontext.forms.Continuations-class.html#replaces,Method portality.models.journal.JournalBibJSON.replaces()=portality.models.journal.JournalBibJSON-class.html#replaces"><a title="portality.formcontext.forms.Continuations.replaces
+portality.models.journal.JournalBibJSON.replaces" class="py-name" href="#" onclick="return doclink('link-5', 'replaces', 'link-5');">replaces</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">    <tt id="link-6" class="py-name" targets="Function portality.api.v1.common.created()=portality.api.v1.common-module.html#created"><a title="portality.api.v1.common.created" class="py-name" href="#" onclick="return doclink('link-6', 'created', 'link-6');">created</a></tt> <tt class="py-op">=</tt> <tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"created_date"</tt><tt class="py-op">)</tt>      <tt class="py-comment"># created date defaults to the parent record's created date - will be overridden later if possible</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">h</tt> <tt class="py-keyword">in</tt> <tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"history"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">        <tt class="py-name">obj</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">"bibjson"</tt> <tt class="py-op">:</tt> <tt class="py-name">h</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">)</tt><tt class="py-op">}</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"replaces"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">h</tt><tt class="py-op">:</tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">            <tt class="py-name">obj</tt><tt class="py-op">[</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"replaces"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">h</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"replaces"</tt><tt class="py-op">)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"isreplacedby"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">h</tt><tt class="py-op">:</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">            <tt class="py-name">obj</tt><tt class="py-op">[</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"is_replaced_by"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">h</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"isreplacedby"</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">irb</tt> <tt class="py-keyword">in</tt> <tt class="py-name">h</tt><tt class="py-op">[</tt><tt class="py-string">"isreplacedby"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">irb</tt> <tt class="py-keyword">in</tt> <tt id="link-7" class="py-name"><a title="portality.models.bibjson.GenericBibJSON.issns" class="py-name" href="#" onclick="return doclink('link-7', 'issns', 'link-3');">issns</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">                    <tt id="link-8" class="py-name"><a title="portality.formcontext.forms.Continuations.replaces
+portality.models.journal.JournalBibJSON.replaces" class="py-name" href="#" onclick="return doclink('link-8', 'replaces', 'link-5');">replaces</a></tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name"><a title="portality.migrate.continuations.extract_continuations._get_issns" class="py-name" href="#" onclick="return doclink('link-9', '_get_issns', 'link-4');">_get_issns</a></tt><tt class="py-op">(</tt><tt class="py-name">obj</tt><tt class="py-op">[</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt class="py-comment">#if "date" in h:</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-comment">#    created = h["date"]</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line">        <tt class="py-name">j</tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-10', 'models', 'link-1');">models</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Class portality.models.journal.Journal=portality.models.journal.Journal-class.html"><a title="portality.models.journal.Journal" class="py-name" href="#" onclick="return doclink('link-11', 'Journal', 'link-11');">Journal</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">obj</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method portality.models.article.Article.set_in_doaj()=portality.models.article.Article-class.html#set_in_doaj,Method portality.models.journal.Journal.set_in_doaj()=portality.models.journal.Journal-class.html#set_in_doaj,Function portality.tasks.journal_in_out_doaj.set_in_doaj()=portality.tasks.journal_in_out_doaj-module.html#set_in_doaj"><a title="portality.models.article.Article.set_in_doaj
+portality.models.journal.Journal.set_in_doaj
+portality.tasks.journal_in_out_doaj.set_in_doaj" class="py-name" href="#" onclick="return doclink('link-12', 'set_in_doaj', 'link-12');">set_in_doaj</a></tt><tt class="py-op">(</tt><tt id="link-13" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-13', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"in_doaj"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method portality.models.journal.Journal.set_ticked()=portality.models.journal.Journal-class.html#set_ticked"><a title="portality.models.journal.Journal.set_ticked" class="py-name" href="#" onclick="return doclink('link-14', 'set_ticked', 'link-14');">set_ticked</a></tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-15', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"ticked"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method portality.models.article.Article.set_seal()=portality.models.article.Article-class.html#set_seal,Method portality.models.journal.JournalLikeObject.set_seal()=portality.models.journal.JournalLikeObject-class.html#set_seal"><a title="portality.models.article.Article.set_seal
+portality.models.journal.JournalLikeObject.set_seal" class="py-name" href="#" onclick="return doclink('link-16', 'set_seal', 'link-16');">set_seal</a></tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-17', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"seal"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Method portality.models.journal.JournalLikeObject.set_owner()=portality.models.journal.JournalLikeObject-class.html#set_owner"><a title="portality.models.journal.JournalLikeObject.set_owner" class="py-name" href="#" onclick="return doclink('link-18', 'set_owner', 'link-18');">set_owner</a></tt><tt class="py-op">(</tt><tt id="link-19" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-19', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"owner"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method portality.models.journal.JournalLikeObject.set_editor_group()=portality.models.journal.JournalLikeObject-class.html#set_editor_group"><a title="portality.models.journal.JournalLikeObject.set_editor_group" class="py-name" href="#" onclick="return doclink('link-20', 'set_editor_group', 'link-20');">set_editor_group</a></tt><tt class="py-op">(</tt><tt id="link-21" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-21', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"editor_group"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name" targets="Method portality.models.editors.EditorGroup.set_editor()=portality.models.editors.EditorGroup-class.html#set_editor,Method portality.models.journal.JournalLikeObject.set_editor()=portality.models.journal.JournalLikeObject-class.html#set_editor"><a title="portality.models.editors.EditorGroup.set_editor
+portality.models.journal.JournalLikeObject.set_editor" class="py-name" href="#" onclick="return doclink('link-22', 'set_editor', 'link-22');">set_editor</a></tt><tt class="py-op">(</tt><tt id="link-23" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-23', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"editor"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-24" class="py-name" targets="Variable portality.view.account.RegisterForm.c=portality.view.account.RegisterForm-class.html#c"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-24', 'c', 'link-24');">c</a></tt> <tt class="py-keyword">in</tt> <tt id="link-25" class="py-name"><a title="portality.view.admin" class="py-name" href="#" onclick="return doclink('link-25', 'admin', 'link-2');">admin</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"contact"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">            <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Method portality.models.journal.JournalLikeObject.add_contact()=portality.models.journal.JournalLikeObject-class.html#add_contact"><a title="portality.models.journal.JournalLikeObject.add_contact" class="py-name" href="#" onclick="return doclink('link-26', 'add_contact', 'link-26');">add_contact</a></tt><tt class="py-op">(</tt><tt id="link-27" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-27', 'c', 'link-24');">c</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"name"</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt id="link-28" class="py-name"><a title="portality.view.account.RegisterForm.c" class="py-name" href="#" onclick="return doclink('link-28', 'c', 'link-24');">c</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"email"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-comment"># FIXME: note that the date on the history records appears to be the date of import from the last version of DOAJ, so not much value in it.  Defaulting to the parent's created date</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-29" class="py-name"><a title="portality.api.v1.common.created" class="py-name" href="#" onclick="return doclink('link-29', 'created', 'link-6');">created</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">            <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name" targets="Method portality.dao.DomainObject.set_created()=portality.dao.DomainObject-class.html#set_created,Method portality.models.journal.JournalLikeObject.set_created()=portality.models.journal.JournalLikeObject-class.html#set_created"><a title="portality.dao.DomainObject.set_created
+portality.models.journal.JournalLikeObject.set_created" class="py-name" href="#" onclick="return doclink('link-30', 'set_created', 'link-30');">set_created</a></tt><tt class="py-op">(</tt><tt id="link-31" class="py-name"><a title="portality.api.v1.common.created" class="py-name" href="#" onclick="return doclink('link-31', 'created', 'link-6');">created</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method portality.models.journal.JournalLikeObject.add_note()=portality.models.journal.JournalLikeObject-class.html#add_note"><a title="portality.models.journal.JournalLikeObject.add_note" class="py-name" href="#" onclick="return doclink('link-32', 'add_note', 'link-32');">add_note</a></tt><tt class="py-op">(</tt><tt class="py-string">u"Continuation automatically extracted from journal {x} during migration"</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-33', 'format', 'link-33');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"id"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">        <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name" targets="Method portality.clcsv.ClCsv.save()=portality.clcsv.ClCsv-class.html#save,Method portality.dao.DomainObject.save()=portality.dao.DomainObject-class.html#save,Method portality.models.article.Article.save()=portality.models.article.Article-class.html#save,Method portality.models.history.History.save()=portality.models.history.History-class.html#save,Method portality.models.journal.Journal.save()=portality.models.journal.Journal-class.html#save,Method portality.models.lcc.LCC.save()=portality.models.lcc.LCC-class.html#save,Method portality.models.provenance.Provenance.save()=portality.models.provenance.Provenance-class.html#save,Method portality.models.suggestion.Suggestion.save()=portality.models.suggestion.Suggestion-class.html#save,Function portality.scripts.prepare_delete_request.save()=portality.scripts.prepare_delete_request-module.html#save"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-34', 'save', 'link-34');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-35" class="py-name"><a title="portality.formcontext.forms.Continuations.replaces
+portality.models.journal.JournalBibJSON.replaces" class="py-name" href="#" onclick="return doclink('link-35', 'replaces', 'link-5');">replaces</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"bibjson"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"replaces"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-36" class="py-name"><a title="portality.formcontext.forms.Continuations.replaces
+portality.models.journal.JournalBibJSON.replaces" class="py-name" href="#" onclick="return doclink('link-36', 'replaces', 'link-5');">replaces</a></tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">    <tt class="py-keyword">del</tt> <tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"history"</tt><tt class="py-op">]</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">data</tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="_get_issns"></a><div id="_get_issns-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="_get_issns-toggle" onclick="return toggle('_get_issns');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.migrate.continuations.extract_continuations-module.html#_get_issns">_get_issns</a><tt class="py-op">(</tt><tt class="py-param">bibjson</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="_get_issns-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="_get_issns-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">    <tt id="link-37" class="py-name"><a title="portality.models.bibjson.GenericBibJSON.issns" class="py-name" href="#" onclick="return doclink('link-37', 'issns', 'link-3');">issns</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">ident</tt> <tt class="py-keyword">in</tt> <tt id="link-38" class="py-name" targets="Method portality.models.article.Article.bibjson()=portality.models.article.Article-class.html#bibjson,Module portality.models.bibjson=portality.models.bibjson-module.html,Method portality.models.journal.JournalLikeObject.bibjson()=portality.models.journal.JournalLikeObject-class.html#bibjson"><a title="portality.models.article.Article.bibjson
+portality.models.bibjson
+portality.models.journal.JournalLikeObject.bibjson" class="py-name" href="#" onclick="return doclink('link-38', 'bibjson', 'link-38');">bibjson</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"identifier"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ident</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"type"</tt><tt class="py-op">)</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">"pissn"</tt><tt class="py-op">,</tt> <tt class="py-string">"eissn"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line">            <tt id="link-39" class="py-name"><a title="portality.models.bibjson.GenericBibJSON.issns" class="py-name" href="#" onclick="return doclink('link-39', 'issns', 'link-3');">issns</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">ident</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"id"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-40" class="py-name"><a title="portality.models.bibjson.GenericBibJSON.issns" class="py-name" href="#" onclick="return doclink('link-40', 'issns', 'link-3');">issns</a></tt> </tt>
+</div><a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:11 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.models.account</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.models-module.html">Package&nbsp;models</a> ::
+        Module&nbsp;account
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.models.account-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.models.account-module.html">Module portality.models.account</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">uuid</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt><tt class="py-op">.</tt><tt class="py-name">ext</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Function portality.view.account.login()=portality.view.account-module.html#login"><a title="portality.view.account.login" class="py-name" href="#" onclick="return doclink('link-0', 'login', 'link-0');">login</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">UserMixin</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">datetime</tt> <tt class="py-keyword">import</tt> <tt class="py-name">datetime</tt><tt class="py-op">,</tt> <tt class="py-name">timedelta</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">werkzeug</tt><tt class="py-op">.</tt><tt class="py-name">security</tt> <tt class="py-keyword">import</tt> <tt class="py-name">generate_password_hash</tt><tt class="py-op">,</tt> <tt class="py-name">check_password_hash</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-1', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module portality.dao=portality.dao-module.html"><a title="portality.dao" class="py-name" href="#" onclick="return doclink('link-2', 'dao', 'link-2');">dao</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class portality.dao.DomainObject=portality.dao.DomainObject-class.html"><a title="portality.dao.DomainObject" class="py-name" href="#" onclick="return doclink('link-3', 'DomainObject', 'link-3');">DomainObject</a></tt> <tt class="py-keyword">as</tt> <tt id="link-4" class="py-name"><a title="portality.dao.DomainObject" class="py-name" href="#" onclick="return doclink('link-4', 'DomainObject', 'link-3');">DomainObject</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-5', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-6', 'core', 'link-6');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-7', 'app', 'link-7');">app</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-8', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module portality.authorise=portality.authorise-module.html"><a title="portality.authorise" class="py-name" href="#" onclick="return doclink('link-9', 'authorise', 'link-9');">authorise</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class portality.authorise.Authorise=portality.authorise.Authorise-class.html"><a title="portality.authorise.Authorise" class="py-name" href="#" onclick="return doclink('link-10', 'Authorise', 'link-10');">Authorise</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-11', 'portality', 'link-1');">portality</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Package portality.formcontext=portality.formcontext-module.html,Module portality.formcontext.formcontext=portality.formcontext.formcontext-module.html"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-12', 'formcontext', 'link-12');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method portality.article.DOAJXWalk.validate()=portality.article.DOAJXWalk-class.html#validate,Method portality.formcontext.formcontext.FormContext.validate()=portality.formcontext.formcontext.FormContext-class.html#validate,Method portality.formcontext.formcontext.ManEdJournalReview.validate()=portality.formcontext.formcontext.ManEdJournalReview-class.html#validate,Module portality.formcontext.validate=portality.formcontext.validate-module.html,Class Method portality.formcontext.validate.ReservedUsernames.validate()=portality.formcontext.validate.ReservedUsernames-class.html#validate,Method portality.lib.dataobj.DataObj.validate()=portality.lib.dataobj.DataObj-class.html#validate,Function portality.lib.dataobj.validate()=portality.lib.dataobj-module.html#validate"><a title="portality.article.DOAJXWalk.validate
+portality.formcontext.formcontext.FormContext.validate
+portality.formcontext.formcontext.ManEdJournalReview.validate
+portality.formcontext.validate
+portality.formcontext.validate.ReservedUsernames.validate
+portality.lib.dataobj.DataObj.validate
+portality.lib.dataobj.validate" class="py-name" href="#" onclick="return doclink('link-13', 'validate', 'link-13');">validate</a></tt> <tt class="py-keyword">import</tt> <tt id="link-14" class="py-name" targets="Class portality.formcontext.validate.ReservedUsernames=portality.formcontext.validate.ReservedUsernames-class.html"><a title="portality.formcontext.validate.ReservedUsernames" class="py-name" href="#" onclick="return doclink('link-14', 'ReservedUsernames', 'link-14');">ReservedUsernames</a></tt> </tt>
+<a name="Account"></a><div id="Account-def"><a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt> <a class="py-toggle" href="#" id="Account-toggle" onclick="return toggle('Account');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.models.account.Account-class.html">Account</a><tt class="py-op">(</tt><tt class="py-base-class">DomainObject</tt><tt class="py-op">,</tt> <tt class="py-base-class">UserMixin</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Account-expanded"><a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">    <tt id="link-15" class="py-name" targets="Variable portality.blog.News.__type__=portality.blog.News-class.html#__type__,Variable portality.dao.DomainObject.__type__=portality.dao.DomainObject-class.html#__type__,Variable portality.models.account.Account.__type__=portality.models.account.Account-class.html#__type__,Variable portality.models.article.Article.__type__=portality.models.article.Article-class.html#__type__,Variable portality.models.background.BackgroundJob.__type__=portality.models.background.BackgroundJob-class.html#__type__,Variable portality.models.cache.Cache.__type__=portality.models.cache.Cache-class.html#__type__,Variable portality.models.editors.EditorGroup.__type__=portality.models.editors.EditorGroup-class.html#__type__,Variable portality.models.history.ArticleHistory.__type__=portality.models.history.ArticleHistory-class.html#__type__,Variable portality.models.history.JournalHistory.__type__=portality.models.history.JournalHistory-class.html#__type__,Variable portality.models.journal.Journal.__type__=portality.models.journal.Journal-class.html#__type__,Variable portality.models.lcc.LCC.__type__=portality.models.lcc.LCC-class.html#__type__,Variable portality.models.lock.Lock.__type__=portality.models.lock.Lock-class.html#__type__,Variable portality.models.provenance.Provenance.__type__=portality.models.provenance.Provenance-class.html#__type__,Variable portality.models.search.JournalArticle.__type__=portality.models.search.JournalArticle-class.html#__type__,Variable portality.models.suggestion.Suggestion.__type__=portality.models.suggestion.Suggestion-class.html#__type__,Variable portality.models.toc.JournalVolumeToC.__type__=portality.models.toc.JournalVolumeToC-class.html#__type__,Variable portality.models.uploads.FileUpload.__type__=portality.models.uploads.FileUpload-class.html#__type__"><a title="portality.blog.News.__type__
+portality.dao.DomainObject.__type__
+portality.models.account.Account.__type__
+portality.models.article.Article.__type__
+portality.models.background.BackgroundJob.__type__
+portality.models.cache.Cache.__type__
+portality.models.editors.EditorGroup.__type__
+portality.models.history.ArticleHistory.__type__
+portality.models.history.JournalHistory.__type__
+portality.models.journal.Journal.__type__
+portality.models.lcc.LCC.__type__
+portality.models.lock.Lock.__type__
+portality.models.provenance.Provenance.__type__
+portality.models.search.JournalArticle.__type__
+portality.models.suggestion.Suggestion.__type__
+portality.models.toc.JournalVolumeToC.__type__
+portality.models.uploads.FileUpload.__type__" class="py-name" href="#" onclick="return doclink('link-15', '__type__', 'link-15');">__type__</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'account'</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="Account.__init__"></a><div id="Account.__init__-def"><a name="L14"></a><tt class="py-lineno"> 14</tt> <a class="py-toggle" href="#" id="Account.__init__-toggle" onclick="return toggle('Account.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.__init__-expanded"><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="portality.formcontext.validate.ReservedUsernames" class="py-name" href="#" onclick="return doclink('link-16', 'ReservedUsernames', 'link-14');">ReservedUsernames</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="portality.article.DOAJXWalk.validate
+portality.formcontext.formcontext.FormContext.validate
+portality.formcontext.formcontext.ManEdJournalReview.validate
+portality.formcontext.validate
+portality.formcontext.validate.ReservedUsernames.validate
+portality.lib.dataobj.DataObj.validate
+portality.lib.dataobj.validate" class="py-name" href="#" onclick="return doclink('link-17', 'validate', 'link-13');">validate</a></tt><tt class="py-op">(</tt><tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'id'</tt><tt class="py-op">,</tt> <tt class="py-string">''</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-18" class="py-name" targets="Class portality.models.account.Account=portality.models.account.Account-class.html"><a title="portality.models.account.Account" class="py-name" href="#" onclick="return doclink('link-18', 'Account', 'link-18');">Account</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method portality.api.v1.data_objects.application.IncomingApplication.__init__()=portality.api.v1.data_objects.application.IncomingApplication-class.html#__init__,Method portality.api.v1.data_objects.application.OutgoingApplication.__init__()=portality.api.v1.data_objects.application.OutgoingApplication-class.html#__init__,Method portality.api.v1.data_objects.article.IncomingArticleDO.__init__()=portality.api.v1.data_objects.article.IncomingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.article.OutgoingArticleDO.__init__()=portality.api.v1.data_objects.article.OutgoingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.journal.OutgoingJournal.__init__()=portality.api.v1.data_objects.journal.OutgoingJournal-class.html#__init__,Method portality.api.v1.discovery.ApplicationQuery.__init__()=portality.api.v1.discovery.ApplicationQuery-class.html#__init__,Method portality.api.v1.discovery.SearchQuery.__init__()=portality.api.v1.discovery.SearchQuery-class.html#__init__,Method portality.api.v1.discovery.SearchResult.__init__()=portality.api.v1.discovery.SearchResult-class.html#__init__,Method portality.article.DOAJXWalk.__init__()=portality.article.DOAJXWalk-class.html#__init__,Method portality.article.IngestException.__init__()=portality.article.IngestException-class.html#__init__,Method portality.article.XWalk.__init__()=portality.article.XWalk-class.html#__init__,Method portality.background.BackgroundSummary.__init__()=portality.background.BackgroundSummary-class.html#__init__,Method portality.background.BackgroundTask.__init__()=portality.background.BackgroundTask-class.html#__init__,Method portality.bll.exceptions.AuthoriseException.__init__()=portality.bll.exceptions.AuthoriseException-class.html#__init__,Method portality.blog.NewsQuery.__init__()=portality.blog.NewsQuery-class.html#__init__,Method portality.clcsv.ClCsv.__init__()=portality.clcsv.ClCsv-class.html#__init__,Method portality.clcsv.UTF8Recoder.__init__()=portality.clcsv.UTF8Recoder-class.html#__init__,Method portality.clcsv.UnicodeReader.__init__()=portality.clcsv.UnicodeReader-class.html#__init__,Method portality.clcsv.UnicodeWriter.__init__()=portality.clcsv.UnicodeWriter-class.html#__init__,Method portality.dao.DomainObject.__init__()=portality.dao.DomainObject-class.html#__init__,Method portality.formcontext.fields.DOAJSelectField.__init__()=portality.formcontext.fields.DOAJSelectField-class.html#__init__,Method portality.formcontext.fields.DOAJSelectMultipleField.__init__()=portality.formcontext.fields.DOAJSelectMultipleField-class.html#__init__,Method portality.formcontext.formcontext.FormContext.__init__()=portality.formcontext.formcontext.FormContext-class.html#__init__,Method portality.formcontext.formcontext.PublicApplication.__init__()=portality.formcontext.formcontext.PublicApplication-class.html#__init__,Method portality.formcontext.render.ApplicationRenderer.__init__()=portality.formcontext.render.ApplicationRenderer-class.html#__init__,Method portality.formcontext.render.AssEdApplicationReviewRenderer.__init__()=portality.formcontext.render.AssEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.AssEdJournalReviewRenderer.__init__()=portality.formcontext.render.AssEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.BasicJournalInformationRenderer.__init__()=portality.formcontext.render.BasicJournalInformationRenderer-class.html#__init__,Method portality.formcontext.render.EditorApplicationReviewRenderer.__init__()=portality.formcontext.render.EditorApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.EditorJournalReviewRenderer.__init__()=portality.formcontext.render.EditorJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.JournalRenderer.__init__()=portality.formcontext.render.JournalRenderer-class.html#__init__,Method portality.formcontext.render.ManEdApplicationReviewRenderer.__init__()=portality.formcontext.render.ManEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__()=portality.formcontext.render.ManEdJournalBulkEditRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalReviewRenderer.__init__()=portality.formcontext.render.ManEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.PublicApplicationRenderer.__init__()=portality.formcontext.render.PublicApplicationRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestRenderer-class.html#__init__,Method portality.formcontext.render.ReadOnlyJournalRenderer.__init__()=portality.formcontext.render.ReadOnlyJournalRenderer-class.html#__init__,Method portality.formcontext.render.Renderer.__init__()=portality.formcontext.render.Renderer-class.html#__init__,Method portality.formcontext.validate.DataOptional.__init__()=portality.formcontext.validate.DataOptional-class.html#__init__,Method portality.formcontext.validate.ExclusiveCheckbox.__init__()=portality.formcontext.validate.ExclusiveCheckbox-class.html#__init__,Method portality.formcontext.validate.ExtraFieldRequiredIf.__init__()=portality.formcontext.validate.ExtraFieldRequiredIf-class.html#__init__,Method portality.formcontext.validate.MaxLen.__init__()=portality.formcontext.validate.MaxLen-class.html#__init__,Method portality.formcontext.validate.OptionalIf.__init__()=portality.formcontext.validate.OptionalIf-class.html#__init__,Method portality.formcontext.validate.RegexpOnTagList.__init__()=portality.formcontext.validate.RegexpOnTagList-class.html#__init__,Method portality.formcontext.validate.RequiredIfRole.__init__()=portality.formcontext.validate.RequiredIfRole-class.html#__init__,Method portality.formcontext.validate.ReservedUsernames.__init__()=portality.formcontext.validate.ReservedUsernames-class.html#__init__,Method portality.formcontext.validate.ThisOrThat.__init__()=portality.formcontext.validate.ThisOrThat-class.html#__init__,Method portality.formcontext.validate.URLOptionalScheme.__init__()=portality.formcontext.validate.URLOptionalScheme-class.html#__init__,Method portality.lib.dataobj.DataObj.__init__()=portality.lib.dataobj.DataObj-class.html#__init__,Method portality.lib.swagger.SwaggerSupport.__init__()=portality.lib.swagger.SwaggerSupport-class.html#__init__,Method portality.lock.LockQuery.__init__()=portality.lock.LockQuery-class.html#__init__,Method portality.lock.Locked.__init__()=portality.lock.Locked-class.html#__init__,Method portality.models.ObjectDict.__init__()=portality.models.ObjectDict-class.html#__init__,Method portality.models.account.Account.__init__()=portality.models.account.Account-class.html#__init__,Method portality.models.article.ArticleBibJSON.__init__()=portality.models.article.ArticleBibJSON-class.html#__init__,Method portality.models.article.ArticleIssueQuery.__init__()=portality.models.article.ArticleIssueQuery-class.html#__init__,Method portality.models.article.ArticleQuery.__init__()=portality.models.article.ArticleQuery-class.html#__init__,Method portality.models.article.ArticleVolumesIssuesQuery.__init__()=portality.models.article.ArticleVolumesIssuesQuery-class.html#__init__,Method portality.models.article.ArticleVolumesQuery.__init__()=portality.models.article.ArticleVolumesQuery-class.html#__init__,Method portality.models.article.DuplicateArticleQuery.__init__()=portality.models.article.DuplicateArticleQuery-class.html#__init__,Method portality.models.background.BackgroundJob.__init__()=portality.models.background.BackgroundJob-class.html#__init__,Method portality.models.bibjson.GenericBibJSON.__init__()=portality.models.bibjson.GenericBibJSON-class.html#__init__,Method portality.models.editors.EditorGroupMemberQuery.__init__()=portality.models.editors.EditorGroupMemberQuery-class.html#__init__,Method portality.models.editors.EditorGroupQuery.__init__()=portality.models.editors.EditorGroupQuery-class.html#__init__,Method portality.models.journal.ContinuationQuery.__init__()=portality.models.journal.ContinuationQuery-class.html#__init__,Method portality.models.journal.IssnQuery.__init__()=portality.models.journal.IssnQuery-class.html#__init__,Method portality.models.journal.Journal.__init__()=portality.models.journal.Journal-class.html#__init__,Method portality.models.journal.JournalBibJSON.__init__()=portality.models.journal.JournalBibJSON-class.html#__init__,Method portality.models.journal.JournalQuery.__init__()=portality.models.journal.JournalQuery-class.html#__init__,Method portality.models.journal.PublisherQuery.__init__()=portality.models.journal.PublisherQuery-class.html#__init__,Method portality.models.journal.TitleQuery.__init__()=portality.models.journal.TitleQuery-class.html#__init__,Method portality.models.openurl.OpenURLRequest.__init__()=portality.models.openurl.OpenURLRequest-class.html#__init__,Method portality.models.provenance.Provenance.__init__()=portality.models.provenance.Provenance-class.html#__init__,Method portality.models.provenance.ResourceIDQuery.__init__()=portality.models.provenance.ResourceIDQuery-class.html#__init__,Method portality.models.suggestion.CurrentJournalQuery.__init__()=portality.models.suggestion.CurrentJournalQuery-class.html#__init__,Method portality.models.suggestion.OwnerStatusQuery.__init__()=portality.models.suggestion.OwnerStatusQuery-class.html#__init__,Method portality.models.suggestion.RelatedJournalQuery.__init__()=portality.models.suggestion.RelatedJournalQuery-class.html#__init__,Method portality.models.suggestion.StatusQuery.__init__()=portality.models.suggestion.StatusQuery-class.html#__init__,Method portality.models.suggestion.Suggestion.__init__()=portality.models.suggestion.Suggestion-class.html#__init__,Method portality.models.suggestion.SuggestionQuery.__init__()=portality.models.suggestion.SuggestionQuery-class.html#__init__,Method portality.models.toc.JournalIssueToC.__init__()=portality.models.toc.JournalIssueToC-class.html#__init__,Method portality.models.toc.ToCQuery.__init__()=portality.models.toc.ToCQuery-class.html#__init__,Method portality.models.toc.VolumesToCQuery.__init__()=portality.models.toc.VolumesToCQuery-class.html#__init__,Method portality.models.uploads.ExistsFileQuery.__init__()=portality.models.uploads.ExistsFileQuery-class.html#__init__,Method portality.models.uploads.OwnerFileQuery.__init__()=portality.models.uploads.OwnerFileQuery-class.html#__init__,Method portality.models.uploads.ValidFileQuery.__init__()=portality.models.uploads.ValidFileQuery-class.html#__init__,Method portality.ordereddict.OrderedDict.__init__()=portality.ordereddict.OrderedDict-class.html#__init__,Method portality.tasks.reporting.ActionCounter.__init__()=portality.tasks.reporting.ActionCounter-class.html#__init__,Method portality.tasks.reporting.ContentByDate.__init__()=portality.tasks.reporting.ContentByDate-class.html#__init__,Method portality.tasks.reporting.ProvenanceList.__init__()=portality.tasks.reporting.ProvenanceList-class.html#__init__,Method portality.tasks.reporting.ReportCounter.__init__()=portality.tasks.reporting.ReportCounter-class.html#__init__,Method portality.tasks.reporting.StatusCounter.__init__()=portality.tasks.reporting.StatusCounter-class.html#__init__,Method portality.view.account.RedirectForm.__init__()=portality.view.account.RedirectForm-class.html#__init__,Method portality.view.atom.AtomFeed.__init__()=portality.view.atom.AtomFeed-class.html#__init__,Method portality.view.forms.ArticleForm.__init__()=portality.view.forms.ArticleForm-class.html#__init__,Method portality.view.forms.NotRole.__init__()=portality.view.forms.NotRole-class.html#__init__,Method portality.view.forms.UniqueGroupName.__init__()=portality.view.forms.UniqueGroupName-class.html#__init__,Method portality.view.oaipmh.BadArgument.__init__()=portality.view.oaipmh.BadArgument-class.html#__init__,Method portality.view.oaipmh.BadResumptionToken.__init__()=portality.view.oaipmh.BadResumptionToken-class.html#__init__,Method portality.view.oaipmh.BadVerb.__init__()=portality.view.oaipmh.BadVerb-class.html#__init__,Method portality.view.oaipmh.CannotDisseminateFormat.__init__()=portality.view.oaipmh.CannotDisseminateFormat-class.html#__init__,Method portality.view.oaipmh.GetRecord.__init__()=portality.view.oaipmh.GetRecord-class.html#__init__,Method portality.view.oaipmh.IdDoesNotExist.__init__()=portality.view.oaipmh.IdDoesNotExist-class.html#__init__,Method portality.view.oaipmh.Identify.__init__()=portality.view.oaipmh.Identify-class.html#__init__,Method portality.view.oaipmh.ListIdentifiers.__init__()=portality.view.oaipmh.ListIdentifiers-class.html#__init__,Method portality.view.oaipmh.ListMetadataFormats.__init__()=portality.view.oaipmh.ListMetadataFormats-class.html#__init__,Method portality.view.oaipmh.ListRecords.__init__()=portality.view.oaipmh.ListRecords-class.html#__init__,Method portality.view.oaipmh.ListSets.__init__()=portality.view.oaipmh.ListSets-class.html#__init__,Method portality.view.oaipmh.NoMetadataFormats.__init__()=portality.view.oaipmh.NoMetadataFormats-class.html#__init__,Method portality.view.oaipmh.NoRecordsMatch.__init__()=portality.view.oaipmh.NoRecordsMatch-class.html#__init__,Method portality.view.oaipmh.NoSetHierarchy.__init__()=portality.view.oaipmh.NoSetHierarchy-class.html#__init__,Method portality.view.oaipmh.OAIPMHError.__init__()=portality.view.oaipmh.OAIPMHError-class.html#__init__,Method portality.view.oaipmh.OAI_PMH.__init__()=portality.view.oaipmh.OAI_PMH-class.html#__init__,Method portality.view.query.Query.__init__()=portality.view.query.Query-class.html#__init__"><a title="portality.api.v1.data_objects.application.IncomingApplication.__init__
+portality.api.v1.data_objects.application.OutgoingApplication.__init__
+portality.api.v1.data_objects.article.IncomingArticleDO.__init__
+portality.api.v1.data_objects.article.OutgoingArticleDO.__init__
+portality.api.v1.data_objects.journal.OutgoingJournal.__init__
+portality.api.v1.discovery.ApplicationQuery.__init__
+portality.api.v1.discovery.SearchQuery.__init__
+portality.api.v1.discovery.SearchResult.__init__
+portality.article.DOAJXWalk.__init__
+portality.article.IngestException.__init__
+portality.article.XWalk.__init__
+portality.background.BackgroundSummary.__init__
+portality.background.BackgroundTask.__init__
+portality.bll.exceptions.AuthoriseException.__init__
+portality.blog.NewsQuery.__init__
+portality.clcsv.ClCsv.__init__
+portality.clcsv.UTF8Recoder.__init__
+portality.clcsv.UnicodeReader.__init__
+portality.clcsv.UnicodeWriter.__init__
+portality.dao.DomainObject.__init__
+portality.formcontext.fields.DOAJSelectField.__init__
+portality.formcontext.fields.DOAJSelectMultipleField.__init__
+portality.formcontext.formcontext.FormContext.__init__
+portality.formcontext.formcontext.PublicApplication.__init__
+portality.formcontext.render.ApplicationRenderer.__init__
+portality.formcontext.render.AssEdApplicationReviewRenderer.__init__
+portality.formcontext.render.AssEdJournalReviewRenderer.__init__
+portality.formcontext.render.BasicJournalInformationRenderer.__init__
+portality.formcontext.render.EditorApplicationReviewRenderer.__init__
+portality.formcontext.render.EditorJournalReviewRenderer.__init__
+portality.formcontext.render.JournalRenderer.__init__
+portality.formcontext.render.ManEdApplicationReviewRenderer.__init__
+portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__
+portality.formcontext.render.ManEdJournalReviewRenderer.__init__
+portality.formcontext.render.PublicApplicationRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestRenderer.__init__
+portality.formcontext.render.ReadOnlyJournalRenderer.__init__
+portality.formcontext.render.Renderer.__init__
+portality.formcontext.validate.DataOptional.__init__
+portality.formcontext.validate.ExclusiveCheckbox.__init__
+portality.formcontext.validate.ExtraFieldRequiredIf.__init__
+portality.formcontext.validate.MaxLen.__init__
+portality.formcontext.validate.OptionalIf.__init__
+portality.formcontext.validate.RegexpOnTagList.__init__
+portality.formcontext.validate.RequiredIfRole.__init__
+portality.formcontext.validate.ReservedUsernames.__init__
+portality.formcontext.validate.ThisOrThat.__init__
+portality.formcontext.validate.URLOptionalScheme.__init__
+portality.lib.dataobj.DataObj.__init__
+portality.lib.swagger.SwaggerSupport.__init__
+portality.lock.LockQuery.__init__
+portality.lock.Locked.__init__
+portality.models.ObjectDict.__init__
+portality.models.account.Account.__init__
+portality.models.article.ArticleBibJSON.__init__
+portality.models.article.ArticleIssueQuery.__init__
+portality.models.article.ArticleQuery.__init__
+portality.models.article.ArticleVolumesIssuesQuery.__init__
+portality.models.article.ArticleVolumesQuery.__init__
+portality.models.article.DuplicateArticleQuery.__init__
+portality.models.background.BackgroundJob.__init__
+portality.models.bibjson.GenericBibJSON.__init__
+portality.models.editors.EditorGroupMemberQuery.__init__
+portality.models.editors.EditorGroupQuery.__init__
+portality.models.journal.ContinuationQuery.__init__
+portality.models.journal.IssnQuery.__init__
+portality.models.journal.Journal.__init__
+portality.models.journal.JournalBibJSON.__init__
+portality.models.journal.JournalQuery.__init__
+portality.models.journal.PublisherQuery.__init__
+portality.models.journal.TitleQuery.__init__
+portality.models.openurl.OpenURLRequest.__init__
+portality.models.provenance.Provenance.__init__
+portality.models.provenance.ResourceIDQuery.__init__
+portality.models.suggestion.CurrentJournalQuery.__init__
+portality.models.suggestion.OwnerStatusQuery.__init__
+portality.models.suggestion.RelatedJournalQuery.__init__
+portality.models.suggestion.StatusQuery.__init__
+portality.models.suggestion.Suggestion.__init__
+portality.models.suggestion.SuggestionQuery.__init__
+portality.models.toc.JournalIssueToC.__init__
+portality.models.toc.ToCQuery.__init__
+portality.models.toc.VolumesToCQuery.__init__
+portality.models.uploads.ExistsFileQuery.__init__
+portality.models.uploads.OwnerFileQuery.__init__
+portality.models.uploads.ValidFileQuery.__init__
+portality.ordereddict.OrderedDict.__init__
+portality.tasks.reporting.ActionCounter.__init__
+portality.tasks.reporting.ContentByDate.__init__
+portality.tasks.reporting.ProvenanceList.__init__
+portality.tasks.reporting.ReportCounter.__init__
+portality.tasks.reporting.StatusCounter.__init__
+portality.view.account.RedirectForm.__init__
+portality.view.atom.AtomFeed.__init__
+portality.view.forms.ArticleForm.__init__
+portality.view.forms.NotRole.__init__
+portality.view.forms.UniqueGroupName.__init__
+portality.view.oaipmh.BadArgument.__init__
+portality.view.oaipmh.BadResumptionToken.__init__
+portality.view.oaipmh.BadVerb.__init__
+portality.view.oaipmh.CannotDisseminateFormat.__init__
+portality.view.oaipmh.GetRecord.__init__
+portality.view.oaipmh.IdDoesNotExist.__init__
+portality.view.oaipmh.Identify.__init__
+portality.view.oaipmh.ListIdentifiers.__init__
+portality.view.oaipmh.ListMetadataFormats.__init__
+portality.view.oaipmh.ListRecords.__init__
+portality.view.oaipmh.ListSets.__init__
+portality.view.oaipmh.NoMetadataFormats.__init__
+portality.view.oaipmh.NoRecordsMatch.__init__
+portality.view.oaipmh.NoSetHierarchy.__init__
+portality.view.oaipmh.OAIPMHError.__init__
+portality.view.oaipmh.OAI_PMH.__init__
+portality.view.query.Query.__init__" class="py-name" href="#" onclick="return doclink('link-19', '__init__', 'link-19');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Account.make_account"></a><div id="Account.make_account-def"><a name="L19"></a><tt class="py-lineno"> 19</tt> <a class="py-toggle" href="#" id="Account.make_account-toggle" onclick="return toggle('Account.make_account');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#make_account">make_account</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">username</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">email</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">roles</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">associated_journal_ids</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.make_account-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.make_account-expanded"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-20" class="py-name" targets="Method portality.models.provenance.Provenance.roles()=portality.models.provenance.Provenance-class.html#roles,Variable portality.view.account.RegisterForm.roles=portality.view.account.RegisterForm-class.html#roles"><a title="portality.models.provenance.Provenance.roles
+portality.view.account.RegisterForm.roles" class="py-name" href="#" onclick="return doclink('link-20', 'roles', 'link-20');">roles</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">            <tt id="link-21" class="py-name"><a title="portality.models.provenance.Provenance.roles
+portality.view.account.RegisterForm.roles" class="py-name" href="#" onclick="return doclink('link-21', 'roles', 'link-20');">roles</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">associated_journal_ids</tt><tt class="py-op">:</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">            <tt class="py-name">associated_journal_ids</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt id="link-22" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.a()=portality.journalcsv.Journal2QuestionXwalk-class.html#a"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-22', 'a', 'link-22');">a</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-23', 'pull', 'link-23');">pull</a></tt><tt class="py-op">(</tt><tt id="link-24" class="py-name" targets="Method portality.models.lock.Lock.username()=portality.models.lock.Lock-class.html#username,Variable portality.view.account.LoginForm.username=portality.view.account.LoginForm-class.html#username,Function portality.view.account.username()=portality.view.account-module.html#username"><a title="portality.models.lock.Lock.username
+portality.view.account.LoginForm.username
+portality.view.account.username" class="py-name" href="#" onclick="return doclink('link-24', 'username', 'link-24');">username</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-25" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-25', 'a', 'link-22');">a</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-26" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-26', 'a', 'link-22');">a</a></tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">        <tt id="link-27" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-27', 'a', 'link-22');">a</a></tt> <tt class="py-op">=</tt> <tt id="link-28" class="py-name"><a title="portality.models.account.Account" class="py-name" href="#" onclick="return doclink('link-28', 'Account', 'link-18');">Account</a></tt><tt class="py-op">(</tt><tt id="link-29" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-29', 'id', 'link-29');">id</a></tt><tt class="py-op">=</tt><tt id="link-30" class="py-name"><a title="portality.models.lock.Lock.username
+portality.view.account.LoginForm.username
+portality.view.account.username" class="py-name" href="#" onclick="return doclink('link-30', 'username', 'link-24');">username</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt id="link-31" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-31', 'a', 'link-22');">a</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method portality.models.account.Account.set_name()=portality.models.account.Account-class.html#set_name,Method portality.models.editors.EditorGroup.set_name()=portality.models.editors.EditorGroup-class.html#set_name"><a title="portality.models.account.Account.set_name
+portality.models.editors.EditorGroup.set_name" class="py-name" href="#" onclick="return doclink('link-32', 'set_name', 'link-32');">set_name</a></tt><tt class="py-op">(</tt><tt id="link-33" class="py-name" targets="Method portality.models.account.Account.name()=portality.models.account.Account-class.html#name,Method portality.models.editors.EditorGroup.name()=portality.models.editors.EditorGroup-class.html#name,Variable portality.view.forms.AuthorForm.name=portality.view.forms.AuthorForm-class.html#name,Variable portality.view.forms.EditorGroupForm.name=portality.view.forms.EditorGroupForm-class.html#name"><a title="portality.models.account.Account.name
+portality.models.editors.EditorGroup.name
+portality.view.forms.AuthorForm.name
+portality.view.forms.EditorGroupForm.name" class="py-name" href="#" onclick="return doclink('link-33', 'name', 'link-33');">name</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt id="link-34" class="py-name"><a title="portality.models.account.Account.name
+portality.models.editors.EditorGroup.name
+portality.view.forms.AuthorForm.name
+portality.view.forms.EditorGroupForm.name" class="py-name" href="#" onclick="return doclink('link-34', 'name', 'link-33');">name</a></tt> <tt class="py-keyword">else</tt> <tt class="py-name">None</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt id="link-35" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-35', 'a', 'link-22');">a</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method portality.models.account.Account.set_email()=portality.models.account.Account-class.html#set_email"><a title="portality.models.account.Account.set_email" class="py-name" href="#" onclick="return doclink('link-36', 'set_email', 'link-36');">set_email</a></tt><tt class="py-op">(</tt><tt id="link-37" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Function portality.tasks.reporting.email()=portality.tasks.reporting-module.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-37', 'email', 'link-37');">email</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt id="link-38" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-38', 'email', 'link-37');">email</a></tt> <tt class="py-keyword">else</tt> <tt class="py-name">None</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt id="link-39" class="py-name" targets="Method portality.models.account.Account.role()=portality.models.account.Account-class.html#role"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-39', 'role', 'link-39');">role</a></tt> <tt class="py-keyword">in</tt> <tt id="link-40" class="py-name"><a title="portality.models.provenance.Provenance.roles
+portality.view.account.RegisterForm.roles" class="py-name" href="#" onclick="return doclink('link-40', 'roles', 'link-20');">roles</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">            <tt id="link-41" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-41', 'a', 'link-22');">a</a></tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method portality.models.account.Account.add_role()=portality.models.account.Account-class.html#add_role"><a title="portality.models.account.Account.add_role" class="py-name" href="#" onclick="return doclink('link-42', 'add_role', 'link-42');">add_role</a></tt><tt class="py-op">(</tt><tt id="link-43" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-43', 'role', 'link-39');">role</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">jid</tt> <tt class="py-keyword">in</tt> <tt class="py-name">associated_journal_ids</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">            <tt id="link-44" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-44', 'a', 'link-22');">a</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Method portality.models.account.Account.add_journal()=portality.models.account.Account-class.html#add_journal"><a title="portality.models.account.Account.add_journal" class="py-name" href="#" onclick="return doclink('link-45', 'add_journal', 'link-45');">add_journal</a></tt><tt class="py-op">(</tt><tt class="py-name">jid</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt id="link-46" class="py-name" targets="Method portality.models.account.Account.reset_token()=portality.models.account.Account-class.html#reset_token"><a title="portality.models.account.Account.reset_token" class="py-name" href="#" onclick="return doclink('link-46', 'reset_token', 'link-46');">reset_token</a></tt> <tt class="py-op">=</tt> <tt class="py-name">uuid</tt><tt class="py-op">.</tt><tt class="py-name">uuid4</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">hex</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">        <tt class="py-comment"># give them 14 days to create their first password if timeout not specified in config</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt id="link-47" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-47', 'a', 'link-22');">a</a></tt><tt class="py-op">.</tt><tt id="link-48" class="py-name" targets="Method portality.models.account.Account.set_reset_token()=portality.models.account.Account-class.html#set_reset_token"><a title="portality.models.account.Account.set_reset_token" class="py-name" href="#" onclick="return doclink('link-48', 'set_reset_token', 'link-48');">set_reset_token</a></tt><tt class="py-op">(</tt><tt id="link-49" class="py-name"><a title="portality.models.account.Account.reset_token" class="py-name" href="#" onclick="return doclink('link-49', 'reset_token', 'link-46');">reset_token</a></tt><tt class="py-op">,</tt> <tt id="link-50" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-50', 'app', 'link-7');">app</a></tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-51', 'config', 'link-51');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"PASSWORD_CREATE_TIMEOUT"</tt><tt class="py-op">,</tt> <tt id="link-52" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-52', 'app', 'link-7');">app</a></tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-53', 'config', 'link-51');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'PASSWORD_RESET_TIMEOUT'</tt><tt class="py-op">,</tt> <tt class="py-number">86400</tt><tt class="py-op">)</tt> <tt class="py-op">*</tt> <tt class="py-number">14</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-54" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-54', 'a', 'link-22');">a</a></tt> </tt>
+</div><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Account.pull_by_email"></a><div id="Account.pull_by_email-def"><a name="L45"></a><tt class="py-lineno"> 45</tt> <a class="py-toggle" href="#" id="Account.pull_by_email-toggle" onclick="return toggle('Account.pull_by_email');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#pull_by_email">pull_by_email</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">email</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.pull_by_email-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.pull_by_email-expanded"><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.lock.LockQuery.query()=portality.lock.LockQuery-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.provenance.ResourceIDQuery.query()=portality.models.provenance.ResourceIDQuery-class.html#query,Method portality.models.suggestion.CurrentJournalQuery.query()=portality.models.suggestion.CurrentJournalQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.RelatedJournalQuery.query()=portality.models.suggestion.RelatedJournalQuery-class.html#query,Method portality.models.suggestion.StatusQuery.query()=portality.models.suggestion.StatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Method portality.tasks.reporting.ContentByDate.query()=portality.tasks.reporting.ContentByDate-class.html#query,Method portality.tasks.reporting.ProvenanceList.query()=portality.tasks.reporting.ProvenanceList-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-55', 'query', 'link-55');">query</a></tt><tt class="py-op">(</tt><tt id="link-56" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.q()=portality.journalcsv.Journal2QuestionXwalk-class.html#q"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-56', 'q', 'link-56');">q</a></tt><tt class="py-op">=</tt><tt class="py-string">'email:"'</tt> <tt class="py-op">+</tt> <tt id="link-57" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-57', 'email', 'link-37');">email</a></tt> <tt class="py-op">+</tt> <tt class="py-string">'"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">res</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'hits'</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'total'</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">res</tt><tt class="py-op">[</tt><tt class="py-string">'hits'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'hits'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'_source'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Account.get_by_reset_token"></a><div id="Account.get_by_reset_token-def"><a name="L53"></a><tt class="py-lineno"> 53</tt> <a class="py-toggle" href="#" id="Account.get_by_reset_token-toggle" onclick="return toggle('Account.get_by_reset_token');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#get_by_reset_token">get_by_reset_token</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">reset_token</tt><tt class="py-op">,</tt> <tt class="py-param">not_expired</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.get_by_reset_token-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.get_by_reset_token-expanded"><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-58" class="py-name"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-58', 'query', 'link-55');">query</a></tt><tt class="py-op">(</tt><tt id="link-59" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-59', 'q', 'link-56');">q</a></tt><tt class="py-op">=</tt><tt class="py-string">'reset_token.exact:"'</tt> <tt class="py-op">+</tt> <tt id="link-60" class="py-name"><a title="portality.models.account.Account.reset_token" class="py-name" href="#" onclick="return doclink('link-60', 'reset_token', 'link-46');">reset_token</a></tt> <tt class="py-op">+</tt> <tt class="py-string">'"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">obs</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">hit</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"_source"</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">hit</tt> <tt class="py-keyword">in</tt> <tt class="py-name">res</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"hits"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"hits"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">obs</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt> <tt class="py-keyword">or</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">obs</tt><tt class="py-op">)</tt> <tt class="py-op">&gt;</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt id="link-61" class="py-name" targets="Method portality.models.lock.Lock.expires()=portality.models.lock.Lock-class.html#expires"><a title="portality.models.lock.Lock.expires" class="py-name" href="#" onclick="return doclink('link-61', 'expires', 'link-61');">expires</a></tt> <tt class="py-op">=</tt> <tt class="py-name">obs</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"reset_expires"</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-62" class="py-name"><a title="portality.models.lock.Lock.expires" class="py-name" href="#" onclick="return doclink('link-62', 'expires', 'link-61');">expires</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">not_expired</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">                <tt class="py-name">ed</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt class="py-name">strptime</tt><tt class="py-op">(</tt><tt id="link-63" class="py-name"><a title="portality.models.lock.Lock.expires" class="py-name" href="#" onclick="return doclink('link-63', 'expires', 'link-61');">expires</a></tt><tt class="py-op">,</tt> <tt class="py-string">"%Y-%m-%dT%H:%M:%SZ"</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">ed</tt> <tt class="py-op">&lt;</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-64" class="py-name" targets="Function portality.lib.dates.now()=portality.lib.dates-module.html#now,Class Method portality.view.oaipmh.DateFormat.now()=portality.view.oaipmh.DateFormat-class.html#now"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-64', 'now', 'link-64');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                    <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">obs</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.name"></a><div id="Account.name-def"><a name="L71"></a><tt class="py-lineno"> 71</tt> <a class="py-toggle" href="#" id="Account.name-toggle" onclick="return toggle('Account.name');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#name">name</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.name-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.name-expanded"><a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"name"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"> </tt>
+<a name="Account.set_name"></a><div id="Account.set_name-def"><a name="L74"></a><tt class="py-lineno"> 74</tt> <a class="py-toggle" href="#" id="Account.set_name-toggle" onclick="return toggle('Account.set_name');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#set_name">set_name</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">name</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.set_name-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.set_name-expanded"><a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"name"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-65" class="py-name"><a title="portality.models.account.Account.name
+portality.models.editors.EditorGroup.name
+portality.view.forms.AuthorForm.name
+portality.view.forms.EditorGroupForm.name" class="py-name" href="#" onclick="return doclink('link-65', 'name', 'link-33');">name</a></tt> </tt>
+</div><a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.email"></a><div id="Account.email-def"><a name="L78"></a><tt class="py-lineno"> 78</tt> <a class="py-toggle" href="#" id="Account.email-toggle" onclick="return toggle('Account.email');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#email">email</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.email-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.email-expanded"><a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"email"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="Account.set_email"></a><div id="Account.set_email-def"><a name="L81"></a><tt class="py-lineno"> 81</tt> <a class="py-toggle" href="#" id="Account.set_email-toggle" onclick="return toggle('Account.set_email');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#set_email">set_email</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">email</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.set_email-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.set_email-expanded"><a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"email"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-66" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-66', 'email', 'link-37');">email</a></tt> </tt>
+</div><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line"> </tt>
+<a name="Account.set_password"></a><div id="Account.set_password-def"><a name="L84"></a><tt class="py-lineno"> 84</tt> <a class="py-toggle" href="#" id="Account.set_password-toggle" onclick="return toggle('Account.set_password');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#set_password">set_password</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">password</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.set_password-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.set_password-expanded"><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'password'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">generate_password_hash</tt><tt class="py-op">(</tt><tt id="link-67" class="py-name" targets="Variable portality.view.account.LoginForm.password=portality.view.account.LoginForm-class.html#password"><a title="portality.view.account.LoginForm.password" class="py-name" href="#" onclick="return doclink('link-67', 'password', 'link-67');">password</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="Account.check_password"></a><div id="Account.check_password-def"><a name="L87"></a><tt class="py-lineno"> 87</tt> <a class="py-toggle" href="#" id="Account.check_password-toggle" onclick="return toggle('Account.check_password');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#check_password">check_password</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">password</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.check_password-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.check_password-expanded"><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">check_password_hash</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'password'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt id="link-68" class="py-name"><a title="portality.view.account.LoginForm.password" class="py-name" href="#" onclick="return doclink('link-68', 'password', 'link-67');">password</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.journal"></a><div id="Account.journal-def"><a name="L91"></a><tt class="py-lineno"> 91</tt> <a class="py-toggle" href="#" id="Account.journal-toggle" onclick="return toggle('Account.journal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#journal">journal</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.journal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.journal-expanded"><a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"journal"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="Account.add_journal"></a><div id="Account.add_journal-def"><a name="L94"></a><tt class="py-lineno"> 94</tt> <a class="py-toggle" href="#" id="Account.add_journal-toggle" onclick="return toggle('Account.add_journal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#add_journal">add_journal</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">jid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.add_journal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.add_journal-expanded"><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">jid</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"journal"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"journal"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"journal"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">jid</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"journal"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"journal"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">jid</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="Account.remove_journal"></a><div id="Account.remove_journal-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="Account.remove_journal-toggle" onclick="return toggle('Account.remove_journal');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#remove_journal">remove_journal</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">jid</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.remove_journal-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.remove_journal-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"journal"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"journal"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">remove</tt><tt class="py-op">(</tt><tt class="py-name">jid</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.reset_token"></a><div id="Account.reset_token-def"><a name="L108"></a><tt class="py-lineno">108</tt> <a class="py-toggle" href="#" id="Account.reset_token-toggle" onclick="return toggle('Account.reset_token');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#reset_token">reset_token</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'reset_token'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="Account.set_reset_token"></a><div id="Account.set_reset_token-def"><a name="L110"></a><tt class="py-lineno">110</tt> <a class="py-toggle" href="#" id="Account.set_reset_token-toggle" onclick="return toggle('Account.set_reset_token');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#set_reset_token">set_reset_token</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">token</tt><tt class="py-op">,</tt> <tt class="py-param">timeout</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.set_reset_token-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.set_reset_token-expanded"><a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt id="link-69" class="py-name"><a title="portality.models.lock.Lock.expires" class="py-name" href="#" onclick="return doclink('link-69', 'expires', 'link-61');">expires</a></tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-70', 'now', 'link-64');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">timedelta</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">timeout</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"reset_token"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">token</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"reset_expires"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-71" class="py-name"><a title="portality.models.lock.Lock.expires" class="py-name" href="#" onclick="return doclink('link-71', 'expires', 'link-61');">expires</a></tt><tt class="py-op">.</tt><tt class="py-name">strftime</tt><tt class="py-op">(</tt><tt class="py-string">"%Y-%m-%dT%H:%M:%SZ"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="Account.remove_reset_token"></a><div id="Account.remove_reset_token-def"><a name="L115"></a><tt class="py-lineno">115</tt> <a class="py-toggle" href="#" id="Account.remove_reset_token-toggle" onclick="return toggle('Account.remove_reset_token');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#remove_reset_token">remove_reset_token</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.remove_reset_token-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.remove_reset_token-expanded"><a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"reset_token"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">            <tt class="py-keyword">del</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"reset_token"</tt><tt class="py-op">]</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"reset_expires"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">del</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"reset_expires"</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.is_super"></a><div id="Account.is_super-def"><a name="L122"></a><tt class="py-lineno">122</tt> <a class="py-toggle" href="#" id="Account.is_super-toggle" onclick="return toggle('Account.is_super');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#is_super">is_super</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.is_super-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.is_super-expanded"><a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-comment"># return not self.is_anonymous() and self.id in app.config['SUPER_USER']</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-72" class="py-name"><a title="portality.authorise.Authorise" class="py-name" href="#" onclick="return doclink('link-72', 'Authorise', 'link-10');">Authorise</a></tt><tt class="py-op">.</tt><tt id="link-73" class="py-name" targets="Class Method portality.authorise.Authorise.has_role()=portality.authorise.Authorise-class.html#has_role,Method portality.models.account.Account.has_role()=portality.models.account.Account-class.html#has_role"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-73', 'has_role', 'link-73');">has_role</a></tt><tt class="py-op">(</tt><tt id="link-74" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-74', 'app', 'link-7');">app</a></tt><tt class="py-op">.</tt><tt id="link-75" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-75', 'config', 'link-51');">config</a></tt><tt class="py-op">[</tt><tt class="py-string">"SUPER_USER_ROLE"</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"role"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt>
+<a name="Account.has_role"></a><div id="Account.has_role-def"><a name="L126"></a><tt class="py-lineno">126</tt> <a class="py-toggle" href="#" id="Account.has_role-toggle" onclick="return toggle('Account.has_role');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#has_role">has_role</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">role</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.has_role-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.has_role-expanded"><a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-76" class="py-name"><a title="portality.authorise.Authorise" class="py-name" href="#" onclick="return doclink('link-76', 'Authorise', 'link-10');">Authorise</a></tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-77', 'has_role', 'link-73');">has_role</a></tt><tt class="py-op">(</tt><tt id="link-78" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-78', 'role', 'link-39');">role</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"role"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Account.all_top_level_roles"></a><div id="Account.all_top_level_roles-def"><a name="L130"></a><tt class="py-lineno">130</tt> <a class="py-toggle" href="#" id="Account.all_top_level_roles-toggle" onclick="return toggle('Account.all_top_level_roles');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#all_top_level_roles">all_top_level_roles</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.all_top_level_roles-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.all_top_level_roles-expanded"><a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-79" class="py-name"><a title="portality.authorise.Authorise" class="py-name" href="#" onclick="return doclink('link-79', 'Authorise', 'link-10');">Authorise</a></tt><tt class="py-op">.</tt><tt id="link-80" class="py-name" targets="Class Method portality.authorise.Authorise.top_level_roles()=portality.authorise.Authorise-class.html#top_level_roles"><a title="portality.authorise.Authorise.top_level_roles" class="py-name" href="#" onclick="return doclink('link-80', 'top_level_roles', 'link-80');">top_level_roles</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"> </tt>
+<a name="Account.add_role"></a><div id="Account.add_role-def"><a name="L133"></a><tt class="py-lineno">133</tt> <a class="py-toggle" href="#" id="Account.add_role-toggle" onclick="return toggle('Account.add_role');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#add_role">add_role</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">role</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.add_role-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.add_role-expanded"><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"role"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-81" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-81', 'role', 'link-39');">role</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt id="link-82" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-82', 'role', 'link-39');">role</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-comment"># If we're adding the API role, ensure we also have a key to validate</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-83" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-83', 'role', 'link-39');">role</a></tt> <tt class="py-op">==</tt> <tt class="py-string">'api'</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'api_key'</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-84" class="py-name" targets="Method portality.models.account.Account.generate_api_key()=portality.models.account.Account-class.html#generate_api_key"><a title="portality.models.account.Account.generate_api_key" class="py-name" href="#" onclick="return doclink('link-84', 'generate_api_key', 'link-84');">generate_api_key</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="Account.remove_role"></a><div id="Account.remove_role-def"><a name="L142"></a><tt class="py-lineno">142</tt> <a class="py-toggle" href="#" id="Account.remove_role-toggle" onclick="return toggle('Account.remove_role');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#remove_role">remove_role</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">role</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.remove_role-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.remove_role-expanded"><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"role"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-85" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-85', 'role', 'link-39');">role</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">remove</tt><tt class="py-op">(</tt><tt id="link-86" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-86', 'role', 'link-39');">role</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.role"></a><div id="Account.role-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="Account.role-toggle" onclick="return toggle('Account.role');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#role">role</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.role-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.role-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"role"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"> </tt>
+<a name="Account.set_role"></a><div id="Account.set_role-def"><a name="L152"></a><tt class="py-lineno">152</tt> <a class="py-toggle" href="#" id="Account.set_role-toggle" onclick="return toggle('Account.set_role');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#set_role">set_role</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">role</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.set_role-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.set_role-expanded"><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt id="link-87" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-87', 'role', 'link-39');">role</a></tt><tt class="py-op">,</tt> <tt class="py-name">list</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">            <tt id="link-88" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-88', 'role', 'link-39');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt id="link-89" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-89', 'role', 'link-39');">role</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">"role"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt id="link-90" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-90', 'role', 'link-39');">role</a></tt> </tt>
+</div><a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line"> </tt>
+<a name="Account.prep"></a><div id="Account.prep-def"><a name="L157"></a><tt class="py-lineno">157</tt> <a class="py-toggle" href="#" id="Account.prep-toggle" onclick="return toggle('Account.prep');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#prep">prep</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.prep-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.prep-expanded"><a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'last_updated'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">datetime</tt><tt class="py-op">.</tt><tt id="link-91" class="py-name"><a title="portality.lib.dates.now
+portality.view.oaipmh.DateFormat.now" class="py-name" href="#" onclick="return doclink('link-91', 'now', 'link-64');">now</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">strftime</tt><tt class="py-op">(</tt><tt class="py-string">"%Y-%m-%dT%H:%M:%SZ"</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="Account.api_key"></a><div id="Account.api_key-def"><a name="L161"></a><tt class="py-lineno">161</tt> <a class="py-toggle" href="#" id="Account.api_key-toggle" onclick="return toggle('Account.api_key');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#api_key">api_key</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.api_key-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.api_key-expanded"><a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-92" class="py-name"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-92', 'has_role', 'link-73');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">'api'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'api_key'</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line"> </tt>
+<a name="Account.generate_api_key"></a><div id="Account.generate_api_key-def"><a name="L167"></a><tt class="py-lineno">167</tt> <a class="py-toggle" href="#" id="Account.generate_api_key-toggle" onclick="return toggle('Account.generate_api_key');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#generate_api_key">generate_api_key</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.generate_api_key-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.generate_api_key-expanded"><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">k</tt> <tt class="py-op">=</tt> <tt class="py-name">uuid</tt><tt class="py-op">.</tt><tt class="py-name">uuid4</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">hex</tt> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">[</tt><tt class="py-string">'api_key'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">k</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">k</tt> </tt>
+</div><a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line"> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="Account.pull_by_api_key"></a><div id="Account.pull_by_api_key-def"><a name="L173"></a><tt class="py-lineno">173</tt> <a class="py-toggle" href="#" id="Account.pull_by_api_key-toggle" onclick="return toggle('Account.pull_by_api_key');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.models.account.Account-class.html#pull_by_api_key">pull_by_api_key</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Account.pull_by_api_key-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Account.pull_by_api_key-expanded"><a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">        <tt class="py-docstring">"""Find a user by their API key - only succeed if they currently have API access."""</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-93" class="py-name"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-93', 'query', 'link-55');">query</a></tt><tt class="py-op">(</tt><tt id="link-94" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-94', 'q', 'link-56');">q</a></tt><tt class="py-op">=</tt><tt class="py-string">'api_key.exact:"'</tt> <tt class="py-op">+</tt> <tt class="py-name">key</tt> <tt class="py-op">+</tt> <tt class="py-string">'"'</tt><tt class="py-op">)</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">res</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'hits'</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'total'</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">            <tt class="py-name">usr</tt> <tt class="py-op">=</tt> <tt class="py-name">cls</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">res</tt><tt class="py-op">[</tt><tt class="py-string">'hits'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'hits'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'_source'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">usr</tt><tt class="py-op">.</tt><tt id="link-95" class="py-name"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-95', 'has_role', 'link-73');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">'api'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">usr</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">None</tt> </tt>
+</div></div><a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:17 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

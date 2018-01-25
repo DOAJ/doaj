@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.view.editor</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.view-module.html">Package&nbsp;view</a> ::
+        Module&nbsp;editor
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.view.editor-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.view.editor-module.html">Module portality.view.editor</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">request</tt><tt class="py-op">,</tt> <tt id="link-0" class="py-name" targets="Class Method portality.ui.messages.Messages.flash()=portality.ui.messages.Messages-class.html#flash"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-0', 'flash', 'link-0');">flash</a></tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Function portality.scripts.sync_doaj_records.abort()=portality.scripts.sync_doaj_records-module.html#abort"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-1', 'abort', 'link-1');">abort</a></tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Method portality.formcontext.formcontext.AssEdApplicationReview.render_template()=portality.formcontext.formcontext.AssEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.AssEdJournalReview.render_template()=portality.formcontext.formcontext.AssEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.EditorApplicationReview.render_template()=portality.formcontext.formcontext.EditorApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.EditorJournalReview.render_template()=portality.formcontext.formcontext.EditorJournalReview-class.html#render_template,Method portality.formcontext.formcontext.FormContext.render_template()=portality.formcontext.formcontext.FormContext-class.html#render_template,Method portality.formcontext.formcontext.ManEdApplicationReview.render_template()=portality.formcontext.formcontext.ManEdApplicationReview-class.html#render_template,Method portality.formcontext.formcontext.ManEdJournalReview.render_template()=portality.formcontext.formcontext.ManEdJournalReview-class.html#render_template,Method portality.formcontext.formcontext.PublisherUpdateRequest.render_template()=portality.formcontext.formcontext.PublisherUpdateRequest-class.html#render_template,Method portality.formcontext.formcontext.ReadOnlyJournal.render_template()=portality.formcontext.formcontext.ReadOnlyJournal-class.html#render_template"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-2', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Method portality.view.account.RedirectForm.redirect()=portality.view.account.RedirectForm-class.html#redirect"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-3', 'redirect', 'link-3');">redirect</a></tt><tt class="py-op">,</tt> <tt class="py-name">url_for</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt><tt class="py-op">.</tt><tt class="py-name">ext</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Function portality.view.account.login()=portality.view.account-module.html#login"><a title="portality.view.account.login" class="py-name" href="#" onclick="return doclink('link-4', 'login', 'link-4');">login</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">current_user</tt><tt class="py-op">,</tt> <tt class="py-name">login_required</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-5', 'portality', 'link-5');">portality</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-6', 'core', 'link-6');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-7', 'app', 'link-7');">app</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-8" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-8', 'portality', 'link-5');">portality</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module portality.decorators=portality.decorators-module.html"><a title="portality.decorators" class="py-name" href="#" onclick="return doclink('link-9', 'decorators', 'link-9');">decorators</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Function portality.decorators.ssl_required()=portality.decorators-module.html#ssl_required"><a title="portality.decorators.ssl_required" class="py-name" href="#" onclick="return doclink('link-10', 'ssl_required', 'link-10');">ssl_required</a></tt><tt class="py-op">,</tt> <tt id="link-11" class="py-name" targets="Function portality.decorators.restrict_to_role()=portality.decorators-module.html#restrict_to_role"><a title="portality.decorators.restrict_to_role" class="py-name" href="#" onclick="return doclink('link-11', 'restrict_to_role', 'link-11');">restrict_to_role</a></tt><tt class="py-op">,</tt> <tt id="link-12" class="py-name" targets="Function portality.decorators.write_required()=portality.decorators-module.html#write_required"><a title="portality.decorators.write_required" class="py-name" href="#" onclick="return doclink('link-12', 'write_required', 'link-12');">write_required</a></tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-13" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-13', 'portality', 'link-5');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-14" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-14', 'models', 'link-14');">models</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-15" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-15', 'portality', 'link-5');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-16" class="py-name" targets="Module portality.lock=portality.lock-module.html,Function portality.lock.lock()=portality.lock-module.html#lock,Module portality.models.lock=portality.models.lock-module.html"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-16', 'lock', 'link-16');">lock</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-17" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-17', 'portality', 'link-5');">portality</a></tt><tt class="py-op">.</tt><tt id="link-18" class="py-name" targets="Package portality.formcontext=portality.formcontext-module.html,Module portality.formcontext.formcontext=portality.formcontext.formcontext-module.html"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-18', 'formcontext', 'link-18');">formcontext</a></tt> <tt class="py-keyword">import</tt> <tt id="link-19" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-19', 'formcontext', 'link-18');">formcontext</a></tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-20" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-20', 'portality', 'link-5');">portality</a></tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Module portality.util=portality.util-module.html"><a title="portality.util" class="py-name" href="#" onclick="return doclink('link-21', 'util', 'link-21');">util</a></tt> <tt class="py-keyword">import</tt> <tt id="link-22" class="py-name" targets="Class Method portality.ui.messages.Messages.flash_with_url()=portality.ui.messages.Messages-class.html#flash_with_url,Function portality.util.flash_with_url()=portality.util-module.html#flash_with_url"><a title="portality.ui.messages.Messages.flash_with_url
+portality.util.flash_with_url" class="py-name" href="#" onclick="return doclink('link-22', 'flash_with_url', 'link-22');">flash_with_url</a></tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt id="link-23" class="py-name" targets="Variable portality.view.account.blueprint=portality.view.account-module.html#blueprint,Variable portality.view.admin.blueprint=portality.view.admin-module.html#blueprint,Variable portality.view.api_v1.blueprint=portality.view.api_v1-module.html#blueprint,Variable portality.view.atom.blueprint=portality.view.atom-module.html#blueprint,Variable portality.view.doaj.blueprint=portality.view.doaj-module.html#blueprint,Variable portality.view.doajservices.blueprint=portality.view.doajservices-module.html#blueprint,Variable portality.view.editor.blueprint=portality.view.editor-module.html#blueprint,Variable portality.view.hooks.blueprint=portality.view.hooks-module.html#blueprint,Variable portality.view.media.blueprint=portality.view.media-module.html#blueprint,Variable portality.view.oaipmh.blueprint=portality.view.oaipmh-module.html#blueprint,Variable portality.view.openurl.blueprint=portality.view.openurl-module.html#blueprint,Variable portality.view.publisher.blueprint=portality.view.publisher-module.html#blueprint,Variable portality.view.query.blueprint=portality.view.query-module.html#blueprint,Variable portality.view.stream.blueprint=portality.view.stream-module.html#blueprint"><a title="portality.view.account.blueprint
+portality.view.admin.blueprint
+portality.view.api_v1.blueprint
+portality.view.atom.blueprint
+portality.view.doaj.blueprint
+portality.view.doajservices.blueprint
+portality.view.editor.blueprint
+portality.view.hooks.blueprint
+portality.view.media.blueprint
+portality.view.oaipmh.blueprint
+portality.view.openurl.blueprint
+portality.view.publisher.blueprint
+portality.view.query.blueprint
+portality.view.stream.blueprint" class="py-name" href="#" onclick="return doclink('link-23', 'blueprint', 'link-23');">blueprint</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">(</tt><tt class="py-string">'editor'</tt><tt class="py-op">,</tt> <tt class="py-name">__name__</tt><tt class="py-op">)</tt> </tt>
+<a name="restrict"></a><div id="restrict-def"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-comment"># restrict everything in admin to logged in users with the "admin" role</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">before_request</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="restrict-toggle" onclick="return toggle('restrict');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#restrict">restrict</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="restrict-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="restrict-expanded"><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-24" class="py-name"><a title="portality.decorators.restrict_to_role" class="py-name" href="#" onclick="return doclink('link-24', 'restrict_to_role', 'link-11');">restrict_to_role</a></tt><tt class="py-op">(</tt><tt class="py-string">'editor_area'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
+<a name="index"></a><div id="index-def"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-comment"># build an editor's page where things can be done</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt> <a class="py-toggle" href="#" id="index-toggle" onclick="return toggle('index');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#index">index</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="index-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="index-expanded"><a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-name">editor_of</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-25', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Class portality.models.editors.EditorGroup=portality.models.editors.EditorGroup-class.html"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-26', 'EditorGroup', 'link-26');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Class Method portality.models.editors.EditorGroup.groups_by_editor()=portality.models.editors.EditorGroup-class.html#groups_by_editor"><a title="portality.models.editors.EditorGroup.groups_by_editor" class="py-name" href="#" onclick="return doclink('link-27', 'groups_by_editor', 'link-27');">groups_by_editor</a></tt><tt class="py-op">(</tt><tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-28', 'id', 'link-28');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-name">associate_of</tt> <tt class="py-op">=</tt> <tt id="link-29" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-29', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-30', 'EditorGroup', 'link-26');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Class Method portality.models.editors.EditorGroup.groups_by_associate()=portality.models.editors.EditorGroup-class.html#groups_by_associate"><a title="portality.models.editors.EditorGroup.groups_by_associate" class="py-name" href="#" onclick="return doclink('link-31', 'groups_by_associate', 'link-31');">groups_by_associate</a></tt><tt class="py-op">(</tt><tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-32', 'id', 'link-28');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-33" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-33', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">'editor/index.html'</tt><tt class="py-op">,</tt> <tt class="py-name">editor_of</tt><tt class="py-op">=</tt><tt class="py-name">editor_of</tt><tt class="py-op">,</tt> <tt class="py-name">associate_of</tt><tt class="py-op">=</tt><tt class="py-name">associate_of</tt><tt class="py-op">,</tt> <tt class="py-name">managing_editor</tt><tt class="py-op">=</tt><tt id="link-34" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-34', 'app', 'link-7');">app</a></tt><tt class="py-op">.</tt><tt id="link-35" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-35', 'config', 'link-35');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"MANAGING_EDITOR_EMAIL"</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="group_journals"></a><div id="group_journals-def"><a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/group_journals'</tt><tt class="py-op">)</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt> <a class="py-toggle" href="#" id="group_journals-toggle" onclick="return toggle('group_journals');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#group_journals">group_journals</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="group_journals-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="group_journals-expanded"><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-36" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-36', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/group_journals.html"</tt><tt class="py-op">,</tt> <tt class="py-name">search_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">facetviews</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"editor.groupjournals.facetview"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="group_suggestions"></a><div id="group_suggestions-def"><a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/group_applications'</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="group_suggestions-toggle" onclick="return toggle('group_suggestions');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#group_suggestions">group_suggestions</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="group_suggestions-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="group_suggestions-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-37" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-37', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/group_suggestions.html"</tt><tt class="py-op">,</tt> <tt class="py-name">search_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">facetviews</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"editor.groupapplications.facetview"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="associate_journals"></a><div id="associate_journals-def"><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/your_journals'</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="associate_journals-toggle" onclick="return toggle('associate_journals');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#associate_journals">associate_journals</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="associate_journals-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="associate_journals-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-38" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-38', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/associate_journals.html"</tt><tt class="py-op">,</tt> <tt class="py-name">search_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">facetviews</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"associate.journals.facetview"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"> </tt>
+<a name="associate_suggestions"></a><div id="associate_suggestions-def"><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/your_applications'</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt> <a class="py-toggle" href="#" id="associate_suggestions-toggle" onclick="return toggle('associate_suggestions');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#associate_suggestions">associate_suggestions</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="associate_suggestions-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="associate_suggestions-expanded"><a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-39" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-39', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/associate_suggestions.html"</tt><tt class="py-op">,</tt> <tt class="py-name">search_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-name">facetviews</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"associate.applications.facetview"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="journal_page"></a><div id="journal_page-def"><a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/journal/&lt;journal_id&gt;'</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"GET"</tt><tt class="py-op">,</tt> <tt class="py-string">"POST"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">write_required</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt> <a class="py-toggle" href="#" id="journal_page-toggle" onclick="return toggle('journal_page');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#journal_page">journal_page</a><tt class="py-op">(</tt><tt class="py-param">journal_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="journal_page-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="journal_page-expanded"><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-comment"># user must have the role "edit_journal"</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name" targets="Class Method portality.authorise.Authorise.has_role()=portality.authorise.Authorise-class.html#has_role,Method portality.models.account.Account.has_role()=portality.models.account.Account-class.html#has_role"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-40', 'has_role', 'link-40');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">"edit_journal"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt id="link-41" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-41', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">    <tt class="py-comment"># get the journal, so we can check our permissions against it</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-name">j</tt> <tt class="py-op">=</tt> <tt id="link-42" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-42', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Class portality.models.journal.Journal=portality.models.journal.Journal-class.html"><a title="portality.models.journal.Journal" class="py-name" href="#" onclick="return doclink('link-43', 'Journal', 'link-43');">Journal</a></tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-44', 'pull', 'link-44');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">journal_id</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">j</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt id="link-45" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-45', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line"> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">    <tt class="py-comment"># user must be either the "admin.editor" of the journal, or the editor of the "admin.editor_group"</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">    <tt class="py-comment"># is the user the currently assigned editor of the journal?</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Variable portality.formcontext.forms.Editorial.editor=portality.formcontext.forms.Editorial-class.html#editor,Method portality.models.editors.EditorGroup.editor()=portality.models.editors.EditorGroup-class.html#editor,Method portality.models.journal.JournalLikeObject.editor()=portality.models.journal.JournalLikeObject-class.html#editor,Module portality.view.editor=portality.view.editor-module.html,Variable portality.view.forms.EditorGroupForm.editor=portality.view.forms.EditorGroupForm-class.html#editor"><a title="portality.formcontext.forms.Editorial.editor
+portality.models.editors.EditorGroup.editor
+portality.models.journal.JournalLikeObject.editor
+portality.view.editor
+portality.view.forms.EditorGroupForm.editor" class="py-name" href="#" onclick="return doclink('link-46', 'editor', 'link-46');">editor</a></tt> <tt class="py-op">==</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-47" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-47', 'id', 'link-28');">id</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line"> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-comment"># now check whether the user is the editor of the editor group</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">    <tt id="link-48" class="py-name" targets="Method portality.models.account.Account.role()=portality.models.account.Account-class.html#role"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-48', 'role', 'link-48');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"associate_editor"</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-name">eg</tt> <tt class="py-op">=</tt> <tt id="link-49" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-49', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-50', 'EditorGroup', 'link-26');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Class Method portality.dao.DomainObject.pull_by_key()=portality.dao.DomainObject-class.html#pull_by_key"><a title="portality.dao.DomainObject.pull_by_key" class="py-name" href="#" onclick="return doclink('link-51', 'pull_by_key', 'link-51');">pull_by_key</a></tt><tt class="py-op">(</tt><tt class="py-string">"name"</tt><tt class="py-op">,</tt> <tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-52" class="py-name" targets="Variable portality.formcontext.forms.Editorial.editor_group=portality.formcontext.forms.Editorial-class.html#editor_group,Method portality.models.journal.JournalLikeObject.editor_group()=portality.models.journal.JournalLikeObject-class.html#editor_group,Method portality.models.provenance.Provenance.editor_group()=portality.models.provenance.Provenance-class.html#editor_group,Function portality.view.admin.editor_group()=portality.view.admin-module.html#editor_group"><a title="portality.formcontext.forms.Editorial.editor_group
+portality.models.journal.JournalLikeObject.editor_group
+portality.models.provenance.Provenance.editor_group
+portality.view.admin.editor_group" class="py-name" href="#" onclick="return doclink('link-52', 'editor_group', 'link-52');">editor_group</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">eg</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-53" class="py-name"><a title="portality.formcontext.forms.Editorial.editor
+portality.models.editors.EditorGroup.editor
+portality.models.journal.JournalLikeObject.editor
+portality.view.editor
+portality.view.forms.EditorGroupForm.editor" class="py-name" href="#" onclick="return doclink('link-53', 'editor', 'link-46');">editor</a></tt> <tt class="py-op">==</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-54" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-54', 'id', 'link-28');">id</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt id="link-55" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-55', 'role', 'link-48');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"editor"</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">    <tt class="py-comment"># if the user wasn't the editor or the owner of the editor group, unauthorised</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">passed</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt id="link-56" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-56', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">    <tt class="py-comment"># attempt to get a lock on the object</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">lockinfo</tt> <tt class="py-op">=</tt> <tt id="link-57" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-57', 'lock', 'link-16');">lock</a></tt><tt class="py-op">.</tt><tt id="link-58" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-58', 'lock', 'link-16');">lock</a></tt><tt class="py-op">(</tt><tt class="py-string">"journal"</tt><tt class="py-op">,</tt> <tt class="py-name">journal_id</tt><tt class="py-op">,</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-59" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-59', 'id', 'link-28');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt id="link-60" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-60', 'lock', 'link-16');">lock</a></tt><tt class="py-op">.</tt><tt id="link-61" class="py-name" targets="Class portality.lock.Locked=portality.lock.Locked-class.html"><a title="portality.lock.Locked" class="py-name" href="#" onclick="return doclink('link-61', 'Locked', 'link-61');">Locked</a></tt> <tt class="py-keyword">as</tt> <tt id="link-62" class="py-name" targets="Variable portality.datasets.l=portality.datasets-module.html#l"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-62', 'l', 'link-62');">l</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-63" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-63', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/journal_locked.html"</tt><tt class="py-op">,</tt> <tt id="link-64" class="py-name" targets="Module portality.api.v1.data_objects.journal=portality.api.v1.data_objects.journal-module.html,Method portality.bll.doaj.DOAJ.journal()=portality.bll.doaj.DOAJ-class.html#journal,Method portality.models.account.Account.journal()=portality.models.account.Account-class.html#journal,Module portality.models.journal=portality.models.journal-module.html"><a title="portality.api.v1.data_objects.journal
+portality.bll.doaj.DOAJ.journal
+portality.models.account.Account.journal
+portality.models.journal" class="py-name" href="#" onclick="return doclink('link-64', 'journal', 'link-64');">journal</a></tt><tt class="py-op">=</tt><tt class="py-name">j</tt><tt class="py-op">,</tt> <tt id="link-65" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-65', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt id="link-66" class="py-name"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-66', 'l', 'link-62');">l</a></tt><tt class="py-op">.</tt><tt id="link-67" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-67', 'lock', 'link-16');">lock</a></tt><tt class="py-op">,</tt> <tt class="py-name">edit_journal_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line"> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"GET"</tt><tt class="py-op">:</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">        <tt class="py-name">fc</tt> <tt class="py-op">=</tt> <tt id="link-68" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-68', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-69" class="py-name" targets="Class portality.formcontext.formcontext.JournalFormFactory=portality.formcontext.formcontext.JournalFormFactory-class.html"><a title="portality.formcontext.formcontext.JournalFormFactory" class="py-name" href="#" onclick="return doclink('link-69', 'JournalFormFactory', 'link-69');">JournalFormFactory</a></tt><tt class="py-op">.</tt><tt id="link-70" class="py-name" targets="Class Method portality.formcontext.formcontext.ApplicationFormFactory.get_form_context()=portality.formcontext.formcontext.ApplicationFormFactory-class.html#get_form_context,Class Method portality.formcontext.formcontext.JournalFormFactory.get_form_context()=portality.formcontext.formcontext.JournalFormFactory-class.html#get_form_context"><a title="portality.formcontext.formcontext.ApplicationFormFactory.get_form_context
+portality.formcontext.formcontext.JournalFormFactory.get_form_context" class="py-name" href="#" onclick="return doclink('link-70', 'get_form_context', 'link-70');">get_form_context</a></tt><tt class="py-op">(</tt><tt id="link-71" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-71', 'role', 'link-48');">role</a></tt><tt class="py-op">=</tt><tt id="link-72" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-72', 'role', 'link-48');">role</a></tt><tt class="py-op">,</tt> <tt id="link-73" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.source()=portality.formcontext.formcontext.FormContext-class.html#source,Variable portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications.source=portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications-module.html#source,Variable portality.scripts.inconsistent_journal_prov_application.source=portality.scripts.inconsistent_journal_prov_application-module.html#source"><a title="portality.formcontext.formcontext.FormContext.source
+portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications.source
+portality.scripts.inconsistent_journal_prov_application.source" class="py-name" href="#" onclick="return doclink('link-73', 'source', 'link-73');">source</a></tt><tt class="py-op">=</tt><tt class="py-name">j</tt><tt class="py-op">)</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-74" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-74', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">edit_journal_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt id="link-75" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-75', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt class="py-name">lockinfo</tt><tt class="py-op">)</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"POST"</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">fc</tt> <tt class="py-op">=</tt> <tt id="link-76" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-76', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="portality.formcontext.formcontext.JournalFormFactory" class="py-name" href="#" onclick="return doclink('link-77', 'JournalFormFactory', 'link-69');">JournalFormFactory</a></tt><tt class="py-op">.</tt><tt id="link-78" class="py-name"><a title="portality.formcontext.formcontext.ApplicationFormFactory.get_form_context
+portality.formcontext.formcontext.JournalFormFactory.get_form_context" class="py-name" href="#" onclick="return doclink('link-78', 'get_form_context', 'link-70');">get_form_context</a></tt><tt class="py-op">(</tt><tt id="link-79" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-79', 'role', 'link-48');">role</a></tt><tt class="py-op">=</tt><tt id="link-80" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-80', 'role', 'link-48');">role</a></tt><tt class="py-op">,</tt> <tt id="link-81" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.form_data()=portality.formcontext.formcontext.FormContext-class.html#form_data"><a title="portality.formcontext.formcontext.FormContext.form_data" class="py-name" href="#" onclick="return doclink('link-81', 'form_data', 'link-81');">form_data</a></tt><tt class="py-op">=</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-82" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.form()=portality.formcontext.formcontext.FormContext-class.html#form,Function portality.lib.modeldoc.form()=portality.lib.modeldoc-module.html#form"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-82', 'form', 'link-82');">form</a></tt><tt class="py-op">,</tt> <tt id="link-83" class="py-name"><a title="portality.formcontext.formcontext.FormContext.source
+portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications.source
+portality.scripts.inconsistent_journal_prov_application.source" class="py-name" href="#" onclick="return doclink('link-83', 'source', 'link-73');">source</a></tt><tt class="py-op">=</tt><tt class="py-name">j</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-84" class="py-name" targets="Method portality.article.DOAJXWalk.validate()=portality.article.DOAJXWalk-class.html#validate,Method portality.formcontext.formcontext.FormContext.validate()=portality.formcontext.formcontext.FormContext-class.html#validate,Method portality.formcontext.formcontext.ManEdJournalReview.validate()=portality.formcontext.formcontext.ManEdJournalReview-class.html#validate,Module portality.formcontext.validate=portality.formcontext.validate-module.html,Class Method portality.formcontext.validate.ReservedUsernames.validate()=portality.formcontext.validate.ReservedUsernames-class.html#validate,Method portality.lib.dataobj.DataObj.validate()=portality.lib.dataobj.DataObj-class.html#validate,Function portality.lib.dataobj.validate()=portality.lib.dataobj-module.html#validate"><a title="portality.article.DOAJXWalk.validate
+portality.formcontext.formcontext.FormContext.validate
+portality.formcontext.formcontext.ManEdJournalReview.validate
+portality.formcontext.validate
+portality.formcontext.validate.ReservedUsernames.validate
+portality.lib.dataobj.DataObj.validate
+portality.lib.dataobj.validate" class="py-name" href="#" onclick="return doclink('link-84', 'validate', 'link-84');">validate</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-85" class="py-name" targets="Method portality.formcontext.formcontext.AssEdApplicationReview.finalise()=portality.formcontext.formcontext.AssEdApplicationReview-class.html#finalise,Method portality.formcontext.formcontext.AssEdJournalReview.finalise()=portality.formcontext.formcontext.AssEdJournalReview-class.html#finalise,Method portality.formcontext.formcontext.EditorApplicationReview.finalise()=portality.formcontext.formcontext.EditorApplicationReview-class.html#finalise,Method portality.formcontext.formcontext.EditorJournalReview.finalise()=portality.formcontext.formcontext.EditorJournalReview-class.html#finalise,Method portality.formcontext.formcontext.FormContext.finalise()=portality.formcontext.formcontext.FormContext-class.html#finalise,Method portality.formcontext.formcontext.ManEdApplicationReview.finalise()=portality.formcontext.formcontext.ManEdApplicationReview-class.html#finalise,Method portality.formcontext.formcontext.ManEdJournalReview.finalise()=portality.formcontext.formcontext.ManEdJournalReview-class.html#finalise,Method portality.formcontext.formcontext.PublicApplication.finalise()=portality.formcontext.formcontext.PublicApplication-class.html#finalise,Method portality.formcontext.formcontext.PublisherUpdateRequest.finalise()=portality.formcontext.formcontext.PublisherUpdateRequest-class.html#finalise,Method portality.formcontext.formcontext.PublisherUpdateRequestReadOnly.finalise()=portality.formcontext.formcontext.PublisherUpdateRequestReadOnly-class.html#finalise,Method portality.formcontext.formcontext.ReadOnlyJournal.finalise()=portality.formcontext.formcontext.ReadOnlyJournal-class.html#finalise"><a title="portality.formcontext.formcontext.AssEdApplicationReview.finalise
+portality.formcontext.formcontext.AssEdJournalReview.finalise
+portality.formcontext.formcontext.EditorApplicationReview.finalise
+portality.formcontext.formcontext.EditorJournalReview.finalise
+portality.formcontext.formcontext.FormContext.finalise
+portality.formcontext.formcontext.ManEdApplicationReview.finalise
+portality.formcontext.formcontext.ManEdJournalReview.finalise
+portality.formcontext.formcontext.PublicApplication.finalise
+portality.formcontext.formcontext.PublisherUpdateRequest.finalise
+portality.formcontext.formcontext.PublisherUpdateRequestReadOnly.finalise
+portality.formcontext.formcontext.ReadOnlyJournal.finalise" class="py-name" href="#" onclick="return doclink('link-85', 'finalise', 'link-85');">finalise</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                <tt id="link-86" class="py-name"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-86', 'flash', 'link-0');">flash</a></tt><tt class="py-op">(</tt><tt class="py-string">'Journal updated.'</tt><tt class="py-op">,</tt> <tt class="py-string">'success'</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt id="link-87" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.a()=portality.journalcsv.Journal2QuestionXwalk-class.html#a"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-87', 'a', 'link-87');">a</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-88" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.alert()=portality.formcontext.formcontext.FormContext-class.html#alert"><a title="portality.formcontext.formcontext.FormContext.alert" class="py-name" href="#" onclick="return doclink('link-88', 'alert', 'link-88');">alert</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">                    <tt id="link-89" class="py-name"><a title="portality.ui.messages.Messages.flash_with_url
+portality.util.flash_with_url" class="py-name" href="#" onclick="return doclink('link-89', 'flash_with_url', 'link-22');">flash_with_url</a></tt><tt class="py-op">(</tt><tt id="link-90" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-90', 'a', 'link-87');">a</a></tt><tt class="py-op">,</tt> <tt class="py-string">"success"</tt><tt class="py-op">)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt id="link-91" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-91', 'redirect', 'link-3');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"editor.journal_page"</tt><tt class="py-op">,</tt> <tt class="py-name">journal_id</tt><tt class="py-op">=</tt><tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-92" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-92', 'id', 'link-28');">id</a></tt><tt class="py-op">,</tt> <tt class="py-name">_anchor</tt><tt class="py-op">=</tt><tt class="py-string">'done'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt id="link-93" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-93', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-94" class="py-name" targets="Class portality.formcontext.FormContextException=portality.formcontext.FormContextException-class.html"><a title="portality.formcontext.FormContextException" class="py-name" href="#" onclick="return doclink('link-94', 'FormContextException', 'link-94');">FormContextException</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                <tt id="link-95" class="py-name"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-95', 'flash', 'link-0');">flash</a></tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">.</tt><tt id="link-96" class="py-name" targets="Variable portality.view.forms.ContactUs.message=portality.view.forms.ContactUs-class.html#message"><a title="portality.view.forms.ContactUs.message" class="py-name" href="#" onclick="return doclink('link-96', 'message', 'link-96');">message</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt id="link-97" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-97', 'redirect', 'link-3');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"editor.journal_page"</tt><tt class="py-op">,</tt> <tt class="py-name">journal_id</tt><tt class="py-op">=</tt><tt class="py-name">j</tt><tt class="py-op">.</tt><tt id="link-98" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-98', 'id', 'link-28');">id</a></tt><tt class="py-op">,</tt> <tt class="py-name">_anchor</tt><tt class="py-op">=</tt><tt class="py-string">'cannot_edit'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-99" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-99', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">edit_journal_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt id="link-100" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-100', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt class="py-name">lockinfo</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="suggestion_page"></a><div id="suggestion_page-def"><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/suggestion/&lt;suggestion_id&gt;'</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">"GET"</tt><tt class="py-op">,</tt> <tt class="py-string">"POST"</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">login_required</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">ssl_required</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">write_required</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt> <a class="py-toggle" href="#" id="suggestion_page-toggle" onclick="return toggle('suggestion_page');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.editor-module.html#suggestion_page">suggestion_page</a><tt class="py-op">(</tt><tt class="py-param">suggestion_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="suggestion_page-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="suggestion_page-expanded"><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">    <tt class="py-comment"># user must have the role "edit_journal"</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-101" class="py-name"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-101', 'has_role', 'link-40');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">"edit_suggestion"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt id="link-102" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-102', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">    <tt class="py-comment"># get the suggestion, so we can check our permissions against it</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">    <tt id="link-103" class="py-name" targets="Variable portality.view.account.RegisterForm.s=portality.view.account.RegisterForm-class.html#s"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-103', 's', 'link-103');">s</a></tt> <tt class="py-op">=</tt> <tt id="link-104" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-104', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-105" class="py-name" targets="Class portality.formcontext.forms.Suggestion=portality.formcontext.forms.Suggestion-class.html,Class portality.models.suggestion.Suggestion=portality.models.suggestion.Suggestion-class.html"><a title="portality.formcontext.forms.Suggestion
+portality.models.suggestion.Suggestion" class="py-name" href="#" onclick="return doclink('link-105', 'Suggestion', 'link-105');">Suggestion</a></tt><tt class="py-op">.</tt><tt id="link-106" class="py-name"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-106', 'pull', 'link-44');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">suggestion_id</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-107" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-107', 's', 'link-103');">s</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt id="link-108" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-108', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">    <tt class="py-comment"># user must be either the "admin.editor" of the suggestion, or the editor of the "admin.editor_group"</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-comment"># is the user the currently assigned editor of the suggestion?</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-109" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-109', 's', 'link-103');">s</a></tt><tt class="py-op">.</tt><tt id="link-110" class="py-name"><a title="portality.formcontext.forms.Editorial.editor
+portality.models.editors.EditorGroup.editor
+portality.models.journal.JournalLikeObject.editor
+portality.view.editor
+portality.view.forms.EditorGroupForm.editor" class="py-name" href="#" onclick="return doclink('link-110', 'editor', 'link-46');">editor</a></tt> <tt class="py-op">==</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-111" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-111', 'id', 'link-28');">id</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">    <tt class="py-comment"># now check whether the user is the editor of the editor group</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt id="link-112" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-112', 'role', 'link-48');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"associate_editor"</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-name">eg</tt> <tt class="py-op">=</tt> <tt id="link-113" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-113', 'models', 'link-14');">models</a></tt><tt class="py-op">.</tt><tt id="link-114" class="py-name"><a title="portality.models.editors.EditorGroup" class="py-name" href="#" onclick="return doclink('link-114', 'EditorGroup', 'link-26');">EditorGroup</a></tt><tt class="py-op">.</tt><tt id="link-115" class="py-name"><a title="portality.dao.DomainObject.pull_by_key" class="py-name" href="#" onclick="return doclink('link-115', 'pull_by_key', 'link-51');">pull_by_key</a></tt><tt class="py-op">(</tt><tt class="py-string">"name"</tt><tt class="py-op">,</tt> <tt id="link-116" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-116', 's', 'link-103');">s</a></tt><tt class="py-op">.</tt><tt id="link-117" class="py-name"><a title="portality.formcontext.forms.Editorial.editor_group
+portality.models.journal.JournalLikeObject.editor_group
+portality.models.provenance.Provenance.editor_group
+portality.view.admin.editor_group" class="py-name" href="#" onclick="return doclink('link-117', 'editor_group', 'link-52');">editor_group</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">eg</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">eg</tt><tt class="py-op">.</tt><tt id="link-118" class="py-name"><a title="portality.formcontext.forms.Editorial.editor
+portality.models.editors.EditorGroup.editor
+portality.models.journal.JournalLikeObject.editor
+portality.view.editor
+portality.view.forms.EditorGroupForm.editor" class="py-name" href="#" onclick="return doclink('link-118', 'editor', 'link-46');">editor</a></tt> <tt class="py-op">==</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-119" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-119', 'id', 'link-28');">id</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">        <tt class="py-name">passed</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt id="link-120" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-120', 'role', 'link-48');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"editor"</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">    <tt class="py-comment"># if the user wasn't the editor or the owner of the editor group, unauthorised</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">passed</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt id="link-121" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-121', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">    <tt class="py-comment"># attempt to get a lock on the object</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-name">lockinfo</tt> <tt class="py-op">=</tt> <tt id="link-122" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-122', 'lock', 'link-16');">lock</a></tt><tt class="py-op">.</tt><tt id="link-123" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-123', 'lock', 'link-16');">lock</a></tt><tt class="py-op">(</tt><tt class="py-string">"suggestion"</tt><tt class="py-op">,</tt> <tt class="py-name">suggestion_id</tt><tt class="py-op">,</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-124" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-124', 'id', 'link-28');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt id="link-125" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-125', 'lock', 'link-16');">lock</a></tt><tt class="py-op">.</tt><tt id="link-126" class="py-name"><a title="portality.lock.Locked" class="py-name" href="#" onclick="return doclink('link-126', 'Locked', 'link-61');">Locked</a></tt> <tt class="py-keyword">as</tt> <tt id="link-127" class="py-name"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-127', 'l', 'link-62');">l</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-128" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-128', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-string">"editor/suggestion_locked.html"</tt><tt class="py-op">,</tt> <tt id="link-129" class="py-name" targets="Module portality.models.suggestion=portality.models.suggestion-module.html,Function portality.view.doaj.suggestion()=portality.view.doaj-module.html#suggestion"><a title="portality.models.suggestion
+portality.view.doaj.suggestion" class="py-name" href="#" onclick="return doclink('link-129', 'suggestion', 'link-129');">suggestion</a></tt><tt class="py-op">=</tt><tt id="link-130" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-130', 's', 'link-103');">s</a></tt><tt class="py-op">,</tt> <tt id="link-131" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-131', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt id="link-132" class="py-name"><a title="portality.datasets.l" class="py-name" href="#" onclick="return doclink('link-132', 'l', 'link-62');">l</a></tt><tt class="py-op">.</tt><tt id="link-133" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-133', 'lock', 'link-16');">lock</a></tt><tt class="py-op">,</tt> <tt class="py-name">edit_suggestion_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"GET"</tt><tt class="py-op">:</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt class="py-name">fc</tt> <tt class="py-op">=</tt> <tt id="link-134" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-134', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-135" class="py-name" targets="Class portality.formcontext.formcontext.ApplicationFormFactory=portality.formcontext.formcontext.ApplicationFormFactory-class.html"><a title="portality.formcontext.formcontext.ApplicationFormFactory" class="py-name" href="#" onclick="return doclink('link-135', 'ApplicationFormFactory', 'link-135');">ApplicationFormFactory</a></tt><tt class="py-op">.</tt><tt id="link-136" class="py-name"><a title="portality.formcontext.formcontext.ApplicationFormFactory.get_form_context
+portality.formcontext.formcontext.JournalFormFactory.get_form_context" class="py-name" href="#" onclick="return doclink('link-136', 'get_form_context', 'link-70');">get_form_context</a></tt><tt class="py-op">(</tt><tt id="link-137" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-137', 'role', 'link-48');">role</a></tt><tt class="py-op">=</tt><tt id="link-138" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-138', 'role', 'link-48');">role</a></tt><tt class="py-op">,</tt> <tt id="link-139" class="py-name"><a title="portality.formcontext.formcontext.FormContext.source
+portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications.source
+portality.scripts.inconsistent_journal_prov_application.source" class="py-name" href="#" onclick="return doclink('link-139', 'source', 'link-73');">source</a></tt><tt class="py-op">=</tt><tt id="link-140" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-140', 's', 'link-103');">s</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-141" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-141', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">edit_suggestion_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt id="link-142" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-142', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt class="py-name">lockinfo</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"POST"</tt><tt class="py-op">:</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-name">fc</tt> <tt class="py-op">=</tt> <tt id="link-143" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-143', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-144" class="py-name"><a title="portality.formcontext.formcontext.ApplicationFormFactory" class="py-name" href="#" onclick="return doclink('link-144', 'ApplicationFormFactory', 'link-135');">ApplicationFormFactory</a></tt><tt class="py-op">.</tt><tt id="link-145" class="py-name"><a title="portality.formcontext.formcontext.ApplicationFormFactory.get_form_context
+portality.formcontext.formcontext.JournalFormFactory.get_form_context" class="py-name" href="#" onclick="return doclink('link-145', 'get_form_context', 'link-70');">get_form_context</a></tt><tt class="py-op">(</tt><tt id="link-146" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-146', 'role', 'link-48');">role</a></tt><tt class="py-op">=</tt><tt id="link-147" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-147', 'role', 'link-48');">role</a></tt><tt class="py-op">,</tt> <tt id="link-148" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form_data" class="py-name" href="#" onclick="return doclink('link-148', 'form_data', 'link-81');">form_data</a></tt><tt class="py-op">=</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-149" class="py-name"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-149', 'form', 'link-82');">form</a></tt><tt class="py-op">,</tt> <tt id="link-150" class="py-name"><a title="portality.formcontext.formcontext.FormContext.source
+portality.migrate.20180106_1463_ongoing_updates.sync_journals_applications.source
+portality.scripts.inconsistent_journal_prov_application.source" class="py-name" href="#" onclick="return doclink('link-150', 'source', 'link-73');">source</a></tt><tt class="py-op">=</tt><tt id="link-151" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-151', 's', 'link-103');">s</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-152" class="py-name"><a title="portality.article.DOAJXWalk.validate
+portality.formcontext.formcontext.FormContext.validate
+portality.formcontext.formcontext.ManEdJournalReview.validate
+portality.formcontext.validate
+portality.formcontext.validate.ReservedUsernames.validate
+portality.lib.dataobj.DataObj.validate
+portality.lib.dataobj.validate" class="py-name" href="#" onclick="return doclink('link-152', 'validate', 'link-84');">validate</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">                <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-153" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.finalise
+portality.formcontext.formcontext.AssEdJournalReview.finalise
+portality.formcontext.formcontext.EditorApplicationReview.finalise
+portality.formcontext.formcontext.EditorJournalReview.finalise
+portality.formcontext.formcontext.FormContext.finalise
+portality.formcontext.formcontext.ManEdApplicationReview.finalise
+portality.formcontext.formcontext.ManEdJournalReview.finalise
+portality.formcontext.formcontext.PublicApplication.finalise
+portality.formcontext.formcontext.PublisherUpdateRequest.finalise
+portality.formcontext.formcontext.PublisherUpdateRequestReadOnly.finalise
+portality.formcontext.formcontext.ReadOnlyJournal.finalise" class="py-name" href="#" onclick="return doclink('link-153', 'finalise', 'link-85');">finalise</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">                <tt id="link-154" class="py-name"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-154', 'flash', 'link-0');">flash</a></tt><tt class="py-op">(</tt><tt class="py-string">'Application updated.'</tt><tt class="py-op">,</tt> <tt class="py-string">'success'</tt><tt class="py-op">)</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt id="link-155" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-155', 'a', 'link-87');">a</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-156" class="py-name"><a title="portality.formcontext.formcontext.FormContext.alert" class="py-name" href="#" onclick="return doclink('link-156', 'alert', 'link-88');">alert</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">                    <tt id="link-157" class="py-name"><a title="portality.ui.messages.Messages.flash_with_url
+portality.util.flash_with_url" class="py-name" href="#" onclick="return doclink('link-157', 'flash_with_url', 'link-22');">flash_with_url</a></tt><tt class="py-op">(</tt><tt id="link-158" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-158', 'a', 'link-87');">a</a></tt><tt class="py-op">,</tt> <tt class="py-string">"success"</tt><tt class="py-op">)</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt id="link-159" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-159', 'redirect', 'link-3');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"editor.suggestion_page"</tt><tt class="py-op">,</tt> <tt class="py-name">suggestion_id</tt><tt class="py-op">=</tt><tt id="link-160" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-160', 's', 'link-103');">s</a></tt><tt class="py-op">.</tt><tt id="link-161" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-161', 'id', 'link-28');">id</a></tt><tt class="py-op">,</tt> <tt class="py-name">_anchor</tt><tt class="py-op">=</tt><tt class="py-string">'done'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt id="link-162" class="py-name"><a title="portality.formcontext
+portality.formcontext.formcontext" class="py-name" href="#" onclick="return doclink('link-162', 'formcontext', 'link-18');">formcontext</a></tt><tt class="py-op">.</tt><tt id="link-163" class="py-name"><a title="portality.formcontext.FormContextException" class="py-name" href="#" onclick="return doclink('link-163', 'FormContextException', 'link-94');">FormContextException</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">                <tt id="link-164" class="py-name"><a title="portality.ui.messages.Messages.flash" class="py-name" href="#" onclick="return doclink('link-164', 'flash', 'link-0');">flash</a></tt><tt class="py-op">(</tt><tt class="py-name">e</tt><tt class="py-op">.</tt><tt id="link-165" class="py-name"><a title="portality.view.forms.ContactUs.message" class="py-name" href="#" onclick="return doclink('link-165', 'message', 'link-96');">message</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt id="link-166" class="py-name"><a title="portality.view.account.RedirectForm.redirect" class="py-name" href="#" onclick="return doclink('link-166', 'redirect', 'link-3');">redirect</a></tt><tt class="py-op">(</tt><tt class="py-name">url_for</tt><tt class="py-op">(</tt><tt class="py-string">"editor.suggestion_page"</tt><tt class="py-op">,</tt> <tt class="py-name">suggestion_id</tt><tt class="py-op">=</tt><tt id="link-167" class="py-name"><a title="portality.view.account.RegisterForm.s" class="py-name" href="#" onclick="return doclink('link-167', 's', 'link-103');">s</a></tt><tt class="py-op">.</tt><tt id="link-168" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-168', 'id', 'link-28');">id</a></tt><tt class="py-op">,</tt> <tt class="py-name">_anchor</tt><tt class="py-op">=</tt><tt class="py-string">'cannot_edit'</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">fc</tt><tt class="py-op">.</tt><tt id="link-169" class="py-name"><a title="portality.formcontext.formcontext.AssEdApplicationReview.render_template
+portality.formcontext.formcontext.AssEdJournalReview.render_template
+portality.formcontext.formcontext.EditorApplicationReview.render_template
+portality.formcontext.formcontext.EditorJournalReview.render_template
+portality.formcontext.formcontext.FormContext.render_template
+portality.formcontext.formcontext.ManEdApplicationReview.render_template
+portality.formcontext.formcontext.ManEdJournalReview.render_template
+portality.formcontext.formcontext.PublisherUpdateRequest.render_template
+portality.formcontext.formcontext.ReadOnlyJournal.render_template" class="py-name" href="#" onclick="return doclink('link-169', 'render_template', 'link-2');">render_template</a></tt><tt class="py-op">(</tt><tt class="py-name">edit_suggestion_page</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt id="link-170" class="py-name"><a title="portality.lock
+portality.lock.lock
+portality.models.lock" class="py-name" href="#" onclick="return doclink('link-170', 'lock', 'link-16');">lock</a></tt><tt class="py-op">=</tt><tt class="py-name">lockinfo</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:18 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

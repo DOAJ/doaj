@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.formcontext.formhelper</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.formcontext-module.html">Package&nbsp;formcontext</a> ::
+        Module&nbsp;formhelper
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.formcontext.formhelper-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.formcontext.formhelper-module.html">Module portality.formcontext.formhelper</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wtforms</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module portality.formcontext.fields=portality.formcontext.fields-module.html"><a title="portality.formcontext.fields" class="py-name" href="#" onclick="return doclink('link-0', 'fields', 'link-0');">fields</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-1', 'core', 'link-1');">core</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">UnboundField</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper"></a><div id="FormHelper-def"><a name="L3"></a><tt class="py-lineno">  3</tt> <a class="py-toggle" href="#" id="FormHelper-toggle" onclick="return toggle('FormHelper');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html">FormHelper</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="FormHelper-expanded"><a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper.render_field"></a><div id="FormHelper.render_field-def"><a name="L5"></a><tt class="py-lineno">  5</tt> <a class="py-toggle" href="#" id="FormHelper.render_field-toggle" onclick="return toggle('FormHelper.render_field');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#render_field">render_field</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper.render_field-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper.render_field-expanded"><a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line">        <tt class="py-comment"># FIXME: disabled = form_context.is_disabled(field_name)</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line">        <tt class="py-comment"># begin the frag</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">        <tt class="py-comment"># deal with the first error if it is relevant</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line">        <tt class="py-name">first_error</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Method portality.ordereddict.OrderedDict.pop()=portality.ordereddict.OrderedDict-class.html#pop"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-2', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"first_error"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">first_error</tt><tt class="py-op">:</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;a name="first_problem"&gt;&lt;/a&gt;'</tt> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line">        <tt class="py-comment"># call the correct render function on the field type</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method portality.models.lock.Lock.type()=portality.models.lock.Lock-class.html#type,Method portality.models.provenance.Provenance.type()=portality.models.provenance.Provenance-class.html#type,Variable portality.view.forms.MakeContinuation.type=portality.view.forms.MakeContinuation-class.html#type"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-3', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">"FormField"</tt><tt class="py-op">:</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper._form_field()=portality.formcontext.formhelper.FormHelper-class.html#_form_field"><a title="portality.formcontext.formhelper.FormHelper._form_field" class="py-name" href="#" onclick="return doclink('link-4', '_form_field', 'link-4');">_form_field</a></tt><tt class="py-op">(</tt><tt class="py-name">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-5', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">"FieldList"</tt><tt class="py-op">:</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper._field_list()=portality.formcontext.formhelper.FormHelper-class.html#_field_list"><a title="portality.formcontext.formhelper.FormHelper._field_list" class="py-name" href="#" onclick="return doclink('link-6', '_field_list', 'link-6');">_field_list</a></tt><tt class="py-op">(</tt><tt class="py-name">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">            <tt class="py-name">hidden</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-7', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"hidden"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">            <tt class="py-name">container_class</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-8', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"container_class"</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;div class="control-group'</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.errors()=portality.formcontext.formcontext.FormContext-class.html#errors"><a title="portality.formcontext.formcontext.FormContext.errors" class="py-name" href="#" onclick="return doclink('link-9', 'errors', 'link-9');">errors</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" error"</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">container_class</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" "</tt> <tt class="py-op">+</tt> <tt class="py-name">container_class</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'" id="'</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'-container"'</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">hidden</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">' style="display:none;"'</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&gt;"</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper._render_field()=portality.formcontext.formhelper.FormHelper-class.html#_render_field"><a title="portality.formcontext.formhelper.FormHelper._render_field" class="py-name" href="#" onclick="return doclink('link-10', '_render_field', 'link-10');">_render_field</a></tt><tt class="py-op">(</tt><tt class="py-name">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/div&gt;"</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper._form_field"></a><div id="FormHelper._form_field-def"><a name="L40"></a><tt class="py-lineno"> 40</tt> <a class="py-toggle" href="#" id="FormHelper._form_field-toggle" onclick="return toggle('FormHelper._form_field');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#_form_field">_form_field</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper._form_field-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper._form_field-expanded"><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-comment"># get the useful kwargs</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">hidden</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-11', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"hidden"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">render_subfields_horizontal</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-12', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"render_subfields_horizontal"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">container_class</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-13', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"container_class"</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-comment"># start the div for this group of fields</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;div class="control-group'</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="portality.formcontext.formcontext.FormContext.errors" class="py-name" href="#" onclick="return doclink('link-14', 'errors', 'link-9');">errors</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" error"</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">render_subfields_horizontal</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" row-fluid"</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">container_class</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" "</tt> <tt class="py-op">+</tt> <tt class="py-name">container_class</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'" id="'</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'-container"'</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">hidden</tt><tt class="py-op">:</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">' style="display:none;"'</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&gt;"</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-comment"># for each subfield, do the render</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">subfield</tt> <tt class="py-keyword">in</tt> <tt class="py-name">field</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">render_subfields_horizontal</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-15', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">'CSRFTokenField'</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">subfield</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">                <tt class="py-name">subfield_width</tt> <tt class="py-op">=</tt> <tt class="py-string">"3"</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                <tt class="py-name">remove</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">kwarg</tt><tt class="py-op">,</tt> <tt class="py-name">val</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Method portality.ordereddict.OrderedDict.iteritems()=portality.ordereddict.OrderedDict-class.html#iteritems"><a title="portality.ordereddict.OrderedDict.iteritems" class="py-name" href="#" onclick="return doclink('link-16', 'iteritems', 'link-16');">iteritems</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">kwarg</tt> <tt class="py-op">==</tt> <tt class="py-string">'subfield_display-'</tt> <tt class="py-op">+</tt> <tt class="py-name">subfield</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                        <tt class="py-name">subfield_width</tt> <tt class="py-op">=</tt> <tt class="py-name">val</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                        <tt class="py-name">remove</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">kwarg</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">rm</tt> <tt class="py-keyword">in</tt> <tt class="py-name">remove</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                    <tt class="py-keyword">del</tt> <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-name">rm</tt><tt class="py-op">]</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;div class="span'</tt> <tt class="py-op">+</tt> <tt class="py-name">subfield_width</tt> <tt class="py-op">+</tt> <tt class="py-string">' nested-field-container"&gt;'</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name"><a title="portality.formcontext.formhelper.FormHelper._render_field" class="py-name" href="#" onclick="return doclink('link-17', '_render_field', 'link-10');">_render_field</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-name">maximise_width</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/div&gt;"</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="portality.formcontext.formhelper.FormHelper._render_field" class="py-name" href="#" onclick="return doclink('link-18', '_render_field', 'link-10');">_render_field</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-comment"># close off the div and return</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/div&gt;"</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div><a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper._field_list"></a><div id="FormHelper._field_list-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="FormHelper._field_list-toggle" onclick="return toggle('FormHelper._field_list');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#_field_list">_field_list</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper._field_list-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper._field_list-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-comment"># for each subfield, do the render</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">subfield</tt> <tt class="py-keyword">in</tt> <tt class="py-name">field</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">subfield</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-19', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">"FormField"</tt><tt class="py-op">:</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper.render_field()=portality.formcontext.formhelper.FormHelper-class.html#render_field"><a title="portality.formcontext.formhelper.FormHelper.render_field" class="py-name" href="#" onclick="return doclink('link-20', 'render_field', 'link-20');">render_field</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">                <tt class="py-name">hidden</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-21', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"hidden"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;div class="control-group'</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="portality.formcontext.formcontext.FormContext.errors" class="py-name" href="#" onclick="return doclink('link-22', 'errors', 'link-9');">errors</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">                    <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">" error"</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'" id="'</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'-container"'</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">hidden</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">                    <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">' style="display:none;"'</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&gt;"</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="portality.formcontext.formhelper.FormHelper._render_field" class="py-name" href="#" onclick="return doclink('link-23', '_render_field', 'link-10');">_render_field</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/div&gt;"</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper._render_field"></a><div id="FormHelper._render_field-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="FormHelper._render_field-toggle" onclick="return toggle('FormHelper._render_field');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#_render_field">_render_field</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper._render_field-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper._render_field-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt class="py-comment"># interesting arguments from keywords</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">extra_input_fields</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"extra_input_fields"</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-name">q_num</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-24', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"q_num"</tt><tt class="py-op">,</tt> <tt class="py-name">None</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">maximise_width</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-25', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"maximise_width"</tt><tt class="py-op">,</tt> <tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-name">clazz</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"class"</tt><tt class="py-op">,</tt> <tt class="py-string">""</tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-26', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">'CSRFTokenField'</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">value</tt><tt class="py-op">:</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">""</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-comment"># If this is the kind of field that requires a label, give it one</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-27', 'type', 'link-3');">type</a></tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-string">'SubmitField'</tt><tt class="py-op">,</tt> <tt class="py-string">'HiddenField'</tt><tt class="py-op">,</tt> <tt class="py-string">'CSRFTokenField'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">q_num</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;a class="animated" name="'</tt> <tt class="py-op">+</tt> <tt class="py-name">q_num</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;&lt;/a&gt;'</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;label class="control-label" for="'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">q_num</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;a class="animated orange" href="#'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'-container" title="Link to this question" tabindex="-1"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">q_num</tt> <tt class="py-op">+</tt> <tt class="py-string">')&lt;/a&gt;&amp;nbsp;'</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">flags</tt><tt class="py-op">.</tt><tt class="py-name">required</tt> <tt class="py-keyword">or</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">flags</tt><tt class="py-op">.</tt><tt class="py-name">display_required_star</tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&amp;nbsp;&lt;span class="red"&gt;*&lt;/span&gt;'</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/label&gt;"</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-comment"># determine if this is a checkbox</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-name">is_checkbox</tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-op">(</tt><tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-28', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">"SelectMultipleField"</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">                <tt class="py-keyword">and</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">option_widget</tt><tt class="py-op">.</tt><tt class="py-name">__class__</tt><tt class="py-op">.</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'CheckboxInput'</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">                <tt class="py-keyword">and</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Variable portality.formcontext.fields.TagListField.widget=portality.formcontext.fields.TagListField-class.html#widget,Variable portality.formcontext.fields.URLField.widget=portality.formcontext.fields.URLField-class.html#widget"><a title="portality.formcontext.fields.TagListField.widget
+portality.formcontext.fields.URLField.widget" class="py-name" href="#" onclick="return doclink('link-29', 'widget', 'link-29');">widget</a></tt><tt class="py-op">.</tt><tt class="py-name">__class__</tt><tt class="py-op">.</tt><tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'ListWidget'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line">            <tt class="py-name">is_checkbox</tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-name">extra_class</tt> <tt class="py-op">=</tt> <tt class="py-string">""</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">is_checkbox</tt><tt class="py-op">:</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line">            <tt class="py-name">extra_class</tt> <tt class="py-op">+=</tt> <tt class="py-string">" checkboxes"</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;div class="controls'</tt> <tt class="py-op">+</tt> <tt class="py-name">extra_class</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-30', 'type', 'link-3');">type</a></tt> <tt class="py-op">==</tt> <tt class="py-string">"RadioField"</tt><tt class="py-op">:</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">subfield</tt> <tt class="py-keyword">in</tt> <tt class="py-name">field</tt><tt class="py-op">:</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper._render_radio()=portality.formcontext.formhelper.FormHelper-class.html#_render_radio"><a title="portality.formcontext.formhelper.FormHelper._render_radio" class="py-name" href="#" onclick="return doclink('link-31', '_render_radio', 'link-31');">_render_radio</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-name">is_checkbox</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;ul id="'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">subfield</tt> <tt class="py-keyword">in</tt> <tt class="py-name">field</tt><tt class="py-op">:</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Method portality.formcontext.formhelper.FormHelper._render_checkbox()=portality.formcontext.formhelper.FormHelper-class.html#_render_checkbox"><a title="portality.formcontext.formhelper.FormHelper._render_checkbox" class="py-name" href="#" onclick="return doclink('link-32', '_render_checkbox', 'link-32');">_render_checkbox</a></tt><tt class="py-op">(</tt><tt class="py-name">subfield</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/ul&gt;"</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">maximise_width</tt><tt class="py-op">:</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">                <tt class="py-name">clazz</tt> <tt class="py-op">+=</tt> <tt class="py-string">" span11"</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">                <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">"class"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">clazz</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> <tt class="py-comment"># FIXME: this is probably going to do some weird stuff</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt class="py-comment"># FIXME: field.value isn't always set</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-comment">#if field.value in extra_input_fields.keys():</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line">            <tt class="py-comment">#    extra_input_fields[field.value](**{"class" : "extra_input_field"})</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="portality.formcontext.formcontext.FormContext.errors" class="py-name" href="#" onclick="return doclink('link-33', 'errors', 'link-9');">errors</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;ul class="errors"&gt;'</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt id="link-34" class="py-name" targets="Method portality.models.uploads.FileUpload.error()=portality.models.uploads.FileUpload-class.html#error"><a title="portality.models.uploads.FileUpload.error" class="py-name" href="#" onclick="return doclink('link-34', 'error', 'link-34');">error</a></tt> <tt class="py-keyword">in</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="portality.formcontext.formcontext.FormContext.errors" class="py-name" href="#" onclick="return doclink('link-35', 'errors', 'link-9');">errors</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;li&gt;'</tt> <tt class="py-op">+</tt> <tt id="link-36" class="py-name"><a title="portality.models.uploads.FileUpload.error" class="py-name" href="#" onclick="return doclink('link-36', 'error', 'link-34');">error</a></tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/li&gt;'</tt> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/ul&gt;"</tt> </tt>
+<a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">description</tt><tt class="py-op">:</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;p class="help-block"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">description</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/p&gt;'</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line"> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/div&gt;"</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div><a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper._render_radio"></a><div id="FormHelper._render_radio-def"><a name="L168"></a><tt class="py-lineno">168</tt> <a class="py-toggle" href="#" id="FormHelper._render_radio-toggle" onclick="return toggle('FormHelper._render_radio');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#_render_radio">_render_radio</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper._render_radio-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper._render_radio-expanded"><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line">        <tt class="py-name">extra_input_fields</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-37', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"extra_input_fields"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">'&lt;label class="radio" for="'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;span class="label-text"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/span&gt;'</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line"> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> <tt class="py-keyword">in</tt> <tt class="py-name">extra_input_fields</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name" targets="Method portality.ordereddict.OrderedDict.keys()=portality.ordereddict.OrderedDict-class.html#keys"><a title="portality.ordereddict.OrderedDict.keys" class="py-name" href="#" onclick="return doclink('link-38', 'keys', 'link-38');">keys</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">            <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&amp;nbsp;"</tt> <tt class="py-op">+</tt> <tt class="py-name">extra_input_fields</tt><tt class="py-op">[</tt><tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">]</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-op">{</tt><tt class="py-string">"class"</tt> <tt class="py-op">:</tt> <tt class="py-string">"extra_input_field"</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/label&gt;"</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div><a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt>
+<a name="FormHelper._render_checkbox"></a><div id="FormHelper._render_checkbox-def"><a name="L182"></a><tt class="py-lineno">182</tt> <a class="py-toggle" href="#" id="FormHelper._render_checkbox-toggle" onclick="return toggle('FormHelper._render_checkbox');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.formhelper.FormHelper-class.html#_render_checkbox">_render_checkbox</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">field</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="FormHelper._render_checkbox-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="FormHelper._render_checkbox-expanded"><a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-name">extra_input_fields</tt> <tt class="py-op">=</tt> <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-39', 'pop', 'link-2');">pop</a></tt><tt class="py-op">(</tt><tt class="py-string">"extra_input_fields"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-string">"&lt;li&gt;"</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-name">field</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">'&lt;label for="'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">short_name</tt> <tt class="py-op">+</tt> <tt class="py-string">'"&gt;'</tt> <tt class="py-op">+</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> <tt class="py-op">+</tt> <tt class="py-string">'&lt;/label&gt;'</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt> <tt class="py-keyword">in</tt> <tt class="py-name">extra_input_fields</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="portality.ordereddict.OrderedDict.keys" class="py-name" href="#" onclick="return doclink('link-40', 'keys', 'link-38');">keys</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line">            <tt class="py-name">eif</tt> <tt class="py-op">=</tt> <tt class="py-name">extra_input_fields</tt><tt class="py-op">[</tt><tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">]</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">isinstance</tt><tt class="py-op">(</tt><tt class="py-name">eif</tt><tt class="py-op">,</tt> <tt class="py-name">UnboundField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line">                <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&amp;nbsp;"</tt> <tt class="py-op">+</tt> <tt class="py-name">extra_input_fields</tt><tt class="py-op">[</tt><tt class="py-name">field</tt><tt class="py-op">.</tt><tt class="py-name">label</tt><tt class="py-op">.</tt><tt class="py-name">text</tt><tt class="py-op">]</tt><tt class="py-op">(</tt><tt class="py-op">**</tt><tt class="py-op">{</tt><tt class="py-string">"class"</tt> <tt class="py-op">:</tt> <tt class="py-string">"extra_input_field"</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line"> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">        <tt class="py-name">frag</tt> <tt class="py-op">+=</tt> <tt class="py-string">"&lt;/li&gt;"</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">frag</tt> </tt>
+</div></div><a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:11 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

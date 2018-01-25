@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.background</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        Module&nbsp;background
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.background-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.background-module.html">Module portality.background</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask_login</tt> <tt class="py-keyword">import</tt> <tt class="py-name">login_user</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-1', 'core', 'link-1');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-2', 'app', 'link-2');">app</a></tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-0');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Package portality.models=portality.models-module.html"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-4', 'models', 'link-4');">models</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Module portality.app_email=portality.app_email-module.html"><a title="portality.app_email" class="py-name" href="#" onclick="return doclink('link-5', 'app_email', 'link-5');">app_email</a></tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-6" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-6', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Module portality.dao=portality.dao-module.html"><a title="portality.dao" class="py-name" href="#" onclick="return doclink('link-7', 'dao', 'link-7');">dao</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Class portality.dao.Facetview2=portality.dao.Facetview2-class.html"><a title="portality.dao.Facetview2" class="py-name" href="#" onclick="return doclink('link-8', 'Facetview2', 'link-8');">Facetview2</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">traceback</tt> </tt>
+<a name="BackgroundException"></a><div id="BackgroundException-def"><a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt> <a class="py-toggle" href="#" id="BackgroundException-toggle" onclick="return toggle('BackgroundException');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.BackgroundException-class.html">BackgroundException</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundException-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundException-expanded"><a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="RetryException"></a><div id="RetryException-def"><a name="L13"></a><tt class="py-lineno"> 13</tt> <a class="py-toggle" href="#" id="RetryException-toggle" onclick="return toggle('RetryException');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.RetryException-class.html">RetryException</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="RetryException-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="RetryException-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundSummary"></a><div id="BackgroundSummary-def"><a name="L16"></a><tt class="py-lineno"> 16</tt> <a class="py-toggle" href="#" id="BackgroundSummary-toggle" onclick="return toggle('BackgroundSummary');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.BackgroundSummary-class.html">BackgroundSummary</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundSummary-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundSummary-expanded"><a name="BackgroundSummary.__init__"></a><div id="BackgroundSummary.__init__-def"><a name="L17"></a><tt class="py-lineno"> 17</tt> <a class="py-toggle" href="#" id="BackgroundSummary.__init__-toggle" onclick="return toggle('BackgroundSummary.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundSummary-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">job_id</tt><tt class="py-op">,</tt> <tt class="py-param">affected</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">error</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundSummary.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundSummary.__init__-expanded"><a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">job_id</tt> <tt class="py-op">=</tt> <tt class="py-name">job_id</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">affected</tt> <tt class="py-op">=</tt> <tt class="py-name">affected</tt> <tt class="py-keyword">if</tt> <tt class="py-name">affected</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">else</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Method portality.models.uploads.FileUpload.error()=portality.models.uploads.FileUpload-class.html#error"><a title="portality.models.uploads.FileUpload.error" class="py-name" href="#" onclick="return doclink('link-9', 'error', 'link-9');">error</a></tt> <tt class="py-op">=</tt> <tt id="link-10" class="py-name"><a title="portality.models.uploads.FileUpload.error" class="py-name" href="#" onclick="return doclink('link-10', 'error', 'link-9');">error</a></tt> </tt>
+</div><a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundSummary.as_dict"></a><div id="BackgroundSummary.as_dict-def"><a name="L22"></a><tt class="py-lineno"> 22</tt> <a class="py-toggle" href="#" id="BackgroundSummary.as_dict-toggle" onclick="return toggle('BackgroundSummary.as_dict');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundSummary-class.html#as_dict">as_dict</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundSummary.as_dict-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundSummary.as_dict-expanded"><a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-op">{</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">            <tt class="py-string">"job_id"</tt> <tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">job_id</tt><tt class="py-op">,</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">            <tt class="py-string">"affected"</tt> <tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">affected</tt><tt class="py-op">,</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">            <tt class="py-string">"error"</tt> <tt class="py-op">:</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="portality.models.uploads.FileUpload.error" class="py-name" href="#" onclick="return doclink('link-11', 'error', 'link-9');">error</a></tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt class="py-op">}</tt> </tt>
+</div></div><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundApi"></a><div id="BackgroundApi-def"><a name="L29"></a><tt class="py-lineno"> 29</tt> <a class="py-toggle" href="#" id="BackgroundApi-toggle" onclick="return toggle('BackgroundApi');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.BackgroundApi-class.html">BackgroundApi</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundApi-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundApi-expanded"><a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundApi.execute"></a><div id="BackgroundApi.execute-def"><a name="L32"></a><tt class="py-lineno"> 32</tt> <a class="py-toggle" href="#" id="BackgroundApi.execute-toggle" onclick="return toggle('BackgroundApi.execute');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundApi-class.html#execute">execute</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">background_task</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundApi.execute-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundApi.execute-expanded"><a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">job</tt> <tt class="py-op">=</tt> <tt class="py-name">background_task</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Method portality.background.BackgroundTask.background_job()=portality.background.BackgroundTask-class.html#background_job"><a title="portality.background.BackgroundTask.background_job" class="py-name" href="#" onclick="return doclink('link-12', 'background_job', 'link-12');">background_job</a></tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-name">ctx</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-name">acc</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Method portality.models.background.BackgroundJob.user()=portality.models.background.BackgroundJob-class.html#user,Method portality.models.provenance.Provenance.user()=portality.models.provenance.Provenance-class.html#user"><a title="portality.models.background.BackgroundJob.user
+portality.models.provenance.Provenance.user" class="py-name" href="#" onclick="return doclink('link-13', 'user', 'link-13');">user</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">            <tt class="py-name">ctx</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-14', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">test_request_context</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">            <tt class="py-name">ctx</tt><tt class="py-op">.</tt><tt class="py-name">push</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">            <tt class="py-name">acc</tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-15', 'models', 'link-4');">models</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Class portality.models.account.Account=portality.models.account.Account-class.html"><a title="portality.models.account.Account" class="py-name" href="#" onclick="return doclink('link-16', 'Account', 'link-16');">Account</a></tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-17', 'pull', 'link-17');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="portality.models.background.BackgroundJob.user
+portality.models.provenance.Provenance.user" class="py-name" href="#" onclick="return doclink('link-18', 'user', 'link-13');">user</a></tt><tt class="py-op">)</tt>     <tt class="py-comment"># FIXME: what happens when this is the "system" user</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">acc</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">                <tt class="py-name">login_user</tt><tt class="py-op">(</tt><tt class="py-name">acc</tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method portality.models.background.BackgroundJob.start()=portality.models.background.BackgroundJob-class.html#start,Variable portality.view.forms.ArticleForm.start=portality.view.forms.ArticleForm-class.html#start"><a title="portality.models.background.BackgroundJob.start
+portality.view.forms.ArticleForm.start" class="py-name" href="#" onclick="return doclink('link-19', 'start', 'link-19');">start</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Method portality.models.background.BackgroundJob.add_audit_message()=portality.models.background.BackgroundJob-class.html#add_audit_message"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-20', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Job Started"</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">            <tt class="py-name">background_task</tt><tt class="py-op">.</tt><tt id="link-21" class="py-name" targets="Method portality.background.BackgroundTask.run()=portality.background.BackgroundTask-class.html#run,Method portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.run()=portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask-class.html#run,Method portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.run()=portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask-class.html#run,Method portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.run()=portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask-class.html#run,Method portality.tasks.ingestarticles.IngestArticlesBackgroundTask.run()=portality.tasks.ingestarticles.IngestArticlesBackgroundTask-class.html#run,Method portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.run()=portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask-class.html#run,Method portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.run()=portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask-class.html#run,Method portality.tasks.journal_csv.JournalCSVBackgroundTask.run()=portality.tasks.journal_csv.JournalCSVBackgroundTask-class.html#run,Method portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.run()=portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask-class.html#run,Method portality.tasks.read_news.ReadNewsBackgroundTask.run()=portality.tasks.read_news.ReadNewsBackgroundTask-class.html#run,Method portality.tasks.reporting.ReportingBackgroundTask.run()=portality.tasks.reporting.ReportingBackgroundTask-class.html#run,Method portality.tasks.sitemap.SitemapBackgroundTask.run()=portality.tasks.sitemap.SitemapBackgroundTask-class.html#run,Method portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.run()=portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask-class.html#run"><a title="portality.background.BackgroundTask.run
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.run
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.run
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.run
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.run
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.run
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.run
+portality.tasks.journal_csv.JournalCSVBackgroundTask.run
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.run
+portality.tasks.read_news.ReadNewsBackgroundTask.run
+portality.tasks.reporting.ReportingBackgroundTask.run
+portality.tasks.sitemap.SitemapBackgroundTask.run
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.run" class="py-name" href="#" onclick="return doclink('link-21', 'run', 'link-21');">run</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt id="link-22" class="py-name" targets="Class portality.background.RetryException=portality.background.RetryException-class.html"><a title="portality.background.RetryException" class="py-name" href="#" onclick="return doclink('link-22', 'RetryException', 'link-22');">RetryException</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Method portality.models.background.BackgroundJob.reference()=portality.models.background.BackgroundJob-class.html#reference"><a title="portality.models.background.BackgroundJob.reference" class="py-name" href="#" onclick="return doclink('link-23', 'reference', 'link-23');">reference</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">                <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="portality.models.background.BackgroundJob.reference" class="py-name" href="#" onclick="return doclink('link-24', 'reference', 'link-23');">reference</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-name">retries</tt> <tt class="py-op">=</tt> <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name"><a title="portality.models.background.BackgroundJob.reference" class="py-name" href="#" onclick="return doclink('link-25', 'reference', 'link-23');">reference</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"retries"</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name"><a title="portality.models.background.BackgroundJob.reference" class="py-name" href="#" onclick="return doclink('link-26', 'reference', 'link-23');">reference</a></tt><tt class="py-op">[</tt><tt class="py-string">"retries"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">retries</tt> <tt class="py-op">+</tt> <tt class="py-number">1</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Method portality.clcsv.ClCsv.save()=portality.clcsv.ClCsv-class.html#save,Method portality.dao.DomainObject.save()=portality.dao.DomainObject-class.html#save,Method portality.models.article.Article.save()=portality.models.article.Article-class.html#save,Method portality.models.history.History.save()=portality.models.history.History-class.html#save,Method portality.models.journal.Journal.save()=portality.models.journal.Journal-class.html#save,Method portality.models.lcc.LCC.save()=portality.models.lcc.LCC-class.html#save,Method portality.models.provenance.Provenance.save()=portality.models.provenance.Provenance-class.html#save,Method portality.models.suggestion.Suggestion.save()=portality.models.suggestion.Suggestion-class.html#save,Function portality.scripts.prepare_delete_request.save()=portality.scripts.prepare_delete_request-module.html#save"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-27', 'save', 'link-27');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Method portality.models.background.BackgroundJob.fail()=portality.models.background.BackgroundJob-class.html#fail"><a title="portality.models.background.BackgroundJob.fail" class="py-name" href="#" onclick="return doclink('link-28', 'fail', 'link-28');">fail</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-29', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Error in Job Run"</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-30', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Caught in job runner during run: "</tt> <tt class="py-op">+</tt> <tt class="py-name">traceback</tt><tt class="py-op">.</tt><tt class="py-name">format_exc</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-31', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Job Run Completed"</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-32" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-32', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Cleanup Started"</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-name">background_task</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Method portality.background.BackgroundTask.cleanup()=portality.background.BackgroundTask-class.html#cleanup,Method portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.cleanup()=portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask-class.html#cleanup,Method portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.cleanup()=portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask-class.html#cleanup,Method portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.cleanup()=portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask-class.html#cleanup,Method portality.tasks.ingestarticles.IngestArticlesBackgroundTask.cleanup()=portality.tasks.ingestarticles.IngestArticlesBackgroundTask-class.html#cleanup,Method portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.cleanup()=portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask-class.html#cleanup,Method portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.cleanup()=portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask-class.html#cleanup,Method portality.tasks.journal_csv.JournalCSVBackgroundTask.cleanup()=portality.tasks.journal_csv.JournalCSVBackgroundTask-class.html#cleanup,Method portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.cleanup()=portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask-class.html#cleanup,Method portality.tasks.read_news.ReadNewsBackgroundTask.cleanup()=portality.tasks.read_news.ReadNewsBackgroundTask-class.html#cleanup,Method portality.tasks.reporting.ReportingBackgroundTask.cleanup()=portality.tasks.reporting.ReportingBackgroundTask-class.html#cleanup,Method portality.tasks.sitemap.SitemapBackgroundTask.cleanup()=portality.tasks.sitemap.SitemapBackgroundTask-class.html#cleanup,Method portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.cleanup()=portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask-class.html#cleanup"><a title="portality.background.BackgroundTask.cleanup
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.cleanup
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.cleanup
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.cleanup
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.cleanup
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.cleanup
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.cleanup
+portality.tasks.journal_csv.JournalCSVBackgroundTask.cleanup
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.cleanup
+portality.tasks.read_news.ReadNewsBackgroundTask.cleanup
+portality.tasks.reporting.ReportingBackgroundTask.cleanup
+portality.tasks.sitemap.SitemapBackgroundTask.cleanup
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.cleanup" class="py-name" href="#" onclick="return doclink('link-33', 'cleanup', 'link-33');">cleanup</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-34" class="py-name"><a title="portality.models.background.BackgroundJob.fail" class="py-name" href="#" onclick="return doclink('link-34', 'fail', 'link-28');">fail</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-35" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-35', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Error in Cleanup Run"</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-36', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Caught in job runner during cleanup: "</tt> <tt class="py-op">+</tt> <tt class="py-name">traceback</tt><tt class="py-op">.</tt><tt class="py-name">format_exc</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-37" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-37', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Job Cleanup Completed"</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-38" class="py-name"><a title="portality.models.background.BackgroundJob.add_audit_message" class="py-name" href="#" onclick="return doclink('link-38', 'add_audit_message', 'link-20');">add_audit_message</a></tt><tt class="py-op">(</tt><tt class="py-string">"Job Finished"</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name" targets="Method portality.models.background.BackgroundJob.is_failed()=portality.models.background.BackgroundJob-class.html#is_failed"><a title="portality.models.background.BackgroundJob.is_failed" class="py-name" href="#" onclick="return doclink('link-39', 'is_failed', 'link-39');">is_failed</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name" targets="Method portality.models.background.BackgroundJob.success()=portality.models.background.BackgroundJob-class.html#success"><a title="portality.models.background.BackgroundJob.success" class="py-name" href="#" onclick="return doclink('link-40', 'success', 'link-40');">success</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="portality.clcsv.ClCsv.save
+portality.dao.DomainObject.save
+portality.models.article.Article.save
+portality.models.history.History.save
+portality.models.journal.Journal.save
+portality.models.lcc.LCC.save
+portality.models.provenance.Provenance.save
+portality.models.suggestion.Suggestion.save
+portality.scripts.prepare_delete_request.save" class="py-name" href="#" onclick="return doclink('link-41', 'save', 'link-27');">save</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line"> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-comment"># send a confirmation email to the user if the account exists</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">acc</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">acc</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method portality.models.account.Account.email()=portality.models.account.Account-class.html#email,Function portality.tasks.reporting.email()=portality.tasks.reporting-module.html#email,Variable portality.view.forms.ContactUs.email=portality.view.forms.ContactUs-class.html#email"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-42', 'email', 'link-42');">email</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-name">acc</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Class Method portality.authorise.Authorise.has_role()=portality.authorise.Authorise-class.html#has_role,Method portality.models.account.Account.has_role()=portality.models.account.Account-class.html#has_role"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-43', 'has_role', 'link-43');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">"admin"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt id="link-44" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.template()=portality.formcontext.formcontext.FormContext-class.html#template"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-44', 'template', 'link-44');">template</a></tt> <tt class="py-op">=</tt> <tt class="py-string">"email/admin_background_job_finished.txt"</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                <tt id="link-45" class="py-name" targets="Variable portality.formcontext.forms.ApplicationSubject.subject=portality.formcontext.forms.ApplicationSubject-class.html#subject,Variable portality.formcontext.forms.JournalSubject.subject=portality.formcontext.forms.JournalSubject-class.html#subject,Variable portality.view.forms.ContactUs.subject=portality.view.forms.ContactUs-class.html#subject"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-45', 'subject', 'link-45');">subject</a></tt> <tt class="py-op">=</tt> <tt id="link-46" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-46', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-47" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-47', 'config', 'link-47');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"SERVICE_NAME"</tt><tt class="py-op">,</tt> <tt class="py-string">""</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-string">" - background job finished"</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                <tt class="py-name">url_root</tt> <tt class="py-op">=</tt> <tt id="link-48" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-48', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-49', 'config', 'link-47');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"BASE_URL"</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">url_root</tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">                    <tt class="py-name">url_root</tt> <tt class="py-op">+=</tt> <tt class="py-string">"/"</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                <tt class="py-name">to</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">acc</tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="portality.models.account.Account.email
+portality.tasks.reporting.email
+portality.view.forms.ContactUs.email" class="py-name" href="#" onclick="return doclink('link-50', 'email', 'link-42');">email</a></tt><tt class="py-op">]</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">                <tt class="py-name">fro</tt> <tt class="py-op">=</tt> <tt id="link-51" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-51', 'app', 'link-2');">app</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-52', 'config', 'link-47');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'SYSTEM_EMAIL_FROM'</tt><tt class="py-op">,</tt> <tt class="py-string">'feedback@doaj.org'</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">                <tt id="link-53" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.lock.LockQuery.query()=portality.lock.LockQuery-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.provenance.ResourceIDQuery.query()=portality.models.provenance.ResourceIDQuery-class.html#query,Method portality.models.suggestion.CurrentJournalQuery.query()=portality.models.suggestion.CurrentJournalQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.RelatedJournalQuery.query()=portality.models.suggestion.RelatedJournalQuery-class.html#query,Method portality.models.suggestion.StatusQuery.query()=portality.models.suggestion.StatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Method portality.tasks.reporting.ContentByDate.query()=portality.tasks.reporting.ContentByDate-class.html#query,Method portality.tasks.reporting.ProvenanceList.query()=portality.tasks.reporting.ProvenanceList-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-53', 'query', 'link-53');">query</a></tt> <tt class="py-op">=</tt> <tt id="link-54" class="py-name"><a title="portality.dao.Facetview2" class="py-name" href="#" onclick="return doclink('link-54', 'Facetview2', 'link-8');">Facetview2</a></tt><tt class="py-op">.</tt><tt id="link-55" class="py-name" targets="Static Method portality.dao.DomainObject.make_query()=portality.dao.DomainObject-class.html#make_query,Static Method portality.dao.Facetview2.make_query()=portality.dao.Facetview2-class.html#make_query"><a title="portality.dao.DomainObject.make_query
+portality.dao.Facetview2.make_query" class="py-name" href="#" onclick="return doclink('link-55', 'make_query', 'link-55');">make_query</a></tt><tt class="py-op">(</tt><tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-56" class="py-name" targets="Method portality.dao.DomainObject.id()=portality.dao.DomainObject-class.html#id,Variable portality.migrate.st2cl.cluster2.id=portality.migrate.st2cl.cluster2-module.html#id,Method portality.models.journal.JournalLikeObject.id()=portality.models.journal.JournalLikeObject-class.html#id"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-56', 'id', 'link-56');">id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                <tt id="link-57" class="py-name" targets="Method portality.blog.News.url()=portality.blog.News-class.html#url,Variable portality.formcontext.forms.JournalInformation.url=portality.formcontext.forms.JournalInformation-class.html#url"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-57', 'url', 'link-57');">url</a></tt> <tt class="py-op">=</tt> <tt class="py-name">url_root</tt> <tt class="py-op">+</tt> <tt class="py-string">"admin/background_jobs?source="</tt> <tt class="py-op">+</tt> <tt id="link-58" class="py-name"><a title="portality.dao.Facetview2" class="py-name" href="#" onclick="return doclink('link-58', 'Facetview2', 'link-8');">Facetview2</a></tt><tt class="py-op">.</tt><tt id="link-59" class="py-name" targets="Static Method portality.dao.Facetview2.url_encode_query()=portality.dao.Facetview2-class.html#url_encode_query"><a title="portality.dao.Facetview2.url_encode_query" class="py-name" href="#" onclick="return doclink('link-59', 'url_encode_query', 'link-59');">url_encode_query</a></tt><tt class="py-op">(</tt><tt id="link-60" class="py-name"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-60', 'query', 'link-53');">query</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">                <tt id="link-61" class="py-name"><a title="portality.app_email" class="py-name" href="#" onclick="return doclink('link-61', 'app_email', 'link-5');">app_email</a></tt><tt class="py-op">.</tt><tt id="link-62" class="py-name" targets="Function portality.app_email.send_mail()=portality.app_email-module.html#send_mail"><a title="portality.app_email.send_mail" class="py-name" href="#" onclick="return doclink('link-62', 'send_mail', 'link-62');">send_mail</a></tt><tt class="py-op">(</tt><tt class="py-name">to</tt><tt class="py-op">=</tt><tt class="py-name">to</tt><tt class="py-op">,</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                                    <tt class="py-name">fro</tt><tt class="py-op">=</tt><tt class="py-name">fro</tt><tt class="py-op">,</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">                                    <tt id="link-63" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-63', 'subject', 'link-45');">subject</a></tt><tt class="py-op">=</tt><tt id="link-64" class="py-name"><a title="portality.formcontext.forms.ApplicationSubject.subject
+portality.formcontext.forms.JournalSubject.subject
+portality.view.forms.ContactUs.subject" class="py-name" href="#" onclick="return doclink('link-64', 'subject', 'link-45');">subject</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">                                    <tt class="py-name">template_name</tt><tt class="py-op">=</tt><tt id="link-65" class="py-name"><a title="portality.formcontext.formcontext.FormContext.template" class="py-name" href="#" onclick="return doclink('link-65', 'template', 'link-44');">template</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                                    <tt class="py-name">job_id</tt><tt class="py-op">=</tt><tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-66" class="py-name"><a title="portality.dao.DomainObject.id
+portality.migrate.st2cl.cluster2.id
+portality.models.journal.JournalLikeObject.id" class="py-name" href="#" onclick="return doclink('link-66', 'id', 'link-56');">id</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">                                    <tt id="link-67" class="py-name" targets="Method portality.models.background.BackgroundJob.action()=portality.models.background.BackgroundJob-class.html#action,Method portality.models.provenance.Provenance.action()=portality.models.provenance.Provenance-class.html#action"><a title="portality.models.background.BackgroundJob.action
+portality.models.provenance.Provenance.action" class="py-name" href="#" onclick="return doclink('link-67', 'action', 'link-67');">action</a></tt><tt class="py-op">=</tt><tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-68" class="py-name"><a title="portality.models.background.BackgroundJob.action
+portality.models.provenance.Provenance.action" class="py-name" href="#" onclick="return doclink('link-68', 'action', 'link-67');">action</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">                                    <tt id="link-69" class="py-name" targets="Method portality.models.background.BackgroundJob.status()=portality.models.background.BackgroundJob-class.html#status,Method portality.models.uploads.FileUpload.status()=portality.models.uploads.FileUpload-class.html#status"><a title="portality.models.background.BackgroundJob.status
+portality.models.uploads.FileUpload.status" class="py-name" href="#" onclick="return doclink('link-69', 'status', 'link-69');">status</a></tt><tt class="py-op">=</tt><tt class="py-name">job</tt><tt class="py-op">.</tt><tt id="link-70" class="py-name"><a title="portality.models.background.BackgroundJob.status
+portality.models.uploads.FileUpload.status" class="py-name" href="#" onclick="return doclink('link-70', 'status', 'link-69');">status</a></tt><tt class="py-op">,</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">                                    <tt class="py-name">background_job_url</tt><tt class="py-op">=</tt><tt id="link-71" class="py-name"><a title="portality.blog.News.url
+portality.formcontext.forms.JournalInformation.url" class="py-name" href="#" onclick="return doclink('link-71', 'url', 'link-57');">url</a></tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                                    <tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">ctx</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">            <tt class="py-name">ctx</tt><tt class="py-op">.</tt><tt id="link-72" class="py-name" targets="Method portality.ordereddict.OrderedDict.pop()=portality.ordereddict.OrderedDict-class.html#pop"><a title="portality.ordereddict.OrderedDict.pop" class="py-name" href="#" onclick="return doclink('link-72', 'pop', 'link-72');">pop</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundTask"></a><div id="BackgroundTask-def"><a name="L102"></a><tt class="py-lineno">102</tt> <a class="py-toggle" href="#" id="BackgroundTask-toggle" onclick="return toggle('BackgroundTask');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html">BackgroundTask</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="BackgroundTask-expanded"><a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-docstring">    All background tasks should extend from this object and override at least the following methods:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"><tt class="py-docstring">    - run</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"><tt class="py-docstring">    - cleanup</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring">    - prepare (class method)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt id="link-73" class="py-name" targets="Variable portality.background.BackgroundTask.__action__=portality.background.BackgroundTask-class.html#__action__,Variable portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.__action__=portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask-class.html#__action__,Variable portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.__action__=portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask-class.html#__action__,Variable portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.__action__=portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask-class.html#__action__,Variable portality.tasks.ingestarticles.IngestArticlesBackgroundTask.__action__=portality.tasks.ingestarticles.IngestArticlesBackgroundTask-class.html#__action__,Variable portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.__action__=portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask-class.html#__action__,Variable portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.__action__=portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask-class.html#__action__,Variable portality.tasks.journal_csv.JournalCSVBackgroundTask.__action__=portality.tasks.journal_csv.JournalCSVBackgroundTask-class.html#__action__,Variable portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.__action__=portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask-class.html#__action__,Variable portality.tasks.read_news.ReadNewsBackgroundTask.__action__=portality.tasks.read_news.ReadNewsBackgroundTask-class.html#__action__,Variable portality.tasks.reporting.ReportingBackgroundTask.__action__=portality.tasks.reporting.ReportingBackgroundTask-class.html#__action__,Variable portality.tasks.sitemap.SitemapBackgroundTask.__action__=portality.tasks.sitemap.SitemapBackgroundTask-class.html#__action__,Variable portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.__action__=portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask-class.html#__action__"><a title="portality.background.BackgroundTask.__action__
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.__action__
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.__action__
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.__action__
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.__action__
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.__action__
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.__action__
+portality.tasks.journal_csv.JournalCSVBackgroundTask.__action__
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.__action__
+portality.tasks.read_news.ReadNewsBackgroundTask.__action__
+portality.tasks.reporting.ReportingBackgroundTask.__action__
+portality.tasks.sitemap.SitemapBackgroundTask.__action__
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.__action__" class="py-name" href="#" onclick="return doclink('link-73', '__action__', 'link-73');">__action__</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">    <tt class="py-string">""" static member variable defining the name of this task """</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundTask.__init__"></a><div id="BackgroundTask.__init__-def"><a name="L115"></a><tt class="py-lineno">115</tt> <a class="py-toggle" href="#" id="BackgroundTask.__init__-toggle" onclick="return toggle('BackgroundTask.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">background_job</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.__init__-expanded"><a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_background_job</tt> <tt class="py-op">=</tt> <tt id="link-74" class="py-name"><a title="portality.background.BackgroundTask.background_job" class="py-name" href="#" onclick="return doclink('link-74', 'background_job', 'link-12');">background_job</a></tt> </tt>
+</div><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">property</tt> </tt>
+<a name="BackgroundTask.background_job"></a><div id="BackgroundTask.background_job-def"><a name="L119"></a><tt class="py-lineno">119</tt> <a class="py-toggle" href="#" id="BackgroundTask.background_job-toggle" onclick="return toggle('BackgroundTask.background_job');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#background_job">background_job</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.background_job-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.background_job-expanded"><a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_background_job</tt> </tt>
+</div><a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundTask.run"></a><div id="BackgroundTask.run-def"><a name="L122"></a><tt class="py-lineno">122</tt> <a class="py-toggle" href="#" id="BackgroundTask.run-toggle" onclick="return toggle('BackgroundTask.run');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#run">run</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.run-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.run-expanded"><a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-docstring">        Execute the task as specified by the background_job</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"><tt class="py-docstring">        :return:</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line"> </tt>
+<a name="BackgroundTask.cleanup"></a><div id="BackgroundTask.cleanup-def"><a name="L129"></a><tt class="py-lineno">129</tt> <a class="py-toggle" href="#" id="BackgroundTask.cleanup-toggle" onclick="return toggle('BackgroundTask.cleanup');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#cleanup">cleanup</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.cleanup-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.cleanup-expanded"><a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"><tt class="py-docstring">        Cleanup after a successful OR failed run of the task</tt> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line"><tt class="py-docstring">        :return:</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundTask.prepare"></a><div id="BackgroundTask.prepare-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="BackgroundTask.prepare-toggle" onclick="return toggle('BackgroundTask.prepare');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#prepare">prepare</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">username</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.prepare-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.prepare-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"><tt class="py-docstring">        Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"><tt class="py-docstring">        or fail with a suitable exception</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"><tt class="py-docstring">        :param username: the user creating the job</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line"><tt class="py-docstring">        :param kwargs: arbitrary keyword arguments pertaining to this task type</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line"><tt class="py-docstring">        :return: a BackgroundJob instance representing this task</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line"> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundTask.submit"></a><div id="BackgroundTask.submit-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="BackgroundTask.submit-toggle" onclick="return toggle('BackgroundTask.submit');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#submit">submit</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">background_job</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.submit-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.submit-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line"><tt class="py-docstring">        Submit the specified BackgroundJob to the background queue</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"><tt class="py-docstring">        :param background_job: the BackgroundJob instance</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"><tt class="py-docstring">        :return:</tt> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">        <tt class="py-keyword">raise</tt> <tt class="py-name">NotImplementedError</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundTask.get_param"></a><div id="BackgroundTask.get_param-def"><a name="L159"></a><tt class="py-lineno">159</tt> <a class="py-toggle" href="#" id="BackgroundTask.get_param-toggle" onclick="return toggle('BackgroundTask.get_param');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#get_param">get_param</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">params</tt><tt class="py-op">,</tt> <tt class="py-param">param_name</tt><tt class="py-op">,</tt> <tt class="py-param">default</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.get_param-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.get_param-expanded"><a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt id="link-75" class="py-name" targets="Method portality.models.background.BackgroundJob.params()=portality.models.background.BackgroundJob-class.html#params"><a title="portality.models.background.BackgroundJob.params" class="py-name" href="#" onclick="return doclink('link-75', 'params', 'link-75');">params</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">'{}__{}'</tt><tt class="py-op">.</tt><tt id="link-76" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-76', 'format', 'link-76');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="portality.background.BackgroundTask.__action__
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.__action__
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.__action__
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.__action__
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.__action__
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.__action__
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.__action__
+portality.tasks.journal_csv.JournalCSVBackgroundTask.__action__
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.__action__
+portality.tasks.read_news.ReadNewsBackgroundTask.__action__
+portality.tasks.reporting.ReportingBackgroundTask.__action__
+portality.tasks.sitemap.SitemapBackgroundTask.__action__
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.__action__" class="py-name" href="#" onclick="return doclink('link-77', '__action__', 'link-73');">__action__</a></tt><tt class="py-op">,</tt> <tt class="py-name">param_name</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt id="link-78" class="py-name" targets="Method portality.api.v1.common.DataObjectJsonEncoder.default()=portality.api.v1.common.DataObjectJsonEncoder-class.html#default,Method portality.api.v1.common.ModelJsonEncoder.default()=portality.api.v1.common.ModelJsonEncoder-class.html#default"><a title="portality.api.v1.common.DataObjectJsonEncoder.default
+portality.api.v1.common.ModelJsonEncoder.default" class="py-name" href="#" onclick="return doclink('link-78', 'default', 'link-78');">default</a></tt><tt class="py-op">)</tt> </tt>
+</div><a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundTask.set_param"></a><div id="BackgroundTask.set_param-def"><a name="L163"></a><tt class="py-lineno">163</tt> <a class="py-toggle" href="#" id="BackgroundTask.set_param-toggle" onclick="return toggle('BackgroundTask.set_param');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#set_param">set_param</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">params</tt><tt class="py-op">,</tt> <tt class="py-param">param_name</tt><tt class="py-op">,</tt> <tt class="py-param">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.set_param-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.set_param-expanded"><a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt id="link-79" class="py-name"><a title="portality.models.background.BackgroundJob.params" class="py-name" href="#" onclick="return doclink('link-79', 'params', 'link-75');">params</a></tt><tt class="py-op">[</tt><tt class="py-string">'{}__{}'</tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-80', 'format', 'link-76');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-81" class="py-name"><a title="portality.background.BackgroundTask.__action__
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.__action__
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.__action__
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.__action__
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.__action__
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.__action__
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.__action__
+portality.tasks.journal_csv.JournalCSVBackgroundTask.__action__
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.__action__
+portality.tasks.read_news.ReadNewsBackgroundTask.__action__
+portality.tasks.reporting.ReportingBackgroundTask.__action__
+portality.tasks.sitemap.SitemapBackgroundTask.__action__
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.__action__" class="py-name" href="#" onclick="return doclink('link-81', '__action__', 'link-73');">__action__</a></tt><tt class="py-op">,</tt> <tt class="py-name">param_name</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">value</tt> </tt>
+</div><a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="BackgroundTask.set_reference"></a><div id="BackgroundTask.set_reference-def"><a name="L167"></a><tt class="py-lineno">167</tt> <a class="py-toggle" href="#" id="BackgroundTask.set_reference-toggle" onclick="return toggle('BackgroundTask.set_reference');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.BackgroundTask-class.html#set_reference">set_reference</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">refs</tt><tt class="py-op">,</tt> <tt class="py-param">ref_name</tt><tt class="py-op">,</tt> <tt class="py-param">value</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="BackgroundTask.set_reference-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="BackgroundTask.set_reference-expanded"><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">refs</tt><tt class="py-op">[</tt><tt class="py-string">'{}__{}'</tt><tt class="py-op">.</tt><tt id="link-82" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-82', 'format', 'link-76');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-83" class="py-name"><a title="portality.background.BackgroundTask.__action__
+portality.tasks.article_bulk_delete.ArticleBulkDeleteBackgroundTask.__action__
+portality.tasks.article_cleanup_sync.ArticleCleanupSyncBackgroundTask.__action__
+portality.tasks.async_workflow_notifications.AsyncWorkflowBackgroundTask.__action__
+portality.tasks.ingestarticles.IngestArticlesBackgroundTask.__action__
+portality.tasks.journal_bulk_delete.JournalBulkDeleteBackgroundTask.__action__
+portality.tasks.journal_bulk_edit.JournalBulkEditBackgroundTask.__action__
+portality.tasks.journal_csv.JournalCSVBackgroundTask.__action__
+portality.tasks.journal_in_out_doaj.SetInDOAJBackgroundTask.__action__
+portality.tasks.read_news.ReadNewsBackgroundTask.__action__
+portality.tasks.reporting.ReportingBackgroundTask.__action__
+portality.tasks.sitemap.SitemapBackgroundTask.__action__
+portality.tasks.suggestion_bulk_edit.SuggestionBulkEditBackgroundTask.__action__" class="py-name" href="#" onclick="return doclink('link-83', '__action__', 'link-73');">__action__</a></tt><tt class="py-op">,</tt> <tt class="py-name">ref_name</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-name">value</tt> </tt>
+</div></div><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"> </tt>
+<a name="AdminBackgroundTask"></a><div id="AdminBackgroundTask-def"><a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt> <a class="py-toggle" href="#" id="AdminBackgroundTask-toggle" onclick="return toggle('AdminBackgroundTask');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.background.AdminBackgroundTask-class.html">AdminBackgroundTask</a><tt class="py-op">(</tt><tt class="py-base-class">BackgroundTask</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AdminBackgroundTask-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="AdminBackgroundTask-expanded"><a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="AdminBackgroundTask.check_admin_privilege"></a><div id="AdminBackgroundTask.check_admin_privilege-def"><a name="L173"></a><tt class="py-lineno">173</tt> <a class="py-toggle" href="#" id="AdminBackgroundTask.check_admin_privilege-toggle" onclick="return toggle('AdminBackgroundTask.check_admin_privilege');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.AdminBackgroundTask-class.html#check_admin_privilege">check_admin_privilege</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">username</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AdminBackgroundTask.check_admin_privilege-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AdminBackgroundTask.check_admin_privilege-expanded"><a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line">        <tt id="link-84" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.a()=portality.journalcsv.Journal2QuestionXwalk-class.html#a"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-84', 'a', 'link-84');">a</a></tt> <tt class="py-op">=</tt> <tt id="link-85" class="py-name"><a title="portality.models" class="py-name" href="#" onclick="return doclink('link-85', 'models', 'link-4');">models</a></tt><tt class="py-op">.</tt><tt id="link-86" class="py-name"><a title="portality.models.account.Account" class="py-name" href="#" onclick="return doclink('link-86', 'Account', 'link-16');">Account</a></tt><tt class="py-op">.</tt><tt id="link-87" class="py-name"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-87', 'pull', 'link-17');">pull</a></tt><tt class="py-op">(</tt><tt id="link-88" class="py-name" targets="Method portality.models.lock.Lock.username()=portality.models.lock.Lock-class.html#username,Variable portality.view.account.LoginForm.username=portality.view.account.LoginForm-class.html#username,Function portality.view.account.username()=portality.view.account-module.html#username"><a title="portality.models.lock.Lock.username
+portality.view.account.LoginForm.username
+portality.view.account.username" class="py-name" href="#" onclick="return doclink('link-88', 'username', 'link-88');">username</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-89" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-89', 'a', 'link-84');">a</a></tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line">            <tt class="py-comment"># very unlikely, as they would have had to log in to get to here..</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-90" class="py-name" targets="Class portality.background.BackgroundException=portality.background.BackgroundException-class.html"><a title="portality.background.BackgroundException" class="py-name" href="#" onclick="return doclink('link-90', 'BackgroundException', 'link-90');">BackgroundException</a></tt><tt class="py-op">(</tt><tt class="py-string">'Admin account that is being used to prepare this job does not exist.'</tt><tt class="py-op">)</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt id="link-91" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.a" class="py-name" href="#" onclick="return doclink('link-91', 'a', 'link-84');">a</a></tt><tt class="py-op">.</tt><tt id="link-92" class="py-name"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-92', 'has_role', 'link-43');">has_role</a></tt><tt class="py-op">(</tt><tt class="py-string">'admin'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line">            <tt class="py-keyword">raise</tt> <tt id="link-93" class="py-name"><a title="portality.background.BackgroundException" class="py-name" href="#" onclick="return doclink('link-93', 'BackgroundException', 'link-90');">BackgroundException</a></tt><tt class="py-op">(</tt><tt class="py-string">'Account {} is not permitted to run this background task.'</tt><tt class="py-op">.</tt><tt id="link-94" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-94', 'format', 'link-76');">format</a></tt><tt class="py-op">(</tt><tt id="link-95" class="py-name"><a title="portality.models.lock.Lock.username
+portality.view.account.LoginForm.username
+portality.view.account.username" class="py-name" href="#" onclick="return doclink('link-95', 'username', 'link-88');">username</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">    <tt class="py-decorator">@</tt><tt class="py-decorator">classmethod</tt> </tt>
+<a name="AdminBackgroundTask.prepare"></a><div id="AdminBackgroundTask.prepare-def"><a name="L183"></a><tt class="py-lineno">183</tt> <a class="py-toggle" href="#" id="AdminBackgroundTask.prepare-toggle" onclick="return toggle('AdminBackgroundTask.prepare');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.background.AdminBackgroundTask-class.html#prepare">prepare</a><tt class="py-op">(</tt><tt class="py-param">cls</tt><tt class="py-op">,</tt> <tt class="py-param">username</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="AdminBackgroundTask.prepare-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="AdminBackgroundTask.prepare-expanded"><a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt class="py-name">cls</tt><tt class="py-op">.</tt><tt id="link-96" class="py-name" targets="Class Method portality.background.AdminBackgroundTask.check_admin_privilege()=portality.background.AdminBackgroundTask-class.html#check_admin_privilege"><a title="portality.background.AdminBackgroundTask.check_admin_privilege" class="py-name" href="#" onclick="return doclink('link-96', 'check_admin_privilege', 'link-96');">check_admin_privilege</a></tt><tt class="py-op">(</tt><tt id="link-97" class="py-name"><a title="portality.models.lock.Lock.username
+portality.view.account.LoginForm.username
+portality.view.account.username" class="py-name" href="#" onclick="return doclink('link-97', 'username', 'link-88');">username</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:20 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

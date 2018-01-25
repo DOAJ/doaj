@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.view.query</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.view-module.html">Package&nbsp;view</a> ::
+        Module&nbsp;query
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.view.query-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.view.query-module.html">Module portality.view.query</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Method portality.dao.DomainObject.json()=portality.dao.DomainObject-class.html#json,Method portality.lib.dataobj.DataObj.json()=portality.lib.dataobj.DataObj-class.html#json"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-0', 'json', 'link-0');">json</a></tt><tt class="py-op">,</tt> <tt class="py-name">urllib2</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment"># from esprit.models import Query</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">,</tt> <tt class="py-name">request</tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Function portality.scripts.sync_doaj_records.abort()=portality.scripts.sync_doaj_records-module.html#abort"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-1', 'abort', 'link-1');">abort</a></tt><tt class="py-op">,</tt> <tt class="py-name">make_response</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">flask</tt><tt class="py-op">.</tt><tt class="py-name">ext</tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Function portality.view.account.login()=portality.view.account-module.html#login"><a title="portality.view.account.login" class="py-name" href="#" onclick="return doclink('link-2', 'login', 'link-2');">login</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">current_user</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-3" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-3', 'portality', 'link-3');">portality</a></tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Module portality.core=portality.core-module.html"><a title="portality.core" class="py-name" href="#" onclick="return doclink('link-4', 'core', 'link-4');">core</a></tt> <tt class="py-keyword">import</tt> <tt id="link-5" class="py-name" targets="Module portality.app=portality.app-module.html,Variable portality.core.app=portality.core-module.html#app"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-5', 'app', 'link-5');">app</a></tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-6" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-6', 'portality', 'link-3');">portality</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name" targets="Package portality.lib=portality.lib-module.html"><a title="portality.lib" class="py-name" href="#" onclick="return doclink('link-7', 'lib', 'link-7');">lib</a></tt> <tt class="py-keyword">import</tt> <tt id="link-8" class="py-name" targets="Module portality.lib.plugin=portality.lib.plugin-module.html"><a title="portality.lib.plugin" class="py-name" href="#" onclick="return doclink('link-8', 'plugin', 'link-8');">plugin</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-9" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-9', 'portality', 'link-3');">portality</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Module portality.util=portality.util-module.html"><a title="portality.util" class="py-name" href="#" onclick="return doclink('link-10', 'util', 'link-10');">util</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable portality.view.account.blueprint=portality.view.account-module.html#blueprint,Variable portality.view.admin.blueprint=portality.view.admin-module.html#blueprint,Variable portality.view.api_v1.blueprint=portality.view.api_v1-module.html#blueprint,Variable portality.view.atom.blueprint=portality.view.atom-module.html#blueprint,Variable portality.view.doaj.blueprint=portality.view.doaj-module.html#blueprint,Variable portality.view.doajservices.blueprint=portality.view.doajservices-module.html#blueprint,Variable portality.view.editor.blueprint=portality.view.editor-module.html#blueprint,Variable portality.view.hooks.blueprint=portality.view.hooks-module.html#blueprint,Variable portality.view.media.blueprint=portality.view.media-module.html#blueprint,Variable portality.view.oaipmh.blueprint=portality.view.oaipmh-module.html#blueprint,Variable portality.view.openurl.blueprint=portality.view.openurl-module.html#blueprint,Variable portality.view.publisher.blueprint=portality.view.publisher-module.html#blueprint,Variable portality.view.query.blueprint=portality.view.query-module.html#blueprint,Variable portality.view.stream.blueprint=portality.view.stream-module.html#blueprint"><a title="portality.view.account.blueprint
+portality.view.admin.blueprint
+portality.view.api_v1.blueprint
+portality.view.atom.blueprint
+portality.view.doaj.blueprint
+portality.view.doajservices.blueprint
+portality.view.editor.blueprint
+portality.view.hooks.blueprint
+portality.view.media.blueprint
+portality.view.oaipmh.blueprint
+portality.view.openurl.blueprint
+portality.view.publisher.blueprint
+portality.view.query.blueprint
+portality.view.stream.blueprint" class="py-name" href="#" onclick="return doclink('link-11', 'blueprint', 'link-11');">blueprint</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Blueprint</tt><tt class="py-op">(</tt><tt class="py-string">'query'</tt><tt class="py-op">,</tt> <tt class="py-name">__name__</tt><tt class="py-op">)</tt> </tt>
+<a name="QueryFilterException"></a><div id="QueryFilterException-def"><a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt> <a class="py-toggle" href="#" id="QueryFilterException-toggle" onclick="return toggle('QueryFilterException');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.view.query.QueryFilterException-class.html">QueryFilterException</a><tt class="py-op">(</tt><tt class="py-base-class">Exception</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="QueryFilterException-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="QueryFilterException-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
+</div><a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="query"></a><div id="query-def"><a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># pass queries direct to index. POST only for receipt of complex query objects</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">blueprint</tt><tt class="py-op">.</tt><tt class="py-name">route</tt><tt class="py-op">(</tt><tt class="py-string">'/&lt;path:path&gt;'</tt><tt class="py-op">,</tt> <tt class="py-name">methods</tt><tt class="py-op">=</tt><tt class="py-op">[</tt><tt class="py-string">'GET'</tt><tt class="py-op">,</tt><tt class="py-string">'POST'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-decorator">@</tt><tt class="py-decorator">util</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Function portality.util.jsonp()=portality.util-module.html#jsonp"><a title="portality.util.jsonp" class="py-name" href="#" onclick="return doclink('link-12', 'jsonp', 'link-12');">jsonp</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt> <a class="py-toggle" href="#" id="query-toggle" onclick="return toggle('query');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query-module.html#query">query</a><tt class="py-op">(</tt><tt class="py-param">path</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="query-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="query-expanded"><a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line">    <tt class="py-comment"># get the bits out of the path, and ensure that we have at least some parts to work with</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">    <tt class="py-name">pathparts</tt> <tt class="py-op">=</tt> <tt class="py-name">path</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-string">'/'</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">'/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">pathparts</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt id="link-13" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-13', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">400</tt><tt class="py-op">)</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">    <tt class="py-comment"># load the query route config and the path we are being requested for</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">    <tt class="py-name">qrs</tt> <tt class="py-op">=</tt> <tt id="link-14" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-14', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Variable portality.scripts.sync_doaj_records.config=portality.scripts.sync_doaj_records-module.html#config"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-15', 'config', 'link-15');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"QUERY_ROUTE"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">    <tt class="py-name">frag</tt> <tt class="py-op">=</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">path</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">    <tt class="py-comment"># get the configuration for this url route</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">    <tt class="py-name">route_cfg</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">key</tt> <tt class="py-keyword">in</tt> <tt class="py-name">qrs</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">frag</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt> <tt class="py-op">+</tt> <tt class="py-name">key</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">            <tt class="py-name">route_cfg</tt> <tt class="py-op">=</tt> <tt class="py-name">qrs</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-name">key</tt><tt class="py-op">)</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">            <tt class="py-keyword">break</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-comment"># if no route cfg is found this is not authorised</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">route_cfg</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-16', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-comment"># get the configuration for the specific index being queried</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">    <tt id="link-17" class="py-name" targets="Function portality.view.account.index()=portality.view.account-module.html#index,Function portality.view.admin.index()=portality.view.admin-module.html#index,Function portality.view.editor.index()=portality.view.editor-module.html#index,Function portality.view.publisher.index()=portality.view.publisher-module.html#index"><a title="portality.view.account.index
+portality.view.admin.index
+portality.view.editor.index
+portality.view.publisher.index" class="py-name" href="#" onclick="return doclink('link-17', 'index', 'link-17');">index</a></tt> <tt class="py-op">=</tt> <tt class="py-name">pathparts</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">    <tt class="py-name">cfg</tt> <tt class="py-op">=</tt> <tt class="py-name">route_cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt id="link-18" class="py-name"><a title="portality.view.account.index
+portality.view.admin.index
+portality.view.editor.index
+portality.view.publisher.index" class="py-name" href="#" onclick="return doclink('link-18', 'index', 'link-17');">index</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">cfg</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt id="link-19" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-19', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">    <tt class="py-comment"># does the user have to be authenticated</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"auth"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">current_user</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">or</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt class="py-name">is_anonymous</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt id="link-20" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-20', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-comment"># if so, does the user require a role</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt id="link-21" class="py-name" targets="Method portality.models.account.Account.role()=portality.models.account.Account-class.html#role"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-21', 'role', 'link-21');">role</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"roles"</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt id="link-22" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-22', 'role', 'link-21');">role</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">current_user</tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Class Method portality.authorise.Authorise.has_role()=portality.authorise.Authorise-class.html#has_role,Method portality.models.account.Account.has_role()=portality.models.account.Account-class.html#has_role"><a title="portality.authorise.Authorise.has_role
+portality.models.account.Account.has_role" class="py-name" href="#" onclick="return doclink('link-23', 'has_role', 'link-23');">has_role</a></tt><tt class="py-op">(</tt><tt id="link-24" class="py-name"><a title="portality.models.account.Account.role" class="py-name" href="#" onclick="return doclink('link-24', 'role', 'link-21');">role</a></tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">            <tt id="link-25" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-25', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">    <tt class="py-comment"># get the name of the model that will handle this query, and then look up</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">    <tt class="py-comment"># the class that will handle it</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">    <tt class="py-name">dao_name</tt> <tt class="py-op">=</tt> <tt class="py-name">cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"dao"</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-name">dao_klass</tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="portality.lib.plugin" class="py-name" href="#" onclick="return doclink('link-26', 'plugin', 'link-8');">plugin</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Function portality.lib.plugin.load_class()=portality.lib.plugin-module.html#load_class"><a title="portality.lib.plugin.load_class" class="py-name" href="#" onclick="return doclink('link-27', 'load_class', 'link-27');">load_class</a></tt><tt class="py-op">(</tt><tt class="py-name">dao_name</tt><tt class="py-op">)</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">dao_klass</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt id="link-28" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-28', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">404</tt><tt class="py-op">)</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-comment"># now work out what kind of operation is being asked for</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">    <tt class="py-comment"># if _search is specified, then this is a normal query</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt id="link-29" class="py-name" targets="Module portality.models.search=portality.models.search-module.html,Function portality.view.doaj.search()=portality.view.doaj-module.html#search"><a title="portality.models.search
+portality.view.doaj.search" class="py-name" href="#" onclick="return doclink('link-29', 'search', 'link-29');">search</a></tt> <tt class="py-op">=</tt> <tt class="py-name">False</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">    <tt class="py-name">by_id</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">pathparts</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">1</tt> <tt class="py-keyword">or</tt> <tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">pathparts</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">2</tt> <tt class="py-keyword">and</tt> <tt class="py-name">pathparts</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> <tt class="py-op">==</tt> <tt class="py-string">"_search"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt id="link-30" class="py-name"><a title="portality.models.search
+portality.view.doaj.search" class="py-name" href="#" onclick="return doclink('link-30', 'search', 'link-29');">search</a></tt> <tt class="py-op">=</tt> <tt class="py-name">True</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">pathparts</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"POST"</tt><tt class="py-op">:</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">            <tt id="link-31" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-31', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">401</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-name">by_id</tt> <tt class="py-op">=</tt> <tt class="py-name">pathparts</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt id="link-32" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-32', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">400</tt><tt class="py-op">)</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">    <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">by_id</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-name">rec</tt> <tt class="py-op">=</tt> <tt class="py-name">dao_klass</tt><tt class="py-op">.</tt><tt id="link-33" class="py-name" targets="Class Method portality.dao.DomainObject.pull()=portality.dao.DomainObject-class.html#pull,Method portality.models.oaipmh.OAIPMHArticle.pull()=portality.models.oaipmh.OAIPMHArticle-class.html#pull,Method portality.models.oaipmh.OAIPMHJournal.pull()=portality.models.oaipmh.OAIPMHJournal-class.html#pull"><a title="portality.dao.DomainObject.pull
+portality.models.oaipmh.OAIPMHArticle.pull
+portality.models.oaipmh.OAIPMHJournal.pull" class="py-name" href="#" onclick="return doclink('link-33', 'pull', 'link-33');">pull</a></tt><tt class="py-op">(</tt><tt class="py-name">by_id</tt><tt class="py-op">,</tt> <tt class="py-name">wrap</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">make_response</tt><tt class="py-op">(</tt><tt class="py-name">rec</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt id="link-34" class="py-name"><a title="portality.models.search
+portality.view.doaj.search" class="py-name" href="#" onclick="return doclink('link-34', 'search', 'link-29');">search</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">        <tt id="link-35" class="py-name" targets="Class Method portality.journalcsv.Journal2QuestionXwalk.q()=portality.journalcsv.Journal2QuestionXwalk-class.html#q"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-35', 'q', 'link-35');">q</a></tt> <tt class="py-op">=</tt> <tt id="link-36" class="py-name" targets="Class portality.view.query.Query=portality.view.query.Query-class.html"><a title="portality.view.query.Query" class="py-name" href="#" onclick="return doclink('link-36', 'Query', 'link-36');">Query</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line"> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-comment"># if this is a POST, read the contents out of the body</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">method</tt> <tt class="py-op">==</tt> <tt class="py-string">"POST"</tt><tt class="py-op">:</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">            <tt id="link-37" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-37', 'q', 'link-35');">q</a></tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="portality.view.query.Query" class="py-name" href="#" onclick="return doclink('link-38', 'Query', 'link-36');">Query</a></tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-39', 'json', 'link-0');">json</a></tt><tt class="py-op">)</tt> <tt class="py-keyword">if</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-40" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-40', 'json', 'link-0');">json</a></tt> <tt class="py-keyword">else</tt> <tt id="link-41" class="py-name"><a title="portality.view.query.Query" class="py-name" href="#" onclick="return doclink('link-41', 'Query', 'link-36');">Query</a></tt><tt class="py-op">(</tt><tt class="py-name">dict</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.form()=portality.formcontext.formcontext.FormContext-class.html#form,Function portality.lib.modeldoc.form()=portality.lib.modeldoc-module.html#form"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-42', 'form', 'link-42');">form</a></tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-43" class="py-name" targets="Method portality.ordereddict.OrderedDict.keys()=portality.ordereddict.OrderedDict-class.html#keys"><a title="portality.ordereddict.OrderedDict.keys" class="py-name" href="#" onclick="return doclink('link-43', 'keys', 'link-43');">keys</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> <tt class="py-comment"># FIXME: does this actually work?</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-comment"># if there is a q param, make it into a query string query</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-comment">#elif 'q' in request.values:</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-comment">#    s = request.values['q']</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-comment">#    op = request.values.get('default_operator')</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-comment">#    q.query_string(s, op)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-comment"># if there is a source param, load the json from it</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-keyword">elif</tt> <tt class="py-string">'source'</tt> <tt class="py-keyword">in</tt> <tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-44" class="py-name" targets="Method portality.ordereddict.OrderedDict.values()=portality.ordereddict.OrderedDict-class.html#values"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-44', 'values', 'link-44');">values</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">            <tt id="link-45" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-45', 'q', 'link-35');">q</a></tt> <tt class="py-op">=</tt> <tt id="link-46" class="py-name"><a title="portality.view.query.Query" class="py-name" href="#" onclick="return doclink('link-46', 'Query', 'link-36');">Query</a></tt><tt class="py-op">(</tt><tt id="link-47" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-47', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">loads</tt><tt class="py-op">(</tt><tt class="py-name">urllib2</tt><tt class="py-op">.</tt><tt class="py-name">unquote</tt><tt class="py-op">(</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt id="link-48" class="py-name"><a title="portality.ordereddict.OrderedDict.values" class="py-name" href="#" onclick="return doclink('link-48', 'values', 'link-44');">values</a></tt><tt class="py-op">[</tt><tt class="py-string">'source'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-comment"># now run the query through the filters</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-name">filters</tt> <tt class="py-op">=</tt> <tt id="link-49" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-49', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt id="link-50" class="py-name"><a title="portality.scripts.sync_doaj_records.config" class="py-name" href="#" onclick="return doclink('link-50', 'config', 'link-15');">config</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"QUERY_FILTERS"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-name">filter_names</tt> <tt class="py-op">=</tt> <tt class="py-name">cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"query_filters"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">filter_name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">filter_names</tt><tt class="py-op">:</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">            <tt class="py-comment"># because of back-compat, we have to do a few tricky things here...</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">            <tt class="py-comment"># filter may be the name of a filter in the list of query filters</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">            <tt class="py-name">fn</tt> <tt class="py-op">=</tt> <tt id="link-51" class="py-name"><a title="portality.lib.plugin" class="py-name" href="#" onclick="return doclink('link-51', 'plugin', 'link-8');">plugin</a></tt><tt class="py-op">.</tt><tt id="link-52" class="py-name" targets="Function portality.lib.plugin.load_function()=portality.lib.plugin-module.html#load_function"><a title="portality.lib.plugin.load_function" class="py-name" href="#" onclick="return doclink('link-52', 'load_function', 'link-52');">load_function</a></tt><tt class="py-op">(</tt><tt class="py-name">filters</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-name">filter_name</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">fn</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt id="link-53" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-53', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-54" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.info()=portality.formcontext.formcontext.FormContext-class.html#info"><a title="portality.formcontext.formcontext.FormContext.info" class="py-name" href="#" onclick="return doclink('link-54', 'info', 'link-54');">info</a></tt><tt class="py-op">(</tt><tt class="py-string">"Unable to load query filter for {x}"</tt><tt class="py-op">.</tt><tt id="link-55" class="py-name" targets="Function portality.lib.dates.format()=portality.lib.dates-module.html#format,Function portality.lib.modeldoc.format()=portality.lib.modeldoc-module.html#format,Method portality.models.journal.JournalBibJSON.format()=portality.models.journal.JournalBibJSON-class.html#format,Class Method portality.view.oaipmh.DateFormat.format()=portality.view.oaipmh.DateFormat-class.html#format"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-55', 'format', 'link-55');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">filter_name</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">                <tt id="link-56" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-56', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">500</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">            <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">                <tt class="py-name">fn</tt><tt class="py-op">(</tt><tt id="link-57" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-57', 'q', 'link-35');">q</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt> <tt id="link-58" class="py-name" targets="Class portality.view.query.QueryFilterException=portality.view.query.QueryFilterException-class.html"><a title="portality.view.query.QueryFilterException" class="py-name" href="#" onclick="return doclink('link-58', 'QueryFilterException', 'link-58');">QueryFilterException</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">                <tt id="link-59" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-59', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">400</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">            <tt class="py-keyword">except</tt><tt class="py-op">:</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">                <tt id="link-60" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-60', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">500</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-comment"># send the query</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">dao_klass</tt><tt class="py-op">.</tt><tt id="link-61" class="py-name" targets="Method portality.api.v1.discovery.ApplicationQuery.query()=portality.api.v1.discovery.ApplicationQuery-class.html#query,Method portality.api.v1.discovery.SearchQuery.query()=portality.api.v1.discovery.SearchQuery-class.html#query,Method portality.blog.NewsQuery.query()=portality.blog.NewsQuery-class.html#query,Class Method portality.dao.DomainObject.query()=portality.dao.DomainObject-class.html#query,Method portality.lock.LockQuery.query()=portality.lock.LockQuery-class.html#query,Method portality.models.article.ArticleIssueQuery.query()=portality.models.article.ArticleIssueQuery-class.html#query,Method portality.models.article.ArticleQuery.query()=portality.models.article.ArticleQuery-class.html#query,Method portality.models.article.ArticleVolumesIssuesQuery.query()=portality.models.article.ArticleVolumesIssuesQuery-class.html#query,Method portality.models.article.ArticleVolumesQuery.query()=portality.models.article.ArticleVolumesQuery-class.html#query,Method portality.models.article.DuplicateArticleQuery.query()=portality.models.article.DuplicateArticleQuery-class.html#query,Method portality.models.editors.EditorGroupMemberQuery.query()=portality.models.editors.EditorGroupMemberQuery-class.html#query,Method portality.models.editors.EditorGroupQuery.query()=portality.models.editors.EditorGroupQuery-class.html#query,Method portality.models.journal.ContinuationQuery.query()=portality.models.journal.ContinuationQuery-class.html#query,Method portality.models.journal.IssnQuery.query()=portality.models.journal.IssnQuery-class.html#query,Method portality.models.journal.PublisherQuery.query()=portality.models.journal.PublisherQuery-class.html#query,Method portality.models.journal.TitleQuery.query()=portality.models.journal.TitleQuery-class.html#query,Method portality.models.provenance.ResourceIDQuery.query()=portality.models.provenance.ResourceIDQuery-class.html#query,Method portality.models.suggestion.CurrentJournalQuery.query()=portality.models.suggestion.CurrentJournalQuery-class.html#query,Method portality.models.suggestion.OwnerStatusQuery.query()=portality.models.suggestion.OwnerStatusQuery-class.html#query,Method portality.models.suggestion.RelatedJournalQuery.query()=portality.models.suggestion.RelatedJournalQuery-class.html#query,Method portality.models.suggestion.StatusQuery.query()=portality.models.suggestion.StatusQuery-class.html#query,Method portality.models.suggestion.SuggestionQuery.query()=portality.models.suggestion.SuggestionQuery-class.html#query,Method portality.models.toc.ToCQuery.query()=portality.models.toc.ToCQuery-class.html#query,Method portality.models.toc.VolumesToCQuery.query()=portality.models.toc.VolumesToCQuery-class.html#query,Method portality.models.uploads.ExistsFileQuery.query()=portality.models.uploads.ExistsFileQuery-class.html#query,Method portality.models.uploads.OwnerFileQuery.query()=portality.models.uploads.OwnerFileQuery-class.html#query,Method portality.models.uploads.ValidFileQuery.query()=portality.models.uploads.ValidFileQuery-class.html#query,Method portality.tasks.reporting.ContentByDate.query()=portality.tasks.reporting.ContentByDate-class.html#query,Method portality.tasks.reporting.ProvenanceList.query()=portality.tasks.reporting.ProvenanceList-class.html#query,Module portality.view.query=portality.view.query-module.html,Function portality.view.query.query()=portality.view.query-module.html#query"><a title="portality.api.v1.discovery.ApplicationQuery.query
+portality.api.v1.discovery.SearchQuery.query
+portality.blog.NewsQuery.query
+portality.dao.DomainObject.query
+portality.lock.LockQuery.query
+portality.models.article.ArticleIssueQuery.query
+portality.models.article.ArticleQuery.query
+portality.models.article.ArticleVolumesIssuesQuery.query
+portality.models.article.ArticleVolumesQuery.query
+portality.models.article.DuplicateArticleQuery.query
+portality.models.editors.EditorGroupMemberQuery.query
+portality.models.editors.EditorGroupQuery.query
+portality.models.journal.ContinuationQuery.query
+portality.models.journal.IssnQuery.query
+portality.models.journal.PublisherQuery.query
+portality.models.journal.TitleQuery.query
+portality.models.provenance.ResourceIDQuery.query
+portality.models.suggestion.CurrentJournalQuery.query
+portality.models.suggestion.OwnerStatusQuery.query
+portality.models.suggestion.RelatedJournalQuery.query
+portality.models.suggestion.StatusQuery.query
+portality.models.suggestion.SuggestionQuery.query
+portality.models.toc.ToCQuery.query
+portality.models.toc.VolumesToCQuery.query
+portality.models.uploads.ExistsFileQuery.query
+portality.models.uploads.OwnerFileQuery.query
+portality.models.uploads.ValidFileQuery.query
+portality.tasks.reporting.ContentByDate.query
+portality.tasks.reporting.ProvenanceList.query
+portality.view.query
+portality.view.query.query" class="py-name" href="#" onclick="return doclink('link-61', 'query', 'link-61');">query</a></tt><tt class="py-op">(</tt><tt id="link-62" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-62', 'q', 'link-35');">q</a></tt><tt class="py-op">=</tt><tt id="link-63" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-63', 'q', 'link-35');">q</a></tt><tt class="py-op">.</tt><tt id="link-64" class="py-name" targets="Method portality.background.BackgroundSummary.as_dict()=portality.background.BackgroundSummary-class.html#as_dict,Function portality.lib.isolang.as_dict()=portality.lib.isolang-module.html#as_dict,Method portality.view.query.Query.as_dict()=portality.view.query.Query-class.html#as_dict"><a title="portality.background.BackgroundSummary.as_dict
+portality.lib.isolang.as_dict
+portality.view.query.Query.as_dict" class="py-name" href="#" onclick="return doclink('link-64', 'as_dict', 'link-64');">as_dict</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line"> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">        <tt class="py-name">result_filter_names</tt> <tt class="py-op">=</tt> <tt class="py-name">cfg</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"result_filters"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">result_filter_name</tt> <tt class="py-keyword">in</tt> <tt class="py-name">result_filter_names</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">            <tt class="py-name">fn</tt> <tt class="py-op">=</tt> <tt id="link-65" class="py-name"><a title="portality.lib.plugin" class="py-name" href="#" onclick="return doclink('link-65', 'plugin', 'link-8');">plugin</a></tt><tt class="py-op">.</tt><tt id="link-66" class="py-name"><a title="portality.lib.plugin.load_function" class="py-name" href="#" onclick="return doclink('link-66', 'load_function', 'link-52');">load_function</a></tt><tt class="py-op">(</tt><tt class="py-name">filters</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-name">result_filter_name</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">fn</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">                <tt id="link-67" class="py-name"><a title="portality.app
+portality.core.app" class="py-name" href="#" onclick="return doclink('link-67', 'app', 'link-5');">app</a></tt><tt class="py-op">.</tt><tt class="py-name">logger</tt><tt class="py-op">.</tt><tt id="link-68" class="py-name"><a title="portality.formcontext.formcontext.FormContext.info" class="py-name" href="#" onclick="return doclink('link-68', 'info', 'link-54');">info</a></tt><tt class="py-op">(</tt><tt class="py-string">"Unable to load result filter for {x}"</tt><tt class="py-op">.</tt><tt id="link-69" class="py-name"><a title="portality.lib.dates.format
+portality.lib.modeldoc.format
+portality.models.journal.JournalBibJSON.format
+portality.view.oaipmh.DateFormat.format" class="py-name" href="#" onclick="return doclink('link-69', 'format', 'link-55');">format</a></tt><tt class="py-op">(</tt><tt class="py-name">x</tt><tt class="py-op">=</tt><tt class="py-name">result_filter_name</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">                <tt id="link-70" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-70', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">500</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">            <tt class="py-comment"># apply the result filter</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">            <tt class="py-name">res</tt> <tt class="py-op">=</tt> <tt class="py-name">fn</tt><tt class="py-op">(</tt><tt class="py-name">res</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-name">resp</tt> <tt class="py-op">=</tt> <tt class="py-name">make_response</tt><tt class="py-op">(</tt><tt id="link-71" class="py-name"><a title="portality.dao.DomainObject.json
+portality.lib.dataobj.DataObj.json" class="py-name" href="#" onclick="return doclink('link-71', 'json', 'link-0');">json</a></tt><tt class="py-op">.</tt><tt class="py-name">dumps</tt><tt class="py-op">(</tt><tt class="py-name">res</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line">        <tt id="link-72" class="py-name"><a title="portality.scripts.sync_doaj_records.abort" class="py-name" href="#" onclick="return doclink('link-72', 'abort', 'link-1');">abort</a></tt><tt class="py-op">(</tt><tt class="py-number">400</tt><tt class="py-op">)</tt> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt class="py-name">resp</tt><tt class="py-op">.</tt><tt class="py-name">mimetype</tt> <tt class="py-op">=</tt> <tt class="py-string">"application/json"</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">resp</tt> </tt>
+</div><a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"> </tt>
+<a name="Query"></a><div id="Query-def"><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt> <a class="py-toggle" href="#" id="Query-toggle" onclick="return toggle('Query');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.view.query.Query-class.html">Query</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="Query-expanded"><a name="Query.__init__"></a><div id="Query.__init__-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="Query.__init__-toggle" onclick="return toggle('Query.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query.Query-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">raw</tt><tt class="py-op">=</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-param">filtered</tt><tt class="py-op">=</tt><tt class="py-name">False</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Query.__init__-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-73" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-73', 'q', 'link-35');">q</a></tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-string">"query"</tt><tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-string">"match_all"</tt><tt class="py-op">:</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">}</tt><tt class="py-op">}</tt> <tt class="py-keyword">if</tt> <tt class="py-name">raw</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt> <tt class="py-keyword">else</tt> <tt class="py-name">raw</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filtered</tt> <tt class="py-op">=</tt> <tt class="py-name">filtered</tt> <tt class="py-keyword">is</tt> <tt class="py-name">True</tt> <tt class="py-keyword">or</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-74" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-74', 'q', 'link-35');">q</a></tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"query"</tt><tt class="py-op">,</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">get</tt><tt class="py-op">(</tt><tt class="py-string">"filtered"</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt> </tt>
+</div><a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"> </tt>
+<a name="Query.ensure_filtered"></a><div id="Query.ensure_filtered-def"><a name="L141"></a><tt class="py-lineno">141</tt> <a class="py-toggle" href="#" id="Query.ensure_filtered-toggle" onclick="return toggle('Query.ensure_filtered');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query.Query-class.html#ensure_filtered">ensure_filtered</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query.ensure_filtered-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Query.ensure_filtered-expanded"><a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"query"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-75" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-75', 'q', 'link-35');">q</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-76" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-76', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"filtered"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-77" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-77', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-78" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-78', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filtered"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"filter"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-79" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-79', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filtered"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-80" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-80', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filtered"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filter"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+</div><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line"> </tt>
+<a name="Query.add_must"></a><div id="Query.add_must-def"><a name="L149"></a><tt class="py-lineno">149</tt> <a class="py-toggle" href="#" id="Query.add_must-toggle" onclick="return toggle('Query.add_must');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query.Query-class.html#add_must">add_must</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">filter</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query.add_must-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Query.add_must-expanded"><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-name">context</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-81" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-81', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">filtered</tt><tt class="py-op">:</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-82" class="py-name" targets="Method portality.view.query.Query.ensure_filtered()=portality.view.query.Query-class.html#ensure_filtered"><a title="portality.view.query.Query.ensure_filtered" class="py-name" href="#" onclick="return doclink('link-82', 'ensure_filtered', 'link-82');">ensure_filtered</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line">            <tt class="py-name">context</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-83" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-83', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filtered"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"filter"</tt><tt class="py-op">]</tt> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"> </tt>
+<a name="L155"></a><tt class="py-lineno">155</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"bool"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">context</tt><tt class="py-op">:</tt> </tt>
+<a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">            <tt class="py-name">context</tt><tt class="py-op">[</tt><tt class="py-string">"bool"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">{</tt><tt class="py-op">}</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"must"</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">context</tt><tt class="py-op">[</tt><tt class="py-string">"bool"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line">            <tt class="py-name">context</tt><tt class="py-op">[</tt><tt class="py-string">"bool"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"must"</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"> </tt>
+<a name="L160"></a><tt class="py-lineno">160</tt>  <tt class="py-line">        <tt class="py-name">context</tt><tt class="py-op">[</tt><tt class="py-string">"bool"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"must"</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">filter</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line"> </tt>
+<a name="Query.clear_match_all"></a><div id="Query.clear_match_all-def"><a name="L162"></a><tt class="py-lineno">162</tt> <a class="py-toggle" href="#" id="Query.clear_match_all-toggle" onclick="return toggle('Query.clear_match_all');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query.Query-class.html#clear_match_all">clear_match_all</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query.clear_match_all-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Query.clear_match_all-expanded"><a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-string">"match_all"</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-84" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-84', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">            <tt class="py-keyword">del</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-85" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-85', 'q', 'link-35');">q</a></tt><tt class="py-op">[</tt><tt class="py-string">"query"</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">"match_all"</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line"> </tt>
+<a name="Query.as_dict"></a><div id="Query.as_dict-def"><a name="L166"></a><tt class="py-lineno">166</tt> <a class="py-toggle" href="#" id="Query.as_dict-toggle" onclick="return toggle('Query.as_dict');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.view.query.Query-class.html#as_dict">as_dict</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="Query.as_dict-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="Query.as_dict-expanded"><a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-86" class="py-name"><a title="portality.journalcsv.Journal2QuestionXwalk.q" class="py-name" href="#" onclick="return doclink('link-86', 'q', 'link-35');">q</a></tt> </tt>
+</div></div><a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line"> </tt>
+<a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"><tt class="py-string">"""</tt> </tt>
+<a name="L170"></a><tt class="py-lineno">170</tt>  <tt class="py-line"><tt class="py-string">'''</tt> </tt>
+<a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line"><tt class="py-string">An elasticsearch query pass-through.</tt> </tt>
+<a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line"><tt class="py-string">Has auth control, so it is better than exposing your ES index directly.</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"><tt class="py-string">'''</tt> </tt>
+<a name="L174"></a><tt class="py-lineno">174</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line"><tt class="py-string">import json, urllib2</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-string">from flask import Blueprint, request, abort, make_response</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line"><tt class="py-string">from flask.ext.login import current_user</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"><tt class="py-string">import portality.models as models</tt> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line"><tt class="py-string">from portality.core import app</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line"><tt class="py-string">import portality.util as util</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line"><tt class="py-string">blueprint = Blueprint('query', __name__)</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line"><tt class="py-string"># pass queries direct to index. POST only for receipt of complex query objects</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"><tt class="py-string">@blueprint.route('/&lt;path:path&gt;', methods=['GET','POST'])</tt> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line"><tt class="py-string">@blueprint.route('/', methods=['GET','POST'])</tt> </tt>
+<a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"><tt class="py-string">@util.jsonp</tt> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line"><tt class="py-string">def query(path='Pages'):</tt> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line"><tt class="py-string">    pathparts = path.strip('/').split('/')</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line"><tt class="py-string">    subpath = pathparts[0]</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line"><tt class="py-string">    if ',' in subpath:</tt> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line"><tt class="py-string">        subpaths = subpath.split(',')</tt> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line"><tt class="py-string">        subpaths = [clean_item for clean_item in [item.strip() for item in subpaths] if clean_item]  # strip whitespace</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line"><tt class="py-string">    else:</tt> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line"><tt class="py-string">        subpaths = [subpath]</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line"><tt class="py-string">    if not subpaths:</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line"><tt class="py-string">        abort(400)</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line"><tt class="py-string">    # first, decide if we are to 401 the request</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line"><tt class="py-string">    for subpath in subpaths:</tt> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line"><tt class="py-string">        if subpath.lower() in app.config.get('NO_QUERY',[]):</tt> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line"><tt class="py-string">            abort(401)</tt> </tt>
+<a name="L208"></a><tt class="py-lineno">208</tt>  <tt class="py-line"><tt class="py-string">        if subpath.lower() in app.config.get("SU_ONLY", []):</tt> </tt>
+<a name="L209"></a><tt class="py-lineno">209</tt>  <tt class="py-line"><tt class="py-string">            if current_user.is_anonymous() or not current_user.is_super:</tt> </tt>
+<a name="L210"></a><tt class="py-lineno">210</tt>  <tt class="py-line"><tt class="py-string">                abort(401)</tt> </tt>
+<a name="L211"></a><tt class="py-lineno">211</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L212"></a><tt class="py-lineno">212</tt>  <tt class="py-line"><tt class="py-string">    # now look at the config of this route and determine if the url path</tt> </tt>
+<a name="L213"></a><tt class="py-lineno">213</tt>  <tt class="py-line"><tt class="py-string">    # requires us to limit access or not to a user role</tt> </tt>
+<a name="L214"></a><tt class="py-lineno">214</tt>  <tt class="py-line"><tt class="py-string">    #</tt> </tt>
+<a name="L215"></a><tt class="py-lineno">215</tt>  <tt class="py-line"><tt class="py-string">    owner_filter = False # don't apply the owner filter unless expressly requested</tt> </tt>
+<a name="L216"></a><tt class="py-lineno">216</tt>  <tt class="py-line"><tt class="py-string">    default_filter = True # always apply the default filter unless asked otherwise</tt> </tt>
+<a name="L217"></a><tt class="py-lineno">217</tt>  <tt class="py-line"><tt class="py-string">    editor_filter = False # don't apply the editor group filter unless expressly requested</tt> </tt>
+<a name="L218"></a><tt class="py-lineno">218</tt>  <tt class="py-line"><tt class="py-string">    reapp_filter = False # don't apply the reapplication status filter unless expressly requested</tt> </tt>
+<a name="L219"></a><tt class="py-lineno">219</tt>  <tt class="py-line"><tt class="py-string">    associate_filter = False # don't limit to associates unless expressly requested</tt> </tt>
+<a name="L220"></a><tt class="py-lineno">220</tt>  <tt class="py-line"><tt class="py-string">    public_result_filter = False</tt> </tt>
+<a name="L221"></a><tt class="py-lineno">221</tt>  <tt class="py-line"><tt class="py-string">    role = None</tt> </tt>
+<a name="L222"></a><tt class="py-lineno">222</tt>  <tt class="py-line"><tt class="py-string">    qr = app.config.get("QUERY_ROUTE", {})</tt> </tt>
+<a name="L223"></a><tt class="py-lineno">223</tt>  <tt class="py-line"><tt class="py-string">    frag = request.path</tt> </tt>
+<a name="L224"></a><tt class="py-lineno">224</tt>  <tt class="py-line"><tt class="py-string">    for qroute in qr:</tt> </tt>
+<a name="L225"></a><tt class="py-lineno">225</tt>  <tt class="py-line"><tt class="py-string">        if frag.startswith("/" + qroute):</tt> </tt>
+<a name="L226"></a><tt class="py-lineno">226</tt>  <tt class="py-line"><tt class="py-string">            default_filter = qr[qroute].get("default_filter", True)</tt> </tt>
+<a name="L227"></a><tt class="py-lineno">227</tt>  <tt class="py-line"><tt class="py-string">            role = qr[qroute].get("role")</tt> </tt>
+<a name="L228"></a><tt class="py-lineno">228</tt>  <tt class="py-line"><tt class="py-string">            owner_filter = qr[qroute].get("owner_filter")</tt> </tt>
+<a name="L229"></a><tt class="py-lineno">229</tt>  <tt class="py-line"><tt class="py-string">            editor_filter = qr[qroute].get("editor_filter", False)</tt> </tt>
+<a name="L230"></a><tt class="py-lineno">230</tt>  <tt class="py-line"><tt class="py-string">            associate_filter = qr[qroute].get("associate_filter", False)</tt> </tt>
+<a name="L231"></a><tt class="py-lineno">231</tt>  <tt class="py-line"><tt class="py-string">            reapp_filter = qr[qroute].get("reapp_filter", False)</tt> </tt>
+<a name="L232"></a><tt class="py-lineno">232</tt>  <tt class="py-line"><tt class="py-string">            public_result_filter = qr[qroute].get("public_result_filter", False)</tt> </tt>
+<a name="L233"></a><tt class="py-lineno">233</tt>  <tt class="py-line"><tt class="py-string">            break</tt> </tt>
+<a name="L234"></a><tt class="py-lineno">234</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L235"></a><tt class="py-lineno">235</tt>  <tt class="py-line"><tt class="py-string">    # if there is a role, then check that the user is not anonymous and</tt> </tt>
+<a name="L236"></a><tt class="py-lineno">236</tt>  <tt class="py-line"><tt class="py-string">    # that the user has the required role</tt> </tt>
+<a name="L237"></a><tt class="py-lineno">237</tt>  <tt class="py-line"><tt class="py-string">    if role is not None:</tt> </tt>
+<a name="L238"></a><tt class="py-lineno">238</tt>  <tt class="py-line"><tt class="py-string">        if current_user.is_anonymous() or not current_user.has_role(role):</tt> </tt>
+<a name="L239"></a><tt class="py-lineno">239</tt>  <tt class="py-line"><tt class="py-string">            abort(401)</tt> </tt>
+<a name="L240"></a><tt class="py-lineno">240</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L241"></a><tt class="py-lineno">241</tt>  <tt class="py-line"><tt class="py-string">    # if we get to here, then we are good to respond, though check further down</tt> </tt>
+<a name="L242"></a><tt class="py-lineno">242</tt>  <tt class="py-line"><tt class="py-string">    # to see if we apply the default filter</tt> </tt>
+<a name="L243"></a><tt class="py-lineno">243</tt>  <tt class="py-line"><tt class="py-string">    </tt> </tt>
+<a name="L244"></a><tt class="py-lineno">244</tt>  <tt class="py-line"><tt class="py-string">    modelname = ''</tt> </tt>
+<a name="L245"></a><tt class="py-lineno">245</tt>  <tt class="py-line"><tt class="py-string">    for s in subpaths:</tt> </tt>
+<a name="L246"></a><tt class="py-lineno">246</tt>  <tt class="py-line"><tt class="py-string">        modelname += s.capitalize()</tt> </tt>
+<a name="L247"></a><tt class="py-lineno">247</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L248"></a><tt class="py-lineno">248</tt>  <tt class="py-line"><tt class="py-string">    klass = models.lookup_model(modelname, capitalize=False)</tt> </tt>
+<a name="L249"></a><tt class="py-lineno">249</tt>  <tt class="py-line"><tt class="py-string">    if not klass:</tt> </tt>
+<a name="L250"></a><tt class="py-lineno">250</tt>  <tt class="py-line"><tt class="py-string">        abort(404)</tt> </tt>
+<a name="L251"></a><tt class="py-lineno">251</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L252"></a><tt class="py-lineno">252</tt>  <tt class="py-line"><tt class="py-string">    if len(pathparts) &gt; 1 and pathparts[1] == '_mapping':</tt> </tt>
+<a name="L253"></a><tt class="py-lineno">253</tt>  <tt class="py-line"><tt class="py-string">        resp = make_response( json.dumps(klass().query(endpoint='_mapping')) )</tt> </tt>
+<a name="L254"></a><tt class="py-lineno">254</tt>  <tt class="py-line"><tt class="py-string">    elif len(pathparts) == 2 and pathparts[1] not in ['_mapping','_search']:</tt> </tt>
+<a name="L255"></a><tt class="py-lineno">255</tt>  <tt class="py-line"><tt class="py-string">        if request.method == 'POST':</tt> </tt>
+<a name="L256"></a><tt class="py-lineno">256</tt>  <tt class="py-line"><tt class="py-string">            abort(401)</tt> </tt>
+<a name="L257"></a><tt class="py-lineno">257</tt>  <tt class="py-line"><tt class="py-string">        else:</tt> </tt>
+<a name="L258"></a><tt class="py-lineno">258</tt>  <tt class="py-line"><tt class="py-string">            rec = klass().pull(pathparts[1])</tt> </tt>
+<a name="L259"></a><tt class="py-lineno">259</tt>  <tt class="py-line"><tt class="py-string">            if rec:</tt> </tt>
+<a name="L260"></a><tt class="py-lineno">260</tt>  <tt class="py-line"><tt class="py-string">                if not current_user.is_anonymous() or (app.config.get('PUBLIC_ACCESSIBLE_JSON',True) and rec.data.get('visible',True) and rec.data.get('accessible',True)):</tt> </tt>
+<a name="L261"></a><tt class="py-lineno">261</tt>  <tt class="py-line"><tt class="py-string">                    resp = make_response( rec.json )</tt> </tt>
+<a name="L262"></a><tt class="py-lineno">262</tt>  <tt class="py-line"><tt class="py-string">                else:</tt> </tt>
+<a name="L263"></a><tt class="py-lineno">263</tt>  <tt class="py-line"><tt class="py-string">                    abort(401)</tt> </tt>
+<a name="L264"></a><tt class="py-lineno">264</tt>  <tt class="py-line"><tt class="py-string">            else:</tt> </tt>
+<a name="L265"></a><tt class="py-lineno">265</tt>  <tt class="py-line"><tt class="py-string">                abort(404)</tt> </tt>
+<a name="L266"></a><tt class="py-lineno">266</tt>  <tt class="py-line"><tt class="py-string">    else:</tt> </tt>
+<a name="L267"></a><tt class="py-lineno">267</tt>  <tt class="py-line"><tt class="py-string">        if request.method == "POST":</tt> </tt>
+<a name="L268"></a><tt class="py-lineno">268</tt>  <tt class="py-line"><tt class="py-string">            if request.json:</tt> </tt>
+<a name="L269"></a><tt class="py-lineno">269</tt>  <tt class="py-line"><tt class="py-string">                qs = request.json</tt> </tt>
+<a name="L270"></a><tt class="py-lineno">270</tt>  <tt class="py-line"><tt class="py-string">            else:</tt> </tt>
+<a name="L271"></a><tt class="py-lineno">271</tt>  <tt class="py-line"><tt class="py-string">                qs = dict(request.form).keys()[-1]</tt> </tt>
+<a name="L272"></a><tt class="py-lineno">272</tt>  <tt class="py-line"><tt class="py-string">        elif 'q' in request.values:</tt> </tt>
+<a name="L273"></a><tt class="py-lineno">273</tt>  <tt class="py-line"><tt class="py-string">            qs = {'query': {'query_string': { 'query': request.values['q'] }}}</tt> </tt>
+<a name="L274"></a><tt class="py-lineno">274</tt>  <tt class="py-line"><tt class="py-string">            if 'default_operator' in request.values:</tt> </tt>
+<a name="L275"></a><tt class="py-lineno">275</tt>  <tt class="py-line"><tt class="py-string">                qs['query']['query_string']['default_operator'] = request.values['default_operator']</tt> </tt>
+<a name="L276"></a><tt class="py-lineno">276</tt>  <tt class="py-line"><tt class="py-string">        elif 'source' in request.values:</tt> </tt>
+<a name="L277"></a><tt class="py-lineno">277</tt>  <tt class="py-line"><tt class="py-string">            unquoted_source = urllib2.unquote(request.values['source'])</tt> </tt>
+<a name="L278"></a><tt class="py-lineno">278</tt>  <tt class="py-line"><tt class="py-string">            try:</tt> </tt>
+<a name="L279"></a><tt class="py-lineno">279</tt>  <tt class="py-line"><tt class="py-string">                qs = json.loads(unquoted_source)</tt> </tt>
+<a name="L280"></a><tt class="py-lineno">280</tt>  <tt class="py-line"><tt class="py-string">            except ValueError:</tt> </tt>
+<a name="L281"></a><tt class="py-lineno">281</tt>  <tt class="py-line"><tt class="py-string">                app.logger.exception("Problematic query:\n    {0}\n".format(unquoted_source))</tt> </tt>
+<a name="L282"></a><tt class="py-lineno">282</tt>  <tt class="py-line"><tt class="py-string">        else: </tt> </tt>
+<a name="L283"></a><tt class="py-lineno">283</tt>  <tt class="py-line"><tt class="py-string">            qs = {'query': {'match_all': {}}}</tt> </tt>
+<a name="L284"></a><tt class="py-lineno">284</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L285"></a><tt class="py-lineno">285</tt>  <tt class="py-line"><tt class="py-string">        for item in request.values:</tt> </tt>
+<a name="L286"></a><tt class="py-lineno">286</tt>  <tt class="py-line"><tt class="py-string">            if item not in ['q','source','callback','_', 'default_operator'] and isinstance(qs,dict):</tt> </tt>
+<a name="L287"></a><tt class="py-lineno">287</tt>  <tt class="py-line"><tt class="py-string">                qs[item] = request.values[item]</tt> </tt>
+<a name="L288"></a><tt class="py-lineno">288</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L289"></a><tt class="py-lineno">289</tt>  <tt class="py-line"><tt class="py-string">        if 'sort' not in qs and app.config.get('DEFAULT_SORT',False):</tt> </tt>
+<a name="L290"></a><tt class="py-lineno">290</tt>  <tt class="py-line"><tt class="py-string">            if path.lower() in app.config['DEFAULT_SORT'].keys():</tt> </tt>
+<a name="L291"></a><tt class="py-lineno">291</tt>  <tt class="py-line"><tt class="py-string">                qs['sort'] = app.config['DEFAULT_SORT'][path.lower()]</tt> </tt>
+<a name="L292"></a><tt class="py-lineno">292</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L293"></a><tt class="py-lineno">293</tt>  <tt class="py-line"><tt class="py-string">        if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):</tt> </tt>
+<a name="L294"></a><tt class="py-lineno">294</tt>  <tt class="py-line"><tt class="py-string">            if path.lower() in app.config['ANONYMOUS_SEARCH_TERMS'].keys():</tt> </tt>
+<a name="L295"></a><tt class="py-lineno">295</tt>  <tt class="py-line"><tt class="py-string">                if 'bool' not in qs['query']:</tt> </tt>
+<a name="L296"></a><tt class="py-lineno">296</tt>  <tt class="py-line"><tt class="py-string">                    pq = qs['query']</tt> </tt>
+<a name="L297"></a><tt class="py-lineno">297</tt>  <tt class="py-line"><tt class="py-string">                    qs['query'] = {</tt> </tt>
+<a name="L298"></a><tt class="py-lineno">298</tt>  <tt class="py-line"><tt class="py-string">                        'bool':{</tt> </tt>
+<a name="L299"></a><tt class="py-lineno">299</tt>  <tt class="py-line"><tt class="py-string">                            'must': [</tt> </tt>
+<a name="L300"></a><tt class="py-lineno">300</tt>  <tt class="py-line"><tt class="py-string">                                pq</tt> </tt>
+<a name="L301"></a><tt class="py-lineno">301</tt>  <tt class="py-line"><tt class="py-string">                            ]</tt> </tt>
+<a name="L302"></a><tt class="py-lineno">302</tt>  <tt class="py-line"><tt class="py-string">                        }</tt> </tt>
+<a name="L303"></a><tt class="py-lineno">303</tt>  <tt class="py-line"><tt class="py-string">                    }</tt> </tt>
+<a name="L304"></a><tt class="py-lineno">304</tt>  <tt class="py-line"><tt class="py-string">                if 'must' not in qs['query']['bool']:</tt> </tt>
+<a name="L305"></a><tt class="py-lineno">305</tt>  <tt class="py-line"><tt class="py-string">                    qs['query']['bool']['must'] = []</tt> </tt>
+<a name="L306"></a><tt class="py-lineno">306</tt>  <tt class="py-line"><tt class="py-string">                qs['query']['bool']['must'] = qs['query']['bool']['must'] + app.config['ANONYMOUS_SEARCH_TERMS'][path.lower()]</tt> </tt>
+<a name="L307"></a><tt class="py-lineno">307</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L308"></a><tt class="py-lineno">308</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L309"></a><tt class="py-lineno">309</tt>  <tt class="py-line"><tt class="py-string">        terms = {}</tt> </tt>
+<a name="L310"></a><tt class="py-lineno">310</tt>  <tt class="py-line"><tt class="py-string">        shoulds = {}</tt> </tt>
+<a name="L311"></a><tt class="py-lineno">311</tt>  <tt class="py-line"><tt class="py-string">        if default_filter:</tt> </tt>
+<a name="L312"></a><tt class="py-lineno">312</tt>  <tt class="py-line"><tt class="py-string">            terms.update(_default_filter(subpaths))</tt> </tt>
+<a name="L313"></a><tt class="py-lineno">313</tt>  <tt class="py-line"><tt class="py-string">        </tt> </tt>
+<a name="L314"></a><tt class="py-lineno">314</tt>  <tt class="py-line"><tt class="py-string">        if owner_filter:</tt> </tt>
+<a name="L315"></a><tt class="py-lineno">315</tt>  <tt class="py-line"><tt class="py-string">            terms.update(_owner_filter())</tt> </tt>
+<a name="L316"></a><tt class="py-lineno">316</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L317"></a><tt class="py-lineno">317</tt>  <tt class="py-line"><tt class="py-string">        if editor_filter:</tt> </tt>
+<a name="L318"></a><tt class="py-lineno">318</tt>  <tt class="py-line"><tt class="py-string">            shoulds.update(_editor_filter())</tt> </tt>
+<a name="L319"></a><tt class="py-lineno">319</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L320"></a><tt class="py-lineno">320</tt>  <tt class="py-line"><tt class="py-string">        if reapp_filter:</tt> </tt>
+<a name="L321"></a><tt class="py-lineno">321</tt>  <tt class="py-line"><tt class="py-string">            shoulds.update(_update_request_filter())</tt> </tt>
+<a name="L322"></a><tt class="py-lineno">322</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L323"></a><tt class="py-lineno">323</tt>  <tt class="py-line"><tt class="py-string">        if associate_filter:</tt> </tt>
+<a name="L324"></a><tt class="py-lineno">324</tt>  <tt class="py-line"><tt class="py-string">            terms.update(_associate_filter())</tt> </tt>
+<a name="L325"></a><tt class="py-lineno">325</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L326"></a><tt class="py-lineno">326</tt>  <tt class="py-line"><tt class="py-string">        results = klass().query(q=qs, terms=terms, should_terms=shoulds)</tt> </tt>
+<a name="L327"></a><tt class="py-lineno">327</tt>  <tt class="py-line"><tt class="py-string">        if public_result_filter:</tt> </tt>
+<a name="L328"></a><tt class="py-lineno">328</tt>  <tt class="py-line"><tt class="py-string">            results = _result_filter(results)</tt> </tt>
+<a name="L329"></a><tt class="py-lineno">329</tt>  <tt class="py-line"><tt class="py-string">        resp = make_response( json.dumps(results) )</tt> </tt>
+<a name="L330"></a><tt class="py-lineno">330</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L331"></a><tt class="py-lineno">331</tt>  <tt class="py-line"><tt class="py-string">    resp.mimetype = "application/json"</tt> </tt>
+<a name="L332"></a><tt class="py-lineno">332</tt>  <tt class="py-line"><tt class="py-string">    return resp</tt> </tt>
+<a name="L333"></a><tt class="py-lineno">333</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L334"></a><tt class="py-lineno">334</tt>  <tt class="py-line"><tt class="py-string">def _associate_filter():</tt> </tt>
+<a name="L335"></a><tt class="py-lineno">335</tt>  <tt class="py-line"><tt class="py-string">    return {"admin.editor.exact" : current_user.id}</tt> </tt>
+<a name="L336"></a><tt class="py-lineno">336</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L337"></a><tt class="py-lineno">337</tt>  <tt class="py-line"><tt class="py-string">def _editor_filter():</tt> </tt>
+<a name="L338"></a><tt class="py-lineno">338</tt>  <tt class="py-line"><tt class="py-string">    '''</tt> </tt>
+<a name="L339"></a><tt class="py-lineno">339</tt>  <tt class="py-line"><tt class="py-string">    Apply filter to include only items assigned to editor groups that the current user is the editor for</tt> </tt>
+<a name="L340"></a><tt class="py-lineno">340</tt>  <tt class="py-line"><tt class="py-string">    '''</tt> </tt>
+<a name="L341"></a><tt class="py-lineno">341</tt>  <tt class="py-line"><tt class="py-string">    gnames = []</tt> </tt>
+<a name="L342"></a><tt class="py-lineno">342</tt>  <tt class="py-line"><tt class="py-string">    groups = models.EditorGroup.groups_by_editor(current_user.id)</tt> </tt>
+<a name="L343"></a><tt class="py-lineno">343</tt>  <tt class="py-line"><tt class="py-string">    for g in groups:</tt> </tt>
+<a name="L344"></a><tt class="py-lineno">344</tt>  <tt class="py-line"><tt class="py-string">        gnames.append(g.name)</tt> </tt>
+<a name="L345"></a><tt class="py-lineno">345</tt>  <tt class="py-line"><tt class="py-string">    return {"admin.editor_group.exact" : gnames}</tt> </tt>
+<a name="L346"></a><tt class="py-lineno">346</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L347"></a><tt class="py-lineno">347</tt>  <tt class="py-line"><tt class="py-string">def _update_request_filter():</tt> </tt>
+<a name="L348"></a><tt class="py-lineno">348</tt>  <tt class="py-line"><tt class="py-string">    return {"created_date" : ["update_request", "submitted"]}</tt> </tt>
+<a name="L349"></a><tt class="py-lineno">349</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L350"></a><tt class="py-lineno">350</tt>  <tt class="py-line"><tt class="py-string">def _owner_filter():</tt> </tt>
+<a name="L351"></a><tt class="py-lineno">351</tt>  <tt class="py-line"><tt class="py-string">    return {"admin.owner.exact" : current_user.id}</tt> </tt>
+<a name="L352"></a><tt class="py-lineno">352</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L353"></a><tt class="py-lineno">353</tt>  <tt class="py-line"><tt class="py-string">def _default_filter(subpaths):</tt> </tt>
+<a name="L354"></a><tt class="py-lineno">354</tt>  <tt class="py-line"><tt class="py-string">    for s in subpaths:</tt> </tt>
+<a name="L355"></a><tt class="py-lineno">355</tt>  <tt class="py-line"><tt class="py-string">        if s == 'journal' or s == 'article':</tt> </tt>
+<a name="L356"></a><tt class="py-lineno">356</tt>  <tt class="py-line"><tt class="py-string">            return {'in_doaj':True}</tt> </tt>
+<a name="L357"></a><tt class="py-lineno">357</tt>  <tt class="py-line"><tt class="py-string">    return None</tt> </tt>
+<a name="L358"></a><tt class="py-lineno">358</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L359"></a><tt class="py-lineno">359</tt>  <tt class="py-line"><tt class="py-string">def _result_filter(results):</tt> </tt>
+<a name="L360"></a><tt class="py-lineno">360</tt>  <tt class="py-line"><tt class="py-string">    if "hits" not in results:</tt> </tt>
+<a name="L361"></a><tt class="py-lineno">361</tt>  <tt class="py-line"><tt class="py-string">        return results</tt> </tt>
+<a name="L362"></a><tt class="py-lineno">362</tt>  <tt class="py-line"><tt class="py-string">    if "hits" not in results["hits"]:</tt> </tt>
+<a name="L363"></a><tt class="py-lineno">363</tt>  <tt class="py-line"><tt class="py-string">        return results</tt> </tt>
+<a name="L364"></a><tt class="py-lineno">364</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L365"></a><tt class="py-lineno">365</tt>  <tt class="py-line"><tt class="py-string">    for hit in results["hits"]["hits"]:</tt> </tt>
+<a name="L366"></a><tt class="py-lineno">366</tt>  <tt class="py-line"><tt class="py-string">        if "_source" in hit:</tt> </tt>
+<a name="L367"></a><tt class="py-lineno">367</tt>  <tt class="py-line"><tt class="py-string">            if "admin" in hit["_source"]:</tt> </tt>
+<a name="L368"></a><tt class="py-lineno">368</tt>  <tt class="py-line"><tt class="py-string">                for k in hit["_source"]["admin"].keys():</tt> </tt>
+<a name="L369"></a><tt class="py-lineno">369</tt>  <tt class="py-line"><tt class="py-string">                    if k not in ["ticked", "seal"]:</tt> </tt>
+<a name="L370"></a><tt class="py-lineno">370</tt>  <tt class="py-line"><tt class="py-string">                        del hit["_source"]["admin"][k]</tt> </tt>
+<a name="L371"></a><tt class="py-lineno">371</tt>  <tt class="py-line"><tt class="py-string"></tt> </tt>
+<a name="L372"></a><tt class="py-lineno">372</tt>  <tt class="py-line"><tt class="py-string">    return results</tt> </tt>
+<a name="L373"></a><tt class="py-lineno">373</tt>  <tt class="py-line"><tt class="py-string">"""</tt> </tt>
+<a name="L374"></a><tt class="py-lineno">374</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:13 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

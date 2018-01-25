@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.api.v1.bulk.applications.ApplicationsBulkApi</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.api-module.html">Package&nbsp;api</a> ::
+        <a href="portality.api.v1-module.html">Package&nbsp;v1</a> ::
+        <a href="portality.api.v1.bulk-module.html">Package&nbsp;bulk</a> ::
+        <a href="portality.api.v1.bulk.applications-module.html">Module&nbsp;applications</a> ::
+        Class&nbsp;ApplicationsBulkApi
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class ApplicationsBulkApi</h1><p class="nomargin-top"><span class="codelink"><a href="portality.api.v1.bulk.applications-pysrc.html#ApplicationsBulkApi">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_portalit" name="uml_class_diagram_for_portalit">
+<area shape="rect" id="node1_18" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#API_KEY_OPTIONAL" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.API_KEY_OPTIONAL" alt="" coords="17,353,261,373"/>
+<area shape="rect" id="node1_19" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_TAG" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.SWAG_TAG" alt="" coords="17,373,261,393"/>
+<area shape="rect" id="node1_20" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_DELETE_PARAM" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.SWAG_DELETE_PARAM" alt="" coords="17,393,261,413"/>
+<area shape="rect" id="node1_21" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_APPLICATION_BODY_PARAM" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.SWAG_APPLICATION_BODY_PARAM" alt="" coords="17,413,261,433"/>
+<area shape="rect" id="node1_22" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#create_swag" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.create_swag" alt="" coords="17,436,261,456"/>
+<area shape="rect" id="node1_23" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#create" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.create" alt="" coords="17,456,261,476"/>
+<area shape="rect" id="node1_24" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#delete_swag" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.delete_swag" alt="" coords="17,476,261,496"/>
+<area shape="rect" id="node1_25" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#delete" title="portality.api.v1.bulk.applications.ApplicationsBulkApi.delete" alt="" coords="17,496,261,516"/>
+<area shape="rect" id="node1" href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html" title="portality.api.v1.bulk.applications.ApplicationsBulkApi" alt="" coords="5,328,273,523"/>
+<area shape="rect" id="node2" href="portality.api.v1.crud.common.CrudApi-class.html" title="portality.api.v1.crud.common.CrudApi" alt="" coords="61,264,217,309"/>
+<area shape="rect" id="node3_26" href="portality.api.v1.common.Api-class.html#SWAG_TEMPLATE" title="portality.api.v1.common.Api.SWAG_TEMPLATE" alt="" coords="39,31,241,51"/>
+<area shape="rect" id="node3_27" href="portality.api.v1.common.Api-class.html#R200" title="portality.api.v1.common.Api.R200" alt="" coords="39,51,241,71"/>
+<area shape="rect" id="node3_28" href="portality.api.v1.common.Api-class.html#R201" title="portality.api.v1.common.Api.R201" alt="" coords="39,71,241,91"/>
+<area shape="rect" id="node3_29" href="portality.api.v1.common.Api-class.html#R201_BULK" title="portality.api.v1.common.Api.R201_BULK" alt="" coords="39,91,241,111"/>
+<area shape="rect" id="node3_30" href="portality.api.v1.common.Api-class.html#R204" title="portality.api.v1.common.Api.R204" alt="" coords="39,111,241,131"/>
+<area shape="rect" id="node3_31" href="portality.api.v1.common.Api-class.html#R400" title="portality.api.v1.common.Api.R400" alt="" coords="39,131,241,151"/>
+<area shape="rect" id="node3_32" href="portality.api.v1.common.Api-class.html#R401" title="portality.api.v1.common.Api.R401" alt="" coords="39,151,241,171"/>
+<area shape="rect" id="node3_33" href="portality.api.v1.common.Api-class.html#R403" title="portality.api.v1.common.Api.R403" alt="" coords="39,171,241,191"/>
+<area shape="rect" id="node3_34" href="portality.api.v1.common.Api-class.html#R404" title="portality.api.v1.common.Api.R404" alt="" coords="39,191,241,211"/>
+<area shape="rect" id="node3_35" href="portality.api.v1.common.Api-class.html#SWAG_API_KEY_REQ_PARAM" title="portality.api.v1.common.Api.SWAG_API_KEY_REQ_PARAM" alt="" coords="39,211,241,231"/>
+<area shape="rect" id="node3" href="portality.api.v1.common.Api-class.html" title="portality.api.v1.common.Api" alt="" coords="27,5,253,245"/>
+</map>
+  <img src="uml_class_diagram_for_portalit.gif" alt='' usemap="#uml_class_diagram_for_portalit" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__delattr__</code>,
+      <code>__format__</code>,
+      <code>__getattribute__</code>,
+      <code>__hash__</code>,
+      <code>__init__</code>,
+      <code>__new__</code>,
+      <code>__reduce__</code>,
+      <code>__reduce_ex__</code>,
+      <code>__repr__</code>,
+      <code>__setattr__</code>,
+      <code>__sizeof__</code>,
+      <code>__str__</code>,
+      <code>__subclasshook__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS METHODS ==================== -->
+<a name="section-ClassMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="create_swag"></a><span class="summary-sig-name">create_swag</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.bulk.applications-pysrc.html#ApplicationsBulkApi.create_swag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="create"></a><span class="summary-sig-name">create</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">applications</span>,
+        <span class="summary-sig-arg">account</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.bulk.applications-pysrc.html#ApplicationsBulkApi.create">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="delete_swag"></a><span class="summary-sig-name">delete_swag</span>(<span class="summary-sig-arg">cls</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.bulk.applications-pysrc.html#ApplicationsBulkApi.delete_swag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="delete"></a><span class="summary-sig-name">delete</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">application_ids</span>,
+        <span class="summary-sig-arg">account</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.bulk.applications-pysrc.html#ApplicationsBulkApi.delete">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8"  class="private">
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.api.v1.common.Api-class.html">common.Api</a></th></tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_api_key"></a><span class="summary-sig-name">_add_api_key</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">template</span>,
+        <span class="summary-sig-arg">optional</span>=<span class="summary-sig-default">False</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.common-pysrc.html#Api._add_api_key">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_add_swag_tag"></a><span class="summary-sig-name">_add_swag_tag</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">template</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.common-pysrc.html#Api._add_swag_tag">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr class="private">
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="_build_swag_response"></a><span class="summary-sig-name">_build_swag_response</span>(<span class="summary-sig-arg">cls</span>,
+        <span class="summary-sig-arg">template</span>,
+        <span class="summary-sig-arg">api_key_optional_override</span>=<span class="summary-sig-default">None</span>)</span><br />
+      Construct the swagger response structure upon a template
+:param template
+:param api_key_optional_override: override the class-level value of API_KEY_OPTIONAL
+:return: an updated template</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="portality.api.v1.common-pysrc.html#Api._build_swag_response">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="API_KEY_OPTIONAL"></a><span class="summary-name">API_KEY_OPTIONAL</span> = <code title="False">False</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SWAG_TAG"></a><span class="summary-name">SWAG_TAG</span> = <code title="'Bulk API'">'Bulk API'</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_DELETE_PARAM" class="summary-name">SWAG_DELETE_PARAM</a> = <code title="{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query-docs\&quot;&gt;List of DOAJ applica\
+tion IDs to be deleted. You must own all of the ids, and they must all\
+ not have entered the DOAJ workflow yet, or none of them will be proce\
+ssed.e.g. [4cf8b72139a749c88d043129f00e1b07, 8e896b60-35f1-4cd3-b3f9-0\
+7f7f29d8a98].&lt;/div&gt;&quot;, &quot;required&quot;: True, &quot;type&quot;: &quot;string&quot;, &quot;name&quot;: &quot;app\
+lication_ids&quot;, &quot;in&quot;: &quot;body&quot;}">{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.bulk.applications.ApplicationsBulkApi-class.html#SWAG_APPLICATION_BODY_PARAM" class="summary-name">SWAG_APPLICATION_BODY_PARAM</a> = <code title="{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query-docs\&quot;&gt;List of Application \
+JSON objects that you would like to create. Each element of the list s\
+hould comply with the schema displayed in the &lt;a href=\&quot;/api/v1/docs#C\
+RUD_Applications_get_api_v1_application_application_id\&quot;&gt; GET (Retriev\
+e) an application route&lt;/a&gt;.&lt;/div&gt;&quot;, &quot;required&quot;: True, &quot;type&quot;: &quot;string\
+&quot;, &quot;name&quot;: &quot;application_json&quot;, &quot;in&quot;: &quot;body&quot;}">{&quot;description&quot;: &quot;&lt;div class=\&quot;se<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr bgcolor="#e8f0f8" >
+  <th colspan="2" class="group-header"
+    >&nbsp;&nbsp;&nbsp;&nbsp;Inherited from <a href="portality.api.v1.common.Api-class.html">common.Api</a></th></tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="R200"></a><span class="summary-name">R200</span> = <code title="{&quot;schema&quot;: {}}">{&quot;schema&quot;: {}}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R201" class="summary-name">R201</a> = <code title="{&quot;schema&quot;: {&quot;properties&quot;: CREATED_TEMPLATE, &quot;description&quot;: &quot;Resource c\
+reated successfully, response contains the new resource ID and locatio\
+n.&quot;}}">{&quot;schema&quot;: {&quot;properties&quot;: CREATED_TEMPLATE, &quot;descriptio<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R201_BULK" class="summary-name">R201_BULK</a> = <code title="{&quot;schema&quot;: {&quot;items&quot;: {&quot;properties&quot;: CREATED_TEMPLATE, &quot;type&quot;: &quot;object&quot;\
+}, &quot;type&quot;: &quot;array&quot;, &quot;description&quot;: &quot;Resources created successfully, re\
+sponse contains the new resource IDs and locations.&quot;}}">{&quot;schema&quot;: {&quot;items&quot;: {&quot;properties&quot;: CREATED_TEMPLA<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="R204"></a><span class="summary-name">R204</span> = <code title="{&quot;description&quot;: &quot;OK (Request succeeded), No Content&quot;}">{&quot;description&quot;: &quot;OK (Request succeeded), No Content&quot;}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R400" class="summary-name">R400</a> = <code title="{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description&quot;: &quot;Bad Request\
+. Your request body was missing a required field, or the data in one o\
+f the fields did not match the schema above (e.g. string of latin lett\
+ers in an integer field). In the Bulk API it may mean that one of the \
+records in the bulk operation failed. See the \&quot;error\&quot; part of the re\
+sponse for details.&quot;}">{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R401" class="summary-name">R401</a> = <code title="{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description&quot;: &quot;Access to t\
+his route/resource requires authentication, but you did not provide an\
+y credentials.&quot;}">{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R403" class="summary-name">R403</a> = <code title="{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description&quot;: &quot;Access to t\
+his route/resource requires authentication, and you provided the wrong\
+ credentials. This includes situations where you are authenticated suc\
+cessfully via your API key, but you are not the owner of a specific re\
+source and are therefore barred from updating/deleting it.&quot;}">{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#R404" class="summary-name">R404</a> = <code title="{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description&quot;: &quot;Resource no\
+t found&quot;}">{&quot;schema&quot;: {&quot;properties&quot;: ERROR_TEMPLATE}, &quot;description<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a href="portality.api.v1.common.Api-class.html#SWAG_API_KEY_REQ_PARAM" class="summary-name">SWAG_API_KEY_REQ_PARAM</a> = <code title="{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query-docs\&quot;&gt; Go to the top right\
+ of the page and click your username. If you have generated an API key\
+ already, it will appear under your name. If not, click the Generate A\
+PI Key button. Accounts are not available to the public. &lt;a href=\&quot;#in\
+tro_auth\&quot;&gt;More details&lt;/a&gt;&lt;/div&gt;&quot;, &quot;required&quot;: True, &quot;type&quot;: &quot;string&quot;\
+, &quot;name&quot;: &quot;api_key&quot;, &quot;in&quot;: &quot;query&quot;}">{&quot;description&quot;: &quot;&lt;div class=\&quot;search-<code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="SWAG_TEMPLATE"></a><span class="summary-name">SWAG_TEMPLATE</span> = <code title="{&quot;responses&quot;: {}, &quot;parameters&quot;: [], &quot;tags&quot;: []}">{&quot;responses&quot;: {}, &quot;parameters&quot;: [], &quot;tags&quot;: []}</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== PROPERTIES ==================== -->
+<a name="section-Properties"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Properties</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-Properties"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+      <code>__class__</code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLE DETAILS ==================== -->
+<a name="section-ClassVariableDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variable Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariableDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="SWAG_DELETE_PARAM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">SWAG_DELETE_PARAM</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query-docs\&quot;&gt;List of DOAJ applica<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+tion IDs to be deleted. You must own all of the ids, and they must all<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ not have entered the DOAJ workflow yet, or none of them will be proce<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+ssed.e.g. [4cf8b72139a749c88d043129f00e1b07, 8e896b60-35f1-4cd3-b3f9-0<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+7f7f29d8a98].&lt;/div&gt;&quot;, &quot;required&quot;: True, &quot;type&quot;: &quot;string&quot;, &quot;name&quot;: &quot;app<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+lication_ids&quot;, &quot;in&quot;: &quot;body&quot;}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<a name="SWAG_APPLICATION_BODY_PARAM"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">SWAG_APPLICATION_BODY_PARAM</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+{&quot;description&quot;: &quot;&lt;div class=\&quot;search-query-docs\&quot;&gt;List of Application <span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+JSON objects that you would like to create. Each element of the list s<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+hould comply with the schema displayed in the &lt;a href=\&quot;/api/v1/docs#C<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+RUD_Applications_get_api_v1_application_application_id\&quot;&gt; GET (Retriev<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+e) an application route&lt;/a&gt;.&lt;/div&gt;&quot;, &quot;required&quot;: True, &quot;type&quot;: &quot;string<span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+&quot;, &quot;name&quot;: &quot;application_json&quot;, &quot;in&quot;: &quot;body&quot;}
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:40:58 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

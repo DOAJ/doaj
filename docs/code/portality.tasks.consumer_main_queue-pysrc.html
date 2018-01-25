@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.tasks.consumer_main_queue</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.tasks-module.html">Package&nbsp;tasks</a> ::
+        Module&nbsp;consumer_main_queue
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.tasks.consumer_main_queue-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.tasks.consumer_main_queue-module.html">Module portality.tasks.consumer_main_queue</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># NOTE: this file is designed to be imported by Huey, the background job processor</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"># It changes the logging configuration. If it's imported anywhere else in the app,</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-comment"># it will change the logging configuration for the entire app.</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">logging</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">getLogger</tt><tt class="py-op">(</tt><tt class="py-string">"requests"</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">setLevel</tt><tt class="py-op">(</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">WARNING</tt><tt class="py-op">)</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">getLogger</tt><tt class="py-op">(</tt><tt class="py-string">"urllib3"</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt class="py-name">setLevel</tt><tt class="py-op">(</tt><tt class="py-name">logging</tt><tt class="py-op">.</tt><tt class="py-name">WARNING</tt><tt class="py-op">)</tt> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-comment"># import the queues</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package portality=portality-module.html"><a title="portality" class="py-name" href="#" onclick="return doclink('link-0', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package portality.tasks=portality.tasks-module.html"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-1', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module portality.tasks.redis_huey=portality.tasks.redis_huey-module.html"><a title="portality.tasks.redis_huey" class="py-name" href="#" onclick="return doclink('link-2', 'redis_huey', 'link-2');">redis_huey</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Variable portality.tasks.redis_huey.main_queue=portality.tasks.redis_huey-module.html#main_queue"><a title="portality.tasks.redis_huey.main_queue" class="py-name" href="#" onclick="return doclink('link-3', 'main_queue', 'link-3');">main_queue</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line"> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"><tt class="py-comment"># now import the tasks that will bind to those queues</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line"><tt class="py-comment"># these are the ones which bind to the main_queue</tt> </tt>
+<a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-4', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-5', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module portality.tasks.reporting=portality.tasks.reporting-module.html"><a title="portality.tasks.reporting" class="py-name" href="#" onclick="return doclink('link-6', 'reporting', 'link-6');">reporting</a></tt> <tt class="py-keyword">import</tt> <tt id="link-7" class="py-name" targets="Function portality.tasks.reporting.scheduled_reports()=portality.tasks.reporting-module.html#scheduled_reports"><a title="portality.tasks.reporting.scheduled_reports" class="py-name" href="#" onclick="return doclink('link-7', 'scheduled_reports', 'link-7');">scheduled_reports</a></tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name" targets="Function portality.tasks.reporting.run_reports()=portality.tasks.reporting-module.html#run_reports"><a title="portality.tasks.reporting.run_reports" class="py-name" href="#" onclick="return doclink('link-8', 'run_reports', 'link-8');">run_reports</a></tt> </tt>
+<a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-9" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-9', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-10', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name" targets="Module portality.tasks.journal_in_out_doaj=portality.tasks.journal_in_out_doaj-module.html"><a title="portality.tasks.journal_in_out_doaj" class="py-name" href="#" onclick="return doclink('link-11', 'journal_in_out_doaj', 'link-11');">journal_in_out_doaj</a></tt> <tt class="py-keyword">import</tt> <tt id="link-12" class="py-name" targets="Method portality.models.article.Article.set_in_doaj()=portality.models.article.Article-class.html#set_in_doaj,Method portality.models.journal.Journal.set_in_doaj()=portality.models.journal.Journal-class.html#set_in_doaj,Function portality.tasks.journal_in_out_doaj.set_in_doaj()=portality.tasks.journal_in_out_doaj-module.html#set_in_doaj"><a title="portality.models.article.Article.set_in_doaj
+portality.models.journal.Journal.set_in_doaj
+portality.tasks.journal_in_out_doaj.set_in_doaj" class="py-name" href="#" onclick="return doclink('link-12', 'set_in_doaj', 'link-12');">set_in_doaj</a></tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-13" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-13', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-14', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Module portality.scripts.sitemap=portality.scripts.sitemap-module.html,Module portality.tasks.sitemap=portality.tasks.sitemap-module.html,Function portality.view.doaj.sitemap()=portality.view.doaj-module.html#sitemap"><a title="portality.scripts.sitemap
+portality.tasks.sitemap
+portality.view.doaj.sitemap" class="py-name" href="#" onclick="return doclink('link-15', 'sitemap', 'link-15');">sitemap</a></tt> <tt class="py-keyword">import</tt> <tt id="link-16" class="py-name" targets="Function portality.tasks.sitemap.scheduled_sitemap()=portality.tasks.sitemap-module.html#scheduled_sitemap"><a title="portality.tasks.sitemap.scheduled_sitemap" class="py-name" href="#" onclick="return doclink('link-16', 'scheduled_sitemap', 'link-16');">scheduled_sitemap</a></tt><tt class="py-op">,</tt> <tt id="link-17" class="py-name" targets="Function portality.tasks.sitemap.generate_sitemap()=portality.tasks.sitemap-module.html#generate_sitemap"><a title="portality.tasks.sitemap.generate_sitemap" class="py-name" href="#" onclick="return doclink('link-17', 'generate_sitemap', 'link-17');">generate_sitemap</a></tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-18" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-18', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-19" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-19', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Module portality.tasks.journal_bulk_edit=portality.tasks.journal_bulk_edit-module.html,Function portality.tasks.journal_bulk_edit.journal_bulk_edit()=portality.tasks.journal_bulk_edit-module.html#journal_bulk_edit"><a title="portality.tasks.journal_bulk_edit
+portality.tasks.journal_bulk_edit.journal_bulk_edit" class="py-name" href="#" onclick="return doclink('link-20', 'journal_bulk_edit', 'link-20');">journal_bulk_edit</a></tt> <tt class="py-keyword">import</tt> <tt id="link-21" class="py-name"><a title="portality.tasks.journal_bulk_edit
+portality.tasks.journal_bulk_edit.journal_bulk_edit" class="py-name" href="#" onclick="return doclink('link-21', 'journal_bulk_edit', 'link-20');">journal_bulk_edit</a></tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-22" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-22', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-23', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Module portality.tasks.suggestion_bulk_edit=portality.tasks.suggestion_bulk_edit-module.html,Function portality.tasks.suggestion_bulk_edit.suggestion_bulk_edit()=portality.tasks.suggestion_bulk_edit-module.html#suggestion_bulk_edit"><a title="portality.tasks.suggestion_bulk_edit
+portality.tasks.suggestion_bulk_edit.suggestion_bulk_edit" class="py-name" href="#" onclick="return doclink('link-24', 'suggestion_bulk_edit', 'link-24');">suggestion_bulk_edit</a></tt> <tt class="py-keyword">import</tt> <tt id="link-25" class="py-name"><a title="portality.tasks.suggestion_bulk_edit
+portality.tasks.suggestion_bulk_edit.suggestion_bulk_edit" class="py-name" href="#" onclick="return doclink('link-25', 'suggestion_bulk_edit', 'link-24');">suggestion_bulk_edit</a></tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-26" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-26', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-27', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-28" class="py-name" targets="Module portality.tasks.ingestarticles=portality.tasks.ingestarticles-module.html"><a title="portality.tasks.ingestarticles" class="py-name" href="#" onclick="return doclink('link-28', 'ingestarticles', 'link-28');">ingestarticles</a></tt> <tt class="py-keyword">import</tt> <tt id="link-29" class="py-name" targets="Function portality.tasks.ingestarticles.ingest_articles()=portality.tasks.ingestarticles-module.html#ingest_articles"><a title="portality.tasks.ingestarticles.ingest_articles" class="py-name" href="#" onclick="return doclink('link-29', 'ingest_articles', 'link-29');">ingest_articles</a></tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-30" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-30', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-31" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-31', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-32" class="py-name" targets="Module portality.tasks.journal_csv=portality.tasks.journal_csv-module.html,Function portality.tasks.journal_csv.journal_csv()=portality.tasks.journal_csv-module.html#journal_csv"><a title="portality.tasks.journal_csv
+portality.tasks.journal_csv.journal_csv" class="py-name" href="#" onclick="return doclink('link-32', 'journal_csv', 'link-32');">journal_csv</a></tt> <tt class="py-keyword">import</tt> <tt id="link-33" class="py-name" targets="Function portality.tasks.journal_csv.scheduled_journal_csv()=portality.tasks.journal_csv-module.html#scheduled_journal_csv"><a title="portality.tasks.journal_csv.scheduled_journal_csv" class="py-name" href="#" onclick="return doclink('link-33', 'scheduled_journal_csv', 'link-33');">scheduled_journal_csv</a></tt><tt class="py-op">,</tt> <tt id="link-34" class="py-name"><a title="portality.tasks.journal_csv
+portality.tasks.journal_csv.journal_csv" class="py-name" href="#" onclick="return doclink('link-34', 'journal_csv', 'link-32');">journal_csv</a></tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-35" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-35', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-36', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-37" class="py-name" targets="Module portality.tasks.read_news=portality.tasks.read_news-module.html,Function portality.tasks.read_news.read_news()=portality.tasks.read_news-module.html#read_news"><a title="portality.tasks.read_news
+portality.tasks.read_news.read_news" class="py-name" href="#" onclick="return doclink('link-37', 'read_news', 'link-37');">read_news</a></tt> <tt class="py-keyword">import</tt> <tt id="link-38" class="py-name" targets="Function portality.tasks.read_news.scheduled_read_news()=portality.tasks.read_news-module.html#scheduled_read_news"><a title="portality.tasks.read_news.scheduled_read_news" class="py-name" href="#" onclick="return doclink('link-38', 'scheduled_read_news', 'link-38');">scheduled_read_news</a></tt><tt class="py-op">,</tt> <tt id="link-39" class="py-name"><a title="portality.tasks.read_news
+portality.tasks.read_news.read_news" class="py-name" href="#" onclick="return doclink('link-39', 'read_news', 'link-37');">read_news</a></tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-40" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-40', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-41" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-41', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Module portality.tasks.journal_bulk_delete=portality.tasks.journal_bulk_delete-module.html,Function portality.tasks.journal_bulk_delete.journal_bulk_delete()=portality.tasks.journal_bulk_delete-module.html#journal_bulk_delete"><a title="portality.tasks.journal_bulk_delete
+portality.tasks.journal_bulk_delete.journal_bulk_delete" class="py-name" href="#" onclick="return doclink('link-42', 'journal_bulk_delete', 'link-42');">journal_bulk_delete</a></tt> <tt class="py-keyword">import</tt> <tt id="link-43" class="py-name"><a title="portality.tasks.journal_bulk_delete
+portality.tasks.journal_bulk_delete.journal_bulk_delete" class="py-name" href="#" onclick="return doclink('link-43', 'journal_bulk_delete', 'link-42');">journal_bulk_delete</a></tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-44" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-44', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-45', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Module portality.tasks.article_bulk_delete=portality.tasks.article_bulk_delete-module.html,Function portality.tasks.article_bulk_delete.article_bulk_delete()=portality.tasks.article_bulk_delete-module.html#article_bulk_delete"><a title="portality.tasks.article_bulk_delete
+portality.tasks.article_bulk_delete.article_bulk_delete" class="py-name" href="#" onclick="return doclink('link-46', 'article_bulk_delete', 'link-46');">article_bulk_delete</a></tt> <tt class="py-keyword">import</tt> <tt id="link-47" class="py-name"><a title="portality.tasks.article_bulk_delete
+portality.tasks.article_bulk_delete.article_bulk_delete" class="py-name" href="#" onclick="return doclink('link-47', 'article_bulk_delete', 'link-46');">article_bulk_delete</a></tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-48" class="py-name"><a title="portality" class="py-name" href="#" onclick="return doclink('link-48', 'portality', 'link-0');">portality</a></tt><tt class="py-op">.</tt><tt id="link-49" class="py-name"><a title="portality.tasks" class="py-name" href="#" onclick="return doclink('link-49', 'tasks', 'link-1');">tasks</a></tt><tt class="py-op">.</tt><tt id="link-50" class="py-name" targets="Module portality.scripts.async_workflow_notifications=portality.scripts.async_workflow_notifications-module.html,Module portality.tasks.async_workflow_notifications=portality.tasks.async_workflow_notifications-module.html,Function portality.tasks.async_workflow_notifications.async_workflow_notifications()=portality.tasks.async_workflow_notifications-module.html#async_workflow_notifications"><a title="portality.scripts.async_workflow_notifications
+portality.tasks.async_workflow_notifications
+portality.tasks.async_workflow_notifications.async_workflow_notifications" class="py-name" href="#" onclick="return doclink('link-50', 'async_workflow_notifications', 'link-50');">async_workflow_notifications</a></tt> <tt class="py-keyword">import</tt> <tt id="link-51" class="py-name"><a title="portality.scripts.async_workflow_notifications
+portality.tasks.async_workflow_notifications
+portality.tasks.async_workflow_notifications.async_workflow_notifications" class="py-name" href="#" onclick="return doclink('link-51', 'async_workflow_notifications', 'link-50');">async_workflow_notifications</a></tt> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:13 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

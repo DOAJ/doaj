@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>portality.formcontext.fields</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="portality-module.html">Package&nbsp;portality</a> ::
+        <a href="portality.formcontext-module.html">Package&nbsp;formcontext</a> ::
+        Module&nbsp;fields
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="portality.formcontext.fields-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="portality.formcontext.fields-module.html">Module portality.formcontext.fields</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wtforms</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Field</tt><tt class="py-op">,</tt> <tt class="py-name">TextField</tt><tt class="py-op">,</tt> <tt class="py-name">SelectField</tt><tt class="py-op">,</tt> <tt class="py-name">SelectMultipleField</tt><tt class="py-op">,</tt> <tt class="py-name">RadioField</tt> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">wtforms</tt> <tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Function portality.view.doaj.widgets()=portality.view.doaj-module.html#widgets"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-0', 'widgets', 'link-0');">widgets</a></tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">re</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt id="link-1" class="py-name" targets="Variable portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX=portality.formcontext.fields-module.html#URL_REQUIRED_SCHEME_REGEX"><a title="portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX" class="py-name" href="#" onclick="return doclink('link-1', 'URL_REQUIRED_SCHEME_REGEX', 'link-1');">URL_REQUIRED_SCHEME_REGEX</a></tt> <tt class="py-op">=</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">compile</tt><tt class="py-op">(</tt><tt class="py-string">r'^[a-z]+://([^/:]+\.[a-z]{2,10}|([0-9]{1,3}\.){3}[0-9]{1,3})(:[0-9]+)?(\/.*)?$'</tt><tt class="py-op">,</tt> <tt class="py-name">re</tt><tt class="py-op">.</tt><tt class="py-name">IGNORECASE</tt><tt class="py-op">)</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"> </tt>
+<a name="set_select_field_default"></a><div id="set_select_field_default-def"><a name="L8"></a><tt class="py-lineno"> 8</tt> <a class="py-toggle" href="#" id="set_select_field_default-toggle" onclick="return toggle('set_select_field_default');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields-module.html#set_select_field_default">set_select_field_default</a><tt class="py-op">(</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="set_select_field_default-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="set_select_field_default-expanded"><a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-string">'default'</tt> <tt class="py-keyword">not</tt> <tt class="py-keyword">in</tt> <tt class="py-name">kwargs</tt><tt class="py-op">:</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">        <tt class="py-name">kwargs</tt><tt class="py-op">[</tt><tt class="py-string">'default'</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-string">''</tt> </tt>
+</div><a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line"> </tt>
+<a name="DOAJSelectField"></a><div id="DOAJSelectField-def"><a name="L13"></a><tt class="py-lineno">13</tt> <a class="py-toggle" href="#" id="DOAJSelectField-toggle" onclick="return toggle('DOAJSelectField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.DOAJSelectField-class.html">DOAJSelectField</a><tt class="py-op">(</tt><tt class="py-base-class">SelectField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DOAJSelectField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="DOAJSelectField-expanded"><a name="DOAJSelectField.__init__"></a><div id="DOAJSelectField.__init__-def"><a name="L14"></a><tt class="py-lineno">14</tt> <a class="py-toggle" href="#" id="DOAJSelectField.__init__-toggle" onclick="return toggle('DOAJSelectField.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.DOAJSelectField-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DOAJSelectField.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DOAJSelectField.__init__-expanded"><a name="L15"></a><tt class="py-lineno">15</tt>  <tt class="py-line">        <tt id="link-2" class="py-name" targets="Function portality.formcontext.fields.set_select_field_default()=portality.formcontext.fields-module.html#set_select_field_default"><a title="portality.formcontext.fields.set_select_field_default" class="py-name" href="#" onclick="return doclink('link-2', 'set_select_field_default', 'link-2');">set_select_field_default</a></tt><tt class="py-op">(</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-3" class="py-name" targets="Class portality.formcontext.fields.DOAJSelectField=portality.formcontext.fields.DOAJSelectField-class.html"><a title="portality.formcontext.fields.DOAJSelectField" class="py-name" href="#" onclick="return doclink('link-3', 'DOAJSelectField', 'link-3');">DOAJSelectField</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method portality.api.v1.data_objects.application.IncomingApplication.__init__()=portality.api.v1.data_objects.application.IncomingApplication-class.html#__init__,Method portality.api.v1.data_objects.application.OutgoingApplication.__init__()=portality.api.v1.data_objects.application.OutgoingApplication-class.html#__init__,Method portality.api.v1.data_objects.article.IncomingArticleDO.__init__()=portality.api.v1.data_objects.article.IncomingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.article.OutgoingArticleDO.__init__()=portality.api.v1.data_objects.article.OutgoingArticleDO-class.html#__init__,Method portality.api.v1.data_objects.journal.OutgoingJournal.__init__()=portality.api.v1.data_objects.journal.OutgoingJournal-class.html#__init__,Method portality.api.v1.discovery.ApplicationQuery.__init__()=portality.api.v1.discovery.ApplicationQuery-class.html#__init__,Method portality.api.v1.discovery.SearchQuery.__init__()=portality.api.v1.discovery.SearchQuery-class.html#__init__,Method portality.api.v1.discovery.SearchResult.__init__()=portality.api.v1.discovery.SearchResult-class.html#__init__,Method portality.article.DOAJXWalk.__init__()=portality.article.DOAJXWalk-class.html#__init__,Method portality.article.IngestException.__init__()=portality.article.IngestException-class.html#__init__,Method portality.article.XWalk.__init__()=portality.article.XWalk-class.html#__init__,Method portality.background.BackgroundSummary.__init__()=portality.background.BackgroundSummary-class.html#__init__,Method portality.background.BackgroundTask.__init__()=portality.background.BackgroundTask-class.html#__init__,Method portality.bll.exceptions.AuthoriseException.__init__()=portality.bll.exceptions.AuthoriseException-class.html#__init__,Method portality.blog.NewsQuery.__init__()=portality.blog.NewsQuery-class.html#__init__,Method portality.clcsv.ClCsv.__init__()=portality.clcsv.ClCsv-class.html#__init__,Method portality.clcsv.UTF8Recoder.__init__()=portality.clcsv.UTF8Recoder-class.html#__init__,Method portality.clcsv.UnicodeReader.__init__()=portality.clcsv.UnicodeReader-class.html#__init__,Method portality.clcsv.UnicodeWriter.__init__()=portality.clcsv.UnicodeWriter-class.html#__init__,Method portality.dao.DomainObject.__init__()=portality.dao.DomainObject-class.html#__init__,Method portality.formcontext.fields.DOAJSelectField.__init__()=portality.formcontext.fields.DOAJSelectField-class.html#__init__,Method portality.formcontext.fields.DOAJSelectMultipleField.__init__()=portality.formcontext.fields.DOAJSelectMultipleField-class.html#__init__,Method portality.formcontext.formcontext.FormContext.__init__()=portality.formcontext.formcontext.FormContext-class.html#__init__,Method portality.formcontext.formcontext.PublicApplication.__init__()=portality.formcontext.formcontext.PublicApplication-class.html#__init__,Method portality.formcontext.render.ApplicationRenderer.__init__()=portality.formcontext.render.ApplicationRenderer-class.html#__init__,Method portality.formcontext.render.AssEdApplicationReviewRenderer.__init__()=portality.formcontext.render.AssEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.AssEdJournalReviewRenderer.__init__()=portality.formcontext.render.AssEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.BasicJournalInformationRenderer.__init__()=portality.formcontext.render.BasicJournalInformationRenderer-class.html#__init__,Method portality.formcontext.render.EditorApplicationReviewRenderer.__init__()=portality.formcontext.render.EditorApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.EditorJournalReviewRenderer.__init__()=portality.formcontext.render.EditorJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.JournalRenderer.__init__()=portality.formcontext.render.JournalRenderer-class.html#__init__,Method portality.formcontext.render.ManEdApplicationReviewRenderer.__init__()=portality.formcontext.render.ManEdApplicationReviewRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__()=portality.formcontext.render.ManEdJournalBulkEditRenderer-class.html#__init__,Method portality.formcontext.render.ManEdJournalReviewRenderer.__init__()=portality.formcontext.render.ManEdJournalReviewRenderer-class.html#__init__,Method portality.formcontext.render.PublicApplicationRenderer.__init__()=portality.formcontext.render.PublicApplicationRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer-class.html#__init__,Method portality.formcontext.render.PublisherUpdateRequestRenderer.__init__()=portality.formcontext.render.PublisherUpdateRequestRenderer-class.html#__init__,Method portality.formcontext.render.ReadOnlyJournalRenderer.__init__()=portality.formcontext.render.ReadOnlyJournalRenderer-class.html#__init__,Method portality.formcontext.render.Renderer.__init__()=portality.formcontext.render.Renderer-class.html#__init__,Method portality.formcontext.validate.DataOptional.__init__()=portality.formcontext.validate.DataOptional-class.html#__init__,Method portality.formcontext.validate.ExclusiveCheckbox.__init__()=portality.formcontext.validate.ExclusiveCheckbox-class.html#__init__,Method portality.formcontext.validate.ExtraFieldRequiredIf.__init__()=portality.formcontext.validate.ExtraFieldRequiredIf-class.html#__init__,Method portality.formcontext.validate.MaxLen.__init__()=portality.formcontext.validate.MaxLen-class.html#__init__,Method portality.formcontext.validate.OptionalIf.__init__()=portality.formcontext.validate.OptionalIf-class.html#__init__,Method portality.formcontext.validate.RegexpOnTagList.__init__()=portality.formcontext.validate.RegexpOnTagList-class.html#__init__,Method portality.formcontext.validate.RequiredIfRole.__init__()=portality.formcontext.validate.RequiredIfRole-class.html#__init__,Method portality.formcontext.validate.ReservedUsernames.__init__()=portality.formcontext.validate.ReservedUsernames-class.html#__init__,Method portality.formcontext.validate.ThisOrThat.__init__()=portality.formcontext.validate.ThisOrThat-class.html#__init__,Method portality.formcontext.validate.URLOptionalScheme.__init__()=portality.formcontext.validate.URLOptionalScheme-class.html#__init__,Method portality.lib.dataobj.DataObj.__init__()=portality.lib.dataobj.DataObj-class.html#__init__,Method portality.lib.swagger.SwaggerSupport.__init__()=portality.lib.swagger.SwaggerSupport-class.html#__init__,Method portality.lock.LockQuery.__init__()=portality.lock.LockQuery-class.html#__init__,Method portality.lock.Locked.__init__()=portality.lock.Locked-class.html#__init__,Method portality.models.ObjectDict.__init__()=portality.models.ObjectDict-class.html#__init__,Method portality.models.account.Account.__init__()=portality.models.account.Account-class.html#__init__,Method portality.models.article.ArticleBibJSON.__init__()=portality.models.article.ArticleBibJSON-class.html#__init__,Method portality.models.article.ArticleIssueQuery.__init__()=portality.models.article.ArticleIssueQuery-class.html#__init__,Method portality.models.article.ArticleQuery.__init__()=portality.models.article.ArticleQuery-class.html#__init__,Method portality.models.article.ArticleVolumesIssuesQuery.__init__()=portality.models.article.ArticleVolumesIssuesQuery-class.html#__init__,Method portality.models.article.ArticleVolumesQuery.__init__()=portality.models.article.ArticleVolumesQuery-class.html#__init__,Method portality.models.article.DuplicateArticleQuery.__init__()=portality.models.article.DuplicateArticleQuery-class.html#__init__,Method portality.models.background.BackgroundJob.__init__()=portality.models.background.BackgroundJob-class.html#__init__,Method portality.models.bibjson.GenericBibJSON.__init__()=portality.models.bibjson.GenericBibJSON-class.html#__init__,Method portality.models.editors.EditorGroupMemberQuery.__init__()=portality.models.editors.EditorGroupMemberQuery-class.html#__init__,Method portality.models.editors.EditorGroupQuery.__init__()=portality.models.editors.EditorGroupQuery-class.html#__init__,Method portality.models.journal.ContinuationQuery.__init__()=portality.models.journal.ContinuationQuery-class.html#__init__,Method portality.models.journal.IssnQuery.__init__()=portality.models.journal.IssnQuery-class.html#__init__,Method portality.models.journal.Journal.__init__()=portality.models.journal.Journal-class.html#__init__,Method portality.models.journal.JournalBibJSON.__init__()=portality.models.journal.JournalBibJSON-class.html#__init__,Method portality.models.journal.JournalQuery.__init__()=portality.models.journal.JournalQuery-class.html#__init__,Method portality.models.journal.PublisherQuery.__init__()=portality.models.journal.PublisherQuery-class.html#__init__,Method portality.models.journal.TitleQuery.__init__()=portality.models.journal.TitleQuery-class.html#__init__,Method portality.models.openurl.OpenURLRequest.__init__()=portality.models.openurl.OpenURLRequest-class.html#__init__,Method portality.models.provenance.Provenance.__init__()=portality.models.provenance.Provenance-class.html#__init__,Method portality.models.provenance.ResourceIDQuery.__init__()=portality.models.provenance.ResourceIDQuery-class.html#__init__,Method portality.models.suggestion.CurrentJournalQuery.__init__()=portality.models.suggestion.CurrentJournalQuery-class.html#__init__,Method portality.models.suggestion.OwnerStatusQuery.__init__()=portality.models.suggestion.OwnerStatusQuery-class.html#__init__,Method portality.models.suggestion.RelatedJournalQuery.__init__()=portality.models.suggestion.RelatedJournalQuery-class.html#__init__,Method portality.models.suggestion.StatusQuery.__init__()=portality.models.suggestion.StatusQuery-class.html#__init__,Method portality.models.suggestion.Suggestion.__init__()=portality.models.suggestion.Suggestion-class.html#__init__,Method portality.models.suggestion.SuggestionQuery.__init__()=portality.models.suggestion.SuggestionQuery-class.html#__init__,Method portality.models.toc.JournalIssueToC.__init__()=portality.models.toc.JournalIssueToC-class.html#__init__,Method portality.models.toc.ToCQuery.__init__()=portality.models.toc.ToCQuery-class.html#__init__,Method portality.models.toc.VolumesToCQuery.__init__()=portality.models.toc.VolumesToCQuery-class.html#__init__,Method portality.models.uploads.ExistsFileQuery.__init__()=portality.models.uploads.ExistsFileQuery-class.html#__init__,Method portality.models.uploads.OwnerFileQuery.__init__()=portality.models.uploads.OwnerFileQuery-class.html#__init__,Method portality.models.uploads.ValidFileQuery.__init__()=portality.models.uploads.ValidFileQuery-class.html#__init__,Method portality.ordereddict.OrderedDict.__init__()=portality.ordereddict.OrderedDict-class.html#__init__,Method portality.tasks.reporting.ActionCounter.__init__()=portality.tasks.reporting.ActionCounter-class.html#__init__,Method portality.tasks.reporting.ContentByDate.__init__()=portality.tasks.reporting.ContentByDate-class.html#__init__,Method portality.tasks.reporting.ProvenanceList.__init__()=portality.tasks.reporting.ProvenanceList-class.html#__init__,Method portality.tasks.reporting.ReportCounter.__init__()=portality.tasks.reporting.ReportCounter-class.html#__init__,Method portality.tasks.reporting.StatusCounter.__init__()=portality.tasks.reporting.StatusCounter-class.html#__init__,Method portality.view.account.RedirectForm.__init__()=portality.view.account.RedirectForm-class.html#__init__,Method portality.view.atom.AtomFeed.__init__()=portality.view.atom.AtomFeed-class.html#__init__,Method portality.view.forms.ArticleForm.__init__()=portality.view.forms.ArticleForm-class.html#__init__,Method portality.view.forms.NotRole.__init__()=portality.view.forms.NotRole-class.html#__init__,Method portality.view.forms.UniqueGroupName.__init__()=portality.view.forms.UniqueGroupName-class.html#__init__,Method portality.view.oaipmh.BadArgument.__init__()=portality.view.oaipmh.BadArgument-class.html#__init__,Method portality.view.oaipmh.BadResumptionToken.__init__()=portality.view.oaipmh.BadResumptionToken-class.html#__init__,Method portality.view.oaipmh.BadVerb.__init__()=portality.view.oaipmh.BadVerb-class.html#__init__,Method portality.view.oaipmh.CannotDisseminateFormat.__init__()=portality.view.oaipmh.CannotDisseminateFormat-class.html#__init__,Method portality.view.oaipmh.GetRecord.__init__()=portality.view.oaipmh.GetRecord-class.html#__init__,Method portality.view.oaipmh.IdDoesNotExist.__init__()=portality.view.oaipmh.IdDoesNotExist-class.html#__init__,Method portality.view.oaipmh.Identify.__init__()=portality.view.oaipmh.Identify-class.html#__init__,Method portality.view.oaipmh.ListIdentifiers.__init__()=portality.view.oaipmh.ListIdentifiers-class.html#__init__,Method portality.view.oaipmh.ListMetadataFormats.__init__()=portality.view.oaipmh.ListMetadataFormats-class.html#__init__,Method portality.view.oaipmh.ListRecords.__init__()=portality.view.oaipmh.ListRecords-class.html#__init__,Method portality.view.oaipmh.ListSets.__init__()=portality.view.oaipmh.ListSets-class.html#__init__,Method portality.view.oaipmh.NoMetadataFormats.__init__()=portality.view.oaipmh.NoMetadataFormats-class.html#__init__,Method portality.view.oaipmh.NoRecordsMatch.__init__()=portality.view.oaipmh.NoRecordsMatch-class.html#__init__,Method portality.view.oaipmh.NoSetHierarchy.__init__()=portality.view.oaipmh.NoSetHierarchy-class.html#__init__,Method portality.view.oaipmh.OAIPMHError.__init__()=portality.view.oaipmh.OAIPMHError-class.html#__init__,Method portality.view.oaipmh.OAI_PMH.__init__()=portality.view.oaipmh.OAI_PMH-class.html#__init__,Method portality.view.query.Query.__init__()=portality.view.query.Query-class.html#__init__"><a title="portality.api.v1.data_objects.application.IncomingApplication.__init__
+portality.api.v1.data_objects.application.OutgoingApplication.__init__
+portality.api.v1.data_objects.article.IncomingArticleDO.__init__
+portality.api.v1.data_objects.article.OutgoingArticleDO.__init__
+portality.api.v1.data_objects.journal.OutgoingJournal.__init__
+portality.api.v1.discovery.ApplicationQuery.__init__
+portality.api.v1.discovery.SearchQuery.__init__
+portality.api.v1.discovery.SearchResult.__init__
+portality.article.DOAJXWalk.__init__
+portality.article.IngestException.__init__
+portality.article.XWalk.__init__
+portality.background.BackgroundSummary.__init__
+portality.background.BackgroundTask.__init__
+portality.bll.exceptions.AuthoriseException.__init__
+portality.blog.NewsQuery.__init__
+portality.clcsv.ClCsv.__init__
+portality.clcsv.UTF8Recoder.__init__
+portality.clcsv.UnicodeReader.__init__
+portality.clcsv.UnicodeWriter.__init__
+portality.dao.DomainObject.__init__
+portality.formcontext.fields.DOAJSelectField.__init__
+portality.formcontext.fields.DOAJSelectMultipleField.__init__
+portality.formcontext.formcontext.FormContext.__init__
+portality.formcontext.formcontext.PublicApplication.__init__
+portality.formcontext.render.ApplicationRenderer.__init__
+portality.formcontext.render.AssEdApplicationReviewRenderer.__init__
+portality.formcontext.render.AssEdJournalReviewRenderer.__init__
+portality.formcontext.render.BasicJournalInformationRenderer.__init__
+portality.formcontext.render.EditorApplicationReviewRenderer.__init__
+portality.formcontext.render.EditorJournalReviewRenderer.__init__
+portality.formcontext.render.JournalRenderer.__init__
+portality.formcontext.render.ManEdApplicationReviewRenderer.__init__
+portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__
+portality.formcontext.render.ManEdJournalReviewRenderer.__init__
+portality.formcontext.render.PublicApplicationRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestRenderer.__init__
+portality.formcontext.render.ReadOnlyJournalRenderer.__init__
+portality.formcontext.render.Renderer.__init__
+portality.formcontext.validate.DataOptional.__init__
+portality.formcontext.validate.ExclusiveCheckbox.__init__
+portality.formcontext.validate.ExtraFieldRequiredIf.__init__
+portality.formcontext.validate.MaxLen.__init__
+portality.formcontext.validate.OptionalIf.__init__
+portality.formcontext.validate.RegexpOnTagList.__init__
+portality.formcontext.validate.RequiredIfRole.__init__
+portality.formcontext.validate.ReservedUsernames.__init__
+portality.formcontext.validate.ThisOrThat.__init__
+portality.formcontext.validate.URLOptionalScheme.__init__
+portality.lib.dataobj.DataObj.__init__
+portality.lib.swagger.SwaggerSupport.__init__
+portality.lock.LockQuery.__init__
+portality.lock.Locked.__init__
+portality.models.ObjectDict.__init__
+portality.models.account.Account.__init__
+portality.models.article.ArticleBibJSON.__init__
+portality.models.article.ArticleIssueQuery.__init__
+portality.models.article.ArticleQuery.__init__
+portality.models.article.ArticleVolumesIssuesQuery.__init__
+portality.models.article.ArticleVolumesQuery.__init__
+portality.models.article.DuplicateArticleQuery.__init__
+portality.models.background.BackgroundJob.__init__
+portality.models.bibjson.GenericBibJSON.__init__
+portality.models.editors.EditorGroupMemberQuery.__init__
+portality.models.editors.EditorGroupQuery.__init__
+portality.models.journal.ContinuationQuery.__init__
+portality.models.journal.IssnQuery.__init__
+portality.models.journal.Journal.__init__
+portality.models.journal.JournalBibJSON.__init__
+portality.models.journal.JournalQuery.__init__
+portality.models.journal.PublisherQuery.__init__
+portality.models.journal.TitleQuery.__init__
+portality.models.openurl.OpenURLRequest.__init__
+portality.models.provenance.Provenance.__init__
+portality.models.provenance.ResourceIDQuery.__init__
+portality.models.suggestion.CurrentJournalQuery.__init__
+portality.models.suggestion.OwnerStatusQuery.__init__
+portality.models.suggestion.RelatedJournalQuery.__init__
+portality.models.suggestion.StatusQuery.__init__
+portality.models.suggestion.Suggestion.__init__
+portality.models.suggestion.SuggestionQuery.__init__
+portality.models.toc.JournalIssueToC.__init__
+portality.models.toc.ToCQuery.__init__
+portality.models.toc.VolumesToCQuery.__init__
+portality.models.uploads.ExistsFileQuery.__init__
+portality.models.uploads.OwnerFileQuery.__init__
+portality.models.uploads.ValidFileQuery.__init__
+portality.ordereddict.OrderedDict.__init__
+portality.tasks.reporting.ActionCounter.__init__
+portality.tasks.reporting.ContentByDate.__init__
+portality.tasks.reporting.ProvenanceList.__init__
+portality.tasks.reporting.ReportCounter.__init__
+portality.tasks.reporting.StatusCounter.__init__
+portality.view.account.RedirectForm.__init__
+portality.view.atom.AtomFeed.__init__
+portality.view.forms.ArticleForm.__init__
+portality.view.forms.NotRole.__init__
+portality.view.forms.UniqueGroupName.__init__
+portality.view.oaipmh.BadArgument.__init__
+portality.view.oaipmh.BadResumptionToken.__init__
+portality.view.oaipmh.BadVerb.__init__
+portality.view.oaipmh.CannotDisseminateFormat.__init__
+portality.view.oaipmh.GetRecord.__init__
+portality.view.oaipmh.IdDoesNotExist.__init__
+portality.view.oaipmh.Identify.__init__
+portality.view.oaipmh.ListIdentifiers.__init__
+portality.view.oaipmh.ListMetadataFormats.__init__
+portality.view.oaipmh.ListRecords.__init__
+portality.view.oaipmh.ListSets.__init__
+portality.view.oaipmh.NoMetadataFormats.__init__
+portality.view.oaipmh.NoRecordsMatch.__init__
+portality.view.oaipmh.NoSetHierarchy.__init__
+portality.view.oaipmh.OAIPMHError.__init__
+portality.view.oaipmh.OAI_PMH.__init__
+portality.view.query.Query.__init__" class="py-name" href="#" onclick="return doclink('link-4', '__init__', 'link-4');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line"> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line"> </tt>
+<a name="DOAJSelectMultipleField"></a><div id="DOAJSelectMultipleField-def"><a name="L19"></a><tt class="py-lineno">19</tt> <a class="py-toggle" href="#" id="DOAJSelectMultipleField-toggle" onclick="return toggle('DOAJSelectMultipleField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.DOAJSelectMultipleField-class.html">DOAJSelectMultipleField</a><tt class="py-op">(</tt><tt class="py-base-class">SelectMultipleField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DOAJSelectMultipleField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="DOAJSelectMultipleField-expanded"><a name="DOAJSelectMultipleField.__init__"></a><div id="DOAJSelectMultipleField.__init__-def"><a name="L20"></a><tt class="py-lineno">20</tt> <a class="py-toggle" href="#" id="DOAJSelectMultipleField.__init__-toggle" onclick="return toggle('DOAJSelectMultipleField.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.DOAJSelectMultipleField-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DOAJSelectMultipleField.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DOAJSelectMultipleField.__init__-expanded"><a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">        <tt id="link-5" class="py-name"><a title="portality.formcontext.fields.set_select_field_default" class="py-name" href="#" onclick="return doclink('link-5', 'set_select_field_default', 'link-2');">set_select_field_default</a></tt><tt class="py-op">(</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-6" class="py-name" targets="Class portality.formcontext.fields.DOAJSelectMultipleField=portality.formcontext.fields.DOAJSelectMultipleField-class.html"><a title="portality.formcontext.fields.DOAJSelectMultipleField" class="py-name" href="#" onclick="return doclink('link-6', 'DOAJSelectMultipleField', 'link-6');">DOAJSelectMultipleField</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="portality.api.v1.data_objects.application.IncomingApplication.__init__
+portality.api.v1.data_objects.application.OutgoingApplication.__init__
+portality.api.v1.data_objects.article.IncomingArticleDO.__init__
+portality.api.v1.data_objects.article.OutgoingArticleDO.__init__
+portality.api.v1.data_objects.journal.OutgoingJournal.__init__
+portality.api.v1.discovery.ApplicationQuery.__init__
+portality.api.v1.discovery.SearchQuery.__init__
+portality.api.v1.discovery.SearchResult.__init__
+portality.article.DOAJXWalk.__init__
+portality.article.IngestException.__init__
+portality.article.XWalk.__init__
+portality.background.BackgroundSummary.__init__
+portality.background.BackgroundTask.__init__
+portality.bll.exceptions.AuthoriseException.__init__
+portality.blog.NewsQuery.__init__
+portality.clcsv.ClCsv.__init__
+portality.clcsv.UTF8Recoder.__init__
+portality.clcsv.UnicodeReader.__init__
+portality.clcsv.UnicodeWriter.__init__
+portality.dao.DomainObject.__init__
+portality.formcontext.fields.DOAJSelectField.__init__
+portality.formcontext.fields.DOAJSelectMultipleField.__init__
+portality.formcontext.formcontext.FormContext.__init__
+portality.formcontext.formcontext.PublicApplication.__init__
+portality.formcontext.render.ApplicationRenderer.__init__
+portality.formcontext.render.AssEdApplicationReviewRenderer.__init__
+portality.formcontext.render.AssEdJournalReviewRenderer.__init__
+portality.formcontext.render.BasicJournalInformationRenderer.__init__
+portality.formcontext.render.EditorApplicationReviewRenderer.__init__
+portality.formcontext.render.EditorJournalReviewRenderer.__init__
+portality.formcontext.render.JournalRenderer.__init__
+portality.formcontext.render.ManEdApplicationReviewRenderer.__init__
+portality.formcontext.render.ManEdJournalBulkEditRenderer.__init__
+portality.formcontext.render.ManEdJournalReviewRenderer.__init__
+portality.formcontext.render.PublicApplicationRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestReadOnlyRenderer.__init__
+portality.formcontext.render.PublisherUpdateRequestRenderer.__init__
+portality.formcontext.render.ReadOnlyJournalRenderer.__init__
+portality.formcontext.render.Renderer.__init__
+portality.formcontext.validate.DataOptional.__init__
+portality.formcontext.validate.ExclusiveCheckbox.__init__
+portality.formcontext.validate.ExtraFieldRequiredIf.__init__
+portality.formcontext.validate.MaxLen.__init__
+portality.formcontext.validate.OptionalIf.__init__
+portality.formcontext.validate.RegexpOnTagList.__init__
+portality.formcontext.validate.RequiredIfRole.__init__
+portality.formcontext.validate.ReservedUsernames.__init__
+portality.formcontext.validate.ThisOrThat.__init__
+portality.formcontext.validate.URLOptionalScheme.__init__
+portality.lib.dataobj.DataObj.__init__
+portality.lib.swagger.SwaggerSupport.__init__
+portality.lock.LockQuery.__init__
+portality.lock.Locked.__init__
+portality.models.ObjectDict.__init__
+portality.models.account.Account.__init__
+portality.models.article.ArticleBibJSON.__init__
+portality.models.article.ArticleIssueQuery.__init__
+portality.models.article.ArticleQuery.__init__
+portality.models.article.ArticleVolumesIssuesQuery.__init__
+portality.models.article.ArticleVolumesQuery.__init__
+portality.models.article.DuplicateArticleQuery.__init__
+portality.models.background.BackgroundJob.__init__
+portality.models.bibjson.GenericBibJSON.__init__
+portality.models.editors.EditorGroupMemberQuery.__init__
+portality.models.editors.EditorGroupQuery.__init__
+portality.models.journal.ContinuationQuery.__init__
+portality.models.journal.IssnQuery.__init__
+portality.models.journal.Journal.__init__
+portality.models.journal.JournalBibJSON.__init__
+portality.models.journal.JournalQuery.__init__
+portality.models.journal.PublisherQuery.__init__
+portality.models.journal.TitleQuery.__init__
+portality.models.openurl.OpenURLRequest.__init__
+portality.models.provenance.Provenance.__init__
+portality.models.provenance.ResourceIDQuery.__init__
+portality.models.suggestion.CurrentJournalQuery.__init__
+portality.models.suggestion.OwnerStatusQuery.__init__
+portality.models.suggestion.RelatedJournalQuery.__init__
+portality.models.suggestion.StatusQuery.__init__
+portality.models.suggestion.Suggestion.__init__
+portality.models.suggestion.SuggestionQuery.__init__
+portality.models.toc.JournalIssueToC.__init__
+portality.models.toc.ToCQuery.__init__
+portality.models.toc.VolumesToCQuery.__init__
+portality.models.uploads.ExistsFileQuery.__init__
+portality.models.uploads.OwnerFileQuery.__init__
+portality.models.uploads.ValidFileQuery.__init__
+portality.ordereddict.OrderedDict.__init__
+portality.tasks.reporting.ActionCounter.__init__
+portality.tasks.reporting.ContentByDate.__init__
+portality.tasks.reporting.ProvenanceList.__init__
+portality.tasks.reporting.ReportCounter.__init__
+portality.tasks.reporting.StatusCounter.__init__
+portality.view.account.RedirectForm.__init__
+portality.view.atom.AtomFeed.__init__
+portality.view.forms.ArticleForm.__init__
+portality.view.forms.NotRole.__init__
+portality.view.forms.UniqueGroupName.__init__
+portality.view.oaipmh.BadArgument.__init__
+portality.view.oaipmh.BadResumptionToken.__init__
+portality.view.oaipmh.BadVerb.__init__
+portality.view.oaipmh.CannotDisseminateFormat.__init__
+portality.view.oaipmh.GetRecord.__init__
+portality.view.oaipmh.IdDoesNotExist.__init__
+portality.view.oaipmh.Identify.__init__
+portality.view.oaipmh.ListIdentifiers.__init__
+portality.view.oaipmh.ListMetadataFormats.__init__
+portality.view.oaipmh.ListRecords.__init__
+portality.view.oaipmh.ListSets.__init__
+portality.view.oaipmh.NoMetadataFormats.__init__
+portality.view.oaipmh.NoRecordsMatch.__init__
+portality.view.oaipmh.NoSetHierarchy.__init__
+portality.view.oaipmh.OAIPMHError.__init__
+portality.view.oaipmh.OAI_PMH.__init__
+portality.view.query.Query.__init__" class="py-name" href="#" onclick="return doclink('link-7', '__init__', 'link-4');">__init__</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+<a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Method portality.models.lock.Lock.type()=portality.models.lock.Lock-class.html#type,Method portality.models.provenance.Provenance.type()=portality.models.provenance.Provenance-class.html#type,Variable portality.view.forms.MakeContinuation.type=portality.view.forms.MakeContinuation-class.html#type"><a title="portality.models.lock.Lock.type
+portality.models.provenance.Provenance.type
+portality.view.forms.MakeContinuation.type" class="py-name" href="#" onclick="return doclink('link-8', 'type', 'link-8');">type</a></tt> <tt class="py-op">=</tt> <tt class="py-string">'SelectMultipleField'</tt> </tt>
+</div></div><a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"> </tt>
+<a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"> </tt>
+<a name="OptionalRadioField"></a><div id="OptionalRadioField-def"><a name="L26"></a><tt class="py-lineno">26</tt> <a class="py-toggle" href="#" id="OptionalRadioField-toggle" onclick="return toggle('OptionalRadioField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.OptionalRadioField-class.html">OptionalRadioField</a><tt class="py-op">(</tt><tt class="py-base-class">RadioField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OptionalRadioField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="OptionalRadioField-expanded"><a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">    <tt class="py-docstring">"""Use this class if you want to have an optional radio button. I.e. if you use validators.Optional() on a radio button, use this class instead of wtforms.RadioButton."""</tt> </tt>
+<a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line">    <tt class="py-comment"># it's to do with what happens to the default choice for a RadioField - None</tt> </tt>
+<a name="L29"></a><tt class="py-lineno">29</tt>  <tt class="py-line">    <tt class="py-comment"># by default it will fail WTForms validation since WTForms will only accept</tt> </tt>
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">    <tt class="py-comment"># what we have defined as choices for the field. For radio buttons those</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">    <tt class="py-comment"># don't ever include None.</tt> </tt>
+<a name="OptionalRadioField.pre_validate"></a><div id="OptionalRadioField.pre_validate-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="OptionalRadioField.pre_validate-toggle" onclick="return toggle('OptionalRadioField.pre_validate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.OptionalRadioField-class.html#pre_validate">pre_validate</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">form</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="OptionalRadioField.pre_validate-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="OptionalRadioField.pre_validate-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-9" class="py-name" targets="Class portality.formcontext.fields.OptionalRadioField=portality.formcontext.fields.OptionalRadioField-class.html"><a title="portality.formcontext.fields.OptionalRadioField" class="py-name" href="#" onclick="return doclink('link-9', 'OptionalRadioField', 'link-9');">OptionalRadioField</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Method portality.formcontext.fields.OptionalRadioField.pre_validate()=portality.formcontext.fields.OptionalRadioField-class.html#pre_validate,Method portality.formcontext.fields.PermissiveSelectField.pre_validate()=portality.formcontext.fields.PermissiveSelectField-class.html#pre_validate,Method portality.formcontext.formcontext.AssEdApplicationReview.pre_validate()=portality.formcontext.formcontext.AssEdApplicationReview-class.html#pre_validate,Method portality.formcontext.formcontext.EditorApplicationReview.pre_validate()=portality.formcontext.formcontext.EditorApplicationReview-class.html#pre_validate,Method portality.formcontext.formcontext.EditorJournalReview.pre_validate()=portality.formcontext.formcontext.EditorJournalReview-class.html#pre_validate,Method portality.formcontext.formcontext.FormContext.pre_validate()=portality.formcontext.formcontext.FormContext-class.html#pre_validate,Method portality.formcontext.formcontext.ManEdApplicationReview.pre_validate()=portality.formcontext.formcontext.ManEdApplicationReview-class.html#pre_validate,Method portality.formcontext.formcontext.ManEdJournalReview.pre_validate()=portality.formcontext.formcontext.ManEdJournalReview-class.html#pre_validate,Method portality.formcontext.formcontext.PublicApplication.pre_validate()=portality.formcontext.formcontext.PublicApplication-class.html#pre_validate,Method portality.formcontext.formcontext.PublisherUpdateRequest.pre_validate()=portality.formcontext.formcontext.PublisherUpdateRequest-class.html#pre_validate"><a title="portality.formcontext.fields.OptionalRadioField.pre_validate
+portality.formcontext.fields.PermissiveSelectField.pre_validate
+portality.formcontext.formcontext.AssEdApplicationReview.pre_validate
+portality.formcontext.formcontext.EditorApplicationReview.pre_validate
+portality.formcontext.formcontext.EditorJournalReview.pre_validate
+portality.formcontext.formcontext.FormContext.pre_validate
+portality.formcontext.formcontext.ManEdApplicationReview.pre_validate
+portality.formcontext.formcontext.ManEdJournalReview.pre_validate
+portality.formcontext.formcontext.PublicApplication.pre_validate
+portality.formcontext.formcontext.PublisherUpdateRequest.pre_validate" class="py-name" href="#" onclick="return doclink('link-10', 'pre_validate', 'link-10');">pre_validate</a></tt><tt class="py-op">(</tt><tt id="link-11" class="py-name" targets="Method portality.formcontext.formcontext.FormContext.form()=portality.formcontext.formcontext.FormContext-class.html#form,Function portality.lib.modeldoc.form()=portality.lib.modeldoc-module.html#form"><a title="portality.formcontext.formcontext.FormContext.form
+portality.lib.modeldoc.form" class="py-name" href="#" onclick="return doclink('link-11', 'form', 'link-11');">form</a></tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line"> </tt>
+<a name="TagListField"></a><div id="TagListField-def"><a name="L37"></a><tt class="py-lineno">37</tt> <a class="py-toggle" href="#" id="TagListField-toggle" onclick="return toggle('TagListField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html">TagListField</a><tt class="py-op">(</tt><tt class="py-base-class">Field</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="TagListField-expanded"><a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line">    <tt id="link-12" class="py-name" targets="Variable portality.formcontext.fields.TagListField.widget=portality.formcontext.fields.TagListField-class.html#widget,Variable portality.formcontext.fields.URLField.widget=portality.formcontext.fields.URLField-class.html#widget"><a title="portality.formcontext.fields.TagListField.widget
+portality.formcontext.fields.URLField.widget" class="py-name" href="#" onclick="return doclink('link-12', 'widget', 'link-12');">widget</a></tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-13', 'widgets', 'link-0');">widgets</a></tt><tt class="py-op">.</tt><tt class="py-name">TextInput</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"> </tt>
+<a name="TagListField._value"></a><div id="TagListField._value-def"><a name="L40"></a><tt class="py-lineno">40</tt> <a class="py-toggle" href="#" id="TagListField._value-toggle" onclick="return toggle('TagListField._value');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#_value">_value</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField._value-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField._value-expanded"><a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">u', '</tt><tt class="py-op">.</tt><tt class="py-name">join</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">u''</tt> </tt>
+</div><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt>
+<a name="TagListField.get_list"></a><div id="TagListField.get_list-def"><a name="L46"></a><tt class="py-lineno">46</tt> <a class="py-toggle" href="#" id="TagListField.get_list-toggle" onclick="return toggle('TagListField.get_list');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#get_list">get_list</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField.get_list-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField.get_list-expanded"><a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> </tt>
+</div><a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"> </tt>
+<a name="TagListField.process_formdata"></a><div id="TagListField.process_formdata-def"><a name="L49"></a><tt class="py-lineno">49</tt> <a class="py-toggle" href="#" id="TagListField.process_formdata-toggle" onclick="return toggle('TagListField.process_formdata');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.TagListField-class.html#process_formdata">process_formdata</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">valuelist</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="TagListField.process_formdata-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="TagListField.process_formdata-expanded"><a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">valuelist</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-name">clean_x</tt> <tt class="py-keyword">for</tt> <tt class="py-name">clean_x</tt> <tt class="py-keyword">in</tt> <tt class="py-op">[</tt><tt class="py-name">x</tt><tt class="py-op">.</tt><tt class="py-name">strip</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">for</tt> <tt class="py-name">x</tt> <tt class="py-keyword">in</tt> <tt class="py-name">valuelist</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">.</tt><tt class="py-name">split</tt><tt class="py-op">(</tt><tt class="py-string">','</tt><tt class="py-op">)</tt><tt class="py-op">]</tt> <tt class="py-keyword">if</tt> <tt class="py-name">clean_x</tt><tt class="py-op">]</tt> </tt>
+<a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L53"></a><tt class="py-lineno">53</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"> </tt>
+<a name="URLField"></a><div id="URLField-def"><a name="L56"></a><tt class="py-lineno">56</tt> <a class="py-toggle" href="#" id="URLField-toggle" onclick="return toggle('URLField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.URLField-class.html">URLField</a><tt class="py-op">(</tt><tt class="py-base-class">TextField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="URLField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="URLField-expanded"><a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line">    <tt id="link-14" class="py-name"><a title="portality.formcontext.fields.TagListField.widget
+portality.formcontext.fields.URLField.widget" class="py-name" href="#" onclick="return doclink('link-14', 'widget', 'link-12');">widget</a></tt> <tt class="py-op">=</tt> <tt id="link-15" class="py-name"><a title="portality.view.doaj.widgets" class="py-name" href="#" onclick="return doclink('link-15', 'widgets', 'link-0');">widgets</a></tt><tt class="py-op">.</tt><tt class="py-name">TextInput</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"> </tt>
+<a name="URLField.process_formdata"></a><div id="URLField.process_formdata-def"><a name="L59"></a><tt class="py-lineno">59</tt> <a class="py-toggle" href="#" id="URLField.process_formdata-toggle" onclick="return toggle('URLField.process_formdata');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.URLField-class.html#process_formdata">process_formdata</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">valuelist</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="URLField.process_formdata-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="URLField.process_formdata-expanded"><a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line">        <tt class="py-name">val</tt> <tt class="py-op">=</tt> <tt class="py-name">valuelist</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L61"></a><tt class="py-lineno">61</tt>  <tt class="py-line">        <tt class="py-name">assumed_scheme</tt> <tt class="py-op">=</tt> <tt class="py-string">'http://'</tt> </tt>
+<a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line"> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">val</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt class="py-name">val</tt><tt class="py-op">.</tt><tt class="py-name">startswith</tt><tt class="py-op">(</tt><tt class="py-name">assumed_scheme</tt><tt class="py-op">)</tt> <tt class="py-keyword">and</tt> <tt class="py-keyword">not</tt> <tt id="link-16" class="py-name"><a title="portality.formcontext.fields.URL_REQUIRED_SCHEME_REGEX" class="py-name" href="#" onclick="return doclink('link-16', 'URL_REQUIRED_SCHEME_REGEX', 'link-1');">URL_REQUIRED_SCHEME_REGEX</a></tt><tt class="py-op">.</tt><tt class="py-name">match</tt><tt class="py-op">(</tt><tt class="py-name">val</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">assumed_scheme</tt> <tt class="py-op">+</tt> <tt class="py-name">val</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">val</tt> <tt class="py-op">==</tt> <tt class="py-name">assumed_scheme</tt><tt class="py-op">:</tt>  <tt class="py-comment"># just to prevent http:// from showing up on its own in all the URL fields when you make a mistake elsewhere</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-string">u''</tt> </tt>
+<a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L69"></a><tt class="py-lineno">69</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt> <tt class="py-op">=</tt> <tt class="py-name">val</tt> </tt>
+</div></div><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line"> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"> </tt>
+<a name="DisabledTextField"></a><div id="DisabledTextField-def"><a name="L72"></a><tt class="py-lineno">72</tt> <a class="py-toggle" href="#" id="DisabledTextField-toggle" onclick="return toggle('DisabledTextField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.DisabledTextField-class.html">DisabledTextField</a><tt class="py-op">(</tt><tt class="py-base-class">TextField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DisabledTextField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="DisabledTextField-expanded"><a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"> </tt>
+<a name="DisabledTextField.__call__"></a><div id="DisabledTextField.__call__-def"><a name="L74"></a><tt class="py-lineno">74</tt> <a class="py-toggle" href="#" id="DisabledTextField.__call__-toggle" onclick="return toggle('DisabledTextField.__call__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.DisabledTextField-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-op">*</tt><tt class="py-param">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-param">kwargs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="DisabledTextField.__call__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="DisabledTextField.__call__-expanded"><a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt class="py-name">kwargs</tt><tt class="py-op">.</tt><tt id="link-17" class="py-name" targets="Method portality.ordereddict.OrderedDict.setdefault()=portality.ordereddict.OrderedDict-class.html#setdefault"><a title="portality.ordereddict.OrderedDict.setdefault" class="py-name" href="#" onclick="return doclink('link-17', 'setdefault', 'link-17');">setdefault</a></tt><tt class="py-op">(</tt><tt class="py-string">'disabled'</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">super</tt><tt class="py-op">(</tt><tt id="link-18" class="py-name" targets="Class portality.formcontext.fields.DisabledTextField=portality.formcontext.fields.DisabledTextField-class.html"><a title="portality.formcontext.fields.DisabledTextField" class="py-name" href="#" onclick="return doclink('link-18', 'DisabledTextField', 'link-18');">DisabledTextField</a></tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">)</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method portality.formcontext.fields.DisabledTextField.__call__()=portality.formcontext.fields.DisabledTextField-class.html#__call__,Method portality.formcontext.validate.DataOptional.__call__()=portality.formcontext.validate.DataOptional-class.html#__call__,Method portality.formcontext.validate.ExclusiveCheckbox.__call__()=portality.formcontext.validate.ExclusiveCheckbox-class.html#__call__,Method portality.formcontext.validate.ExtraFieldRequiredIf.__call__()=portality.formcontext.validate.ExtraFieldRequiredIf-class.html#__call__,Method portality.formcontext.validate.MaxLen.__call__()=portality.formcontext.validate.MaxLen-class.html#__call__,Method portality.formcontext.validate.OptionalIf.__call__()=portality.formcontext.validate.OptionalIf-class.html#__call__,Method portality.formcontext.validate.RegexpOnTagList.__call__()=portality.formcontext.validate.RegexpOnTagList-class.html#__call__,Method portality.formcontext.validate.RequiredIfRole.__call__()=portality.formcontext.validate.RequiredIfRole-class.html#__call__,Method portality.formcontext.validate.ReservedUsernames.__call__()=portality.formcontext.validate.ReservedUsernames-class.html#__call__,Method portality.formcontext.validate.ThisOrThat.__call__()=portality.formcontext.validate.ThisOrThat-class.html#__call__,Method portality.formcontext.validate.URLOptionalScheme.__call__()=portality.formcontext.validate.URLOptionalScheme-class.html#__call__,Method portality.view.forms.NotRole.__call__()=portality.view.forms.NotRole-class.html#__call__,Method portality.view.forms.UniqueGroupName.__call__()=portality.view.forms.UniqueGroupName-class.html#__call__"><a title="portality.formcontext.fields.DisabledTextField.__call__
+portality.formcontext.validate.DataOptional.__call__
+portality.formcontext.validate.ExclusiveCheckbox.__call__
+portality.formcontext.validate.ExtraFieldRequiredIf.__call__
+portality.formcontext.validate.MaxLen.__call__
+portality.formcontext.validate.OptionalIf.__call__
+portality.formcontext.validate.RegexpOnTagList.__call__
+portality.formcontext.validate.RequiredIfRole.__call__
+portality.formcontext.validate.ReservedUsernames.__call__
+portality.formcontext.validate.ThisOrThat.__call__
+portality.formcontext.validate.URLOptionalScheme.__call__
+portality.view.forms.NotRole.__call__
+portality.view.forms.UniqueGroupName.__call__" class="py-name" href="#" onclick="return doclink('link-19', '__call__', 'link-19');">__call__</a></tt><tt class="py-op">(</tt><tt class="py-op">*</tt><tt class="py-name">args</tt><tt class="py-op">,</tt> <tt class="py-op">**</tt><tt class="py-name">kwargs</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L77"></a><tt class="py-lineno">77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno">78</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField"></a><div id="PermissiveSelectField-def"><a name="L79"></a><tt class="py-lineno">79</tt> <a class="py-toggle" href="#" id="PermissiveSelectField-toggle" onclick="return toggle('PermissiveSelectField');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html">PermissiveSelectField</a><tt class="py-op">(</tt><tt class="py-base-class">DOAJSelectField</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="PermissiveSelectField-expanded"><a name="L80"></a><tt class="py-lineno">80</tt>  <tt class="py-line">    <tt class="py-docstring">""" A SelectField with validation disabled, allowing us to change the choices in JS and validate later."""</tt> </tt>
+<a name="L81"></a><tt class="py-lineno">81</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField.iter_choices"></a><div id="PermissiveSelectField.iter_choices-def"><a name="L82"></a><tt class="py-lineno">82</tt> <a class="py-toggle" href="#" id="PermissiveSelectField.iter_choices-toggle" onclick="return toggle('PermissiveSelectField.iter_choices');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html#iter_choices">iter_choices</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField.iter_choices-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissiveSelectField.iter_choices-expanded"><a name="L83"></a><tt class="py-lineno">83</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt> <tt class="py-keyword">in</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-20" class="py-name" targets="Module portality.formcontext.choices=portality.formcontext.choices-module.html"><a title="portality.formcontext.choices" class="py-name" href="#" onclick="return doclink('link-20', 'choices', 'link-20');">choices</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno">84</tt>  <tt class="py-line">            <tt class="py-keyword">yield</tt> <tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">,</tt> <tt class="py-name">label</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">coerce</tt><tt class="py-op">(</tt><tt class="py-name">value</tt><tt class="py-op">)</tt> <tt class="py-op">==</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">data</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L85"></a><tt class="py-lineno">85</tt>  <tt class="py-line"> </tt>
+<a name="PermissiveSelectField.pre_validate"></a><div id="PermissiveSelectField.pre_validate-def"><a name="L86"></a><tt class="py-lineno">86</tt> <a class="py-toggle" href="#" id="PermissiveSelectField.pre_validate-toggle" onclick="return toggle('PermissiveSelectField.pre_validate');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="portality.formcontext.fields.PermissiveSelectField-class.html#pre_validate">pre_validate</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">form</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PermissiveSelectField.pre_validate-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="PermissiveSelectField.pre_validate-expanded"><a name="L87"></a><tt class="py-lineno">87</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
+</div></div><a name="L88"></a><tt class="py-lineno">88</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="portality-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="https://github.com/DOAJ/doaj">DOAJ</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Jan 25 09:41:13 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
