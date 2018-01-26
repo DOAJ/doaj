@@ -6,7 +6,7 @@
     <div class="sponsors sponsors-spacious">
         {% for s in sponsors['featured'].values() %}
             <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
+                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
             </a>
         {% endfor %}
     </div>
@@ -17,7 +17,7 @@
     <div class="sponsors sponsors-spacious">
         {% for s in sponsors['gold'].values() %}
             <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
+                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
             </a>
         {% endfor %}
     </div>
@@ -28,7 +28,7 @@
     <div class="sponsors sponsors-spacious">
         {% for s in sponsors['silver'].values() %}
             <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
+                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
             </a>
         {% endfor %}
     </div>
@@ -39,7 +39,7 @@
     <div class="sponsors sponsors-spacious">
         {% for s in sponsors['bronze'].values() %}
             <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}" style="padding: 20px;" />
+                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
             </a>
         {% endfor %}
     </div>

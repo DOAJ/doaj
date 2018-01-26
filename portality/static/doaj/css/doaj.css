@@ -327,6 +327,7 @@ footer > .box + .box {
     max-width: 170px;
     max-height: 100px;
     margin-top: 0.5em;
+    padding: 20px;
 }
 
 .sponsors-spacious {
