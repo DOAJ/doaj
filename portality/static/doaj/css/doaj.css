@@ -329,6 +329,10 @@ footer > .box + .box {
     margin-top: 0.5em;
 }
 
+.sponsors-spacious {
+    padding-bottom: 2em;
+}
+
 /* From suggestion form */
 #digital_archiving_policy_library {
     width: 150px;
