@@ -52,6 +52,24 @@ jQuery(document).ready(function($) {
 
     ////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////
+    // functions for diff table
+
+    $(".show_hide_diff_table").click(function(event) {
+        event.preventDefault();
+
+        var state = $(this).attr("data-state");
+        if (state == "hidden") {
+            $(".form_diff").slideDown();
+            $(this).html("hide").attr("data-state", "shown");
+        } else if (state === "shown") {
+            $(".form_diff").slideUp();
+            $(this).html("show").attr("data-state", "hidden");
+        }
+    });
+
+    ///////////////////////////////////////////////////
+
 
     // define a new highlight function, letting us highlight any element
     // on a page

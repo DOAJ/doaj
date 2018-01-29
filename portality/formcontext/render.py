@@ -244,6 +244,15 @@ class BasicJournalInformationRenderer(Renderer):
                 obj[field]["q_num"] = str(q)
                 q += 1
 
+    def question_number(self, field):
+        for g in self.FIELD_GROUPS:
+            cfg = self.FIELD_GROUPS.get(g)
+            for obj in cfg:
+                f = obj.keys()[0]
+                if f == field and "q_num" in obj[f]:
+                    return obj[f]["q_num"]
+        return ""
+
     def set_error_fields(self, fields):
         super(BasicJournalInformationRenderer, self).set_error_fields(fields)
 

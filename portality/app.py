@@ -215,6 +215,25 @@ def doi_url(doi):
     return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
 
 
+@app.template_filter('compare_value')
+def compare_value(val):
+    if val is None:
+        return ""
+    if isinstance(val, list) and len(val) == 0:
+        return ""
+
+    if isinstance(val, list):
+        dvals = []
+        for v in val:
+            dvals.append(compare_value(v))
+        return ", ".join(dvals)
+    else:
+        if val is True or val == "True":
+            return "Yes"
+        elif val is False or val == "False":
+            return "No"
+        return val
+
 @app.before_request
 def standard_authentication():
     """Check remote_user on a per-request basis."""

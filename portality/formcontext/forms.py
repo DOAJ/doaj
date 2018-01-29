@@ -113,9 +113,9 @@ class JournalInformation(Form):
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False)
     )
-    digital_archiving_policy_other = StringField('',
+    digital_archiving_policy_other = StringField('Digital Archiving Policy (Other)',
     )
-    digital_archiving_policy_library = StringField('',
+    digital_archiving_policy_library = StringField('Digital Archiving Policy (Library)',
     )
     digital_archiving_policy_url = URLField('Enter the URL where this information can be found',
         [OptionalIf('digital_archiving_policy', optvals=Choices.digital_archiving_policy_url_optional()), URLOptionalScheme()],
@@ -131,7 +131,7 @@ class JournalInformation(Form):
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False),
     )
-    article_identifiers_other = StringField('',
+    article_identifiers_other = StringField('Article Identifiers (Other)',
     )
     download_statistics = RadioField('Does the journal provide article download statistics?',
         [validators.DataRequired()],
@@ -152,7 +152,7 @@ class JournalInformation(Form):
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False)
     )
-    fulltext_format_other = StringField('',
+    fulltext_format_other = StringField('Fulltext Format (Other)',
     )
     keywords = TagListField('Add keyword(s) that best describe the journal (comma delimited)',
         [validators.DataRequired(), MaxLen(6, message='You can only enter up to {max_len} keywords.')],
@@ -210,7 +210,7 @@ class JournalInformation(Form):
         choices = Choices._licence,
         description = 'For more information go to <a href="http://creativecommons.org/licenses/" target="_blank">http://creativecommons.org/licenses/</a>'
     )
-    license_other = StringField('',
+    license_other = StringField('License (Other)',
     )
     license_checkbox = DOAJSelectMultipleField('Which of the following does the content require? (Tick all that apply.)',
         choices = Choices.licence_checkbox(),
@@ -232,7 +232,7 @@ class JournalInformation(Form):
         option_widget=widgets.CheckboxInput(),
         widget=widgets.ListWidget(prefix_label=False)
     )
-    deposit_policy_other = StringField('',
+    deposit_policy_other = StringField('Deposit Policy (Other)',
     )
     copyright = RadioField('Does the journal allow the author(s) to hold the copyright without restrictions?',
         [validators.DataRequired()],

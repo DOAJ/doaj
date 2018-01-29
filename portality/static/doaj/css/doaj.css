@@ -371,6 +371,35 @@ button[target^="notes-"][target$="-container"] {
     overflow: hidden;
 }
 
+.diff_table {
+    width: 100%;
+    border: 1px solid #cccccc;
+}
+
+.diff_table thead {
+    font-weight: bold;
+    background-color: #F68B1F;
+    color: #ffffff;
+    font-size: 1.2em;
+}
+
+.diff_table tr:hover {
+    background: #eeeeee;
+}
+
+.diff_table td {
+    padding: 5px;
+    border: 1px solid #cccccc;
+}
+
+.diff_table .inner_comparison_table {
+    border: 0px;
+}
+
+.diff_table .inner_comparison_table td {
+    border: 0px
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {

@@ -519,6 +519,40 @@ class ApplicationContext(PrivateContext):
             self.add_alert('Hm, sending the journal contact acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending accepted email to journal contact - ' + magic)
 
+    def render_template(self, **kwargs):
+        diff = None
+        cj = None
+        if self.source is not None:
+            current_journal = self.source.current_journal
+            if current_journal is not None:
+                cj = models.Journal.pull(current_journal)
+                if cj is not None:
+                    jform = xwalk.JournalFormXWalk.obj2form(cj)
+                    aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
+                    diff = self._form_diff(jform, aform)
+
+        return super(ApplicationContext, self).render_template(
+            form_diff=diff,
+            current_journal=cj,
+            **kwargs)
+
+    def _form_diff(self, journal_form, application_form):
+        diff = []
+        for k, v in application_form.iteritems():
+            if k in journal_form and journal_form[k] != v:
+                try:
+                    q = self.form[k].label
+                except KeyError:
+                    continue
+                q_num = self.renderer.question_number(k)
+                if q_num is None or q_num == "":
+                    q_num = 0
+                else:
+                    q_num = int(q_num)
+                diff.append((k, q_num, q.text, journal_form[k], v))
+                diff = sorted(diff, key=lambda x: x[1])
+        return diff
+
 
 class ApplicationFormFactory(object):
     @classmethod
@@ -629,16 +663,6 @@ class ManEdApplicationReview(ApplicationContext):
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == 'accepted':
             j = dbl.accept_application(self.target, current_user._get_current_object())
-            """
-            # this suggestion is just getting accepted
-            j = self.target.make_journal()
-            j.set_in_doaj(True)
-            j.set_last_manual_update()
-            j.save()
-
-            # record the event in the provenance tracker
-            models.Provenance.make(current_user, "status:accepted", self.target)
-            """
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:
@@ -739,9 +763,19 @@ class ManEdApplicationReview(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
+        """
+        current_journal = kwargs.get("current_journal")
+        diff = None
+        if current_journal is not None:
+            jform = xwalk.JournalFormXWalk.obj2form(current_journal)
+            aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
+            diff = self._form_diff(jform, aform)
+        """
+
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            # form_diff=diff,
             **kwargs)
 
     def _set_choices(self):
@@ -751,6 +785,21 @@ class ManEdApplicationReview(ApplicationContext):
         egn = self.form.editor_group.data
         self._populate_editor_field(egn)
 
+    """
+    def _form_diff(self, journal_form, application_form):
+        diff = []
+        for k,v in application_form.iteritems():
+            if k in journal_form and journal_form[k] != v:
+                q = self.form[k].label
+                q_num = self.renderer.question_number(k)
+                if q_num is None or q_num == "":
+                    q_num = 0
+                else:
+                    q_num = int(q_num)
+                diff.append((k, q_num, q.text, journal_form[k], v))
+                diff = sorted(diff, key=lambda x: x[1])
+        return diff
+    """
 
 class EditorApplicationReview(ApplicationContext):
     """
