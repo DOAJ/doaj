@@ -330,6 +330,59 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "admin",
             "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Suggestion"
+        },
+        "editor,group" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.EditorGroup"
+        },
+        "account" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Account"
+        },
+        "journal,article" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.search.JournalArticle"
+        },
+        "background,job" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.BackgroundJob"
+        }
+    },
+    "associate_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "associate_editor",
+            "query_filters" : ["associate"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "associate_editor",
+            "query_filters" : ["associate"],
+            "dao" : "portality.models.Suggestion"
+        }
+    },
+    "editor_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["editor"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["editor"],
+            "dao" : "portality.models.Suggestion"
         }
     }
 }
@@ -339,6 +392,8 @@ QUERY_FILTERS = {
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
     "owner" : "portality.lib.query_filters.owner",
     "update_request" : "portality.lib.query_filters.update_request",
+    "associate" : "portality.lib.query_filters.associate",
+    "editor" : "portality.lib.query_filters.editor",
 
     # result filters
     "public_result_filter" : "portality.lib.query_filters.public_result_filter",

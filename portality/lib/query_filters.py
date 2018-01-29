@@ -1,5 +1,6 @@
 from flask_login import current_user
 from portality.core import app
+from portality import models
 
 # query filters
 ###############
@@ -17,6 +18,20 @@ def owner(q):
 def update_request(q):
     q.clear_match_all()
     q.add_must({"range" : {"created_date" : {"gte" : app.config.get("UPDATE_REQUEST_SHOW_OLDEST")}}})
+    return q
+
+def associate(q):
+    q.clear_match_all()
+    q.add_must({"term" : {"admin.editor.exact" : current_user.id}})
+    return q
+
+def editor(q):
+    gnames = []
+    groups = models.EditorGroup.groups_by_editor(current_user.id)
+    for g in groups:
+        gnames.append(g.name)
+    q.clear_match_all()
+    q.add_must({"terms" : {"admin.editor_group.exact" : gnames}})
     return q
 
 # results filters
