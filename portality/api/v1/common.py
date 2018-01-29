@@ -25,6 +25,7 @@ class Api(object):
     R401 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Access to this route/resource requires authentication, but you did not provide any credentials."}
     R403 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Access to this route/resource requires authentication, and you provided the wrong credentials. This includes situations where you are authenticated successfully via your API key, but you are not the owner of a specific resource and are therefore barred from updating/deleting it."}
     R404 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "Resource not found"}
+    R409 = {"schema": {"properties": ERROR_TEMPLATE}, "description": "This resource or one it depends on is currently locked for editing by another user, and you may not submit changes to it at this time"}
 
     SWAG_API_KEY_REQ_PARAM = {
         "description": "<div class=\"search-query-docs\"> Go to the top right of the page and click your username. If you have generated an API key already, it will appear under your name. If not, click the Generate API Key button. Accounts are not available to the public. <a href=\"#intro_auth\">More details</a></div>",

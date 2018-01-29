@@ -39,6 +39,7 @@ class ApplicationsCrudApi(CrudApi):
         template['responses']['201'] = cls.R201
         template['responses']['400'] = cls.R400
         template['responses']['401'] = cls.R401
+        template['responses']['409'] = cls.R409
         return cls._build_swag_response(template)
 
     @classmethod
@@ -171,6 +172,7 @@ class ApplicationsCrudApi(CrudApi):
         template['responses']['401'] = cls.R401
         template['responses']['403'] = cls.R403
         template['responses']['404'] = cls.R404
+        template['responses']['409'] = cls.R409
         return cls._build_swag_response(template)
 
     @classmethod
@@ -278,6 +280,7 @@ class ApplicationsCrudApi(CrudApi):
         template['responses']['401'] = cls.R401
         template['responses']['403'] = cls.R403
         template['responses']['404'] = cls.R404
+        template['responses']['409'] = cls.R409
         return cls._build_swag_response(template)
 
     @classmethod
