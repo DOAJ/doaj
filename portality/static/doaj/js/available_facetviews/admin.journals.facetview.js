@@ -84,7 +84,8 @@ jQuery(document).ready(function($) {
             "make_continuation" : fv_make_continuation,
             "in_doaj": fv_in_doaj,
             "country_name": fv_country_name,
-            "owner" : fv_owner
+            "owner" : fv_owner,
+            "related_applications" : fv_related_applications
         },
         result_display: [
             // Journals
@@ -205,6 +206,11 @@ jQuery(document).ready(function($) {
                 {
                     "pre": "<strong>Language</strong>: ",
                     "field": "bibjson.language"
+                }
+            ],
+            [
+                {
+                    "field" : "related_applications"
                 }
             ],
             [

@@ -537,3 +537,47 @@ fv_make_update_request = (function (resultobj) {
     return that;
 })();
 
+fv_related_applications = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = "";
+        if (resultobj.admin) {
+            if (resultobj.admin.current_application) {
+                result += "<strong>Current Application</strong>: " + resultobj.admin.current_application;
+            }
+            if (resultobj.admin.related_applications && resultobj.admin.related_applications.length > 0) {
+                if (result != "") {
+                    result += "<br>";
+                }
+                result += "<strong>Related Applications</strong>: ";
+                for (var i = 0; i < resultobj.admin.related_applications.length; i++) {
+                    if (i > 0) {
+                        result += ", ";
+                    }
+                    var ra = resultobj.admin.related_applications[i];
+                    result += ra.application_id
+                }
+            }
+        }
+        return result;
+    };
+    return that;
+})();
+
+fv_related_journal = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = "";
+        if (resultobj.admin) {
+            if (resultobj.admin.current_journal) {
+                result += "<strong>Current Journal</strong>: " + resultobj.admin.current_journal;
+            }
+            if (resultobj.admin.related_journal) {
+                if (result != "") {
+                    result += "<br>";
+                }
+                result += "<strong>Related Journal</strong>: " + resultobj.admin.related_journal;
+            }
+        }
+        return result;
+    };
+    return that;
+})();
