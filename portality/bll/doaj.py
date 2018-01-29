@@ -193,12 +193,22 @@ class DOAJ(object):
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Entering application_2_journal")
 
-        abj = application.bibjson()
+        # create a new blank journal record, which we can build up
         journal = models.Journal()
+
+        # first thing is to copy the bibjson as-is wholesale, and set active=True
+        abj = application.bibjson()
         journal.set_bibjson(abj)
         jbj = journal.bibjson()
         jbj.active = True
 
+        # now carry over key administrative properties from the application itself
+        # * contacts
+        # * notes
+        # * editor
+        # * editor_group
+        # * owner
+        # * seal
         contacts = application.contacts()
         notes = application.notes
 
@@ -214,19 +224,48 @@ class DOAJ(object):
             journal.set_owner(application.owner)
         journal.set_seal(application.has_seal())
 
+        # no relate the journal to the application and place it in_doaj
         journal.add_related_application(application.id, dates.now())
         journal.set_in_doaj(True)
 
+        # if we've been called in the context of a manual update, record that
         if manual_update:
             journal.set_last_manual_update()
 
+        # if this is an update to an existing journal, then we can also port information from
+        # that journal
         if application.current_journal is not None:
             cj = models.Journal.pull(application.current_journal)
-
-            # carry the id and the created date
             if cj is not None:
+                # carry the id and the created date
                 journal.set_id(cj.id)
                 journal.set_created(cj.created_date)
+
+                # bring forward any notes from the old journal record
+                old_notes = cj.notes
+                for note in old_notes:
+                    journal.add_note(note.get("note"), note.get("date"))
+
+                # bring forward any related applications
+                related = cj.related_applications
+                for r in related:
+                    journal.add_related_application(r.get("application_id"), r.get("date_accepted"), r.get("status"))
+
+                # ignore any previously set bulk_upload reference
+
+                # carry over any properties that are not already set from the application
+                # * contact
+                # * editor & editor_group (together or not at all)
+                # * owner
+                if len(journal.contacts()) == 0:
+                    old_contacts = cj.contacts()
+                    for contact in old_contacts:
+                        journal.add_contact(contact.get("name"), contact.get("email"))
+                if journal.editor is None and journal.editor_group is None:
+                    journal.set_editor(cj.editor)
+                    journal.set_editor_group(cj.editor_group)
+                if journal.owner is None:
+                    journal.set_owner(cj.owner)
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completing application_2_journal")
 

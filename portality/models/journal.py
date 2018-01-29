@@ -124,6 +124,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def add_contact(self, name, email):
         self._add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
 
+    def remove_contacts(self):
+        self._delete("admin.contact")
+
     def add_note(self, note, date=None):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -134,6 +137,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_notes(self, notes):
         self._set_with_struct("admin.notes", notes)
+
+    def remove_notes(self):
+        self._delete("admin.notes")
 
     @property
     def notes(self):
@@ -146,12 +152,18 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def set_owner(self, owner):
         self._set_with_struct("admin.owner", owner)
 
+    def remove_owner(self):
+        self._delete("admin.owner")
+
     @property
     def editor_group(self):
         return self._get_single("admin.editor_group")
 
     def set_editor_group(self, eg):
         self._set_with_struct("admin.editor_group", eg)
+
+    def remove_editor_group(self):
+        self._delete("admin.editor_group")
 
     @property
     def editor(self):

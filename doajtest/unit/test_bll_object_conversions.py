@@ -1,14 +1,18 @@
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from parameterized import parameterized, param
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
 from copy import deepcopy
+from random import randint
 
 from portality.models import Journal, Account, Suggestion
 
 from portality.bll import DOAJ
 from portality.bll import exceptions
 
+EXCEPTIONS = {
+    "ArgumentException" : exceptions.ArgumentException
+}
 
 def load_j2a_cases():
     journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
@@ -37,30 +41,7 @@ def load_j2a_cases():
 
 
 def load_a2j_cases():
-    update_request_reference = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
-    update_request_reference.set_id(update_request_reference.makeid())
-
-    application_source = ApplicationFixtureFactory.make_application_source()
-
-    ncj_source = deepcopy(application_source)
-    del ncj_source["admin"]["current_journal"]
-    no_current_journal = Suggestion(**ncj_source)
-
-    cj_source = deepcopy(application_source)
-    cj_source["admin"]["current_journal"] = update_request_reference.id
-    with_current_journal = Suggestion(**cj_source)
-
-    return [
-        param("1", None, None, raises=exceptions.ArgumentException),
-        param("2", None, True, raises=exceptions.ArgumentException),
-        param("3", None, False, raises=exceptions.ArgumentException),
-        param("4", no_current_journal, None, raises=exceptions.ArgumentException),
-        param("5", no_current_journal, True, comparator=journal_matches),
-        param("6", no_current_journal, False, comparator=journal_matches),
-        param("7", with_current_journal, None, update_request_reference, raises=exceptions.ArgumentException),
-        param("8", with_current_journal, True, update_request_reference, comparator=journal_matches),
-        param("9", with_current_journal, False, update_request_reference, comparator=journal_matches)
-    ]
+    return load_from_matrix("application_2_journal.csv", test_ids=[])
 
 def application_matches(journal, application):
     assert isinstance(application, Suggestion)
@@ -75,30 +56,6 @@ def application_matches(journal, application):
     assert application.has_seal() is journal.has_seal()
     assert application.suggester == journal.contacts()[0]
 
-def journal_matches(application, journal, manual_update, update_request_reference):
-    assert isinstance(journal, Journal)
-    jbj = journal.bibjson().data
-    del jbj["active"]
-    assert jbj == application.bibjson().data
-    assert journal.contacts() == application.contacts()
-    assert application.editor == journal.editor
-    assert application.editor_group == journal.editor_group
-    assert application.notes == journal.notes
-    assert application.owner == journal.owner
-    assert application.has_seal() is journal.has_seal()
-
-    assert len(journal.related_applications) == 1
-    assert journal.related_applications[0].get("application_id") == application.id
-    assert journal.related_applications[0].get("date_accepted") is not None
-
-    assert journal.is_in_doaj() is True
-
-    if manual_update:
-        assert journal.last_manual_update is not None and journal.last_manual_update != "1970-01-01T00:00:00Z"
-
-    if update_request_reference:
-        assert journal.id == update_request_reference.id
-        assert journal.created_date == update_request_reference.created_date
 
 class TestBLLObjectConversions(DoajTestCase):
 
@@ -115,15 +72,121 @@ class TestBLLObjectConversions(DoajTestCase):
             assert False, "Specify either raises or comparator"
 
     @parameterized.expand(load_a2j_cases)
-    def test_02_application_2_journal(self, name, application, manual_update, update_request_reference=None, raises=None, comparator=None):
-        if update_request_reference is not None:
-            update_request_reference.save(blocking=True)
+    def test_02_application_2_journal(self, name, application_type, manual_update, app_key_properties, current_journal, raises):
+        # set up for the test
+        #########################################
+
+        cj = None
+        has_seal = bool(randint(0, 1))
+        application = None
+        if application_type == "present":
+            application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application.set_id(application.makeid())
+            application.remove_contacts()
+            application.remove_editor_group()
+            application.remove_editor()
+            application.remove_owner()
+            application.remove_current_journal()
+            application.remove_notes()
+
+            if app_key_properties == "yes":
+                application.add_contact("Application", "application@example.com")
+                application.set_editor_group("appeditorgroup")
+                application.set_editor("appeditor")
+                application.set_owner("appowner")
+
+            application.set_seal(has_seal)
+            application.add_note("Application Note")
+
+            if current_journal == "present":
+                journal = Journal(**JournalFixtureFactory.make_journal_source())
+                journal.remove_contacts()
+                journal.add_contact("Journal", "journal@example.com")
+                journal.set_editor_group("journaleditorgroup")
+                journal.set_editor("journaleditor")
+                journal.set_owner("journalowner")
+                journal.remove_current_application()
+                journal.remove_notes()
+                journal.add_note("Journal Note")
+                journal.save(blocking=True)
+                application.set_current_journal(journal.id)
+                cj = journal
+            elif current_journal == "missing":
+                application.set_current_journal("123456789987654321")
+
+        mu = None
+        if manual_update == "true":
+            mu = True
+        elif manual_update == "false":
+            mu = False
+
+        # execute the test
+        ########################################
+
         doaj = DOAJ()
-        if raises is not None:
-            with self.assertRaises(raises):
-                doaj.application_2_journal(application, manual_update)
-        elif comparator is not None:
-            journal = doaj.application_2_journal(application, manual_update)
-            comparator(application, journal, manual_update, update_request_reference)
+        if raises is not None and raises != "":
+            with self.assertRaises(EXCEPTIONS[raises]):
+                doaj.application_2_journal(application, mu)
         else:
-            assert False, "Specify either raises or comparator"
+            journal = doaj.application_2_journal(application, mu)
+
+            # check the result
+            ######################################
+
+            assert journal is not None
+            assert isinstance(journal, Journal)
+            assert journal.is_in_doaj() is True
+
+            jbj = journal.bibjson().data
+            del jbj["active"]
+            assert jbj == application.bibjson().data
+
+            if current_journal == "present":
+                assert len(journal.related_applications) == 3
+            else:
+                assert len(journal.related_applications) == 1
+            related = journal.related_application_record(application.id)
+            assert related is not None
+
+            if manual_update == "true":
+                assert journal.last_manual_update is not None and journal.last_manual_update != "1970-01-01T00:00:00Z"
+
+            if app_key_properties == "yes":
+                contacts = journal.contacts()
+                assert len(contacts) == 1
+                assert contacts[0].get("name") == "Application"
+                assert contacts[0].get("email") == "application@example.com"
+                assert journal.editor_group == "appeditorgroup"
+                assert journal.editor == "appeditor"
+                assert journal.owner == "appowner"
+                assert journal.has_seal() == has_seal
+
+                if current_journal == "present":
+                    assert len(journal.notes) == 2
+                else:
+                    assert len(journal.notes) == 1
+
+            elif app_key_properties == "no":
+                if current_journal == "present":
+                    contacts = journal.contacts()
+                    assert len(contacts) == 1
+                    assert contacts[0].get("name") == "Journal"
+                    assert contacts[0].get("email") == "journal@example.com"
+                    assert journal.editor_group == "journaleditorgroup"
+                    assert journal.editor == "journaleditor"
+                    assert journal.owner == "journalowner"
+                    assert journal.has_seal() == has_seal
+                    assert len(journal.notes) == 2
+
+                elif current_journal == "none" or current_journal == "missing":
+                    contacts = journal.contacts()
+                    assert len(contacts) == 0
+                    assert journal.editor_group is None
+                    assert journal.editor is None
+                    assert journal.owner is None
+                    assert journal.has_seal() == has_seal
+                    assert len(journal.notes) == 1
+
+            if current_journal == "present":
+                assert cj.id == journal.id
+                assert cj.created_date == journal.created_date
