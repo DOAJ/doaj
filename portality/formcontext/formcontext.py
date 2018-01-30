@@ -1120,6 +1120,7 @@ class PublisherUpdateRequest(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot patch a target from a non-existent source")
 
+        self._carry_subjects()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
@@ -1186,6 +1187,10 @@ class PublisherUpdateRequest(ApplicationContext):
             raise FormContextException("You cannot edit a not-existent application")
 
         return super(PublisherUpdateRequest, self).render_template(**kwargs)
+
+    def _carry_subjects(self):
+        source_subjects = self.source.bibjson().subjects()
+        self.target.bibjson().set_subjects(source_subjects)
 
     def _disable_fields(self):
         if self.source is None:

@@ -115,6 +115,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
         assert fc.target.current_journal == "123456789987654321"
         assert fc.target.related_journal == "987654321123456789"
+        assert fc.target.bibjson().subjects() == fc.source.bibjson().subjects()
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
