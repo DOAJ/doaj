@@ -62,13 +62,28 @@ class DOAJ(object):
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed reject_application")
 
-    def accept_application(self, application, account, manual_update=True, provenance=True):
+    def accept_application(self, application, account, manual_update=True, provenance=True, save_journal=True, save_application=True):
+        """
+        Take the given application and create the Journal object in DOAJ for it.
+
+        The account provided must have permission to create journals from applications.
+
+        :param application: The application to be converted
+        :param account: The account doing the conversion
+        :param manual_update: Whether to record this update as a manual update on both the application and journal objects
+        :param provenance: Whether to write provenance records for this operation
+        :param save_journal: Whether to save the journal that is produced
+        :param save_application: Whether to save the application after it has been modified
+        :return: The journal that was created
+        """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("accept_application", [
             {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"},
-            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"}
+            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"},
+            {"arg" : save_journal, "instance" : bool, "allow_none" : False, "arg_name" : "save_journal"},
+            {"arg" : save_application, "instance" : bool, "allow_none" : False, "arg_name" : "save_application"}
         ], exceptions.ArgumentException)
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Entering accept_application")
@@ -83,11 +98,12 @@ class DOAJ(object):
         if application.application_status != constants.APPLICATION_STATUS_ACCEPTED:
             application.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
 
-        # make the resulting journal
+        # make the resulting journal (and save it if requested)
         j = self.application_2_journal(application, manual_update=manual_update)
-        saved = j.save()
-        if saved is None:
-            raise exceptions.SaveException("Save of resulting journal in accept_application failed")
+        if save_journal is True:
+            saved = j.save()
+            if saved is None:
+                raise exceptions.SaveException("Save of resulting journal in accept_application failed")
 
         # retrieve the id of the current journal if there is one
         cj = application.current_journal
@@ -107,6 +123,10 @@ class DOAJ(object):
         if provenance:
             # record the event in the provenance tracker
             models.Provenance.make(account, constants.PROVENANCE_STATUS_ACCEPTED, application)
+
+        # save the application if requested
+        if save_application is True:
+            application.save()
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Completed accept_application")
 

@@ -3,6 +3,7 @@ from parameterized import parameterized
 from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
 
 import time
+from random import randint
 
 from portality.models import Journal, Account, Suggestion, Provenance
 
@@ -11,7 +12,7 @@ from portality.bll import exceptions, constants
 
 
 def load_test_cases():
-    return load_from_matrix("accept_application.csv", test_ids=[])
+    return load_from_matrix("accept_application.csv", test_ids=["68", "69", "71", "72"])
 
 
 EXCEPTIONS = {
@@ -70,6 +71,7 @@ class TestBLLAcceptApplication(DoajTestCase):
         if provenance in ["true", "false"]:
             prov = provenance == "true"
 
+        save = bool(randint(0,1))
 
         ###########################################################
         # Execution
@@ -79,7 +81,7 @@ class TestBLLAcceptApplication(DoajTestCase):
             with self.assertRaises(EXCEPTIONS[raises]):
                 doaj.accept_application(application, acc, mu, prov)
         else:
-            journal = doaj.accept_application(application, acc, mu, prov)
+            journal = doaj.accept_application(application, acc, mu, prov, save_journal=save, save_application=save)
 
             # we need to sleep, so the index catches up
             time.sleep(1)
@@ -90,7 +92,7 @@ class TestBLLAcceptApplication(DoajTestCase):
             assert journal.current_application is None
             assert application.related_journal == journal.id
             related = journal.related_applications
-            assert len(related) == 1
+            assert len(related) == 3
             assert related[0].get("application_id") == application.id
             assert related[0].get("date_accepted") is not None
 
@@ -109,3 +111,5 @@ class TestBLLAcceptApplication(DoajTestCase):
             elif result_provenance == "no":
                 assert app_prov is None
 
+            if save:
+                pass

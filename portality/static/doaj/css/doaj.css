@@ -383,7 +383,7 @@ button[target^="notes-"][target$="-container"] {
     font-size: 1.2em;
 }
 
-.diff_table tr:hover {
+.diff_table tbody tr:hover {
     background: #eeeeee;
 }
 

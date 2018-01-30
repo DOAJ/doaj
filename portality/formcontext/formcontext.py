@@ -528,7 +528,11 @@ class ApplicationContext(PrivateContext):
                 cj = models.Journal.pull(current_journal)
                 if cj is not None:
                     jform = xwalk.JournalFormXWalk.obj2form(cj)
+                    if "notes" in jform:
+                        del jform["notes"]
                     aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
+                    if "notes" in aform:
+                        del aform["notes"]
                     diff = self._form_diff(jform, aform)
 
         return super(ApplicationContext, self).render_template(
@@ -763,15 +767,6 @@ class ManEdApplicationReview(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
-        """
-        current_journal = kwargs.get("current_journal")
-        diff = None
-        if current_journal is not None:
-            jform = xwalk.JournalFormXWalk.obj2form(current_journal)
-            aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
-            diff = self._form_diff(jform, aform)
-        """
-
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
@@ -785,21 +780,6 @@ class ManEdApplicationReview(ApplicationContext):
         egn = self.form.editor_group.data
         self._populate_editor_field(egn)
 
-    """
-    def _form_diff(self, journal_form, application_form):
-        diff = []
-        for k,v in application_form.iteritems():
-            if k in journal_form and journal_form[k] != v:
-                q = self.form[k].label
-                q_num = self.renderer.question_number(k)
-                if q_num is None or q_num == "":
-                    q_num = 0
-                else:
-                    q_num = int(q_num)
-                diff.append((k, q_num, q.text, journal_form[k], v))
-                diff = sorted(diff, key=lambda x: x[1])
-        return diff
-    """
 
 class EditorApplicationReview(ApplicationContext):
     """
