@@ -1,9 +1,9 @@
 {% if current_journal %}
     <h3>This application is an update for an existing journal</h3>
     <p>This application updates the journal <a href="{{ url_for('doaj.journal_readonly', journal_id=current_journal.id) }}" target="_blank">{{ current_journal.bibjson().title }}</a></p>
-    <p>The following fields have changed in the new application: (<a href="#" class="show_hide_diff_table" data-state="hidden">show</a>)</p>
+    <p>The following fields have changed in the new application: (<a href="#" class="show_hide_diff_table" data-state="shown">hide</a>)</p>
 
-    <div class="form_diff" style="display:none">
+    <div class="form_diff">
     <table class="diff_table">
         <thead>
             <tr>
