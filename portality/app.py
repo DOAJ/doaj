@@ -76,11 +76,14 @@ else:
     from collections import OrderedDict
 
 # The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
-# consistency - no code should rely on this though. Sponsors are in tiers: featured, gold, silver, bronze, patron.
-# Only featured sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
+# consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
+# Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
 # the other tiers' logos.
 SPONSORS = {
-    'featured': {
+    'gold': {
+
+    },
+    'silver': {
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'http://www.frontiersin.org/'},
@@ -114,20 +117,16 @@ SPONSORS = {
         'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.jpg', 'url': 'http://www.mandumah.com'},
         'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://ejournal.p-adri.org/'},
         'nsd': {'name': 'Norwegian Centre for Research Data', 'logo': 'nsd.jpg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
-        'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'}
-    },
-    'gold': {
+        'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.png', 'url': 'http://emeraldpublishing.com/'},
-    },
-    'silver': {
-
+        'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
+        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.gif', 'url': 'http://cottagelabs.com'},
     },
     'bronze': {
 
     },
     'patron': {
-        'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
-        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.gif', 'url': 'http://cottagelabs.com'},
+
     }
 }
 

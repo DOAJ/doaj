@@ -1,17 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-{%- if sponsors['featured'] -%}
-    <h2>Top sponsors</h2>
-    <div class="sponsors sponsors-spacious">
-        {% for s in sponsors['featured'].values() %}
-            <a href="{{ s['url'] }}" target="_blank" title="{{ s['name'] }}">
-                <img src="{{ url_for('static', filename='doaj/images/sponsors/' + s['logo']) }}" alt="{{ s['name'] }}"/>
-            </a>
-        {% endfor %}
-    </div>
-{%- endif -%}
-
 {%- if sponsors['gold'] -%}
     <h2>Gold sponsors</h2>
     <div class="sponsors sponsors-spacious">
