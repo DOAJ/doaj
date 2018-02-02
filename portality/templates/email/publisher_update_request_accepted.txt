@@ -7,3 +7,5 @@ An email has also been sent to {{ journal_contact }} who is listed as the Journa
 We are absolutely delighted that you have updated this journal in DOAJ. Please don't hesitate to contact us if you have any questions.
 
 The DOAJ Team
+
+**This is an automated message. Please do not reply to this message.**
