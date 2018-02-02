@@ -7,7 +7,7 @@ and include the views you require, as well as writing new ones. Of course, views
 also be backed up by models, so have a look at the example models and use them / write
 new ones as required too.
 """
-import os
+import os, sys
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask.ext.login import login_user, current_user
@@ -17,7 +17,7 @@ import tzlocal
 import pytz
 
 import portality.models as models
-from portality.core import app, initialise_index, login_manager
+from portality.core import app, initialise_index
 from portality import settings
 
 from portality.view.account import blueprint as account
@@ -60,12 +60,10 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app)
 
-from datetime import datetime
 """
 FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
 with the 404 pages which requires them
 """
-import sys
 try:
     if sys.version_info.major == 2 and sys.version_info.minor < 7:
         from portality.ordereddict import OrderedDict
@@ -76,10 +74,16 @@ except AttributeError:
         from collections import OrderedDict
 else:
     from collections import OrderedDict
+
+# The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
+# consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
+# Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
+# the other tiers' logos.
 SPONSORS = {
-        # the key should correspond to the sponsor logo name in
-        # /static/doaj/images/sponsors without the extension for
-        # consistency - no code should rely on this though
+    'gold': {
+
+    },
+    'silver': {
         'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
         'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'http://www.frontiersin.org/'},
@@ -116,9 +120,19 @@ SPONSORS = {
         'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://ejournal.p-adri.org/'},
         'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
         'nsd': {'name': 'Norwegian Centre for Research Data', 'logo': 'nsd.jpg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
-        'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'}
+        'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
+    },
+    'bronze': {
+
+    },
+    'patron': {
+
+    }
 }
-SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
+
+# In each tier, create an ordered dictionary sorted alphabetically by sponsor name
+SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+
 
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 
@@ -140,9 +154,11 @@ def legacy():
         return redirect(url_for('openurl.openurl', **vals), 301)
     abort(404)
 
+
 @app.route("/doaj2csv")
 def another_legacy_csv_route():
     return redirect("/csv"), 301
+
 
 @app.route("/schemas/doajArticles.xsd")
 def legacy_doaj_XML_schema():
@@ -151,6 +167,7 @@ def legacy_doaj_XML_schema():
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
+
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
@@ -171,12 +188,12 @@ def set_current_context():
         'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
-        'statistics' : models.JournalArticle.site_statistics(),
+        'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
-        "app" : app,
+        "app": app,
         "current_year": datetime.now().strftime('%Y'),
         }
-    # return dict(current_user=current_user, app=app)
+
 
 @app.template_filter('utc_timestamp')
 def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
@@ -192,6 +209,7 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
     return utcdt.strftime(string_format)
 
+
 @app.template_filter('doi_url')
 def doi_url(doi):
     """
@@ -201,6 +219,7 @@ def doi_url(doi):
     """
     tendot = doi[doi.find('10.'):]
     return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
+
 
 @app.before_request
 def standard_authentication():
@@ -218,6 +237,7 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
+
 if 'api' in app.config['FEATURES']:
     @app.route('/api/')
     def api_directory():
@@ -234,13 +254,16 @@ if 'api' in app.config['FEATURES']:
             }
         )
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
+
 
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)
