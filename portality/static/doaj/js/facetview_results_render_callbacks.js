@@ -292,7 +292,7 @@ fv_readonly_journal = (function (resultobj) {
             result += readonly_journal_url;
             result += resultobj.admin.current_journal;
             result += '" target="_blank"';
-            result += '>View associated journal</a>';
+            result += '>View journal being updated</a>';
             return result;
         }
         return false;
@@ -542,7 +542,8 @@ fv_related_applications = (function (resultobj) {
         var result = "";
         if (resultobj.admin) {
             if (resultobj.admin.current_application) {
-                result += "<strong>Current Application</strong>: " + resultobj.admin.current_application;
+                var fvurl = applications_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_application + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                result += "<strong>Current Update Request</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_application + "</a>";
             }
             if (resultobj.admin.related_applications && resultobj.admin.related_applications.length > 0) {
                 if (result != "") {
@@ -554,7 +555,12 @@ fv_related_applications = (function (resultobj) {
                         result += ", ";
                     }
                     var ra = resultobj.admin.related_applications[i];
-                    result += ra.application_id
+                    var fvurl = applications_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + ra.application_id + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                    var linkName = ra.date_accepted;
+                    if (!linkName) {
+                        linkName = ra.application_id;
+                    }
+                    result += "<a href='" + fvurl + "'>" + linkName + "</a>";
                 }
             }
         }
@@ -568,13 +574,15 @@ fv_related_journal = (function (resultobj) {
         var result = "";
         if (resultobj.admin) {
             if (resultobj.admin.current_journal) {
-                result += "<strong>Current Journal</strong>: " + resultobj.admin.current_journal;
+                var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
             }
             if (resultobj.admin.related_journal) {
+                 var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
                 if (result != "") {
                     result += "<br>";
                 }
-                result += "<strong>Related Journal</strong>: " + resultobj.admin.related_journal;
+                result += "<strong>Produced Journal</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
             }
         }
         return result;

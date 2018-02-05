@@ -66,5 +66,6 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
+    var journals_fv_url = "{{ url_for('admin.journals') }}";
 </script>
 {% endblock %}
