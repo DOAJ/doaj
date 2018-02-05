@@ -16,6 +16,24 @@ if ga_id:
     tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=app.config['BASE_DOMAIN'])
 
 
+class GAEvent(object):
+    category = None
+    action = None
+    label = None
+    value = None
+    fieldsobject = None
+
+    def __init__(self, category, action, label='', value=None, fieldsobject=None):
+        self.category = category
+        self.action = action
+        self.label = label
+        self.value = value
+        self.fieldsobject=fieldsobject
+
+    def submit(self):
+        ga_send_event(self.category, self.action, self.label, self.value, self.fieldsobject)
+
+
 def ga_send_event(category, action, label='', value=None, fieldsobject=None):
     """
     Send event data to Google Analytics.

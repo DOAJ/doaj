@@ -26,7 +26,8 @@ def openurl():
         return redirect(parser_response, 301)
 
     # Log this request to analytics
-    analytics.ga_send_event(category="OpenURL", action=parser_response.genre, label=unquote(request.query_string))
+    ga_event = analytics.GAEvent(category="OpenURL", action=parser_response.genre, label=unquote(request.query_string))
+    ga_event.submit()
 
     # Get the OpenURLRequest object to issue a query and supply a url for the result
     result_url = parser_response.get_result_url()

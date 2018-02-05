@@ -18,28 +18,28 @@ blueprint = Blueprint('oaipmh', __name__)
 @blueprint.route("/oai", methods=["GET", "POST"])
 @blueprint.route("/oai.<specified>", methods=["GET", "POST"])
 def oaipmh(specified=None):
-    # Google Analytics event
-    event = {'category': 'OAI-PMH', 'action': None, 'label': None, 'fieldsobject': None}
+    # Google Analytics event, we don't know the action yet but it will be required.
+    event = analytics.GAEvent(category='OAI-PMH', action=None)
     # work out which endpoint we're going to
     if specified is None:
         dao = OAIPMHJournal()
-        event['label'] = 'Journal'
+        event.label = 'Journal'
     else:
         specified = specified.lower()
         dao = OAIPMHArticle()
-        event['label'] = 'Article'
+        event.label = 'Article'
 
     # Add the identifier to the event if there is one
     ident = request.values.get('identifier', None)
     if ident is not None:
-        event['fieldsobject'] = {app.config.get('GA_DIMENSIONS')['oai_res_id']: ident}
+        event.fieldsobject = {app.config.get('GA_DIMENSIONS')['oai_res_id']: ident}
     
     # work out the verb and associated parameters
     verb = request.values.get("verb")
-    event['action'] = verb
+    event.action = verb
 
     # Now we have enough information about the request to send to analytics.
-    analytics.ga_send_event(**event)
+    event.submit()
     
     # call the appropriate protocol operation:
     # if no verb supplied
