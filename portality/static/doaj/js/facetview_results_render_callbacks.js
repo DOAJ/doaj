@@ -528,7 +528,7 @@ fv_make_update_request = (function (resultobj) {
                 result = '<a class="edit_journal_link pull-right" target="_blank" href="';
                 result += journal_update_url;
                 result += resultobj['id'] + '"';
-                result += '>Submit updated information</a>';
+                result += '>Submit an update</a>';
             }
             return result;
         }
