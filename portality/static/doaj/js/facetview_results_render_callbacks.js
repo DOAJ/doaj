@@ -496,7 +496,7 @@ fv_edit_update_request = (function (resultobj) {
                 var view = '(<a href="' + update_request_readonly_url + resultobj['id'] + '">view request</a>)';
                 if (status === "update_request" || status == "submitted") {
                     var actionUrl = update_request_edit_url + resultobj.admin.current_journal;
-                    result = '<span class="pull-right"><a class="edit_suggestion_link" href="' + actionUrl;
+                    result = '<span class="pull-right"><a class="edit_suggestion_link" target="_blank" href="' + actionUrl;
                     result += '"';
                     result += '>Edit this update request</a> | <a href="' + actionUrl + '" class="delete_suggestion_link">Delete this update request</a></span>';
                 } else  if (status !== "rejected" && status !== "accepted") {
@@ -525,7 +525,7 @@ fv_make_update_request = (function (resultobj) {
                 var idquery = '%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22' + resultobj['id'] + '%22%7D%7D%7D';
                 result = '<a class="edit_journal_link pull-right" href="' + journal_update_requests_url + "?source=" + idquery + '">View current update request</a>';
             } else {
-                result = '<a class="edit_journal_link pull-right" href="';
+                result = '<a class="edit_journal_link pull-right" target="_blank" href="';
                 result += journal_update_url;
                 result += resultobj['id'] + '"';
                 result += '>Submit updated information</a>';
