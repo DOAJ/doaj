@@ -43,7 +43,7 @@ fv_application_status = (function(resultobj) {
 // This must be updated in line with the list in formcontext/choices.py
 fv_application_status.mapping = {
     'update_request' : 'Update Request Pending',
-    'submitted' : 'Update Request Submitted',
+    'submitted' : 'Update request',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',
@@ -273,11 +273,15 @@ fv_issns = (function (resultobj) {
 fv_edit_suggestion = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
+            var linkName = "Review application";
+            if (resultobj.admin.current_journal || resultobj.admin.related_journal) {
+                linkName = "Review update";
+            }
             var result = '<a class="edit_suggestion_link pull-right" href="';
             result += suggestion_edit_url;
             result += resultobj['id'];
             result += '" target="_blank"';
-            result += '>Edit this application</a>';
+            result += '>' + linkName + '</a>';
             return result;
         }
         return false;
@@ -549,7 +553,7 @@ fv_related_applications = (function (resultobj) {
                 if (result != "") {
                     result += "<br>";
                 }
-                result += "<strong>Related Applications</strong>: ";
+                result += "<strong>Related Records</strong>: ";
                 for (var i = 0; i < resultobj.admin.related_applications.length; i++) {
                     if (i > 0) {
                         result += ", ";

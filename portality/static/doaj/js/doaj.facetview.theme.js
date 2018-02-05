@@ -501,7 +501,7 @@ function publisherStatusMap(value) {
 // This must be updated in line with the list in formcontext/choices.py
 var applicationStatusMapping = {
     'update_request' : 'Update Request Pending',
-    'submitted' : 'Update Request Submitted',
+    'submitted' : 'Update request',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',

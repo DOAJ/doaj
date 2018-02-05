@@ -2,8 +2,8 @@ from flask import flash
 
 class Messages(object):
     APPLICATION_UPDATE_SUBMITTED_FLASH = ("""
-        Your update request has been submitted and it is editable until the DOAJ editorial team picks it up for review.
-        You will find your update request in your list of updates below.  Select 'edit this update request' to make changes
+        Your update request has been submitted. You may make further changes until the DOAJ Editorial Team picks it up
+        for review. Click 'Edit this update request' to make further changes.
         """, 'success')
 
     @classmethod

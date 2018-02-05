@@ -94,7 +94,7 @@ class Choices(object):
 
     _application_status_admin = _application_status_base + [
         ('update_request', 'Update Request Pending'),
-        ('submitted', 'Update Request Submitted'),
+        ('submitted', 'Update request'),
         ('on hold', 'On Hold'),
         ('ready', 'Ready'),
         ('rejected', 'Rejected'),
