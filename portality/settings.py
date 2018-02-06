@@ -584,20 +584,53 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "issn" :  "index.issn.exact"
 }
 
+# =========================================
+# scheduled reports configuration
+REPORTS_BASE_DIR = "/home/cloo/reports/"
+REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+
 # ========================================
 # Google Analytics configuration
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
 
-
-# =========================================
-# scheduled reports configuration
-REPORTS_BASE_DIR = "/home/cloo/reports/"
-REPORTS_EMAIL_TO = ["feedback@doaj.org"]
-
-# =========================================
 # Google Analytics custom dimensions. These are configured in the GA interface.
 GA_DIMENSIONS = {
     'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
+}
+
+# GA for OAI-PMH
+OAI_GA_CATEGORY = 'OAI-PMH'
+
+# GA for Atom
+ATOM_GA_CATEGORY = 'Atom'
+ATOM_GA_ACTION = 'Feed request'
+
+# GA for JournalCSV
+JOURNALCSV_GA_CATEGORY = 'JournalCSV'
+JOURNALCSV_GA_ACTION = 'Download'
+
+# GA for OpenURL
+OPENURL_GA_CATEGORY = 'OpenURL'
+
+# GA for API
+API_GA_CATEGORY = 'API Hit'
+API_GA_ACTIONS = {
+    'search_applications': 'Search applications',
+    'search_journals': 'Search journals',
+    'search_articles': 'Search articles',
+    'create_application': 'Create application',
+    'retrieve_application': 'Retrieve application',
+    'update_application': 'Update application',
+    'delete_application': 'Delete application',
+    'create_article': 'Create article',
+    'retrieve_article': 'Retrieve article',
+    'update_article': 'Update article',
+    'delete_article': 'Delete article',
+    'retrieve_journal': 'Retrieve journal',
+    'bulk_application_create': 'Bulk application create',
+    'bulk_application_delete': 'Bulk application delete',
+    'bulk_article_create': 'Bulk article create',
+    'bulk_article_delete': 'Bulk article delete'
 }

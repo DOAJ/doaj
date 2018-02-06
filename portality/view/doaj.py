@@ -119,7 +119,7 @@ def suggestion_thanks():
     
 
 @blueprint.route("/csv")
-@analytics.sends_ga_event(event_category="JournalCSV", event_action="Download")
+@analytics.sends_ga_event(event_category=app.config.get('JOURNALCSV_GA_CATEGORY', 'JournalCSV'), event_action=app.config.get('JOURNALCSV_GA_ACTION', 'Download'))
 def csv_data():
     """
     with futures.ProcessPoolExecutor(max_workers=1) as executor:
