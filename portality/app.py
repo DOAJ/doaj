@@ -120,6 +120,14 @@ SPONSORS = {
 }
 SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
 
+# Configure the Google Analytics tracker
+from portality.lib import analytics
+try:
+    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
+except KeyError:
+    app.logger.warn("No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'.")
+
+
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 
 # alongside the DOAJ codebase.  I know they could also go into the

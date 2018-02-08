@@ -1,19 +1,19 @@
 import UniversalAnalytics
+import logging
 from functools import wraps
-from portality.core import app
 
-"""
-# FIXME: temporary debug logging for the analytics.
-import logging.config
-logging.config.dictConfig({'version': 1, 'loggers': {__name__: {'level': 'DEBUG', 'propagate': False, 'handlers': ['file']}}, 'formatters': {'simple': {'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'}}, 'handlers': {'file': {'formatter': 'simple', 'class': 'logging.FileHandler', 'filename': __name__ + '.log', 'level': 'DEBUG'}}})
+# Logger specific to analytics
 logger = logging.getLogger(__name__)
-"""
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.FileHandler(__name__ + '.log'))
 
+# The global tracker object
 tracker = None
 
-ga_id = app.config.get('GOOGLE_ANALYTICS_ID', '')
-if ga_id:
-    tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=app.config['BASE_DOMAIN'])
+
+def create_tracker(ga_id, domain):
+    global tracker
+    tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
 
 
 class GAEvent(object):
@@ -74,8 +74,10 @@ def ga_send_event(category, action, label='', value=None, fieldsobject=None):
         if fieldsobject is not None:
             analytics_args.append(fieldsobject)
 
-        app.logger.debug("Event Send %s", analytics_args)
+        logger.debug("Event Send %s", analytics_args)
         tracker.send('event', *analytics_args)
+    else:
+        logger.error("Google Analytics tracker is not configured.")
 
 
 def sends_ga_event(event_category, event_action, event_label='',
