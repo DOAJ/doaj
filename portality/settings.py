@@ -8,7 +8,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.11.9"
+DOAJ_VERSION = "2.11.10"
 
 OFFLINE_MODE = False
 
@@ -584,14 +584,53 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "issn" :  "index.issn.exact"
 }
 
+# =========================================
+# scheduled reports configuration
+REPORTS_BASE_DIR = "/home/cloo/reports/"
+REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+
 # ========================================
 # Google Analytics configuration
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
 
+# Google Analytics custom dimensions. These are configured in the GA interface.
+GA_DIMENSIONS = {
+    'oai_res_id': 'dimension1',                                                                    # In GA as OAI:Record
+}
 
-# =========================================
-# scheduled reports configuration
-REPORTS_BASE_DIR = "/home/cloo/reports/"
-REPORTS_EMAIL_TO = ["feedback@doaj.org"]
+# GA for OAI-PMH
+GA_CATEGORY_OAI = 'OAI-PMH'
+
+# GA for Atom
+GA_CATEGORY_ATOM = 'Atom'
+GA_ACTION_ACTION = 'Feed request'
+
+# GA for JournalCSV
+GA_CATEGORY_JOURNALCSV = 'JournalCSV'
+GA_ACTION_JOURNALCSV = 'Download'
+
+# GA for OpenURL
+GA_CATEGORY_OPENURL = 'OpenURL'
+
+# GA for API
+GA_CATEGORY_API = 'API Hit'
+GA_ACTIONS_API = {
+    'search_applications': 'Search applications',
+    'search_journals': 'Search journals',
+    'search_articles': 'Search articles',
+    'create_application': 'Create application',
+    'retrieve_application': 'Retrieve application',
+    'update_application': 'Update application',
+    'delete_application': 'Delete application',
+    'create_article': 'Create article',
+    'retrieve_article': 'Retrieve article',
+    'update_article': 'Update article',
+    'delete_article': 'Delete article',
+    'retrieve_journal': 'Retrieve journal',
+    'bulk_application_create': 'Bulk application create',
+    'bulk_application_delete': 'Bulk application delete',
+    'bulk_article_create': 'Bulk article create',
+    'bulk_article_delete': 'Bulk article delete'
+}
