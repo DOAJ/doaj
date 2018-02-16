@@ -120,7 +120,7 @@ try:
 except (KeyError, analytics.GAException):
     err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
     if app.config.get("DOAJENV") == 'production':
-        app.logger.warn(err)
+        app.logger.error(err)
     else:
         app.logger.debug(err)
 
