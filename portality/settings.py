@@ -601,22 +601,22 @@ GA_DIMENSIONS = {
 }
 
 # GA for OAI-PMH
-OAI_GA_CATEGORY = 'OAI-PMH'
+GA_CATEGORY_OAI = 'OAI-PMH'
 
 # GA for Atom
-ATOM_GA_CATEGORY = 'Atom'
-ATOM_GA_ACTION = 'Feed request'
+GA_CATEGORY_ATOM = 'Atom'
+GA_ACTION_ACTION = 'Feed request'
 
 # GA for JournalCSV
-JOURNALCSV_GA_CATEGORY = 'JournalCSV'
-JOURNALCSV_GA_ACTION = 'Download'
+GA_CATEGORY_JOURNALCSV = 'JournalCSV'
+GA_ACTION_JOURNALCSV = 'Download'
 
 # GA for OpenURL
-OPENURL_GA_CATEGORY = 'OpenURL'
+GA_CATEGORY_OPENURL = 'OpenURL'
 
 # GA for API
-API_GA_CATEGORY = 'API Hit'
-API_GA_ACTIONS = {
+GA_CATEGORY_API = 'API Hit'
+GA_ACTIONS_API = {
     'search_applications': 'Search applications',
     'search_journals': 'Search journals',
     'search_articles': 'Search articles',

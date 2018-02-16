@@ -11,7 +11,7 @@ blueprint = Blueprint('atom', __name__)
 
 
 @blueprint.route('/feed')
-@analytics.sends_ga_event(app.config.get('ATOM_GA_CATEGORY', 'Atom'), app.config.get('ATOM_GA_ACTION', 'Feed Request'))
+@analytics.sends_ga_event(app.config.get('GA_CATEGORY_ATOM', 'Atom'), app.config.get('GA_ACTION_ACTION', 'Feed Request'))
 def feed():
     # get the feed for this base_url (which is just used to set the metadata of
     # the feed, but we want to do this outside of a request context so it

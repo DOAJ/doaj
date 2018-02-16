@@ -11,9 +11,16 @@ logger.addHandler(logging.FileHandler(__name__ + '.log'))
 tracker = None
 
 
+class GAException(Exception):
+    pass
+
+
 def create_tracker(ga_id, domain):
     global tracker
-    tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
+    if ga_id:
+        tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
+    else:
+        raise GAException("Invalid GA ID supplied, no tracker created.")
 
 
 class GAEvent(object):

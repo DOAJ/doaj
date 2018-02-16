@@ -19,7 +19,7 @@ blueprint = Blueprint('oaipmh', __name__)
 @blueprint.route("/oai.<specified>", methods=["GET", "POST"])
 def oaipmh(specified=None):
     # Google Analytics event, we don't know the action yet but it will be required.
-    event = analytics.GAEvent(category=app.config.get('OAI_GA_CATEGORY', 'OAI-PMH'), action=None)
+    event = analytics.GAEvent(category=app.config.get('GA_CATEGORY_OAI', 'OAI-PMH'), action=None)
     # work out which endpoint we're going to
     if specified is None:
         dao = OAIPMHJournal()

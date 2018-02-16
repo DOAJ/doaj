@@ -117,8 +117,12 @@ SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SP
 from portality.lib import analytics
 try:
     analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
-except KeyError:
-    app.logger.warn("No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'.")
+except (KeyError, analytics.GAException):
+    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
+    if app.config.get("DOAJENV") == 'production':
+        app.logger.warn(err)
+    else:
+        app.logger.debug(err)
 
 
 # Redirects from previous DOAJ app.
