@@ -43,12 +43,8 @@ mkdir -p /home/cloo/appdata/doaj/s3fs/upload
 mkdir -p /home/cloo/appdata/doaj/s3fs/upload_reapplication
 mkdir -p /home/cloo/appdata/doaj/s3fs/reapp_csvs
 
-sudo supervisorctl reread huey-main-$ENV
-sudo supervisorctl reread huey-long-running-$ENV
-sudo supervisorctl update huey-main-$ENV
-sudo supervisorctl update huey-long-running-$ENV
-sudo supervisorctl restart huey-main-$ENV
-sudo supervisorctl restart huey-long-running-$ENV
+# Restart background apps services
+/home/cloo/repl/$ENV/doaj/src/doaj/deploy/restart-background-apps.sh $ENV
 
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-background-apps

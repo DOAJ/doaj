@@ -7,7 +7,7 @@ and include the views you require, as well as writing new ones. Of course, views
 also be backed up by models, so have a look at the example models and use them / write
 new ones as required too.
 """
-import os
+import os, sys
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
 from flask.ext.login import login_user, current_user
@@ -17,7 +17,7 @@ import tzlocal
 import pytz
 
 import portality.models as models
-from portality.core import app, initialise_index, login_manager
+from portality.core import app, initialise_index
 from portality import settings
 
 from portality.view.account import blueprint as account
@@ -60,12 +60,10 @@ app.register_blueprint(doaj)
 # putting it here ensures it will run under any web server
 initialise_index(app)
 
-from datetime import datetime
 """
 FIXME: this needs to be sorted out - they shouldn't be in here and in doaj.py, but there is an issue
 with the 404 pages which requires them
 """
-import sys
 try:
     if sys.version_info.major == 2 and sys.version_info.minor < 7:
         from portality.ordereddict import OrderedDict
@@ -76,49 +74,44 @@ except AttributeError:
         from collections import OrderedDict
 else:
     from collections import OrderedDict
+
+# The key should correspond to the sponsor logo name in /static/doaj/images/sponsors without the extension for
+# consistency - no code should rely on this though. Sponsors are in tiers: gold, silver, bronze, and patron.
+# Only gold sponsors appear on the front page, and patrons are displayed text-only on the sponsors page alongside
+# the other tiers' logos.
 SPONSORS = {
-        # the key should correspond to the sponsor logo name in
-        # /static/doaj/images/sponsors without the extension for
-        # consistency - no code should rely on this though
-        'cogent-oa': {'name': 'Cogent OA', 'logo': 'cogent-oa.gif', 'url': 'http://cogentoa.com/'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
+    'gold': {
+
+    },
+    'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'http://www.frontiersin.org/'},
         'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'http://www.hindawi.com/'},
-        'lund-university': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'http://www.lunduniversity.lu.se/'},
-        'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.gif', 'url': 'http://www.mdpi.com/'},
-        'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.gif', 'url': 'http://www.taylorandfrancisgroup.com/'},
-        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.jpg', 'url': 'http://www.karger.com/OpenAccess'},
-        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.gif', 'url': 'http://cottagelabs.com'},
-        'wiley': {'name': 'Wiley', 'logo': 'wiley.gif', 'url': 'http://wiley.com'},
-        'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.jpg', 'url': 'http://www.scielo.br/'},
-        'edp-sciences': {'name': 'EDP Sciences', 'logo': 'edp-sciences.gif', 'url': 'http://www.edpsciences.org/'},
-        'ebsco': {'name': 'EBSCO Information Services', 'logo': 'ebsco.gif', 'url': 'http://www.ebsco.com/'},
-        'sage': {'name': 'SAGE Publications', 'logo': 'sage.gif', 'url': 'http://www.sagepublications.com/'},
-        'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.gif', 'url': 'http://www.thieme.com/'},
-        'brill': {'name': 'Brill', 'logo': 'brill.jpg', 'url': 'http://www.brill.com/'},
-        'palgrave-macmillan': {'name': 'Palgrave Macmillan', 'logo': 'palgrave-macmillan.gif', 'url': 'http://www.palgrave.com/'},
-        'jmir': {'name': 'JMIR Publications', 'logo': 'jmir.gif', 'url': 'http://jmirpublications.com'},
-        'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
-        'openedition': {'name': 'OpenEdition', 'logo': 'openedition.jpg', 'url': 'http://www.openedition.org/'},
-        'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.jpg', 'url': 'http://www.plos.org/'},
-        'degruyter': {'name': 'De Gruyter Open', 'logo': 'degruyter.jpg', 'url': 'http://www.degruyteropen.com/'},
-        'aaas': {'name': 'AAAS (American Association for the Advancement of Science)', 'logo': 'aaas.png', 'url': 'http://www.aaas.org/'},
-        'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
-        'iop': {'name': 'IOP Publishing', 'logo': 'iop.jpg', 'url': 'http://ioppublishing.org/'},
-        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.jpg', 'url': 'http://www.springernature.com/gp/group/aboutus'},
-        'aps': {'name': 'American Physical Society', 'logo': 'aps.jpg', 'url': 'https://www.aps.org/'},
-        'wolters-kluwer': {'name': 'Wolters Kluwer', 'logo': 'wolters-kluwer.gif', 'url': 'http://wolterskluwer.com/'},
+        'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
         'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
-        'ingenta': {'name': 'Ingenta', 'logo': 'ingenta.png', 'url': 'http://www.ingenta.com/'},
-        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.png', 'url': 'http://emeraldpublishing.com/'},
-        'finnish-learned': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-learned.gif', 'url': 'https://tsv.fi/en/frontpage'},
-        'vetenskapsradet': {'name': 'Vetenskapsradet', 'logo': 'vetenskapsradet.gif', 'url': 'http://www.vr.se/'},
-        'mandumah': {'name': 'Dar Almandumah', 'logo': 'mandumah.jpg', 'url': 'http://www.mandumah.com'},
-        'p-adri': {'name': 'Perkumpulan Ahli dan Dosen Republik Indonesia', 'logo': 'p-adri.jpg', 'url': 'http://ejournal.p-adri.org/'},
-        'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tecnologico_de_monterrey.png', 'url': 'https://tec.mx/es'},
-        'nsd': {'name': 'Norwegian Centre for Research Data', 'logo': 'nsd.jpg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
+        'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'http://www.plos.org/'},
+    },
+    'bronze': {
+        '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
+        'aps': {'name': 'American Physical Society', 'logo': 'aps.jpg', 'url': 'https://www.aps.org/'},
+        'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
+        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.gif', 'url': 'http://publications.copernicus.org/'},
+        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'http://cottagelabs.com'},
+        'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
+        'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
+        'sage': {'name': 'SAGE Publications', 'logo': 'sage.gif', 'url': 'http://www.sagepublications.com/'},
+        'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
+        'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
+        'wiley': {'name': 'Wiley', 'logo': 'wiley.gif', 'url': 'http://wiley.com'},
+    },
+    'patron': {
+        'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
+        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.jpg', 'url': 'http://www.karger.com/OpenAccess'},
+    }
 }
-SPONSORS = OrderedDict(sorted(SPONSORS.items(), key=lambda t: t[0])) # create an ordered dictionary, sort by the key of the unordered one
+
+# In each tier, create an ordered dictionary sorted alphabetically by sponsor name
+SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
+
 
 # Configure the Google Analytics tracker
 from portality.lib import analytics
@@ -148,9 +141,11 @@ def legacy():
         return redirect(url_for('openurl.openurl', **vals), 301)
     abort(404)
 
+
 @app.route("/doaj2csv")
 def another_legacy_csv_route():
     return redirect("/csv"), 301
+
 
 @app.route("/schemas/doajArticles.xsd")
 def legacy_doaj_XML_schema():
@@ -159,6 +154,7 @@ def legacy_doaj_XML_schema():
             os.path.join(app.config.get("STATIC_DIR"), "doaj", schema_fn),
             mimetype="application/xml", as_attachment=True, attachment_filename=schema_fn
             )
+
 
 # FIXME: this used to calculate the site stats on request, but for the time being
 # this is an unnecessary overhead, so taking it out.  Will need to put something
@@ -179,12 +175,12 @@ def set_current_context():
         'heading_text': '',
         'sponsors': SPONSORS,
         'settings': settings,
-        'statistics' : models.JournalArticle.site_statistics(),
+        'statistics': models.JournalArticle.site_statistics(),
         "current_user": current_user,
-        "app" : app,
+        "app": app,
         "current_year": datetime.now().strftime('%Y'),
         }
-    # return dict(current_user=current_user, app=app)
+
 
 @app.template_filter('utc_timestamp')
 def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
@@ -200,6 +196,7 @@ def utc_timestamp(stamp, string_format="%Y-%m-%dT%H:%M:%SZ"):
     utcdt = datetime(tt.tm_year, tt.tm_mon, tt.tm_mday, tt.tm_hour, tt.tm_min, tt.tm_sec, tzinfo=pytz.utc)
     return utcdt.strftime(string_format)
 
+
 @app.template_filter('doi_url')
 def doi_url(doi):
     """
@@ -209,6 +206,7 @@ def doi_url(doi):
     """
     tendot = doi[doi.find('10.'):]
     return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
+
 
 @app.before_request
 def standard_authentication():
@@ -226,6 +224,7 @@ def standard_authentication():
             if user:
                 login_user(user, remember=False)
 
+
 if 'api' in app.config['FEATURES']:
     @app.route('/api/')
     def api_directory():
@@ -242,13 +241,16 @@ if 'api' in app.config['FEATURES']:
             }
         )
 
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
 
+
 @app.errorhandler(401)
 def page_not_found(e):
     return render_template('401.html'), 401
+
 
 if __name__ == "__main__":
     pycharm_debug = app.config.get('DEBUG_PYCHARM', False)

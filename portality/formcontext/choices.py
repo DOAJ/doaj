@@ -22,10 +22,12 @@ class Choices(object):
 
     _digital_archiving_policy = [
         ("No policy in place", "No policy in place"),
-        ('LOCKSS', 'LOCKSS'),
+        ('CINES', 'CINES'),
         ('CLOCKSS', 'CLOCKSS'),
-        ('Portico', 'Portico'),
+        ('LOCKSS', 'LOCKSS'),
+        ('PKP PN', 'PKP PN'),
         ('PMC/Europe PMC/PMC Canada', 'PMC/Europe PMC/PMC Canada'),
+        ('Portico', 'Portico'),
         ('A national library', 'A national library'),
         (OTHER, OTHER)
     ]
@@ -208,14 +210,14 @@ class Choices(object):
         if type == "none":
             return cls._digital_archiving_policy[0][0]
         elif type == "library":
-            return cls._digital_archiving_policy[5][0]
+            return cls._digital_archiving_policy[7][0]
         elif type == "other":
             return cls.OTHER
 
     @classmethod
     def digital_archiving_policy_label(cls, type):
         if type == "library":
-            return cls._digital_archiving_policy[5][1]
+            return cls._digital_archiving_policy[7][1]
 
     @classmethod
     def digital_archiving_policy_list(cls, type=None):
