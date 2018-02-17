@@ -392,7 +392,7 @@ class Workflow(Form):
 class Seal(Form):
     """ Field to set the DOAJ Seal """
 
-    doaj_seal = BooleanField('<b>Qualifies for Seal</b>', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
+    doaj_seal = BooleanField('Qualifies for Seal', [validators.Optional()], false_values=(BooleanField.false_values + (False,)))
 
 class Continuations(Form):
     """ Fields to manage continuation of journals, and discontinuations """
