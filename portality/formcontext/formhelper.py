@@ -3,8 +3,6 @@ from wtforms.fields.core import UnboundField
 class FormHelper(object):
 
     def render_field(self, field, **kwargs):
-        # FIXME: disabled = form_context.is_disabled(field_name)
-
         # begin the frag
         frag = ""
 
@@ -19,31 +17,16 @@ class FormHelper(object):
         elif field.type == "FieldList":
             frag += self._field_list(field, **kwargs)
         else:
-            hidden = kwargs.pop("hidden", False)
-            container_class = kwargs.pop("container_class", None)
-
-            frag += '<div class="control-group'
-            if field.errors:
-                frag += " error"
-            if container_class is not None:
-                frag += " " + container_class
-            frag += '" id="'
-            frag += field.short_name + '-container"'
-            if hidden:
-                frag += ' style="display:none;"'
-            frag += ">"
-            frag += self._render_field(field, **kwargs)
-            frag += "</div>"
+            frag += self._wrap_control_group(field, self._render_field(field, **kwargs), **kwargs)
 
         return frag
 
-    def _form_field(self, field, **kwargs):
-        # get the useful kwargs
+    def _wrap_control_group(self, field, contents, **kwargs):
         hidden = kwargs.pop("hidden", False)
-        render_subfields_horizontal = kwargs.pop("render_subfields_horizontal", False)
         container_class = kwargs.pop("container_class", None)
+        disabled = kwargs.pop("disabled", False)
+        render_subfields_horizontal = kwargs.pop("render_subfields_horizontal", False)
 
-        # start the div for this group of fields
         frag = '<div class="control-group'
         if field.errors:
             frag += " error"
@@ -51,12 +34,24 @@ class FormHelper(object):
             frag += " row-fluid"
         if container_class is not None:
             frag += " " + container_class
+        if (field.flags.required or field.flags.display_required_star) and (field.data is None or field.data == "" or field.data == "None") and not disabled:
+            frag += " complete-me"
         frag += '" id="'
         frag += field.short_name + '-container"'
         if hidden:
             frag += ' style="display:none;"'
         frag += ">"
+        if contents is not None:
+            frag += contents
+        frag += "</div>"
 
+        return frag
+
+    def _form_field(self, field, **kwargs):
+        # get the useful kwargs
+        render_subfields_horizontal = kwargs.pop("render_subfields_horizontal", False)
+
+        frag = ""
         # for each subfield, do the render
         for subfield in field:
             if render_subfields_horizontal and not (subfield.type == 'CSRFTokenField' and not subfield.value):
@@ -74,10 +69,7 @@ class FormHelper(object):
             else:
                 frag += self._render_field(subfield, **kwargs)
 
-
-        # close off the div and return
-        frag += "</div>"
-        return frag
+        return self._wrap_control_group(field, frag, **kwargs)
 
     def _field_list(self, field, **kwargs):
         # for each subfield, do the render
@@ -86,17 +78,7 @@ class FormHelper(object):
             if subfield.type == "FormField":
                 frag += self.render_field(subfield, **kwargs)
             else:
-                hidden = kwargs.pop("hidden", False)
-                frag = '<div class="control-group'
-                if field.errors:
-                    frag += " error"
-                frag += '" id="'
-                frag += field.short_name + '-container"'
-                if hidden:
-                    frag += ' style="display:none;"'
-                frag += ">"
-                frag += self._render_field(subfield, **kwargs)
-                frag += "</div>"
+                frag = self._wrap_control_group(field, self._render_field(field, **kwargs), **kwargs)
         return frag
 
     def _render_field(self, field, **kwargs):

@@ -400,6 +400,12 @@ button[target^="notes-"][target$="-container"] {
     border: 0px
 }
 
+.complete-me {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #f2dbb0;
+}
+
 /* Custom responsive bits - elements, classes and id-s in that order */
 
 @media (min-width: 768px) {
