@@ -9,6 +9,7 @@ from portality.lcc import lcc_jstree
 from portality import models, app_email, util
 from portality.core import app
 from portality import lock
+from portality.ui.messages import Messages
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -451,7 +452,7 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_application_approved_email(self, journal_title, publisher_name, email, journal_contact, reapplication=False):
+    def _send_application_approved_email(self, journal_title, publisher_name, email, journal_contact, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -463,8 +464,10 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
                 template = "email/publisher_application_accepted.txt"
-                if reapplication:
+                if update_request:
+                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL(email=email)
                     template = "email/publisher_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
@@ -477,9 +480,12 @@ class ApplicationContext(PrivateContext):
                                     journal_contact=journal_contact,
                                     url_root=url_root
                 )
-                self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
+                self.add_alert(msg)
             else:
-                self.add_alert('Did not send email to ' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.')
+                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
+                if update_request:
+                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')

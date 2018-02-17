@@ -6,6 +6,14 @@ class Messages(object):
         for review. Click 'Edit this update request' to make further changes.
         """, 'success')
 
+    SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to {email} to tell them that their journal was accepted."""
+
+    SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """'Sent email to {email} to tell them that their journal update was accepted."""
+
+    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to {email} to tell them tht their journal was accepted, as publisher emails are disabled."""
+
+    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to {email} to tell them that their updagte was accepted, as publisher emails are disabled."""
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
