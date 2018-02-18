@@ -130,7 +130,9 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def add_note(self, note, date=None):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self._add_to_list_with_struct("admin.notes", {"date" : date, "note" : note})
+        obj = {"date" : date, "note" : note}
+        self._delete_from_list("admin.notes", matchsub=obj)
+        self._add_to_list_with_struct("admin.notes", obj)
 
     def remove_note(self, note):
         self._delete_from_list("admin.notes", matchsub=note)

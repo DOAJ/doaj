@@ -12,7 +12,7 @@ from portality.bll import exceptions, constants
 
 
 def load_test_cases():
-    return load_from_matrix("accept_application.csv", test_ids=["68", "69", "71", "72"])
+    return load_from_matrix("accept_application.csv", test_ids=[])
 
 
 EXCEPTIONS = {
@@ -48,9 +48,15 @@ class TestBLLAcceptApplication(DoajTestCase):
             Journal.save = mock_save
         elif application_type == "with_current_journal":
             application = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            application.remove_notes()
+            application.add_note("unique 1", "2002-01-01T00:00:00Z")
+            application.add_note("duplicate", "2001-01-01T00:00:00Z")
             cj = application.current_journal
             journal = Journal(**JournalFixtureFactory.make_journal_source())
             journal.set_id(cj)
+            journal.remove_notes()
+            journal.add_note("unique 2", "2003-01-01T00:00:00Z")
+            journal.add_note("duplicate", "2001-01-01T00:00:00Z")
             journal.save(blocking=True)
         elif application_type == "no_current_journal":
             application = Suggestion(**ApplicationFixtureFactory.make_application_source())
@@ -91,8 +97,12 @@ class TestBLLAcceptApplication(DoajTestCase):
             assert application.current_journal is None
             assert journal.current_application is None
             assert application.related_journal == journal.id
+
             related = journal.related_applications
-            assert len(related) == 3
+            if application_type == "with_current_journal":
+                assert len(related) == 3
+            elif application_type == "no_current_journal":
+                assert len(related) == 1
             assert related[0].get("application_id") == application.id
             assert related[0].get("date_accepted") is not None
 
@@ -104,6 +114,13 @@ class TestBLLAcceptApplication(DoajTestCase):
             elif result_manual_update == "no":
                 assert journal.last_manual_update is None
                 assert application.last_manual_update is None
+
+            if application_type == "with_current_journal":
+                assert len(journal.notes) == 3
+                notevals = [note.get("note") for note in journal.notes]
+                assert "duplicate" in notevals
+                assert "unique 1" in notevals
+                assert "unique 2" in notevals
 
             app_prov = Provenance.get_latest_by_resource_id(application.id)
             if result_provenance == "yes":
