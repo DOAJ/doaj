@@ -467,7 +467,7 @@ class ApplicationContext(PrivateContext):
                 msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
                 template = "email/publisher_application_accepted.txt"
                 if update_request:
-                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL(email=email)
+                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
                     template = "email/publisher_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
