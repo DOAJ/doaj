@@ -473,7 +473,7 @@ class AssEdApplicationReviewForm(Workflow, JournalInfoOptionalPaymentURLs, Sugge
 
 class PublisherUpdateRequestForm(JournalInformation, Suggestion):
     """
-    Publisher's reapplication form.  It consists of:
+    Publisher's update request form.  It consists of:
         * JournalInformation - journal bibliographic data
         * Suggestion - additional application metadata
     """

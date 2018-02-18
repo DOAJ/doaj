@@ -1,12 +1,12 @@
 Dear {{ journal_contact }},
 
-You are listed as the Journal Contact for {{ journal_title }}. A reapplication for this journal to remain indexed in DOAJ has been successful and you can see the updated and expanded entry by searching for the journal: http://bit.ly/1IPWhtD
+You are listed as the Journal Contact for {{ journal_title }}. An update request for this journal has been successful and you can see the updated and expanded entry by searching for the journal: http://bit.ly/1IPWhtD
 
 An email has also been sent to {{ publisher }} who is the account holder for this journal.
 
 It is advantageous for this journal's metadata to be uploaded to DOAJ as this will increase the visibility, impact, distribution and usage* of its content. Please urge {{ publisher }} to do this as soon as possible.
 
-We are absolutely delighted to retain this journal in DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
+We are absolutely delighted to have this journal in DOAJ and look forward to seeing the article metadata soon. Please don't hesitate to contact us if you have any questions.
 
 The DOAJ Team
 

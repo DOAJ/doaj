@@ -66,11 +66,11 @@ class TestAssedAppReview(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the associate editor's reapplication form
+    # Tests on the associate editor's application form
     ###########################################################
 
     def test_01_editor_review_success(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("associate_editor")
@@ -169,7 +169,7 @@ class TestAssedAppReview(DoajTestCase):
         assert fc.validate()
 
     def test_03_associate_review_complete(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("associate_editor")

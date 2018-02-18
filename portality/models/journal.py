@@ -615,12 +615,12 @@ class Journal(JournalLikeObject):
 
     def calculate_tick(self):
         created_date = self.created_date
-        last_reapplied = self.last_update_request
+        last_update_request = self.last_update_request
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
 
-        if created_date is None:    # don't worry about the last_reapplied date - you can't reapply unless you've been created!
+        if created_date is None:    # don't worry about the last_update_request date - you can't update unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
@@ -634,15 +634,15 @@ class Journal(JournalLikeObject):
 
         # convert the strings to datetime objects
         created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
-        reappd = None
-        if last_reapplied is not None:
-            reappd = datetime.strptime(last_reapplied, "%Y-%m-%dT%H:%M:%SZ")
+        lud = None
+        if last_update_request is not None:
+            lud = datetime.strptime(last_update_request, "%Y-%m-%dT%H:%M:%SZ")
 
         if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)
             return
 
-        if reappd is not None and reappd >= threshold and self.is_in_doaj():
+        if lud is not None and lud >= threshold and self.is_in_doaj():
             self.set_ticked(True)
             return
 

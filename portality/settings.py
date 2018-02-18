@@ -288,17 +288,6 @@ DEFAULT_SORT = {
     # "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
 }
 
-"""
-QUERY_ROUTE = {
-    "query" : {"role": None, "default_filter": True, "public_result_filter" : True},
-    "admin_query" : {"role" : "admin", "default_filter": False},
-    "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
-    "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
-    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
-    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "update_request_filter" : True}
-}
-"""
-
 QUERY_ROUTE = {
     "query" : {
         "journal,article" : {
@@ -543,9 +532,6 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
-
-# Publisher CSV storage
-BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
 # Article and Journal History directories - they should be different
 ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")

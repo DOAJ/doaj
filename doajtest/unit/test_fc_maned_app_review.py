@@ -147,12 +147,12 @@ class TestManEdAppReview(DoajTestCase):
         h = self.list_today_journal_history_files()
         assert len(h) == 1
 
-        # set up an application which is a reapp on an existing journal
+        # set up an application which is a update on an existing journal
         s = models.Suggestion(**APPLICATION_SOURCE)
         s.set_current_journal("abcdefghijk_journal")
         s.set_application_status("submitted")
 
-        # set up the form which "accepts" this reapplication
+        # set up the form which "accepts" this update request
         fd = deepcopy(APPLICATION_FORM)
         fd["application_status"] = "accepted"
         fd = MultiDict(fd)

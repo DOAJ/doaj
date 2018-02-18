@@ -119,7 +119,7 @@ PROVENANCE = {
     "roles" : ["associate_editor", "editor", "admin"],
     "editor_group": ["eg1", "eg2"],
     "type" : "suggestion",
-    "subtype" : "reapplication",
+    "subtype" : "update_request",
     "action" : "edit",
     "resource_id" : "987654321"
 }

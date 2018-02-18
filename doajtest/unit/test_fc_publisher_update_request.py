@@ -32,11 +32,11 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
 
     ###########################################################
-    # Tests on the publisher's reapplication form
+    # Tests on the publisher's update request form
     ###########################################################
 
-    def test_01_publisher_reapplication_success(self):
-        """Give the publisher reapplication a full workout"""
+    def test_01_publisher_update_request_success(self):
+        """Give the publisher update request a full workout"""
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.set_id("123456789987654321")
         journal.save(blocking=True)

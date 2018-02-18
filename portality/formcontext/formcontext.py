@@ -491,7 +491,7 @@ class ApplicationContext(PrivateContext):
             self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
-    def _send_contact_approved_email(self, journal_title, journal_contact, email, publisher_name, reapplication=False):
+    def _send_contact_approved_email(self, journal_title, journal_contact, email, publisher_name, update_request=False):
         """Email the journal contact when an application is accepted """
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -504,7 +504,7 @@ class ApplicationContext(PrivateContext):
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/contact_application_accepted.txt"
-                if reapplication:
+                if update_request:
                     template = "email/contact_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
@@ -1139,8 +1139,7 @@ class PublisherUpdateRequest(ApplicationContext):
         if self.source.suggester.get("name") or self.source.suggester.get("email"):
             self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
         else:
-        # but if the source object has no suggester set, then this reapplication is being
-        # created via CSV upload now, for the first time, so copy over the contact info
+            # but if the source object has no suggester set, then copy over the contact info
             self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
@@ -1180,7 +1179,7 @@ class PublisherUpdateRequest(ApplicationContext):
             else:
                 self.target.remove_current_journal()
 
-        # email the publisher to tell them we received their reapplication
+        # email the publisher to tell them we received their update request
         if email_alert:
             try:
                 self._send_received_email()
@@ -1657,7 +1656,7 @@ class AssEdJournalReview(PrivateContext):
 class ReadOnlyJournal(PrivateContext):
     """
     Read Only Journal form. Nothing can be changed. Useful for reviewing a journal and an application
-    (or reapplication) side by side in 2 browser windows or tabs.
+    (or update request) side by side in 2 browser windows or tabs.
     """
     def make_renderer(self):
         self.renderer = render.ReadOnlyJournalRenderer()

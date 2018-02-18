@@ -68,11 +68,11 @@ class TestEditorAppReview(DoajTestCase):
         lcc.lookup_code = self.old_lookup_code
 
     ###########################################################
-    # Tests on the editor's reapplication form
+    # Tests on the editor's application form
     ###########################################################
 
     def test_01_editor_review_success(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("richard")
         acc.add_role("editor")
@@ -179,7 +179,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.validate()
 
     def test_03_editor_review_ready(self):
-        """Give the editor's reapplication form a full workout"""
+        """Give the editor's application form a full workout"""
         acc = models.Account()
         acc.set_id("contextuser")
         acc.add_role("editor")
