@@ -26,6 +26,7 @@ class FormHelper(object):
         container_class = kwargs.pop("container_class", None)
         disabled = kwargs.pop("disabled", False)
         render_subfields_horizontal = kwargs.pop("render_subfields_horizontal", False)
+        complete_me = kwargs.get("complete_me", False)
 
         frag = '<div class="control-group'
         if field.errors:
@@ -34,7 +35,7 @@ class FormHelper(object):
             frag += " row-fluid"
         if container_class is not None:
             frag += " " + container_class
-        if (field.flags.required or field.flags.display_required_star) and (field.data is None or field.data == "" or field.data == "None") and not disabled:
+        if complete_me and (field.flags.required or field.flags.display_required_star) and (field.data is None or field.data == "" or field.data == "None") and not disabled:
             frag += " complete-me"
         frag += '" id="'
         frag += field.short_name + '-container"'

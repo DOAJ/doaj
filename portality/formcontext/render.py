@@ -9,6 +9,7 @@ class Renderer(object):
         self._error_fields = []
         self._disabled_fields = []
         self._disable_all_fields = False
+        self._highlight_completable_fields = False
 
     def check_field_group_exists(self, field_group_name):
         """ Return true if the field group exists in this form """
@@ -32,13 +33,16 @@ class Renderer(object):
         for entry in group_def:
             field_name = entry.keys()[0]
             config = entry.get(field_name)
+            config = deepcopy(config)
 
             config = self._rewrite_extra_fields(form_context, config)
             field = form_context.form[field_name]
 
             if field_name in self.disabled_fields or self._disable_all_fields is True:
-                config = deepcopy(config)
                 config["disabled"] = "disabled"
+
+            if self._highlight_completable_fields is True:
+                config["complete_me"] = True
 
             frag += self.fh.render_field(field, **config)
 
@@ -331,6 +335,9 @@ class PublisherUpdateRequestRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
+
 class PublisherUpdateRequestReadOnlyRenderer(ApplicationRenderer):
     def __init__(self):
         super(PublisherUpdateRequestReadOnlyRenderer, self).__init__()
@@ -385,6 +392,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class EditorApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -418,6 +427,8 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class AssEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -445,6 +456,8 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+        self._highlight_completable_fields = True
 
 
 class JournalRenderer(BasicJournalInformationRenderer):
@@ -519,6 +532,8 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class ManEdJournalBulkEditRenderer(Renderer):
     def __init__(self):
@@ -567,6 +582,8 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class AssEdJournalReviewRenderer(JournalRenderer):
     def __init__(self):
@@ -588,6 +605,8 @@ class AssEdJournalReviewRenderer(JournalRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+        self._highlight_completable_fields = True
 
 
 class ReadOnlyJournalRenderer(JournalRenderer):
