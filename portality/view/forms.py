@@ -21,7 +21,7 @@ from portality.formcontext.fields import DOAJSelectField
 ## Forms and related features for Article metadata
 ##########################################################################
 
-DOI_REGEX = "^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)"
+DOI_REGEX = r"^((https?:\/\/)?((dx\.)?doi\.org/|hdl\.handle\.net\/)|doi:|info:doi:)?(?P<id>10\..+\/.+)"
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 
 # use the year choices in app.cfg or default to 15 years previous.
