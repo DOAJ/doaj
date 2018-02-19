@@ -209,7 +209,7 @@ def doi_url(doi):
     :return: the HTML link
     """
     tendot = doi[doi.find('10.'):]
-    return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
+    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
 
 
 @app.before_request
