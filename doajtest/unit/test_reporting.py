@@ -17,7 +17,7 @@ MONTH_EDIT_OUTPUT = [
     ["u3", 11, 12, 13, 14, 15, 16],
     ["u4", 2, 5, 0, 8, 13, 21],
     ["u5", 2, 5, 0, 8, 0, 4],
-]  # TODO add middle 0s to the year and month test data, see if tests fail like here
+]
 
 YEAR_EDIT_OUTPUT = [
     ["User", "2015"],
