@@ -14,14 +14,18 @@ MONTH_EDIT_OUTPUT = [
     ["User", "2015-01", "2015-02", "2015-03", "2015-04", "2015-05", "2015-06"],
     ["u1", 0, 1, 2, 3, 4, 5],
     ["u2", 6, 7, 8, 9, 10, 0],
-    ["u3", 11, 12, 13, 14, 15, 16]
-]
+    ["u3", 11, 12, 13, 14, 15, 16],
+    ["u4", 2, 5, 0, 8, 13, 21],
+    ["u5", 2, 5, 0, 8, 0, 4],
+]  # TODO add middle 0s to the year and month test data, see if tests fail like here
 
 YEAR_EDIT_OUTPUT = [
     ["User", "2015"],
     ["u1", 15],
     ["u2", 40],
-    ["u3", 81]
+    ["u3", 81],
+    ["u4", 49],
+    ["u5", 19],
 ]
 
 MONTH_COMPLETE_OUTPUT = [
