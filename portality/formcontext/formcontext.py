@@ -549,18 +549,22 @@ class ApplicationContext(PrivateContext):
     def _form_diff(self, journal_form, application_form):
         diff = []
         for k, v in application_form.iteritems():
+            try:
+                q = self.form[k].label
+            except KeyError:
+                continue
+            q_num = self.renderer.question_number(k)
+            if q_num is None or q_num == "":
+                q_num = 0
+            else:
+                q_num = int(q_num)
+
             if k in journal_form and journal_form[k] != v:
-                try:
-                    q = self.form[k].label
-                except KeyError:
-                    continue
-                q_num = self.renderer.question_number(k)
-                if q_num is None or q_num == "":
-                    q_num = 0
-                else:
-                    q_num = int(q_num)
                 diff.append((k, q_num, q.text, journal_form[k], v))
-                diff = sorted(diff, key=lambda x: x[1])
+            elif k not in journal_form and q_num != 0:
+                diff.append((k, q_num, q.text, Messages.DIFF_TABLE_NOT_PRESENT, v))
+
+        diff = sorted(diff, key=lambda x: x[1])
         return diff
 
 
