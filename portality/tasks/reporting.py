@@ -95,10 +95,9 @@ def _tabulate_time_entity_group(group, entityKey):
         # in a previous month but haven't made any edits this month".
         users_in_table = set(map(lambda each_row: each_row[0], table))
         previously_active_users = users_in_table - set(users_active_this_period)
-        for u in previously_active_users:
-            for row in table:
-                if row[0] == u:
-                    row.append(0)
+        for row in table:
+            if row[0] in previously_active_users:
+                row.append(0)
 
         # The following is only prefix padding. E.g. if "dom" started making edits in
         # Jan 2015 but "emanuil" only started in Mar 2015, then "emanuil" needs
