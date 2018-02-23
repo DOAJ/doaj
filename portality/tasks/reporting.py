@@ -78,8 +78,8 @@ def _tabulate_time_entity_group(group, entityKey):
     table = []
     padding = []
     for db in date_keys:
-        users = group[db].keys()
-        for u in users:
+        users_active_this_period = group[db].keys()
+        for u in users_active_this_period:
             c = group[db][u]["count"]
             existing = False
             for row in table:
@@ -88,6 +88,20 @@ def _tabulate_time_entity_group(group, entityKey):
                     existing = True
             if not existing:
                 table.append([u] + padding + [c])
+
+        # Add a 0 for each user who has been added to the table but doesn't
+        # have any actions in the current time period we're looping over. E.g.
+        # if we're counting edits by month, this would be "users who were active
+        # in a previous month but haven't made any edits this month".
+        users_in_table = set(map(lambda each_row: each_row[0], table))
+        previously_active_users = users_in_table - set(users_active_this_period)
+        for row in table:
+            if row[0] in previously_active_users:
+                row.append(0)
+
+        # The following is only prefix padding. E.g. if "dom" started making edits in
+        # Jan 2015 but "emanuil" only started in Mar 2015, then "emanuil" needs
+        # 0s filled in for Jan + Feb 2015.
         padding.append(0)
 
     for row in table:
