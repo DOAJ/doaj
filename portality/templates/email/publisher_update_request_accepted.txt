@@ -1,10 +1,10 @@
 Dear {{ publisher_name }},
 
-Congratulations! The update you sent us for {{ journal_title }} has been accepted and the journal record has been updated. Please review the changes here: {{ url_root }}/publisher/.
+Congratulations! The changes which you sent us for {{ journal_title }} have been reviewed and the journal record updated. Please note that some of the changes you suggested may have been edited by DOAJ staff. You may review the journal record here: {{ url_root }}/publisher/.
 
 An email has also been sent to {{ journal_contact }} who is listed as the Journal Contact.
 
-We are absolutely delighted that you have updated this journal in DOAJ. Please don't hesitate to contact us if you have any questions.
+We are delighted that you have updated this journal in DOAJ. Please don't hesitate to contact us if you have any questions.
 
 The DOAJ Team
 
