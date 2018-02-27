@@ -52,6 +52,20 @@ def widgets():
                            )
 
 
+@blueprint.route("/fqw_hit", methods=['POST'])
+def fqw_hit():
+    if 'embedding_page' in request.data:
+        fqw_event = analytics.GAEvent(
+            category=app.config.get('GA_CATEGORY_FQW', 'FQW'),
+            action=app.config.get('GA_ACTION_FQW', 'hit'),
+            label=request.json['embedding_page']
+        )
+        fqw_event.submit()
+
+    # No content response, whether data there or not.
+    return '', 204
+
+
 @blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])

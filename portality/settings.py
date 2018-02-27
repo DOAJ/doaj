@@ -634,3 +634,7 @@ GA_ACTIONS_API = {
     'bulk_article_create': 'Bulk article create',
     'bulk_article_delete': 'Bulk article delete'
 }
+
+# GA for fixed query widget
+GA_CATEGORY_FQW = 'FQW'
+GA_ACTION_FQW = 'Hit'
