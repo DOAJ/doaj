@@ -4,12 +4,8 @@
         $('#doaj-fixed-query-widget').load(doaj_url + "/static/widget/fixed_query_body_test.html");
         $.ajax({
             type: "POST",
+            crossDomain: true,
             url: doaj_url + "/fqw_hit",
-            headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache"
-            },
-            processData: false,
             data: {embedding_page: window.location.href}
         })
     });

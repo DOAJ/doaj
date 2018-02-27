@@ -5,11 +5,6 @@
         $.ajax({
             type: "POST",
             url: doaj_url + "/fqw_hit",
-            headers: {
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache"
-            },
-            processData: false,
             data: {embedding_page: window.location.href}
         })
     });

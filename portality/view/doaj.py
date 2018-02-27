@@ -54,11 +54,12 @@ def widgets():
 
 @blueprint.route("/fqw_hit", methods=['POST'])
 def fqw_hit():
-    if 'embedding_page' in request.data:
+    page = request.form.get('embedding_page')
+    if page is not None:
         fqw_event = analytics.GAEvent(
             category=app.config.get('GA_CATEGORY_FQW', 'FQW'),
             action=app.config.get('GA_ACTION_FQW', 'hit'),
-            label=request.json['embedding_page']
+            label=request.form.get('embedding_page')
         )
         fqw_event.submit()
 
