@@ -11,6 +11,6 @@
             },
             processData: false,
             data: {embedding_page: window.location.href}
-            })
-        });
+        })
+    });
 })();
