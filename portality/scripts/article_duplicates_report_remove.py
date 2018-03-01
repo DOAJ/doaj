@@ -36,14 +36,17 @@ def duplicates_per_article(connection, delete, snapshot, owner=None, query_overr
         if duplicates:
             doi_dups = [d.id for d in duplicates.get('doi', [])]
             fulltext_dups = [d.id for d in duplicates.get('fulltext', [])]
-            doi_dups.sort(), fulltext_dups.sort()                            # Sort so we can visually compare the lists
+            fuzzy_dups = [d.id for d in duplicates.get('fuzzy', [])]
+            doi_dups.sort(), fulltext_dups.sort(), fuzzy_dups.sort()         # Sort so we can visually compare the lists
             print "\n{0}".format(article.id)
             if doi_dups:
                 print "\t{0} DOI duplicates: {1}".format(len(doi_dups), ", ".join(doi_dups))
             if fulltext_dups:
                 print "\t{0} fulltext duplicates: {1}".format(len(fulltext_dups), ", ".join(fulltext_dups))
+            if fuzzy_dups:
+                print "\t{0} fuzzy duplicates: {1}".format(len(fuzzy_dups), ", ".join(fuzzy_dups))
 
-            # Only consider duplicates that appear in both lists (we should be cautious with deletes)
+            # Only consider duplicates that appear in at least 2 lists (we should be cautious with deletes) TODO: 3 - way comparison
             set_of_duplicates = set(doi_dups).intersection(set(fulltext_dups))
             dupcount += len(set_of_duplicates) + 1                     # The detected duplicates plus the article itself
 
