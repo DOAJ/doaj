@@ -172,6 +172,16 @@ class XWalk(object):
             if possible_articles['fulltext']:
                 found = True
 
+        # Third test is a fuzzy match according to other criteria we have access to
+        articles = models.Article.duplicates(title=b.title,
+                                             volume=b.volume,
+                                             number=b.number,
+                                             start=b.start_page,
+                                             should_match=True)
+        possible_articles['fuzzy'] = [a for a in articles if a.id != article.id]
+        if possible_articles['fuzzy']:
+            found = True
+
         return possible_articles if found else None
 
 

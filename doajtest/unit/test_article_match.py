@@ -265,7 +265,7 @@ class TestArticleMatch(DoajTestCase):
         assert len(dupes) == 1
 
     def test_08_same_title(self):
-        """Check that an article can have the same title but not be considered a duplicate"""
+        """Check that an article with the same title is considered a duplicate"""
         same_title = "Example article title"
 
         # make ourselves an example article
@@ -278,6 +278,31 @@ class TestArticleMatch(DoajTestCase):
         z = models.Article()
         y = z.bibjson()
         y.title = same_title
+
+        # get the xwalk to determine if there is a duplicate
+        xwalk = article.XWalk()
+        d = xwalk.get_duplicate(z)
+
+        assert d is not None
+
+    def test_09_similar_title(self):
+        """Check that an article can have the same title but not be considered a duplicate"""
+        # make ourselves an example article
+        a = models.Article()
+        b = a.bibjson()
+        b.title = "This article is about things like cheese"
+        a.save(blocking=True)
+
+        # create another article
+        a2 = models.Article()
+        b2 = a.bibjson()
+        b2.title = "This article is about things like flamboyance"
+        a2.save(blocking=True)
+
+        # And a third
+        z = models.Article()
+        y = z.bibjson()
+        y.title = "About cheese is things like this article"
 
         # get the xwalk to determine if there is a duplicate
         xwalk = article.XWalk()
