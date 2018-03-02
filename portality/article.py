@@ -172,13 +172,11 @@ class XWalk(object):
             if possible_articles['fulltext']:
                 found = True
 
-        # Third test is a fuzzy match according to other criteria we have access to
+        # Third test is a fuzzy match according to all of the useful criteria we have access to (i.e. not vol or issue)
         articles = models.Article.duplicates(issns=issns,
                                              doi=b.get_one_identifier(b.DOI),
                                              fulltexts=b.get_urls(b.FULLTEXT),
                                              title=b.title,
-                                             volume=b.volume,
-                                             number=b.number,
                                              start=b.start_page,
                                              should_match=2)
 
