@@ -194,7 +194,7 @@ class TestArticleMatch(DoajTestCase):
             journal.set_owner(pubs[i].id)
             journal.save()
 
-            for i in range(0, 2):
+            for j in range(0, 2):
                 article = models.Article(**ArticleFixtureFactory.make_article_source(
                     eissn=journal.known_issns()[0],
                     pissn=journal.known_issns()[1],
