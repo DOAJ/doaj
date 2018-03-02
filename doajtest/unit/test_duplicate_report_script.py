@@ -82,26 +82,30 @@ class TestArticleMatch(DoajTestCase):
             del src_minus_identifiers['bibjson']['link']
             article = models.Article(**src_minus_identifiers)
 
-            # some overlapping duplication criteria
-            if i % 2:
+            # some overlapping duplication criteria - 6 have the same DOI, 4 have the same fulltext, 3 have same title
+            if i % 2 == 0:
                 article.bibjson().add_identifier('doi', dup_doi)
             else:
                 article.bibjson().add_identifier('doi', '10.1234/' + str(i))
-            if i % 3:
+            if i % 3 == 0:
                 article.bibjson().add_url(url=dup_fulltext, urltype='fulltext', content_type='html')
             else:
                 article.bibjson().add_url('http://not_duplicate/fulltext/' + str(i), 'fulltext', 'html')
+            if i % 4 == 0:
+                article.bibjson().title = "This title is the same for these articles"
+            else:
+                article.bibjson().title = str(i) * 20
             article.save(blocking=True, differentiate=True)
 
+        time.sleep(1.0)
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
         dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=True, snapshot=False)
 
-        # 12 articles duplicated, minus i=(6,12), which was false for both criteria. So 10 duplicates.
-        assert dupcount == 10, dupcount
+        # There are 8 numbers divisible by {2,3,4} in the 12 article indexes - 2,3,4,6,8,9,12. These are our duplicates.
+        assert dupcount == 8, dupcount
 
-        # We should delete 3 of these duplicates, the 3 that fully overlap with the original (i=1, i=5, i=7, i=11)
-        # because we only delete those that feature in both categories.
+        # We should delete 3 of the 4 duplicates, because 4 overlap in 2 criteria (i=4, i=6, i=8, i=12).
         assert delcount == 3, delcount
         time.sleep(1.5)
 
