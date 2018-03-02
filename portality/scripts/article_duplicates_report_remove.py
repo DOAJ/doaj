@@ -9,6 +9,7 @@ from portality.models import Article, Journal, Account
 from portality.article import XWalk
 from portality.core import app
 from datetime import datetime
+from itertools import combinations
 import time
 import esprit
 
@@ -46,8 +47,10 @@ def duplicates_per_article(connection, delete, snapshot, owner=None, query_overr
             if fuzzy_dups:
                 print "\t{0} fuzzy duplicates: {1}".format(len(fuzzy_dups), ", ".join(fuzzy_dups))
 
-            # Only consider duplicates that appear in at least 2 lists (we should be cautious with deletes) TODO: 3 - way comparison
-            set_of_duplicates = set(doi_dups).intersection(set(fulltext_dups))
+            # Only consider duplicates that appear in at least 2 lists (we should be cautious with deletes)
+            set_of_duplicates = reduce(set.union,
+                                       map(lambda x: set(x[0]).intersection(set(x[1])),
+                                           combinations([doi_dups, fulltext_dups, fuzzy_dups], 2)))
             dupcount += len(set_of_duplicates) + 1                     # The detected duplicates plus the article itself
 
             if set_of_duplicates:
