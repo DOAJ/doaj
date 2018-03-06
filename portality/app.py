@@ -102,10 +102,11 @@ SPONSORS = {
         'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
         'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'http://wiley.com'},
+        'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
     },
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
-        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.jpg', 'url': 'http://www.karger.com/OpenAccess'},
+        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'http://www.karger.com/OpenAccess'},
     }
 }
 
