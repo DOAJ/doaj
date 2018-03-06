@@ -11,19 +11,32 @@ DOI_LIST = [
     "http://dx.doi.org/10.1371/journal.pone.0057696",
     "http://dx.doi.org/10.14295/2238-6416.v71i4.511",
     "http://dx.doi.org/10.4081/ijas.2009.s2.450",
+    "https://doi.org/10.3403string/bseniso9233",
+    "https://doi.org/10.3403.999/bseniso9233",
+    "HTTPS://DOI.ORG/10.3403/BSENISO9233",                                         # TODO: do we normalise case on save?
 ]
 
 HANDLE_LIST = [
-    "http://hdl.handle.net/10568/89928",
-    "http://hdl.handle.net/1893/26234",
-    "http://hdl.handle.net/1893/23601",
-    "http://hdl.handle.net/2134/6997"
+    "http://hdl.handle.net/10.1000/182",
+    #"http://hdl.handle.net/10568/89928",       # FIXME: open question whether we should support prefixes other than 10.
+    #"http://hdl.handle.net/1893/23601",
+    #"http://hdl.handle.net/2134/6997"
 ]
 
-INVALID_LIST = [
+INVALID_DOI_LIST = [
     "This is not a DOI or handle",
     "https://doaj.org",
     "http://dx.doi.org",
     "https://doi.org",
-    "https://dx.doi.org/invalid"
+    "https://dx.doi.org/invalid",
+    "http://hd&.handle.net/10.1234/567",
+    "httpx://doi.org/10.3403/bseniso9233",
+    "https:/doi.org/10.3403/bseniso9233",
+    "https://doi.org/10.3403",
+    "https://doi.org.uk/10.3403/bseniso9233",
+    "https://doi.org/10.3403/   556",
+    "   https://doi.org/10.3403/01095063",
+    "https://doi.org/10.3403/01095063       ",
+    "\thttps://doi.org/\t10.3403/01095063\t",
+    "https://doi.org/10.3403/01095063\thttps://doi.org/\t10.3403/01095063\t"
 ]
