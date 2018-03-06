@@ -1,16 +1,17 @@
-from flask import Blueprint, request, abort, make_response, url_for
-from flask.ext.login import current_user
+from flask import Blueprint, request, make_response, url_for
 
 from portality import models as models
 from portality.core import app
+from portality.lib import analytics
 
 from lxml import etree
 from datetime import datetime, timedelta
-import urllib
 
 blueprint = Blueprint('atom', __name__)
 
+
 @blueprint.route('/feed')
+@analytics.sends_ga_event(app.config.get('GA_CATEGORY_ATOM', 'Atom'), app.config.get('GA_ACTION_ACTION', 'Feed Request'))
 def feed():
     # get the feed for this base_url (which is just used to set the metadata of
     # the feed, but we want to do this outside of a request context so it
@@ -41,11 +42,11 @@ def get_feed(base_url=None):
 
     title = app.config.get("FEED_TITLE", "untitled")
     url = base_url
-    generator = app.config.get('FEED_GENERATOR',"")
-    icon = app.config.get("FEED_LOGO","")
-    logo = app.config.get("FEED_LOGO","")
-    link = app.config.get('BASE_URL',"")
-    rights = app.config.get('FEED_LICENCE',"")
+    generator = app.config.get('FEED_GENERATOR', "")
+    icon = app.config.get("FEED_LOGO", "")
+    logo = app.config.get("FEED_LOGO", "")
+    link = app.config.get('BASE_URL', "")
+    rights = app.config.get('FEED_LICENCE', "")
 
     xwalk = AtomCrosswalk()
     f = AtomFeed(title, url, generator, icon, logo, link, rights)
@@ -55,6 +56,7 @@ def get_feed(base_url=None):
         f.add_entry(entry)
 
     return f
+
 
 class AtomCrosswalk(object):
     def crosswalk(self, atom_record):
@@ -119,10 +121,11 @@ class AtomCrosswalk(object):
         
         return entry
 
+
 class AtomFeed(object):
     ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
     ATOM = "{%s}" % ATOM_NAMESPACE
-    NSMAP = {None : ATOM_NAMESPACE}
+    NSMAP = {None: ATOM_NAMESPACE}
 
     def __init__(self, title, url, generator, icon, logo, link, rights):
         self.title = title
@@ -232,5 +235,3 @@ class AtomFeed(object):
         
         updated = etree.SubElement(entry, self.ATOM + "updated")
         updated.text = e['updated']
-        
-        

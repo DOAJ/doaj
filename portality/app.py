@@ -114,6 +114,18 @@ SPONSORS = {
 SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SPONSORS.items()}
 
 
+# Configure the Google Analytics tracker
+from portality.lib import analytics
+try:
+    analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
+except (KeyError, analytics.GAException):
+    err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
+    if app.config.get("DOAJENV") == 'production':
+        app.logger.error(err)
+    else:
+        app.logger.debug(err)
+
+
 # Redirects from previous DOAJ app.
 # RJ: I have decided to put these here so that they can be managed 
 # alongside the DOAJ codebase.  I know they could also go into the
@@ -198,7 +210,7 @@ def doi_url(doi):
     :return: the HTML link
     """
     tendot = doi[doi.find('10.'):]
-    return "<a href='http://dx.doi.org/{0}'>{0}</a>".format(tendot)
+    return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
 
 
 @app.before_request
