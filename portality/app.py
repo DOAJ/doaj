@@ -84,29 +84,31 @@ SPONSORS = {
 
     },
     'silver': {
-        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'http://www.frontiersin.org/'},
-        'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'http://www.hindawi.com/'},
+        'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
+        'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'https://www.hindawi.com'},
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
         'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
+        'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'http://publications.copernicus.org/'},
-        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'http://cottagelabs.com'},
+        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://www.publications.copernicus.org'},
+        'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
         'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
         'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
         'sage': {'name': 'SAGE Publications', 'logo': 'sage.svg', 'url': 'http://www.sagepublications.com/'},
         'scielo': {'name': 'SciELO (Scientific Electronic Library Online)', 'logo': 'scielo.svg', 'url': 'http://www.scielo.br/'},
         'taylor-and-francis': {'name': 'Taylor and Francis Group', 'logo': 'taylor-and-francis.svg', 'url': 'http://www.taylorandfrancisgroup.com/'},
-        'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'http://wiley.com'},
+        'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
+        'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
     },
     'patron': {
-        'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'http://elifesciences.org/'},
-        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'http://www.karger.com/OpenAccess'},
+        'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
+        'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
     }
 }
 
