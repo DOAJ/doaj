@@ -715,6 +715,15 @@ class ManEdApplicationReview(ApplicationContext):
         else:
             self.target.save()
 
+        # if revisions were requested, email the publisher
+        if self.source.application_status != "revisions_required" and self.target.application_status == "revisions_required":
+            publisher_email = self.target.get_latest_contact_email()
+            try:
+                emails.send_publisher_update_request_revisions_required(self.target)
+                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
+            except app_email.EmailException as e:
+                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
+
         # if we need to email the editor and/or the associate, handle those here
         if is_editor_group_changed:
             try:
@@ -1163,8 +1172,8 @@ class PublisherUpdateRequest(ApplicationContext):
         # if we are allowed to finalise, kick this up to the superclass
         super(PublisherUpdateRequest, self).finalise()
 
-        # set the status to updated
-        self.target.set_application_status('submitted')
+        # set the status to update_request (if not already)
+        self.target.set_application_status('update_request')
 
         # Save the target
         self.target.set_last_manual_update()

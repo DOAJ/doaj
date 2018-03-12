@@ -1,0 +1,10 @@
+Dear {{ publisher_name }},
+
+The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The administrator responsible for
+your request will contact you shortly to discuss the changes that are needed.
+
+If you have any questions about this in the mean time, please email feedback@doaj.org
+
+The DOAJ Team
+
+**This is an automated message. Please do not reply to this message.**

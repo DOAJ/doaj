@@ -15,7 +15,13 @@ jQuery(document).ready(function($) {
         default_operator : "AND",
 
         facets: [
-            {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
+            {
+                'field': 'admin.in_doaj',
+                'display': 'In DOAJ?',
+                value_function: function(val) {
+                    return val == "T" ? "Yes" : "No"
+                }
+            },
             {'field': 'index.license.exact', 'display': 'Journal License'},
             {'field': 'index.classification.exact', 'display': 'Classification'},
             {'field': 'index.subject.exact', 'display': 'Subject'}

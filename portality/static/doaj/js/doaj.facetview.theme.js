@@ -488,20 +488,17 @@ function authorPaysMap(value) {
     return value;
 }
 
-var publisherStatusMapping = {
-    "update_request" : "pending"
-};
 function publisherStatusMap(value) {
-    if (publisherStatusMapping.hasOwnProperty(value)) {
-        return publisherStatusMapping[value];
+    if (applicationStatusMapping.hasOwnProperty(value)) {
+        return applicationStatusMapping[value];
     }
     return value;
 }
 
 // This must be updated in line with the list in formcontext/choices.py
 var applicationStatusMapping = {
-    'update_request' : 'Update Request Pending',
-    'submitted' : 'Update request',
+    'update_request' : 'Update Request',
+    'revisions_required' : 'Revisions Required',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',

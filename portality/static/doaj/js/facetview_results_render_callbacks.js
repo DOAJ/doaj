@@ -42,8 +42,8 @@ fv_application_status = (function(resultobj) {
 
 // This must be updated in line with the list in formcontext/choices.py
 fv_application_status.mapping = {
-    'update_request' : 'Update Request Pending',
-    'submitted' : 'Update request',
+    'update_request' : 'Update Request',
+    'revisions_required' : 'Revisions Required',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',
@@ -52,6 +52,15 @@ fv_application_status.mapping = {
     'rejected' : 'Rejected',
     'accepted' : 'Accepted'
 };
+
+/*
+fv_in_doaj = (function(resultobj) {
+    var that = function(resultobj) {
+        return resultobj['admin']['in_doaj'] ? "Yes" : "No";
+    };
+    return that;
+})();
+*/
 
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
@@ -498,7 +507,7 @@ fv_edit_update_request = (function (resultobj) {
                 var status = resultobj.admin.application_status;
                 var result = "";
                 var view = '(<a href="' + update_request_readonly_url + resultobj['id'] + '">view request</a>)';
-                if (status === "update_request" || status == "submitted") {
+                if (status === "update_request" || status == "revisions_required") {
                     var actionUrl = update_request_edit_url + resultobj.admin.current_journal;
                     result = '<span class="pull-right"><a class="edit_suggestion_link" href="' + actionUrl;
                     result += '"';
