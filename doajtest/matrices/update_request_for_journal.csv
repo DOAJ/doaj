@@ -106,3 +106,17 @@ test_id,journal_id,journal_lock,account,account_role,account_is_owner,applicatio
 105,valid,no,no,none,no,2,no,update_request,,yes,none,none,no,no,yes
 106,valid,no,no,none,no,2,no,submitted,,yes,none,none,no,no,yes
 107,valid,no,no,none,no,2,no,ready,,yes,none,none,no,no,yes
+108,not_in_doaj,yes,yes,none,yes,0,no,n/a,,none,none,none,,,
+109,not_in_doaj,yes,yes,none,no,0,no,n/a,,none,none,none,,,
+110,not_in_doaj,yes,yes,publisher,yes,0,no,n/a,,none,none,none,,,
+111,not_in_doaj,yes,yes,publisher,no,0,no,n/a,,none,none,none,,,
+112,not_in_doaj,yes,yes,admin,yes,0,no,n/a,,none,none,none,,,
+113,not_in_doaj,yes,yes,admin,no,0,no,n/a,,none,none,none,,,
+114,not_in_doaj,yes,no,none,no,0,no,n/a,,none,none,none,,,
+115,not_in_doaj,no,yes,none,yes,0,no,n/a,,none,none,none,,,
+116,not_in_doaj,no,yes,none,no,0,no,n/a,,none,none,none,,,
+117,not_in_doaj,no,yes,publisher,yes,0,no,n/a,,none,none,none,,,
+118,not_in_doaj,no,yes,publisher,no,0,no,n/a,,none,none,none,,,
+119,not_in_doaj,no,yes,admin,yes,0,no,n/a,,none,none,none,,,
+120,not_in_doaj,no,yes,admin,no,0,no,n/a,,none,none,none,,,
+121,not_in_doaj,no,no,none,no,0,no,n/a,,none,none,none,,,

@@ -164,6 +164,11 @@ class DOAJ(object):
             app.logger.info("Request for journal {x} did not find anything in the database".format(x=journal_id))
             return None, None, None
 
+        # if the journal is not in_doaj, we won't create an update request for it
+        if not journal.is_in_doaj():
+            app.logger.info("Request for journal {x} found it is not in_doaj; will not create update request".format(x=journal_id))
+            return None, None, None
+
         # retrieve the latest application attached to this journal
         application_lock = None
         application = models.Suggestion.find_latest_by_current_journal(journal_id)

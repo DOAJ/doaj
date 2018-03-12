@@ -40,6 +40,9 @@ class TestBLLUpdateRequest(DoajTestCase):
         if journal_id == "valid":
             journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
             jid = journal.id
+        elif journal_id == "not_in_doaj":
+            journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+            jid = journal.id
         elif journal_id == "missing":
             jid = uuid.uuid4().hex
 

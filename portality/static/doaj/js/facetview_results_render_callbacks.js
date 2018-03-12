@@ -520,6 +520,11 @@ fv_edit_update_request = (function (resultobj) {
 
 fv_make_update_request = (function (resultobj) {
     var that = function(resultobj) {
+        if (resultobj.admin && resultobj.admin.hasOwnProperty("in_doaj")) {
+            if (resultobj.admin.in_doaj === false) {
+                return ""
+            }
+        }
         if (!resultobj.suggestion && !resultobj.bibjson.journal) {
             // if it's not a suggestion or an article .. (it's a
             // journal!)
