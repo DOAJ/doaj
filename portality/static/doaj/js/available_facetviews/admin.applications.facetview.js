@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
                 'display': 'Application Status',
                 'value_function': adminStatusMap
             },
-            {'field': 'index.application_type.exact', 'display': 'Application type'},
+            {'field': 'index.application_type.exact', 'display': 'Record type'},
             {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
             {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},

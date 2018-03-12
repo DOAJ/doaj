@@ -123,8 +123,10 @@ class Suggestion(JournalLikeObject):
     def _generate_index(self):
         super(Suggestion, self)._generate_index()
 
-        if self.current_journal:
+        if self.current_journal is not None:
             self._set_with_struct("index.application_type", "update request")
+        elif self.application_status in ["accepted", "rejected"]:
+            self._set_with_struct("index.application_type", "finished application/update")
         else:
             self._set_with_struct("index.application_type", "new application")
 
