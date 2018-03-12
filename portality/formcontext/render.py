@@ -42,7 +42,8 @@ class Renderer(object):
                 config["disabled"] = "disabled"
 
             if self._highlight_completable_fields is True:
-                config["complete_me"] = True
+                valid = field.validate(form_context.form)
+                config["complete_me"] = not valid
 
             frag += self.fh.render_field(field, **config)
 
