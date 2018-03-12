@@ -3,12 +3,9 @@ from portality.lib.argvalidate import argvalidate
 from portality.lib import dates
 
 from portality import models
-from portality.formcontext import formcontext
 from portality import lock
 
 from portality.bll import exceptions, constants
-
-from werkzeug.datastructures import MultiDict
 
 class DOAJ(object):
 
@@ -291,7 +288,7 @@ class DOAJ(object):
 
         return journal
 
-    def journal_2_application(self, journal, account=None):
+    def journal_2_application(self, journal, account=None, keep_editors=False):
         """
         Function to convert a given journal into an application object.
 
@@ -338,10 +335,11 @@ class DOAJ(object):
             if first_contact is None:
                 first_contact = c
         application.set_current_journal(journal.id)
-        if journal.editor is not None:
-            application.set_editor(journal.editor)
-        if journal.editor_group is not None:
-            application.set_editor_group(journal.editor_group)
+        if keep_editors is True:
+            if journal.editor is not None:
+                application.set_editor(journal.editor)
+            if journal.editor_group is not None:
+                application.set_editor_group(journal.editor_group)
         for n in notes:
             application.add_note(n.get("note"), n.get("date"))
         application.set_owner(journal.owner)

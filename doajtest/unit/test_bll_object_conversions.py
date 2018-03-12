@@ -49,8 +49,8 @@ def application_matches(journal, application):
     assert application.application_status == "update_request"
     assert journal.contacts() == application.contacts()
     assert application.current_journal == journal.id
-    assert application.editor == journal.editor
-    assert application.editor_group == journal.editor_group
+    #assert application.editor == journal.editor
+    #assert application.editor_group == journal.editor_group
     assert application.notes == journal.notes
     assert application.owner == journal.owner
     assert application.has_seal() is journal.has_seal()
