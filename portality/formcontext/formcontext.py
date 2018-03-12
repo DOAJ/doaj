@@ -504,8 +504,10 @@ class ApplicationContext(PrivateContext):
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/contact_application_accepted.txt"
+                alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL.format(email=to[0])
                 if update_request:
                     template = "email/contact_update_request_accepted.txt"
+                    alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=to[0])
                 jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -517,9 +519,10 @@ class ApplicationContext(PrivateContext):
                                     publisher=publisher_name,
                                     url_root=url_root
                 )
-                self.add_alert('Sent email to journal contact ' + email + ' to tell them about their journal getting accepted into DOAJ.')
+                self.add_alert(alert)
             else:
-                self.add_alert('Did not send email to journal contact' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.')
+                alert = Messages.NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL.format(email=to[0])
+                self.add_alert(alert)
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal contact acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
