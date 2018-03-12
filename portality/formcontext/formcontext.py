@@ -702,9 +702,13 @@ class ManEdApplicationReview(ApplicationContext):
 
         # if the application was instead rejected, record a provenance event against it
         elif self.source.application_status != "rejected" and self.target.application_status == "rejected":
-            # record the event in the provenance tracker
-            # models.Provenance.make(current_user, "status:rejected", self.target)
             dbl.reject_application(self.target, current_user._get_current_object())
+            publisher_email = self.target.get_latest_contact_email()
+            try:
+                emails.send_publisher_update_request_rejected(self.target)
+                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+            except app_email.EmailException as e:
+                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
 
         # the application was neither accepted or rejected, so just save it
         else:

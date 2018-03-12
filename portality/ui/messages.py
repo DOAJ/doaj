@@ -6,13 +6,13 @@ class Messages(object):
         for review. Click 'Edit this update request' to make further changes.
         """, 'success')
 
-    SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to {email} to tell them that their journal was accepted."""
+    SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal was accepted."""
+    SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to '{email}' to tell them that their journal update was accepted."""
+    SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Sent email to '{email}' to tell them that their journal update was rejected."""
 
-    SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """'Sent email to {email} to tell them that their journal update was accepted."""
-
-    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to {email} to tell them tht their journal was accepted, as publisher emails are disabled."""
-
-    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to {email} to tell them that their updagte was accepted, as publisher emails are disabled."""
+    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them tht their journal was accepted, as publisher emails are disabled."""
+    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was accepted, as publisher emails are disabled."""
+    NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was rejected. Email may be disabled, or there is a problem with the email address"""
 
     DIFF_TABLE_NOT_PRESENT = """-- Not held in journal metadata --"""
 
