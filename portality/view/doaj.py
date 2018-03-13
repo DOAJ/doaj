@@ -76,7 +76,7 @@ def search():
 def search_post():
     """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(501)                                          # not implemented - we must receive searches from our own UI
+        abort(400)                                              # bad request - we must receive searches from our own UI
 
     filters = None
     if not (request.form.get('include_journals') and request.form.get('include_articles')):
@@ -89,7 +89,7 @@ def search_post():
     query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
     ref = request.form.get("ref")
     if ref is None:
-        abort(501)                                                                                # Referrer is required
+        abort(400)                                                                                # Referrer is required
     else:
         return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)) + "&ref=" + urllib.quote(ref))
 
