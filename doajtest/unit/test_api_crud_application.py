@@ -498,7 +498,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_email("test@test.com")
         account.add_role("publisher")
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
@@ -547,7 +547,7 @@ class TestCrudApplication(DoajTestCase):
     def test_14_create_application_update_request_fail(self):
         data = ApplicationFixtureFactory.incoming_application()
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
@@ -578,7 +578,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_email("test@test.com")
         account.add_role("publisher")
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
@@ -605,7 +605,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_email("test@test.com")
         account.add_role("publisher")
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
@@ -652,7 +652,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_email("test@test.com")
         account.add_role("publisher")
 
-        journal = models.Journal(**JournalFixtureFactory.make_journal_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
         journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
         journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")

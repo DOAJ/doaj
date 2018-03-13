@@ -185,6 +185,10 @@ class TestClient(DoajTestCase):
         s.prep()
         assert 'index' in s, s
         assert 'application_type' in s['index'], s['index']
+        assert s['index']['application_type'] == 'finished application/update'
+
+        s.set_application_status("pending")
+        s.prep()
         assert s['index']['application_type'] == 'new application'
 
         s.save()

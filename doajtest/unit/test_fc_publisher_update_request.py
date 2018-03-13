@@ -119,7 +119,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
-        assert fc.target.application_status == "submitted"
+        assert fc.target.application_status == "update_request"
 
         j2 = models.Journal.pull(journal.id)
         assert j2.current_application == fc.target.id

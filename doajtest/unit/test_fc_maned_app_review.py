@@ -150,7 +150,7 @@ class TestManEdAppReview(DoajTestCase):
         # set up an application which is a update on an existing journal
         s = models.Suggestion(**APPLICATION_SOURCE)
         s.set_current_journal("abcdefghijk_journal")
-        s.set_application_status("submitted")
+        s.set_application_status("update_request")
 
         # set up the form which "accepts" this update request
         fd = deepcopy(APPLICATION_FORM)

@@ -705,8 +705,9 @@ class ManEdApplicationReview(ApplicationContext):
 
         # if the application was instead rejected, record a provenance event against it
         elif self.source.application_status != "rejected" and self.target.application_status == "rejected":
+            had_current = self.target.current_journal is not None
             dbl.reject_application(self.target, current_user._get_current_object())
-            if self.target.current_journal is not None:
+            if had_current:
                 publisher_email = self.target.get_latest_contact_email()
                 try:
                     emails.send_publisher_update_request_rejected(self.target)
