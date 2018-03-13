@@ -26,8 +26,8 @@ class TestBLLUpdateRequest(DoajTestCase):
     @parameterized.expand(load_test_cases)
     def test_01_update_request(self, name, journal_id, journal_lock,
                                account, account_role, account_is_owner,
-                               applications, application_lock, application_status,
-                               raises,
+                               current_applications, application_lock, application_status,
+                               completed_applications, raises,
                                return_app, return_jlock, return_alock,
                                db_jlock, db_alock, db_app):
 
@@ -39,9 +39,13 @@ class TestBLLUpdateRequest(DoajTestCase):
         jid = None
         if journal_id == "valid":
             journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+            journal.remove_related_applications()
+            journal.remove_current_application()
             jid = journal.id
         elif journal_id == "not_in_doaj":
             journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=False))
+            journal.remove_related_applications()
+            journal.remove_current_application()
             jid = journal.id
         elif journal_id == "missing":
             jid = uuid.uuid4().hex
@@ -62,16 +66,28 @@ class TestBLLUpdateRequest(DoajTestCase):
             lock.lock("journal", jid, "someoneelse", blocking=True)
 
         latest_app = None
-        app_count = int(applications)
-        for i in range(app_count):
+        current_app_count = int(current_applications)
+        for i in range(current_app_count):
             app = Suggestion(**ApplicationFixtureFactory.make_application_source())
             app.set_id(app.makeid())
-            app.set_created("197" + str(i) + "-01-01T00:00:00Z")
+            app.set_created("198" + str(i) + "-01-01T00:00:00Z")
             app.set_current_journal(jid)
             app.save()
             latest_app = app
+            if journal is not None:
+                journal.set_current_application(app.id)
 
-        if app_count == 0:
+        comp_app_count = int(completed_applications)
+        for i in range(comp_app_count):
+            app = Suggestion(**ApplicationFixtureFactory.make_application_source())
+            app.set_id(app.makeid())
+            app.set_created("197" + str(i) + "-01-01T00:00:00Z")
+            app.set_related_journal(jid)
+            app.save()
+            if journal is not None:
+                journal.add_related_application(app.id, date_accepted=app.created_date)
+
+        if current_app_count == 0 and comp_app_count == 0:
             # save at least one record to initialise the index mapping, otherwise tests fail
             app = Suggestion(**ApplicationFixtureFactory.make_application_source())
             app.set_id(app.makeid())
@@ -133,3 +149,10 @@ class TestBLLUpdateRequest(DoajTestCase):
             elif db_app == "yes" and application.id is not None:
                 indb = Suggestion.q2obj(q="id.exact:" + application.id)
                 assert indb is not None
+
+            if current_app_count == 0 and comp_app_count == 0 and application is not None:
+                assert application.article_metadata is None
+                assert application.articles_last_year is None
+            elif application is not None:
+                assert application.article_metadata is not None
+                assert application.articles_last_year is not None

@@ -563,6 +563,15 @@ class Journal(JournalLikeObject):
                 return record
         return None
 
+    def latest_related_application_id(self):
+        related = self.related_applications
+        if len(related) == 0:
+            return None
+        if len(related) == 1:
+            return related[0].get("application_id")
+        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        return related[0].get("application_id")
+
     def is_ticked(self):
         return self._get_single("admin.ticked", default=False)
 

@@ -102,6 +102,7 @@ class TestClient(DoajTestCase):
         # check over the related_applications management functions
         related = j.related_applications
         assert related is not None
+        assert j.latest_related_application_id() == "123456789"
         j.remove_related_applications()
         assert len(j.related_applications) == 0
         j.set_related_applications(related)
