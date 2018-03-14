@@ -1,7 +1,9 @@
 from doajtest.helpers import DoajTestCase
 from portality import article, models
+from doajtest.fixtures import ArticleFixtureFactory
 import uuid, time
 from random import randint
+from copy import deepcopy
 
 
 class TestArticleMatch(DoajTestCase):
@@ -309,3 +311,103 @@ class TestArticleMatch(DoajTestCase):
         d = xwalk.get_duplicate(z)
 
         assert d is None, d
+
+    def test_10_article_replace_strong_criteria(self):
+        """ Have a detailed look at the article duplication detection """
+        # Get ourselves a fully populated article
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+        a.save(blocking=True)
+
+        b_copy = deepcopy(a.data)
+        del b_copy['id']
+        b = models.Article(**b_copy)
+
+        # We can change the ISSN or fulltext URL and it's still a duplicate - first, the DOI is differentiated
+        b.bibjson().remove_identifiers()
+        b_doi = "10.doi_for_article_b"
+        b.bibjson().add_identifier('doi', b_doi)
+
+        # Check that the saved article is a duplicate
+        dups = article.XWalk.get_duplicates(b)
+        assert len(dups) == 1
+        assert dups[0].id == a.id
+
+        # A different fulltext, but the DOI is still the same.
+        c_copy = deepcopy(a.data)
+        del c_copy['id']
+        c = models.Article(**c_copy)
+        del c.data['bibjson']['link']
+        assert c.bibjson().get_single_url('fulltext') is None
+        c.bibjson().add_url("http://url_for.article_c", urltype="fulltext")
+        assert c.bibjson().get_single_url('fulltext') == "http://url_for.article_c"
+        assert c.bibjson().get_one_identifier('doi') == a.bibjson().get_one_identifier('doi')
+
+        # Check that the saved article is a duplicate
+        dups = article.XWalk.get_duplicates(c)
+        assert len(dups) == 1, len(dups)
+        assert dups[0].id == a.id
+
+        # If those duplicates are saved too, we should have more to find in the index when we check again
+        b.save(blocking=True)
+        c.save(blocking=True)
+
+        x_copy = deepcopy(a.data)
+        del x_copy['id']
+        x = models.Article(**x_copy)
+        dups = article.XWalk.get_duplicates(x)
+        assert len(dups) == 3
+
+        # Check that we get the same results when there's more stuff in the index than our duplicates.
+        for i in range(0, 5):
+            unique_issn = '{0}-{1}'.format(str(i) * 4, str(i)*4)
+            art = models.Article(**ArticleFixtureFactory.make_article_source(eissn=unique_issn, pissn=unique_issn, with_id=False, with_journal_info=True))
+            art.bibjson().remove_identifiers('doi')
+            art.bibjson().add_identifier('doi', '10.doi_for_article_' + str(i))
+            art.bibjson().title = str(i) * 12
+            del art.data['bibjson']['link']
+            art.bibjson().add_url("http://url_for.article_" + str(i), urltype="fulltext")
+            art.bibjson().start_page = i
+            art.save(blocking=True)
+
+        dups = article.XWalk.get_duplicates(x)
+        assert len(dups) == 3
+
+    def test_11_article_replace_weak_criteria(self):
+        pass
+
+        """
+        # Change both DOI and fulltext URL, should still overwrite because the title, DOI, other fuzzy criteria match
+        d = models.Article(**a_copy)
+        del d.data['bibjson']['link']
+        d.bibjson().add_url("http://url_for.article_d", urltype="fulltext")
+        d.bibjson().remove_identifiers()
+        d.bibjson().add_identifier('doi', "10.doi_for_article_d")
+        d.save(blocking=True)
+
+        assert len(models.Article.all()) == 1
+        assert a.id == b.id == c.id == d.id
+
+        # Change some of the metadata to make it sufficiently different and be a new article.
+        e = models.Article(**a_copy)
+        del e.data['bibjson']['link']
+        e.bibjson().add_url("http://url_for.article_e", urltype="fulltext")
+        e.bibjson().remove_identifiers()
+        e.bibjson().add_identifier('doi', "10.doi_for_article_e")
+        e.bibjson().add_identifier('pissn', a.bibjson().first_pissn)
+        e.bibjson().add_identifier('eissn', a.bibjson().first_eissn)
+
+        # Add a different title and start page - only the ISSN matches now.
+        e.bibjson().title = "This title is distinct from the others"
+        e.bibjson().start_page = 321
+        assert e.bibjson().start_page != a.bibjson().start_page
+        e.save(blocking=True)
+
+        print a
+        print e
+
+        # This time there should be an additional article in the index, because it's sufficiently different.
+        time.sleep(2)
+        assert len(models.Article.all()) == 2, len(models.Article.all())
+        print models.Article.all()
+        assert e.id != a.id
+        """
