@@ -373,41 +373,54 @@ class TestArticleMatch(DoajTestCase):
         assert len(dups) == 3
 
     def test_11_article_replace_weak_criteria(self):
-        pass
 
-        """
-        # Change both DOI and fulltext URL, should still overwrite because the title, DOI, other fuzzy criteria match
-        d = models.Article(**a_copy)
-        del d.data['bibjson']['link']
-        d.bibjson().add_url("http://url_for.article_d", urltype="fulltext")
-        d.bibjson().remove_identifiers()
-        d.bibjson().add_identifier('doi', "10.doi_for_article_d")
-        d.save(blocking=True)
+        # Get ourselves a fully populated article
+        a = models.Article(**ArticleFixtureFactory.make_article_source())
+        a.save(blocking=True)
 
-        assert len(models.Article.all()) == 1
-        assert a.id == b.id == c.id == d.id
+        b_copy = deepcopy(a.data)
+        del b_copy['id']
+        b = models.Article(**b_copy)
+
+        # Change both DOI and fulltext URL, won't overwrite - we require one of those as well as the fuzzy criteria
+        del b.data['bibjson']['link']
+        b.bibjson().add_url("http://url_for.article_b", urltype="fulltext")
+        b.bibjson().remove_identifiers()
+        b.bibjson().add_identifier('doi', "10.doi_for_article_b")
+
+        # We have 2 matching criteria for our fuzzy match, so it should pass.
+        assert a.bibjson().title == b.bibjson().title
+        assert a.bibjson().start_page == b.bibjson().start_page
+
+        # Verify it was detected as a fuzzy match
+        dups = article.XWalk.discover_duplicates(b)
+        assert dups['doi'] is None
+        assert dups['fulltext'] is None
+        assert dups['fuzzy'] is not None
+        assert len(dups['fuzzy']) == 1
+        assert dups['fuzzy'].pop()['id'] == a.id
+
+        # However, we expect the overall duplication to return none because we require more than just fuzzy
+        dups = article.XWalk.get_duplicates(b)
+        assert len(dups) == 0
+
+        # Another article, with no matching criteria - not a duplicate
+        c_copy = deepcopy(a.data)
+        del c_copy['id']
+        c = models.Article(**c_copy)
 
         # Change some of the metadata to make it sufficiently different and be a new article.
-        e = models.Article(**a_copy)
-        del e.data['bibjson']['link']
-        e.bibjson().add_url("http://url_for.article_e", urltype="fulltext")
-        e.bibjson().remove_identifiers()
-        e.bibjson().add_identifier('doi', "10.doi_for_article_e")
-        e.bibjson().add_identifier('pissn', a.bibjson().first_pissn)
-        e.bibjson().add_identifier('eissn', a.bibjson().first_eissn)
+        del c.data['bibjson']['link']
+        c.bibjson().add_url("http://url_for.article_e", urltype="fulltext")
+        c.bibjson().remove_identifiers()
+        c.bibjson().add_identifier('doi', "10.doi_for_article_e")
+        c.bibjson().add_identifier('pissn', a.bibjson().first_pissn)
+        c.bibjson().add_identifier('eissn', a.bibjson().first_eissn)
 
         # Add a different title and start page - only the ISSN matches now.
-        e.bibjson().title = "This title is distinct from the others"
-        e.bibjson().start_page = 321
-        assert e.bibjson().start_page != a.bibjson().start_page
-        e.save(blocking=True)
+        c.bibjson().title = "This title is distinct from the others"
+        c.bibjson().start_page = 321
+        assert c.bibjson().start_page != a.bibjson().start_page
 
-        print a
-        print e
-
-        # This time there should be an additional article in the index, because it's sufficiently different.
-        time.sleep(2)
-        assert len(models.Article.all()) == 2, len(models.Article.all())
         print models.Article.all()
-        assert e.id != a.id
-        """
+        assert c.id != a.id
