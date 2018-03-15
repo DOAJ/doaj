@@ -37,14 +37,14 @@ class Article(DomainObject):
             duplicate_articles = []
             for g in issn_groups:
                 q = DuplicateArticleQuery(issns=g,
-                                            publisher_record_id=publisher_record_id,
-                                            doi=doi,
-                                            urls=urls,
-                                            title=title,
-                                            volume=volume,
-                                            number=number,
-                                            start=start,
-                                            should_match=should_match)
+                                          publisher_record_id=publisher_record_id,
+                                          doi=doi,
+                                          urls=urls,
+                                          title=title,
+                                          volume=volume,
+                                          number=number,
+                                          start=start,
+                                          should_match=should_match)
                 # print json.dumps(q.query())
 
                 res = cls.query(q=q.query())
@@ -53,13 +53,13 @@ class Article(DomainObject):
             return duplicate_articles
         else:
             q = DuplicateArticleQuery(publisher_record_id=publisher_record_id,
-                                        doi=doi,
-                                        urls=urls,
-                                        title=title,
-                                        volume=volume,
-                                        number=number,
-                                        start=start,
-                                        should_match=should_match)
+                                      doi=doi,
+                                      urls=urls,
+                                      title=title,
+                                      volume=volume,
+                                      number=number,
+                                      start=start,
+                                      should_match=should_match)
             # print json.dumps(q.query())
 
             res = cls.query(q=q.query())

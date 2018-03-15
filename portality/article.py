@@ -110,7 +110,7 @@ class XWalk(object):
 
     @staticmethod
     def get_duplicates(article, owner=None):
-        """Get all duplicates (or previous versions) of an article."""
+        """Get all duplicates (or existing versions) of an article."""
 
         possible_articles_dict = XWalk.discover_duplicates(article, owner)
         if not possible_articles_dict:
@@ -171,6 +171,18 @@ class XWalk(object):
             possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
             if possible_articles['fulltext']:
                 found = True
+
+        # Third test is a fuzzy match according to all of the useful criteria we have access to (i.e. not vol or issue)
+        articles = models.Article.duplicates(issns=issns,
+                                             doi=b.get_one_identifier(b.DOI),
+                                             fulltexts=b.get_urls(b.FULLTEXT),
+                                             title=b.title,
+                                             start=b.start_page,
+                                             should_match=2)
+
+        possible_articles['fuzzy'] = [a for a in articles if a.id != article.id]
+        if possible_articles['fuzzy']:
+            found = True
 
         return possible_articles if found else None
 
