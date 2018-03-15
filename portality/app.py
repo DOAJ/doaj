@@ -87,7 +87,7 @@ SPONSORS = {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
         'hindawi': {'name': 'Hindawi Publishing Corporation', 'logo': 'hindawi.png', 'url': 'https://www.hindawi.com'},
         'mdpi': {'name': 'Multidisciplinary Digital Publishing Institute (MDPI)', 'logo': 'mdpi.svg', 'url': 'http://www.mdpi.com/'},
-        'oclc': {'name': 'OCLC', 'logo': 'oclc.png', 'url': 'https://www.oclc.org/en-europe/home.html'},
+        'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
     },
@@ -105,6 +105,7 @@ SPONSORS = {
         'wiley': {'name': 'Wiley', 'logo': 'wiley.svg', 'url': 'https://wiley.com'},
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
+        'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
     },
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
