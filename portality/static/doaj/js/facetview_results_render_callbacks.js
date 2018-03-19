@@ -221,7 +221,7 @@ fv_doi_link = (function (resultobj) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "http://dx.doi.org/" + doi.substring(tendot);
+                    var url = "https://doi.org/" + doi.substring(tendot);
                     return "<a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>"
                 }
             }

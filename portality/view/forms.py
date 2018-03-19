@@ -21,7 +21,7 @@ from portality.formcontext.fields import DOAJSelectField
 ## Forms and related features for Article metadata
 ##########################################################################
 
-DOI_REGEX = "^((http:\/\/){0,1}dx.doi.org/|(http:\/\/){0,1}hdl.handle.net\/|doi:|info:doi:){0,1}(?P<id>10\\..+\/.+)"
+DOI_REGEX = re.compile(r"^((https?://)?((dx\.)?doi\.org/|hdl\.handle\.net/)|doi:|info:doi:)?(?P<id>10\.\S+/\S+)$", re.IGNORECASE)
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 
 # use the year choices in app.cfg or default to 15 years previous.
@@ -125,7 +125,7 @@ class EditorGroupForm(Form):
 ## Continuations Forms
 ##########################################################################
 
-ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X|x){1}$')
+ISSN_REGEX = re.compile(r'^\d{4}-\d{3}(\d|X){1}$', re.IGNORECASE)
 ISSN_ERROR = 'An ISSN or EISSN should be 7 or 8 digits long, separated by a dash, e.g. 1234-5678. If it is 7 digits long, it must end with the letter X (e.g. 1234-567X).'
 
 

@@ -1,17 +1,18 @@
-from flask import Blueprint, request, make_response, flash
+from flask import Blueprint, request, flash
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask.ext.login import current_user, login_required
 import urllib
 
 from portality import dao
 from portality import models
+from portality import blog
 from portality.core import app
 from portality.decorators import ssl_required, write_required
-from portality import blog
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
+from portality.lib import analytics
 
 import json
 import os
@@ -51,6 +52,21 @@ def widgets():
                            )
 
 
+@blueprint.route("/fqw_hit", methods=['POST'])
+def fqw_hit():
+    page = request.form.get('embedding_page')
+    if page is not None:
+        fqw_event = analytics.GAEvent(
+            category=app.config.get('GA_CATEGORY_FQW', 'FQW'),
+            action=app.config.get('GA_ACTION_FQW', 'hit'),
+            label=request.form.get('embedding_page')
+        )
+        fqw_event.submit()
+
+    # No content response, whether data there or not.
+    return '', 204
+
+
 @blueprint.route("/search", methods=['GET'])
 def search():
     return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
@@ -58,8 +74,9 @@ def search():
 
 @blueprint.route("/search", methods=['POST'])
 def search_post():
+    """ Redirect a query from the box on the index page to the search page. """
     if request.form.get('origin') != 'ui':
-        abort(501)  # not implemented
+        abort(400)                                              # bad request - we must receive searches from our own UI
 
     filters = None
     if not (request.form.get('include_journals') and request.form.get('include_articles')):
@@ -70,7 +87,11 @@ def search_post():
             filters.append(dao.Facetview2.make_term_filter("_type", "article"))
 
     query = dao.Facetview2.make_query(request.form.get("q"), filters=filters, default_operator="AND")
-    return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)))
+    ref = request.form.get("ref")
+    if ref is None:
+        abort(400)                                                                                # Referrer is required
+    else:
+        return redirect(url_for('.search') + '?source=' + urllib.quote(json.dumps(query)) + "&ref=" + urllib.quote(ref))
 
 
 @blueprint.route("/subjects")
@@ -118,6 +139,7 @@ def suggestion_thanks():
     
 
 @blueprint.route("/csv")
+@analytics.sends_ga_event(event_category=app.config.get('GA_CATEGORY_JOURNALCSV', 'JournalCSV'), event_action=app.config.get('GA_ACTION_JOURNALCSV', 'Download'))
 def csv_data():
     """
     with futures.ProcessPoolExecutor(max_workers=1) as executor:

@@ -4,6 +4,7 @@ from portality.models import Journal, Article
 from portality.core import app
 from copy import deepcopy
 from portality.util import parse_date
+from portality.lib import analytics
 
 JOURNAL_SCHEMA_KEYS = ['doi', 'aulast', 'aufirst', 'auinit', 'auinit1', 'auinitm', 'ausuffix', 'au', 'aucorp', 'atitle',
                        'jtitle', 'stitle', 'date', 'chron', 'ssn', 'quarter', 'volume', 'part', 'issue', 'spage',
@@ -14,24 +15,25 @@ SUPPORTED_GENRES = ['journal', 'article']
 
 # Mapping from OpenURL schema to both supported models (Journal, Article)
 OPENURL_TO_ES = {
-    'au' : (None, 'author.name.exact'),
-    'aucorp' : (None, 'author.affiliation.exact'),
-    'atitle' : (None, 'bibjson.title.exact'),
-    'jtitle' : ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
-    'stitle' : ('bibjson.alternative_title.exact', None),
-    'date' : (None, 'bibjson.year.exact'),
-    'volume' : (None, 'bibjson.journal.volume.exact'),
-    'issue' : (None, 'bibjson.journal.number.exact'),
-    'spage' : (None, 'bibjson.start_page.exact'),
-    'epage' : (None, 'bibjson.end_page.exact'),
-    'issn' : ('index.issn.exact', 'index.issn.exact'), # bibjson.identifier.id.exact
-    'eissn' : ('index.issn.exact', 'index.issn.exact'),
-    'isbn' : ('index.issn.exact', 'index.issn.exact'),
+    'au': (None, 'author.name.exact'),
+    'aucorp': (None, 'author.affiliation.exact'),
+    'atitle': (None, 'bibjson.title.exact'),
+    'jtitle': ('index.title.exact', 'bibjson.journal.title.exact'),    # Note we use index.title.exact for journals, to support continuations
+    'stitle': ('bibjson.alternative_title.exact', None),
+    'date': (None, 'bibjson.year.exact'),
+    'volume': (None, 'bibjson.journal.volume.exact'),
+    'issue': (None, 'bibjson.journal.number.exact'),
+    'spage': (None, 'bibjson.start_page.exact'),
+    'epage': (None, 'bibjson.end_page.exact'),
+    'issn': ('index.issn.exact', 'index.issn.exact'),   # bibjson.identifier.id.exact
+    'eissn': ('index.issn.exact', 'index.issn.exact'),
+    'isbn': ('index.issn.exact', 'index.issn.exact')
 }
 
 # Terms search template. Ensure all queries from OpenURL return publicly visible results with in_doaj : true
-IN_DOAJ_TERM = { "term" : { "admin.in_doaj" : True } }
-TERMS_SEARCH = { "query" : {"bool" : { "must" : [ IN_DOAJ_TERM ] } } }
+IN_DOAJ_TERM = {"term": {"admin.in_doaj": True}}
+TERMS_SEARCH = {"query": {"bool": {"must": [IN_DOAJ_TERM]}}}
+
 
 class OpenURLRequest(object):
     """
@@ -74,10 +76,10 @@ class OpenURLRequest(object):
         # Add the attributes to the query
         for (k, v) in set_attributes:
             es_term = OPENURL_TO_ES[k][i]
-            if es_term == None:
+            if es_term is None:
                 continue
             else:
-                term = { "term" : { es_term : v} }
+                term = {"term": {es_term: v}}
             populated_query["query"]["bool"]["must"].append(term)
 
         # avoid doing an empty query
@@ -115,28 +117,8 @@ class OpenURLRequest(object):
             # construct a journal object around the result
             journal = Journal(**results['hits']['hits'][0])
 
-            """
-            # since we might be looking for a specific continuation of a journal, do a bit of work
-            # to point the user to the correct ToC, which should be by ISSN if possible.  If they have
-            # given us the journal title, then we should try to identify the ISSN associated with it
-            # Failing all that, just fall back to the current version ToC
-            ident = self.issn
-            if ident is None:
-                if self.jtitle is not None:
-                    issns = journal.issns_for_title(self.jtitle)
-                    if len(issns) > 0:
-                        ident = issns[0]
-                elif self.stitle is not None:
-                    issns = journal.issns_for_title(self.stitle)
-                    if len(issns) > 0:
-                        ident = issns[0]
-                if ident is None:
-                    ident = journal.id
-            """
-
-            # we no longer have to look for the right continuation - the continuation is a first-class journal
-            # object, so if we have a journal we have the right continuation (assuming that the user gave us
-            # specific enough information
+            # the continuation is a first-class journal object, so if we have a journal we have the right continuation
+            # (assuming that the user gave us specific enough information
             ident = journal.id
 
             # If there request has a volume parameter, query for presence of an article with that volume
@@ -161,43 +143,26 @@ class OpenURLRequest(object):
             return url_for("doaj.article_page", identifier=results['hits']['hits'][0]['_id'])
 
     def query_for_vol(self, journalobj):
-        """
-        # find which continuation the searched issn/title belongs to so we can find accurate volume/issue results
-        issns = None
-        if self.issn is None:                                               # if query was by title, find the issns
-            if self.jtitle is not None:
-                issns = journalobj.issns_for_title(self.jtitle)
-            elif self.stitle is not None:
-                issns = journalobj.issns_for_title(self.stitle)
-        else:
-            if self.issn in journalobj.bibjson().issns():                   # issn is in current version
-                issns = journalobj.bibjson().issns()
-            else:
-                history_bibjson = journalobj.get_history_for(self.issn)
-                if history_bibjson is not None:                             # issn is from previous version
-                    issns = history_bibjson.issns()
-        """
 
-        # we no longer need to dig through the continuations to look for the right issn.  The journal object
-        # will already be the correct continuation, if the user provided sufficient detail for us to identify it
+        # The journal object will already be the correct continuation, if the user provided sufficient detail.
         issns = journalobj.bibjson().issns()
 
         # If there's no way to get the wanted issns, give up, else run the query
-        if issns == None:
+        if issns is None:
             return None
         else:
             volume_query = deepcopy(TERMS_SEARCH)
             volume_query["size"] = 0
 
-            issn_term = { "terms" : { "index.issn.exact" : issns} }
+            issn_term = {"terms": {"index.issn.exact": issns}}
             volume_query["query"]["bool"]["must"].append(issn_term)
 
-            vol_term = { "term" : {"bibjson.journal.volume.exact" : self.volume} }
+            vol_term = {"term": {"bibjson.journal.volume.exact": self.volume}}
             volume_query["query"]["bool"]["must"].append(vol_term)
 
             # And if there's an issue, query that too. Note, issue does not make sense on its own.
             if self.issue:
-                iss_term = { "term" : {"bibjson.journal.number.exact" : self.issue} }
+                iss_term = {"term": {"bibjson.journal.number.exact": self.issue}}
                 volume_query["query"]["bool"]["must"].append(iss_term)
 
             app.logger.debug("OpenURL subsequent volume query to article: " + json.dumps(volume_query))
@@ -217,7 +182,6 @@ class OpenURLRequest(object):
             results = self.query_es()
 
         return results
-
 
     def validate_issn(self, issn_str):
         """
