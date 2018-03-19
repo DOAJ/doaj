@@ -1,6 +1,6 @@
 Dear {{ publisher_name }},
 
-The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The Editorial Team member responsible for your request will contact you shortly to discuss the changes that are needed.
+The update which you submitted for "{{ journal_title }}" requires some revisions before it can be accepted. The Editorial Team member responsible for your request will contact you to explain the changes that are needed.
 
 Thank you,
 
