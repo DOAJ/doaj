@@ -14,6 +14,9 @@ from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
 from portality.tasks import journal_in_out_doaj, journal_bulk_edit, suggestion_bulk_edit, journal_bulk_delete, article_bulk_delete
+from portality.bll.doaj import DOAJ
+from portality.formcontext import emails
+from portality.ui.messages import Messages
 
 from portality.view.forms import EditorGroupForm, MakeContinuation
 from portality.background import BackgroundSummary
@@ -310,6 +313,49 @@ def suggestion_page(suggestion_id):
                 return redirect(url_for("admin.suggestion_page", suggestion_id=ap.id, _anchor='cannot_edit'))
         else:
             return fc.render_template(edit_suggestion_page=True, lock=lockinfo)
+
+
+@blueprint.route("/application_quick_reject/<application_id>", methods=["POST"])
+@login_required
+@ssl_required
+@write_required()
+def application_quick_reject(application_id):
+    doaj = DOAJ()
+    # retrieve the application and an edit lock on that application
+    application = None
+    try:
+        application, alock = doaj.application(application_id, lock_application=True, lock_account=current_user._get_current_object())
+    except lock.Locked as e:
+        abort(409)
+
+    # extract the note information from the request
+    reason = request.values.get("reject_reason")
+    if reason == "":
+        reason = request.values.get("custom_reject_reason")
+    if reason == "":
+        abort(400)
+
+    # determine if this was a new application or an update request, for use later
+    update_request = application.current_journal is not None
+
+    # reject the application
+    doaj.reject_application(application, current_user._get_current_object(), note=reason)
+
+    # send the notification email to the user
+    emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+
+    # sort out some flash messages for the user
+    flash(Messages.REJECT_NOTE_WRAPPER.format(note=reason), "success")
+
+    msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
+    if update_request:
+        msg = Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL
+    publisher_email = application.get_latest_contact_email()
+    msg = msg.format(email=publisher_email)
+    flash(msg, "success")
+
+    # redirect the user back to the edit page
+    return redirect(url_for('.suggestion_page', suggestion_id=application_id))
 
 
 @blueprint.route("/admin_site_search", methods=["GET"])

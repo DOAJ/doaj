@@ -12,6 +12,31 @@
 {# include the table for comparing applications with journals that have changed #}
 {% include 'formcontext/_application_diff.html' %}
 
+{% if form_context.source.application_status != "rejected" %}
+<div class="row-fluid">
+  <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
+
+    <div class="row-fluid">
+        <div class="span12">
+            <p class="centre-text-container">This button will not save any other changes on this page!</p>
+            <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
+                Select a reason for rejection:
+                <select name="reject_reason" id="reject_reason">
+                    {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
+                        <option value="{{ reason }}">{{ reason }}</option>
+                    {% endfor %}
+                    <option value="">Custom Note</option>
+                </select>
+                <textarea name="custom_reject_reason" id="custom_reject_reason" placeholder="Enter your custom note here"></textarea>
+                <button class="btn btn-danger" type="submit">Quick Reject</button>
+                <p><strong>Remember that the note text will be sent to the publisher.</strong></p>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
     {% if form_context.errors %}
     <h4 class="red form-status">There is a problem with the submitted form.</h4>

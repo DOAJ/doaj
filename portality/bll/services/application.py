@@ -9,7 +9,7 @@ from portality.bll.doaj import DOAJ
 
 class ApplicationService(object):
 
-    def reject_application(self, application, account, provenance=True):
+    def reject_application(self, application, account, provenance=True, note=None):
         """
         Reject an application.  This will:
         * set the application status to "rejected" (if not already)
@@ -41,6 +41,10 @@ class ApplicationService(object):
         # ensure the application status is "rejected"
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
             application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
+
+        if note is not None:
+            thenote = Messages.REJECT_NOTE_WRAPPER.format(note=note)
+            application.add_note(thenote)
 
         # retrieve the id of the current journal if there is one
         cj_id = application.current_journal

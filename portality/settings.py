@@ -763,3 +763,11 @@ GA_ACTION_FQW = 'Hit'
 # ========================================
 # Anonymisation configuration
 ANON_SALT = 'changeme'
+
+###################################
+## Quick Reject Feature Config
+
+QUICK_REJECT_REASONS = [
+    "Reject reason 1",
+    "Reject reason 2"
+]

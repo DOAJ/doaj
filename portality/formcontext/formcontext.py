@@ -798,7 +798,6 @@ class ManEdApplicationReview(ApplicationContext):
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
-            # form_diff=diff,
             **kwargs)
 
     def _set_choices(self):

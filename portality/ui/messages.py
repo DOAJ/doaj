@@ -7,6 +7,7 @@ class Messages(object):
         """, 'success')
 
     SENT_ACCEPTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal was accepted."""
+    SENT_REJECTED_APPLICATION_EMAIL = """Sent email to '{email}' to tell them that their journal application was rejected."""
     SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to '{email}' to tell them that their journal update was accepted."""
     SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Sent email to '{email}' to tell them that their journal update was rejected."""
     SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = """Sent email to '{email}' to tell them that their journal update requires revisions.  You will need to contact them separately with details."""
@@ -20,6 +21,8 @@ class Messages(object):
     NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their application/update request was accepted. Email may be disabled, or there is a problem with the email address"""
 
     DIFF_TABLE_NOT_PRESENT = """-- Not held in journal metadata --"""
+
+    REJECT_NOTE_WRAPPER = """This application was rejected with the reason '{note}'"""
 
     @classmethod
     def flash(cls, tup):

@@ -1,7 +1,6 @@
 class DOAJ(object):
     """
     Primary entry point to the services which back up the DOAJ Business Logic Layer.
-
     This is, in effect, a factory for generating the services for the various areas
     of the DOAJ.
 

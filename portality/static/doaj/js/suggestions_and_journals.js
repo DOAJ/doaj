@@ -70,6 +70,34 @@ jQuery(document).ready(function($) {
 
     ///////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////
+    // quick reject
+
+    function showCustomRejectNote() {
+        $("#custom_reject_reason").show();
+    }
+
+    function hideCustomRejectNote() {
+        $("#custom_reject_reason").hide();
+    }
+
+    if ($("#reject_reason").val() == "") {
+        showCustomRejectNote();
+    } else {
+        hideCustomRejectNote()
+    }
+
+    $("#reject_reason").bind("change", function() {
+        var note = $(this).val();
+        if (note === "") {
+            showCustomRejectNote()
+        } else {
+            hideCustomRejectNote()
+        }
+    });
+
+    ///////////////////////////////////////////////////
+
 
     // define a new highlight function, letting us highlight any element
     // on a page
