@@ -296,6 +296,13 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter"],
             "dao" : "portality.models.search.JournalArticle"
+        },
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Article"
         }
     },
     "publisher_query" : {
