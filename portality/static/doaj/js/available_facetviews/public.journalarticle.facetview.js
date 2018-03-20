@@ -266,9 +266,9 @@ jQuery(document).ready(function($) {
             result += humanDate(resultobj.created_date) + "<br>";
         }
 
-        if (resultobj.last_updated) {
+        if (resultobj.last_manual_update) {
             result += "<strong>Record Last Updated</strong>:&nbsp;";
-            result += humanDate(resultobj.last_updated);
+            result += humanDate(resultobj.last_manual_update);
         }
 
         // close the main details box
