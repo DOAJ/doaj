@@ -263,7 +263,12 @@ jQuery(document).ready(function($) {
         // add the date added to doaj
         if (resultobj.created_date) {
             result += "<strong>Date added to DOAJ</strong>:&nbsp;";
-            result += humanDate(resultobj.created_date);
+            result += humanDate(resultobj.created_date) + "<br>";
+        }
+
+        if (resultobj.last_updated) {
+            result += "<strong>Record Last Updated</strong>:&nbsp;";
+            result += humanDate(resultobj.last_updated);
         }
 
         // close the main details box
