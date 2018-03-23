@@ -8,8 +8,9 @@ from werkzeug.datastructures import MultiDict
 
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
+
 from portality.formcontext import formcontext, choices
-from portality import lock
+from portality import lock, app_email
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
 from portality.core import app
@@ -342,14 +343,25 @@ def application_quick_reject(application_id):
     doaj.reject_application(application, current_user._get_current_object(), note=reason)
 
     # send the notification email to the user
-    emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+    sent = False
+    try:
+        emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+        sent = True
+    except app_email.EmailException as e:
+        pass
 
     # sort out some flash messages for the user
     flash(Messages.REJECT_NOTE_WRAPPER.format(note=reason), "success")
 
-    msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
-    if update_request:
-        msg = Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL
+    if sent:
+        msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
+        if update_request:
+            msg = Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL
+    else:
+        msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAIL
+        if update_request:
+            msg = Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL
+
     publisher_email = application.get_latest_contact_email()
     msg = msg.format(email=publisher_email)
     flash(msg, "success")

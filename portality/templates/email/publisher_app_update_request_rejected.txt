@@ -1,15 +1,8 @@
 Dear {{ publisher_name }},
 
-The {{ app_type }} which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the
-information which you provided with the information stated on your website. Please double check your website and submit
-a new {{ app_type }} when you are ready.
+The {{ app_type }} which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new {{ app_type }} when you are ready.
 
-{% if note %}
-The editors provided the following feedback on your rejected application:
-
-{{ note }}
-
-{% endif %}
+{% if note %}The editors provided the following feedback on your rejected application: {{ note }} {% endif %}
 
 If you have any questions about this decision, please email feedback@doaj.org
 

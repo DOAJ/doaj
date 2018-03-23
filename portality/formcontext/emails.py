@@ -229,25 +229,6 @@ def send_received_email(application):
                         url=application.bibjson().get_single_url(urltype="homepage"))
 
 
-def send_publisher_update_request_rejected(application):
-    """Tell the publisher their update request was rejected"""
-    journal_title = application.bibjson().title
-
-    # This is to the publisher contact on the application
-    publisher_name = application.get_latest_contact_name()
-    publisher_email = application.get_latest_contact_email()
-
-    to = [publisher_email]
-    fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    subject = app.config.get("SERVICE_NAME", "") + " - your update request was rejected"
-
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_update_request_rejected.txt",
-                        publisher_name=publisher_name,
-                        journal_title=journal_title)
-
 def send_publisher_update_request_revisions_required(application):
     """Tell the publisher their update request requires revisions"""
     journal_title = application.bibjson().title
@@ -266,6 +247,7 @@ def send_publisher_update_request_revisions_required(application):
                         template_name="email/publisher_update_request_revisions.txt",
                         publisher_name=publisher_name,
                         journal_title=journal_title)
+
 
 def send_publisher_reject_email(application, note=None, update_request=False):
     """Tell the publisher their application was rejected"""

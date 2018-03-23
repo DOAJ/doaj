@@ -14,8 +14,9 @@ class Messages(object):
     SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Sent email to journal contact '{email}' to tell them their journal was accepted."""
     SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Sent email to journal contact '{email}' to tell that an update to their journal was accepted."""
 
-    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them tht their journal was accepted, as publisher emails are disabled."""
-    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was accepted, as publisher emails are disabled."""
+    NOT_SENT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
+    NOT_SENT_REJECTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
+    NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was accepted  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL = """Did not send email to '{email}' to tell them that their update was rejected. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = """Did not send email to '{email}' to tell them that their update required revisions. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = """Did not send email to '{email}' to tell them that their application/update request was accepted. Email may be disabled, or there is a problem with the email address"""
