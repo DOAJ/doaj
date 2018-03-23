@@ -41,6 +41,7 @@ fv_application_status = (function(resultobj) {
 })();
 
 // This must be updated in line with the list in formcontext/choices.py
+// FIXME: eventually, JS config needs to come through from the python back-end
 fv_application_status.mapping = {
     'update_request' : 'Update Request',
     'revisions_required' : 'Revisions Required',
@@ -52,15 +53,6 @@ fv_application_status.mapping = {
     'rejected' : 'Rejected',
     'accepted' : 'Accepted'
 };
-
-/*
-fv_in_doaj = (function(resultobj) {
-    var that = function(resultobj) {
-        return resultobj['admin']['in_doaj'] ? "Yes" : "No";
-    };
-    return that;
-})();
-*/
 
 fv_created_date = (function (resultobj) {
     var that = function(resultobj) {
