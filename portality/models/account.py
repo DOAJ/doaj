@@ -6,12 +6,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
-from portality.formcontext.validate import ReservedUsernames
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     def __init__(self, **kwargs):
+        from portality.formcontext.validate import ReservedUsernames
         ReservedUsernames().validate(kwargs.get('id', ''))
         super(Account, self).__init__(**kwargs)
 
