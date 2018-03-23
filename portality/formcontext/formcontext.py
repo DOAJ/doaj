@@ -669,7 +669,6 @@ class ManEdApplicationReview(ApplicationContext):
 
         # Save the target
         self.target.set_last_manual_update()
-        # self.target.save()
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
@@ -704,7 +703,7 @@ class ManEdApplicationReview(ApplicationContext):
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
                 app.logger.exception("Acceptance email to owner failed.")
 
-        # if the application was instead rejected, record a provenance event against it
+        # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
             had_current = self.target.current_journal is not None
             dbl.reject_application(self.target, current_user._get_current_object())

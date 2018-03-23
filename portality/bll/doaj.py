@@ -14,6 +14,7 @@ class DOAJ(object):
         Reject an application.  This will:
         * set the application status to "rejected" (if not already)
         * remove the current_journal field, and move it to related_journal (if needed)
+        * remove the current_application field from the related journal (if needed)
         * save the application
         * write a provenance record for the rejection (if requested)
 
@@ -40,14 +41,23 @@ class DOAJ(object):
             application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
 
         # retrieve the id of the current journal if there is one
-        cj = application.current_journal
+        cj_id = application.current_journal
+        cj, _ = self.journal(cj_id)
 
         # if there is a current_journal record, remove it, and record
         # it as a related journal.  This will let us come back later and know
         # which journal record this was intended as an update against if needed.
-        if cj is not None:
+        if cj_id is not None:
             application.remove_current_journal()
-            application.set_related_journal(cj)
+            if cj is not None:
+                application.set_related_journal(cj_id)
+                cj.remove_current_application()
+
+        # if there is a current journal, we will have modified it above, so save it
+        if cj is not None:
+            saved = cj.save()
+            if saved is None:
+                raise exceptions.SaveException("Save on current_journal in reject_application failed")
 
         saved = application.save()
         if saved is None:
