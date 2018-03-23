@@ -8,7 +8,7 @@ from werkzeug.datastructures import MultiDict
 
 from portality.decorators import ssl_required, restrict_to_role, write_required
 import portality.models as models
-from portality.formcontext import formcontext
+from portality.formcontext import formcontext, choices
 from portality import lock
 from portality.lib.es_query_http import remove_search_limits
 from portality.util import flash_with_url, jsonp, make_json_resp, get_web_json_payload, validate_json
@@ -272,7 +272,8 @@ def journal_continue(journal_id):
 def suggestions():
     return render_template("admin/suggestions.html",
                            admin_page=True, search_page=True,
-                           facetviews=['admin.applications.facetview'])
+                           facetviews=['admin.applications.facetview'],
+                           application_status_choices=choices.Choices.application_status("admin"))
 
 
 @blueprint.route("/suggestion/<suggestion_id>", methods=["GET", "POST"])
