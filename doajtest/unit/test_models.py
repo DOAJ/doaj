@@ -1,10 +1,14 @@
+import json
+import time
+from datetime import datetime
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
-import time, json
 from portality.lib import dataobj
 from portality.models import shared_structs
+
 
 class TestClient(DoajTestCase):
 
@@ -22,24 +26,6 @@ class TestClient(DoajTestCase):
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""
-        from portality.models import Account
-        from portality.models import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery
-        from portality.models import AtomRecord
-        from portality.models import GenericBibJSON
-        from portality.models import Cache
-        from portality.models import EditorGroupQuery, EditorGroup, EditorGroupMemberQuery
-        from portality.models import ArticleHistory, JournalHistory
-        from portality.models import IssnQuery, Journal, JournalBibJSON, JournalQuery, PublisherQuery, TitleQuery
-        from portality.models import LCC
-        from portality.models import Lock
-        from portality.models import OAIPMHArticle, OAIPMHJournal, OAIPMHRecord
-        from portality.models import JournalArticle, JournalArticleQuery
-        from portality.models import Suggestion, SuggestionQuery
-        from portality.models import JournalIssueToC, JournalVolumeToC, ToCQuery, VolumesToCQuery
-        from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
-        from portality.models import ObjectDict
-        from portality.models import Provenance
-        from portality.models.background import BackgroundJob
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -158,7 +144,7 @@ class TestClient(DoajTestCase):
         s.set_current_journal("9876543")
         s.set_related_journal("123456789")
         s.set_bulk_upload_id("abcdef")
-        s.set_application_status("rejected")
+        s.set_application_status(constants.APPLICATION_STATUS_REJECTED)
         s.suggested_on = "2001-01-01T00:00:00Z"
         s.set_articles_last_year(12, "http://aly.com")
         s.article_metadata = True
@@ -168,7 +154,7 @@ class TestClient(DoajTestCase):
         assert s.current_journal == "9876543"
         assert s.related_journal == "123456789"
         assert s.bulk_upload_id == "abcdef"
-        assert s.application_status == "rejected"
+        assert s.application_status == constants.APPLICATION_STATUS_REJECTED
         assert s.suggested_on == "2001-01-01T00:00:00Z"
         assert s.articles_last_year.get("count") == 12
         assert s.articles_last_year.get("url") == "http://aly.com"
@@ -188,7 +174,7 @@ class TestClient(DoajTestCase):
         assert 'application_type' in s['index'], s['index']
         assert s['index']['application_type'] == 'finished application/update'
 
-        s.set_application_status("pending")
+        s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
         assert s['index']['application_type'] == 'new application'
 

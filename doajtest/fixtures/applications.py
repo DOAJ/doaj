@@ -1,12 +1,15 @@
 from copy import deepcopy
 from datetime import datetime
+
 import rstr
 
-from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
+from portality import constants
 from doajtest.fixtures.common import EDITORIAL, SUBJECT, NOTES, OWNER, SEAL
-from portality.models import Suggestion
-from portality.lib import dates
+from doajtest.fixtures.journals import JOURNAL_SOURCE, JOURNAL_INFO
 from portality.formcontext import forms
+from portality.lib import dates
+from portality.models import Suggestion
+
 
 class ApplicationFixtureFactory(object):
     @staticmethod
@@ -119,7 +122,7 @@ APPLICATION_SOURCE = {
         "article_metadata" : True
     },
     "admin" : {
-        "application_status" : "pending",
+        "application_status" : constants.APPLICATION_STATUS_PENDING,
         "notes" : [
             {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
             {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
@@ -191,7 +194,7 @@ SUGGESTER = {
 }
 
 WORKFLOW = {
-    "application_status" : "pending"
+    "application_status" : constants.APPLICATION_STATUS_PENDING
 }
 
 APPLICATION_FORMINFO = deepcopy(JOURNAL_INFO)

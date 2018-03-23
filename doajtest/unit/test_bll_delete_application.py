@@ -1,14 +1,15 @@
-from doajtest.helpers import DoajTestCase, load_from_matrix
-from parameterized import parameterized
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
-
 import time
 
+from parameterized import parameterized
+
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase, load_from_matrix
+from portality import lock
+from portality.bll import DOAJ
+from portality.bll import exceptions
 from portality.models import Journal, Account, Suggestion
 
-from portality.bll import DOAJ
-from portality.bll import exceptions, constants
-from portality import lock
 
 def load_test_cases():
     return load_from_matrix("delete_application.csv", test_ids=[])

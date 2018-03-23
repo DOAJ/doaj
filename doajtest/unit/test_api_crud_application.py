@@ -1,10 +1,13 @@
-from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataStructureException
-from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
-from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
-from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
 import time
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
+from portality.lib.dataobj import DataStructureException
+
 
 class TestCrudApplication(DoajTestCase):
 
@@ -388,7 +391,7 @@ class TestCrudApplication(DoajTestCase):
             ApplicationsCrudApi.update("adfasdfhwefwef", data, account)
 
         # on one with a disallowed workflow status
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
         account.add_role("publisher")
@@ -457,7 +460,7 @@ class TestCrudApplication(DoajTestCase):
             ApplicationsCrudApi.delete(u"adfasdfhwefwef", account)
 
         # on one with a disallowed workflow status
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
 
@@ -698,7 +701,7 @@ class TestCrudApplication(DoajTestCase):
         account.add_role("publisher")
 
         # on one with a disallowed workflow status
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save(blocking=True)
 
         with self.assertRaises(Api403Error):

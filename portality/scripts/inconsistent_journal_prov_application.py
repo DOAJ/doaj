@@ -12,13 +12,17 @@ Script which attempts to identify journals, applications and provenance records 
 5. All journals which were published earlier than their related application was last updated (suggesting a failure to reapply)
 """
 
+from copy import deepcopy
+from datetime import datetime, timedelta
+
+import codecs
+import csv
+import esprit
+
+from portality import constants
+from portality.clcsv import UnicodeWriter
 from portality.core import app
 from portality.models import Suggestion, Provenance, Journal, Account
-from portality.clcsv import UnicodeWriter
-import esprit, codecs, csv
-from datetime import datetime, timedelta
-from copy import deepcopy
-
 
 APP_TIMEZONE_CUTOFF = datetime.strptime("2017-05-18T14:02:08Z", "%Y-%m-%dT%H:%M:%SZ")
 JOURNAL_TIMEZONE_CUTOFF = datetime.strptime("2017-09-21T08:54:05Z", "%Y-%m-%dT%H:%M:%SZ")
@@ -69,7 +73,7 @@ def applications_inconsistencies(outfile_later, outfile_missing, conn):
                     out_later.writerow([application.id, application.last_updated, created, diff])
 
             # Part 2 - missing journals
-            if application.application_status == "accepted":
+            if application.application_status == constants.APPLICATION_STATUS_ACCEPTED:
                 missing = False
 
                 # find the matching journals by issn or by title
@@ -167,7 +171,7 @@ def journals_applications_provenance(outfile_applications, outfile_accounts, out
                 out_applications.writerow([journal.id, journal.created_date, journal.last_update_request, latest.id, latest.last_updated, latest.application_status, diff, last_edit, last_accept])
 
             # was the journal (in doaj) created before the application by greater than the threshold, and is it in a state other than rejected
-            if mdiff < -1 * THRESHOLD and latest.application_status != "rejected" and journal.is_in_doaj():
+            if mdiff < -1 * THRESHOLD and latest.application_status != constants.APPLICATION_STATUS_REJECTED and journal.is_in_doaj():
                 out_reapps.writerow([journal.id, journal.created_date, journal.last_update_request, latest.id, latest.created_date, latest.last_updated, latest.last_manual_update, latest.application_status, mdiff])
 
             # now figure out if the account is missing

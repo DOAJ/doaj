@@ -1,17 +1,16 @@
 # -*- coding: UTF-8 -*-
 
-from time import sleep
 import json
-
-from doajtest.helpers import DoajTestCase
+from time import sleep
 
 from flask_login import logout_user
 
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.background import BackgroundException
 from portality.tasks.suggestion_bulk_edit import suggestion_manage, SuggestionBulkEditBackgroundTask
-
-from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory, EditorGroupFixtureFactory
 
 TEST_SUGGESTION_COUNT = 25
 
@@ -121,7 +120,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         SuggestionBulkEditBackgroundTask.set_param(params, 'ids', None)
         SuggestionBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
         SuggestionBulkEditBackgroundTask.set_param(params, 'note', 'test note')
-        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', constants.APPLICATION_STATUS_PENDING)
 
         assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is False, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
 
@@ -149,7 +148,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         # ids are supplied along with application status only
         params = {}
         SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
-        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', constants.APPLICATION_STATUS_PENDING)
         assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
 
         # everything is supplied
@@ -157,12 +156,12 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         SuggestionBulkEditBackgroundTask.set_param(params, 'ids', ['123'])
         SuggestionBulkEditBackgroundTask.set_param(params, 'editor_group', 'test editor group')
         SuggestionBulkEditBackgroundTask.set_param(params, 'note', 'test note')
-        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', 'pending')
+        SuggestionBulkEditBackgroundTask.set_param(params, 'application_status', constants.APPLICATION_STATUS_PENDING)
         assert SuggestionBulkEditBackgroundTask._job_parameter_check(params) is True, SuggestionBulkEditBackgroundTask._job_parameter_check(params)
 
     def test_05_application_successful_status_assign(self):
         """Bulk set an application status on a bunch of suggestions using a background task"""
-        expected_app_status = 'on hold'
+        expected_app_status = constants.APPLICATION_STATUS_ON_HOLD
         # test dry run
         summary = suggestion_manage({"query": {"terms": {"_id": [s.id for s in self.suggestions]}}}, application_status=expected_app_status, dry_run=True)
         assert summary.as_dict().get("affected", {}).get("applications") == TEST_SUGGESTION_COUNT, summary.as_dict()
@@ -214,7 +213,7 @@ class TestTaskSuggestionBulkEdit(DoajTestCase):
         # and this was acceptable on the UI.
         # The problem with select fields has been fixed, this tests for
         # regressions.
-        expected_app_status = 'on hold'
+        expected_app_status = constants.APPLICATION_STATUS_ON_HOLD
         for s in self.suggestions:
             del s.data['bibjson']['apc']
             del s.data['bibjson']['apc_url']

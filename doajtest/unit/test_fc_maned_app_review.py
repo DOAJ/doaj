@@ -1,15 +1,16 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
-
 import time
 from copy import deepcopy
 
+from nose.tools import assert_raises
+from werkzeug.datastructures import MultiDict
+
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import lcc
 from portality import models
 from portality.formcontext import formcontext
-from portality import lcc
 
-from werkzeug.datastructures import MultiDict
-from nose.tools import assert_raises
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -150,11 +151,11 @@ class TestManEdAppReview(DoajTestCase):
         # set up an application which is a update on an existing journal
         s = models.Suggestion(**APPLICATION_SOURCE)
         s.set_current_journal("abcdefghijk_journal")
-        s.set_application_status("update_request")
+        s.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # set up the form which "accepts" this update request
         fd = deepcopy(APPLICATION_FORM)
-        fd["application_status"] = "accepted"
+        fd["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(fd)
 
         # create and finalise the form context
@@ -181,12 +182,12 @@ class TestManEdAppReview(DoajTestCase):
     def test_03_classification_required(self):
         # Check we can accept an application with a subject classification present
         ready_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        ready_application.set_application_status("ready")
+        ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
         fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=ready_application)
 
         # Make changes to the application status via the form, check it validates
-        fc.form.application_status.data = "accepted"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         assert fc.validate()
 
@@ -196,12 +197,12 @@ class TestManEdAppReview(DoajTestCase):
         fc = formcontext.ApplicationFormFactory.get_form_context(role='admin', source=no_class_application)
         # Make changes to the application status via the form
         assert fc.source.bibjson().subjects() == []
-        fc.form.application_status.data = "accepted"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         assert not fc.validate()
 
         # However, we should be able to set it to a different status rather than 'accepted'
-        fc.form.application_status.data = "in progress"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         assert fc.validate()
 
@@ -236,7 +237,7 @@ class TestManEdAppReview(DoajTestCase):
 
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
-        source["application_status"] = "accepted"
+        source["application_status"] = constants.APPLICATION_STATUS_ACCEPTED
         fd = MultiDict(source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="admin",
@@ -266,7 +267,7 @@ class TestManEdAppReview(DoajTestCase):
 
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
-        source["application_status"] = "rejected"
+        source["application_status"] = constants.APPLICATION_STATUS_REJECTED
         fd = MultiDict(source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="admin",
@@ -299,10 +300,10 @@ class TestManEdAppReview(DoajTestCase):
 
         # Check that an accepted application can't be regressed by a managing editor
         accepted_source = APPLICATION_SOURCE.copy()
-        accepted_source['admin']['application_status'] = 'accepted'
+        accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
 
         completed_form = APPLICATION_FORM.copy()
-        completed_form['application_status'] = 'completed'
+        completed_form['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -321,10 +322,10 @@ class TestManEdAppReview(DoajTestCase):
 
         # Check that an application status can when on hold.
         held_source = APPLICATION_SOURCE.copy()
-        held_source['admin']['application_status'] = 'on hold'
+        held_source['admin']['application_status'] = constants.APPLICATION_STATUS_ON_HOLD
 
         progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
+        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -345,7 +346,7 @@ class TestManEdAppReview(DoajTestCase):
         pending_source = APPLICATION_SOURCE.copy()
 
         progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
+        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(

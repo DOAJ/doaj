@@ -1,6 +1,7 @@
+from portality import constants
+from portality import lcc
 from portality.datasets import language_options, main_license_options, country_options, currency_options, CURRENCY_DEFAULT
 from portality.formcontext import FormContextException
-from portality import lcc
 
 
 class Choices(object):
@@ -87,22 +88,22 @@ class Choices(object):
 
     _application_status_base = [        # This is all the Associate Editor sees
         ('', ' '),
-        ('pending', 'Pending'),
-        ('in progress', 'In Progress'),
-        ('completed', 'Completed')
+        (constants.APPLICATION_STATUS_PENDING, 'Pending'),
+        (constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress'),
+        (constants.APPLICATION_STATUS_COMPLETED, 'Completed')
     ]
 
     _application_status_admin = _application_status_base + [
-        ('update_request', 'Update Request'),
-        ('revisions_required', 'Revisions Required'),
-        ('on hold', 'On Hold'),
-        ('ready', 'Ready'),
-        ('rejected', 'Rejected'),
-        ('accepted', 'Accepted')
+        (constants.APPLICATION_STATUS_UPDATE_REQUEST, 'Update Request'),
+        (constants.APPLICATION_STATUS_REVISIONS_REQUIRED, 'Revisions Required'),
+        (constants.APPLICATION_STATUS_ON_HOLD, 'On Hold'),
+        (constants.APPLICATION_STATUS_READY, 'Ready'),
+        (constants.APPLICATION_STATUS_REJECTED, 'Rejected'),
+        (constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')
     ]
 
     _application_status_editor = _application_status_base + [
-        ('ready', 'Ready'),
+        (constants.APPLICATION_STATUS_READY, 'Ready'),
     ]
 
     ############################################################
@@ -352,7 +353,7 @@ class Choices(object):
     @classmethod
     def application_status_optional(cls):
         all_s = [v[0] for v in cls._application_status_admin]
-        all_s.remove("accepted")
+        all_s.remove(constants.APPLICATION_STATUS_ACCEPTED)
         return all_s
 
     @classmethod
@@ -362,7 +363,7 @@ class Choices(object):
         elif context == "editor":
             return cls._application_status_editor
         elif context == "accepted":
-            return [('accepted', 'Accepted')] # just the one status - Accepted
+            return [(constants.APPLICATION_STATUS_ACCEPTED, 'Accepted')] # just the one status - Accepted
         else:
             return cls._application_status_base
 
@@ -370,7 +371,7 @@ class Choices(object):
     def application_status_subject_optional(cls):
         """ The set of permitted statuses we can save an application without a subject classification """
         all_s = [v[0] for v in cls._application_status_admin]
-        disallowed_statuses = {'accepted', 'ready', 'completed'}
+        disallowed_statuses = {constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_READY, constants.APPLICATION_STATUS_COMPLETED}
         return list(set(all_s).difference(disallowed_statuses))
 
     @classmethod
@@ -387,7 +388,7 @@ class Choices(object):
         # Don't permit changes to status in reverse of the editorial process
         if choices_for_role.index(target_status) < choices_for_role.index(source_status):
             # Except that editors can revert 'completed' to 'in progress'
-            if role == 'editor' and source_status == 'completed' and target_status == 'in progress':
+            if role == 'editor' and source_status == constants.APPLICATION_STATUS_COMPLETED and target_status == constants.APPLICATION_STATUS_IN_PROGRESS:
                 pass
             else:
                 raise FormContextException(
@@ -411,7 +412,7 @@ class Choices(object):
             forward_choices = role_choices[role_choices.index(full_current_status):]
 
             # But allow an exception: Editors can revert to 'in progress' from 'completed'
-            if role == 'editor' and status == 'completed':
-                forward_choices = [('in progress', 'In Progress')] + forward_choices
+            if role == 'editor' and status == constants.APPLICATION_STATUS_COMPLETED:
+                forward_choices = [(constants.APPLICATION_STATUS_IN_PROGRESS, 'In Progress')] + forward_choices
 
             return forward_choices

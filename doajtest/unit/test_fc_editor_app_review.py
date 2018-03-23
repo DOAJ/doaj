@@ -1,15 +1,17 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
-
-import re, time
+import re
+import time
 from copy import deepcopy
 
+from nose.tools import assert_raises
+from werkzeug.datastructures import MultiDict
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import lcc
 from portality import models
 from portality.formcontext import formcontext, FormContextException
-from portality import lcc
 
-from werkzeug.datastructures import MultiDict
-from nose.tools import assert_raises
 
 #####################################################################
 # Mocks required to make some of the lookups work
@@ -133,7 +135,7 @@ class TestEditorAppReview(DoajTestCase):
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
-        assert fc.target.application_status == "pending", fc.target.application_status # is updated by the form
+        assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING, fc.target.application_status # is updated by the form
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"
@@ -154,12 +156,12 @@ class TestEditorAppReview(DoajTestCase):
     def test_02_classification_required(self):
         # Check we can mark an application 'ready' with a subject classification present
         in_progress_application = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        in_progress_application.set_application_status("in progress")
+        in_progress_application.set_application_status(constants.APPLICATION_STATUS_IN_PROGRESS)
 
         fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=in_progress_application)
 
         # Make changes to the application status via the form, check it validates
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
 
         assert fc.validate()
 
@@ -169,12 +171,12 @@ class TestEditorAppReview(DoajTestCase):
         fc = formcontext.ApplicationFormFactory.get_form_context(role='editor', source=no_class_application)
         # Make changes to the application status via the form
         assert fc.source.bibjson().subjects() == []
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
 
         assert not fc.validate()
 
         # However, we should be able to set it to a different status rather than 'ready'
-        fc.form.application_status.data = "pending"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_PENDING
 
         assert fc.validate()
 
@@ -194,7 +196,7 @@ class TestEditorAppReview(DoajTestCase):
 
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
-        source["application_status"] = "ready"
+        source["application_status"] = constants.APPLICATION_STATUS_READY
         fd = MultiDict(source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="editor",
@@ -225,10 +227,10 @@ class TestEditorAppReview(DoajTestCase):
 
         # Check that an accepted application can't be regressed by an editor
         accepted_source = APPLICATION_SOURCE.copy()
-        accepted_source['admin']['application_status'] = 'accepted'
+        accepted_source['admin']['application_status'] = constants.APPLICATION_STATUS_ACCEPTED
 
         ready_form = APPLICATION_FORM.copy()
-        ready_form['application_status'] = 'ready'
+        ready_form['application_status'] = constants.APPLICATION_STATUS_READY
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -248,10 +250,10 @@ class TestEditorAppReview(DoajTestCase):
         # Check that an application status can't be edited by editors when on hold,
         # since this status must have been set by a managing editor.
         held_source = APPLICATION_SOURCE.copy()
-        held_source['admin']['application_status'] = 'on hold'
+        held_source['admin']['application_status'] = constants.APPLICATION_STATUS_ON_HOLD
 
         progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
+        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -272,7 +274,7 @@ class TestEditorAppReview(DoajTestCase):
         pending_source = APPLICATION_SOURCE.copy()
 
         progressing_form = APPLICATION_FORM.copy()
-        progressing_form['application_status'] = 'in progress'
+        progressing_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -300,10 +302,10 @@ class TestEditorAppReview(DoajTestCase):
 
         # Check that an editor can change from 'completed' to 'in progress' after a failed review
         completed_source = APPLICATION_SOURCE.copy()
-        completed_source['admin']['application_status'] = 'completed'
+        completed_source['admin']['application_status'] = constants.APPLICATION_STATUS_COMPLETED
 
         in_progress_form = APPLICATION_FORM.copy()
-        in_progress_form['application_status'] = 'in progress'
+        in_progress_form['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Construct the formcontext from form data (with a known source)
         fc = formcontext.ApplicationFormFactory.get_form_context(

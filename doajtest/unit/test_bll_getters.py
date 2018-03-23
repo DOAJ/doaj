@@ -1,13 +1,15 @@
-from doajtest.helpers import DoajTestCase
+import time
+import uuid
+
 from parameterized import parameterized, param
+
+from portality import constants
 from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory, AccountFixtureFactory
-import uuid, time
-
-from portality.models import Journal, Suggestion, Account
-
-from portality.bll import DOAJ
-from portality.bll import exceptions, constants
+from doajtest.helpers import DoajTestCase
 from portality import lock
+from portality.bll import DOAJ
+from portality.bll import exceptions
+from portality.models import Journal, Suggestion, Account
 
 
 def load_journal_cases():

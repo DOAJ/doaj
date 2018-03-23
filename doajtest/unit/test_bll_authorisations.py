@@ -1,13 +1,13 @@
-from doajtest.helpers import DoajTestCase, load_from_matrix
-from parameterized import parameterized, param
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
-
 from copy import deepcopy
 
-from portality.models import Journal, Account, Suggestion
+from parameterized import parameterized, param
 
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.models import Journal, Account, Suggestion
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -49,10 +49,10 @@ def create_edit_cases():
     account_source = AccountFixtureFactory.make_publisher_source()
 
     editable_application = Suggestion(**application_source)
-    editable_application.set_application_status("update_request")
+    editable_application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
     non_editable_application = Suggestion(**application_source)
-    non_editable_application.set_application_status("ready")
+    non_editable_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
     owner_account = Account(**deepcopy(account_source))
     owner_account.set_id(editable_application.owner)

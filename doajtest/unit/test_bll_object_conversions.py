@@ -1,14 +1,14 @@
-from doajtest.helpers import DoajTestCase, load_from_matrix
-from parameterized import parameterized, param
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
-
 from copy import deepcopy
 from random import randint
 
-from portality.models import Journal, Account, Suggestion
+from parameterized import parameterized, param
 
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
 from portality.bll import exceptions
+from portality.models import Journal, Account, Suggestion
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException
@@ -46,7 +46,7 @@ def load_a2j_cases():
 def application_matches(journal, application):
     assert isinstance(application, Suggestion)
     assert journal.bibjson().data == application.bibjson().data
-    assert application.application_status == "update_request"
+    assert application.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST
     assert journal.contacts() == application.contacts()
     assert application.current_journal == journal.id
     #assert application.editor == journal.editor

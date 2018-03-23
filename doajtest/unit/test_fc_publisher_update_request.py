@@ -1,21 +1,20 @@
-from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
-
 import re
 from copy import deepcopy
 
+from werkzeug.datastructures import MultiDict
+
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.formcontext import formcontext
-
-
-from werkzeug.datastructures import MultiDict
 
 #####################################################################
 # Source objects to be used for testing
 #####################################################################
 
 UPDATE_REQUEST_SOURCE = ApplicationFixtureFactory.make_application_source()
-UPDATE_REQUEST_SOURCE["admin"]["application_status"] = "update_request"
+UPDATE_REQUEST_SOURCE["admin"]["application_status"] = constants.APPLICATION_STATUS_UPDATE_REQUEST
 UPDATE_REQUEST_FORM = ApplicationFixtureFactory.make_application_form(role="publisher")
 
 ######################################################
@@ -107,7 +106,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.owner == "Owner"
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
-        assert fc.target.application_status == "update_request" # because it hasn't been finalised yet
+        assert fc.target.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST # because it hasn't been finalised yet
         assert fc.target.suggester['name'] == fc.source.suggester["name"]
         assert fc.target.suggester['email'] == fc.source.suggester["email"]
         assert fc.target.bibjson().replaces == ["1111-1111"]
@@ -119,7 +118,7 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
 
         # now do finalise (which will also re-run all of the steps above)
         fc.finalise()
-        assert fc.target.application_status == "update_request"
+        assert fc.target.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST
 
         j2 = models.Journal.pull(journal.id)
         assert j2.current_application == fc.target.id

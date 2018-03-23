@@ -1,8 +1,0 @@
-APPLICATION_STATUS_ACCEPTED = "accepted"
-APPLICATION_STATUS_REJECTED = "rejected"
-
-PROVENANCE_STATUS_REJECTED = "status:rejected"
-PROVENANCE_STATUS_ACCEPTED = "status:accepted"
-
-LOCK_APPLICATION = "suggestion"
-LOCK_JOURNAL = "journal"

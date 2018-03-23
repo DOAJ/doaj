@@ -1,14 +1,14 @@
-from doajtest.helpers import DoajTestCase, load_from_matrix
-from parameterized import parameterized
-from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
-
 import time
 from random import randint
 
-from portality.models import Journal, Account, Suggestion, Provenance
+from parameterized import parameterized
 
+from portality import constants
+from doajtest.fixtures import JournalFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase, load_from_matrix
 from portality.bll import DOAJ
-from portality.bll import exceptions, constants
+from portality.bll import exceptions
+from portality.models import Journal, Account, Suggestion, Provenance
 
 
 def load_test_cases():

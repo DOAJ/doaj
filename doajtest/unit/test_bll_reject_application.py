@@ -1,13 +1,13 @@
-from doajtest.helpers import DoajTestCase
-from parameterized import parameterized, param
-from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
-
-from portality.models import Account, Suggestion, Provenance
-
-from portality.bll import DOAJ
-from portality.bll import exceptions, constants
-
 import time
+
+from parameterized import parameterized, param
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, AccountFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality.bll import DOAJ
+from portality.bll import exceptions
+from portality.models import Account, Suggestion, Provenance
 
 CASES = [
     ["1", "None", "None", True, "ArgEx"],

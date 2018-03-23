@@ -1,9 +1,11 @@
-from portality.models.journal import JournalLikeObject
-from portality.models import shared_structs
-from portality.core import app
-from portality.lib import dataobj, es_data_mapping
-
 from copy import deepcopy
+
+from portality import constants
+from portality.core import app
+from portality.lib import es_data_mapping
+from portality.models import shared_structs
+from portality.models.journal import JournalLikeObject
+
 
 class Suggestion(JournalLikeObject):
     __type__ = "suggestion"
@@ -125,7 +127,7 @@ class Suggestion(JournalLikeObject):
 
         if self.current_journal is not None:
             self._set_with_struct("index.application_type", "update request")
-        elif self.application_status in ["accepted", "rejected"]:
+        elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
             self._set_with_struct("index.application_type", "finished application/update")
         else:
             self._set_with_struct("index.application_type", "new application")

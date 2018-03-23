@@ -1,11 +1,11 @@
-from portality.core import app
-from portality.lib.argvalidate import argvalidate
-from portality.lib import dates
-
-from portality import models
+from portality import constants
 from portality import lock
+from portality import models
+from portality.bll import exceptions
+from portality.core import app
+from portality.lib import dates
+from portality.lib.argvalidate import argvalidate
 
-from portality.bll import exceptions, constants
 
 class DOAJ(object):
 
@@ -363,7 +363,7 @@ class DOAJ(object):
         first_contact = None
 
         application = models.Suggestion()
-        application.set_application_status("update_request")
+        application.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
         for c in contacts:
             application.add_contact(c.get("name"), c.get("email"))
             if first_contact is None:
@@ -576,7 +576,7 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
         if account.id != application.owner:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
-        if application.application_status not in ["pending", "update_request", "submitted"]:
+        if application.application_status not in [constants.APPLICATION_STATUS_UPDATE_REQUEST, constants.APPLICATION_STATUS_REVISIONS_REQUIRED]:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
         return True

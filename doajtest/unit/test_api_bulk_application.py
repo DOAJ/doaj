@@ -1,8 +1,11 @@
-from doajtest.helpers import DoajTestCase
-from portality.api.v1 import ApplicationsBulkApi, Api401Error, Api400Error
-from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory
 import time
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.api.v1 import ApplicationsBulkApi, Api401Error, Api400Error
+
 
 class TestCrudApplication(DoajTestCase):
 
@@ -133,7 +136,7 @@ class TestCrudApplication(DoajTestCase):
 
         # on one with a disallowed workflow status
         created = models.Suggestion.pull(ids[3])
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
 

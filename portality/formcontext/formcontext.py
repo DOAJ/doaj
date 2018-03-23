@@ -1,14 +1,15 @@
+import json
+import uuid
+from datetime import datetime
+
 from flask import render_template, url_for, request
 from flask.ext.login import current_user
 
-import json, uuid
-from datetime import datetime
-
-from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
-from portality.lcc import lcc_jstree
+from portality import constants
 from portality import models, app_email, util
 from portality.core import app
-from portality import lock
+from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
+from portality.lcc import lcc_jstree
 from portality.ui.messages import Messages
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
@@ -628,7 +629,7 @@ class ManEdApplicationReview(ApplicationContext):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG
 
     def pre_validate(self):
@@ -655,7 +656,7 @@ class ManEdApplicationReview(ApplicationContext):
 
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -678,7 +679,7 @@ class ManEdApplicationReview(ApplicationContext):
         dbl = doaj.DOAJ()
 
         # if this application is being accepted, then do the conversion to a journal
-        if self.target.application_status == 'accepted':
+        if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             j = dbl.accept_application(self.target, current_user._get_current_object())
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
@@ -704,7 +705,7 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception("Acceptance email to owner failed.")
 
         # if the application was instead rejected, record a provenance event against it
-        elif self.source.application_status != "rejected" and self.target.application_status == "rejected":
+        elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
             had_current = self.target.current_journal is not None
             dbl.reject_application(self.target, current_user._get_current_object())
             if had_current:
@@ -720,7 +721,7 @@ class ManEdApplicationReview(ApplicationContext):
             self.target.save()
 
         # if revisions were requested, email the publisher
-        if self.source.application_status != "revisions_required" and self.target.application_status == "revisions_required":
+        if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
             publisher_email = self.target.get_latest_contact_email()
             try:
                 emails.send_publisher_update_request_revisions_required(self.target)
@@ -752,7 +753,7 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception("Publisher notification failed")
 
         # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
-        if (self.source.application_status == 'ready' or self.source.application_status == 'completed') and self.target.application_status == 'in progress':
+        if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             # First, the editor
             try:
                 emails.send_editor_inprogress_email(self.target)
@@ -780,7 +781,7 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending review failed email to associate editor - ' + magic)
 
         # email other managing editors if this was newly set to 'ready'
-        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
             # this template requires who made the change, say it was an Admin
             ed_id = 'an administrator'
             try:
@@ -840,13 +841,13 @@ class EditorApplicationReview(ApplicationContext):
         if self.source.application_status not in editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
 
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         self.form.editor_group.data = self.source.editor_group
         if "application_status" in self.renderer.disabled_fields:
-            self.form.application_status.data = "accepted"
+            self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -866,7 +867,7 @@ class EditorApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -903,7 +904,7 @@ class EditorApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending editor assigned email to publisher.')
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
-        if self.source.application_status == 'completed' and self.target.application_status == 'in progress':
+        if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             try:
                 emails.send_assoc_editor_inprogress_email(self.target)
                 self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
@@ -917,7 +918,7 @@ class EditorApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending failed review email to associate editor - ' + magic)
 
         # email managing editors if the application was newly set to 'ready'
-        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
             # Tell the ManEds who has made the status change - the editor in charge of the group
             editor_group_name = self.target.editor_group
             editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
@@ -948,7 +949,7 @@ class EditorApplicationReview(ApplicationContext):
     def _set_choices(self):
         if self.source is None:
             raise FormContextException("You cannot set choices for a non-existent source")
-        if self.form.application_status.data == "accepted":
+        if self.form.application_status.data == constants.APPLICATION_STATUS_ACCEPTED:
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
@@ -996,12 +997,12 @@ class AssEdApplicationReview(ApplicationContext):
         if self.source.application_status not in associate_editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
 
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         if "application_status" in self.renderer.disabled_fields:
-            self.form.application_status.data = "accepted"
+            self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -1023,7 +1024,7 @@ class AssEdApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -1040,7 +1041,7 @@ class AssEdApplicationReview(ApplicationContext):
         models.Provenance.make(current_user, "edit", self.target)
 
         # inform publisher if this was set to 'in progress' from 'pending'
-        if self.source.application_status == 'pending' and self.target.application_status == 'in progress':
+        if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 try:
                     emails.send_publisher_inprogress_email(self.target)
@@ -1053,7 +1054,7 @@ class AssEdApplicationReview(ApplicationContext):
                 self.add_alert('Did not send email to Journal Contact about the status change, as publisher emails are disabled.')
 
         # inform editor if this was newly set to 'completed'
-        if self.source.application_status != 'completed' and self.target.application_status == 'completed':
+        if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
             # record the event in the provenance tracker
             models.Provenance.make(current_user, "status:completed", self.target)
 
@@ -1075,7 +1076,7 @@ class AssEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        if self.form.application_status.data == "accepted":
+        if self.form.application_status.data == constants.APPLICATION_STATUS_ACCEPTED:
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
@@ -1177,7 +1178,7 @@ class PublisherUpdateRequest(ApplicationContext):
         super(PublisherUpdateRequest, self).finalise()
 
         # set the status to update_request (if not already)
-        self.target.set_application_status('update_request')
+        self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # Save the target
         self.target.set_last_manual_update()
@@ -1329,7 +1330,7 @@ class PublicApplication(ApplicationContext):
         # set some administrative data
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         self.target.suggested_on = now
-        self.target.set_application_status('pending')
+        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
 
         # Finally save the target
         self.target.set_last_manual_update()

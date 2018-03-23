@@ -1,5 +1,7 @@
 import os
 
+from portality import constants
+
 # Use these options to place the application into READ ONLY mode
 
 # This puts the UI into READ_ONLY mode
@@ -119,9 +121,20 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
-MAN_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed', 'on hold']
-ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed']
-ASSOC_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress']
+MAN_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
+    constants.APPLICATION_STATUS_ON_HOLD
+]
+ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS,
+    constants.APPLICATION_STATUS_COMPLETED
+]
+ASSOC_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS
+]
 
 # ========================
 # user login settings
