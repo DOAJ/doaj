@@ -576,7 +576,11 @@ class DOAJ(object):
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_ROLE)
         if account.id != application.owner:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.NOT_OWNER)
-        if application.application_status not in [constants.APPLICATION_STATUS_UPDATE_REQUEST, constants.APPLICATION_STATUS_REVISIONS_REQUIRED]:
+        if application.application_status not in [
+                constants.APPLICATION_STATUS_PENDING,
+                constants.APPLICATION_STATUS_UPDATE_REQUEST,
+                constants.APPLICATION_STATUS_REVISIONS_REQUIRED
+            ]:
             raise exceptions.AuthoriseException(reason=exceptions.AuthoriseException.WRONG_STATUS)
 
         return True
