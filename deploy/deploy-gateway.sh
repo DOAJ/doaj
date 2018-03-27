@@ -43,7 +43,7 @@ pip install flask-cors==2.1.2 # for some reason this is not being picked up from
 # something's wrong with the virtualenv
 pip install LinkHeader==0.4.3
 pip install universal-analytics-python==0.2.4
-pip install huey==1.2.2
+pip install huey==1.7.0
 pip install redis==2.10.5
 pip install rstr==2.2.5
 
