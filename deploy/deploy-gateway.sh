@@ -46,6 +46,7 @@ pip install universal-analytics-python==0.2.4
 pip install huey==1.7.0
 pip install redis==2.10.5
 pip install rstr==2.2.5
+pip install freezegun==0.3.10
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/$ENV/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf

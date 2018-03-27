@@ -30,6 +30,8 @@ setup(
         "huey==1.7.0",
         "redis==2.10.5",
         "rstr==2.2.5",
+        "freezegun==0.3.10",
+        "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",
         "newrelic",
