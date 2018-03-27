@@ -27,7 +27,8 @@ class ApplicationService(object):
         argvalidate("reject_application", [
             {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
-            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"}
+            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"},
+            {"arg" : note, "instance" : basestring, "allow_none" : True, "arg_name" : "note"}
         ], exceptions.ArgumentException)
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Entering reject_application")
@@ -42,11 +43,11 @@ class ApplicationService(object):
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
             application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
 
+        # add the note to the application
         if note is not None:
-            thenote = Messages.REJECT_NOTE_WRAPPER.format(note=note)
-            application.add_note(thenote)
+            application.add_note(note)
 
-        # retrieve the id of the current journal if there is one
+         # retrieve the id of the current journal if there is one
         cj_id = application.current_journal
         cj = None
 

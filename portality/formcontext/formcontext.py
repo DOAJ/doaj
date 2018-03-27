@@ -708,7 +708,7 @@ class ManEdApplicationReview(ApplicationContext):
             had_current = self.target.current_journal is not None
 
             applicationService.reject_application(self.target, current_user._get_current_object())
-            
+
             publisher_email = self.target.get_latest_contact_email()
             sent = False
             try:

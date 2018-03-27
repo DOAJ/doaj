@@ -335,12 +335,13 @@ def application_quick_reject(application_id):
         reason = request.values.get("custom_reject_reason")
     if reason == "":
         abort(400)
+    note = Messages.REJECT_NOTE_WRAPPER.format(note=reason)
 
     # determine if this was a new application or an update request, for use later
     update_request = application.current_journal is not None
 
     # reject the application
-    doaj.reject_application(application, current_user._get_current_object(), note=reason)
+    doaj.reject_application(application, current_user._get_current_object(), note=note)
 
     # send the notification email to the user
     sent = False
@@ -351,7 +352,7 @@ def application_quick_reject(application_id):
         pass
 
     # sort out some flash messages for the user
-    flash(Messages.REJECT_NOTE_WRAPPER.format(note=reason), "success")
+    flash(note, "success")
 
     if sent:
         msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
