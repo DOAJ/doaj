@@ -6,12 +6,9 @@ import requests
 
 def generate_delete_pattern():
     now = datetime.now()
-    delete_month = str(now.month - 3)
-    delete_year = str(now.year)
-    if len(delete_month) < 2:
-        delete_month = '0' + delete_month
+    delete_date = now - relativedelta(months=3)
 
-    return ".marvel-{0}.{1}*".format(delete_year, delete_month)
+    return ".marvel-{0}*".format(delete_date.strftime('%Y.%m'))
 
 
 def main():
