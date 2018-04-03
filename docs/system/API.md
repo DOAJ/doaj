@@ -63,3 +63,9 @@ template['responses']['200'] = cls.R200
 template['responses']['200']['schema'] = IncomingApplication().struct_to_swag(schema_title='Application schema')
 ```
 
+Additionally, the Swagger spec can be pre-generated if that's more appropriate, and the JSON served from disk. 
+`retrieve_swag` in this example could do something like:
+
+```python
+return json.loads(util.load_file(os.path.join(app.config['BASE_FILE_PATH'], 'api', 'v1', 'crud_api_application_retrieve_swag.json')))
+```

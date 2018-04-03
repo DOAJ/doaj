@@ -165,18 +165,18 @@ class TestClient(DoajTestCase):
         s.prep()
         assert 'index' in s, s
         assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == 'update request'
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
 
         s.remove_current_journal()
         assert s.current_journal is None
         s.prep()
         assert 'index' in s, s
         assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == 'finished application/update'
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
 
         s.set_application_status(constants.APPLICATION_STATUS_PENDING)
         s.prep()
-        assert s['index']['application_type'] == 'new application'
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
 
         s.save()
 

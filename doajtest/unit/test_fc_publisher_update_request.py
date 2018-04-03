@@ -134,7 +134,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert "contact_name" in fc.renderer.disabled_fields
         assert "contact_email" in fc.renderer.disabled_fields
         assert "confirm_contact_email" in fc.renderer.disabled_fields
-        # should validate
         assert fc.validate()
 
         # source only, no contact details, so those fields not disabled
@@ -145,7 +144,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert "contact_name" not in fc.renderer.disabled_fields
         assert "contact_email" not in fc.renderer.disabled_fields
         assert "confirm_contact_email" not in fc.renderer.disabled_fields
-        # should fail to validate
         assert not fc.validate()
 
         # source + form data, everything complete from source, so all fields disabled
@@ -157,7 +155,6 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert "contact_name" in fc.renderer.disabled_fields
         assert "contact_email" in fc.renderer.disabled_fields
         assert "confirm_contact_email" in fc.renderer.disabled_fields
-        # should validate
         assert fc.validate()
 
         # source + form data, both source and form missing some values, but disabled fields only draw from source
@@ -170,5 +167,4 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert "contact_name" not in fc.renderer.disabled_fields
         assert "contact_email" not in fc.renderer.disabled_fields
         assert "confirm_contact_email" not in fc.renderer.disabled_fields
-        # should fail to validate
         assert not fc.validate()

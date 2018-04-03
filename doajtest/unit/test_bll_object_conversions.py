@@ -72,7 +72,7 @@ class TestBLLObjectConversions(DoajTestCase):
             assert False, "Specify either raises or comparator"
 
     @parameterized.expand(load_a2j_cases)
-    def test_02_application_2_journal(self, name, application_type, manual_update, app_key_properties, current_journal, raises):
+    def test_02_application_2_journal(self, name, application_type, manual_update_arg, app_key_properties, current_journal, raises):
         # set up for the test
         #########################################
 
@@ -114,11 +114,11 @@ class TestBLLObjectConversions(DoajTestCase):
             elif current_journal == "missing":
                 application.set_current_journal("123456789987654321")
 
-        mu = None
-        if manual_update == "true":
-            mu = True
-        elif manual_update == "false":
-            mu = False
+        manual_update = None
+        if manual_update_arg == "true":
+            manual_update = True
+        elif manual_update_arg == "false":
+            manual_update = False
 
         # execute the test
         ########################################
@@ -126,9 +126,9 @@ class TestBLLObjectConversions(DoajTestCase):
         doaj = DOAJ()
         if raises is not None and raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.application_2_journal(application, mu)
+                doaj.application_2_journal(application, manual_update)
         else:
-            journal = doaj.application_2_journal(application, mu)
+            journal = doaj.application_2_journal(application, manual_update)
 
             # check the result
             ######################################
@@ -148,7 +148,7 @@ class TestBLLObjectConversions(DoajTestCase):
             related = journal.related_application_record(application.id)
             assert related is not None
 
-            if manual_update == "true":
+            if manual_update_arg == "true":
                 assert journal.last_manual_update is not None and journal.last_manual_update != "1970-01-01T00:00:00Z"
 
             if app_key_properties == "yes":
