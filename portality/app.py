@@ -110,6 +110,7 @@ SPONSORS = {
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
         'karger-oa': {'name': 'Karger Open Access', 'logo': 'karger-oa.svg', 'url': 'https://www.karger.com/OpenAccess'},
+        'enago': {'name': 'ENAGO', 'url': 'https://www.enago.com/'},
     }
 }
 
