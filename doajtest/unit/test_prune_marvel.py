@@ -6,7 +6,7 @@ from doajtest.helpers import DoajTestCase
 from portality.scripts.prune_marvel import generate_delete_pattern
 
 
-class TestFeed(DoajTestCase):
+class TestPruneMarvel(DoajTestCase):
 
     @classmethod
     def setUpClass(cls):
