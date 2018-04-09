@@ -34,5 +34,7 @@ class TestPruneMarvel(DoajTestCase):
             with freeze_time(run):
                 expected_delete_date = run - relativedelta(months=3)
                 expected_delete_pattern = '.marvel-{}*'.format(expected_delete_date.strftime('%Y.%m'))
-                assert generate_delete_pattern() == expected_delete_pattern, 'Current time: {}. {} did not match expected {}'.format(run, generate_delete_pattern(), expected_delete_pattern)
+                actual_delete_pattern = generate_delete_pattern()
+                assert actual_delete_pattern == expected_delete_pattern, 'Current time: {}. {} did not match expected {}'.format(run, generate_delete_pattern(), expected_delete_pattern)
+                assert len(actual_delete_pattern) == 16, "actual_delete_pattern is the wrong length: {} characters for '{}'".format(len(actual_delete_pattern), actual_delete_pattern)
 
