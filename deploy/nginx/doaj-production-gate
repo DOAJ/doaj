@@ -88,6 +88,7 @@ server {
 # different SSL cert, see further down
 
 limit_req_zone $binary_remote_addr zone=mylimit:100m rate=2r/s;
+limit_req_status 429;
 server {
     listen          443 ssl;
     server_name     doaj.org;
