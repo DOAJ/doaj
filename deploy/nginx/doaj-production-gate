@@ -87,7 +87,8 @@ server {
 # there's 2 server sections since *.cottagelabs.com is covered by a
 # different SSL cert, see further down
 
-limit_req_zone $binary_remote_addr zone=mylimit:100m rate=2r/s;
+limit_req_zone $binary_remote_addr zone=general:100m rate=2r/s;
+limit_req_zone $binary_remote_addr zone=api:100m rate=2r/s;
 limit_req_status 429;
 server {
     listen          443 ssl;
@@ -125,20 +126,20 @@ server {
 
     location /search {
         if ($block_ua) {return 403;}
-        limit_req zone=mylimit burst=5 nodelay;
+        limit_req zone=general burst=5 nodelay;
         proxy_pass http://apps;
         include includes/proxy_pass_settings;
     }
 
     location /query {
         if ($block_ua) {return 403;}
-        limit_req zone=mylimit burst=5 nodelay;
+        limit_req zone=general burst=5 nodelay;
         proxy_pass http://apps;
         include includes/proxy_pass_settings;
     }
 
     location / {
-        limit_req zone=mylimit burst=5 nodelay;
+        limit_req zone=general burst=5 nodelay;
         proxy_pass http://apps;
         include includes/proxy_pass_settings;
     }
