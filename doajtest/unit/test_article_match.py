@@ -150,12 +150,13 @@ class TestArticleMatch(DoajTestCase):
         # create a replacement article
         z = models.Article()
         y = z.bibjson()
-        y.title = "Replacement article for fulltext url"
+        y.title = "Replacement article for DOI"
         y.add_identifier('doi', "10.doi")
 
         # get the xwalk to determine if there is a duplicate
         xwalk = article.XWalk()
         d = xwalk.get_duplicate(z)
+        assert len(xwalk.get_duplicates(z)) == 2
 
         # Check when we ask for one duplicate we get the most recent duplicate.
         assert d is not None
@@ -172,8 +173,51 @@ class TestArticleMatch(DoajTestCase):
         assert len(l) == 2
         l.sort()
         assert expected == l
+
+    def test_05_full_doi(self):
+        """ Test that we still detect duplicate DOIs when we have the full URI, not just the 10. """
+        # make ourselves a couple of example articles
+        a = models.Article()
+        b = a.bibjson()
+        b.title = "Example A article with a DOI"
+        b.add_identifier('doi', "https://doi.org/10.doi")
+        a.save()
+
+        # wait for a bit to create good separation between last_updated times
+        time.sleep(1.3)
+
+        a2 = models.Article()
+        b2 = a2.bibjson()
+        b2.title = "Example B article with a DOI"
+        b2.add_identifier('doi', "https://doi.org/10.doi")
+        a2.save()
+
+        # wait for a bit to create good separation between last_updated times
+        time.sleep(1.3)
+
+        # create an article which should not be caught by the duplicate detection
+        not_duplicate = models.Article()
+        not_duplicate_bibjson = not_duplicate.bibjson()
+        not_duplicate_bibjson.title = "Example C article with a DOI"
+        not_duplicate_bibjson.add_identifier('doi', "https://doi.org/10.doi.DIFFERENT")
+        not_duplicate.save(blocking=True)
+
+        # create a replacement article
+        z = models.Article()
+        y = z.bibjson()
+        y.title = "Replacement article for DOI"
+        y.add_identifier('doi', "https://doi.org/10.doi")
+
+        # get the xwalk to determine if there is just one duplicate
+        xwalk = article.XWalk()
+        d = xwalk.get_duplicate(z)
+        assert len(xwalk.get_duplicates(z)) == 2
+
+        # Check when we ask for one duplicate we get the most recent duplicate.
+        assert d is not None
+        assert d.bibjson().title == "Example B article with a DOI", d.bibjson().title
     
-    def test_05_merge_replaces_metadata(self):
+    def test_06_merge_replaces_metadata(self):
         """Ensure that merging replaces metadata of a new article, but keeps its old id."""
 
         ftu = "http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf"
@@ -216,7 +260,7 @@ class TestArticleMatch(DoajTestCase):
         assert a3.bibjson().title == "Example C article with a fulltext url"
         assert a3.bibjson().abstract == "a newer bunch of text"
 
-    def test_06_both_duplication_criteria(self):
+    def test_07_both_duplication_criteria(self):
         """Check that an article is only reported once if it is duplicated by both DOI and fulltext URL"""
         # make ourselves an example article
         ftu = "http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf"
@@ -244,7 +288,7 @@ class TestArticleMatch(DoajTestCase):
         print len(d)
         assert d[0].bibjson().title == "Example article with a fulltext url and a DOI"
 
-    def test_07_many_issns(self):
+    def test_08_many_issns(self):
         """Test that a query with a LOT of ISSNs is still successful."""
         a = models.Article()
         b = a.bibjson()
