@@ -1,0 +1,11 @@
+/home/cloo/repl/production/doaj/src/doaj/portality.lib.analytics.log {
+	daily
+	missingok
+	compress
+	delaycompress
+	notifempty
+	dateext
+	dateyesterday
+	olddir /home/cloo/analytics-logs
+	rotate 365
+}

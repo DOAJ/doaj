@@ -20,6 +20,9 @@ echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-apps
 sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-$ENV-apps /etc/anacrontab
 
+echo "Configuring logrotate"
+sudo ln -sf /home/cloo/repl/$ENV/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
+
 echo "Mounting S3FS permanently"
 cd /home/cloo/repl/$ENV/doaj
 . bin/activate

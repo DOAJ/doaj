@@ -5,7 +5,9 @@ from functools import wraps
 # Logger specific to analytics
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.FileHandler(__name__ + '.log'))
+fh = logging.FileHandler(__name__ + '.log')
+fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+logger.addHandler(fh)
 
 # The global tracker object
 tracker = None
