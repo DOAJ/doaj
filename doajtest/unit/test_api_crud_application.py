@@ -1,20 +1,30 @@
 import time
 
 from portality import constants
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
 from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
 from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
 from portality.lib.dataobj import DataStructureException
+from portality.formcontext import FormContextException, formcontext
 
+def mock_finalise_exception(self, *args, **kwargs):
+    raise FormContextException("test exception")
+
+def mock_custom_validate_always_pass(self, *args, **kwargs):
+    return
 
 class TestCrudApplication(DoajTestCase):
 
     def setUp(self):
+        self.old_finalise = formcontext.FormContext.finalise
+        self.old_custom_validate = IncomingApplication.custom_validate
         super(TestCrudApplication, self).setUp()
 
     def tearDown(self):
+        formcontext.FormContext.finalise = self.old_finalise
+        IncomingApplication.custom_validate = self.old_custom_validate
         super(TestCrudApplication, self).tearDown()
 
     def test_01_incoming_application_do(self):
@@ -158,6 +168,92 @@ class TestCrudApplication(DoajTestCase):
             account.set_email("test@test.com")
             data = {"some" : {"junk" : "data"}}
             a = ApplicationsCrudApi.create(data, account)
+
+        # if a formcontext exception is raised on finalise
+        formcontext.FormContext.finalise = mock_finalise_exception
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                assert e.message == "test exception"
+                raise
+        formcontext.FormContext.finalise = self.old_finalise
+
+        # validation fails on the formcontext
+        IncomingApplication.custom_validate = mock_custom_validate_always_pass
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
+            # a duff email should trigger the form validation failure
+            data["admin"]["contact"][0]["email"] = "not an email address"
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+
+    def test_03b_create_update_request_fail(self):
+        # update request target not found
+        with self.assertRaises(Api404Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api404Error as e:
+                raise
+
+        # if a formcontext exception is raised on finalise
+        publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.set_owner(publisher.id)
+        journal.save(blocking=True)
+        formcontext.FormContext.finalise = mock_finalise_exception
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["current_journal"] = journal.id
+
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                assert e.message == "test exception"
+                raise
+        formcontext.FormContext.finalise = self.old_finalise
+
+        # validation fails on the formcontext
+        publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.set_owner(publisher.id)
+        journal.save(blocking=True)
+        IncomingApplication.custom_validate = mock_custom_validate_always_pass
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            # duff submission charges url should trip the validator
+            data["bibjson"]["submission_charges_url"] = "not a url!"
+            data["admin"]["current_journal"] = journal.id
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+    def test_03c_update_update_request_fail(self):
+        # update request target in disallowed status
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.save(blocking=True)
+        with self.assertRaises(Api404Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["current_journal"] = journal.id
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api404Error as e:
+                raise
 
     def test_03a_create_application_dryrun(self):
         # set up all the bits we need

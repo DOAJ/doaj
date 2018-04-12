@@ -101,14 +101,19 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error()
+                    raise Api400Error(e.message)
                 finally:
                     if jlock is not None: jlock.delete()
                     if alock is not None: alock.delete()
             else:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
-                raise Api400Error()
+
+                errors = fc.errors
+                msg = "The following validation errors were received:\n"
+                for fieldName, errorMessages in errors.iteritems():
+                    msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
+                raise Api400Error(msg)
 
         # otherwise, this is a brand-new application
         else:
@@ -126,9 +131,13 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(save_target=save_target, email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error()
+                    raise Api400Error(e.message)
             else:
-                raise Api400Error()
+                errors = fc.errors
+                msg = "The following validation errors were received:\n"
+                for fieldName, errorMessages in errors.iteritems():
+                    msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
+                raise Api400Error(msg)
 
 
     @classmethod
