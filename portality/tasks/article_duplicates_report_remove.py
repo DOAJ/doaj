@@ -14,6 +14,14 @@ from portality.lib import dates
 from portality.core import app
 from portality.clcsv import UnicodeWriter
 
+# TODO:
+# build owner cache
+# print the iteration number progress
+# verbose argument for printed output (defaulted to false)
+# summarise result in audit message
+# email the reports
+# run on test first!
+
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
     __action__ = "article_duplicate_report"
