@@ -91,7 +91,7 @@ class TestArticleMatch(DoajTestCase):
                 article.bibjson().add_url(url=dup_fulltext, urltype='fulltext', content_type='html')
             else:
                 article.bibjson().add_url('http://not_duplicate/fulltext/' + str(i), 'fulltext', 'html')
-            article.save(blocking=True, differentiate=True)
+            article.save(blocking=True)
 
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
@@ -146,7 +146,7 @@ class TestArticleMatch(DoajTestCase):
         article_diff = models.Article(**art_src)
         article_diff.bibjson().add_url('http://not_duplicate/fulltext/_DIFFERENT', 'fulltext', 'html')
         article_diff.add_journal_metadata(in_journal)                                          # Copies the ISSNs across
-        article_diff.save(blocking=True, differentiate=True)
+        article_diff.save(blocking=True)
 
         # Next, 2 duplicates for the not-in_doaj journals which we also expect to be taken out.
         for i in range(0, 2):
@@ -157,7 +157,7 @@ class TestArticleMatch(DoajTestCase):
             )
             article = models.Article(**src)
             article.add_journal_metadata(out_journal)
-            article.save(blocking=True, differentiate=True)
+            article.save(blocking=True)
 
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
@@ -198,7 +198,7 @@ class TestArticleMatch(DoajTestCase):
                     in_doaj=False,
                     with_journal_info=True
                 ))
-                article.save(blocking=True, differentiate=True)
+                article.save(blocking=True)
 
         # Connect to ES with esprit and run the dedupe function
         conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
