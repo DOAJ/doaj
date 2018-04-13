@@ -73,19 +73,16 @@ class TestArticleMatch(DoajTestCase):
         b = a.bibjson()
         b.title = "Example A article with a fulltext url"
         b.add_url(ftu, urltype="fulltext")
-        a.save()
-        
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        a.save(blocking=True)
+
+        # Wait a second to ensure the timestamps are different
+        time.sleep(1.01)
         
         a2 = models.Article()
         b2 = a2.bibjson()
         b2.title = "Example B article with a fulltext url"
         b2.add_url(ftu, urltype="fulltext")
-        a2.save()
-
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        a2.save(blocking=True)
 
         # create an article which should not be caught by the duplicate detection
         not_duplicate = models.Article()
@@ -126,19 +123,16 @@ class TestArticleMatch(DoajTestCase):
         b = a.bibjson()
         b.title = "Example A article with a DOI"
         b.add_identifier('doi', "10.doi")
-        a.save()
+        a.save(blocking=True)
 
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        # Wait a second to ensure the timestamps are different
+        time.sleep(1.01)
 
         a2 = models.Article()
         b2 = a2.bibjson()
         b2.title = "Example B article with a DOI"
         b2.add_identifier('doi', "10.doi")
-        a2.save()
-
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        a2.save(blocking=True)
 
         # create an article which should not be caught by the duplicate detection
         not_duplicate = models.Article()
@@ -181,19 +175,16 @@ class TestArticleMatch(DoajTestCase):
         b = a.bibjson()
         b.title = "Example A article with a DOI"
         b.add_identifier('doi', "https://doi.org/10.doi")
-        a.save()
+        a.save(blocking=True)
 
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        # Wait a second to ensure the timestamps are different
+        time.sleep(1.01)
 
         a2 = models.Article()
         b2 = a2.bibjson()
         b2.title = "Example B article with a DOI"
         b2.add_identifier('doi', "https://doi.org/10.doi")
-        a2.save()
-
-        # wait for a bit to create good separation between last_updated times
-        time.sleep(1.3)
+        a2.save(blocking=True)
 
         # create an article which should not be caught by the duplicate detection
         not_duplicate = models.Article()
