@@ -15,13 +15,12 @@ from portality.lib import dates
 from portality.core import app
 from portality.clcsv import UnicodeWriter
 
-# TODO:
-# build owner cache
-# run on test first!
-
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
     __action__ = "article_duplicate_report"
+
+    # Keep a cache of ISSNs to owners
+    owner_cache = {}
 
     def run(self):
         job = self.background_job
@@ -71,7 +70,10 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             journal = article.get_journal()
             owner = None
             if journal:
-                owner = journal.owner                                                # TODO: cache ISSN -> owner lookups
+                owner = journal.owner
+                for issn in journal.bibjson().issns():
+                    if issn not in self.owner_cache:
+                        self.owner_cache[issn] = owner
 
             # Get the global duplicates
             global_duplicates = XWalk.discover_duplicates(article, owner=None)
@@ -79,7 +81,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
                 gd_count += len(s) - 1
                 if s not in global_matches:
-                    self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
+                    self._write_rows_from_duplicates(article, None, global_duplicates, global_report)
                     global_matches.append(s)
 
             # Get the duplicates within the owner's records
@@ -107,16 +109,22 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         else:
             job.add_audit_message("no email alert sent")
 
-    @staticmethod
-    def _summarise_article(article, owner):
+    def _summarise_article(self, article, owner=None):
         a_doi = article.bibjson().get_identifiers('doi')
         a_fulltext = article.bibjson().get_urls('fulltext')
+
+        o = owner
+        if o is None:
+            for i in article.bibjson().issns():
+                o = self.owner_cache.get(i, None)
+                if o is not None:
+                    break
 
         return {
             'created': article.created_date,
             'doi': a_doi[0] if len(a_doi) > 0 else '',
             'fulltext': a_fulltext[0] if len(a_fulltext) > 0 else '',
-            'owner': owner,
+            'owner': o if o is not None else '',
             'issns': ','.join(article.bibjson().issns())
         }
 
@@ -140,7 +148,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    a_summary['created'],
                    a_summary['doi'],
                    a_summary['fulltext'],
-                   owner,
+                   a_summary['owner'],
                    a_summary['issns'],
                    str(len(dups)),
                    v['match_type'],
