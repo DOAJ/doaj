@@ -1,5 +1,5 @@
 """
-use this script if you want to manually (and synchronously) execute the article duplicate reporting task
+This script allows you to manually (and synchronously) execute the article duplicate reporting task
 """
 from portality.background import BackgroundApi
 from portality.core import app
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-o", "--out",
-                        help="Output directory into which article duplicate reports should be made (will be created if it doesn't exist)",
+                        help="Output directory in which article duplicate reports should be saved (will be created if it doesn't exist)",
                         default="article_duplicates_" + dates.today())
     parser.add_argument("-e", "--email",
                         help="Send zip archived reports to email addresses configured via REPORTS_EMAIL_TO in settings",

@@ -16,9 +16,7 @@ from portality.clcsv import UnicodeWriter
 
 # TODO:
 # build owner cache
-# print the iteration number progress
 # verbose argument for printed output (defaulted to false)
-# summarise result in audit message
 # email the reports
 # run on test first!
 
@@ -31,6 +29,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         params = job.params
 
         outdir = self.get_param(params, "outdir", "article_duplicates_" + dates.today())
+        job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
@@ -56,7 +55,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         owner_report = UnicodeWriter(g)
         
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns"]
-        print ' '.join(header)
+        app.logger.info(' '.join(header))
         global_report.writerow(header)
         owner_report.writerow(header)
 
@@ -64,9 +63,13 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         global_matches = []
         owner_matches = {}
 
-        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query):
+        a_count = gd_count = od_count = 0
+
+        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m'):
+            a_count += 1
+            app.logger.debug(a_count)
             article = models.Article(_source=a)
-            print article.id
+            app.logger.debug(article.id)
             journal = article.get_journal()
             owner = None
             if journal:
@@ -76,6 +79,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             global_duplicates = XWalk.discover_duplicates(article, owner=None)
             if global_duplicates:
                 s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
+                gd_count += len(s) - 1
                 if s not in global_matches:
                     self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                     global_matches.append(s)
@@ -87,10 +91,13 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                     if owner not in owner_matches:
                         owner_matches[owner] = []
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
+                    od_count += len(s) - 1
                     if s not in owner_matches[owner]:
                         self._write_rows_from_duplicates(article, owner, owner_duplicates, owner_report)
                         owner_matches[owner].append(s)
 
+        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found, '
+                              '{2} found within user accounts.'.format(a_count, gd_count, od_count))
         f.close()
         g.close()
 
@@ -137,8 +144,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    v['owner'],
                    v['issns']]
             report.writerow(row)
-            print row
-
+            app.logger.info(row)
 
     def cleanup(self):
         """
