@@ -67,9 +67,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m'):
             a_count += 1
-            app.logger.debug(a_count)
             article = models.Article(_source=a)
-            app.logger.debug(article.id)
+            app.logger.debug('{0} {1}'.format(a_count, article.id))
             journal = article.get_journal()
             owner = None
             if journal:
@@ -135,7 +134,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    a_summary['fulltext'],
                    owner,
                    a_summary['issns'],
-                   len(dups),
+                   str(len(dups)),
                    v['match_type'],
                    k,
                    v['created'],
@@ -144,7 +143,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    v['owner'],
                    v['issns']]
             report.writerow(row)
-            app.logger.info(row)
+            app.logger.info(' '.join(row))
 
     def cleanup(self):
         """
