@@ -93,6 +93,14 @@ class DomainObject(UserDict.IterableUserDict, object):
         return self.data.get("last_updated")
 
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False):
+        """
+        Save to the index.
+        :param retries: Number of times to retry the save if there's an ES error.
+        :param back_off_factor: Increase this to wait longer between save attempts.
+        :param differentiate: Ensure subsequent timestamps are different when updating an existing record.
+        :param blocking: Wait until we have verified the target has been updated before returning.
+        :return: the response to our save operation.
+        """
 
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):
             app.logger.warn("System is in READ-ONLY mode, save command cannot run")
@@ -101,19 +109,19 @@ class DomainObject(UserDict.IterableUserDict, object):
         if 'id' not in self.data:
             self.data['id'] = self.makeid()
 
-        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        now = datetime.utcnow()
         if (blocking or differentiate) and "last_updated" in self.data:
-            diff = datetime.now() - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
+            diff = now - datetime.strptime(self.data["last_updated"], "%Y-%m-%dT%H:%M:%SZ")
 
-            # we need the new last_updated time to be later than the new one
+            # we need the new last_updated time to be later than the new one, add a second to the current time
             if diff.total_seconds() < 1:
-                soon = datetime.utcnow() + timedelta(seconds=1)
-                now = soon.strftime("%Y-%m-%dT%H:%M:%SZ")
+                now += timedelta(seconds=1)
 
-        self.data['last_updated'] = now
+        now_tstamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.data['last_updated'] = now_tstamp
 
         if 'created_date' not in self.data:
-            self.data['created_date'] = now
+            self.data['created_date'] = now_tstamp
 
         attempt = 0
         url = self.target() + self.data['id']
@@ -174,7 +182,7 @@ class DomainObject(UserDict.IterableUserDict, object):
                     continue
                 if len(j) > 1:
                     raise Exception("More than one record with id {x}".format(x=self.id))
-                if j[0].get("last_updated", [])[0] == now:  # NOTE: only works on ES > 1.x
+                if j[0].get("last_updated", [])[0] == now_tstamp:  # NOTE: only works on ES > 1.x
                     break
                 else:
                     time.sleep(0.25)
