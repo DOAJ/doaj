@@ -41,6 +41,8 @@ if __name__ == "__main__":
         app.logger.setLevel(logging.DEBUG)
 
     user = app.config.get("SYSTEM_USERNAME")
-    job = article_duplicates_report_remove.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=args.out, email=args.email)
+    job = article_duplicates_report_remove.ArticleDuplicateReportBackgroundTask.prepare(user,
+                                                                                        outdir=args.out,
+                                                                                        email=args.email)
     task = article_duplicates_report_remove.ArticleDuplicateReportBackgroundTask(job)
     BackgroundApi.execute(task)

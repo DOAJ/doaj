@@ -1,9 +1,10 @@
 """Task to generate a report on duplicated articles in the index"""
 
-from portality.tasks.redis_huey import long_running, schedule
+from portality.tasks.redis_huey import long_running
+from portality.tasks.bg_util import email
 from portality.decorators import write_required
 
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
+from portality.background import BackgroundTask, BackgroundApi
 
 import esprit
 import codecs
@@ -16,8 +17,6 @@ from portality.clcsv import UnicodeWriter
 
 # TODO:
 # build owner cache
-# verbose argument for printed output (defaulted to false)
-# email the reports
 # run on test first!
 
 
@@ -65,7 +64,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         a_count = gd_count = od_count = 0
 
-        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m'):
+        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m', limit=200):
             a_count += 1
             article = models.Article(_source=a)
             app.logger.debug('{0} {1}'.format(a_count, article.id))
@@ -100,7 +99,16 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         f.close()
         g.close()
 
-    def _summarise_article(self, article, owner):
+        send_email = self.get_param(params, "email", False)
+        if send_email:
+            archive_name = "article_duplicates_" + dates.today()
+            email(outdir, archive_name)
+            job.add_audit_message("email alert sent")
+        else:
+            job.add_audit_message("no email alert sent")
+
+    @staticmethod
+    def _summarise_article(article, owner):
         a_doi = article.bibjson().get_identifiers('doi')
         a_fulltext = article.bibjson().get_urls('fulltext')
 
@@ -162,14 +170,16 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
 
-        params = {}
-        cls.set_param(params, "outdir", kwargs.get("outdir", "article_duplicates_" + dates.today()))
-
-        # first prepare a job record
+        # First prepare a job record
         job = models.BackgroundJob()
         job.user = username
         job.action = cls.__action__
+
+        params = {}
+        cls.set_param(params, "outdir", kwargs.get("outdir", "article_duplicates_" + dates.today()))
+        cls.set_param(params, "email", kwargs.get("email", False))
         job.params = params
+
         return job
 
     @classmethod
@@ -182,6 +192,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         """
         background_job.save()
         article_duplicate_report.schedule(args=(background_job.id,), delay=10)
+
 
 """
 @long_running.periodic_task(schedule("article_duplicate_report"))
