@@ -163,10 +163,10 @@ class DomainObject(UserDict.IterableUserDict, object):
 
         if attempt > retries:
             raise DAOSaveExceptionMaxRetriesReached(
-                u"After {attempts} attempts the record with "
-                u"id {id} failed to save.".format(
+                u"After {attempts} attempts the record with id {id} failed to save.".format(
                     attempts=attempt, id=self.data['id']))
 
+        # If this is a blocking save, don't return until we've retrieved the record by its ID and the timestamp matches.
         if blocking:
             q = {
                 "query": {
