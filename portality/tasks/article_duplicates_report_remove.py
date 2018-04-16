@@ -63,7 +63,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         a_count = gd_count = od_count = 0
 
-        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m', limit=200):
+        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m'):
             a_count += 1
             article = models.Article(_source=a)
             app.logger.debug('{0} {1}'.format(a_count, article.id))
