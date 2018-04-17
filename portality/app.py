@@ -215,8 +215,15 @@ def doi_url(doi):
     return "<a href='https://doi.org/{0}'>{0}</a>".format(tendot)
 
 
-@app.template_filter('compare_value')
-def compare_value(val):
+@app.template_filter('form_diff_table_comparison_value')
+def form_diff_table_comparison_value(val):
+    """
+    Function for converting the given value to a suitable UI value for presentation in the diff table
+    on the admin forms for update requests.
+
+    :param val: the raw value to be converted to a display value
+    :return:
+    """
     if val is None:
         return ""
     if isinstance(val, list) and len(val) == 0:
@@ -225,12 +232,12 @@ def compare_value(val):
     if isinstance(val, list):
         dvals = []
         for v in val:
-            dvals.append(compare_value(v))
+            dvals.append(form_diff_table_comparison_value(v))
         return ", ".join(dvals)
     else:
-        if val is True or val == "True":
+        if val is True or (isinstance(val, basestring) and val.lower() == "true"):
             return "Yes"
-        elif val is False or val == "False":
+        elif val is False or (isinstance(val, basestring) and val.lower() == "false"):
             return "No"
         return val
 

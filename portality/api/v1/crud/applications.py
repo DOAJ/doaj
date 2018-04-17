@@ -79,11 +79,11 @@ class ApplicationsCrudApi(CrudApi):
                 vanilla_ap, jlock, alock = dbl.update_request_for_journal(ap.current_journal, account=account)
             except AuthoriseException as e:
                 if e.reason == AuthoriseException.WRONG_STATUS:
-                    raise Api403Error()
+                    raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
                     raise Api404Error()
             except lock.Locked as e:
-                raise Api409Error()
+                raise Api409Error("The application you are requesting an update for is locked for editing by another user")
 
             # if we didn't find an application or journal, 404 the user
             if vanilla_ap is None:
@@ -108,12 +108,7 @@ class ApplicationsCrudApi(CrudApi):
             else:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
-
-                errors = fc.errors
-                msg = "The following validation errors were received:\n"
-                for fieldName, errorMessages in errors.iteritems():
-                    msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
-                raise Api400Error(msg)
+                raise Api400Error(cls._validation_message(fc))
 
         # otherwise, this is a brand-new application
         else:
@@ -133,11 +128,7 @@ class ApplicationsCrudApi(CrudApi):
                 except formcontext.FormContextException as e:
                     raise Api400Error(e.message)
             else:
-                errors = fc.errors
-                msg = "The following validation errors were received:\n"
-                for fieldName, errorMessages in errors.iteritems():
-                    msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
-                raise Api400Error(msg)
+                raise Api400Error(cls._validation_message(fc))
 
 
     @classmethod
@@ -220,7 +211,7 @@ class ApplicationsCrudApi(CrudApi):
         if new_ap.current_journal is not None:
             # once an application has a current_journal specified, you can't change it
             if new_ap.current_journal != ap.current_journal:
-                raise Api400Error()
+                raise Api400Error("current_journal cannot be changed once set.  current_journal is {x}; this request tried to change it to {y}".format(x=ap.current_journal, y=new_ap.current_journal))
 
             # load the update_request application either directly or by crosswalking the journal object
             vanilla_ap = None
@@ -230,11 +221,11 @@ class ApplicationsCrudApi(CrudApi):
                 vanilla_ap, jlock, alock = dbl.update_request_for_journal(new_ap.current_journal, account=account)
             except AuthoriseException as e:
                 if e.reason == AuthoriseException.WRONG_STATUS:
-                    raise Api403Error()
+                    raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
                     raise Api404Error()
             except lock.Locked as e:
-                raise Api409Error()
+                raise Api409Error("The application is locked for editing by another user - most likely your application is being reviewed by an editor")
 
             # if we didn't find an application or journal, 404 the user
             if vanilla_ap is None:
@@ -251,20 +242,20 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error()
+                    raise Api400Error(e.message)
                 finally:
                     if jlock is not None: jlock.delete()
                     if alock is not None: alock.delete()
             else:
                 if jlock is not None: jlock.delete()
                 if alock is not None: alock.delete()
-                raise Api400Error()
+                raise Api400Error(cls._validation_message(fc))
         else:
             try:
                 dbl.can_edit_application(account, ap)
             except AuthoriseException as e:
                 if e.reason == e.WRONG_STATUS:
-                    raise Api403Error()
+                    raise Api403Error("The application is no longer in a state in which it can be edited via the API")
                 else:
                     raise Api404Error()
 
@@ -277,9 +268,9 @@ class ApplicationsCrudApi(CrudApi):
                     fc.finalise(email_alert=False)
                     return fc.target
                 except formcontext.FormContextException as e:
-                    raise Api400Error()
+                    raise Api400Error(e.message)
             else:
-                raise Api400Error()
+                raise Api400Error(cls._validation_message(fc))
 
     @classmethod
     def delete_swag(cls):
@@ -321,4 +312,12 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
             except NoSuchObjectException as e:
                 raise Api404Error()
+
+    @classmethod
+    def _validation_message(cls, fc):
+        errors = fc.errors
+        msg = "The following validation errors were received:\n"
+        for fieldName, errorMessages in errors.iteritems():
+            msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
+        return msg
 
