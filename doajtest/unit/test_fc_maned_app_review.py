@@ -148,7 +148,7 @@ class TestManEdAppReview(DoajTestCase):
         h = self.list_today_journal_history_files()
         assert len(h) == 1
 
-        # set up an application which is a update on an existing journal
+        # set up an application which is an update on an existing journal
         s = models.Suggestion(**APPLICATION_SOURCE)
         s.set_current_journal("abcdefghijk_journal")
         s.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)

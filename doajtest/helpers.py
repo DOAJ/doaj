@@ -84,12 +84,9 @@ def load_from_matrix(filename, test_ids):
         test_ids = []
     with open(paths.rel2abs(__file__, "matrices", filename)) as f:
         reader = csv.reader(f)
+        reader.next()   # pop the header row
         cases = []
-        first = True
         for row in reader:
-            if first:
-                first = False
-                continue
             if row[0] in test_ids or len(test_ids) == 0:
                 row[0] = "row_id_" + row[0]
                 cases.append(tuple(row))
