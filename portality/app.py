@@ -241,6 +241,37 @@ def form_diff_table_comparison_value(val):
             return "No"
         return val
 
+
+@app.template_filter('form_diff_table_subject_expand')
+def form_diff_table_subject_expand(val):
+    """
+    Function for expanding one or more subject classifications out to their full terms
+
+    :param val:
+    :return:
+    """
+    if val is None:
+        return ""
+    if isinstance(val, list) and len(val) == 0:
+        return ""
+    if not isinstance(val, list):
+        val = [val]
+
+    from portality import lcc
+
+    results = []
+    for v in val:
+        if v is None or v == "":
+            continue
+        expanded = lcc.lcc_index_by_code.get(v)
+        if expanded is not None:
+            results.append(expanded + " [code: " + v + "]")
+        else:
+            results.append(v)
+
+    return ", ".join(results)
+
+
 @app.before_request
 def standard_authentication():
     """Check remote_user on a per-request basis."""

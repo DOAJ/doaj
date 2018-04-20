@@ -25,11 +25,19 @@
                         <table class="inner_comparison_table">
                             <tr>
                                 <td><strong>Previous</strong></td>
-                                <td>{{ tup[3] | form_diff_table_comparison_value }}</td>
+                                {% if tup[2] == 'Subjects' %}
+                                    <td>{{ tup[3] | form_diff_table_subject_expand }}</td>
+                                {% else %}
+                                    <td>{{ tup[3] | form_diff_table_comparison_value }}</td>
+                                {% endif %}
                             </tr>
                             <tr>
                                 <td><strong>New</strong></td>
-                                <td>{{ tup[4] | form_diff_table_comparison_value }}</td>
+                                {% if tup[2] == 'Subjects' %}
+                                    <td>{{ tup[4] | form_diff_table_subject_expand }}</td>
+                                {% else %}
+                                    <td>{{ tup[4] | form_diff_table_comparison_value }}</td>
+                                {% endif %}
                             </tr>
                         </table>
                     </td>
