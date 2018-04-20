@@ -61,12 +61,12 @@ class TestBLLObjectConversions(DoajTestCase):
 
     @parameterized.expand(load_j2a_cases)
     def test_01_journal_2_application(self, name, journal, account, raises=None, comparator=None):
-        doaj = DOAJ()
+        svc = DOAJ.journalService()
         if raises is not None:
             with self.assertRaises(raises):
-                doaj.journal_2_application(journal, account)
+                svc.journal_2_application(journal, account)
         elif comparator is not None:
-            application = doaj.journal_2_application(journal, account)
+            application = svc.journal_2_application(journal, account)
             comparator(journal, application)
         else:
             assert False, "Specify either raises or comparator"
@@ -123,12 +123,12 @@ class TestBLLObjectConversions(DoajTestCase):
         # execute the test
         ########################################
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
         if raises is not None and raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.application_2_journal(application, manual_update)
+                svc.application_2_journal(application, manual_update)
         else:
-            journal = doaj.application_2_journal(application, manual_update)
+            journal = svc.application_2_journal(application, manual_update)
 
             # check the result
             ######################################

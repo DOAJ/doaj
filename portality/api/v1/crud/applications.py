@@ -69,14 +69,14 @@ class ApplicationsCrudApi(CrudApi):
         # if this is an update request on an existing journal
         if ap.current_journal is not None:
             # DOAJ BLL for this request
-            dbl = DOAJ()
+            applicationService = DOAJ.applicationService()
 
             # load the update_request application either directly or by crosswalking the journal object
             vanilla_ap = None
             jlock = None
             alock = None
             try:
-                vanilla_ap, jlock, alock = dbl.update_request_for_journal(ap.current_journal, account=account)
+                vanilla_ap, jlock, alock = applicationService.update_request_for_journal(ap.current_journal, account=account)
             except AuthoriseException as e:
                 if e.reason == AuthoriseException.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
@@ -205,7 +205,8 @@ class ApplicationsCrudApi(CrudApi):
         new_ap.bibjson().remove_subjects()
 
         # DOAJ BLL for this request
-        dbl = DOAJ()
+        applicationService = DOAJ.applicationService()
+        authService = DOAJ.authorisationService()
 
         # if a current_journal is specified on the incoming data
         if new_ap.current_journal is not None:
@@ -218,7 +219,7 @@ class ApplicationsCrudApi(CrudApi):
             jlock = None
             alock = None
             try:
-                vanilla_ap, jlock, alock = dbl.update_request_for_journal(new_ap.current_journal, account=account)
+                vanilla_ap, jlock, alock = applicationService.update_request_for_journal(new_ap.current_journal, account=account)
             except AuthoriseException as e:
                 if e.reason == AuthoriseException.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
@@ -252,7 +253,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api400Error(cls._validation_message(fc))
         else:
             try:
-                dbl.can_edit_application(account, ap)
+                authService.can_edit_application(account, ap)
             except AuthoriseException as e:
                 if e.reason == e.WRONG_STATUS:
                     raise Api403Error("The application is no longer in a state in which it can be edited via the API")
@@ -290,13 +291,14 @@ class ApplicationsCrudApi(CrudApi):
         if account is None:
             raise Api401Error()
 
-        dbl = DOAJ()
+        applicationService = DOAJ.applicationService()
+        authService = DOAJ.authorisationService()
 
         if dry_run:
-            application, _ = dbl.application(id)
+            application, _ = applicationService.application(id)
             if application is not None:
                 try:
-                    dbl.can_edit_application(account, application)
+                    authService.can_edit_application(account, application)
                 except AuthoriseException as e:
                     if e.reason == e.WRONG_STATUS:
                         raise Api403Error()
@@ -305,7 +307,7 @@ class ApplicationsCrudApi(CrudApi):
                 raise Api404Error()
         else:
             try:
-                dbl.delete_application(id, account)
+                applicationService.delete_application(id, account)
             except AuthoriseException as e:
                 if e.reason == e.WRONG_STATUS:
                     raise Api403Error()

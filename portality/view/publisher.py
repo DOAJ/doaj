@@ -39,14 +39,15 @@ def index():
 @write_required()
 def update_request(journal_id):
     # DOAJ BLL for this request
-    dbl = DOAJ()
+    journalService = DOAJ.journalService()
+    applicationService = DOAJ.applicationService()
 
     # if this is a delete request, deal with it first and separately from the below logic
     if request.method == "DELETE":
-        journal, _ = dbl.journal(journal_id)
+        journal, _ = journalService.journal(journal_id)
         application_id = journal.current_application
         if application_id is not None:
-            dbl.delete_application(application_id, current_user._get_current_object())
+            applicationService.delete_application(application_id, current_user._get_current_object())
         else:
             abort(404)
         return ""
@@ -56,15 +57,15 @@ def update_request(journal_id):
     jlock = None
     alock = None
     try:
-        application, jlock, alock = dbl.update_request_for_journal(journal_id, account=current_user._get_current_object())
+        application, jlock, alock = applicationService.update_request_for_journal(journal_id, account=current_user._get_current_object())
     except AuthoriseException as e:
         if e.reason == AuthoriseException.WRONG_STATUS:
-            journal, _ = dbl.journal(journal_id)
+            journal, _ = journalService.journal(journal_id)
             return render_template("publisher/application_already_submitted.html", journal=journal)
         else:
             abort(404)
     except lock.Locked as e:
-        journal, _ = dbl.journal(journal_id)
+        journal, _ = journalService.journal(journal_id)
         return render_template("publisher/locked.html", journal=journal, lock=e.lock)
 
     # if we didn't find an application or journal, 404 the user
@@ -112,11 +113,12 @@ def update_request(journal_id):
 @write_required()
 def update_request_readonly(application_id):
     # DOAJ BLL for this request
-    dbl = DOAJ()
+    applicationService = DOAJ.applicationService()
+    authService = DOAJ.authorisationService()
 
-    application, _ = dbl.application(application_id)
+    application, _ = applicationService.application(application_id)
     try:
-        dbl.can_view_application(current_user._get_current_object(), application)
+        authService.can_view_application(current_user._get_current_object(), application)
     except AuthoriseException as e:
         abort(404)
 

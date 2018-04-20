@@ -70,12 +70,12 @@ class TestBLRejectApplication(DoajTestCase):
         ########################################
         ## execute
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
         if raises is not None and raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.reject_application(ap, acc, provenance)
+                svc.reject_application(ap, acc, provenance)
         else:
-            doaj.reject_application(ap, acc, provenance)
+            svc.reject_application(ap, acc, provenance)
             time.sleep(1)
 
             #######################################

@@ -108,12 +108,12 @@ class TestBLLUpdateRequest(DoajTestCase):
         ###########################################################
         # Execution
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
         if raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.update_request_for_journal(jid, acc)
+                svc.update_request_for_journal(jid, acc)
         else:
-            application, jlock, alock = doaj.update_request_for_journal(jid, acc)
+            application, jlock, alock = svc.update_request_for_journal(jid, acc)
 
             # we need to sleep, so the index catches up
             time.sleep(1)

@@ -674,12 +674,12 @@ class ManEdApplicationReview(ApplicationContext):
         models.Provenance.make(current_user, "edit", self.target)
 
         # delayed import of the DOAJ BLL
-        from portality.bll import doaj
-        dbl = doaj.DOAJ()
+        from portality.bll.doaj import DOAJ
+        applicationService = DOAJ.applicationService()
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
-            j = dbl.accept_application(self.target, current_user._get_current_object())
+            j = applicationService.accept_application(self.target, current_user._get_current_object())
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:
@@ -706,7 +706,7 @@ class ManEdApplicationReview(ApplicationContext):
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
             had_current = self.target.current_journal is not None
-            dbl.reject_application(self.target, current_user._get_current_object())
+            applicationService.reject_application(self.target, current_user._get_current_object())
             if had_current:
                 publisher_email = self.target.get_latest_contact_email()
                 try:
@@ -1189,9 +1189,9 @@ class PublisherUpdateRequest(ApplicationContext):
         # obtain the related journal, and attach the current application id to it
         journal_id = self.target.current_journal
         from portality.bll.doaj import DOAJ
-        doaj = DOAJ()
+        journalService = DOAJ.journalService()
         if journal_id is not None:
-            journal, _ = doaj.journal(journal_id)
+            journal, _ = journalService.journal(journal_id)
             if journal is not None:
                 journal.set_current_application(self.target.id)
                 if save_target:

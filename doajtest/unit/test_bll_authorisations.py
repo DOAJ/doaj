@@ -84,23 +84,23 @@ class TestBLLAuthorisations(DoajTestCase):
 
     @parameterized.expand(create_update_cases)
     def test_01_create_update_request(self, name, journal, account, raises=None, expected=None):
-        doaj = DOAJ()
+        svc = DOAJ.authorisationService()
         if raises is not None:
             with self.assertRaises(raises):
-                doaj.can_create_update_request(account, journal)
+                svc.can_create_update_request(account, journal)
         elif expected is not None:
-            assert doaj.can_create_update_request(account, journal) is expected
+            assert svc.can_create_update_request(account, journal) is expected
         else:
             assert False, "Specify either raises or expected"
 
     @parameterized.expand(create_edit_cases)
     def test_02_edit_update_request(self, name, application, account, raises=None, expected=None):
-        doaj = DOAJ()
+        svc = DOAJ.authorisationService()
         if raises is not None:
             with self.assertRaises(raises):
-                doaj.can_edit_application(account, application)
+                svc.can_edit_application(account, application)
         elif expected is not None:
-            assert doaj.can_edit_application(account, application) is expected
+            assert svc.can_edit_application(account, application) is expected
         else:
             assert False, "Specify either raises or expected"
 
@@ -125,12 +125,12 @@ class TestBLLAuthorisations(DoajTestCase):
                 application.set_owner(account.id)
 
 
-        doaj = DOAJ()
+        svc = DOAJ.authorisationService()
         if raises is not None and raises != "":
             exception = None
             with self.assertRaises(EXCEPTIONS[raises]):
                 try:
-                    doaj.can_view_application(account, application)
+                    svc.can_view_application(account, application)
                 except Exception as e:
                     exception = e
                     raise e
@@ -142,6 +142,6 @@ class TestBLLAuthorisations(DoajTestCase):
 
         elif returns is not None:
             expected = returns == "true"
-            assert doaj.can_view_application(account, application) is expected
+            assert svc.can_view_application(account, application) is expected
         else:
             assert False, "Specify either raises or returns"

@@ -115,14 +115,14 @@ class TestBLLDeleteApplication(DoajTestCase):
         ###########################################################
         # Execution
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
         if raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.delete_application(application_id, acc)
+                svc.delete_application(application_id, acc)
             time.sleep(1)
             check_locks(application, cj, rj, acc)
         else:
-            doaj.delete_application(application_id, acc)
+            svc.delete_application(application_id, acc)
 
             # we need to sleep, so the index catches up
             time.sleep(1)

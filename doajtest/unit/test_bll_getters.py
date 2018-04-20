@@ -60,7 +60,7 @@ class TestBLLGetters(DoajTestCase):
         if lock_journal:
             lock.lock("journal", journal.id, "someoneelse", blocking=True)
 
-        doaj = DOAJ()
+        svc = DOAJ.journalService()
 
         if journal is not None:
             journal.save(blocking=True)
@@ -68,18 +68,18 @@ class TestBLLGetters(DoajTestCase):
         if raises is not None:
             with self.assertRaises(raises):
                 if account is None:
-                    retrieved, _ = doaj.journal(journal_id)
+                    retrieved, _ = svc.journal(journal_id)
                 else:
-                    retrieved, jlock = doaj.journal(journal_id, lock_journal=True, lock_account=account)
+                    retrieved, jlock = svc.journal(journal_id, lock_journal=True, lock_account=account)
         else:
             if account is None:
-                retrieved, _ = doaj.journal(journal_id)
+                retrieved, _ = svc.journal(journal_id)
                 if retrieved is not None:
                     assert retrieved.data == journal.data
                 else:
                     assert retrieved is None
             else:
-                retrieved, jlock = doaj.journal(journal_id, lock_journal=True, lock_account=account)
+                retrieved, jlock = svc.journal(journal_id, lock_journal=True, lock_account=account)
                 if retrieved is not None:
                     assert retrieved.data == journal.data
                 else:
@@ -94,7 +94,7 @@ class TestBLLGetters(DoajTestCase):
         if lock_application:
             lock.lock(constants.LOCK_APPLICATION, application.id, "someoneelse", blocking=True)
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
 
         if application is not None:
             application.save(blocking=True)
@@ -102,18 +102,18 @@ class TestBLLGetters(DoajTestCase):
         if raises is not None:
             with self.assertRaises(raises):
                 if account is None:
-                    retrieved, _ = doaj.application(application_id)
+                    retrieved, _ = svc.application(application_id)
                 else:
-                    retrieved, jlock = doaj.application(application_id, lock_application=True, lock_account=account)
+                    retrieved, jlock = svc.application(application_id, lock_application=True, lock_account=account)
         else:
             if account is None:
-                retrieved, _ = doaj.application(application_id)
+                retrieved, _ = svc.application(application_id)
                 if retrieved is not None:
                     assert retrieved.data == application.data
                 else:
                     assert retrieved is None
             else:
-                retrieved, jlock = doaj.application(application_id, lock_application=True, lock_account=account)
+                retrieved, jlock = svc.application(application_id, lock_application=True, lock_account=account)
                 if retrieved is not None:
                     assert retrieved.data == application.data
                 else:

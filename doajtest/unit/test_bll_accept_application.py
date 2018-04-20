@@ -82,12 +82,12 @@ class TestBLLAcceptApplication(DoajTestCase):
         ###########################################################
         # Execution
 
-        doaj = DOAJ()
+        svc = DOAJ.applicationService()
         if raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                doaj.accept_application(application, acc, mu, prov)
+                svc.accept_application(application, acc, mu, prov)
         else:
-            journal = doaj.accept_application(application, acc, mu, prov, save_journal=save, save_application=save)
+            journal = svc.accept_application(application, acc, mu, prov, save_journal=save, save_application=save)
 
             # we need to sleep, so the index catches up
             time.sleep(1)
