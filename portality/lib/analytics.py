@@ -1,13 +1,11 @@
 import UniversalAnalytics
 import logging
+import os
 from functools import wraps
 
 # Logger specific to analytics
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler(__name__ + '.log')
-fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(fh)
 
 # The global tracker object
 tracker = None
@@ -23,6 +21,17 @@ def create_tracker(ga_id, domain):
         tracker = UniversalAnalytics.Tracker.create(ga_id, client_id=domain)
     else:
         raise GAException("Invalid GA ID supplied, no tracker created.")
+
+
+def create_logfile(log_dir=None):
+    filepath = __name__ + '.log'
+    if log_dir is not None:
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        filepath = os.path.join(log_dir, filepath)
+    fh = logging.FileHandler(filepath)
+    fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    logger.addHandler(fh)
 
 
 class GAEvent(object):
