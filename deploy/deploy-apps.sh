@@ -9,6 +9,7 @@ mkdir -p /home/cloo/appdata/doaj
 mkdir -p /home/cloo/appdata/doaj/history
 mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
+mkdir -p /home/cloo/appdata/doaj/ga_logs
 
 sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
@@ -19,6 +20,9 @@ sudo apt-get install -q -y redis-tools
 echo "Setting up crontab and anacrontab"
 crontab $DIR/crontab-$ENV-apps
 sudo rm -f /etc/anacrontab && sudo ln -sf $DIR/anacrontab-$ENV-apps /etc/anacrontab
+
+echo "Configuring logrotate"
+sudo ln -sf /home/cloo/repl/$ENV/doaj/deploy/logrotate/doaj-analytics /etc/logrotate.d/doaj-analytics
 
 echo "Mounting S3FS permanently"
 cd /home/cloo/repl/$ENV/doaj
