@@ -595,7 +595,8 @@ REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
 
-GOOGLE_ANALTYICS_LOG_DIR = '/home/cloo/appdata/doaj/ga_logs'
+# Where to put the google analytics logs
+GOOGLE_ANALTYICS_LOG_DIR = None
 
 # Google Analytics custom dimensions. These are configured in the GA interface.
 GA_DIMENSIONS = {
