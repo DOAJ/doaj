@@ -68,6 +68,7 @@ ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/doaj-$GATE_ENV-gate 
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-$GATE_ENV-gate
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/block_user_agents.conf /home/cloo/repl/gateway/nginx/conf.d/block_user_agents.conf
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/proxy_pass_settings /home/cloo/repl/gateway/nginx/includes/proxy_pass_settings
+ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/logrotate/doaj-duplicity /etc/logrotate.d/doaj-duplicity
 
 # gateway crons
 sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/anacrontab-$GATE_ENV-gate /etc/anacrontab

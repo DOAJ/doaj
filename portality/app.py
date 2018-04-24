@@ -121,6 +121,7 @@ SPONSORS = {k: OrderedDict(sorted(v.items(), key=lambda t: t[0])) for k, v in SP
 # Configure the Google Analytics tracker
 from portality.lib import analytics
 try:
+    analytics.create_logfile(app.config.get('GOOGLE_ANALTYICS_LOG_DIR', None))
     analytics.create_tracker(app.config['GOOGLE_ANALYTICS_ID'], app.config['BASE_DOMAIN'])
 except (KeyError, analytics.GAException):
     err = "No Google Analytics credentials found. Required: 'GOOGLE_ANALYTICS_ID' and 'BASE_DOMAIN'."
