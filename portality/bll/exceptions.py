@@ -7,6 +7,7 @@ class AuthoriseException(Exception):
     NOT_OWNER = "not_owner"
     WRONG_ROLE = "wrong_role"
     WRONG_STATUS = "wrong_status"
+    NOT_AUTHORISED = "not_authorised"
 
     def __init__(self, message=None, reason=None):
         super(AuthoriseException, self).__init__(message)
@@ -34,5 +35,11 @@ class NoSuchObjectException(Exception):
     """
     Exception to raise if the object id given does not correspond to an actual object
     in the datastore
+    """
+    pass
+
+class ConfigurationException(Exception):
+    """
+    Exception to raise when our own configuration is broken
     """
     pass
