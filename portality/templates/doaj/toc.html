@@ -409,7 +409,8 @@
 {% block extra_js_bottom %}
 
 <script type="text/javascript">
-    var toc_issn = "{{ toc_issn }}";
+    try writing the representation of the list in Jinja here
+    var toc_issns = {{ toc_issns_str | safe }};
 </script>
 
 <script type="text/javascript">
