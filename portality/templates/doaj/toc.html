@@ -409,8 +409,8 @@
 {% block extra_js_bottom %}
 
 <script type="text/javascript">
-    try writing the representation of the list in Jinja here
-    var toc_issns = {{ toc_issns_str | safe }};
+    {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
+    var toc_issns = [{{ toc_issns_js_str | safe }}];
 </script>
 
 <script type="text/javascript">

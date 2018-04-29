@@ -270,7 +270,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           search_page=True, toc_issns_str=map(lambda x: str(x), journal.bibjson().issns()), facetviews=['public.journaltocarticles.facetview'])
+                           search_page=True, toc_issns=journal.bibjson().issns(), facetviews=['public.journaltocarticles.facetview'])
 
 
 @blueprint.route("/article/<identifier>")
