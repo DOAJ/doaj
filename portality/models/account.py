@@ -1,5 +1,5 @@
 import uuid
-from flask.ext.login import UserMixin
+from flask_login import UserMixin
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 

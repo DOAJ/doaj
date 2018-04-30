@@ -21,7 +21,7 @@ rm -rf src/doaj/doaj.egg-info
 mv src /home/cloo/tmp_deploy_workspace_$ENV/doaj_src
 cd ..
 rm -rf doaj
-virtualenv doaj
+virtualenv -p python2.7 doaj
 cd doaj
 . bin/activate
 pip install pip --upgrade
@@ -34,19 +34,7 @@ git submodule update --recursive
 # install app on gate
 sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
-pip install -r requirements.txt
-# insert assorted swearwords and curses
-pip install flask-swagger==0.2.8
-pip install flask==0.9  # we need to bump flask to 10.1 and retest the app .. soon
-pip install flask-cors==2.1.2 # for some reason this is not being picked up from setup.py?!
-# none of these newly introduced requirements are being picked up by pip
-# something's wrong with the virtualenv
-pip install LinkHeader==0.4.3
-pip install universal-analytics-python==0.2.4
-pip install huey==1.7.0
-pip install redis==2.10.5
-pip install rstr==2.2.5
-pip install freezegun==0.3.10
+pip install --force-reinstall -r requirements.txt
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/$ENV/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf

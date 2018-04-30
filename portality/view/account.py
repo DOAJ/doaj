@@ -2,9 +2,8 @@ import uuid, json
 
 from flask import Blueprint, request, url_for, flash, redirect, make_response
 from flask import render_template, abort
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from flask.ext.wtf import StringField, HiddenField
-from flask.ext.wtf import Form, PasswordField, validators, ValidationError
+from flask_login import login_user, logout_user, current_user, login_required
+from wtforms import StringField, HiddenField, PasswordField, ValidationError, validators, Form
 
 from portality.core import app
 from portality.decorators import ssl_required, write_required
