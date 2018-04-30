@@ -14,7 +14,7 @@ setup(
         "requests==2.18.4",
         "markdown",
         "gitpython",
-        #"lxml",
+        "lxml",
         "nose",
         "feedparser",
         "tzlocal",
