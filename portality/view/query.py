@@ -1,16 +1,11 @@
 import json, urllib2
-# from esprit.models import Query
 
 from flask import Blueprint, request, abort, make_response
 from flask.ext.login import current_user
 
-from portality.core import app
-from portality.lib import plugin
 from portality import util
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
-
-from copy import deepcopy
 
 blueprint = Blueprint('query', __name__)
 
