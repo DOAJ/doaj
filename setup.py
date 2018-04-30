@@ -27,9 +27,11 @@ setup(
         "flask-cors==2.1.2",
         "LinkHeader==0.4.3",
         "universal-analytics-python==0.2.4",
-        "huey==1.2.2",
+        "huey==1.7.0",
         "redis==2.10.5",
         "rstr==2.2.5",
+        "freezegun==0.3.10",
+        "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",
         "newrelic",

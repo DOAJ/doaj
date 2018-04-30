@@ -156,8 +156,7 @@ class XWalk(object):
         if len(dois) > 0:
             # there should only be the one
             doi = dois[0]
-            # Only perform de-duplication on genuine DOIs
-            if isinstance(doi, basestring) and doi.startswith('10.'):
+            if isinstance(doi, basestring) and doi != '':
                 articles = models.Article.duplicates(issns=issns, doi=doi)
                 possible_articles['doi'] = [a for a in articles if a.id != article.id]
                 if len(possible_articles['doi']) > 0:

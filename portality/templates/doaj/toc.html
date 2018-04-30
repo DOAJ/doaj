@@ -123,6 +123,11 @@
             {% endif %}
 
             <p><strong>Date added to DOAJ</strong>:&nbsp;{{journal.created_timestamp.strftime("%e %b %Y")}}</p>
+
+            {% if journal.last_manual_update_timestamp %}
+            <p><strong>Record Last Updated</strong>:&nbsp;{{journal.last_manual_update_timestamp.strftime("%e %b %Y")}}</p>
+            {% endif %}
+
         </div>
     </div>
 

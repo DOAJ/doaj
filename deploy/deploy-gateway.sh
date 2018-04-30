@@ -43,9 +43,10 @@ pip install flask-cors==2.1.2 # for some reason this is not being picked up from
 # something's wrong with the virtualenv
 pip install LinkHeader==0.4.3
 pip install universal-analytics-python==0.2.4
-pip install huey==1.2.2
+pip install huey==1.7.0
 pip install redis==2.10.5
 pip install rstr==2.2.5
+pip install freezegun==0.3.10
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/$ENV/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
@@ -67,6 +68,7 @@ ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/doaj-$GATE_ENV-gate 
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-$GATE_ENV-gate
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/block_user_agents.conf /home/cloo/repl/gateway/nginx/conf.d/block_user_agents.conf
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/proxy_pass_settings /home/cloo/repl/gateway/nginx/includes/proxy_pass_settings
+ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/logrotate/doaj-duplicity /etc/logrotate.d/doaj-duplicity
 
 # gateway crons
 sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/anacrontab-$GATE_ENV-gate /etc/anacrontab
@@ -77,6 +79,7 @@ crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
 /home/cloo/repl/command.sh -v redis-$ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-redis.sh $ENV
 /home/cloo/repl/command.sh -v $ENV /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-apps.sh $ENV
 /home/cloo/repl/command.sh -v $ENV-background /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-background-apps.sh $ENV
+/home/cloo/repl/command.sh -v monitor /home/cloo/repl/$ENV/doaj/src/doaj/deploy/deploy-monitor.sh $ENV
 
 # Restart gateway services
 /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/restart-gateway.sh

@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.11.10"
+DOAJ_VERSION = "2.11.11"
 
 OFFLINE_MODE = False
 
@@ -701,6 +701,9 @@ REPORTS_EMAIL_TO = ["feedback@doaj.org"]
 # specify in environment .cfg file - avoids sending live analytics
 # events from test and dev environments
 GOOGLE_ANALYTICS_ID = ''
+
+# Where to put the google analytics logs
+GOOGLE_ANALTYICS_LOG_DIR = None
 
 # Google Analytics custom dimensions. These are configured in the GA interface.
 GA_DIMENSIONS = {
