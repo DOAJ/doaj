@@ -1,6 +1,7 @@
 from flask_login import login_user
 
 from unittest import TestCase
+from functools import wraps
 from portality import core, dao
 from portality.app import app
 from doajtest.bootstrap import prepare_for_test
@@ -17,11 +18,17 @@ prepare_for_test()
 class DoajTestCase(TestCase):
     app_test = app
 
-    def setUp(self):
+    def init_index(self):
         core.initialise_index(self.app_test)
 
-    def tearDown(self):
+    def destroy_index(self):
         dao.DomainObject.destroy_index()
+
+    def setUp(self):
+        self.init_index()
+
+    def tearDown(self):
+        self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
 
@@ -39,6 +46,21 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
+
+def elasticsearch_test(fn):
+    """ Decorator that sets up and tears down the test index. For individual test functions where it's not appropriate
+    to make all tests in the test class use ES. """
+    @wraps(fn)
+    def decorated_fn(*args, **kwargs):
+        # 'self' inside the test (an instance method) is args[0]
+        args[0].init_index()
+        test_result = fn(*args, **kwargs)
+        args[0].destroy_index()
+        return test_result
+
+    return decorated_fn
+
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """
