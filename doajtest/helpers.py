@@ -48,20 +48,6 @@ class DoajTestCase(TestCase):
         return ctx
 
 
-def elasticsearch_test(fn):
-    """ Decorator that sets up and tears down the test index. For individual test functions where it's not appropriate
-    to make all tests in the test class use ES. """
-    @wraps(fn)
-    def decorated_fn(*args, **kwargs):
-        # 'self' inside the test (an instance method) is args[0]
-        args[0].init_index()
-        test_result = fn(*args, **kwargs)
-        args[0].destroy_index()
-        return test_result
-
-    return decorated_fn
-
-
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """
     Diff two dictionaries - prints changed, added and removed keys and the changed values. DOES NOT DO NESTED DICTS!

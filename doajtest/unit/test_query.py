@@ -1,7 +1,7 @@
 from portality import models
 
 from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory
-from doajtest.helpers import DoajTestCase, elasticsearch_test
+from doajtest.helpers import DoajTestCase
 
 from portality.bll.services.query import QueryService, Query
 from portality.bll import exceptions
@@ -47,12 +47,15 @@ QUERY_FILTERS = {
 class TestQuery(DoajTestCase):
 
     def setUp(self):
+        super(TestQuery, self).setUp()
         self.OLD_QUERY_ROUTE = self.app_test.config['QUERY_ROUTE']
         self.app_test.config['QUERY_ROUTE'] = QUERY_ROUTE
 
         self.OLD_QUERY_FILTERS = self.app_test.config['QUERY_FILTERS']
+        self.app_test.config['QUERY_FILTERS'] = QUERY_FILTERS
 
     def tearDown(self):
+        super(TestQuery, self).tearDown()
         self.app_test.config['QUERY_ROUTE'] = self.OLD_QUERY_ROUTE
         self.app_test.config['QUERY_FILTERS'] = self.OLD_QUERY_FILTERS
 
@@ -188,7 +191,6 @@ class TestQuery(DoajTestCase):
           }
         }
 
-    @elasticsearch_test
     def test_06_search(self):
         # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
         # We then expect pre-filters to run on the query, ensuring we only get the 3 in DOAJ articles.
