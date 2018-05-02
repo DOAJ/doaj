@@ -10,6 +10,8 @@ jQuery(document).ready(function($) {
 
         issn : {
             field: 'index.issn.exact',
+            type: 'terms',
+            logic: 'OR',
             hidden: true
         },
 
@@ -280,7 +282,7 @@ jQuery(document).ready(function($) {
         facets: natural,
 
         // Each ToC is fixed to the correct journal ISSN.
-        predefined_filters: {'index.issn.exact': [toc_issn], '_type' : ['article'] },
+        predefined_filters: {"index.issn.exact" : toc_issns, '_type' : ['article'] },
         exclude_predefined_filters_from_facets : true,
 
         search_sortby: [
