@@ -1,7 +1,6 @@
 from functools import wraps
 from flask import request, abort, redirect, flash, url_for, render_template
-from flask.ext.login import current_user
-from flask_login import login_user
+from flask_login import login_user, current_user
 
 from portality.api.v1.common import Api401Error
 
@@ -70,7 +69,7 @@ def ssl_required(fn):
 
 
 def restrict_to_role(role):
-    if current_user.is_anonymous():
+    if current_user.is_anonymous:
         flash('You are trying to access a protected area. Please log in first.', 'error')
         return redirect(url_for('account.login', next=request.url))
 

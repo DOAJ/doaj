@@ -50,12 +50,12 @@ The blueprint should have a "before_request" method which rejects anonymous user
     # restrict everything in admin to logged in users with the "publsiher" role
     @blueprint.before_request
     def restrict():
-        if current_user.is_anonymous() or not current_user.has_role("publisher"):
+        if current_user.is_anonymous or not current_user.has_role("publisher"):
             abort(401)
 
 The restricted method should be annotated with flask.ext.login's login_required:
 
-    from flask.ext.login import login_required
+    from flask_login import login_required
     
     @blueprint.route("/")
     @login_required

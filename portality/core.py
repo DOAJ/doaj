@@ -1,8 +1,8 @@
 import os
 
 from flask import Flask
-from flask.ext.login import LoginManager
-from flask.ext.cors import CORS
+from flask_login import LoginManager
+from flask_cors import CORS
 
 from portality import settings
 from portality.error_handler import setup_error_logging

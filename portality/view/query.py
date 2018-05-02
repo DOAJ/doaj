@@ -6,7 +6,7 @@ Has auth control, so it is better than exposing your ES index directly.
 import json, urllib2
 
 from flask import Blueprint, request, abort, make_response
-from flask.ext.login import current_user
+from flask_login import current_user
 
 import portality.models as models
 from portality.core import app
@@ -37,7 +37,7 @@ def query(path='Pages'):
         if subpath.lower() in app.config.get('NO_QUERY',[]):
             abort(401)
         if subpath.lower() in app.config.get("SU_ONLY", []):
-            if current_user.is_anonymous() or not current_user.is_super:
+            if current_user.is_anonymous or not current_user.is_super:
                 abort(401)
     
     # now look at the config of this route and determine if the url path
@@ -66,7 +66,7 @@ def query(path='Pages'):
     # if there is a role, then check that the user is not anonymous and
     # that the user has the required role
     if role is not None:
-        if current_user.is_anonymous() or not current_user.has_role(role):
+        if current_user.is_anonymous or not current_user.has_role(role):
             abort(401)
     
     # if we get to here, then we are good to respond, though check further down
@@ -88,7 +88,7 @@ def query(path='Pages'):
         else:
             rec = klass().pull(pathparts[1])
             if rec:
-                if not current_user.is_anonymous() or (app.config.get('PUBLIC_ACCESSIBLE_JSON',True) and rec.data.get('visible',True) and rec.data.get('accessible',True)):
+                if not current_user.is_anonymous or (app.config.get('PUBLIC_ACCESSIBLE_JSON',True) and rec.data.get('visible',True) and rec.data.get('accessible',True)):
                     resp = make_response( rec.json )
                 else:
                     abort(401)
@@ -121,7 +121,7 @@ def query(path='Pages'):
             if path.lower() in app.config['DEFAULT_SORT'].keys():
                 qs['sort'] = app.config['DEFAULT_SORT'][path.lower()]
 
-        if current_user.is_anonymous() and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
+        if current_user.is_anonymous and app.config.get('ANONYMOUS_SEARCH_TERMS',False):
             if path.lower() in app.config['ANONYMOUS_SEARCH_TERMS'].keys():
                 if 'bool' not in qs['query']:
                     pq = qs['query']

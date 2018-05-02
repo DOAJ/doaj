@@ -1,5 +1,5 @@
 from flask import render_template, url_for, request
-from flask.ext.login import current_user
+from flask_login import current_user
 
 import json, uuid
 from datetime import datetime

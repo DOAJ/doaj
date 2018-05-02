@@ -10,7 +10,7 @@ new ones as required too.
 import os, sys
 
 from flask import request, abort, render_template, redirect, send_file, url_for, jsonify
-from flask.ext.login import login_user, current_user
+from flask_login import login_user, current_user
 
 from datetime import datetime
 import tzlocal

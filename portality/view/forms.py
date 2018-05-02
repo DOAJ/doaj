@@ -7,7 +7,7 @@ features, and a bit of refactoring on the organisation of the formcontext stuff 
 from datetime import datetime
 import re
 
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from wtforms import Form, validators
 from wtforms import StringField, TextAreaField, FormField, FieldList, HiddenField
@@ -56,7 +56,7 @@ class ArticleForm(Form):
     def __init__(self, *args, **kwargs):
         super(ArticleForm, self).__init__(*args, **kwargs)
         try:
-            if not current_user.is_anonymous():
+            if not current_user.is_anonymous:
                 issns = models.Journal.issns_by_owner(current_user.id)
                 ic = [("", "Select an ISSN")] + [(i,i) for i in issns]
                 self.pissn.choices = ic

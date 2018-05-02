@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template, redirect
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from flask_swagger import swagger
 
@@ -32,7 +32,7 @@ def api_spec():
 
     # Generate the swagger description from the Jinja template
     account_url = None
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True)
 
     swag['info']['description'] = render_template('api/v1/swagger_description.html',

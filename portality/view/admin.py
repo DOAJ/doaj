@@ -2,7 +2,7 @@ import json
 
 from flask import Blueprint, request, flash, abort, make_response
 from flask import render_template, redirect, url_for
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from werkzeug.datastructures import MultiDict
 
