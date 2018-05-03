@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from flask import render_template, abort, redirect, url_for, flash
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from portality.core import app
 from portality import models, article

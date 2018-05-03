@@ -1,5 +1,5 @@
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ArticleFixtureFactory
+from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 from portality import models
 
 
@@ -66,3 +66,46 @@ class TestTOC(DoajTestCase):
         assert a.data['bibjson']['journal']['number'] == '99'
         assert a.data['index']['date'] == "1991-01-01T00:00:00Z"
         assert a.data['index']['date_toc_fv_month'] == a.data['index']['date'] == "1991-01-01T00:00:00Z"
+
+    def test_03_toc_uses_both_issns_when_available(self):
+        j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        pissn = j.bibjson().first_pissn
+        eissn = j.bibjson().first_eissn
+        j.set_last_manual_update()
+        j.save()
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, eissn=eissn, in_doaj=True))
+        a.save(blocking=True)
+        with self.app_test.test_client() as t_client:
+            response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
+            assert response.status_code == 200
+            assert 'var toc_issns = ["{pissn}","{eissn}"];'.format(pissn=pissn, eissn=eissn) in response.data
+
+    def test_04_toc_correctly_uses_pissn(self):
+        j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        pissn = j.bibjson().first_pissn
+        # remove eissn
+        j.bibjson().remove_identifiers(idtype=j.bibjson().E_ISSN, id=j.bibjson().first_eissn)
+
+        j.set_last_manual_update()
+        j.save()
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=pissn, in_doaj=True))
+        a.save(blocking=True)
+        with self.app_test.test_client() as t_client:
+            response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
+            assert response.status_code == 200
+            assert 'var toc_issns = ["{pissn}"];'.format(pissn=pissn) in response.data
+
+    def test_05_toc_correctly_uses_eissn(self):
+        j = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        eissn = j.bibjson().first_eissn
+        # remove pissn
+        j.bibjson().remove_identifiers(idtype=j.bibjson().P_ISSN, id=j.bibjson().first_pissn)
+
+        j.set_last_manual_update()
+        j.save()
+        a = models.Article(**ArticleFixtureFactory.make_article_source(pissn=eissn, in_doaj=True))
+        a.save(blocking=True)
+        with self.app_test.test_client() as t_client:
+            response = t_client.get('/toc/{}'.format(j.bibjson().get_preferred_issn()))
+            assert response.status_code == 200
+            assert 'var toc_issns = ["{eissn}"];'.format(eissn=eissn) in response.data

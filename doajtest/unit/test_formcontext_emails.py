@@ -62,10 +62,6 @@ class TestPublicApplicationEmails(DoajTestCase):
     def setUp(self):
         super(TestPublicApplicationEmails, self).setUp()
 
-        # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
-
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
@@ -78,9 +74,6 @@ class TestPublicApplicationEmails(DoajTestCase):
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
         self.app_test.logger.removeHandler(self.read_info)
-
-        # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
 
     def test_01_public_application_email(self):
         application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
@@ -123,10 +116,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         self.editor_account_pull = models.Account.pull
         models.Account.pull = editor_account_pull
 
-        # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
-
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
@@ -143,9 +132,6 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
         self.app_test.logger.removeHandler(self.read_info)
-
-        # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's application review form sends the right emails"""
@@ -618,10 +604,6 @@ class TestJournalReviewEmails(DoajTestCase):
         self.editor_account_pull = models.Account.pull
         models.Account.pull = editor_account_pull
 
-        # These tests produce a fair bit of output to stdout - disable the log handler which prints those
-        self.stdout_handler = self.app_test.logger.handlers[0]
-        self.app_test.logger.removeHandler(self.stdout_handler)
-
         # Register a new log handler so we can inspect the info logs
         self.info_stream = StringIO()
         self.read_info = logging.StreamHandler(self.info_stream)
@@ -638,9 +620,6 @@ class TestJournalReviewEmails(DoajTestCase):
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
         self.app_test.logger.removeHandler(self.read_info)
-
-        # Re-enable the old log handler
-        self.app_test.logger.addHandler(self.stdout_handler)
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's journal review form sends the right emails"""

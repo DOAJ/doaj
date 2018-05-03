@@ -1,5 +1,5 @@
 import uuid
-from flask.ext.login import UserMixin
+from flask_login import UserMixin
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -120,7 +120,7 @@ class Account(DomainObject, UserMixin):
 
     @property
     def is_super(self):
-        # return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        # return not self.is_anonymous and self.id in app.config['SUPER_USER']
         return Authorise.has_role(app.config["SUPER_USER_ROLE"], self.data.get("role", []))
 
     def has_role(self, role):

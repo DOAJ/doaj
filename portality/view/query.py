@@ -1,7 +1,7 @@
 import json, urllib2
 
 from flask import Blueprint, request, abort, make_response
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from portality import util
 from portality.bll.doaj import DOAJ
@@ -35,7 +35,7 @@ def query(path=None):
 
     try:
         account = None
-        if current_user is not None and not current_user.is_anonymous():
+        if current_user is not None and not current_user.is_anonymous:
             account = current_user._get_current_object()
         queryService = DOAJ.queryService()
         res = queryService.search(domain, index_type, q, account)
@@ -47,6 +47,3 @@ def query(path=None):
     resp = make_response(json.dumps(res))
     resp.mimetype = "application/json"
     return resp
-
-
-

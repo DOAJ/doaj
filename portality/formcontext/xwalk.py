@@ -1,6 +1,6 @@
 from portality import models, lcc
 from portality.datasets import licenses, main_license_options
-from flask.ext.login import current_user
+from flask_login import current_user
 from portality.util import flash_with_url, listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices

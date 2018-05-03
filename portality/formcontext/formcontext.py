@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 
 from flask import render_template, url_for, request
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from portality import constants
 from portality import models, app_email, util
