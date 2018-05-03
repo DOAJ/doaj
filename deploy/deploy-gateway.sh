@@ -24,7 +24,7 @@ rm -rf doaj
 virtualenv -p python2.7 doaj
 cd doaj
 . bin/activate
-pip install pip --upgrade
+pip install --upgrade pip=10.0.1
 mv /home/cloo/tmp_deploy_workspace_$ENV/doaj_src src
 cd src/doaj
 
@@ -34,7 +34,7 @@ git submodule update --recursive
 # install app on gate
 sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
-pip install --force-reinstall -r requirements.txt
+pip install -r requirements.txt
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/$ENV/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
