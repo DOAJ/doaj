@@ -48,10 +48,10 @@ class TestQuery(DoajTestCase):
 
     def setUp(self):
         super(TestQuery, self).setUp()
-        self.OLD_QUERY_ROUTE = self.app_test.config['QUERY_ROUTE']
+        self.OLD_QUERY_ROUTE = self.app_test.config.get('QUERY_ROUTE')
         self.app_test.config['QUERY_ROUTE'] = QUERY_ROUTE
 
-        self.OLD_QUERY_FILTERS = self.app_test.config['QUERY_FILTERS']
+        self.OLD_QUERY_FILTERS = self.app_test.config.get('QUERY_FILTERS')
         self.app_test.config['QUERY_FILTERS'] = QUERY_FILTERS
 
     def tearDown(self):
