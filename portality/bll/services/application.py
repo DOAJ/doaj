@@ -44,12 +44,13 @@ class ApplicationService(object):
 
         # retrieve the id of the current journal if there is one
         cj_id = application.current_journal
-        cj, _ = journalService.journal(cj_id)
+        cj = None
 
         # if there is a current_journal record, remove it, and record
         # it as a related journal.  This will let us come back later and know
         # which journal record this was intended as an update against if needed.
         if cj_id is not None:
+            cj, _ = journalService.journal(cj_id)
             application.remove_current_journal()
             if cj is not None:
                 application.set_related_journal(cj_id)
