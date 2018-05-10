@@ -21,10 +21,10 @@ rm -rf src/doaj/doaj.egg-info
 mv src /home/cloo/tmp_deploy_workspace_$ENV/doaj_src
 cd ..
 rm -rf doaj
-virtualenv doaj
+virtualenv -p python2.7 doaj
 cd doaj
 . bin/activate
-pip install pip --upgrade
+pip install --upgrade pip==10.0.1
 mv /home/cloo/tmp_deploy_workspace_$ENV/doaj_src src
 cd src/doaj
 
@@ -35,18 +35,6 @@ git submodule update --recursive
 sudo apt-get update -q -y
 sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
 pip install -r requirements.txt
-# insert assorted swearwords and curses
-pip install flask-swagger==0.2.8
-pip install flask==0.9  # we need to bump flask to 10.1 and retest the app .. soon
-pip install flask-cors==2.1.2 # for some reason this is not being picked up from setup.py?!
-# none of these newly introduced requirements are being picked up by pip
-# something's wrong with the virtualenv
-pip install LinkHeader==0.4.3
-pip install universal-analytics-python==0.2.4
-pip install huey==1.7.0
-pip install redis==2.10.5
-pip install rstr==2.2.5
-pip install freezegun==0.3.10
 
 # prep sym links for the app server
 ln -sf $DIR/supervisor/$ENV/doaj-$ENV.conf /home/cloo/repl/$ENV/supervisor/conf.d/doaj-$ENV.conf
@@ -68,6 +56,7 @@ ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/doaj-$GATE_ENV-gate 
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-$GATE_ENV-gate
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/block_user_agents.conf /home/cloo/repl/gateway/nginx/conf.d/block_user_agents.conf
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/proxy_pass_settings /home/cloo/repl/gateway/nginx/includes/proxy_pass_settings
+sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/logrotate/doaj-duplicity /etc/logrotate.d/doaj-duplicity
 
 # gateway crons
 sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/anacrontab-$GATE_ENV-gate /etc/anacrontab

@@ -1,0 +1,50 @@
+{% if current_journal %}
+    <h3>This application is an update for an existing journal</h3>
+    <p>This application updates the journal <a href="{{ url_for('doaj.journal_readonly', journal_id=current_journal.id) }}" target="_blank">{{ current_journal.bibjson().title }}</a></p>
+    <p>The following fields have changed in the new application: (<a href="#" class="show_hide_diff_table" data-state="shown">hide</a>)</p>
+
+    <div class="form_diff">
+    <table class="diff_table">
+        <thead>
+            <tr>
+                <td width="40%">Question</td>
+                <td width="60%">Previous and New Values</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tup in form_diff %}
+                <tr>
+                    <td>
+                        {% if tup[1] != 0 %}
+                            <a class="animated" href="#{{ tup[0] }}-container">{{ tup[1] }}) {{ tup[2] }}</a>
+                        {% else %}
+                            {{ tup[2] }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <table class="inner_comparison_table">
+                            <tr>
+                                <td><strong>Previous</strong></td>
+                                {% if tup[2] == 'Subjects' %}
+                                    <td>{{ tup[3] | form_diff_table_subject_expand }}</td>
+                                {% else %}
+                                    <td>{{ tup[3] | form_diff_table_comparison_value }}</td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td><strong>New</strong></td>
+                                {% if tup[2] == 'Subjects' %}
+                                    <td>{{ tup[4] | form_diff_table_subject_expand }}</td>
+                                {% else %}
+                                    <td>{{ tup[4] | form_diff_table_comparison_value }}</td>
+                                {% endif %}
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endif %}

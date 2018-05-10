@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, url_for, request, make_response, abort, render_template, redirect
-from flask.ext.login import current_user
+from flask_login import current_user
 
 from flask_swagger import swagger
 
@@ -32,7 +32,7 @@ def api_spec():
 
     # Generate the swagger description from the Jinja template
     account_url = None
-    if current_user.is_authenticated():
+    if current_user.is_authenticated:
         account_url = url_for('account.username', username=current_user.id, _external=True)
 
     swag['info']['description'] = render_template('api/v1/swagger_description.html',
@@ -162,7 +162,7 @@ def create_application():
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    a = ApplicationsCrudApi.create(data, current_user)
+    a = ApplicationsCrudApi.create(data, current_user._get_current_object())
 
     # respond with a suitable Created response
     return created(a, url_for("api_v1.retrieve_application", application_id=a.id))
@@ -189,7 +189,7 @@ def update_application(application_id):
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    ApplicationsCrudApi.update(application_id, data, current_user)
+    ApplicationsCrudApi.update(application_id, data, current_user._get_current_object())
 
     # respond with a suitable No Content successful response
     return no_content()
@@ -200,7 +200,7 @@ def update_application(application_id):
 @swag(swag_summary='Delete an application <span class="red">[Authenticated, not public]</span>', swag_spec=ApplicationsCrudApi.delete_swag())  # must be applied after @api_key_(optional|required) decorators. They don't preserve func attributes.
 @analytics.sends_ga_event(GA_CATEGORY, GA_ACTIONS.get('delete_application', 'Delete application'), record_value_of_which_arg='application_id')
 def delete_application(application_id):
-    ApplicationsCrudApi.delete(application_id, current_user)
+    ApplicationsCrudApi.delete(application_id, current_user._get_current_object())
     return no_content()
 
 

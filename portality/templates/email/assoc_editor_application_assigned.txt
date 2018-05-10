@@ -1,6 +1,6 @@
 Dear {{ associate_editor }},
 
-An application, or reapplication for the journal "{{ journal_name }}" has been assigned
+An application, or update request for the journal "{{ journal_name }}" has been assigned
 to you by the Editor of your Group "{{ group_name }}". Please start work on this within 10 days.
 {{ url_root }}/editor/ .
 

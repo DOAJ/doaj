@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if not current_user.is_anonymous() %}
+{% if not current_user.is_anonymous %}
 <div id="uploadsection" class="hero-unit well" style="height:100px;">
 <p style="color:#aaa;">Drag and drop here to upload new files</p>
 </div>
@@ -14,7 +14,7 @@
             <thead>
                 <tr>
                     <th>Filename</th><th>Page usage</th>
-                    {% if not current_user.is_anonymous() %}
+                    {% if not current_user.is_anonymous %}
                         <th></th>
                     {% endif %}
                 </tr>
@@ -28,7 +28,7 @@
                         <a target="_blank" href="{{u}}">{{u}}</a><br>
                     {% endfor %}
                     </td>
-                    {% if not current_user.is_anonymous() %}
+                    {% if not current_user.is_anonymous %}
                     <td><a class="deleteme btn btn-danger" href="/media/{{file}}">delete</a></td>
                     {% endif %}
                 </tr>

@@ -123,7 +123,11 @@
             {% endif %}
 
             <p><strong>Date added to DOAJ</strong>:&nbsp;{{journal.created_timestamp.strftime("%e %b %Y")}}</p>
+
+            {% if journal.last_manual_update_timestamp %}
             <p><strong>Record Last Updated</strong>:&nbsp;{{journal.last_manual_update_timestamp.strftime("%e %b %Y")}}</p>
+            {% endif %}
+
         </div>
     </div>
 
@@ -409,7 +413,8 @@
 {% block extra_js_bottom %}
 
 <script type="text/javascript">
-    var toc_issn = "{{ toc_issn }}";
+    {% set toc_issns_js_str = '"' + toc_issns | join('","') + '"' %}
+    var toc_issns = [{{ toc_issns_js_str | safe }}];
 </script>
 
 <script type="text/javascript">

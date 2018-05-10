@@ -1,12 +1,13 @@
-from flask import render_template
 from datetime import datetime, timedelta
 
+from flask import render_template
+
+from portality import constants
 from portality import models, app_email
+from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 from portality.core import app
 from portality.dao import Facetview2
-
 from portality.tasks.redis_huey import main_queue, schedule
-from portality.background import BackgroundTask, BackgroundApi, BackgroundException
 
 
 # Functions for each notification recipient - ManEd, Editor, Assoc_editor
@@ -68,7 +69,7 @@ def managing_editor_notifications(emails_dict):
     _add_email_paragraph(emails_dict, MAN_ED_EMAIL, 'Managing Editors', text)
 
     # The second notification - the number of ready records
-    ready_filter = Facetview2.make_term_filter('admin.application_status.exact', 'ready')
+    ready_filter = Facetview2.make_term_filter('admin.application_status.exact', constants.APPLICATION_STATUS_READY)
 
     ready_query = {
         "query": {

@@ -5,8 +5,12 @@
 {# NOTE: requires suggestions_and_journals.js to be enabled (see _js_includes.html) #}
 
 {# include the title and the "unlock and close" feature #}
+{% set object_type = 'suggestion' %}
 {% set heading_object_type = 'Application' %}
 {% include 'formcontext/_lockable_header.html' %}
+
+{# include the table for comparing applications with journals that have changed #}
+{% include 'formcontext/_application_diff.html' %}
 
 <form method="post" action="#first_problem" class="form-horizontal wide application_journal_form" id="suggest_form">
     {% if form_context.errors %}

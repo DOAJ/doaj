@@ -1,17 +1,30 @@
-from doajtest.helpers import DoajTestCase
-from portality.lib.dataobj import DataStructureException
-from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
-from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
-from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory
 import time
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.api.v1 import ApplicationsCrudApi, Api401Error, Api400Error, Api404Error, Api403Error
+from portality.api.v1.data_objects import IncomingApplication, OutgoingApplication
+from portality.lib.dataobj import DataStructureException
+from portality.formcontext import FormContextException, formcontext
+
+def mock_finalise_exception(self, *args, **kwargs):
+    raise FormContextException("test exception")
+
+def mock_custom_validate_always_pass(self, *args, **kwargs):
+    return
 
 class TestCrudApplication(DoajTestCase):
 
     def setUp(self):
+        self.old_finalise = formcontext.FormContext.finalise
+        self.old_custom_validate = IncomingApplication.custom_validate
         super(TestCrudApplication, self).setUp()
 
     def tearDown(self):
+        formcontext.FormContext.finalise = self.old_finalise
+        IncomingApplication.custom_validate = self.old_custom_validate
         super(TestCrudApplication, self).tearDown()
 
     def test_01_incoming_application_do(self):
@@ -100,6 +113,7 @@ class TestCrudApplication(DoajTestCase):
     def test_02_create_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -155,9 +169,96 @@ class TestCrudApplication(DoajTestCase):
             data = {"some" : {"junk" : "data"}}
             a = ApplicationsCrudApi.create(data, account)
 
+        # if a formcontext exception is raised on finalise
+        formcontext.FormContext.finalise = mock_finalise_exception
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                assert e.message == "test exception"
+                raise
+        formcontext.FormContext.finalise = self.old_finalise
+
+        # validation fails on the formcontext
+        IncomingApplication.custom_validate = mock_custom_validate_always_pass
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
+            # a duff email should trigger the form validation failure
+            data["admin"]["contact"][0]["email"] = "not an email address"
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+
+    def test_03b_create_update_request_fail(self):
+        # update request target not found
+        with self.assertRaises(Api404Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api404Error as e:
+                raise
+
+        # if a formcontext exception is raised on finalise
+        publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.set_owner(publisher.id)
+        journal.save(blocking=True)
+        formcontext.FormContext.finalise = mock_finalise_exception
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["current_journal"] = journal.id
+
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                assert e.message == "test exception"
+                raise
+        formcontext.FormContext.finalise = self.old_finalise
+
+        # validation fails on the formcontext
+        publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.set_owner(publisher.id)
+        journal.save(blocking=True)
+        IncomingApplication.custom_validate = mock_custom_validate_always_pass
+        with self.assertRaises(Api400Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            # duff submission charges url should trip the validator
+            data["bibjson"]["submission_charges_url"] = "not a url!"
+            data["admin"]["current_journal"] = journal.id
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
+
+    def test_03c_update_update_request_fail(self):
+        # update request target in disallowed status
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.set_id(journal.makeid())
+        journal.save(blocking=True)
+        with self.assertRaises(Api404Error):
+            data = ApplicationFixtureFactory.incoming_application()
+            data["admin"]["current_journal"] = journal.id
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api404Error as e:
+                raise
+
     def test_03a_create_application_dryrun(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -261,6 +362,10 @@ class TestCrudApplication(DoajTestCase):
         assert oa.data.get("admin", {}).get("editor_group") is None
         assert oa.data.get("admin", {}).get("editor") is None
         assert oa.data.get("admin", {}).get("seal") is None
+        assert oa.data.get("admin", {}).get("related_journal") is None
+
+        # check that it does contain admin information that it should
+        assert oa.data.get("admin", {}).get("current_journal") is not None
 
     def test_06_retrieve_application_success(self):
         # set up all the bits we need
@@ -307,10 +412,12 @@ class TestCrudApplication(DoajTestCase):
     def test_08_update_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -323,6 +430,7 @@ class TestCrudApplication(DoajTestCase):
 
         # now make an updated version of the object
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object
@@ -342,6 +450,7 @@ class TestCrudApplication(DoajTestCase):
     def test_09_update_application_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
@@ -358,6 +467,7 @@ class TestCrudApplication(DoajTestCase):
 
         # now make an updated version of the object
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         data["bibjson"]["title"] = "An updated title"
 
         # call update on the object in various context that will fail
@@ -377,9 +487,10 @@ class TestCrudApplication(DoajTestCase):
             ApplicationsCrudApi.update("adfasdfhwefwef", data, account)
 
         # on one with a disallowed workflow status
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
+        account.add_role("publisher")
 
         with self.assertRaises(Api403Error):
             ApplicationsCrudApi.update(a.id, data, account)
@@ -387,10 +498,12 @@ class TestCrudApplication(DoajTestCase):
     def test_10_delete_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -410,10 +523,12 @@ class TestCrudApplication(DoajTestCase):
     def test_11_delete_application_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -438,10 +553,10 @@ class TestCrudApplication(DoajTestCase):
         # on the wrong id
         account.set_id("test")
         with self.assertRaises(Api404Error):
-            ApplicationsCrudApi.delete("adfasdfhwefwef", account)
+            ApplicationsCrudApi.delete(u"adfasdfhwefwef", account)
 
         # on one with a disallowed workflow status
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
 
@@ -451,10 +566,12 @@ class TestCrudApplication(DoajTestCase):
     def test_12_delete_application_dryrun(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         account = models.Account()
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the object (which will save it to the index)
         a = ApplicationsCrudApi.create(data, account)
@@ -471,3 +588,228 @@ class TestCrudApplication(DoajTestCase):
         ap = models.Suggestion.pull(a.id)
         assert ap is not None
 
+    def test_13_create_application_update_request_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # check that it got created with the right properties
+        assert isinstance(a, models.Suggestion)
+        assert a.id != "ignore_me"
+        assert a.created_date != "2001-01-01T00:00:00Z"
+        assert a.last_updated != "2001-01-01T00:00:00Z"
+        assert a.suggester.get("name") == "Contact Name"
+        assert a.suggester.get("email") == "contact@email.com"
+        assert a.owner == "test"
+        assert a.suggested_on is not None
+        assert a.bibjson().issns() == ["9999-8888", "7777-6666"] or a.bibjson().issns() == ["7777-6666", "9999-8888"]
+        assert a.bibjson().title == "not changed"
+
+        # also, because it's a special case, check the archiving_policy
+        archiving_policy = a.bibjson().archiving_policy
+        assert len(archiving_policy.get("policy")) == 4
+        lcount = 0
+        scount = 0
+        for ap in archiving_policy.get("policy"):
+            if isinstance(ap, list):
+                lcount += 1
+                assert ap[0] in ["A national library", "Other"]
+                assert ap[1] in ["Trinity", "A safe place"]
+            else:
+                scount += 1
+        assert lcount == 2
+        assert scount == 2
+        assert "CLOCKSS" in archiving_policy.get("policy")
+        assert "LOCKSS" in archiving_policy.get("policy")
+
+        time.sleep(2)
+
+        s = models.Suggestion.pull(a.id)
+        assert s is not None
+
+    def test_14_create_application_update_request_fail(self):
+        data = ApplicationFixtureFactory.incoming_application()
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner("test")
+        journal.save(blocking=True)
+
+        # if the account is dud
+        with self.assertRaises(Api401Error):
+            a = ApplicationsCrudApi.create(data, None)
+
+        # if the data is bust
+        with self.assertRaises(Api400Error):
+            account = models.Account()
+            account.set_id("test")
+            account.set_name("Tester")
+            account.set_email("test@test.com")
+            data = {"some" : {"junk" : "data"}}
+            a = ApplicationsCrudApi.create(data, account)
+
+    def test_15_create_application_update_request_dryrun(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object, with the dry_run flag set
+        a = ApplicationsCrudApi.create(data, account, dry_run=True)
+
+        time.sleep(2)
+
+        # now check that the application index remains empty
+        ss = [x for x in models.Suggestion.iterall()]
+        assert len(ss) == 0
+
+    def test_16_update_application_update_request_success(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+        data["bibjson"]["publisher"] = "An updated publisher"
+
+        # call update on the object
+        a2 = ApplicationsCrudApi.update(a.id, data, account)
+        assert a2 != a
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the updated version
+        updated = models.Suggestion.pull(a.id)
+
+        # now check the properties to make sure the update tool
+        assert updated.bibjson().title == "not changed"
+        assert updated.bibjson().publisher == "An updated publisher"
+        assert updated.created_date == created.created_date
+
+    def test_17_update_application_update_request_fail(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+        account.add_role("publisher")
+
+        journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
+        journal.bibjson().remove_identifiers()
+        journal.bibjson().add_identifier(journal.bibjson().E_ISSN, "9999-8888")
+        journal.bibjson().add_identifier(journal.bibjson().P_ISSN, "7777-6666")
+        journal.bibjson().title = "not changed"
+        journal.set_id(data["admin"]["current_journal"])
+        journal.set_owner(account.id)
+        journal.save(blocking=True)
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # let the index catch up
+        time.sleep(2)
+
+        # get a copy of the newly created version for use in assertions later
+        created = models.Suggestion.pull(a.id)
+
+        # now make an updated version of the object
+        data = ApplicationFixtureFactory.incoming_application()
+        data["bibjson"]["title"] = "An updated title"
+        data["bibjson"]["publisher"] = "An updated publisher"
+
+        # call update on the object in various context that will fail
+
+        # without an account
+        with self.assertRaises(Api401Error):
+            ApplicationsCrudApi.update(a.id, data, None)
+
+        # with the wrong account
+        account.set_id("other")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
+        # on the wrong id
+        account.set_id("test")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update("adfasdfhwefwef", data, account)
+
+        # with the wrong user role
+        account.remove_role("publisher")
+        with self.assertRaises(Api404Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+        account.add_role("publisher")
+
+        # on one with a disallowed workflow status
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
+        created.save(blocking=True)
+
+        with self.assertRaises(Api403Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+
+        # one with the wrong data structure
+        data["flibble"] = "whatever"
+        with self.assertRaises(Api400Error):
+            ApplicationsCrudApi.update(a.id, data, account)
+        del data["flibble"]
+
+        # one where we tried to change the current_journal
+        data["admin"]["current_journal"] = "owqierqwoieqwoijefwq"
+        with self.assertRaises(Api400Error):
+            ApplicationsCrudApi.update(a.id, data, account)

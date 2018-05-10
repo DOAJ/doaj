@@ -1,6 +1,6 @@
 from flask import Blueprint, request, flash
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 import urllib
 
 from portality import dao
@@ -270,7 +270,7 @@ def toc(identifier=None, volume=None, issue=None):
 
     # now render all that information
     return render_template('doaj/toc.html', journal=journal, bibjson=bibjson, future=future_journals, past=past_journals,
-                           search_page=True, toc_issn=issn, facetviews=['public.journaltocarticles.facetview'])
+                           search_page=True, toc_issns=journal.bibjson().issns(), facetviews=['public.journaltocarticles.facetview'])
 
 
 @blueprint.route("/article/<identifier>")
@@ -296,14 +296,14 @@ def article_page(identifier=None):
 def contact():
     if request.method == "GET":
         form = ContactUs()
-        if current_user.is_authenticated():
+        if current_user.is_authenticated:
             form.email.data = current_user.email
         return render_template("doaj/contact.html", form=form)
     elif request.method == "POST":
         prepop = request.values.get("ref")
         form = ContactUs(request.form)
 
-        if current_user.is_authenticated() and (form.email.data is None or form.email.data == ""):
+        if current_user.is_authenticated and (form.email.data is None or form.email.data == ""):
             form.email.data = current_user.email
 
         if prepop is not None:

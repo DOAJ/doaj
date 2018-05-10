@@ -1,6 +1,7 @@
 from flask_login import login_user
 
 from unittest import TestCase
+from functools import wraps
 from portality import core, dao
 from portality.app import app
 from doajtest.bootstrap import prepare_for_test
@@ -8,7 +9,8 @@ import time
 import dictdiffer
 from datetime import datetime
 from glob import glob
-import os
+import os, csv
+from portality.lib import paths
 
 prepare_for_test()
 
@@ -16,11 +18,17 @@ prepare_for_test()
 class DoajTestCase(TestCase):
     app_test = app
 
-    def setUp(self):
+    def init_index(self):
         core.initialise_index(self.app_test)
 
-    def tearDown(self):
+    def destroy_index(self):
         dao.DomainObject.destroy_index()
+
+    def setUp(self):
+        self.init_index()
+
+    def tearDown(self):
+        self.destroy_index()
         for f in self.list_today_article_history_files() + self.list_today_journal_history_files():
             os.remove(f)
 
@@ -38,6 +46,7 @@ class DoajTestCase(TestCase):
             login_user(acc)
 
         return ctx
+
 
 def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     """
@@ -77,3 +86,16 @@ def diff_dicts(d1, d2, d1_label='d1', d2_label='d2', print_unchanged=False):
     if print_unchanged:
         print 'Unchanged :: keys which are the same in {d1} and {d2} and whose values are also the same'.format(d1=d1_label, d2=d2_label)
         print differ.unchanged()
+
+def load_from_matrix(filename, test_ids):
+    if test_ids is None:
+        test_ids = []
+    with open(paths.rel2abs(__file__, "matrices", filename)) as f:
+        reader = csv.reader(f)
+        reader.next()   # pop the header row
+        cases = []
+        for row in reader:
+            if row[0] in test_ids or len(test_ids) == 0:
+                row[0] = "row_id_" + row[0]
+                cases.append(tuple(row))
+        return cases

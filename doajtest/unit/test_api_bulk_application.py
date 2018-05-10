@@ -1,8 +1,11 @@
-from doajtest.helpers import DoajTestCase
-from portality.api.v1 import ApplicationsBulkApi, Api401Error, Api400Error
-from portality import models
-from doajtest.fixtures import ApplicationFixtureFactory
 import time
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.api.v1 import ApplicationsBulkApi, Api401Error, Api400Error
+
 
 class TestCrudApplication(DoajTestCase):
 
@@ -15,6 +18,7 @@ class TestCrudApplication(DoajTestCase):
     def test_01_create_applications_success(self):
         # set up all the bits we need - 10 applications
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create an account that we'll do the create as
@@ -41,6 +45,7 @@ class TestCrudApplication(DoajTestCase):
         # if the account is dud
         with self.assertRaises(Api401Error):
             data = ApplicationFixtureFactory.incoming_application()
+            del data["admin"]["current_journal"]
             dataset = [data] * 10
             ids = ApplicationsBulkApi.create(dataset, None)
 
@@ -64,6 +69,7 @@ class TestCrudApplication(DoajTestCase):
     def test_03_delete_application_success(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create the account we're going to work as
@@ -71,6 +77,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_id("test")
         account.set_name("Tester")
         account.set_email("test@test.com")
+        account.add_role("publisher")
 
         # call create on the objects (which will save it to the index)
         ids = ApplicationsBulkApi.create(dataset, account)
@@ -95,6 +102,7 @@ class TestCrudApplication(DoajTestCase):
     def test_04_delete_applications_fail(self):
         # set up all the bits we need
         data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
         dataset = [data] * 10
 
         # create the account we're going to work as
@@ -128,7 +136,7 @@ class TestCrudApplication(DoajTestCase):
 
         # on one with a disallowed workflow status
         created = models.Suggestion.pull(ids[3])
-        created.set_application_status("accepted")
+        created.set_application_status(constants.APPLICATION_STATUS_ACCEPTED)
         created.save()
         time.sleep(2)
 

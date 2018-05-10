@@ -1,13 +1,16 @@
-from flask import render_template, url_for, request
-from flask.ext.login import current_user
-
-import json, uuid
+import json
+import uuid
 from datetime import datetime
 
-from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
-from portality.lcc import lcc_jstree
+from flask import render_template, url_for, request
+from flask_login import current_user
+
+from portality import constants
 from portality import models, app_email, util
 from portality.core import app
+from portality.formcontext import forms, xwalk, render, choices, emails, FormContextException
+from portality.lcc import lcc_jstree
+from portality.ui.messages import Messages
 
 ACC_MSG = 'Please note you <span class="red">cannot edit</span> this application as it has been accepted into the DOAJ.'
 SCOPE_MSG = 'Please note you <span class="red">cannot edit</span> this application as you don\'t have the necessary ' \
@@ -161,7 +164,7 @@ class FormContext(object):
         """
         pass
 
-    def finalise(self):
+    def finalise(self, *args, **kwargs):
         """
         Finish up with the FormContext.  Carry out any final workflow tasks, etc.
         """
@@ -228,7 +231,8 @@ class PrivateContext(FormContext):
         # copy over any important fields from the previous version of the object
         created_date = self.source.created_date if self.source.created_date else now
         self.target.set_created(created_date)
-        self.target.data['id'] = self.source.data['id']
+        if "id" in self.source.data:
+            self.target.data['id'] = self.source.data['id']
 
         try:
             if self.source.current_application:
@@ -238,17 +242,26 @@ class PrivateContext(FormContext):
             pass
 
         try:
-            if self.source.last_reapplication:
-                self.target.set_last_reapplication(self.source.last_reapplication)
-        except AttributeError:
-            # this means that the source doesn't know about last_reapplication, which is fine
-            pass
-
-        try:
             if self.source.current_journal:
                 self.target.set_current_journal(self.source.current_journal)
         except AttributeError:
             # this means that the source doesn't know about current_journals, which is fine
+            pass
+
+        try:
+            if self.source.related_journal:
+                self.target.set_related_journal(self.source.related_journal)
+        except AttributeError:
+            # this means that the source doesn't know about related_journals, which is fine
+            pass
+
+        try:
+            if self.source.related_applications:
+                related = self.source.related_applications
+                for rel in related:
+                    self.target.add_related_application(rel.get("application_id"), rel.get("date_accepted"))
+        except AttributeError:
+            # this means that the source doesn't know about related_applications, which is fine
             pass
 
         # if the source is a journal, we need to carry the in_doaj flag
@@ -440,7 +453,7 @@ class ApplicationContext(PrivateContext):
         self.add_alert('Account {username} created'.format(username=o.id))
         return o
 
-    def _send_application_approved_email(self, journal_title, publisher_name, email, journal_contact, reapplication=False):
+    def _send_application_approved_email(self, journal_title, publisher_name, email, journal_contact, update_request=False):
         """Email the publisher when an application is accepted (it's here because it's too troublesome to factor out)"""
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -452,9 +465,11 @@ class ApplicationContext(PrivateContext):
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
+                msg = Messages.SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
                 template = "email/publisher_application_accepted.txt"
-                if reapplication:
-                    template = "email/publisher_reapplication_accepted.txt"
+                if update_request:
+                    msg = Messages.SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                    template = "email/publisher_update_request_accepted.txt"
                 jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -466,15 +481,18 @@ class ApplicationContext(PrivateContext):
                                     journal_contact=journal_contact,
                                     url_root=url_root
                 )
-                self.add_alert('Sent email to ' + email + ' to tell them about their journal getting accepted into DOAJ.')
+                self.add_alert(msg)
             else:
-                self.add_alert('Did not send email to ' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.')
+                msg = Messages.NOT_SENT_ACCEPTED_APPLICATION_EMAIL.format(email=email)
+                if update_request:
+                    msg = Messages.NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=email)
+                self.add_alert(msg)
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending application approved email failed - ' + magic)
 
-    def _send_contact_approved_email(self, journal_title, journal_contact, email, publisher_name, reapplication=False):
+    def _send_contact_approved_email(self, journal_title, journal_contact, email, publisher_name, update_request=False):
         """Email the journal contact when an application is accepted """
         url_root = request.url_root
         if url_root.endswith("/"):
@@ -487,8 +505,10 @@ class ApplicationContext(PrivateContext):
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/contact_application_accepted.txt"
-                if reapplication:
-                    template = "email/contact_reapplication_accepted.txt"
+                alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL.format(email=to[0])
+                if update_request:
+                    template = "email/contact_update_request_accepted.txt"
+                    alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=to[0])
                 jn = journal_title #.encode('utf-8', 'replace')
 
                 app_email.send_mail(to=to,
@@ -500,13 +520,56 @@ class ApplicationContext(PrivateContext):
                                     publisher=publisher_name,
                                     url_root=url_root
                 )
-                self.add_alert('Sent email to journal contact ' + email + ' to tell them about their journal getting accepted into DOAJ.')
+                self.add_alert(alert)
             else:
-                self.add_alert('Did not send email to journal contact' + email + ' to tell them about their journal getting accepted into DOAJ, as publisher emails are disabled.')
+                alert = Messages.NOT_SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL.format(email=to[0])
+                self.add_alert(alert)
         except Exception as e:
             magic = str(uuid.uuid1())
             self.add_alert('Hm, sending the journal contact acceptance information email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
             app.logger.exception('Error sending accepted email to journal contact - ' + magic)
+
+    def render_template(self, **kwargs):
+        diff = None
+        cj = None
+        if self.source is not None:
+            current_journal = self.source.current_journal
+            if current_journal is not None:
+                cj = models.Journal.pull(current_journal)
+                if cj is not None:
+                    jform = xwalk.JournalFormXWalk.obj2form(cj)
+                    if "notes" in jform:
+                        del jform["notes"]
+                    aform = xwalk.SuggestionFormXWalk.obj2form(self.source)
+                    if "notes" in aform:
+                        del aform["notes"]
+                    diff = self._form_diff(jform, aform)
+
+        return super(ApplicationContext, self).render_template(
+            form_diff=diff,
+            current_journal=cj,
+            **kwargs)
+
+    def _form_diff(self, journal_form, application_form):
+        diff = []
+        for k, v in application_form.iteritems():
+            try:
+                q = self.form[k].label
+            except KeyError:
+                continue
+            q_num = self.renderer.question_number(k)
+            if q_num is None or q_num == "":
+                q_num = 0
+            else:
+                q_num = int(q_num)
+
+            if k in journal_form and journal_form[k] != v:
+                diff.append((k, q_num, q.text, journal_form[k], v))
+            elif k not in journal_form and q_num != 0:
+                diff.append((k, q_num, q.text, Messages.DIFF_TABLE_NOT_PRESENT, v))
+
+        diff = sorted(diff, key=lambda x: x[1])
+        return diff
 
 
 class ApplicationFormFactory(object):
@@ -521,9 +584,9 @@ class ApplicationFormFactory(object):
         elif role == "associate_editor":
             return AssEdApplicationReview(source=source, form_data=form_data)
         elif role == "publisher":
-            return PublisherReApplication(source=source, form_data=form_data)
-        elif role == "csv":
-            return PublisherCsvReApplication(source=source, form_data=form_data)
+            return PublisherUpdateRequest(source=source, form_data=form_data)
+        elif role == "update_request_readonly":
+            return PublisherUpdateRequestReadOnly(source=source, form_data=form_data)
 
 
 class JournalFormFactory(object):
@@ -566,7 +629,7 @@ class ManEdApplicationReview(ApplicationContext):
         self.form = forms.ManEdApplicationReviewForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._set_choices()
         self._expand_descriptions(["publisher", "society_institution", "platform"])
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG
 
     def pre_validate(self):
@@ -593,7 +656,7 @@ class ManEdApplicationReview(ApplicationContext):
 
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -606,22 +669,17 @@ class ManEdApplicationReview(ApplicationContext):
 
         # Save the target
         self.target.set_last_manual_update()
-        self.target.save()
 
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
 
+        # delayed import of the DOAJ BLL
+        from portality.bll.doaj import DOAJ
+        applicationService = DOAJ.applicationService()
+
         # if this application is being accepted, then do the conversion to a journal
-        if self.target.application_status == 'accepted':
-            # this suggestion is just getting accepted
-            j = self.target.make_journal()
-            j.set_in_doaj(True)
-            j.set_last_manual_update()
-            j.save()
-
-            # record the event in the provenance tracker
-            models.Provenance.make(current_user, "status:accepted", self.target)
-
+        if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
+            j = applicationService.accept_application(self.target, current_user._get_current_object())
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:
@@ -645,10 +703,30 @@ class ManEdApplicationReview(ApplicationContext):
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
                 app.logger.exception("Acceptance email to owner failed.")
 
-        # if the application was instead rejected, record a provenance event against it
-        if self.source.application_status != "rejected" and self.target.application_status == "rejected":
-            # record the event in the provenance tracker
-            models.Provenance.make(current_user, "status:rejected", self.target)
+        # if the application was instead rejected, carry out the rejection actions
+        elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
+            had_current = self.target.current_journal is not None
+            applicationService.reject_application(self.target, current_user._get_current_object())
+            if had_current:
+                publisher_email = self.target.get_latest_contact_email()
+                try:
+                    emails.send_publisher_update_request_rejected(self.target)
+                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+                except app_email.EmailException as e:
+                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+
+        # the application was neither accepted or rejected, so just save it
+        else:
+            self.target.save()
+
+        # if revisions were requested, email the publisher
+        if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
+            publisher_email = self.target.get_latest_contact_email()
+            try:
+                emails.send_publisher_update_request_revisions_required(self.target)
+                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
+            except app_email.EmailException as e:
+                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
 
         # if we need to email the editor and/or the associate, handle those here
         if is_editor_group_changed:
@@ -674,7 +752,7 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception("Publisher notification failed")
 
         # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
-        if (self.source.application_status == 'ready' or self.source.application_status == 'completed') and self.target.application_status == 'in progress':
+        if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             # First, the editor
             try:
                 emails.send_editor_inprogress_email(self.target)
@@ -702,7 +780,7 @@ class ManEdApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending review failed email to associate editor - ' + magic)
 
         # email other managing editors if this was newly set to 'ready'
-        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
             # this template requires who made the change, say it was an Admin
             ed_id = 'an administrator'
             try:
@@ -720,6 +798,7 @@ class ManEdApplicationReview(ApplicationContext):
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            # form_diff=diff,
             **kwargs)
 
     def _set_choices(self):
@@ -761,13 +840,13 @@ class EditorApplicationReview(ApplicationContext):
         if self.source.application_status not in editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
 
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         self.form.editor_group.data = self.source.editor_group
         if "application_status" in self.renderer.disabled_fields:
-            self.form.application_status.data = "accepted"
+            self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -787,7 +866,7 @@ class EditorApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -824,7 +903,7 @@ class EditorApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending editor assigned email to publisher.')
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
-        if self.source.application_status == 'completed' and self.target.application_status == 'in progress':
+        if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             try:
                 emails.send_assoc_editor_inprogress_email(self.target)
                 self.add_alert('An email has been sent to notify the assigned associate editor of the change in status.')
@@ -838,7 +917,7 @@ class EditorApplicationReview(ApplicationContext):
                 app.logger.exception('Error sending failed review email to associate editor - ' + magic)
 
         # email managing editors if the application was newly set to 'ready'
-        if self.source.application_status != 'ready' and self.target.application_status == 'ready':
+        if self.source.application_status != constants.APPLICATION_STATUS_READY and self.target.application_status == constants.APPLICATION_STATUS_READY:
             # Tell the ManEds who has made the status change - the editor in charge of the group
             editor_group_name = self.target.editor_group
             editor_group_id = models.EditorGroup.group_exists_by_name(name=editor_group_name)
@@ -869,7 +948,7 @@ class EditorApplicationReview(ApplicationContext):
     def _set_choices(self):
         if self.source is None:
             raise FormContextException("You cannot set choices for a non-existent source")
-        if self.form.application_status.data == "accepted":
+        if self.form.application_status.data == constants.APPLICATION_STATUS_ACCEPTED:
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
@@ -917,12 +996,12 @@ class AssEdApplicationReview(ApplicationContext):
         if self.source.application_status not in associate_editor_choices:
             self.info = SCOPE_MSG.format(self.source.application_status)
 
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             self.info = ACC_MSG                                     # This is after so we can supersede the last message
 
     def pre_validate(self):
         if "application_status" in self.renderer.disabled_fields:
-            self.form.application_status.data = "accepted"
+            self.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
     def form2target(self):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
@@ -944,7 +1023,7 @@ class AssEdApplicationReview(ApplicationContext):
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
-        if self.source.application_status == "accepted":
+        if self.source.application_status == constants.APPLICATION_STATUS_ACCEPTED:
             raise FormContextException("You cannot edit applications which have been accepted into DOAJ.")
 
         # if we are allowed to finalise, kick this up to the superclass
@@ -961,7 +1040,7 @@ class AssEdApplicationReview(ApplicationContext):
         models.Provenance.make(current_user, "edit", self.target)
 
         # inform publisher if this was set to 'in progress' from 'pending'
-        if self.source.application_status == 'pending' and self.target.application_status == 'in progress':
+        if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 try:
                     emails.send_publisher_inprogress_email(self.target)
@@ -974,7 +1053,7 @@ class AssEdApplicationReview(ApplicationContext):
                 self.add_alert('Did not send email to Journal Contact about the status change, as publisher emails are disabled.')
 
         # inform editor if this was newly set to 'completed'
-        if self.source.application_status != 'completed' and self.target.application_status == 'completed':
+        if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
             # record the event in the provenance tracker
             models.Provenance.make(current_user, "status:completed", self.target)
 
@@ -996,7 +1075,7 @@ class AssEdApplicationReview(ApplicationContext):
             **kwargs)
 
     def _set_choices(self):
-        if self.form.application_status.data == "accepted":
+        if self.form.application_status.data == constants.APPLICATION_STATUS_ACCEPTED:
             self.form.application_status.choices = choices.Choices.application_status("accepted")
             self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
         else:
@@ -1009,137 +1088,23 @@ class AssEdApplicationReview(ApplicationContext):
                 self.renderer.set_disabled_fields(self.renderer.disabled_fields + ["application_status"])
 
 
-class PublisherCsvReApplication(ApplicationContext):
-    def __init__(self, form_data=None, source=None):
-        self.carry = ["contact_name", "contact_email", "confirm_contact_email"]
-        super(PublisherCsvReApplication, self).__init__(form_data=form_data, source=source)
-
+class PublisherUpdateRequest(ApplicationContext):
     def make_renderer(self):
-        # this form does not have a UI expression, so no renderer required
-        pass
+        self.renderer = render.PublisherUpdateRequestRenderer()
 
     def set_template(self):
-        # this form does not have a UI expression, so no template required
-        self.template = None
+        self.template = "formcontext/publisher_update_request.html"
 
     def blank_form(self):
-        # this uses the same form as the UI for the publisher reapplication, since the requirements
-        # are identical
-        self.form = forms.PublisherReApplicationForm()
+        self.form = forms.PublisherUpdateRequestForm()
 
     def data2form(self):
-        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
-        self._carry_fields()
-
-    def source2form(self):
-        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
-        self._carry_fields()
-
-    def pre_validate(self):
-        if self.source is None:
-            raise FormContextException("You cannot validate a form from a non-existent source")
-
-        bj = self.source.bibjson()
-        contacts = self.source.contacts()
-
-        pissn = bj.get_one_identifier(bj.P_ISSN)
-        if pissn == "": pissn = None
-        self.form.pissn.data = pissn
-
-        eissn = bj.get_one_identifier(bj.E_ISSN)
-        if eissn == "": eissn = None
-        self.form.eissn.data = eissn
-
-        if len(contacts) == 0:
-            # this will cause a validation failure if the form does not provide them
-            return
-
-        # we copy across the contacts if they are necessary.  The fields are registered in self.carry
-        # if they are already present in the source data
-        contact = contacts[0]
-        if "contact_name" in self.carry:
-            self.form.contact_name.data = contact.get("name")
-        if "contact_email" in self.carry:
-            self.form.contact_email.data = contact.get("email")
-        if "confirm_contact_email" in self.carry:
-            self.form.confirm_contact_email.data = contact.get("email")
-
-    def form2target(self):
-        self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
-
-    def patch_target(self):
-        if self.source is None:
-            raise FormContextException("You cannot patch a target from a non-existent source")
-
-        self._carry_fixed_aspects()
-        self._merge_notes_forward()
-        self.target.set_owner(self.source.owner)
-        self.target.set_editor_group(self.source.editor_group)
-        self.target.set_editor(self.source.editor)
-        self._carry_continuations()
-
-        # If the source object has the suggester set, it must have been edited via the UI
-        # - do not override that information.
-        if self.source.suggester.get("name") or self.source.suggester.get("email"):
-            self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
-        else:
-        # but if the source object has no suggester set, then this reapplication is being
-        # created via CSV upload now, for the first time, so copy over the contact info
-            self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
-
-        # we carry this over for completeness, although it will be overwritten in the finalise() method
-        self.target.set_application_status(self.source.application_status)
-
-    def finalise(self):
-        # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
-        # can be carried over from the old implementation
-        if self.source is None:
-            raise FormContextException("You cannot edit a not-existent application")
-
-        # if we are allowed to finalise, kick this up to the superclass
-        super(PublisherCsvReApplication, self).finalise()
-
-        # set the status to updated
-        self.target.set_application_status('submitted')
-
-        # Save the target
-        self.target.set_last_manual_update()
-        self.target.save()
-
-    def render_template(self, **kwargs):
-        # there is no template to render
-        return ""
-
-    def _carry_fields(self):
-        if self.source is None:
-            raise FormContextException("You cannot carry fields on a not-existent application")
-        contacts = self.source.contacts()
-        if len(contacts) > 0:
-            c = contacts[0]
-            if c.get("name") is None or c.get("name") == "":
-                self.carry.remove("contact_name")
-            if c.get("email") is None or c.get("email") == "":
-                self.carry.remove("contact_email")
-                self.carry.remove("confirm_contact_email")
-
-
-class PublisherReApplication(ApplicationContext):
-    def make_renderer(self):
-        self.renderer = render.PublisherReApplicationRenderer()
-
-    def set_template(self):
-        self.template = "formcontext/publisher_reapplication.html"
-
-    def blank_form(self):
-        self.form = forms.PublisherReApplicationForm()
-
-    def data2form(self):
-        self.form = forms.PublisherReApplicationForm(formdata=self.form_data)
+        self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
         self._expand_descriptions(["publisher", "society_institution", "platform"])
         self._disable_fields()
 
     def source2form(self):
-        self.form = forms.PublisherReApplicationForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
+        self.form = forms.PublisherUpdateRequestForm(data=xwalk.SuggestionFormXWalk.obj2form(self.source))
         self._expand_descriptions(["publisher", "society_institution", "platform"])
         self._disable_fields()
 
@@ -1147,8 +1112,12 @@ class PublisherReApplication(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot validate a form from a non-existent source")
 
+        # carry forward the disabled fields
         bj = self.source.bibjson()
         contacts = self.source.contacts()
+
+        self.form.title.data = bj.title
+        self.form.alternative_title.data = bj.alternative_title
 
         pissn = bj.get_one_identifier(bj.P_ISSN)
         if pissn == "": pissn = None
@@ -1179,6 +1148,7 @@ class PublisherReApplication(ApplicationContext):
         if self.source is None:
             raise FormContextException("You cannot patch a target from a non-existent source")
 
+        self._carry_subjects_and_seal()
         self._carry_fixed_aspects()
         self._merge_notes_forward()
         self.target.set_owner(self.source.owner)
@@ -1191,47 +1161,73 @@ class PublisherReApplication(ApplicationContext):
         if self.source.suggester.get("name") or self.source.suggester.get("email"):
             self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
         else:
-        # but if the source object has no suggester set, then this reapplication is being
-        # created via CSV upload now, for the first time, so copy over the contact info
+            # but if the source object has no suggester set, then copy over the contact info
             self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)
 
-    def finalise(self):
+    def finalise(self, save_target=True, email_alert=True):
         # FIXME: this first one, we ought to deal with outside the form context, but for the time being this
         # can be carried over from the old implementation
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
         # if we are allowed to finalise, kick this up to the superclass
-        super(PublisherReApplication, self).finalise()
+        super(PublisherUpdateRequest, self).finalise()
 
-        # set the status to updated
-        self.target.set_application_status('submitted')
+        # set the status to update_request (if not already)
+        self.target.set_application_status(constants.APPLICATION_STATUS_UPDATE_REQUEST)
 
         # Save the target
         self.target.set_last_manual_update()
-        self.target.save()
+        if save_target:
+            saved = self.target.save()
+            if saved is None:
+                raise FormContextException("Save on application failed")
 
-        # email the publisher to tell them we received their reapplication
-        try:
-            self._send_received_email()
-        except app_email.EmailException:
-            self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
-            app.logger.exception('Error sending reapplication received email to publisher')
+        # obtain the related journal, and attach the current application id to it
+        journal_id = self.target.current_journal
+        from portality.bll.doaj import DOAJ
+        journalService = DOAJ.journalService()
+        if journal_id is not None:
+            journal, _ = journalService.journal(journal_id)
+            if journal is not None:
+                journal.set_current_application(self.target.id)
+                if save_target:
+                    saved = journal.save()
+                    if saved is None:
+                        raise FormContextException("Save on journal failed")
+            else:
+                self.target.remove_current_journal()
+
+        # email the publisher to tell them we received their update request
+        if email_alert:
+            try:
+                self._send_received_email()
+            except app_email.EmailException as e:
+                self.add_alert("We were unable to send you an email confirmation - possible problem with your email address")
+                app.logger.exception('Error sending reapplication received email to publisher')
 
     def render_template(self, **kwargs):
         if self.source is None:
             raise FormContextException("You cannot edit a not-existent application")
 
-        return super(PublisherReApplication, self).render_template(**kwargs)
+        return super(PublisherUpdateRequest, self).render_template(**kwargs)
+
+    def _carry_subjects_and_seal(self):
+        # carry over the subjects
+        source_subjects = self.source.bibjson().subjects()
+        self.target.bibjson().set_subjects(source_subjects)
+
+        # carry over the seal
+        self.target.set_seal(self.source.has_seal())
 
     def _disable_fields(self):
         if self.source is None:
             raise FormContextException("You cannot disable fields on a not-existent application")
 
-        disable = ["pissn", "eissn"] # these are always disabled
+        disable = ["title", "alternative_title", "pissn", "eissn"] # these are always disabled
 
         # contact fields are only disabled if they already have content in source
         contacts = self.source.contacts()
@@ -1254,25 +1250,26 @@ class PublisherReApplication(ApplicationContext):
 
         to = [acc.email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-        subject = app.config.get("SERVICE_NAME","") + " - reapplication received"
+        subject = app.config.get("SERVICE_NAME","") + " - update request received"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 app_email.send_mail(to=to,
                                     fro=fro,
                                     subject=subject,
-                                    template_name="email/publisher_reapplication_received.txt",
+                                    template_name="email/publisher_update_request_received.txt",
                                     journal_name=journal_name,
                                     username=self.target.owner
                 )
                 self.add_alert('A confirmation email has been sent to ' + acc.email + '.')
-        except app_email.EmailException:
+        except app_email.EmailException as e:
             magic = str(uuid.uuid1())
-            self.add_alert('Hm, sending the reapplication received email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-            app.logger.exception('Error sending reapplication received email - ' + magic)
+            self.add_alert('Hm, sending the "update request received" email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
+            app.logger.error(magic + "\n" + repr(e))
+            raise e
 
 
-class PublicApplication(FormContext):
+class PublicApplication(ApplicationContext):
     """
     Public Application Form Context.  This is also a sort of demonstrator as to how to implement
     one, so it will do unnecessary things like override methods that don't actually need to be overridden.
@@ -1315,28 +1312,92 @@ class PublicApplication(FormContext):
         self.target = xwalk.SuggestionFormXWalk.form2obj(self.form)
 
     def patch_target(self):
-        # no need to patch the target, there is no source for this kind of form, and no complexity
-        # in how it is handled
-        pass
+        if self.source is not None:
+            self._carry_fixed_aspects()
+            self._merge_notes_forward()
+            self.target.set_owner(self.source.owner)
+            self.target.set_editor_group(self.source.editor_group)
+            self.target.set_editor(self.source.editor)
+            self._carry_continuations()
 
-    def finalise(self):
+            # we carry this over for completeness, although it will be overwritten in the finalise() method
+            self.target.set_application_status(self.source.application_status)
+
+    def finalise(self, save_target=True, email_alert=True):
         super(PublicApplication, self).finalise()
 
         # set some administrative data
         now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
         self.target.suggested_on = now
-        self.target.set_application_status('pending')
+        self.target.set_application_status(constants.APPLICATION_STATUS_PENDING)
 
         # Finally save the target
         self.target.set_last_manual_update()
-        self.target.save()
+        if save_target:
+            self.target.save()
 
-        try:
-            emails.send_received_email(self.target)
-        except app_email.EmailException:
-            self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
-            app.logger.exception('Error sending application received email.')
+        if email_alert:
+            try:
+                emails.send_received_email(self.target)
+            except app_email.EmailException as e:
+                self.add_alert("We were unable to send you an email confirmation - possible problem with the email address provided")
+                app.logger.exception('Error sending application received email.')
 
+
+class PublisherUpdateRequestReadOnly(PrivateContext):
+    """
+    Read Only Application form for publishers. Nothing can be changed. Useful to show publishers what they
+    currently have submitted for review
+    """
+    def make_renderer(self):
+        self.renderer = render.PublisherUpdateRequestReadOnlyRenderer()
+
+    def set_template(self):
+        self.template = "formcontext/readonly_application.html"
+
+    def blank_form(self):
+        self.form = forms.PublisherUpdateRequestForm()
+        self.renderer.disable_all_fields(False)
+        # self._set_choices()
+
+    def data2form(self):
+        self.form = forms.PublisherUpdateRequestForm(formdata=self.form_data)
+        # self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self.renderer.disable_all_fields(False)
+
+    def source2form(self):
+        self.form = forms.PublisherUpdateRequestForm(data=xwalk.JournalFormXWalk.obj2form(self.source))
+        # self._set_choices()
+        self._expand_descriptions(["publisher", "society_institution", "platform"])
+        self.renderer.set_disabled_fields(["digital_archiving_policy"])
+        # self.renderer.disable_all_fields(True)
+
+    def form2target(self):
+        pass  # you can't edit objects using this form
+
+    def patch_target(self):
+        pass  # you can't edit objects using this form
+
+    def finalise(self):
+        raise FormContextException("You cannot edit applications using the read-only form")
+
+    """
+    def render_template(self, **kwargs):
+        if self.source is None:
+            raise FormContextException("You cannot view a not-existent journal")
+
+        return super(ReadOnlyJournal, self).render_template(
+            lcc_jstree=json.dumps(lcc_jstree),
+            subjectstr=self._subjects2str(self.source.bibjson().subjects()),
+            **kwargs
+        )
+    """
+    """
+    def _set_choices(self):
+        # no application status (this is a journal) or editorial info (it's not even in the form) to set
+        pass
+    """
 
 ### Journal form contexts ###
 
@@ -1617,7 +1678,7 @@ class AssEdJournalReview(PrivateContext):
 class ReadOnlyJournal(PrivateContext):
     """
     Read Only Journal form. Nothing can be changed. Useful for reviewing a journal and an application
-    (or reapplication) side by side in 2 browser windows or tabs.
+    (or update request) side by side in 2 browser windows or tabs.
     """
     def make_renderer(self):
         self.renderer = render.ReadOnlyJournalRenderer()

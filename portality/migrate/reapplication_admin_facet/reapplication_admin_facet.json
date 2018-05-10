@@ -1,8 +1,0 @@
-{
-	"types": [
-		{
-			"type": "suggestion",
-			"keepalive": "1m"
-		}
-	]
-}

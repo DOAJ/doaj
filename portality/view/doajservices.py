@@ -1,7 +1,7 @@
 import json, urllib, requests
 
 from flask import Blueprint, make_response, request, abort
-from flask.ext.login import current_user, login_required
+from flask_login import current_user, login_required
 
 from portality.core import app
 from portality.decorators import ssl_required, write_required

@@ -128,11 +128,11 @@ JOURNAL_SOURCE = {
         },
         "deposit_policy": ["Sherpa/Romeo", "Store it"],
         "author_copyright": {
-            "copyright": True,
+            "copyright": "True",
             "url": "http://copyright.com"
         },
         "author_publishing_rights": {
-            "publishing_rights": True,
+            "publishing_rights": "True",
             "url": "http://publishing.rights"
         },
         "allows_fulltext_indexing": True,
@@ -168,7 +168,12 @@ JOURNAL_SOURCE = {
         "owner": "Owner",
         "editor_group": "editorgroup",
         "editor": "associate",
-        "seal": True
+        "seal": True,
+        "current_application" : "qwertyuiop",
+        "related_applications" : [
+            {"application_id" : "asdfghjkl", "date_accepted" : "2018-01-01T00:00:00Z"},
+            {"application_id" : "zxcvbnm"}
+        ]
     }
 }
 

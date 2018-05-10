@@ -5,15 +5,6 @@
 <h2>Help</h2>
 <p>Here are some resources to help you with the main Publisher features of DOAJ.</p>
 
-{% if app.config.get("REAPPLICATION_ACTIVE", False) %}
-    <h3>Reapplications</h3>
-    <p>The reapplication project is now closed but you will still see the Reapplications tab in your Publisher Area and you may
-        even see a note telling you that you have reapplications to submit: you can ignore that. If the reapplication that you
-        submitted is still visible, go ahead and make any updates, edits or changes that you wish. If you
-        no longer see the reapplication you submitted, this is because we are working on it already and will be in touch soon.
-    </p>
-{% endif %}
-
 <h3>Application Form</h3>
 <p>Guides to filling in the <a href="{{ url_for('doaj.suggestion') }}">Application Form</a> are available in at least 12 other 
 languages. <a href="{{ url_for('doaj.translated') }}">Download the language of your choice</a> and refer to it when 

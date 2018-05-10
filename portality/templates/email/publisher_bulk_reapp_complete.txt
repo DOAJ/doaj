@@ -1,9 +1,0 @@
-Dear publisher
-
-The CSV file that you uploaded has finished processing successfully and the reapplications have been submitted. Log into your Publisher Area to see them: http://doaj.org/publisher/
-
-You may continue to edit submitted reapplications until they disappear from your Publisher Area.
-
-Yours faithfully
-
-The DOAJ Team

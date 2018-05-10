@@ -1,6 +1,6 @@
 from portality import models, lcc
 from portality.datasets import licenses, main_license_options
-from flask.ext.login import current_user
+from flask_login import current_user
 from portality.util import flash_with_url, listpop
 from copy import deepcopy
 from portality.formcontext.choices import Choices
@@ -558,7 +558,8 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['subject'] = []
         for s in bibjson.subjects():
-            forminfo['subject'].append(s['code'])
+            if "code" in s:
+                forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

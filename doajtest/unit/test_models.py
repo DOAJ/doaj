@@ -1,10 +1,14 @@
+import json
+import time
+from datetime import datetime
+
+from portality import constants
+from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality import models
-from datetime import datetime
-from doajtest.fixtures import ApplicationFixtureFactory, JournalFixtureFactory, ArticleFixtureFactory, BibJSONFixtureFactory, ProvenanceFixtureFactory, BackgroundFixtureFactory
-import time, json
 from portality.lib import dataobj
 from portality.models import shared_structs
+
 
 class TestClient(DoajTestCase):
 
@@ -22,25 +26,6 @@ class TestClient(DoajTestCase):
 
     def test_01_imports(self):
         """import all of the model objects successfully?"""
-        from portality.models import Account
-        from portality.models import Article, ArticleBibJSON, ArticleQuery, ArticleVolumesQuery, DuplicateArticleQuery
-        from portality.models import AtomRecord
-        from portality.models import GenericBibJSON
-        from portality.models import Cache
-        from portality.models import EditorGroupQuery, EditorGroup, EditorGroupMemberQuery
-        from portality.models import ArticleHistory, JournalHistory
-        from portality.models import IssnQuery, Journal, JournalBibJSON, JournalQuery, PublisherQuery, TitleQuery
-        from portality.models import LCC
-        from portality.models import Lock
-        from portality.models import OAIPMHArticle, OAIPMHJournal, OAIPMHRecord
-        from portality.models import JournalArticle, JournalArticleQuery
-        from portality.models import Suggestion, SuggestionQuery
-        from portality.models import JournalIssueToC, JournalVolumeToC, ToCQuery, VolumesToCQuery
-        from portality.models import ExistsFileQuery, FileUpload, OwnerFileQuery, ValidFileQuery
-        from portality.models import ObjectDict
-        from portality.models import BulkUpload, BulkReApplication, OwnerBulkQuery
-        from portality.models import Provenance
-        from portality.models.background import BackgroundJob
 
         j = models.lookup_model("journal")
         ja = models.lookup_model("journal_article")
@@ -55,7 +40,6 @@ class TestClient(DoajTestCase):
         j.set_created("2001-01-01T00:00:00Z")
         j.set_last_updated("2002-01-01T00:00:00Z")
         j.set_bibjson({"title" : "test"})
-        j.set_last_reapplication("2003-01-01T00:00:00Z")
         j.set_last_manual_update("2004-01-01T00:00:00Z")
         j.set_in_doaj(True)
         j.add_contact("richard", "richard@email.com")
@@ -67,14 +51,13 @@ class TestClient(DoajTestCase):
         j.set_ticked(True)
         j.set_bulk_upload_id("abcdef")
         j.set_seal(True)
+        j.add_related_application("123456789", "2003-01-01T00:00:00Z")
+        j.add_related_application("987654321", "2002-01-01T00:00:00Z")
 
         assert j.id == "abcd"
         assert j.created_date == "2001-01-01T00:00:00Z"
         assert j.created_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2001-01-01T00:00:00Z"
         assert j.last_updated == "2002-01-01T00:00:00Z"
-        # assert len(j.bibjson().data.keys()) == 1
-        #assert j.bibjson().data["title"] == "test"
-        assert j.last_reapplication == "2003-01-01T00:00:00Z"
         assert j.last_manual_update == "2004-01-01T00:00:00Z"
         assert j.last_manual_update_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") == "2004-01-01T00:00:00Z"
         assert j.is_in_doaj() is True
@@ -90,6 +73,8 @@ class TestClient(DoajTestCase):
         assert j.has_seal() is True
         assert j.bulk_upload_id == "abcdef"
 
+        assert j.last_update_request == "2003-01-01T00:00:00Z"
+
         notes = j.notes
         j.remove_note(notes[0])
         assert len(j.notes) == 0
@@ -100,9 +85,24 @@ class TestClient(DoajTestCase):
         j.remove_current_application()
         assert j.current_application is None
 
-        now = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        j.set_last_reapplication()
-        assert j.last_reapplication == now # should work, since this ought to take less than a second, but it might sometimes fail
+        # check over the related_applications management functions
+        related = j.related_applications
+        assert related is not None
+        assert j.latest_related_application_id() == "123456789"
+        j.remove_related_applications()
+        assert len(j.related_applications) == 0
+        j.set_related_applications(related)
+        assert len(j.related_applications) == 2
+        j.add_related_application("123456789", "2005-01-01T00:00:00Z")  # duplicate id, should be overwritten
+        assert len(j.related_applications) == 2
+        rar = j.related_application_record("123456789")
+        assert rar.get("application_id") == "123456789"
+        assert rar.get("date_accepted") == "2005-01-01T00:00:00Z"
+        j.add_related_application("123456789", "2005-01-01T00:00:00Z", "deleted")  # update as if being deleted
+        rar = j.related_application_record("123456789")
+        assert rar.get("application_id") == "123456789"
+        assert rar.get("date_accepted") == "2005-01-01T00:00:00Z"
+        assert rar.get("status") == "deleted"
 
         # do a quick by-reference check on the bibjson object
         bj = j.bibjson()
@@ -142,8 +142,9 @@ class TestClient(DoajTestCase):
         """Read and write properties into the suggestion model"""
         s = models.Suggestion()
         s.set_current_journal("9876543")
+        s.set_related_journal("123456789")
         s.set_bulk_upload_id("abcdef")
-        s.set_application_status("rejected")
+        s.set_application_status(constants.APPLICATION_STATUS_REJECTED)
         s.suggested_on = "2001-01-01T00:00:00Z"
         s.set_articles_last_year(12, "http://aly.com")
         s.article_metadata = True
@@ -151,8 +152,9 @@ class TestClient(DoajTestCase):
 
         assert s.data.get("admin", {}).get("current_journal") == "9876543"
         assert s.current_journal == "9876543"
+        assert s.related_journal == "123456789"
         assert s.bulk_upload_id == "abcdef"
-        assert s.application_status == "rejected"
+        assert s.application_status == constants.APPLICATION_STATUS_REJECTED
         assert s.suggested_on == "2001-01-01T00:00:00Z"
         assert s.articles_last_year.get("count") == 12
         assert s.articles_last_year.get("url") == "http://aly.com"
@@ -163,57 +165,26 @@ class TestClient(DoajTestCase):
         s.prep()
         assert 'index' in s, s
         assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == 'reapplication'
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_UPDATE_REQUEST
 
         s.remove_current_journal()
         assert s.current_journal is None
         s.prep()
         assert 'index' in s, s
         assert 'application_type' in s['index'], s['index']
-        assert s['index']['application_type'] == 'new application'
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_FINISHED
+
+        s.set_application_status(constants.APPLICATION_STATUS_PENDING)
+        s.prep()
+        assert s['index']['application_type'] == constants.APPLICATION_TYPE_NEW_APPLICATION
 
         s.save()
 
-    def test_05_bulk_reapplication_rw(self):
-        """Read and write properties into the BulkReapplication Model"""
-        br = models.BulkReApplication()
-        br.set_owner("richard")
-        br.set_spreadsheet_name("richard.csv")
+        s.remove_current_journal()
+        s.remove_related_journal()
 
-        assert br.owner == "richard"
-        assert br.spreadsheet_name == "richard.csv"
-
-    def test_06_bulk_upload(self):
-        """Read and write properties into the BulkUpload model"""
-        br = models.BulkUpload()
-        br.upload("richard", "reapplication.csv")
-
-        assert br.owner == "richard"
-        assert br.filename == "reapplication.csv"
-        assert br.status == "incoming"
-
-        br.failed("Broke, innit")
-
-        assert br.status == "failed"
-        assert br.error == "Broke, innit"
-        assert br.processed_date is not None
-        assert br.processed_timestamp is not None
-
-        br.processed(10, 5)
-
-        assert br.status == "processed"
-        assert br.reapplied == 10
-        assert br.skipped == 5
-        assert br.processed_date is not None
-        assert br.processed_timestamp is not None
-
-    def test_07_make_journal(self):
-        s = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
-        j = s.make_journal()
-
-        assert j.id != s.id
-        assert "suggestion" not in j.data
-        assert j.data.get("bibjson", {}).get("active")
+        assert s.current_journal is None
+        assert s.related_journal is None
 
     def test_08_sync_owners(self):
         # suggestion with no current_journal
@@ -1025,3 +996,51 @@ class TestClient(DoajTestCase):
 
         changed = a.add_journal_metadata(j)
         assert changed is False
+
+    def test_31_application_latest_by_current_journal(self):
+        j = models.Journal()
+        j.set_id(j.makeid())
+
+        app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app1.set_id(app1.makeid())
+        app1.set_current_journal(j.id)
+        app1.set_created("1970-01-01T00:00:00Z")
+        app1.save()
+
+        app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app2.set_id(app2.makeid())
+        app2.set_current_journal(j.id)
+        app2.set_created("1971-01-01T00:00:00Z")
+        app2.save(blocking=True)
+
+        # check that we find the right application when we search
+        app3 = models.Suggestion.find_latest_by_current_journal(j.id)
+        assert app3 is not None
+        assert app3.id == app2.id
+
+        # make sure we get a None response when there's no application
+        app0 = models.Suggestion.find_latest_by_current_journal("whatever")
+        assert app0 is None
+
+    def test_32_application_all_by_related_journal(self):
+        j = models.Journal()
+        j.set_id(j.makeid())
+
+        app1 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app1.set_id(app1.makeid())
+        app1.set_related_journal(j.id)
+        app1.set_created("1970-01-01T00:00:00Z")
+        app1.save()
+
+        app2 = models.Suggestion(**ApplicationFixtureFactory.make_application_source())
+        app2.set_id(app2.makeid())
+        app2.set_related_journal(j.id)
+        app2.set_created("1971-01-01T00:00:00Z")
+        app2.save(blocking=True)
+
+        # check that we find all the applications when we search, and that they're in the right order
+        all = models.Suggestion.find_all_by_related_journal(j.id)
+        assert len(all) == 2
+        assert all[0].id == app1.id
+        assert all[1].id == app2.id
+
