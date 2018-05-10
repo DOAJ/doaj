@@ -105,14 +105,13 @@ class XWalk(object):
     @staticmethod
     def get_duplicate(article, owner=None):
         """Get the most recent duplicate article."""
-        d = XWalk.get_duplicates(article, owner)
-        return d[0] if d else None
+        return XWalk.get_duplicates(article, owner, max_results=1)
 
     @staticmethod
-    def get_duplicates(article, owner=None):
+    def get_duplicates(article, owner=None, max_results=10):
         """Get all duplicates (or previous versions) of an article."""
 
-        possible_articles_dict = XWalk.discover_duplicates(article, owner)
+        possible_articles_dict = XWalk.discover_duplicates(article, owner, max_results)
         if not possible_articles_dict:
             return []
 
@@ -130,10 +129,10 @@ class XWalk(object):
         # Sort the articles newest -> oldest by last_updated so we can get the most recent at [0]
         possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
 
-        return possible_articles
+        return possible_articles[:max_results]
 
     @staticmethod
-    def discover_duplicates(article, owner=None):
+    def discover_duplicates(article, owner=None, results_per_match_type=10):
         """Identify duplicate articles, separated by duplication criteria"""
         # Get the owner's ISSNs
         issns = []
@@ -157,7 +156,7 @@ class XWalk(object):
             # there should only be the one
             doi = dois[0]
             if isinstance(doi, basestring) and doi != '':
-                articles = models.Article.duplicates(issns=issns, doi=doi)
+                articles = models.Article.duplicates(issns=issns, doi=doi, size=results_per_match_type)
                 possible_articles['doi'] = [a for a in articles if a.id != article.id]
                 if len(possible_articles['doi']) > 0:
                     found = True
@@ -166,7 +165,7 @@ class XWalk(object):
         urls = b.get_urls(b.FULLTEXT)
         if len(urls) > 0:
             # there should be only one, but let's allow for multiple
-            articles = models.Article.duplicates(issns=issns, fulltexts=urls)
+            articles = models.Article.duplicates(issns=issns, fulltexts=urls, size=results_per_match_type)
             possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
             if possible_articles['fulltext']:
                 found = True

@@ -9,11 +9,12 @@ from portality.background import BackgroundTask, BackgroundApi
 import esprit
 import codecs
 import os
+import json
 from portality import models
 from portality.article import XWalk
 from portality.lib import dates
 from portality.core import app
-from portality.clcsv import UnicodeWriter
+from portality.clcsv import UnicodeWriter, UnicodeReader
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -36,23 +37,28 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         global_reportpath = os.path.join(outdir, global_reportfile)
         owner_reportpath = os.path.join(outdir, owner_reportfile)
 
+        # Location for our interim CSV file of articles
+        tmpdir = self.get_param(params, "tmpdir", 'tmp_article_duplicate_report')
+        if not os.path.exists(tmpdir):
+            os.makedirs(tmpdir)
+
         # Connection to the ES index, rely on esprit sorting out the port from the host
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
                                           app.config["ELASTIC_SEARCH_DB"])
 
-        # scroll through all articles
-        scroll_query = {  # scroll from newest to oldest
-            "query": {"match_all": {}},
-            "sort": [{"last_updated": {"order": "desc"}}]
-        }
-        
+        tmp_csvfile = 'tmp_articles' + dates.today() + '.csv'
+        tmp_csvpath = os.path.join(tmpdir, tmp_csvfile)
+
+        with codecs.open(tmp_csvpath, 'wb', 'utf-8') as t:
+            self._create_article_csv(conn, t)
+
         # Initialise our reports
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
         g = codecs.open(owner_reportpath, 'wb', 'utf-8')
         owner_report = UnicodeWriter(g)
         
-        header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns"]
+        header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "owners_match", "titles_match", "article_title", "match_title"]
         app.logger.info(' '.join(header))
         global_report.writerow(header)
         owner_report.writerow(header)
@@ -63,38 +69,46 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         a_count = gd_count = od_count = 0
 
-        for a in esprit.tasks.scroll(conn, 'article', q=scroll_query, page_size=100, keepalive='2m'):
-            a_count += 1
-            article = models.Article(_source=a)
-            app.logger.debug('{0} {1}'.format(a_count, article.id))
-            journal = article.get_journal()
-            owner = None
-            if journal:
-                owner = journal.owner
-                for issn in journal.bibjson().issns():
-                    if issn not in self.owner_cache:
-                        self.owner_cache[issn] = owner
+        with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
+            # Read back in the article csv file we created earlier
+            article_reader = UnicodeReader(t)
 
-            # Get the global duplicates
-            global_duplicates = XWalk.discover_duplicates(article, owner=None)
-            if global_duplicates:
-                s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                gd_count += len(s) - 1
-                if s not in global_matches:
-                    self._write_rows_from_duplicates(article, None, global_duplicates, global_report)
-                    global_matches.append(s)
+            for a in article_reader:
+                a_count += 1
+                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}})
+                app.logger.debug('{0} {1}'.format(a_count, article.id))
 
-            # Get the duplicates within the owner's records
-            if owner is not None:
-                owner_duplicates = XWalk.discover_duplicates(article, owner)
-                if owner_duplicates:
-                    if owner not in owner_matches:
-                        owner_matches[owner] = []
+                # Get the global duplicates
+                global_duplicates = XWalk.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                if global_duplicates:
+                    # Look up an article's owner
+                    journal = article.get_journal()
+                    owner = None
+                    if journal:
+                        owner = journal.owner
+                        for issn in journal.bibjson().issns():
+                            if issn not in self.owner_cache:
+                                self.owner_cache[issn] = owner
+
+                    # Deduplicate the DOI and fulltext duplicate lists
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                    od_count += len(s) - 1
-                    if s not in owner_matches[owner]:
-                        self._write_rows_from_duplicates(article, owner, owner_duplicates, owner_report)
-                        owner_matches[owner].append(s)
+                    gd_count += len(s) - 1
+                    if s not in global_matches:
+                        self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
+                        global_matches.append(s)
+                '''
+                # Get the duplicates within the owner's records
+                if owner is not None:
+                    owner_duplicates = XWalk.discover_duplicates(article, owner, results_per_match_type=10000)
+                    if owner_duplicates:
+                        if owner not in owner_matches:
+                            owner_matches[owner] = []
+                        s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
+                        od_count += len(s) - 1
+                        if s not in owner_matches[owner]:
+                            self._write_rows_from_duplicates(article, owner, owner_duplicates, owner_report)
+                            owner_matches[owner].append(s)
+                '''
 
         job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found, '
                               '{2} found within user accounts.'.format(a_count, gd_count, od_count))
@@ -108,6 +122,39 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")
+
+    def _create_article_csv(self, connection, file_object):
+        """ Create a CSV file with the minimum information we require to find and report duplicates. """
+
+        csv_writer = UnicodeWriter(file_object)
+
+        # Scroll through all articles, newest to oldest
+        scroll_query = {
+            "_source": [
+                "id",
+                "created_date",
+                "bibjson.identifier",
+                "bibjson.link",
+                "bibjson.title"
+            ],
+            "query": {
+                "match_all": {}
+            },
+            "sort": [
+                {"last_updated": {"order": "desc"}}
+            ]
+        }
+
+        for a in esprit.tasks.scroll(connection, 'article', q=scroll_query, page_size=1000, keepalive='1m'):
+            row = [
+                a['id'],
+                a['created_date'],
+                json.dumps(a['bibjson']['identifier']),
+                json.dumps(a['bibjson'].get('link', [])),
+                a['bibjson'].get('title', '')
+            ]
+            csv_writer.writerow(row)
+            app.logger.info(' '.join(row))
 
     def _summarise_article(self, article, owner=None):
         a_doi = article.bibjson().get_identifiers('doi')
@@ -125,7 +172,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             'doi': a_doi[0] if len(a_doi) > 0 else '',
             'fulltext': a_fulltext[0] if len(a_fulltext) > 0 else '',
             'owner': o if o is not None else '',
-            'issns': ','.join(article.bibjson().issns())
+            'issns': ','.join(article.bibjson().issns()),
+            'title': article.bibjson().title
         }
 
     def _write_rows_from_duplicates(self, article, owner, duplicates, report):
@@ -157,7 +205,11 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    v['doi'],
                    v['fulltext'],
                    v['owner'],
-                   v['issns']]
+                   v['issns'],
+                   str(a_summary['owner'] == v['owner']),
+                   str(a_summary['title'] == v['title']),
+                   a_summary['title'] if a_summary['title'] != v['title'] else '',
+                   v['title'] if a_summary['title'] != v['title'] else '']
             report.writerow(row)
             app.logger.info(' '.join(row))
 

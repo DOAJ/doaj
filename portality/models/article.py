@@ -18,7 +18,7 @@ class Article(DomainObject):
     __type__ = "article"
 
     @classmethod
-    def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None):
+    def duplicates(cls, issns=None, publisher_record_id=None, doi=None, fulltexts=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         # some input sanitisation
         issns = issns if isinstance(issns, list) else []
         urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
@@ -44,7 +44,8 @@ class Article(DomainObject):
                                             volume=volume,
                                             number=number,
                                             start=start,
-                                            should_match=should_match)
+                                            should_match=should_match,
+                                            size=size)
                 # print json.dumps(q.query())
 
                 res = cls.query(q=q.query())
@@ -59,7 +60,8 @@ class Article(DomainObject):
                                         volume=volume,
                                         number=number,
                                         start=start,
-                                        should_match=should_match)
+                                        should_match=should_match,
+                                        size=size)
             # print json.dumps(q.query())
 
             res = cls.query(q=q.query())
@@ -979,11 +981,12 @@ class ArticleVolumesIssuesQuery(object):
 
 class DuplicateArticleQuery(object):
     base_query = {
-        "query" : {
-            "bool" : {
-                "must" : []
+        "query": {
+            "bool": {
+                "must": []
             }
-        }
+        },
+        "sort": [{"last_updated": {"order": "desc"}}]
     }
 
     _should = {
@@ -1000,7 +1003,7 @@ class DuplicateArticleQuery(object):
     _url_terms = {"terms" : {"bibjson.link.url.exact" : ["<urls here>"]}}
     _fuzzy_title = {"fuzzy" : {"bibjson.title.exact" : "<title here>"}}
 
-    def __init__(self, issns=None, publisher_record_id=None, doi=None, urls=None, title=None, volume=None, number=None, start=None, should_match=None):
+    def __init__(self, issns=None, publisher_record_id=None, doi=None, urls=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
         self.issns = issns if isinstance(issns, list) else []
         self.publisher_record_id = publisher_record_id
         self.doi = doi
@@ -1010,6 +1013,7 @@ class DuplicateArticleQuery(object):
         self.number = number
         self.start = start
         self.should_match = should_match
+        self.size = size
 
     def query(self):
         # - MUST be from at least one of the ISSNs
@@ -1085,6 +1089,9 @@ class DuplicateArticleQuery(object):
             s["minimum_should_match"] = msm
 
             q["query"]["bool"].update(s)
+
+        # Allow more results than the default
+        q["size"] = self.size
 
         return q
 
