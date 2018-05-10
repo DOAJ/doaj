@@ -88,10 +88,10 @@ def mock_get_fail(url, *args, **kwargs):
         raise RuntimeError("oops")
     return GET(url, **kwargs)
 
-class TestArticleUpload(DoajTestCase):
+class TestIngestArticles(DoajTestCase):
 
     def setUp(self):
-        super(TestArticleUpload, self).setUp()
+        super(TestIngestArticles, self).setUp()
 
         self.cleanup_ids = []
         self.cleanup_paths = []
@@ -106,7 +106,7 @@ class TestArticleUpload(DoajTestCase):
         self.ingest_articles_retries = app.config['HUEY_TASKS']['ingest_articles']['retries']
 
     def tearDown(self):
-        super(TestArticleUpload, self).tearDown()
+        super(TestIngestArticles, self).tearDown()
 
         article.check_schema = self.check_schema
         article.ingest_file = self.ingest_file

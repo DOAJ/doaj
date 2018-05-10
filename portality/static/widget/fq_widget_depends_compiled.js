@@ -1,6 +1,3 @@
-// The complete js for the fixed query widget
-// fixme: this could do with being generated properly from facetview components.
-
 /******************************************************************
  * ELASTICSEARCH INTEGRATION
  *****************************************************************/
@@ -52,26 +49,26 @@ function optionsFromQuery(query) {
 
         return val;
     }
-
+    
     var opts = {};
 
     // FIXME: note that fields are not supported here
 
     // from position
     if (query.hasOwnProperty("from")) { opts["from"] = query.from }
-
+    
     // page size
     if (query.size) { opts["page_size"] = query.size }
-
+    
     if (query["sort"]) { opts["sort"] = query["sort"] }
-
+    
     // get hold of the bool query if it is there
     // and get hold of the query string and default operator if they have been provided
     if (query.query) {
         var sq = query.query;
         var must = [];
         var qs = undefined;
-
+        
         // if this is a filtered query, pull must and qs out of the filter
         // otherwise the root of the query is the query_string object
         if (sq.filtered) {
@@ -80,7 +77,7 @@ function optionsFromQuery(query) {
         } else {
             qs = sq
         }
-
+        
         // go through each clause in the must and pull out the options
         if (must.length > 0) {
             opts["_active_filters"] = {};
@@ -88,7 +85,7 @@ function optionsFromQuery(query) {
         }
         for (var i = 0; i < must.length; i++) {
             var clause = must[i];
-
+            
             // could be a term query (implies AND on this field)
             if ("term" in clause) {
                 for (var field in clause.term) {
@@ -102,7 +99,7 @@ function optionsFromQuery(query) {
                     }
                 }
             }
-
+            
             // could be a terms query (implies OR on this field)
             if ("terms" in clause) {
                 for (var field=0; field < clause.terms.length; field=field+1) {
@@ -114,7 +111,7 @@ function optionsFromQuery(query) {
                     opts["_active_filters"][field] = opts["_active_filters"][field].concat(values)
                 }
             }
-
+            
             // could be a range query (which may in turn be a range or a date histogram facet)
             if ("range" in clause) {
                 // get the field that we're ranging on
@@ -133,16 +130,16 @@ function optionsFromQuery(query) {
                     opts["_active_filters"][field] = range;
                 }
             }
-
+            
             // cound be a geo distance query
             if ("geo_distance_range" in clause) {
                 var gdr = clause.geo_distance_range;
-
+                
                 // the range is defined at the root of the range filter
                 var range = {};
                 if ("lt" in gdr) { range["to"] = stripDistanceUnits(gdr.lt) }
                 if ("gte" in gdr) { range["from"] = stripDistanceUnits(gdr.gte) }
-
+                
                 // FIXME: at some point we may need to make this smarter, if we start including other data
                 // in the geo_distance_range filter definition
                 // then we have to go looking for the field name
@@ -155,7 +152,7 @@ function optionsFromQuery(query) {
 
             // FIXME: support for statistical facet and terms_stats facet
         }
-
+        
         if (qs) {
             if (qs.query_string) {
                 var string = unescapeQueryString(qs.query_string.query);
@@ -168,7 +165,7 @@ function optionsFromQuery(query) {
                 opts["q"] = ""
             }
         }
-
+        
         return opts
     }
 }
@@ -296,7 +293,7 @@ function elasticSearchQuery(params) {
     } else {
         ftq = {"match_all" : {}}
     }
-
+    
     // if there are filter constraints (filter_must) then we create a filtered query,
     // otherwise make a normal query
     var qs = undefined;
@@ -306,17 +303,17 @@ function elasticSearchQuery(params) {
     } else {
         qs = {"query" : ftq}
     }
-
+    
     // sort order and direction
     options.sort && options.sort.length > 0 ? qs['sort'] = options.sort : "";
-
+    
     // fields and partial fields
     if (include_fields) {
         options.fields ? qs['fields'] = options.fields : "";
         options.partial_fields ? qs['partial_fields'] = options.partial_fields : "";
         options.script_fields ? qs["script_fields"] = options.script_fields : "";
     }
-
+    
     // paging (number of results, and start cursor)
     if (options.from !== undefined) {
         qs["from"] = options.from
@@ -324,7 +321,7 @@ function elasticSearchQuery(params) {
     if (options.page_size !== undefined) {
         qs["size"] = options.page_size
     }
-
+    
     // facets
     if (include_facets) {
         qs['facets'] = {};
@@ -333,10 +330,10 @@ function elasticSearchQuery(params) {
             if (defn.disabled) { continue }
 
             var size = defn.size;
-
+            
             // add a bunch of extra values to the facets to deal with the shard count issue
-            size += options.elasticsearch_facet_inflation
-
+            size += options.elasticsearch_facet_inflation 
+            
             var facet = {};
             if (defn.type === "terms") {
                 facet["terms"] = {"field" : defn["field"], "size" : size, "order" : defn["order"]}
@@ -373,14 +370,14 @@ function elasticSearchQuery(params) {
             }
             qs["facets"][defn["field"]] = facet
         }
-
+        
         // and any extra facets
         // NOTE: this does not include any treatment of the facet size inflation that may be required
         if (options.extra_facets) {
             $.extend(true, qs['facets'], options.extra_facets );
         }
     }
-
+    
     return qs
 }
 
@@ -460,7 +457,7 @@ function elasticSearchSuccess(callback) {
             "found" : data.hits.total,
             "facets" : {}
         };
-
+        
         // load the results into the records part of the result object
         for (var item = 0; item < data.hits.hits.length; item++) {
             var res = data.hits.hits[item];
@@ -471,7 +468,7 @@ function elasticSearchSuccess(callback) {
                 resultobj.records.push(res._source)
             }
         }
-
+        
         for (var item in data.facets) {
             if (data.facets.hasOwnProperty(item)) {
                 var facet = data.facets[item];
@@ -497,7 +494,7 @@ function elasticSearchSuccess(callback) {
                 }
             }
         }
-
+            
         callback(data, resultobj)
     }
 }
@@ -509,10 +506,10 @@ function doElasticSearchQuery(params) {
     var search_url = params.search_url;
     var queryobj = params.queryobj;
     var datatype = params.datatype;
-
+    
     // serialise the query
     var querystring = serialiseQueryObject(queryobj);
-
+    
     // make the call to the elasticsearch web service
     $.ajax({
         type: "get",
@@ -524,16 +521,27 @@ function doElasticSearchQuery(params) {
     });
 }
 
-function escapeHtml(unsafe) {
-    if (typeof unsafe.replace !== "function") {
-        return unsafe
+
+function escapeHtml(unsafe, def) {
+    if (def === undefined) {
+        def = "";
     }
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    if (unsafe === undefined || unsafe == null) {
+        return def;
+    }
+    try {
+        if (typeof unsafe.replace !== "function") {
+            return unsafe
+        }
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    } catch(err) {
+        return def;
+    }
 }
 
 /******************************************************************
@@ -605,6 +613,608 @@ function theFacetview(options) {
     return thefacetview
 }
 
+function searchOptions(options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_startagain - reset the search parameters
+     * class: facetview_pagesize - size of each result page
+     * class: facetview_order - ordering direction of results
+     * class: facetview_orderby - list of fields which can be ordered by
+     * class: facetview_searchfield - list of fields which can be searched on
+     * class: facetview_freetext - input field for freetext search
+     * class: facetview_force_search - button which triggers a search on the current page status
+     *
+     * should (not must) respect the following configs
+     *
+     * options.search_sortby - list of sort fields and directions
+     * options.searchbox_fieldselect - list of fields search can be focussed on
+     * options.sharesave_link - whether to provide a copy of a link which can be saved
+     * options.search_button - whether to provide a button to force a search
+     */
+
+    var thefacetview = "";
+
+    // share and save link
+    if (options.sharesave_link) {
+        thefacetview += '<a class="btn facetview_sharesave" title="share a link to this search" style="margin:0 5px 21px 0px;" href="">share <i class="icon icon-share"></i></a>';
+    }
+
+    // initial button group of search controls
+    thefacetview += '<div class="btn-group" style="display:inline-block; margin-right:5px;"> \
+        <a class="btn btn-small facetview_startagain" title="clear all search settings and start again" href=""><i class="icon-remove"></i></a> \
+        <a class="btn btn-small facetview_pagesize" title="change result set size" href="#"></a>';
+
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<a class="btn btn-small facetview_order" title="current order descending. Click to change to ascending" \
+            href="desc"><i class="icon-arrow-down"></i></a>';
+    }
+    thefacetview += '</div>';
+
+    // selection for search ordering
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<select class="facetview_orderby" style="border-radius:5px; \
+            -moz-border-radius:5px; -webkit-border-radius:5px; width:100px; background:#eee; margin:0 5px 21px 0;"> \
+            <option value="">order by ... relevance</option>';
+
+        for (var each = 0; each < options.search_sortby.length; each++) {
+            var obj = options.search_sortby[each];
+            var sortoption = '';
+            if ($.type(obj['field']) == 'array') {
+                sortoption = sortoption + '[';
+                sortoption = sortoption + "'" + obj['field'].join("','") + "'";
+                sortoption = sortoption + ']';
+            } else {
+                sortoption = obj['field'];
+            }
+            thefacetview += '<option value="' + sortoption + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    }
+
+    // select box for fields to search on
+    if ( options.searchbox_fieldselect.length > 0 ) {
+        thefacetview += '<select class="facetview_searchfield" style="border-radius:5px 0px 0px 5px; \
+            -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; width:100px; margin:0 -2px 21px 0; background:#ecf4ff;">';
+        thefacetview += '<option value="">search all</option>';
+
+        for (var each = 0; each < options.searchbox_fieldselect.length; each++) {
+            var obj = options.searchbox_fieldselect[each];
+            thefacetview += '<option value="' + obj['field'] + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    };
+
+    // text search box
+    var corners = "border-radius:0px 5px 5px 0px; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;"
+    if (options.search_button) {
+        corners = "border-radius:0px 0px 0px 0px; -moz-border-radius:0px 0px 0px 0px; -webkit-border-radius:0px 0px 0px 0px;"
+    }
+    thefacetview += '<input type="text" class="facetview_freetext span4" style="display:inline-block; margin:0 0 21px 0; background:#ecf4ff; ' + corners + '" name="q" \
+        value="" placeholder="search term" />';
+
+    // search button
+    if (options.search_button) {
+        thefacetview += "<a class='btn btn-info facetview_force_search' style='margin:0 0 21px 0px; border-radius:0px 5px 5px 0px; \
+            -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;'><i class='icon-white icon-search'></i></a>"
+    }
+
+    // share and save link box
+    if (options.sharesave_link) {
+        thefacetview += '<div class="facetview_sharesavebox alert alert-info" style="display:none;"> \
+            <button type="button" class="facetview_sharesave close">×</button> \
+            <p>Share a link to this search';
+
+        // if there is a url_shortener available, render a link
+        if (options.url_shortener) {
+            thefacetview += " <a href='#' class='facetview_shorten_url btn btn-mini' style='margin-left: 30px'><i class='icon-white icon-resize-small'></i> shorten url</a>";
+            thefacetview += " <a href='#' class='facetview_lengthen_url btn btn-mini' style='display: none; margin-left: 30px'><i class='icon-white icon-resize-full'></i> original url</a>";
+        }
+
+        thefacetview += '</p> \
+            <textarea class="facetview_sharesaveurl" style="width:100%">' + shareableUrl(options) + '</textarea> \
+            </div>';
+    }
+
+    return thefacetview
+}
+
+function facetList(options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * none - no requirements for specific classes and ids
+     *
+     * should (not must) respect the following config
+     *
+     * options.facet[x].hidden - whether the facet should be displayed in the UI or not
+     * options.render_terms_facet - renders a term facet into the list
+     * options.render_range_facet - renders a range facet into the list
+     * options.render_geo_facet - renders a geo distance facet into the list
+     */
+    if (options.facets.length > 0) {
+        var filters = options.facets;
+        var thefilters = '';
+        for (var idx = 0; idx < filters.length; idx++) {
+            var facet = filters[idx]
+            // if the facet is hidden do not include it in this list
+            if (facet.hidden) {
+                continue;
+            }
+
+            // note that we do render disabled facets, so that they are available for enabling/disabling
+            // by callbacks
+
+            var type = facet.type ? facet.type : "terms"
+            if (type === "terms") {
+                thefilters += options.render_terms_facet(facet, options)
+            } else if (type === "range") {
+                thefilters += options.render_range_facet(facet, options)
+            } else if (type === "geo_distance") {
+                thefilters += options.render_geo_facet(facet, options)
+            } else if (type == "date_histogram") {
+                thefilters += options.render_date_histogram_facet(facet, options)
+            }
+            // FIXME: statistical facet and terms_stats facet?
+        };
+        return thefilters
+    };
+    return ""
+};
+
+function renderTermsFacet(facet, options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * id: facetview_filter_<safe filtername> - table for the specific filter
+     * class: facetview_morefacetvals - for increasing the size of the facet
+     * id: facetview_facetvals_<safe filtername> - id of anchor for changing facet vals
+     * class: facetview_sort - for changing the facet ordering
+     * id: facetview_sort_<safe filtername> - id of anchor for changing sorting
+     * class: facetview_or - for changing the default operator
+     * id: facetview_or_<safe filtername> - id of anchor for changing AND/OR operator
+     *
+     * each anchor must also have href="<filtername>"
+     *
+     * should (not must) respect the following config
+     *
+     * facet.controls - whether the size/sort/bool controls should be shown
+     */
+
+    // full template for the facet - we'll then go on and do some find and replace
+    var filterTmpl = '<table id="facetview_filter_{{FILTER_NAME}}" class="facetview_filters table table-bordered table-condensed table-striped" data-href="{{FILTER_EXACT}}"> \
+        <tr><td><a class="facetview_filtershow" title="filter by {{FILTER_DISPLAY}}" \
+        style="color:#333; font-weight:bold;" href="{{FILTER_EXACT}}"><i class="icon-plus"></i> {{FILTER_DISPLAY}} \
+        </a>';
+
+    if (facet.tooltip) {
+        var linktext = facet.tooltip_text ? facet.tooltip_text : "learn more";
+        filterTmpl += '<div class="facetview_tooltip" style="display:none"><a href="#" class="facetview_tooltip_more" data-field="{{FILTER_NAME}}">' + linktext + '</a></div>';
+        filterTmpl += '<div class="facetview_tooltip_value" style="display:none">' + facet.tooltip + '<br><a href="#" class="facetview_tooltip_less" data-field="{{FILTER_NAME}}">less</a></div>';
+    }
+
+    if (facet.controls) {
+        filterTmpl += '<div class="btn-group facetview_filteroptions" style="display:none; margin-top:5px;"> \
+            <a class="btn btn-small facetview_morefacetvals" id="facetview_facetvals_{{FILTER_NAME}}" title="filter list size" href="{{FILTER_EXACT}}">0</a> \
+            <a class="btn btn-small facetview_sort" id="facetview_sort_{{FILTER_NAME}}" title="filter value order" href="{{FILTER_EXACT}}"></a> \
+            <a class="btn btn-small facetview_or" id="facetview_or_{{FILTER_NAME}}" href="{{FILTER_EXACT}}">OR</a> \
+        </div>';
+    }
+
+    filterTmpl += '</td></tr> \
+        </table>';
+
+    // put the name of the field into FILTER_NAME and FILTER_EXACT
+    filterTmpl = filterTmpl.replace(/{{FILTER_NAME}}/g, safeId(facet['field'])).replace(/{{FILTER_EXACT}}/g, facet['field']);
+
+    // set the display name of the facet in FILTER_DISPLAY
+    if ('display' in facet) {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['display']);
+    } else {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['field']);
+    };
+
+    return filterTmpl
+}
+
+function renderRangeFacet(facet, options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * id: facetview_filter_<safe filtername> - table for the specific filter
+     *
+     * each anchor must also have href="<filtername>"
+     */
+
+    // full template for the facet - we'll then go on and do some find and replace
+    var filterTmpl = '<table id="facetview_filter_{{FILTER_NAME}}" class="facetview_filters table table-bordered table-condensed table-striped" data-href="{{FILTER_EXACT}}"> \
+        <tr><td><a class="facetview_filtershow" title="filter by {{FILTER_DISPLAY}}" \
+        style="color:#333; font-weight:bold;" href="{{FILTER_EXACT}}"><i class="icon-plus"></i> {{FILTER_DISPLAY}} \
+        </a> \
+        </td></tr> \
+        </table>';
+
+    // put the name of the field into FILTER_NAME and FILTER_EXACT
+    filterTmpl = filterTmpl.replace(/{{FILTER_NAME}}/g, safeId(facet['field'])).replace(/{{FILTER_EXACT}}/g, facet['field']);
+
+    // set the display name of the facet in FILTER_DISPLAY
+    if ('display' in facet) {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['display']);
+    } else {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['field']);
+    };
+
+    return filterTmpl
+}
+
+function renderGeoFacet(facet, options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * id: facetview_filter_<safe filtername> - table for the specific filter
+     *
+     * each anchor must also have href="<filtername>"
+     */
+     // full template for the facet - we'll then go on and do some find and replace
+    var filterTmpl = '<table id="facetview_filter_{{FILTER_NAME}}" class="facetview_filters table table-bordered table-condensed table-striped" data-href="{{FILTER_EXACT}}"> \
+        <tr><td><a class="facetview_filtershow" title="filter by {{FILTER_DISPLAY}}" \
+        style="color:#333; font-weight:bold;" href="{{FILTER_EXACT}}"><i class="icon-plus"></i> {{FILTER_DISPLAY}} \
+        </a> \
+        </td></tr> \
+        </table>';
+
+    // put the name of the field into FILTER_NAME and FILTER_EXACT
+    filterTmpl = filterTmpl.replace(/{{FILTER_NAME}}/g, safeId(facet['field'])).replace(/{{FILTER_EXACT}}/g, facet['field']);
+
+    // set the display name of the facet in FILTER_DISPLAY
+    if ('display' in facet) {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['display']);
+    } else {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['field']);
+    };
+
+    return filterTmpl
+}
+
+function renderDateHistogramFacet(facet, options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * id: facetview_filter_<safe filtername> - table for the specific filter
+     *
+     * each anchor must also have href="<filtername>"
+     */
+
+    // full template for the facet - we'll then go on and do some find and replace
+    var filterTmpl = '<table id="facetview_filter_{{FILTER_NAME}}" class="facetview_filters table table-bordered table-condensed table-striped" data-href="{{FILTER_EXACT}}"> \
+        <tbody><tr><td><a class="facetview_filtershow" title="filter by {{FILTER_DISPLAY}}" \
+        style="color:#333; font-weight:bold;" href="{{FILTER_EXACT}}"><i class="icon-plus"></i> {{FILTER_DISPLAY}} \
+        </a> \
+        </td></tr></tbody> \
+        </table>';
+
+    // put the name of the field into FILTER_NAME and FILTER_EXACT
+    filterTmpl = filterTmpl.replace(/{{FILTER_NAME}}/g, safeId(facet['field'])).replace(/{{FILTER_EXACT}}/g, facet['field']);
+
+    // set the display name of the facet in FILTER_DISPLAY
+    if ('display' in facet) {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['display']);
+    } else {
+        filterTmpl = filterTmpl.replace(/{{FILTER_DISPLAY}}/g, facet['field']);
+    };
+
+    return filterTmpl
+}
+
+function renderTermsFacetValues(options, facet) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filtervalue - wrapper element for any value included in the list
+     * class: facetview_filterselected - for any anchors around selected filters
+     * class: facetview_clear - for any link which should remove a filter (must also provide data-field and data-value)
+     * class: facetview_filterchoice - tags the anchor wrapped around the name of the (unselected) field
+     *
+     * should (not must) respect the following config
+     *
+     * options.selected_filters_in_facet - whether to show selected filters in the facet pull-down (if that's your idiom)
+     * options.render_facet_result - function which renders the individual facets
+     * facet.value_function - the value function to be applied to all displayed values
+     */
+    var selected_filters = options.active_filters[facet.field]
+    var frag = ""
+
+    // first render the active filters
+    if (options.selected_filters_in_facet) {
+        if (selected_filters) {
+            for (var i=0; i < selected_filters.length; i=i+1) {
+                var value = selected_filters[i]
+                if (facet.value_function) {
+                    value = facet.value_function(value)
+                }
+                var sf = '<tr class="facetview_filtervalue" style="display:none;"><td>'
+                sf += "<strong>" + value + "</strong> "
+                sf += '<a class="facetview_filterselected facetview_clear" data-field="' + facet.field + '" data-value="' + escapeHtml(value) + '" href="' + escapeHtml(value) + '"><i class="icon-black icon-remove" style="margin-top:1px;"></i></a>'
+                sf += "</td></tr>"
+                frag += sf
+            }
+        }
+    }
+
+    // is there a pre-defined filter on this facet?
+    var predefined = facet.field in options.predefined_filters ? options.predefined_filters[facet.field] : []
+
+    // then render the remaining selectable facets
+    for (var i=0; i < facet["values"].length; i=i+1) {
+        var f = facet["values"][i]
+        if (options.exclude_predefined_filters_from_facets && $.inArray(f.term, predefined) > -1) { // note that the datatypes have to match
+            continue
+        }
+        if ($.inArray(f.term.toString(), selected_filters) === -1) { // the toString helps us with non-string filters (e.g integers)
+            var append = options.render_terms_facet_result(options, facet, f, selected_filters)
+            frag += append
+        }
+    }
+
+    return frag
+}
+
+function renderRangeFacetValues(options, facet) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filtervalue - wrapper element for any value included in the list
+     * class: facetview_filterselected - for any anchors around selected filters
+     * class: facetview_clear - for any link which should remove a filter (must also provide data-field and data-value)
+     * class: facetview_filterchoice - tags the anchor wrapped around the name of the (unselected) field
+     *
+     * should (not must) respect the following config
+     *
+     * options.selected_filters_in_facet - whether to show selected filters in the facet pull-down (if that's your idiom)
+     * options.render_facet_result - function which renders the individual facets
+     */
+
+    function getValueForRange(range, values) {
+        for (var i=0; i < values.length; i=i+1) {
+            var value = values[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return value
+            }
+        }
+    }
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.range.length; i=i+1) {
+            var range = facet.range[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var selected_range = options.active_filters[facet.field]
+    var frag = ""
+
+    // render the active filter if there is one
+    if (options.selected_filters_in_facet && selected_range) {
+        var range = getRangeForValue(selected_range, facet)
+        var already_selected = true
+
+        var data_to = range.to ? " data-to='" + range.to + "' " : ""
+        var data_from = range.from ? " data-from='" + range.from + "' " : ""
+
+        var sf = '<tr class="facetview_filtervalue" style="display:none;"><td>'
+        sf += "<strong>" + range.display + "</strong> "
+        sf += '<a class="facetview_filterselected facetview_clear" data-field="' + facet.field + '" ' + data_to + data_from + ' href="#"><i class="icon-black icon-remove" style="margin-top:1px;"></i></a>'
+        sf += "</td></tr>"
+        frag += sf
+
+        // if a range is already selected, we don't render any more
+        return frag
+    }
+
+    // then render the remaining selectable facets if necessary
+    for (var i=0; i < facet["range"].length; i=i+1) {
+        var r = facet["range"][i]
+        var f = getValueForRange(r, facet["values"])
+        if (f) {
+            if (f.count === 0 && facet.hide_empty_range) {
+                continue
+            }
+            var append = options.render_range_facet_result(options, facet, f, r)
+            frag += append
+        }
+    }
+
+    return frag
+}
+
+function renderGeoFacetValues(options, facet) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filtervalue - wrapper element for any value included in the list
+     * class: facetview_filterselected - for any anchors around selected filters
+     * class: facetview_clear - for any link which should remove a filter (must also provide data-field and data-value)
+     * class: facetview_filterchoice - tags the anchor wrapped around the name of the (unselected) field
+     *
+     * should (not must) respect the following config
+     *
+     * options.selected_filters_in_facet - whether to show selected filters in the facet pull-down (if that's your idiom)
+     * options.render_facet_result - function which renders the individual facets
+     */
+
+    function getValueForRange(range, values) {
+        for (var i=0; i < values.length; i=i+1) {
+            var value = values[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return value
+            }
+        }
+    }
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.distance.length; i=i+1) {
+            var range = facet.distance[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var selected_geo = options.active_filters[facet.field]
+    var frag = ""
+
+    // render the active filter if there is one
+    if (options.selected_filters_in_facet && selected_geo) {
+        var range = getRangeForValue(selected_geo, facet)
+        var already_selected = true
+
+        var data_to = range.to ? " data-to='" + range.to + "' " : ""
+        var data_from = range.from ? " data-from='" + range.from + "' " : ""
+
+        var sf = '<tr class="facetview_filtervalue" style="display:none;"><td>'
+        sf += "<strong>" + range.display + "</strong> "
+        sf += '<a class="facetview_filterselected facetview_clear" data-field="' + facet.field + '" ' + data_to + data_from + ' href="#"><i class="icon-black icon-remove" style="margin-top:1px;"></i></a>'
+        sf += "</td></tr>"
+        frag += sf
+
+        // if a range is already selected, we don't render any more
+        return frag
+    }
+
+    // then render the remaining selectable facets if necessary
+    for (var i=0; i < facet["distance"].length; i=i+1) {
+        var r = facet["distance"][i]
+        var f = getValueForRange(r, facet["values"])
+        if (f) {
+            if (f.count === 0 && facet.hide_empty_distance) {
+                continue
+            }
+            var append = options.render_geo_facet_result(options, facet, f, r)
+            frag += append
+        }
+    }
+
+    return frag
+}
+
+function renderDateHistogramValues(options, facet) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filtervalue - wrapper element for any value included in the list
+     * class: facetview_filterselected - for any anchors around selected filters
+     * class: facetview_clear - for any link which should remove a filter (must also provide data-field and data-value)
+     * class: facetview_filterchoice - tags the anchor wrapped around the name of the (unselected) field
+     *
+     * should (not must) respect the following config
+     *
+     * options.selected_filters_in_facet - whether to show selected filters in the facet pull-down (if that's your idiom)
+     * options.render_facet_result - function which renders the individual facets
+     */
+
+    var selected_range = options.active_filters[facet.field];
+    var frag = "";
+
+    // render the active filter if there is one
+    if (options.selected_filters_in_facet && selected_range) {
+        var from = selected_range.from;
+        var data_from = " data-from='" + from + "' ";
+        var display = from;
+        if (facet.value_function) {
+            display = facet.value_function(display);
+        }
+
+        var sf = '<tr class="facetview_filtervalue" style="display:none;"><td>';
+        sf += "<strong>" + display + "</strong> ";
+        sf += '<a class="facetview_filterselected facetview_clear" data-field="' + facet.field + '" '+ data_from + ' href="#"><i class="icon-black icon-remove" style="margin-top:1px;"></i></a>';
+        sf += "</td></tr>";
+        frag += sf;
+
+        // if a range is already selected, we don't render any more
+        return frag
+    }
+
+    // then render the remaining selectable facets if necessary
+
+    // get the facet values in the right order for display
+    var values = facet["values"];
+    if (facet.sort === "desc") {
+        values.reverse()
+    }
+
+    var full_frag = "<tbody class='facetview_date_histogram_full table-striped-inverted' style='display: none'>";
+    var short_frag = "<tbody class='facetview_date_histogram_short table-striped-inverted'>";
+
+    for (var i = 0; i < values.length; i++) {
+        var f = values[i];
+        if (f) {
+            if (f.count === 0 && facet.hide_empty_date_bin) {
+                continue
+            }
+
+            var next = false;
+            if (facet.sort === "asc") {
+                if (i + 1 < values.length) {
+                    next = values[i + 1]
+                }
+            } else if (facet.sort === "desc") {
+                if (i - 1 >= 0) {
+                    next = values[i - 1];
+                }
+            }
+
+            var append = options.render_date_histogram_result(options, facet, f, next);
+
+            full_frag += append;
+            if (!facet["short_display"]) {
+                short_frag += append;
+            }
+            else if (facet["short_display"] && i < facet["short_display"]) {
+                short_frag += append;
+            }
+        }
+    }
+
+    full_frag += '<tr class="facetview_filtervalue" style="display:none;"><td><a href="#" class="facetview_date_histogram_showless" data-facet="' + facet['field'] + '">show less</a></td></tr>';
+    full_frag += "</tbody>";
+
+    if (facet["short_display"] && values.length > facet["short_display"]) {
+        short_frag += '<tr class="facetview_filtervalue" style="display:none;"><td><a href="#" class="facetview_date_histogram_showall" data-facet="' + facet['field'] + '">show all</a></td></tr>';
+    }
+    short_frag += "</tbody>";
+
+    return short_frag + full_frag;
+}
 
 function renderTermsFacetResult(options, facet, result, selected_filters) {
     /*****************************************
@@ -681,6 +1291,10 @@ function renderDateHistogramResult(options, facet, result, next) {
                 '" data-field="' + facet['field'] + '" ' + data_to + data_from + ' href="#"><span class="facetview_filterchoice_text" dir="auto">' + escapeHtml(display) + '</span>' +
                 '<span class="facetview_filterchoice_count" dir="ltr"> (' + result.count + ')</span></a></td></tr>';
     return append
+}
+
+function searchingNotification(options) {
+    return "SEARCHING..."
 }
 
 function basicPager(options) {
@@ -769,6 +1383,15 @@ function pageSlider(options) {
     return meta
 }
 
+function renderNotFound() {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_not_found - the id of the top level element containing the not found message
+     */
+    return "<tr class='facetview_not_found'><td>No results found</td></tr>"
+}
+
 function renderResultRecord(options, record) {
     /*****************************************
      * overrides must provide the following classes and ids
@@ -851,6 +1474,399 @@ function renderResultRecord(options, record) {
     // close off the result with the ending strings, and then return
     result += options.resultwrap_end;
     return result;
+}
+
+function renderActiveTermsFilter(options, facet, field, filter_list) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     * options.show_filter_logic - whether to include AND/OR along with filters
+     * facet.value_function - the value function to be applied to all displayed values
+     */
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+    var logic = facet.logic ? facet.logic : options.default_facet_operator;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    for (var i = 0; i < filter_list.length; i++) {
+        var value = filter_list[i];
+        if (facet.value_function) {
+            value = facet.value_function(value)
+        }
+
+        frag += '<span class="facetview_filterselected_text">' + value + '</span>&nbsp;';
+        frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" data-value="' + value + '" alt="remove" title="Remove" href="' + value + '">';
+        frag += '<i class="icon-white icon-remove" style="margin-top:1px;"></i>';
+        frag += "</a>";
+
+        if (i !== filter_list.length - 1 && options.show_filter_logic) {
+            frag += '<span class="facetview_filterselected_text">&nbsp;<strong>' + logic + '</strong>&nbsp;</span>';
+        }
+    }
+    frag += "</div>";
+
+    return frag
+}
+
+function renderActiveRangeFilter(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.range.length; i=i+1) {
+            var range = facet.range[i];
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to);
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from);
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    var range = getRangeForValue(value, facet);
+
+    var data_to = value.to ? " data-to='" + value.to + "' " : "";
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    frag += '<span class="facetview_filterselected_text">' + range.display + '</span>&nbsp;';
+    frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" ' + data_to + data_from +
+            ' alt="remove" title="Remove" href="#">';
+    frag += '<i class="icon-white icon-remove" style="margin-top:1px;"></i>';
+    frag += "</a>";
+
+    frag += "</div>";
+
+    return frag
+}
+
+function renderActiveGeoFilter(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.distance.length; i=i+1) {
+            var range = facet.distance[i];
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to);
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from);
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    var range = getRangeForValue(value, facet);
+
+    var data_to = value.to ? " data-to='" + value.to + "' " : "";
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    frag += '<span class="facetview_filterselected_text">' + range.display + '</span>&nbsp;';
+    frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" ' + data_to + data_from +
+            ' alt="Remove" title="remove" href="#">';
+    frag += '<i class="icon-white icon-remove" style="margin-top:1px;"></i>';
+    frag += "</a>";
+
+    frag += "</div>";
+
+    return frag
+}
+
+function renderActiveDateHistogramFilter(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    var valdisp = value.from;
+    if (facet.value_function) {
+        valdisp = facet.value_function(valdisp);
+    }
+
+    frag += '<span class="facetview_filterselected_text">' + valdisp + '</span>&nbsp;';
+    frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" ' + data_from +
+            ' alt="remove" title="Remove" href="#">';
+    frag += '<i class="icon-white icon-remove" style="margin-top:1px;"></i>';
+    frag += "</a>";
+
+    frag += "</div>";
+
+    return frag
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Alternative active filter renderers which use buttons - deprecated due to usability/ux concerns
+
+function renderActiveTermsFilterButton(options, facet, field, filter_list) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     * options.show_filter_logic - whether to include AND/OR along with filters
+     * facet.value_function - the value function to be applied to all displayed values
+     */
+    var clean = safeId(field)
+    var display = facet.display ? facet.display : facet.field
+    var logic = facet.logic ? facet.logic : options.default_facet_operator
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<a class="btn btn-info facetview_inactive_link facetview_filterselected" href="' + field + '">'
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + '</strong></span>'
+        frag += "</a>"
+    }
+
+    for (var i = 0; i < filter_list.length; i++) {
+        var value = filter_list[i]
+        if (facet.value_function) {
+            value = facet.value_function(value)
+        }
+
+        frag += '<a class="facetview_filterselected facetview_clear btn btn-info" data-field="' + field + '" data-value="' + escapeHtml(value) + '" alt="remove" title="remove" href="' + escapeHtml(value) + '">'
+        frag += '<span class="facetview_filterselected_text">' + escapeHtml(value) + '</span> <i class="icon-white icon-remove" style="margin-top:1px;"></i>'
+        frag += "</a>"
+
+        if (i !== filter_list.length - 1 && options.show_filter_logic) {
+            frag += '<a class="btn btn-info facetview_inactive_link facetview_filterselected" href="' + field + '">'
+            frag += '<span class="facetview_filterselected_text"><strong>' + logic + '</strong></span>'
+            frag += "</a>"
+        }
+    }
+    frag += "</div>"
+
+    return frag
+}
+
+function renderActiveRangeFilterButton(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.range.length; i=i+1) {
+            var range = facet.range[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var clean = safeId(field)
+    var display = facet.display ? facet.display : facet.field
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>"
+
+    if (options.show_filter_field) {
+        frag += '<a class="btn btn-info facetview_inactive_link facetview_filterselected" href="' + field + '">'
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + '</strong></span>'
+        frag += "</a>"
+    }
+
+    var range = getRangeForValue(value, facet)
+
+    var data_to = value.to ? " data-to='" + value.to + "' " : ""
+    var data_from = value.from ? " data-from='" + value.from + "' " : ""
+
+    frag += '<a class="facetview_filterselected facetview_clear btn btn-info" data-field="' + field + '" ' + data_to + data_from +
+            ' alt="remove" title="remove" href="#">'
+    frag += '<span class="facetview_filterselected_text">' + range.display + '</span> <i class="icon-white icon-remove" style="margin-top:1px;"></i>'
+    frag += "</a>"
+
+    frag += "</div>"
+
+    return frag
+}
+
+function renderActiveGeoFilterButton(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    function getRangeForValue(value, facet) {
+        for (var i=0; i < facet.distance.length; i=i+1) {
+            var range = facet.distance[i]
+
+            // the "to"s match if they both value and range have a "to" and they are the same, or if neither have a "to"
+            var match_to = (value.to && range.to && value.to === range.to.toString()) || (!value.to && !range.to)
+
+            // the "from"s match if they both value and range have a "from" and they are the same, or if neither have a "from"
+            var match_from = (value.from && range.from && value.from === range.from.toString()) || (!value.from && !range.from)
+
+            if (match_to && match_from) {
+                return range
+            }
+        }
+    }
+
+    var clean = safeId(field)
+    var display = facet.display ? facet.display : facet.field
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>"
+
+    if (options.show_filter_field) {
+        frag += '<a class="btn btn-info facetview_inactive_link facetview_filterselected" href="' + field + '">'
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + '</strong></span>'
+        frag += "</a>"
+    }
+
+    var range = getRangeForValue(value, facet)
+
+    var data_to = value.to ? " data-to='" + value.to + "' " : ""
+    var data_from = value.from ? " data-from='" + value.from + "' " : ""
+
+    frag += '<a class="facetview_filterselected facetview_clear btn btn-info" data-field="' + field + '" ' + data_to + data_from +
+            ' alt="remove" title="remove" href="#">'
+    frag += '<span class="facetview_filterselected_text">' + range.display + '</span> <i class="icon-white icon-remove" style="margin-top:1px;"></i>'
+    frag += "</a>"
+
+    frag += "</div>"
+
+    return frag
+}
+
+function renderActiveDateHistogramFilterButton(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<a class="btn btn-info facetview_inactive_link facetview_filterselected" href="' + field + '">';
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + '</strong></span>';
+        frag += "</a>"
+    }
+
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    var valdisp = value.from;
+    if (facet.value_function) {
+        valdisp = facet.value_function(valdisp);
+    }
+
+    frag += '<a class="facetview_filterselected facetview_clear btn btn-info" data-field="' + field + '" ' + data_from +
+            ' alt="remove" title="remove" href="#">'
+    frag += '<span class="facetview_filterselected_text">' + escapeHtml(valdisp) + '</span> <i class="icon-white icon-remove" style="margin-top:1px;"></i>'
+    frag += "</a>"
+
+    frag += "</div>"
+
+    return frag
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1024,7 +2040,6 @@ function dateHistogramShowLess(options, context, facet) {
     el.find(".facetview_date_histogram_full").hide();
     el.find(".facetview_date_histogram_short").show();
 }
-
 var licenceMap = {
     "CC BY" : ["/static/doaj/images/cc/by.png", "https://creativecommons.org/licenses/by/4.0/"],
     "CC BY-NC" : ["/static/doaj/images/cc/by-nc.png", "https://creativecommons.org/licenses/by-nc/4.0/"],
@@ -1096,6 +2111,116 @@ function renderNotFound() {
         "</tr>";
 }
 
+// addition of embeddable widget into share link box
+function searchOptions(options) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_startagain - reset the search parameters
+     * class: facetview_pagesize - size of each result page
+     * class: facetview_order - ordering direction of results
+     * class: facetview_orderby - list of fields which can be ordered by
+     * class: facetview_searchfield - list of fields which can be searched on
+     * class: facetview_freetext - input field for freetext search
+     * class: facetview_force_search - button which triggers a search on the current page status
+     *
+     * should (not must) respect the following configs
+     *
+     * options.search_sortby - list of sort fields and directions
+     * options.searchbox_fieldselect - list of fields search can be focussed on
+     * options.sharesave_link - whether to provide a copy of a link which can be saved
+     * options.search_button - whether to provide a button to force a search
+     */
+
+    var thefacetview = "";
+
+    // share and save link + embed link
+    if (options.sharesave_link) {
+        thefacetview += '<a class="btn facetview_sharesave" title="share or embed this search" style="margin:0 5px 21px 0px;" href="">share | embed</a>';
+    }
+
+    // initial button group of search controls
+    thefacetview += '<div class="btn-group" style="display:inline-block; margin-right:5px;"> \
+        <a class="btn btn-small facetview_startagain" title="clear all search settings and start again" href=""><i class="icon-remove"></i></a> \
+        <a class="btn btn-small facetview_pagesize" title="change result set size" href="#"></a>';
+
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<a class="btn btn-small facetview_order" title="current order descending. Click to change to ascending" \
+            href="desc"><i class="icon-arrow-down"></i></a>';
+    }
+    thefacetview += '</div>';
+
+    // selection for search ordering
+    if (options.search_sortby.length > 0) {
+        thefacetview += '<select class="facetview_orderby" style="border-radius:5px; \
+            -moz-border-radius:5px; -webkit-border-radius:5px; width:100px; background:#eee; margin:0 5px 21px 0;"> \
+            <option value="">order by ... relevance</option>';
+
+        for (var each = 0; each < options.search_sortby.length; each++) {
+            var obj = options.search_sortby[each];
+            var sortoption = '';
+            if ($.type(obj['field']) == 'array') {
+                sortoption = sortoption + '[';
+                sortoption = sortoption + "'" + obj['field'].join("','") + "'";
+                sortoption = sortoption + ']';
+            } else {
+                sortoption = obj['field'];
+            }
+            thefacetview += '<option value="' + sortoption + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    }
+
+    // select box for fields to search on
+    if ( options.searchbox_fieldselect.length > 0 ) {
+        thefacetview += '<select class="facetview_searchfield" style="border-radius:5px 0px 0px 5px; \
+            -moz-border-radius:5px 0px 0px 5px; -webkit-border-radius:5px 0px 0px 5px; width:100px; margin:0 -2px 21px 0; background:#ecf4ff;">';
+        thefacetview += '<option value="">search all</option>';
+
+        for (var each = 0; each < options.searchbox_fieldselect.length; each++) {
+            var obj = options.searchbox_fieldselect[each];
+            thefacetview += '<option value="' + obj['field'] + '">' + obj['display'] + '</option>';
+        };
+        thefacetview += '</select>';
+    };
+
+    // text search box
+    var corners = "border-radius:0px 5px 5px 0px; -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;"
+    if (options.search_button) {
+        corners = "border-radius:0px 0px 0px 0px; -moz-border-radius:0px 0px 0px 0px; -webkit-border-radius:0px 0px 0px 0px;"
+    }
+    thefacetview += '<input type="text" class="facetview_freetext span4" style="display:inline-block; margin:0 0 21px 0; background:#ecf4ff; ' + corners + '" name="q" \
+        value="" placeholder="search term" />';
+
+    // search button
+    if (options.search_button) {
+        thefacetview += "<a class='btn btn-info facetview_force_search' style='margin:0 0 21px 0px; border-radius:0px 5px 5px 0px; \
+            -moz-border-radius:0px 5px 5px 0px; -webkit-border-radius:0px 5px 5px 0px;'><i class='icon-white icon-search'></i></a>"
+    }
+
+    // share and save link box
+    if (options.sharesave_link) {
+        thefacetview += '<div class="facetview_sharesavebox alert alert-info" style="display:none;"> \
+            <button type="button" class="facetview_sharesave close">×</button> \
+            <p>Share a link to this search';
+
+        // if there is a url_shortener available, render a link
+        if (options.url_shortener) {
+            thefacetview += " <a href='#' class='facetview_shorten_url btn btn-mini' style='margin-left: 30px'><i class='icon-black icon-resize-small'></i> shorten url</a>";
+            thefacetview += " <a href='#' class='facetview_lengthen_url btn btn-mini' style='display: none; margin-left: 30px'><i class='icon-black icon-resize-full'></i> original url</a>";
+        }
+
+        thefacetview += '</p> \
+            <textarea class="facetview_sharesaveurl" style="width:100%">' + shareableUrl(options) + '</textarea>';
+
+        // The text area for the embeddable widget
+        thefacetview += '<p>Embed this search in your webpage</p>\
+        <textarea class="facetview_embedwidget" style="width:100%">' + doajGenFixedQueryWidget(options) + '</textarea> \
+            </div>';
+    }
+
+    return thefacetview
+}
 
 /////////////////////////////////////////////////////////////////
 // functions for use as plugins to be passed to facetview instances
@@ -1145,6 +2270,22 @@ function doajPager(options) {
     return meta
 }
 
+function doajScrollTop(options, context) {
+    $(".facetview_increment").click(function(event) {
+        event.preventDefault();
+        $('html, body').animate({
+            scrollTop: $("body").offset().top
+        }, 1);
+    });
+
+    $(".facetview_decrement").click(function(event) {
+        event.preventDefault();
+        $('html, body').animate({
+            scrollTop: $("body").offset().top
+        }, 1);
+    });
+}
+
 function doajToggleAbstract(options, context) {
     // toggle the abstracts
     $('.abstract_text', context).hide();
@@ -1156,8 +2297,85 @@ function doajToggleAbstract(options, context) {
     });
 }
 
+function doajPostRender(options, context) {
+    doajScrollTop(options, context);
+    doajToggleAbstract(options, context);
+
+    // Update the widget options & generated text
+    if (options.sharesave_link) {
+        var widget_text = doajGenFixedQueryWidget(options);
+        $('.facetview_embedwidget', context).val(widget_text);
+    }
+}
+
 function doajFixedQueryWidgetPostRender(options, context) {
     doajToggleAbstract(options, context);
+}
+
+function doajJAPostRender(options, context) {
+    // first run the default post render
+    doajPostRender(options, context);
+
+    // now add the handlers for the article delete
+    $(".delete_article_link").unbind("click");
+    $(".delete_article_link").click(function(event) {
+        event.preventDefault();
+
+        function success_callback(data) {
+            alert("The article was successfully deleted");
+            $(".facetview_freetext").trigger("keyup"); // cause a search
+        }
+
+        function error_callback() {
+            alert("There was an error deleting the article")
+        }
+
+        var c = confirm("Are you really really sure?  You can't undo this operation!");
+        if (c) {
+            var href = $(this).attr("href");
+            var obj = {"delete" : "true"};
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: obj,
+                success : success_callback,
+                error: error_callback
+            })
+        }
+    });
+}
+
+function doajEGPostRender(options, context) {
+    // first run the default post render
+    doajPostRender(options, context);
+
+    // now add the handlers for the article delete
+    $(".delete_editor_group_link").unbind("click")
+    $(".delete_editor_group_link").click(function(event) {
+        event.preventDefault();
+
+        function success_callback(data) {
+            alert("The group was successfully deleted")
+            $(".facetview_freetext").trigger("keyup") // cause a search
+        }
+
+        function error_callback() {
+            alert("There was an error deleting the group")
+        }
+
+        var c = confirm("Are you really really sure?  You can't undo this operation!")
+        if (c) {
+            var href = $(this).attr("href")
+            var obj = {"delete" : "true"}
+            $.ajax({
+                type: "POST",
+                url: href,
+                data: obj,
+                success : success_callback,
+                error: error_callback
+            })
+        }
+    });
 }
 
 function doajRenderActiveTermsFilter(options, facet, field, filter_list) {
@@ -1209,6 +2427,50 @@ function doajRenderActiveTermsFilter(options, facet, field, filter_list) {
     return frag
 }
 
+function doajRenderActiveDateHistogramFilter(options, facet, field, value) {
+    /*****************************************
+     * overrides must provide the following classes and ids
+     *
+     * class: facetview_filterselected - anchor tag for any clickable filter selection
+     * class: facetview_clear - anchor tag for any link which will remove the filter (should also provide data-value and data-field)
+     * class: facetview_inactive_link - any link combined with facetview_filterselected which should not execute when clicked
+     *
+     * should (not must) respect the config
+     *
+     * options.show_filter_field - whether to include the name of the field the filter is active on
+     */
+
+    // DOAJ note: we are overriding this (99.9% the same as facetview2's bootstrap2 theme)
+    // because we need to change the class of the cross icon used to close active filters.
+    // We use FontAwesome at the DOAJ because the colours are overridable unlike Bootstrap's glyphicons.
+
+    var clean = safeId(field);
+    var display = facet.display ? facet.display : facet.field;
+
+    var frag = "<div id='facetview_filter_group_" + clean + "' class='btn-group'>";
+
+    if (options.show_filter_field) {
+        frag += '<span class="facetview_filterselected_text"><strong>' + display + ':</strong>&nbsp;</span>';
+    }
+
+    var data_from = value.from ? " data-from='" + value.from + "' " : "";
+
+    var valdisp = value.from;
+    if (facet.value_function) {
+        valdisp = facet.value_function(valdisp);
+    }
+
+    frag += '<span class="facetview_filterselected_text">' + valdisp + '</span>&nbsp;';
+    frag += '<a class="facetview_filterselected facetview_clear" data-field="' + field + '" ' + data_from +
+            ' alt="remove" title="Remove" href="#">';
+    frag += '<i class="fa fa-remove" style="margin-top:1px;"></i>';
+    frag += "</a>";
+
+    frag += "</div>";
+
+    return frag
+}
+
 function editorGroupJournalNotFound() {
     return "<tr class='facetview_not_found'>" +
         "<td><p>There are no journals for your editor group(s) that meet the search criteria</p>" +
@@ -1244,10 +2506,10 @@ function publisherJournalNotFound() {
         "</tr>";
 }
 
-function publisherReapplicationNotFound() {
+function publisherUpdateRequestNotFound() {
     return "<tr class='facetview_not_found'>" +
-        "<td><p>You do not have any active reapplications that meet your search criteria</p>" +
-        "<p>If you have not set any search criteria, you do not have any further reapplications to complete at this stage.</p>" +
+        "<td><p>You do not have any active update requests that meet your search criteria</p>" +
+        "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>" +
         "</tr>";
 }
 
@@ -1268,20 +2530,17 @@ function authorPaysMap(value) {
     return value;
 }
 
-var publisherStatusMapping = {
-    "reapplication" : "pending"
-};
 function publisherStatusMap(value) {
-    if (publisherStatusMapping.hasOwnProperty(value)) {
-        return publisherStatusMapping[value];
+    if (applicationStatusMapping.hasOwnProperty(value)) {
+        return applicationStatusMapping[value];
     }
     return value;
 }
 
 // This must be updated in line with the list in formcontext/choices.py
 var applicationStatusMapping = {
-    'reapplication' : 'Reapplication Pending',
-    'submitted' : 'Reapplication Submitted',
+    'update_request' : 'Update Request',
+    'revisions_required' : 'Revisions Required',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',
@@ -1312,6 +2571,61 @@ function humanDate(datestr) {
     var year = date.getUTCFullYear();
 
     return String(dom) + " " + monthmap[monthnum] + " " + String(year);
+}
+
+function humanDateTime(datestr) {
+    var date = new Date(datestr);
+    var dom = date.getUTCDate();
+    var monthnum = date.getUTCMonth();
+    var year = date.getUTCFullYear();
+    var hour = date.getUTCHours();
+    var minute = date.getUTCMinutes();
+
+    if (String(hour).length === 1) {
+        hour = "0" + String(hour);
+    }
+
+    if (String(minute).length === 1) {
+        minute = "0" + String(minute);
+    }
+
+    return String(dom) + " " + monthmap[monthnum] + " " + String(year) + " at " + String(hour) + ":" + String(minute);
+}
+
+//////////////////////////////////////////////////////
+// fixed query widget generation
+/////////////////////////////////////////////////////
+
+var doajenvmap = {
+    "http://localhost:5004" : "dev",
+    "https://testdoaj.cottagelabs.com" : "test",
+    "https://stagingdoaj.cottagelabs.com" : "staging"
+};
+
+function doajDetectCurrentEnv(){
+    // Return env, if one of recognised locations, default to production.
+    return doajenvmap[document.location.origin] || "production";
+}
+
+function doajGenFixedQueryWidget(widget_fv_opts){
+    // Generates code for the fixed query widget
+
+    var source = elasticSearchQuery({"options" : widget_fv_opts, "include_facets" : widget_fv_opts.include_facets_in_url, "include_fields" : widget_fv_opts.include_fields_in_url});
+
+    // Code to get a version of jQuery
+    var jq = '<script type="text/javascript">!window.jQuery && document.write("<scr" + "ipt type=\\"text/javascript\\" src=\\"http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\\"></scr" + "ipt>"); </script>';
+
+    // Get the env to serve the correct version of the widget file
+    var env_suffix = "";
+    var doaj_env = doajDetectCurrentEnv();
+    if (doaj_env != "production") {
+        env_suffix = "_" + doaj_env;
+    }
+
+    // Code to configure the widget
+    var frag = '<script type="text/javascript">var doaj_url="'+ document.location.origin + '"; var SEARCH_CONFIGURED_OPTIONS=' + JSON.stringify(source) + '</script>';
+    frag += '<script src="' + document.location.origin +'/static/widget/fixed_query' + env_suffix + '.js" type="text/javascript"></script><div id="doaj-fixed-query-widget"></div></div>';
+    return jq + frag
 }
 
 /*
@@ -1366,7 +2680,7 @@ if (!Array.prototype.indexOf) {
  * UTILITIES
  ****************************************************************************/
 
-// first define the bind with delay function from (saves loading it separately)
+// first define the bind with delay function from (saves loading it separately) 
 // https://github.com/bgrins/bindWithDelay/blob/master/bindWithDelay.js
 (function($) {
     $.fn.bindWithDelay = function( type, data, fn, timeout, throttle ) {
@@ -1461,7 +2775,7 @@ function ie8compat(o) {
 /******************************************************************
  * DEFAULT CALLBACKS
  *****************************************************************/
-
+ 
 ///// the lifecycle callbacks ///////////////////////
 function postInit(options, context) {}
 function preSearch(options, context) {}
@@ -1502,7 +2816,7 @@ function getUrlVars() {
             var newval = decodeURIComponent(hash[1]);
             if (newval[0] == "[" || newval[0] == "{") {
                 // if it looks like a JSON object in string form...
-                // remove " (double quotes) at beginning and end of string to make it a valid
+                // remove " (double quotes) at beginning and end of string to make it a valid 
                 // representation of a JSON object, or the parser will complain
                 newval = newval.replace(/^"/,"").replace(/"$/,"");
                 var newval = JSON.parse(newval);
@@ -1513,48 +2827,48 @@ function getUrlVars() {
     if (anchor) {
         params['url_fragment_identifier'] = anchor;
     }
-
+    
     return params;
 }
-
+ 
 /******************************************************************
  * FACETVIEW ITSELF
  *****************************************************************/
 
 (function($){
     $.fn.facetview = function(options) {
-
+    
         /**************************************************************
          * handle the incoming options, default options and url parameters
          *************************************************************/
-
+         
         // all of the possible options that will be used in the facetview lifecycle
         // along with their documentation
         var defaults = {
             ///// elasticsearch parameters /////////////////////////////
-
+            
             // the base search url which will respond to elasticsearch queries.  Generally ends with _search
             "search_url" : "http://localhost:9200/_search",
-
+            
             // datatype for ajax requests to use - overall recommend using jsonp
             "datatype" : "jsonp",
-
+            
             // if set, should be either * or ~
             // if *, * will be prepended and appended to each string in the freetext search term
-            // if ~, ~ then ~ will be appended to each string in the freetext search term.
-            // If * or ~ or : are already in the freetext search term, no action will be taken.
+            // if ~, ~ then ~ will be appended to each string in the freetext search term. 
+            // If * or ~ or : are already in the freetext search term, no action will be taken. 
             "default_freetext_fuzzify": false, // or ~ or *
-
+            
             // due to a bug in elasticsearch's clustered node facet counts, we need to inflate
             // the number of facet results we need to ensure that the results we actually want are
             // accurate.  This option tells us by how much.
             "elasticsearch_facet_inflation" : 100,
-
+            
             ///// query aspects /////////////////////////////
-
+            
             // list of fields to be returned by the elasticsearch query.  If omitted, full result set is returned
             "fields" : false, // or an array of field names
-
+            
             // list of partial fields to be returned by the elasticsearch query.  If omitted, full result set is returned
             "partial_fields" : false, // or an array of partial fields
 
@@ -1562,24 +2876,24 @@ function getUrlVars() {
             // references to stored scripts in the back-end ES.  If not false, then an object corresponding to the
             // ES script_fields structure
             "script_fields" : false,
-
+            
             // number of results to display per page (i.e. to retrieve per query)
             "page_size" : 10,
-
+            
             // cursor position in the elasticsearch result set
             "from" : 0,
-
+            
             // list of fields and directions to sort in.  Note that the UI only supports single value sorting
             "sort" : [], // or something like [ {"title" : {"order" : "asc"}} ]
-
+            
             // field on which to focus the freetext search
             "searchfield" : "", // e.g. title.exact
-
+            
             // freetext search string
             "q" : "",
-
+            
             ///// facet aspects /////////////////////////////
-
+            
             // The list of facets to be displayed and used to seed the filtering processes.
             // Facets are complex fields which can look as follows:
             /*
@@ -1594,7 +2908,7 @@ function getUrlVars() {
                 "tooltip_text" : "<text to use to open the tooltip>",               // sets the text of the tooltip link
 
                 // terms facet only
-
+                
                 "size" : <num>,                                                     // how many terms should the facet limit to
                 "logic" : "AND|OR",                                                 // Whether to AND or OR selected facets together when filtering
                 "order" : "count|reverse_count|term|reverse_term",                  // which standard ordering to use for facet values
@@ -1603,16 +2917,16 @@ function getUrlVars() {
                 "value_function" : <function>,                                      // function to be called on each value before display
                 "controls" : true|false                                             // should the facet sort/size/bool controls be shown?
                 "ignore_empty_string" : true|false                                  // should the terms facet ignore empty strings in display
-
+                
                 // range facet only
-
+                
                 "range" : [                                                         // list of ranges (in order) which define the filters
                     {"from" : <num>, "to" : <num>, "display" : "<display name>"}    // from = lower bound (inclusive), to = upper boud (exclusive)
                 ],                                                                  // display = display name for this range
                 "hide_empty_range" : true|false,                                    // if there are no results for a given range, should it be hidden
-
+                
                 // geo distance facet only
-
+                
                 "distance" : [                                                      // list of distances (in order) which define the filters
                     {"from" : <num>, "to" : <num>, "display" : "<display name>"}    // from = lower bound (inclusive), to = upper boud (exclusive)
                 ],                                                                  // display = display name for this distance
@@ -1628,16 +2942,16 @@ function getUrlVars() {
                 "short_display" : <number to display initially>                     // the number of values to show initially (note you should set size=false)
 
                 // admin use only
-
+                
                 "values" : <object>                                                 // the values associated with a successful query on this facet
             }
             */
             "facets" : [],
-
+            
             // user defined extra facets.  These must be pre-formatted for elasticsearch, and they will
             // simply be added to the query at query-time.
             "extra_facets": {},
-
+            
             // default settings for each of the facet properties above.  If a facet lacks a property, it will
             // be initialised to the default
             "default_facet_type" : "terms",
@@ -1664,165 +2978,165 @@ function getUrlVars() {
 
 
             ///// search bar configuration /////////////////////////////
-
+            
             // list of options by which the search results can be sorted
             // of the form of a list of: { 'display' : '<display name>', 'field' : '<field to sort by>'},
             "search_sortby" : [],
-
+            
             // list of options for fields to which free text search can be constrained
             // of the form of a list of: { 'display' : '<display name>', 'field' : '<field to search on>'},
             "searchbox_fieldselect" : [],
-
+            
             // enable the share/save link feature
             "sharesave_link" : true,
 
             // provide a function which will do url shortening for the sharesave_link box
             "url_shortener" : false,
-
+            
             // on free-text search, default operator for the elasticsearch query system to use
             "default_operator" : "OR",
-
+            
             // enable the search button
             "search_button" : false,
-
+            
             // amount of time between finishing typing and when a query is executed from the search box
             "freetext_submit_delay" : 500,
-
+            
             ///// url configuration /////////////////////////////
-
+            
             // FIXME: should we read in facets from urls, and if we do, what should we do about them?
             // should facets be included in shareable urls.  Turning this on makes them very long, and currently
             // facetview does not read those facets back in if the URLs are parsed
             "include_facets_in_url" : false,
-
+            
             // FIXME: should we read in fields from urls, and if we do, what should we do about them?
             // should fields be included in shareable urls.  Turning this on makes them very long, and currently
             // facetview does not read those fields back in if the URLs are parsed
             "include_fields_in_url" : false,
-
+            
             ///// selected filters /////////////////////////////
-
+            
             // should the facet navigation show filters alongside other facet results which have not been selected
             "selected_filters_in_facet" : true,
-
+            
             // should the "selected filters" area show the name of the facet from which the filter was selected
             "show_filter_field" : true,
-
+            
             // should the "selected filters" area show the boolean logic used by the filter (taken from the facet.logic configuration)
             "show_filter_logic" : true,
-
+            
             // FIXME: add support for pre-defined range filters
             // a set of pre-defined filters which will always be applied to the search.
             // Has the following structure, and works for terms filters only
             // { "<field>" : ["<list of values>"] }
             // requires a facet for the given field to be defined
             "predefined_filters" : {},
-
+            
             // exclude any values that appear in pre-defined filters from any facets
             // This prevents configuration-set filters from ever being seen in a facet, but ensures that
             // they are always included when the search is carried out
             "exclude_predefined_filters_from_facets" : true,
-
+            
             // current active filters
             // DO NOT USE - this is for tracking internal state ONLY
             "active_filters" : {},
-
+            
             ///// general behaviour /////////////////////////////
-
+            
             // after initialisation, begin automatically with a search
             "initialsearch" : true,
-
-            // enable debug.  If debug is enabled, some technical information will be dumped to a
+            
+            // enable debug.  If debug is enabled, some technical information will be dumped to a 
             // visible textarea on the screen
             "debug" : false,
-
+            
             // after search, the results will fade in over this number of milliseconds
             "fadein" : 800,
-
+            
             // should the search url be synchronised with the browser's url bar after search
             // NOTE: does not work in some browsers.  See also share/save link option.
             "pushstate" : true,
-
+            
             ///// render functions /////////////////////////////
-
+            
             // for each render function, see the reference implementation for documentation on how they should work
-
+            
             // render the frame within which the facetview sits
             "render_the_facetview" : theFacetview,
-
+            
             // render the search options - containing freetext search, sorting, etc
-            "render_search_options" : $.noop,
-
+            "render_search_options" : searchOptions,
+            
             // render the list of available facets.  This will in turn call individual render methods
             // for each facet type
-            "render_facet_list" : $.noop,
-
+            "render_facet_list" : facetList,
+            
             // render the terms facet, the list of values, and the value itself
-            "render_terms_facet" : $.noop,                 // overall framework for a terms facet
-            "render_terms_facet_values" : $.noop,    // the list of terms facet values
+            "render_terms_facet" : renderTermsFacet,                 // overall framework for a terms facet
+            "render_terms_facet_values" : renderTermsFacetValues,    // the list of terms facet values
             "render_terms_facet_result" : renderTermsFacetResult,    // individual terms facet values
-
+            
             // render the range facet, the list of values, and the value itself
-            "render_range_facet" : $.noop,                // overall framework for a range facet
-            "render_range_facet_values" : $.noop,   // the list of range facet values
+            "render_range_facet" : renderRangeFacet,                // overall framework for a range facet
+            "render_range_facet_values" : renderRangeFacetValues,   // the list of range facet values
             "render_range_facet_result" : renderRangeFacetResult,   // individual range facet values
-
+            
             // render the geo distance facet, the list of values and the value itself
-            "render_geo_facet" : $.noop,                // overall framework for a geo distance facet
-            "render_geo_facet_values" : $.noop,   // the list of geo distance facet values
+            "render_geo_facet" : renderGeoFacet,                // overall framework for a geo distance facet
+            "render_geo_facet_values" : renderGeoFacetValues,   // the list of geo distance facet values
             "render_geo_facet_result" : renderGeoFacetResult,   // individual geo distance facet values
 
             // render the date histogram facet
-            "render_date_histogram_facet" : $.noop,
-            "render_date_histogram_values" : $.noop,
+            "render_date_histogram_facet" : renderDateHistogramFacet,
+            "render_date_histogram_values" : renderDateHistogramValues,
             "render_date_histogram_result" : renderDateHistogramResult,
-
+            
             // render any searching notification (which will then be shown/hidden as needed)
             "render_searching_notification" : searchingNotification,
-
+            
             // render the paging controls
             "render_results_metadata" : basicPager, // or pageSlider
-
+            
             // render a "results not found" message
             "render_not_found" : renderNotFound,
-
+            
             // render an individual result record
             "render_result_record" : renderResultRecord,
-
+            
             // render a terms filter interface component (e.g. the filter name, boolean operator used, and selected values)
-            "render_active_terms_filter" : $.noop,
-
+            "render_active_terms_filter" : renderActiveTermsFilter,
+            
             // render a range filter interface component (e.g. the filter name and the human readable description of the selected range)
-            "render_active_range_filter" : $.noop,
-
+            "render_active_range_filter" : renderActiveRangeFilter,
+            
             // render a geo distance filter interface component (e.g. the filter name and the human readable description of the selected range)
-            "render_active_geo_filter" : $.noop,
+            "render_active_geo_filter" : renderActiveGeoFilter,
 
             // render a date histogram/range interface component (e.g. the filter name and the human readable description of the selected range)
-            "render_active_date_histogram_filter" : $.noop,
-
+            "render_active_date_histogram_filter" : renderActiveDateHistogramFilter,
+            
             ///// configs for standard render functions /////////////////////////////
-
+            
             // if you provide your own render functions you may or may not want to re-use these
             "resultwrap_start":"<tr><td>",
             "resultwrap_end":"</td></tr>",
             "result_display" : [ [ {"pre" : "<strong>ID</strong>:", "field": "id", "post" : "<br><br>"} ] ],
             "results_render_callbacks" : {},
-
+            
             ///// behaviour functions /////////////////////////////
-
+            
             // called at the start of searching to display the searching notification
             "behaviour_show_searching" : showSearchingNotification,
-
+            
             // called at the end of searching to hide the searching notification
             "behaviour_finished_searching" : hideSearchingNotification,
-
+            
             // called after rendering a facet to determine whether it is visible/disabled
             "behaviour_facet_visibility" : setFacetVisibility,
-
+            
             // called after rendering a facet to determine whether it should be open or closed
             "behaviour_toggle_facet_open" : setFacetOpenness,
-
+            
             // called after changing the result set order to update the search bar
             "behaviour_results_ordering" : setResultsOrder,
 
@@ -1858,31 +3172,31 @@ function getUrlVars() {
 
             "behaviour_date_histogram_showall" : dateHistogramShowAll,
             "behaviour_date_histogram_showless" : dateHistogramShowLess,
-
+            
             ///// lifecycle callbacks /////////////////////////////
-
+            
             // the default callbacks don't have any effect - replace them as needed
-
+            
             "post_init_callback" : postInit,
             "pre_search_callback" : preSearch,
             "post_search_callback" : postSearch,
             "pre_render_callback" : preRender,
             "post_render_callback" : postRender,
-
+            
             ///// internal state monitoring /////////////////////////////
-
+            
             // these are used internally DO NOT USE
             // they are here for completeness and documentation
-
+            
             // is a search currently in progress
             "searching" : false,
-
+            
             // the raw query object
             "queryobj" : false,
-
+            
             // the raw data coming back from elasticsearch
             "rawdata" : false,
-
+            
             // the parsed data from elasticsearch
             "data" : false,
 
@@ -1892,15 +3206,15 @@ function getUrlVars() {
             // should the short url or the long url be displayed to the user?
             "show_short_url" : false
         };
-
+        
         function deriveOptions() {
             // cleanup for ie8 purposes
             ie8compat(options);
             ie8compat(defaults);
-
+            
             // extend the defaults with the provided options
             var provided_options = $.extend(defaults, options);
-
+            
             // deal with the options that come from the url, which require some special treatment
             var url_params = getUrlVars();
             var url_options = {};
@@ -1911,7 +3225,7 @@ function getUrlVars() {
                 url_options["url_fragment_identifier"] = url_params["url_fragment_identifier"]
             }
             provided_options = $.extend(provided_options, url_options);
-
+            
             // copy the _selected_operators data into the relevant facets
             // for each pre-selected operator, find the related facet and set its "logic" property
             var so = provided_options._selected_operators ? provided_options._selected_operators : {};
@@ -1929,7 +3243,7 @@ function getUrlVars() {
             if ("_selected_operators" in provided_options) {
                 delete provided_options._selected_operators
             }
-
+            
             // tease apart the active filters from the predefined filters
             if (!provided_options.predefined_filters) {
                 provided_options["active_filters"] = provided_options._active_filters
@@ -1958,7 +3272,7 @@ function getUrlVars() {
                     }
                 }
             }
-
+            
             // copy in the defaults to the individual facets when they are needed
             for (var i=0; i < provided_options.facets.length; i=i+1) {
                 var facet = provided_options.facets[i];
@@ -1986,10 +3300,10 @@ function getUrlVars() {
                 if (!("tooltip" in facet)) { facet["tooltip"] = provided_options.default_tooltip }
                 if (!("tooltip_text" in facet)) { facet["tooltip_text"] = provided_options.default_tooltip_text }
             }
-
+            
             return provided_options
         }
-
+        
         /******************************************************************
          * OPTIONS MANAGEMENT
          *****************************************************************/
@@ -1997,7 +3311,7 @@ function getUrlVars() {
         function uiFromOptions() {
             // set the current page size
             options.behaviour_set_page_size(options, obj, {size: options.page_size});
-
+            
             // set the search order
             // NOTE: that this interface only supports single field ordering
             var sorting = options.sort;
@@ -2013,13 +3327,13 @@ function getUrlVars() {
                 }
                 break
             }
-
+            
             // set the search field
             options.behaviour_set_search_field(options, obj, {field : options.searchfield});
-
+            
             // set the search string
             options.behaviour_set_search_string(options, obj, {q: options.q});
-
+            
             // for each facet, set the facet size, order and and/or status
             for (var i=0; i < options.facets.length; i=i+1) {
                 var f = options.facets[i];
@@ -2030,13 +3344,13 @@ function getUrlVars() {
                 options.behaviour_set_facet_sort(options, obj, {facet : f});
                 options.behaviour_set_facet_and_or(options, obj, {facet : f});
             }
-
+            
             // for any existing filters, render them
             options.behaviour_set_selected_filters(options, obj);
         }
-
+        
         function urlFromOptions() {
-
+            
             if (options.pushstate && 'pushState' in window.history) {
                 var querypart = shareableUrl(options, true, true);
                 window.history.pushState("", "search", querypart);
@@ -2045,7 +3359,7 @@ function getUrlVars() {
             // also set the default shareable url at this point
             setShareableUrl()
         }
-
+        
         /******************************************************************
          * DEBUG
          *****************************************************************/
@@ -2053,17 +3367,17 @@ function getUrlVars() {
         function addDebug(msg, context) {
             $(".facetview_debug", context).show().find("textarea").append(msg + "\n\n")
         }
-
+        
         /**************************************************************
          * functions for managing search option events
          *************************************************************/
-
+        
         /////// paging /////////////////////////////////
-
+        
         // adjust how many results are shown
         function clickPageSize(event) {
             event.preventDefault();
-            var newhowmany = prompt('Currently displaying ' + options.page_size +
+            var newhowmany = prompt('Currently displaying ' + options.page_size + 
                 ' results per page. How many would you like instead?');
             if (newhowmany) {
                 options.page_size = parseInt(newhowmany);
@@ -2074,40 +3388,40 @@ function getUrlVars() {
         }
 
         /////// start again /////////////////////////////////
-
+        
         // erase the current search and reload the window
         function clickStartAgain(event) {
             event.preventDefault();
             var base = window.location.href.split("?")[0];
             window.location.replace(base);
         }
-
+        
         /////// search ordering /////////////////////////////////
-
+        
         function clickOrder(event) {
             event.preventDefault();
-
+            
             // switch the sort options around
             if ($(this).attr('href') == 'desc') {
                 options.behaviour_set_order(options, obj, {order: "asc"})
             } else {
                 options.behaviour_set_order(options, obj, {order: "desc"})
             };
-
+            
             // synchronise the new sort with the options
             saveSortOption();
-
+            
             // reset the cursor and issue a search
             options.from = 0;
             doSearch();
         }
-
+        
         function changeOrderBy(event) {
             event.preventDefault();
-
+            
             // synchronise the new sort with the options
             saveSortOption();
-
+            
             // reset the cursor and issue a search
             options.from = 0;
             doSearch();
@@ -2131,7 +3445,7 @@ function getUrlVars() {
                     sortobj[sortchoice] = {'order': $('.facetview_order', obj).attr('href')};
                     sorting.push(sortobj);
                 }
-
+                
                 options.sort = sorting;
             } else {
                 sortobj = {};
@@ -2140,9 +3454,9 @@ function getUrlVars() {
                 options.sort = sorting
             }
         }
-
+        
         /////// search fields /////////////////////////////////
-
+        
         // adjust the search field focus
         function changeSearchField(event) {
             event.preventDefault();
@@ -2151,7 +3465,7 @@ function getUrlVars() {
             options.searchfield = field;
             doSearch();
         };
-
+        
         // keyup in search box
         function keyupSearchText(event) {
             event.preventDefault();
@@ -2160,7 +3474,7 @@ function getUrlVars() {
             options.q = q;
             doSearch()
         }
-
+        
         // click of the search button
         function clickSearch() {
             event.preventDefault();
@@ -2171,7 +3485,7 @@ function getUrlVars() {
         }
 
         /////// share save link /////////////////////////////////
-
+        
         // show the current url with the result set as the source param
         function clickShareSave(event) {
             event.preventDefault();
@@ -2224,27 +3538,27 @@ function getUrlVars() {
                 options.behaviour_share_url(options, obj);
             }
         }
-
+        
         /**************************************************************
          * functions for handling facet events
          *************************************************************/
 
         /////// show/hide filter values /////////////////////////////////
-
+        
         // show the filter values
         function clickFilterShow(event) {
             event.preventDefault();
-
+            
             var name = $(this).attr("href");
             var facet = selectFacet(options, name);
             var el = facetElement("#facetview_filter_", name, obj);
-
+            
             facet.open = !facet.open;
             options.behaviour_toggle_facet_open(options, obj, facet)
         }
-
+        
         /////// change facet length /////////////////////////////////
-
+        
         // adjust how many results are shown
         function clickMoreFacetVals(event) {
             event.preventDefault();
@@ -2263,11 +3577,11 @@ function getUrlVars() {
         }
 
         /////// sorting facets /////////////////////////////////
-
+        
         function clickSort(event) {
             event.preventDefault();
             var sortwhat = selectFacet(options, $(this).attr('href'));
-
+            
             var cycle = {
                 "term" : "reverse_term",
                 "reverse_term" : "count",
@@ -2278,14 +3592,14 @@ function getUrlVars() {
             options.behaviour_set_facet_sort(options, obj, {facet: sortwhat});
             doSearch();
         }
-
+        
         /////// AND vs OR on facet selection /////////////////////////////////
-
+        
         // function to switch filters to OR instead of AND
         function clickOr(event) {
             event.preventDefault();
             var orwhat = selectFacet(options, $(this).attr('href'));
-
+            
             var cycle = {
                 "OR" : "AND",
                 "AND" : "OR"
@@ -2311,7 +3625,7 @@ function getUrlVars() {
         }
 
         /////// facet values /////////////////////////////////
-
+        
         function setUIFacetResults(facet) {
             var el = facetElement("#facetview_filter_", facet["field"], obj);
 
@@ -2319,11 +3633,11 @@ function getUrlVars() {
             el.find(".facetview_date_histogram_short", obj).remove();
             el.find(".facetview_date_histogram_full", obj).remove();
             el.find('.facetview_filtervalue', obj).remove();
-
+            
             if (!("values" in facet)) {
                 return
             }
-
+            
             var frag = undefined;
             if (facet.type === "terms") {
                 frag = options.render_terms_facet_values(options, facet)
@@ -2338,14 +3652,14 @@ function getUrlVars() {
             if (frag) {
                 el.append(frag)
             }
-
+            
             options.behaviour_toggle_facet_open(options, obj, facet);
-
+            
             // FIXME: probably all bindings should come with an unbind first
             // enable filter selection
             $('.facetview_filterchoice', obj).unbind('click', clickFilterChoice);
             $('.facetview_filterchoice', obj).bind('click', clickFilterChoice);
-
+            
             // enable filter removal
             $('.facetview_filterselected', obj).unbind('click', clickClearFilter);
             $('.facetview_filterselected', obj).bind('click', clickClearFilter);
@@ -2358,12 +3672,12 @@ function getUrlVars() {
             $(".facetview_tooltip_more").unbind("click", clickTooltipMore).bind("click", clickTooltipMore);
             $(".facetview_tooltip_less").unbind("click", clickTooltipLess).bind("click", clickTooltipLess);
         }
-
+        
         /////// selected filters /////////////////////////////////
-
+        
         function clickFilterChoice(event) {
             event.preventDefault()
-
+            
             var field = $(this).attr("data-field");
             var facet = selectFacet(options, field);
             var value = {};
@@ -2386,26 +3700,26 @@ function getUrlVars() {
                 if (to) { value["to"] = to }
             }
             // FIXME: how to handle clicks on statistical facet (if that even makes sense) or terms_stats facet
-
+            
             // update the options and the filter display.  No need to update
             // the facet, as we'll issue a search straight away and it will
             // get updated automatically
             selectFilter(field, value);
             options.behaviour_set_selected_filters(options, obj);
-
+            
             // reset the result set to the beginning and search again
             options.from = 0;
             doSearch();
         }
-
+        
         function selectFilter(field, value) {
             // make space for the filter in the active filters list
             if (!(field in options.active_filters)) {
                 options.active_filters[field] = []
             }
-
+            
             var facet = selectFacet(options, field)
-
+            
             if (facet.type === "terms") {
                 // get the current values for that filter
                 var filter = options.active_filters[field];
@@ -2425,7 +3739,7 @@ function getUrlVars() {
 
             // FIXME: statistical facet support here?
         }
-
+        
         function deSelectFilter(facet, field, value) {
             if (field in options.active_filters) {
                 var filter = options.active_filters[field];
@@ -2451,7 +3765,7 @@ function getUrlVars() {
             if ($(this).hasClass("facetview_inactive_link")) {
                 return
             }
-
+            
             var field = $(this).attr("data-field");
             var facet = selectFacet(options, field);
             var value = {};
@@ -2471,10 +3785,10 @@ function getUrlVars() {
                 value = $(this).attr("data-from");
             }
             // FIXMe: statistical facet
-
+            
             deSelectFilter(facet, field, value);
             publishSelectedFilters();
-
+            
             // reset the result set to the beginning and search again
             options.from = 0;
             doSearch();
@@ -2486,7 +3800,7 @@ function getUrlVars() {
             $('.facetview_filterselected', obj).unbind('click', clickClearFilter);
             $('.facetview_filterselected', obj).bind('click', clickClearFilter);
         }
-
+        
         function facetVisibility() {
             $('.facetview_filters', obj).each(function() {
                 var facet = selectFacet(options, $(this).attr('data-href'));
@@ -2554,11 +3868,11 @@ function getUrlVars() {
             el.find(".facetview_tooltip_value").hide();
             el.find(".facetview_tooltip").show();
         }
-
+        
         /**************************************************************
          * result metadata/paging handling
          *************************************************************/
-
+        
         // decrement result set
         function decrementPage(event) {
             event.preventDefault();
@@ -2569,7 +3883,7 @@ function getUrlVars() {
             options.from < 0 ? options.from = 0 : "";
             doSearch();
         };
-
+        
         // increment result set
         function incrementPage(event) {
             event.preventDefault();
@@ -2579,9 +3893,9 @@ function getUrlVars() {
             options.from = parseInt(options.from) + parseInt(options.page_size);
             doSearch();
         };
-
+        
         /////// display results metadata /////////////////////////////////
-
+        
         function setUIResultsMetadata() {
             if (!options.data.found) {
                 $('.facetview_metadata', obj).html("");
@@ -2592,16 +3906,16 @@ function getUrlVars() {
             $('.facetview_decrement', obj).bind('click', decrementPage);
             $('.facetview_increment', obj).bind('click', incrementPage);
         }
-
+        
         /**************************************************************
          * result set display
          *************************************************************/
-
+        
         function setUINotFound() {
             frag = options.render_not_found();
             $('#facetview_results', obj).html(frag);
         }
-
+        
         function setUISearchResults() {
             var frag = ""
             for (var i = 0; i < options.data.records.length; i++) {
@@ -2613,31 +3927,31 @@ function getUrlVars() {
             // FIXME: is possibly a debug feature?
             // $('.facetview_viewrecord', obj).bind('click', viewrecord);
         }
-
+        
         /**************************************************************
          * search handling
          *************************************************************/
-
+        
         function querySuccess(rawdata, results) {
             if (options.debug) {
                 addDebug(JSON.stringify(rawdata));
                 addDebug(JSON.stringify(results))
             }
-
+            
             // record the data coming from elasticsearch
             options.rawdata = rawdata;
             options.data = results;
-
+            
             // if a post search callback is provided, run it
             if (typeof options.post_search_callback == 'function') {
                 options.post_search_callback(options, obj);
             }
-
+            
             // if a pre-render callback is provided, run it
             if (typeof options.pre_render_callback == 'function') {
                 options.pre_render_callback(options, obj);
             }
-
+            
             // for each facet, get the results and add them to the page
             for (var each = 0; each < options.facets.length; each++) {
                 // get the facet, the field name and the size
@@ -2648,7 +3962,7 @@ function getUrlVars() {
 
                 var field = facet['field'];
                 var size = facet.hasOwnProperty("size") ? facet["size"] : options.default_facet_size;
-
+                
                 // get the records to be displayed, limited by the size and record against
                 // the options object
                 var records = results["facets"][field];
@@ -2681,26 +3995,26 @@ function getUrlVars() {
                     setUIFacetResults(facet)
                 }
             }
-
+            
             // set the facet visibility
             facetVisibility();
-
+            
             // add the results metadata (paging, etc)
             setUIResultsMetadata();
-
+            
             // show the not found notification if necessary, otherwise render the results
             if (!options.data.found) {
                 setUINotFound()
             } else {
                 setUISearchResults()
             }
-
+            
             // if a post-render callback is provided, run it
             if (typeof options.post_render_callback == 'function') {
                 options.post_render_callback(options, obj);
             }
         }
-
+        
         function queryComplete(jqXHR, textStatus) {
             options.behaviour_finished_searching(options, obj);
             options.searching = false;
@@ -2717,7 +4031,7 @@ function getUrlVars() {
             }
             publishSelectedFilters();
         }
-
+        
         function doSearch() {
             // FIXME: does this have any weird side effects?
             // if a search is currently going on, don't do anything
@@ -2729,12 +4043,12 @@ function getUrlVars() {
 
             // invalidate the existing short url
             options.current_short_url = false;
-
+            
             // if a pre search callback is provided, run it
             if (typeof options.pre_search_callback === 'function') {
                 options.pre_search_callback(options, obj);
             }
-
+            
             // trigger any searching notification behaviour
             options.behaviour_show_searching(options, obj);
 
@@ -2749,10 +4063,10 @@ function getUrlVars() {
                 var querystring = serialiseQueryObject(queryobj);
                 addDebug(querystring)
             }
-
+            
             // augment the URL bar if possible, and the share/save link
             urlFromOptions();
-
+            
             // issue the query to elasticsearch
             doElasticSearchQuery({
                 search_url: options.search_url,
@@ -2762,50 +4076,50 @@ function getUrlVars() {
                 complete: queryComplete
             })
         }
-
+        
         /**************************************************************
          * build all of the fragments that we want to render
          *************************************************************/
-
+        
         // set the externally facing facetview options
         $.fn.facetview.options = deriveOptions();
         var options = $.fn.facetview.options;
-
+        
         // render the facetview frame which will then be populated
         var thefacetview = options.render_the_facetview(options);
         var thesearchopts = options.render_search_options(options);
         var thefacets = options.render_facet_list(options);
         var searching = options.render_searching_notification(options);
-
+        
         // now create the plugin on the page for each div
         var obj = undefined;
         return this.each(function() {
             // get this object
             obj = $(this);
-
+            
             // what to do when ready to go
             var whenready = function() {
                 // append the facetview object to this object
                 obj.append(thefacetview);
-
+                
                 // add the search controls
                 $(".facetview_search_options_container", obj).html(thesearchopts);
-
+                
                 // add the facets (empty at this stage), then set their visibility, which will fall back to the
                 // worst case scenario for visibility - it means facets won't disappear after the search, only reappear
                 if (thefacets != "") {
                     $('#facetview_filters', obj).html(thefacets);
                     facetVisibility();
                 }
-
+                
                 // add the loading notification
                 if (searching != "") {
                     $(".facetview_searching", obj).html(searching)
                 }
-
+                
                 // populate all the page UI framework from the options
                 uiFromOptions(options);
-
+                
                 // bind the search control triggers
                 $(".facetview_startagain", obj).bind("click", clickStartAgain);
                 $('.facetview_pagesize', obj).bind('click', clickPageSize);
@@ -2817,18 +4131,18 @@ function getUrlVars() {
                 $('.facetview_force_search', obj).bind('click', clickSearch);
                 $('.facetview_shorten_url', obj).bind('click', clickShortenUrl);
                 $('.facetview_lengthen_url', obj).bind('click', clickLengthenUrl);
-
+                
                 // bind the facet control triggers
                 $('.facetview_filtershow', obj).bind('click', clickFilterShow);
                 $('.facetview_morefacetvals', obj).bind('click', clickMoreFacetVals);
                 $('.facetview_sort', obj).bind('click', clickSort);
                 $('.facetview_or', obj).bind('click', clickOr);
-
+                
                 // if a post initialisation callback is provided, run it
                 if (typeof options.post_init_callback === 'function') {
                     options.post_init_callback(options, obj);
                 }
-
+                
                 // if an initial search is requested, then issue it
                 if (options.initialsearch) { doSearch() }
             };
@@ -2839,10 +4153,8 @@ function getUrlVars() {
     // facetview options are declared as a function so that they can be retrieved
     // externally (which allows for saving them remotely etc)
     $.fn.facetview.options = {};
-
+    
 })(jQuery);
-
-/* SPLIT HERE */
 
 jQuery(document).ready(function($) {
 
@@ -3185,7 +4497,7 @@ jQuery(document).ready(function($) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "https://doi.org/" + escapeHtml(doi.substring(tendot));
+                    var url = "http://dx.doi.org/" + escapeHtml(doi.substring(tendot));
                     result += " DOI <a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
                 }
             }
@@ -3294,3 +4606,4 @@ function journal_toc_id(journal) {
 
     return toc_id;
 }
+

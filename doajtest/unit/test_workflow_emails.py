@@ -1,14 +1,14 @@
-from doajtest.helpers import DoajTestCase
-
-from portality import models
-from portality.tasks import async_workflow_notifications
-from portality.background import BackgroundException
-from portality.core import app
-
-from nose.tools import assert_raises, assert_false
 from datetime import datetime, timedelta
 
+from nose.tools import assert_raises, assert_false
+
+from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.background import BackgroundException
+from portality.core import app
+from portality.tasks import async_workflow_notifications
 
 APPLICATION_SOURCE = ApplicationFixtureFactory.make_application_source()
 
@@ -100,7 +100,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         application1.save()
 
         # This exceeds the idle limit, managing editors should be notified.
-        APPLICATION_SOURCE_2['admin']['application_status'] = 'in progress'
+        APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
         extremely_idle = app.config['MAN_ED_IDLE_WEEKS'] + 1
         APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
@@ -108,7 +108,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         # This one is ready - managing editors are told as it's now their responsibility.
         APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow()
-        APPLICATION_SOURCE_3['admin']['application_status'] = 'ready'
+        APPLICATION_SOURCE_3['admin']['application_status'] = constants.APPLICATION_STATUS_READY
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)
         application3.save(blocking=True)
 
@@ -134,7 +134,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
         application1.save()
 
         # This exceeds the idle limit, editors should be notified.
-        APPLICATION_SOURCE_2['admin']['application_status'] = 'in progress'
+        APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_IN_PROGRESS
         extremely_idle = app.config['ED_IDLE_WEEKS'] + 1
         APPLICATION_SOURCE_2['last_manual_update'] = datetime.utcnow() - timedelta(weeks=extremely_idle)
         application2 = models.Suggestion(**APPLICATION_SOURCE_2)
@@ -142,7 +142,7 @@ class TestAsyncWorkflowEmails(DoajTestCase):
 
         # This one is assigned to the group but not an associate - editors are reminded.
         extremely_idle = app.config['ED_IDLE_WEEKS'] + 1
-        APPLICATION_SOURCE_2['admin']['application_status'] = 'submitted'
+        APPLICATION_SOURCE_2['admin']['application_status'] = constants.APPLICATION_STATUS_UPDATE_REQUEST
         APPLICATION_SOURCE_3['last_manual_update'] = datetime.utcnow() - timedelta(days=extremely_idle)
         APPLICATION_SOURCE_3['admin']['editor'] = None
         application3 = models.Suggestion(**APPLICATION_SOURCE_3)

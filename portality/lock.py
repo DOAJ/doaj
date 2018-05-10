@@ -7,7 +7,7 @@ class Locked(Exception):
         self.message = message
         self.lock = lock
 
-def lock(type, id, username, timeout=None):
+def lock(type, id, username, timeout=None, blocking=False):
     """
     Obtain a lock on the object for the given username.  If unable to obtain
     a lock, raise an exception
@@ -23,7 +23,7 @@ def lock(type, id, username, timeout=None):
         l.set_type(type)
         l.set_username(username)
         l.expires_in(timeout)
-        l.save()
+        l.save(blocking=blocking)
         return l
 
     indate = not l.is_expired()
@@ -33,7 +33,7 @@ def lock(type, id, username, timeout=None):
         # overwrite the old lock with a new one
         l.set_username(username)
         l.expires_in(timeout)
-        l.save()
+        l.save(blocking=blocking)
         return l
 
     if not yours and indate:
@@ -44,7 +44,7 @@ def lock(type, id, username, timeout=None):
         # if the lock would expire within the time specified by the timeout, extend it
         if l.would_expire_within(timeout):
             l.expires_in(timeout)
-            l.save()
+            l.save(blocking=blocking)
         return l
 
     # shouldn't ever get here - if we do something is bust

@@ -274,7 +274,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "owner" : "<account id of owner>",
         "editor_group" : "<name of editor group which controls this object>",
         "editor" : "<username of associate editor assigned to this object>",
-        "current_application" : "<id of reapplication created from this journal record (mutually exclusive with the below)>",
+        "current_application" : "<id of application created from this journal record (mutually exclusive with the below)>",
         "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
     "index" : {
@@ -529,7 +529,7 @@ genre : "journal|issue|article|proceeding|conference|preprint|unknown" # journal
         "owner" : "<account id of owner>",
         "editor_group" : "<name of editor group which controls this object>",
         "editor" : "<username of associate editor assigned to this object>",
-        "current_application" : "<id of reapplication created from this journal record (mutually exclusive with the below)>",
+        "current_application" : "<id of application created from this journal record (mutually exclusive with the below)>",
         "current_journal" : "<id of journal this application was created from (mutually exclusive with the above) >"
     },
     "index" : {

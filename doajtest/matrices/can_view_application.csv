@@ -1,0 +1,12 @@
+test_id,account_type,role,owner,application_type,raises,returns,auth_reason
+1,none,none,no,none,ArgumentException,,
+2,none,none,no,exists,ArgumentException,,
+3,exists,publisher,yes,exists,,true,
+4,exists,publisher,no,none,ArgumentException,,
+5,exists,publisher,no,exists,AuthoriseException,,not_owner
+6,exists,admin,yes,exists,,true,
+7,exists,admin,no,none,ArgumentException,,
+8,exists,admin,no,exists,,true,
+9,exists,none,yes,exists,AuthoriseException,,wrong_role
+10,exists,none,no,none,ArgumentException,,
+11,exists,none,no,exists,AuthoriseException,,wrong_role

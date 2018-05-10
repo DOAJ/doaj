@@ -8,6 +8,8 @@ class Renderer(object):
         self.fh = FormHelper()
         self._error_fields = []
         self._disabled_fields = []
+        self._disable_all_fields = False
+        self._highlight_completable_fields = False
 
     def check_field_group_exists(self, field_group_name):
         """ Return true if the field group exists in this form """
@@ -31,13 +33,17 @@ class Renderer(object):
         for entry in group_def:
             field_name = entry.keys()[0]
             config = entry.get(field_name)
+            config = deepcopy(config)
 
             config = self._rewrite_extra_fields(form_context, config)
             field = form_context.form[field_name]
 
-            if field_name in self.disabled_fields:
-                config = deepcopy(config)
+            if field_name in self.disabled_fields or self._disable_all_fields is True:
                 config["disabled"] = "disabled"
+
+            if self._highlight_completable_fields is True:
+                valid = field.validate(form_context.form)
+                config["complete_me"] = not valid
 
             frag += self.fh.render_field(field, **config)
 
@@ -56,6 +62,9 @@ class Renderer(object):
 
     def set_disabled_fields(self, fields):
         self._disabled_fields = fields
+
+    def disable_all_fields(self, disable):
+        self._disable_all_fields = disable
 
     def _rewrite_extra_fields(self, form_context, config):
         if "extra_input_fields" in config:
@@ -240,6 +249,15 @@ class BasicJournalInformationRenderer(Renderer):
                 obj[field]["q_num"] = str(q)
                 q += 1
 
+    def question_number(self, field):
+        for g in self.FIELD_GROUPS:
+            cfg = self.FIELD_GROUPS.get(g)
+            for obj in cfg:
+                f = obj.keys()[0]
+                if f == field and "q_num" in obj[f]:
+                    return obj[f]["q_num"]
+        return ""
+
     def set_error_fields(self, fields):
         super(BasicJournalInformationRenderer, self).set_error_fields(fields)
 
@@ -303,9 +321,10 @@ class PublicApplicationRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
-class PublisherReApplicationRenderer(ApplicationRenderer):
+
+class PublisherUpdateRequestRenderer(ApplicationRenderer):
     def __init__(self):
-        super(PublisherReApplicationRenderer, self).__init__()
+        super(PublisherUpdateRequestRenderer, self).__init__()
 
         self.NUMBERING_ORDER.remove("submitter_info")
         self.ERROR_CHECK_ORDER = deepcopy(self.NUMBERING_ORDER)
@@ -316,6 +335,20 @@ class PublisherReApplicationRenderer(ApplicationRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+        self._highlight_completable_fields = True
+
+
+class PublisherUpdateRequestReadOnlyRenderer(ApplicationRenderer):
+    def __init__(self):
+        super(PublisherUpdateRequestReadOnlyRenderer, self).__init__()
+
+        self.ERROR_CHECK_ORDER = []
+
+        self.number_questions()
+
+        self.check_field_groups()
+
 
 class ManEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -360,6 +393,8 @@ class ManEdApplicationReviewRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class EditorApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -393,6 +428,8 @@ class EditorApplicationReviewRenderer(ApplicationRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class AssEdApplicationReviewRenderer(ApplicationRenderer):
     def __init__(self):
@@ -420,6 +457,8 @@ class AssEdApplicationReviewRenderer(ApplicationRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+        self._highlight_completable_fields = True
 
 
 class JournalRenderer(BasicJournalInformationRenderer):
@@ -494,6 +533,9 @@ class ManEdJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
+
 class ManEdJournalBulkEditRenderer(Renderer):
     def __init__(self):
         super(ManEdJournalBulkEditRenderer, self).__init__()
@@ -541,6 +583,8 @@ class EditorJournalReviewRenderer(JournalRenderer):
 
         self.check_field_groups()
 
+        self._highlight_completable_fields = True
+
 
 class AssEdJournalReviewRenderer(JournalRenderer):
     def __init__(self):
@@ -562,6 +606,8 @@ class AssEdJournalReviewRenderer(JournalRenderer):
         self.number_questions()
 
         self.check_field_groups()
+
+        self._highlight_completable_fields = True
 
 
 class ReadOnlyJournalRenderer(JournalRenderer):

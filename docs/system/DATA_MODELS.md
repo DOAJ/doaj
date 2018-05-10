@@ -154,33 +154,3 @@
 }
 ```
 
-## Bulk Reapplication Data Model
-
-```python
-{
-    "id" : "<opaque id for this bulk reapplication>",
-    "owner" : "<user account which owns this reapplication>",
-    "spreadsheet_name" : "<name by which the spreadsheet is known (both locally and for download)>",
-    "created_date" : "<timestamp for when this spreadsheet was created>",
-    "last_updated" : "<timestamp for when this spreadsheet was last modified>"
-}
-```
-
-## Bulk Upload Data Model
-
-```python
-{
-    "id" : "<opaque id for this bulk upload>",
-    "status": "incoming|failed|processed",
-    "owner": "<user id of owner>",
-    "filename": "<filename of upload>",
-    "error" : "<any error associated with the upload>"
-    "reapplied" : <number of reapplications processed from this upload>,
-    "skipped" : <number of reapplications skipped in this upload>,
-    "last_updated": "<last date modified>",
-    "created_date": "<date of initial upload>",
-    "processed_date": "<date the upload was processed>"
-}
-```
-
-Note: Editor group names need to be unique within the index

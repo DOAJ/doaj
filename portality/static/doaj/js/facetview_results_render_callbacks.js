@@ -41,9 +41,10 @@ fv_application_status = (function(resultobj) {
 })();
 
 // This must be updated in line with the list in formcontext/choices.py
+// FIXME: eventually, JS config needs to come through from the python back-end
 fv_application_status.mapping = {
-    'reapplication' : 'Reapplication Pending',
-    'submitted' : 'Reapplication Submitted',
+    'update_request' : 'Update Request',
+    'revisions_required' : 'Revisions Required',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',
@@ -273,11 +274,15 @@ fv_issns = (function (resultobj) {
 fv_edit_suggestion = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
+            var linkName = "Review application";
+            if (resultobj.admin.current_journal || resultobj.admin.related_journal) {
+                linkName = "Review update";
+            }
             var result = '<a class="edit_suggestion_link pull-right" href="';
             result += suggestion_edit_url;
             result += resultobj['id'];
             result += '" target="_blank"';
-            result += '>Edit this application</a>';
+            result += '>' + linkName + '</a>';
             return result;
         }
         return false;
@@ -292,7 +297,7 @@ fv_readonly_journal = (function (resultobj) {
             result += readonly_journal_url;
             result += resultobj.admin.current_journal;
             result += '" target="_blank"';
-            result += '>View associated journal</a>';
+            result += '>View journal being updated</a>';
             return result;
         }
         return false;
@@ -487,17 +492,110 @@ fv_delete_editor_group = (function (resultobj) {
     return that;
 })();
 
-fv_view_reapplication = (function (resultobj) {
+fv_edit_update_request = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
-            var result = '<a class="edit_suggestion_link pull-right" href="';
-            result += reapplication_edit_url;
-            result += resultobj['id'];
-            result += '" target="_blank"';
-            result += '>Edit this application</a>';
+            if (resultobj.admin && resultobj.admin.application_status) {
+                var status = resultobj.admin.application_status;
+                var result = "";
+                var view = '(<a href="' + update_request_readonly_url + resultobj['id'] + '">view request</a>)';
+                if (status === "update_request" || status == "revisions_required") {
+                    var actionUrl = update_request_edit_url + resultobj.admin.current_journal;
+                    result = '<span class="pull-right"><a class="edit_suggestion_link" href="' + actionUrl;
+                    result += '"';
+                    result += '>Edit this update request</a> | <a href="' + actionUrl + '" class="delete_suggestion_link">Delete this update request</a></span>';
+                } else  if (status !== "rejected" && status !== "accepted") {
+                    result = '<span class="pull-right">This update request is currently being reviewed by an Editor ' + view + '.</span>';
+                } else if (status === "rejected") {
+                    result = '<span class="pull-right">This update request has been rejected ' + view + '.</span>';
+                } else if (status === "accepted") {
+                    result = '<span class="pull-right">This update request has been accepted, and your journal in DOAJ updated ' + view + '.</span>';
+                }
+                return result;
+            }
+        }
+        return false;
+    };
+    return that;
+})();
+
+fv_make_update_request = (function (resultobj) {
+    var that = function(resultobj) {
+        if (resultobj.admin && resultobj.admin.hasOwnProperty("in_doaj")) {
+            if (resultobj.admin.in_doaj === false) {
+                return ""
+            }
+        }
+        if (!resultobj.suggestion && !resultobj.bibjson.journal) {
+            // if it's not a suggestion or an article .. (it's a
+            // journal!)
+            // we really need to expose _type ...
+            var result = "";
+            if (resultobj.admin && resultobj.admin.current_application) {
+                var idquery = '%7B%22query%22%3A%7B%22query_string%22%3A%7B%22query%22%3A%22' + resultobj['id'] + '%22%7D%7D%7D';
+                result = '<a class="edit_journal_link pull-right" href="' + journal_update_requests_url + "?source=" + idquery + '">View current update request</a>';
+            } else {
+                result = '<a class="edit_journal_link pull-right" href="';
+                result += journal_update_url;
+                result += resultobj['id'] + '"';
+                result += '>Submit an update</a>';
+            }
             return result;
         }
         return false;
+    };
+    return that;
+})();
+
+fv_related_applications = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = "";
+        if (resultobj.admin) {
+            if (resultobj.admin.current_application) {
+                var fvurl = applications_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_application + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                result += "<strong>Current Update Request</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_application + "</a>";
+            }
+            if (resultobj.admin.related_applications && resultobj.admin.related_applications.length > 0) {
+                if (result != "") {
+                    result += "<br>";
+                }
+                result += "<strong>Related Records</strong>: ";
+                for (var i = 0; i < resultobj.admin.related_applications.length; i++) {
+                    if (i > 0) {
+                        result += ", ";
+                    }
+                    var ra = resultobj.admin.related_applications[i];
+                    var fvurl = applications_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + ra.application_id + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                    var linkName = ra.date_accepted;
+                    if (!linkName) {
+                        linkName = ra.application_id;
+                    }
+                    result += "<a href='" + fvurl + "'>" + linkName + "</a>";
+                }
+            }
+        }
+        return result;
+    };
+    return that;
+})();
+
+fv_related_journal = (function (resultobj) {
+    var that = function(resultobj) {
+        var result = "";
+        if (resultobj.admin) {
+            if (resultobj.admin.current_journal) {
+                var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.current_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                result += "<strong>Update Request For</strong>: <a href='" + fvurl + "'>" + resultobj.admin.current_journal + '</a>';
+            }
+            if (resultobj.admin.related_journal) {
+                 var fvurl = journals_fv_url + '?source=%7B"query"%3A%7B"query_string"%3A%7B"query"%3A"' + resultobj.admin.related_journal + '"%2C"default_operator"%3A"AND"%7D%7D%2C"from"%3A0%2C"size"%3A10%7D';
+                if (result != "") {
+                    result += "<br>";
+                }
+                result += "<strong>Produced Journal</strong>: <a href='" + fvurl + "'>" + resultobj.admin.related_journal + '</a>';
+            }
+        }
+        return result;
     };
     return that;
 })();

@@ -25,15 +25,9 @@
                             <div class="controls ">
                                 <select class="" id="application_status" name="application_status" style="width: 250px">
                                     <option value=""></option>
-                                    <option value="pending">Pending</option>
-                                    <option value="in progress">In Progress</option>
-                                    <option value="completed">Completed</option>
-                                    <option value="reapplication">Reapplication Pending</option>
-                                    <option value="submitted">Reapplication Submitted</option>
-                                    <option value="on hold">On Hold</option>
-                                    <option value="ready">Ready</option>
-                                    <option value="rejected">Rejected</option>
-                                    <option value="accepted">Accepted</option>
+                                    {% for choice in application_status_choices %}
+                                        <option value="{{ choice[0] }}">{{ choice[1] }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                         </div>
@@ -66,5 +60,6 @@
 {% block extra_js_bottom %}
 <script type="text/javascript">
     var suggestion_edit_url = "{{ url_for('admin.suggestion_page', suggestion_id="") }}";
+    var journals_fv_url = "{{ url_for('admin.journals') }}";
 </script>
 {% endblock %}

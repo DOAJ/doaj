@@ -18,11 +18,18 @@ The JSON structure of the model is as follows:
         "in_doaj": true, 
         "notes": [
             {
-                "date": "2016-04-19T13:14:09Z", 
+                "date": "2018-01-25T09:45:44Z", 
                 "note": "string"
             }
         ], 
         "owner": "string", 
+        "related_applications": [
+            {
+                "application_id": "string", 
+                "date_accepted": "2018-01-25T09:45:44Z", 
+                "status": "string"
+            }
+        ], 
         "seal": true, 
         "ticked": true
     }, 
@@ -61,7 +68,7 @@ The JSON structure of the model is as follows:
         "deposit_policy": [
             "string"
         ], 
-        "discontinued_date": "2016-04-19", 
+        "discontinued_date": "2018-01-25", 
         "editorial_review": {
             "process": "string", 
             "url": "string"
@@ -144,7 +151,7 @@ The JSON structure of the model is as follows:
         "submission_charges_url": "string", 
         "title": "string"
     }, 
-    "created_date": "2016-04-19T13:14:09Z", 
+    "created_date": "2018-01-25T09:45:44Z", 
     "id": "string", 
     "index": {
         "aims_scope_url": "string", 
@@ -160,8 +167,11 @@ The JSON structure of the model is as follows:
         "country": "string", 
         "editorial_board_url": "string", 
         "has_apc": "string", 
+        "has_editor": "string", 
+        "has_editor_group": "string", 
         "has_seal": "string", 
         "homepage_url": "string", 
+        "institution_ac": "string", 
         "issn": [
             "string"
         ], 
@@ -172,7 +182,11 @@ The JSON structure of the model is as follows:
             "string"
         ], 
         "oa_statement_url": "string", 
-        "publisher": "string", 
+        "provider_ac": "string", 
+        "publisher": [
+            "string"
+        ], 
+        "publisher_ac": "string", 
         "schema_code": [
             "string"
         ], 
@@ -188,9 +202,9 @@ The JSON structure of the model is as follows:
         "unpunctitle": "string", 
         "waiver_policy_url": "string"
     }, 
-    "last_manual_update": "2016-04-19T13:14:09Z", 
-    "last_reapplication": "2016-04-19T13:14:09Z", 
-    "last_updated": "2016-04-19T13:14:09Z"
+    "last_manual_update": "2018-01-25T09:45:44Z", 
+    "last_reapplication": "2018-01-25T09:45:44Z", 
+    "last_updated": "2018-01-25T09:45:44Z"
 }
 ```
 
@@ -208,6 +222,9 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | admin.notes.date |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
 | admin.notes.note |  | unicode |  |  |
 | admin.owner |  | unicode |  |  |
+| admin.related_applications.application_id |  | unicode |  |  |
+| admin.related_applications.date_accepted |  | unicode | UTC ISO formatted date: YYYY-MM-DDTHH:MM:SSZ |  |
+| admin.related_applications.status |  | unicode |  |  |
 | admin.seal |  | bool |  |  |
 | admin.ticked |  | bool |  |  |
 | bibjson.active |  | bool |  |  |
@@ -285,13 +302,18 @@ Each of the fields is defined as laid out in the table below.  All fields are op
 | index.country |  | unicode |  |  |
 | index.editorial_board_url |  | unicode |  |  |
 | index.has_apc |  | unicode |  |  |
+| index.has_editor |  | unicode |  |  |
+| index.has_editor_group |  | unicode |  |  |
 | index.has_seal |  | unicode |  |  |
 | index.homepage_url |  | unicode |  |  |
+| index.institution_ac |  | unicode |  |  |
 | index.issn |  | unicode |  |  |
 | index.language |  | unicode |  |  |
 | index.license |  | unicode |  |  |
 | index.oa_statement_url |  | unicode |  |  |
+| index.provider_ac |  | unicode |  |  |
 | index.publisher |  | unicode |  |  |
+| index.publisher_ac |  | unicode |  |  |
 | index.schema_code |  | unicode |  |  |
 | index.schema_subject |  | unicode |  |  |
 | index.subject |  | unicode |  |  |

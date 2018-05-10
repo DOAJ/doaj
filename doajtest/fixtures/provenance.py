@@ -1,9 +1,11 @@
+import uuid
 from copy import deepcopy
 from datetime import datetime
+from random import randint
+
+from portality import constants
 from portality.lib import dates
 from portality.models import Provenance
-import uuid
-from random import randint
 
 
 class ProvenanceFixtureFactory(object):
@@ -93,9 +95,9 @@ class ProvenanceFixtureFactory(object):
                 start, end = ranges[i]
                 status = None
                 if role == "associate_editor":
-                    status = "completed"
+                    status = constants.APPLICATION_STATUS_COMPLETED
                 elif role == "editor":
-                    status = "ready"
+                    status = constants.APPLICATION_STATUS_READY
                 elif role == "admin":
                     status = ADMIN_STATUSES[randint(0, len(ADMIN_STATUSES) - 1)]
                 for j in range(count):
@@ -119,9 +121,9 @@ PROVENANCE = {
     "roles" : ["associate_editor", "editor", "admin"],
     "editor_group": ["eg1", "eg2"],
     "type" : "suggestion",
-    "subtype" : "reapplication",
+    "subtype" : "update_request",
     "action" : "edit",
     "resource_id" : "987654321"
 }
 
-ADMIN_STATUSES = ["accepted", "rejected"]
+ADMIN_STATUSES = [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]

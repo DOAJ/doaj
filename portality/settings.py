@@ -1,5 +1,7 @@
 import os
 
+from portality import constants
+
 # Use these options to place the application into READ ONLY mode
 
 # This puts the UI into READ_ONLY mode
@@ -8,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.11.12"
+DOAJ_VERSION = "2.12.0"
 
 OFFLINE_MODE = False
 
@@ -119,9 +121,20 @@ ASSOC_ED_IDLE_DAYS = 10
 ASSOC_ED_IDLE_WEEKS = 3
 
 # Which statuses the notification queries should be filtered to show
-MAN_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed', 'on hold']
-ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress', 'completed']
-ASSOC_ED_NOTIFICATION_STATUSES = ['submitted', 'pending', 'in progress']
+MAN_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS, constants.APPLICATION_STATUS_COMPLETED,
+    constants.APPLICATION_STATUS_ON_HOLD
+]
+ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS,
+    constants.APPLICATION_STATUS_COMPLETED
+]
+ASSOC_ED_NOTIFICATION_STATUSES = [
+    constants.APPLICATION_STATUS_PENDING,
+    constants.APPLICATION_STATUS_IN_PROGRESS
+]
 
 # ========================
 # user login settings
@@ -183,11 +196,22 @@ FACET_FIELD = ".exact"
 # to be loaded into the index during initialisation.
 ELASTIC_SEARCH_MAPPINGS = [
     "portality.models.Journal",
+    "portality.models.Suggestion"
 ]
 
 # Map from dataobj coercion declarations to ES mappings
 DATAOBJ_TO_MAPPING_DEFAULTS = {
     "unicode": {
+        "type": "string",
+        "fields": {
+            "exact": {
+                "type": "string",
+                "index": "not_analyzed",
+                "store": True
+            }
+        }
+    },
+    "unicode_upper": {
         "type": "string",
         "fields": {
             "exact": {
@@ -251,8 +275,6 @@ MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['news'] = {'news': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lock'] = {'lock': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['bulk_reapplication'] = {'bulk_reapplication': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['bulk_upload'] = {'bulk_upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['journal_history'] = {'journal_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['provenance'] = {'provenance': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
@@ -280,13 +302,114 @@ DEFAULT_SORT = {
 }
 
 QUERY_ROUTE = {
-    "query" : {"role": None, "default_filter": True, "public_result_filter" : True},
-    "admin_query" : {"role" : "admin", "default_filter": False},
-    "publisher_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True},
-    "editor_query" : {"role" : "editor", "default_filter" : False, "editor_filter" : True},
-    "associate_query" : {"role" : "associate_editor", "default_filter" : False, "associate_filter" : True},
-    "publisher_reapp_query" : {"role" : "publisher", "default_filter" : False, "owner_filter" : True, "reapp_filter" : True}
+    "query" : {
+        "journal,article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.search.JournalArticle"
+        },
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Article"
+        }
+    },
+    "publisher_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "publisher",
+            "query_filters" : ["owner", "update_request"],
+            "result_filters" : ["publisher_result_filter"],
+            "dao" : "portality.models.Suggestion"
+        }
+    },
+    "admin_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Suggestion"
+        },
+        "editor,group" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.EditorGroup"
+        },
+        "account" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.Account"
+        },
+        "journal,article" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.search.JournalArticle"
+        },
+        "background,job" : {
+            "auth" : True,
+            "role" : "admin",
+            "dao" : "portality.models.BackgroundJob"
+        }
+    },
+    "associate_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "associate_editor",
+            "query_filters" : ["associate"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "associate_editor",
+            "query_filters" : ["associate"],
+            "dao" : "portality.models.Suggestion"
+        }
+    },
+    "editor_query" : {
+        "journal" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["editor"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : "editor",
+            "query_filters" : ["editor"],
+            "dao" : "portality.models.Suggestion"
+        }
+    }
 }
+
+QUERY_FILTERS = {
+    # query filters
+    "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
+    "owner" : "portality.lib.query_filters.owner",
+    "update_request" : "portality.lib.query_filters.update_request",
+    "associate" : "portality.lib.query_filters.associate",
+    "editor" : "portality.lib.query_filters.editor",
+
+    # result filters
+    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
+    "publisher_result_filter" : "portality.lib.query_filters.publisher_result_filter"
+}
+
+UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
 
 AUTOCOMPLETE_ADVANCED_FIELD_MAPS = {
     "bibjson.publisher" : "index.publisher_ac",
@@ -391,25 +514,12 @@ OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE = 300
 OAIPMH_RESUMPTION_TOKEN_EXPIRY = 86400
 
 # =================================
-# Settings for reapplication process
-
-# Whether reactivation is ongoing; when False, reapplication pages will be hidden.
-REAPPLICATION_ACTIVE = False
-
-# The link showed in the bulk reapplication tab in the Publisher's area, showing help for filling out CSVs
-CSV_DOC_LINK = 'https://docs.google.com/a/doaj.org/spreadsheet/ccc?key=0AkfPCpIPjZlmdEQySmdSN2tUNTJiSmotTDlXcm5fcmc#gid=0'
-
-
-# =================================
 # File Upload and crosswalk settings
 
 # directory to upload files to.  MUST be full absolute path
 # The default takes the directory above this, and then down in to "upload"
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload")
 FAILED_ARTICLE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "failed_articles")
-
-# Reapplication upload directory
-REAPPLICATION_UPLOAD_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "upload_reapplication")
 
 # paths to schema files to validate incoming documents against for the various
 # crosswalks available
@@ -442,9 +552,6 @@ ROOT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
 
 # directory into which to put files which are cached (e.g. the csv)
 CACHE_DIR = os.path.join(ROOT_DIR, "cache")
-
-# Publisher CSV storage
-BULK_REAPP_PATH = os.path.join(ROOT_DIR, "reapp_csvs")
 
 # Article and Journal History directories - they should be different
 ARTICLE_HISTORY_DIR = os.path.join(ROOT_DIR, "history", "article")

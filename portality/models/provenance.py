@@ -12,7 +12,7 @@ class Provenance(dataobj.DataObj, DomainObject):
         "roles" : ["<roles this user has at the time of the event>"],
         "editor_group": ["<list of editor groups the user was in at the time>"],
         "type" : "<type being acted on: suggestion, journal, etc>",
-        "subtype" : "<inner type being acted on, in case you want to distinguish between applications/reapplications, etc>",
+        "subtype" : "<inner type being acted on, in case you want to distinguish between applications/update requests, etc>",
         "action" : "<string denoting the action taken on the object>",
         "resource_id" : "<id of the type being acted on>"
     }
@@ -78,7 +78,7 @@ class Provenance(dataobj.DataObj, DomainObject):
     def save(self, **kwargs):
         # self.prep()
         self.check_construct()
-        super(Provenance, self).save(**kwargs)
+        return super(Provenance, self).save(**kwargs)
 
     @classmethod
     def make(cls, account, action, obj, subtype=None, save=True):
@@ -105,7 +105,9 @@ class Provenance(dataobj.DataObj, DomainObject):
 
         p = Provenance(**d)
         if save:
-            p.save()
+            saved = p.save()
+            if saved is None:
+                raise ProvenanceException("Failed to save provenance record")
         return p
 
     @classmethod
@@ -150,3 +152,6 @@ class ResourceIDQuery(object):
             },
             "sort" : [{"created_date" : {"order" : "desc"}}]
         }
+
+class ProvenanceException(Exception):
+    pass

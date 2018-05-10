@@ -5,22 +5,6 @@
   <div class="row-fluid">
     <div class="span12">
 
-        {% if current_user.id|pub_filter_note %}
-            <div class="alert alert-info">
-            <!-- Text in this div will be part of the alert notice to publishers-->
-            <strong>You have reapplications to complete.</strong> As of March 2014, DOAJ has new criteria for inclusion and all journals wishing to remain in DOAJ must now reapply.
-            Go to the <a href="{{ url_for('publisher.updates_in_progress') }}">Reapplications</a> tab where the reapplication can be found for each journal.
-
-            {% if current_user.id|pub_filter_bulk %}
-                <!-- Text in here appears when the publisher can use the bulk upload tab -->
-                <hr>
-                Since you have 11 or more journals associated with this account, we have created a CSV file for you to download,
-                edit offline and then reupload. Download it at the <a href="{{ url_for('publisher.bulk_reapply') }}">CSV</a> tab.
-            {% endif %}
-
-            </div>
-        {% endif %}
-
       {% include 'publisher/nav.html' %}
 
       {% block publisher_content %}

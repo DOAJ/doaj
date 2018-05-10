@@ -16,7 +16,7 @@ jQuery(document).ready(function($) {
 
         facets: [
             {'field': 'admin.application_status.exact', 'display': 'Application Status'},
-            {'field': 'index.application_type.exact', 'display': 'Application type'},
+            {'field': 'index.application_type.exact', 'display': 'Record type'},
             {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
             {'field': 'admin.editor.exact', 'display': 'Editor'},

@@ -1,7 +1,11 @@
-from portality.models.journal import Journal, JournalLikeObject
-from portality.models import shared_structs
-
 from copy import deepcopy
+
+from portality import constants
+from portality.core import app
+from portality.lib import es_data_mapping
+from portality.models import shared_structs
+from portality.models.journal import JournalLikeObject
+
 
 class Suggestion(JournalLikeObject):
     __type__ = "suggestion"
@@ -32,42 +36,21 @@ class Suggestion(JournalLikeObject):
         q = StatusQuery(status)
         return cls.iterate(q=q.query())
 
-    def make_journal(self):
-        # first make a raw copy of the content into a journal
-        journal_data = deepcopy(self.data)
-        if "suggestion" in journal_data:
-            del journal_data['suggestion']
-        if "index" in journal_data:
-            del journal_data['index']
-        if "admin" in journal_data and "application_status" in journal_data["admin"]:
-            del journal_data['admin']['application_status']
-        if "admin" in journal_data and "current_journal" in journal_data["admin"]:
-            del journal_data["admin"]["current_journal"]
-        if "id" in journal_data:
-            del journal_data['id']
-        if "created_date" in journal_data:
-            del journal_data['created_date']
-        if "last_updated" in journal_data:
-            del journal_data['last_updated']
-        if "bibjson" not in journal_data:
-            journal_data["bibjson"] = {}
-        journal_data['bibjson']['active'] = True
+    @classmethod
+    def find_latest_by_current_journal(cls, journal_id):
+        q = CurrentJournalQuery(journal_id)
+        results = cls.q2obj(q=q.query())
+        if len(results) > 0:
+            return results[0]
+        return None
 
-        new_j = Journal(**journal_data)
+    @classmethod
+    def find_all_by_related_journal(cls, journal_id):
+        q = RelatedJournalQuery(journal_id, size=1000)
+        return cls.q2obj(q=q.query())
 
-        # now deal with the fact that this could be a replacement of an existing journal
-        if self.current_journal is not None:
-            cj = Journal.pull(self.current_journal)
-
-            # carry the id and the created date
-            new_j.set_id(self.current_journal)
-            new_j.set_created(cj.created_date)
-
-            # set a reapplication date
-            new_j.set_last_reapplication()
-
-        return new_j
-
+    def mappings(self):
+        return es_data_mapping.create_mapping(self.get_struct(), MAPPING_OPTS)
 
     @property
     def current_journal(self):
@@ -78,6 +61,16 @@ class Suggestion(JournalLikeObject):
 
     def remove_current_journal(self):
         self._delete("admin.current_journal")
+
+    @property
+    def related_journal(self):
+        return self._get_single("admin.related_journal")
+
+    def set_related_journal(self, journal_id):
+        self._set_with_struct("admin.related_journal", journal_id)
+
+    def remove_related_journal(self):
+        self._delete("admin.related_journal")
 
     @property
     def application_status(self):
@@ -132,10 +125,12 @@ class Suggestion(JournalLikeObject):
     def _generate_index(self):
         super(Suggestion, self)._generate_index()
 
-        if self.current_journal:
-            self._set_with_struct("index.application_type", "reapplication")
+        if self.current_journal is not None:
+            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_UPDATE_REQUEST)
+        elif self.application_status in [constants.APPLICATION_STATUS_ACCEPTED, constants.APPLICATION_STATUS_REJECTED]:
+            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_FINISHED)
         else:
-            self._set_with_struct("index.application_type", "new application")
+            self._set_with_struct("index.application_type", constants.APPLICATION_TYPE_NEW_APPLICATION)
 
     def prep(self):
         self._generate_index()
@@ -146,7 +141,7 @@ class Suggestion(JournalLikeObject):
         self.check_construct()
         if sync_owner:
             self._sync_owner_to_journal()
-        super(Suggestion, self).save(**kwargs)
+        return super(Suggestion, self).save(**kwargs)
 
 APPLICATION_STRUCT = {
     "fields" : {
@@ -168,6 +163,7 @@ APPLICATION_STRUCT = {
                 "editor_group" : {"coerce" : "unicode"},
                 "editor" : {"coerce" : "unicode"},
                 "current_journal" : {"coerce" : "unicode"},
+                "related_journal" : {"coerce" : "unicode"},
                 "application_status" : {"coerce" : "unicode"}
             },
             "lists" : {
@@ -247,6 +243,18 @@ APPLICATION_STRUCT = {
     }
 }
 
+MAPPING_OPTS = {
+    "dynamic": None,
+    "coerces": app.config["DATAOBJ_TO_MAPPING_DEFAULTS"],
+    "exceptions": {
+        "admin.notes.note": {
+                    "type": "string",
+                    "index": "not_analyzed",
+                    "include_in_all": False
+        }
+    }
+}
+
 
 class SuggestionQuery(object):
     _base_query = { "query" : { "bool" : {"must" : []}}}
@@ -320,3 +328,44 @@ class StatusQuery(object):
             }
         }
 
+class CurrentJournalQuery(object):
+
+    def __init__(self, journal_id, size=1):
+        self.journal_id = journal_id
+        self.size = size
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"admin.current_journal.exact" : self.journal_id}}
+                    ]
+                }
+            },
+            "sort" : [
+                {"created_date" : {"order" : "desc"}}
+            ],
+            "size" : self.size
+        }
+
+class RelatedJournalQuery(object):
+
+    def __init__(self, journal_id, size=1):
+        self.journal_id = journal_id
+        self.size = size
+
+    def query(self):
+        return {
+            "query" : {
+                "bool" : {
+                    "must" : [
+                        {"term" : {"admin.related_journal.exact" : self.journal_id}}
+                    ]
+                }
+            },
+            "sort" : [
+                {"created_date" : {"order" : "asc"}}
+            ],
+            "size" : self.size
+        }
