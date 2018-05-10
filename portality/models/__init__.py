@@ -13,7 +13,6 @@ from portality.models.atom import AtomRecord
 from portality.models.search import JournalArticle, JournalArticleQuery
 from portality.models.cache import Cache
 from portality.models.toc import JournalVolumeToC, JournalIssueToC, VolumesToCQuery, ToCQuery
-from portality.models.reapplication import BulkReApplication, BulkUpload, OwnerBulkQuery
 from portality.models.openurl import OpenURLRequest
 from portality.models.provenance import Provenance
 from portality.models.background import BackgroundJob

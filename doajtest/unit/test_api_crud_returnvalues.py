@@ -58,6 +58,7 @@ class TestCrudReturnValues(DoajTestCase):
     def test_02_applications_crud(self):
         # add some data to the index with a Create
         user_data = ApplicationFixtureFactory.incoming_application()
+        del user_data["admin"]["current_journal"]
 
         with self.app_test.test_client() as t_client:
             # log into the app as our user

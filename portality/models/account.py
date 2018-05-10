@@ -6,12 +6,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from portality.dao import DomainObject as DomainObject
 from portality.core import app
 from portality.authorise import Authorise
-from portality.formcontext.validate import ReservedUsernames
 
 class Account(DomainObject, UserMixin):
     __type__ = 'account'
 
     def __init__(self, **kwargs):
+        from portality.formcontext.validate import ReservedUsernames
         ReservedUsernames().validate(kwargs.get('id', ''))
         super(Account, self).__init__(**kwargs)
 
@@ -120,7 +120,7 @@ class Account(DomainObject, UserMixin):
 
     @property
     def is_super(self):
-        # return not self.is_anonymous() and self.id in app.config['SUPER_USER']
+        # return not self.is_anonymous and self.id in app.config['SUPER_USER']
         return Authorise.has_role(app.config["SUPER_USER_ROLE"], self.data.get("role", []))
 
     def has_role(self, role):

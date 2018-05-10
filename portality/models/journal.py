@@ -85,7 +85,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return JournalBibJSON(bj)
 
     def set_bibjson(self, bibjson):
-        bibjson = bibjson.bibjson if isinstance(bibjson, JournalBibJSON) else bibjson
+        bibjson = bibjson.data if isinstance(bibjson, JournalBibJSON) else bibjson
         self._set_with_struct("bibjson", bibjson)
 
     def set_last_manual_update(self, date=None):
@@ -124,16 +124,24 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def add_contact(self, name, email):
         self._add_to_list_with_struct("admin.contact", {"name" : name, "email" : email})
 
+    def remove_contacts(self):
+        self._delete("admin.contact")
+
     def add_note(self, note, date=None):
         if date is None:
             date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self._add_to_list_with_struct("admin.notes", {"date" : date, "note" : note})
+        obj = {"date" : date, "note" : note}
+        self._delete_from_list("admin.notes", matchsub=obj)
+        self._add_to_list_with_struct("admin.notes", obj)
 
     def remove_note(self, note):
         self._delete_from_list("admin.notes", matchsub=note)
 
     def set_notes(self, notes):
         self._set_with_struct("admin.notes", notes)
+
+    def remove_notes(self):
+        self._delete("admin.notes")
 
     @property
     def notes(self):
@@ -146,12 +154,18 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
     def set_owner(self, owner):
         self._set_with_struct("admin.owner", owner)
 
+    def remove_owner(self):
+        self._delete("admin.owner")
+
     @property
     def editor_group(self):
         return self._get_single("admin.editor_group")
 
     def set_editor_group(self, eg):
         self._set_with_struct("admin.editor_group", eg)
+
+    def remove_editor_group(self):
+        self._delete("admin.editor_group")
 
     @property
     def editor(self):
@@ -407,13 +421,12 @@ class Journal(JournalLikeObject):
         return id_
 
     @property
-    def last_reapplication(self):
-        return self._get_single("last_reapplication")
-
-    def set_last_reapplication(self, date=None):
-        if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-        self._set_with_struct("last_reapplication", date)
+    def last_update_request(self):
+        related = self.related_applications
+        if len(related) == 0:
+            return None
+        sorted(related, key=lambda x : x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        return related[0].get("date_accepted", "1970-01-01T00:00:00Z")
 
     ############################################################
     ## revision history methods
@@ -436,61 +449,7 @@ class Journal(JournalLikeObject):
         hist.save()
 
     #######################################################################
-    ## Conversion methods (e.g. to a reapplication)
-
-    def make_reapplication(self):
-        from portality.models import Suggestion
-        raw_reapp = deepcopy(self.data)
-
-        # remove all the properties that won't be carried
-        if "id" in raw_reapp:
-            del raw_reapp["id"]
-        if "index" in raw_reapp:
-            del raw_reapp["index"]
-        if "created_date" in raw_reapp:
-            del raw_reapp["created_date"]
-        if "last_updated" in raw_reapp:
-            del raw_reapp["last_updated"]
-        # there should not be an old suggestion record, but just to be safe
-        if "suggestion" in raw_reapp:
-            del raw_reapp["suggestion"]
-
-        # construct the new admin object from the ground up
-        admin = raw_reapp.get("admin")
-        if admin is not None:
-            na = {}
-            na["application_status"] = "reapplication"
-            na["current_journal"] = self.id
-            if "notes" in admin:
-                na["notes"] = admin["notes"]
-            if "contact" in admin:
-                na["contact"] = admin["contact"]
-            if "owner" in admin:
-                na["owner"] = admin["owner"]
-            if "editor_group" in admin:
-                na["editor_group"] = admin["editor_group"]
-            if "editor" in admin:
-                na["editor"] = admin["editor"]
-            raw_reapp["admin"] = na
-
-        # make the new suggestion
-        reapp = Suggestion(**raw_reapp)
-        reapp.suggested_on = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
-
-        # there is no suggester, so we copy the journal contact details into the
-        # suggester fields
-        contacts = reapp.contacts()
-        if len(contacts) > 0:
-            reapp.set_suggester(contacts[0].get("name"), contacts[0].get("email"))
-
-        reapp.save()
-
-        # update this record to include the reapplication id
-        self.set_current_application(reapp.id)
-        self.save()
-
-        # finally, return the reapplication in case the caller needs it
-        return reapp
+    ## Conversion methods
 
     def make_continuation(self, type, eissn=None, pissn=None, title=None):
         # check that the type is one we know.  Must be either 'replaces' or 'is_replaced_by'
@@ -579,6 +538,40 @@ class Journal(JournalLikeObject):
     def remove_current_application(self):
         self._delete("admin.current_application")
 
+    @property
+    def related_applications(self):
+        return self._get_list("admin.related_applications")
+
+    def add_related_application(self, application_id, date_accepted=None, status=None):
+        obj = {"application_id" : application_id}
+        self._delete_from_list("admin.related_applications", matchsub=obj)
+        if date_accepted is not None:
+            obj["date_accepted"] = date_accepted
+        if status is not None:
+            obj["status"] = status
+        self._add_to_list_with_struct("admin.related_applications", obj)
+
+    def set_related_applications(self, related_applications_records):
+        self._set_with_struct("admin.related_applications", related_applications_records)
+
+    def remove_related_applications(self):
+        self._delete("admin.related_applications")
+
+    def related_application_record(self, application_id):
+        for record in self.related_applications:
+            if record.get("application_id") == application_id:
+                return record
+        return None
+
+    def latest_related_application_id(self):
+        related = self.related_applications
+        if len(related) == 0:
+            return None
+        if len(related) == 1:
+            return related[0].get("application_id")
+        sorted(related, key=lambda x: x.get("date_accepted", "1970-01-01T00:00:00Z"))
+        return related[0].get("application_id")
+
     def is_ticked(self):
         return self._get_single("admin.ticked", default=False)
 
@@ -631,12 +624,12 @@ class Journal(JournalLikeObject):
 
     def calculate_tick(self):
         created_date = self.created_date
-        last_reapplied = self.last_reapplication
+        last_update_request = self.last_update_request
 
         tick_threshold = app.config.get("TICK_THRESHOLD", '2014-03-19T00:00:00Z')
         threshold = datetime.strptime(tick_threshold, "%Y-%m-%dT%H:%M:%SZ")
 
-        if created_date is None:    # don't worry about the last_reapplied date - you can't reapply unless you've been created!
+        if created_date is None:    # don't worry about the last_update_request date - you can't update unless you've been created!
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
@@ -650,15 +643,15 @@ class Journal(JournalLikeObject):
 
         # convert the strings to datetime objects
         created = datetime.strptime(created_date, "%Y-%m-%dT%H:%M:%SZ")
-        reappd = None
-        if last_reapplied is not None:
-            reappd = datetime.strptime(last_reapplied, "%Y-%m-%dT%H:%M:%SZ")
+        lud = None
+        if last_update_request is not None:
+            lud = datetime.strptime(last_update_request, "%Y-%m-%dT%H:%M:%SZ")
 
         if created >= threshold and self.is_in_doaj():
             self.set_ticked(True)
             return
 
-        if reappd is not None and reappd >= threshold and self.is_in_doaj():
+        if lud is not None and lud >= threshold and self.is_in_doaj():
             self.set_ticked(True)
             return
 
@@ -682,9 +675,10 @@ class Journal(JournalLikeObject):
         self.check_construct()
         if sync_owner:
             self._sync_owner_to_application()
-        super(Journal, self).save(**kwargs)
+        res = super(Journal, self).save(**kwargs)
         if snapshot:
             self.snapshot()
+        return res
 
     ######################################################
     ## internal utility methods
@@ -1193,7 +1187,8 @@ JOURNAL_STRUCT = {
             },
             "lists" : {
                 "contact" : {"contains" : "object"},
-                "notes" : {"contains" : "object"}
+                "notes" : {"contains" : "object"},
+                "related_applications" : {"contains" : "object"}
             },
             "structs" : {
                 "contact" : {
@@ -1206,6 +1201,13 @@ JOURNAL_STRUCT = {
                     "fields" : {
                         "note" : {"coerce" : "unicode"},
                         "date" : {"coerce" : "utcdatetime"}
+                    }
+                },
+                "related_applications" : {
+                    "fields" : {
+                        "application_id" : {"coerce" : "unicode"},
+                        "date_accepted" : {"coerce" : "utcdatetime"},
+                        "status" : {"coerce" : "unicode"}
                     }
                 }
             }

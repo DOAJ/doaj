@@ -58,3 +58,11 @@ def random_date(fro=None, to=None):
     span = int((to - fro).total_seconds())
     s = randint(0, span)
     return format(to - timedelta(seconds=s))
+
+
+def before(timestamp, seconds):
+    return timestamp - timedelta(seconds=seconds)
+
+
+def after(timestamp, seconds):
+    return timestamp + timedelta(seconds=seconds)

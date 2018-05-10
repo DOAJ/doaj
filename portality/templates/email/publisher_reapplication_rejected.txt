@@ -1,5 +1,0 @@
-Dear {{ publisher_name }},
-
-The reapplication for "{{ journal_title }}" has been rejected for inclusion back into the DOAJ.
-
-The DOAJ Team

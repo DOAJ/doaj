@@ -5,5 +5,8 @@
 {% endblock %}
 
 {% block extra_js_bottom %}
-<script type="text/javascript">var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";</script>
+<script type="text/javascript">
+    var journal_edit_url = "{{ url_for('admin.journal_page', journal_id="") }}";
+    var applications_fv_url = "{{ url_for('admin.suggestions') }}";
+</script>
 {% endblock %}

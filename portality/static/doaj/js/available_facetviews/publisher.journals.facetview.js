@@ -15,7 +15,13 @@ jQuery(document).ready(function($) {
         default_operator : "AND",
 
         facets: [
-            {'field': 'admin.in_doaj', 'display': 'In DOAJ?'},
+            {
+                'field': 'admin.in_doaj',
+                'display': 'In DOAJ?',
+                value_function: function(val) {
+                    return val == "T" ? "Yes" : "No"
+                }
+            },
             {'field': 'index.license.exact', 'display': 'Journal License'},
             {'field': 'index.classification.exact', 'display': 'Classification'},
             {'field': 'index.subject.exact', 'display': 'Subject'}
@@ -48,7 +54,8 @@ jQuery(document).ready(function($) {
             "links" : fv_links,
             "issns" : fv_issns,
             "in_doaj": fv_in_doaj,
-            "country_name": fv_country_name
+            "country_name": fv_country_name,
+            "make_update_request" : fv_make_update_request
         },
         result_display: [
             // Journals
@@ -145,6 +152,11 @@ jQuery(document).ready(function($) {
                 {
                     "pre": "<strong>Language</strong>: ",
                     "field": "bibjson.language"
+                }
+            ],
+            [
+                {
+                    "field" : "make_update_request"
                 }
             ]
         ]

@@ -1,14 +1,13 @@
-from doajtest.helpers import DoajTestCase
-
-from portality import models
-from portality.formcontext import formcontext
-
-from StringIO import StringIO
-from copy import deepcopy
 import logging
 import re
+from StringIO import StringIO
+from copy import deepcopy
 
+from portality import constants
 from doajtest.fixtures import EditorGroupFixtureFactory, AccountFixtureFactory, ApplicationFixtureFactory, JournalFixtureFactory
+from doajtest.helpers import DoajTestCase
+from portality import models
+from portality.formcontext import formcontext
 
 APPLICATION_SOURCE_TEST_1 = ApplicationFixtureFactory.make_application_source()
 APPLICATION_SOURCE_TEST_2 = ApplicationFixtureFactory.make_application_source()
@@ -144,7 +143,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # If an application has been set to 'ready' but is returned to 'in progress',
         # an email is sent to the editor and assigned associate editor
         ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
-        ready_application.set_application_status("ready")
+        ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -154,7 +153,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "in progress"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         fc.finalise()
@@ -163,8 +162,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == "ready"
-        assert fc.target.application_status == "in progress"
+        assert fc.source.application_status == constants.APPLICATION_STATUS_READY
+        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from ready back to in progress.
@@ -193,7 +192,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # If our ManEd is doing an editor's job - setting from 'completed' but is returned to 'in progress',
         # an email is sent to the editor in charge of the application's group and assigned associate editor
         completed_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
-        completed_application.set_application_status("completed")
+        completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -203,7 +202,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.ManEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "in progress"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         fc.finalise()
@@ -212,8 +211,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == "completed"
-        assert fc.target.application_status == "in progress"
+        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect two emails sent:
         #   * to the editor, informing them an application has been bounced from completed back to in progress.
@@ -325,7 +324,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=pending_application)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
 
         fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
@@ -349,7 +348,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Refresh the application form
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
-        fc.form.application_status.data = 'accepted'
+        fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
 
         fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
@@ -367,16 +366,16 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
         assert bool(publisher_email_matched)
 
-        publisher_template = 'publisher_application_accepted.txt'
+        publisher_template = 'publisher_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'journal accepted'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
 
-        publisher_template = 'contact_application_accepted.txt'
+        publisher_template = 'contact_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'journal accepted'
 
@@ -407,7 +406,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "ready"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_READY
 
         fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
@@ -497,7 +496,7 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # When an editor changes the state from 'completed' to 'in progress', the assigned associate is emailed.
         completed_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
-        completed_application.set_application_status("completed")
+        completed_application.set_application_status(constants.APPLICATION_STATUS_COMPLETED)
 
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -507,7 +506,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.EditorApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "in progress"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         # Emails are sent during the finalise stage, and requires the app context to build URLs
         fc.finalise()
@@ -516,8 +515,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         info_stream_contents = self.info_stream.getvalue()
 
         # Prove we went from to and from the right statuses
-        assert fc.source.application_status == "completed"
-        assert fc.target.application_status == "in progress"
+        assert fc.source.application_status == constants.APPLICATION_STATUS_COMPLETED
+        assert fc.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS
 
         # We expect one email to be sent:
         #   * to the associate editor, informing them the application has been bounced back to in progress.
@@ -552,7 +551,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert isinstance(fc, formcontext.AssEdApplicationReview)
 
         # Make changes to the application status via the form
-        fc.form.application_status.data = "in progress"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_IN_PROGRESS
 
         fc.finalise()
         info_stream_contents = self.info_stream.getvalue()
@@ -573,7 +572,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         self.info_stream.truncate(0)
 
         # When the application is then set to 'completed', the editor in charge of this group is informed
-        fc.form.application_status.data = "completed"
+        fc.form.application_status.data = constants.APPLICATION_STATUS_COMPLETED
 
         fc.finalise()
         info_stream_contents = self.info_stream.getvalue()

@@ -145,7 +145,7 @@ class TestJournalCSV(DoajTestCase):
             'True',
             'http://publishing.rights',
             'Yes',
-            'No',
+            'Yes',
             '2000-01-01T00:00:00Z',
             'Social Sciences: Economic theory. Demography']
 
@@ -383,7 +383,7 @@ class TestJournalCSV(DoajTestCase):
             'True',
             'http://publishing.rights',
             'Yes',
-            'No',
+            'Yes',
             '2000-01-01T00:00:00Z',
             'Social Sciences: Economic theory. Demography']
 

@@ -558,7 +558,8 @@ class SuggestionFormXWalk(JournalGenericXWalk):
 
         forminfo['subject'] = []
         for s in bibjson.subjects():
-            forminfo['subject'].append(s['code'])
+            if "code" in s:
+                forminfo['subject'].append(s['code'])
 
         forminfo['owner'] = obj.owner
         if obj.editor_group is not None:

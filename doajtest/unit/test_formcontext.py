@@ -1,10 +1,10 @@
-from doajtest.helpers import DoajTestCase
-
-from portality import models, core
-from portality.formcontext import formcontext, render
-
 from werkzeug.datastructures import MultiDict
 from wtforms import Form, StringField, validators
+
+from portality import constants
+from doajtest.helpers import DoajTestCase
+from portality import models, core
+from portality.formcontext import formcontext, render
 
 #####################################################################
 # Source objects to be used for testing
@@ -80,7 +80,7 @@ APPLICATION_SOURCE = {
         "owner": "15624730",
         "notes": [{"date": "2014-05-21T14:02:45Z", "note": "ok/RZ"}],
         "contact": [{"name": "Murat Akser", "email": "m.akser@ulster.ac.uk"}],
-        "application_status": "accepted"
+        "application_status": constants.APPLICATION_STATUS_ACCEPTED
     },
     "suggestion": {
         "articles_last_year": {"count": 19, "url": "http://cinej.pitt.edu/ojs/index.php/cinej/issue/archive"},
@@ -151,7 +151,7 @@ APPLICATION_SOURCE = {
 APPLICATION_FORM = {
     'aims_scope_url': 'http://cinej.pitt.edu/ojs/index.php/cinej/about/editorialPolicies#focusAndScope',
     'alternative_title': None,
-    'application_status': 'accepted',
+    'application_status': constants.APPLICATION_STATUS_ACCEPTED,
     'article_identifiers': ['DOI'],
     'article_identifiers_other': '',
     'articles_last_year': 19,
@@ -390,13 +390,7 @@ class TestFormContext(DoajTestCase):
         assert fc.source is not None
 
         fc = formcontext.ApplicationFormFactory.get_form_context("publisher", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
-        assert isinstance(fc, formcontext.PublisherReApplication)
-        assert fc.form is not None
-        assert fc.form_data is not None
-        assert fc.source is not None
-
-        fc = formcontext.ApplicationFormFactory.get_form_context("csv", source=models.Suggestion(**APPLICATION_SOURCE), form_data=MultiDict(APPLICATION_FORM))
-        assert isinstance(fc, formcontext.PublisherCsvReApplication)
+        assert isinstance(fc, formcontext.PublisherUpdateRequest)
         assert fc.form is not None
         assert fc.form_data is not None
         assert fc.source is not None
@@ -463,7 +457,7 @@ class TestFormContext(DoajTestCase):
         # now, finalise (which will run all the above stuff again)
         fc.finalise()
         assert fc.target is not None
-        assert fc.target.application_status == "pending"
+        assert fc.target.application_status == constants.APPLICATION_STATUS_PENDING
         assert fc.target.suggested_on is not None
 
         core.app.config['ENABLE_EMAIL'] = old_enable_email

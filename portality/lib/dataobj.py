@@ -41,6 +41,12 @@ def to_unicode():
 
     return to_utf8_unicode
 
+
+def to_unicode_upper(val):
+    ufn = to_unicode()
+    val = ufn(val)
+    return val.upper()
+
 def to_int():
     def intify(val):
         # strip any characters that are outside the ascii range - they won't make up the int anyway
@@ -235,6 +241,7 @@ class DataObj(object):
         # to the swagger translation table as well, in the same way you
         # extend the coerce map.
         "unicode": to_unicode(),
+        "unicode_upper" : to_unicode_upper,
         "utcdatetime": date_str(),
         "utcdatetimemicros" : date_str(out_format="%Y-%m-%dT%H:%M:%S.%fZ"),
         "bigenddate" : date_str(out_format="%Y-%m-%d"),
@@ -805,14 +812,16 @@ class DataObj(object):
         type, struct, instructions = construct_lookup(path, self._struct)
         if type == "field":
             kwargs = construct_kwargs(type, "set", instructions)
-            self._set_single(path, val, **kwargs)
+            coerce_fn = self._coerce_map.get(instructions.get("coerce", "unicode"))
+            self._set_single(path, val, coerce=coerce_fn, **kwargs)
         elif type == "list":
             if not isinstance(val, list):
                 val = [val]
             if struct is not None:
                 val = [construct(x, struct, self._coerce_map) for x in val]
             kwargs = construct_kwargs(type, "set", instructions)
-            self._set_list(path, val, **kwargs)
+            coerce_fn = self._coerce_map.get(instructions.get("coerce"))
+            self._set_list(path, val, coerce=coerce_fn, **kwargs)
         elif type == "object":
             if struct is not None:
                 val = construct(val, struct, self._coerce_map)

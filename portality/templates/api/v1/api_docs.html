@@ -116,6 +116,42 @@ sort=bibjson.title:desc
     <h3 id="creating_articles">Creating articles</h3>
     <p>If you try to create an article with a DOI or a full-text URL as another one of the articles associated with your account, then system will detect this as a duplicate. It will overwrite the old article we have with the new data you're supplying via the CRUD Article Create endpoint. It works in the same way as submitting article metadata to DOAJ via XML upload or manual entry with your publisher user account.</p>
 
+    <h3 id="update_requests">Applications - Update Requests</h3>
+    <p>If you wish to submit an application which is intended to provide updated information for an existing Journal you
+    have in DOAJ, then you can submit an Update Request.</p>
+
+    <p>An Update Request can be created by sending a new application record via the <a href="/api/v1/docs#!/CRUD_Applications/post_api_v1_applications">Application CRUD</a> endpoint, and including
+    the identifier of the Journal it replaces in the "admin.current_journal" field:</p>
+
+<pre>
+    POST /api/v1/applications?api_key=?????
+
+    {
+        "admin" : {
+            "current_journal" : 1234567890
+        },
+        "bibjson : { ... }
+    }
+</pre>
+
+    <p>When you do this, a new application will be created, based on the pre-existing Journal.  There are a number of fields that will be <strong>ignored</strong>
+    when provided during an Update Request, these are:</p>
+
+    <ul>
+        <li>Title - bibjson.title</li>
+        <li>Alternative Title - bibjson.alternative_title</li>
+        <li>Print ISSN - bibjson.identifier type=pissn</li>
+        <li>Electronic ISSN - bibjson.identifier type=eissn</li>
+        <li>Contact Name - admin.contact.name</li>
+        <li>Contact Email - admin.contact.email</li>
+    </ul>
+
+    <p>If you need to change any of these fields, please contact us.</p>
+
+    <p>Once you have created a new Update Request, you can make changes to that via the CRUD endpoint (both Update and Delete) until an
+    administrator at DOAJ picks it up for review.  Once it is picked up for review, attempts to update or delete the Update Request will
+    be rejected by the API with a 403 (Forbidden).</p>
+
 </div>
 </div> <!-- swagger-section -->
 {% endblock %}

@@ -464,10 +464,10 @@ function publisherJournalNotFound() {
         "</tr>";
 }
 
-function publisherReapplicationNotFound() {
+function publisherUpdateRequestNotFound() {
     return "<tr class='facetview_not_found'>" +
-        "<td><p>You do not have any active reapplications that meet your search criteria</p>" +
-        "<p>If you have not set any search criteria, you do not have any further reapplications to complete at this stage.</p>" +
+        "<td><p>You do not have any active update requests that meet your search criteria</p>" +
+        "<p>If you have not set any search criteria, you do not have any update requests at this time.</p>" +
         "</tr>";
 }
 
@@ -488,20 +488,17 @@ function authorPaysMap(value) {
     return value;
 }
 
-var publisherStatusMapping = {
-    "reapplication" : "pending"
-};
 function publisherStatusMap(value) {
-    if (publisherStatusMapping.hasOwnProperty(value)) {
-        return publisherStatusMapping[value];
+    if (applicationStatusMapping.hasOwnProperty(value)) {
+        return applicationStatusMapping[value];
     }
     return value;
 }
 
 // This must be updated in line with the list in formcontext/choices.py
 var applicationStatusMapping = {
-    'reapplication' : 'Reapplication Pending',
-    'submitted' : 'Reapplication Submitted',
+    'update_request' : 'Update Request',
+    'revisions_required' : 'Revisions Required',
     'pending' : 'Pending',
     'in progress' : 'In Progress',
     'completed' : 'Completed',

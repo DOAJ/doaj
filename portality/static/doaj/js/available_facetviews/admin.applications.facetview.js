@@ -316,7 +316,7 @@ jQuery(document).ready(function($) {
                 'display': 'Application Status',
                 'value_function': adminStatusMap
             },
-            {'field': 'index.application_type.exact', 'display': 'Application type'},
+            {'field': 'index.application_type.exact', 'display': 'Record type'},
             {'field': 'index.has_editor_group.exact', 'display': 'Has Editor Group?'},
             {'field': 'index.has_editor.exact', 'display': 'Has Associate Editor?'},
             {'field': 'admin.editor_group.exact', 'display': 'Editor Group'},
@@ -378,7 +378,8 @@ jQuery(document).ready(function($) {
             'last_manual_update': fv_last_manual_update,
             'suggested_on': fv_suggested_on,
             'readonly_journal': fv_readonly_journal,
-            'owner' : fv_owner
+            'owner' : fv_owner,
+            "related_journal" : fv_related_journal
         },
         result_display: [
             [
@@ -516,6 +517,11 @@ jQuery(document).ready(function($) {
             [
                 {
                     "field" : "links"
+                }
+            ],
+            [
+                {
+                    "field" : "related_journal"
                 }
             ],
             [
