@@ -56,6 +56,8 @@ class TestBLRejectApplication(DoajTestCase):
                 journal.set_current_application(ap.id)
                 journal.save(blocking=True)
                 ap.set_current_journal(journal.id)
+            else:
+                ap.remove_current_journal()
 
         acc = None
         if account == "publisher":
