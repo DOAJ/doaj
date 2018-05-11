@@ -9,6 +9,7 @@ from portality.background import BackgroundTask, BackgroundApi
 import esprit
 import codecs
 import os
+import shutil
 import json
 from portality import models
 from portality.article import XWalk
@@ -27,6 +28,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
+        # Set up the files we need to run this task - a dir to place the 2 reports, and a place to write the article csv
         outdir = self.get_param(params, "outdir", "article_duplicates_" + dates.today())
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
@@ -46,7 +48,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
                                           app.config["ELASTIC_SEARCH_DB"])
 
-        tmp_csvfile = 'tmp_articles' + dates.today() + '.csv'
+        tmp_csvfile = 'tmp_articles' + dates.today() + '.csv.full'
         tmp_csvpath = os.path.join(tmpdir, tmp_csvfile)
 
         with codecs.open(tmp_csvpath, 'wb', 'utf-8') as t:
@@ -55,13 +57,12 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         # Initialise our reports
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
-        g = codecs.open(owner_reportpath, 'wb', 'utf-8')
-        owner_report = UnicodeWriter(g)
+        #g = codecs.open(owner_reportpath, 'wb', 'utf-8')
+        #owner_report = UnicodeWriter(g)
         
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "owners_match", "titles_match", "article_title", "match_title"]
-        app.logger.info(' '.join(header))
         global_report.writerow(header)
-        owner_report.writerow(header)
+        #owner_report.writerow(header)
 
         # Record the sets of duplicated articles
         global_matches = []
@@ -69,13 +70,13 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         a_count = gd_count = od_count = 0
 
+        # Read back in the article csv file we created earlier
         with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
-            # Read back in the article csv file we created earlier
             article_reader = UnicodeReader(t)
 
             for a in article_reader:
                 a_count += 1
-                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}})
+                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': json.loads(a[4])}})
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
@@ -113,8 +114,12 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found, '
                               '{2} found within user accounts.'.format(a_count, gd_count, od_count))
         f.close()
-        g.close()
+        #g.close()
 
+        # Delete the transient temporary files.
+        shutil.rmtree(tmpdir)
+
+        # Email the reports if that parameter has been set.
         send_email = self.get_param(params, "email", False)
         if send_email:
             archive_name = "article_duplicates_" + dates.today()
@@ -123,7 +128,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         else:
             job.add_audit_message("no email alert sent")
 
-    def _create_article_csv(self, connection, file_object):
+    @staticmethod
+    def _create_article_csv(connection, file_object):
         """ Create a CSV file with the minimum information we require to find and report duplicates. """
 
         csv_writer = UnicodeWriter(file_object)
@@ -151,10 +157,9 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 a['created_date'],
                 json.dumps(a['bibjson']['identifier']),
                 json.dumps(a['bibjson'].get('link', [])),
-                a['bibjson'].get('title', '')
+                json.dumps(a['bibjson'].get('title', ''))
             ]
             csv_writer.writerow(row)
-            app.logger.info(' '.join(row))
 
     def _summarise_article(self, article, owner=None):
         a_doi = article.bibjson().get_identifiers('doi')
@@ -211,7 +216,6 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    a_summary['title'] if a_summary['title'] != v['title'] else '',
                    v['title'] if a_summary['title'] != v['title'] else '']
             report.writerow(row)
-            app.logger.info(' '.join(row))
 
     def cleanup(self):
         """
