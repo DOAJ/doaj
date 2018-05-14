@@ -1,4 +1,6 @@
 from datetime import datetime, timedelta
+import requests
+from portality.core import app
 
 
 class BadSnapshotNameException(Exception):
@@ -25,11 +27,15 @@ class ESSnapshotsClient(object):
         self.snapshots = []
 
     def list_snapshots(self):
+        snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
+        resp = requests.get(snapshots_url)
+        print resp.text
+        return resp.json()
+
         # if self.snapshots:
         #     return self.snapshots
         # self.snapshots = [ordered ESSnapshot]
         # return self.snapshots
-        pass
 
     def check_today_snapshot(self):
         snapshots = self.list_snapshots()

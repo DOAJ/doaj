@@ -69,6 +69,7 @@ ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
+ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = 'doaj_s3'
 
 ES_TERMS_LIMIT = 1024
 
