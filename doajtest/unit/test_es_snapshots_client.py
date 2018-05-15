@@ -20,7 +20,7 @@ class TestSnapshotClient(DoajTestCase):
         responses.add(responses.GET, snapshot_url, json=SNAPSHOTS_LIST, status=200)
         client = es_snapshots.ESSnapshotsClient()
         s = client.list_snapshots()
-        assert s is False, s
+        assert s == SNAPSHOTS_LIST
 
     def test_02_snapshots_are_sorted(self):
         pass
