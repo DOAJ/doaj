@@ -48,7 +48,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
                                           app.config["ELASTIC_SEARCH_DB"])
 
-        tmp_csvfile = 'tmp_articles' + dates.today() + '.csv.full'
+        tmp_csvfile = 'tmp_articles' + dates.today() + '.full.csv'
         tmp_csvpath = os.path.join(tmpdir, tmp_csvfile)
 
         with codecs.open(tmp_csvpath, 'wb', 'utf-8') as t:
@@ -76,7 +76,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
             for a in article_reader:
                 a_count += 1
-                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': json.loads(a[4])}})
+                app.logger.debug(a)
+                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}})
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
@@ -117,7 +118,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         #g.close()
 
         # Delete the transient temporary files.
-        shutil.rmtree(tmpdir)
+        # shutil.rmtree(tmpdir) todo: reinstate
 
         # Email the reports if that parameter has been set.
         send_email = self.get_param(params, "email", False)
@@ -157,7 +158,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 a['created_date'],
                 json.dumps(a['bibjson']['identifier']),
                 json.dumps(a['bibjson'].get('link', [])),
-                json.dumps(a['bibjson'].get('title', ''))
+                a['bibjson'].get('title', '')
             ]
             csv_writer.writerow(row)
 
