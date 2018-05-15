@@ -659,7 +659,7 @@ class TestClient(DoajTestCase):
         bj.journal_country = "FR"
         bj.journal_issns = ["1111-1111", "9999-9999"]
         bj.publisher = "Elsevier"
-        bj.add_author("Testing", "email@email.com", "School of Hard Knocks")
+        bj.add_author("Testing", "School of Hard Knocks")
         bj.set_journal_license("CC NC", "CC NC", "http://cc.nc", False)
         assert bj.get_publication_date() is not None
         assert bj.vancouver_citation() is not None

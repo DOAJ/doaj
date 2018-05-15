@@ -142,7 +142,6 @@ ARTICLE_SOURCE = {
         "author" : [
             {
                 "name" : "The Author",
-                "email" : "author@example.com",
                 "affiliation" : "University Cottage Labs"
             },
         ],
@@ -220,7 +219,6 @@ ARTICLE_STRUCT = {
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "email": {"coerce": "unicode"},
                         "affiliation": {"coerce": "unicode"}
                     }
                 },
