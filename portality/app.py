@@ -80,7 +80,7 @@ else:
 # the other tiers' logos.
 SPONSORS = {
     'gold': {
-
+        'ebsco': {'name': 'EBSCO', 'logo': 'ebsco.svg', 'url': 'https://www.ebsco.com/'}
     },
     'silver': {
         'frontiers': {'name': 'Frontiers', 'logo': 'frontiers.png', 'url': 'https://www.frontiersin.org'},
@@ -89,6 +89,8 @@ SPONSORS = {
         'oclc': {'name': 'OCLC', 'logo': 'oclc.svg', 'url': 'https://www.oclc.org/en-europe/home.html'},
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
+        'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
+        #'kbse': {'name': 'National Library of Sweden', 'logo': '', 'url': 'https://www.kb.se/'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
