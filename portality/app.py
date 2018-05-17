@@ -90,7 +90,7 @@ SPONSORS = {
         'plos': {'name': 'PLOS (Public Library of Science)', 'logo': 'plos.svg', 'url': 'https://www.plos.org/'},
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
-        #'kbse': {'name': 'National Library of Sweden', 'logo': '', 'url': 'https://www.kb.se/'},
+        'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
