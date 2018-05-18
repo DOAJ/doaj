@@ -321,7 +321,7 @@ def suggestion_page(suggestion_id):
 @ssl_required
 @write_required()
 def application_quick_reject(application_id):
-    doaj = DOAJ()
+    applicationService = DOAJ.applicationService()
     # retrieve the application and an edit lock on that application
     application = None
     try:

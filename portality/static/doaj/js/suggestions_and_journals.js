@@ -81,6 +81,7 @@ jQuery(document).ready(function($) {
         $("#custom_reject_reason").hide();
     }
 
+    /*
     if ($("#reject_reason").val() == "") {
         showCustomRejectNote();
     } else {
@@ -94,7 +95,7 @@ jQuery(document).ready(function($) {
         } else {
             hideCustomRejectNote()
         }
-    });
+    });*/
 
     ///////////////////////////////////////////////////
 
