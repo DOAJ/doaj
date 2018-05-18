@@ -274,10 +274,17 @@ fv_issns = (function (resultobj) {
 fv_edit_suggestion = (function (resultobj) {
     var that = function(resultobj) {
         if (resultobj['suggestion']) {
+            // determine the link name
             var linkName = "Review application";
-            if (resultobj.admin.current_journal || resultobj.admin.related_journal) {
+            if (resultobj.admin.application_status === 'accepted' || resultobj.admin.application_status === 'rejected') {
+                linkName = "View finished application";
+                if (resultobj.admin.related_journal) {
+                    linkName = "View finished update";
+                }
+            } else if (resultobj.admin.current_journal) {
                 linkName = "Review update";
             }
+
             var result = '<a class="edit_suggestion_link pull-right" href="';
             result += suggestion_edit_url;
             result += resultobj['id'];
