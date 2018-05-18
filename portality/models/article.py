@@ -647,6 +647,10 @@ class ArticleBibJSON(GenericBibJSON):
     def author(self):
         return self._get_list("author")
 
+    @author.setter
+    def author(self, authors):
+        self._set_with_struct("author", authors)
+
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         lobj = {"title": licence_title, "type": licence_type}
         if url is not None:

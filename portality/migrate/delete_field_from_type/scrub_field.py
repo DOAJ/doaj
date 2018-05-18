@@ -13,7 +13,7 @@ def scrub_field(connection, o_type, o_field, batch_size=500):
 
     batch = []
 
-    for o in esprit.tasks.scroll(connection, o_type, limit=1):
+    for o in esprit.tasks.scroll(connection, o_type):
         # Access the data using the DataObj class
         o_obj = dataobj.DataObj(raw=o)
         o_obj._delete(o_field)
