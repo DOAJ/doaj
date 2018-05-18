@@ -321,27 +321,34 @@ def suggestion_page(suggestion_id):
 @ssl_required
 @write_required()
 def application_quick_reject(application_id):
+
+    # extract the note information from the request
+    canned_reason = request.values.get("reject_reason", "")
+    additional_info = request.values.get("additional_reject_information", "")
+    reasons = []
+    if canned_reason != "":
+        reasons.append(canned_reason)
+    if additional_info != "":
+        reasons.append(additional_info)
+    if len(reasons) == 0:
+        abort(400)
+    reason = " - ".join(reasons)
+    note = Messages.REJECT_NOTE_WRAPPER.format(note=reason)
+
     applicationService = DOAJ.applicationService()
+
     # retrieve the application and an edit lock on that application
     application = None
     try:
-        application, alock = doaj.application(application_id, lock_application=True, lock_account=current_user._get_current_object())
+        application, alock = applicationService.application(application_id, lock_application=True, lock_account=current_user._get_current_object())
     except lock.Locked as e:
         abort(409)
-
-    # extract the note information from the request
-    reason = request.values.get("reject_reason")
-    if reason == "":
-        reason = request.values.get("custom_reject_reason")
-    if reason == "":
-        abort(400)
-    note = Messages.REJECT_NOTE_WRAPPER.format(note=reason)
 
     # determine if this was a new application or an update request, for use later
     update_request = application.current_journal is not None
 
     # reject the application
-    doaj.reject_application(application, current_user._get_current_object(), note=note)
+    applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
     # send the notification email to the user
     sent = False

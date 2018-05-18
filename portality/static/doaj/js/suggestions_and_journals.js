@@ -81,6 +81,13 @@ jQuery(document).ready(function($) {
         $("#custom_reject_reason").hide();
     }
 
+    $("#submit_quick_reject").on("click", function(event) {
+        if ($("#reject_reason").val() == "" && $("#additional_reject_information").val() == "") {
+            alert("Please select a reject reason and/or enter some additional information");
+            event.preventDefault();
+        }
+    });
+
     /*
     if ($("#reject_reason").val() == "") {
         showCustomRejectNote();
