@@ -12,7 +12,7 @@
 {# include the table for comparing applications with journals that have changed #}
 {% include 'formcontext/_application_diff.html' %}
 
-{% if form_context.source.application_status != "rejected" %}
+{% if form_context.source.application_status != "rejected" and form_context.source.application_status != 'accepted' %}
 <div class="row-fluid">
   <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 
@@ -22,10 +22,10 @@
             <form method="post" action="{{ url_for('admin.application_quick_reject', application_id=form_context.source.id) }}" class="form-horizontal" id="application_quick_reject_form">
                 Select a reason for rejection:
                 <select name="reject_reason" id="reject_reason">
+                    <option value="">Other</option>
                     {% for reason in config.get("QUICK_REJECT_REASONS", []) %}
                         <option value="{{ reason }}">{{ reason }}</option>
                     {% endfor %}
-                    <option value="">Other</option>
                 </select>
                 <textarea name="additional_reject_information" id="additional_reject_information" placeholder="Enter any additional information here"></textarea>
                 <button class="btn btn-danger" type="submit" id="submit_quick_reject">Quick Reject</button>

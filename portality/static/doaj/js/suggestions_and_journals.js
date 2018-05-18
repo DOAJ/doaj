@@ -83,7 +83,7 @@ jQuery(document).ready(function($) {
 
     $("#submit_quick_reject").on("click", function(event) {
         if ($("#reject_reason").val() == "" && $("#additional_reject_information").val() == "") {
-            alert("Please select a reject reason and/or enter some additional information");
+            alert("When selecting 'Other' as a reason for rejection, you must provide additional information");
             event.preventDefault();
         }
     });
