@@ -16,6 +16,7 @@ from portality.article import XWalk
 from portality.lib import dates
 from portality.core import app
 from portality.clcsv import UnicodeWriter, UnicodeReader
+import csv
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -133,7 +134,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
     def _create_article_csv(connection, file_object):
         """ Create a CSV file with the minimum information we require to find and report duplicates. """
 
-        csv_writer = UnicodeWriter(file_object)
+        csv_writer = UnicodeWriter(file_object, quoting=csv.QUOTE_ALL)
 
         # Scroll through all articles, newest to oldest
         scroll_query = {
