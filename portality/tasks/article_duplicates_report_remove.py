@@ -77,7 +77,6 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
             for a in article_reader:
                 a_count += 1
-                app.logger.debug(a)
                 article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}})
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
