@@ -174,7 +174,7 @@ class XWalk(object):
         return possible_articles if found else None
 
 
-class FormXWalk(XWalk):
+class FormXWalk(object):
     format_name = "form"
     
     def crosswalk_form(self, form, add_journal_info=True, limit_to_owner=None):
@@ -253,14 +253,16 @@ class FormXWalk(XWalk):
         # add the journal info if requested
         if add_journal_info:
             article.add_journal_metadata()
-        
+
+        """
         # before finalising, we need to determine whether this is a new article
         # or an update
         duplicate = self.get_duplicate(article, limit_to_owner)
         # print duplicate
         if duplicate is not None:
             article.merge(duplicate) # merge will take the old id, so this will overwrite
-        
+        """
+
         return article
 
 

@@ -224,7 +224,9 @@ def metadata():
             else:
                 xwalk = article.FormXWalk()
                 art = xwalk.crosswalk_form(form)
-                art.save()
+                articleService = DOAJ.articleService()
+                articleService.create_article(article, current_user._get_current_object())
+                # art.save()
                 flash("Article created/updated", "success")
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)

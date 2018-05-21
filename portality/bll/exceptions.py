@@ -43,3 +43,9 @@ class ConfigurationException(Exception):
     Exception to raise when our own configuration is broken
     """
     pass
+
+class DuplicateArticleException(Exception):
+    """
+    Exception to raise when a duplicate article is detected, and this is not permitted
+    """
+    pass
