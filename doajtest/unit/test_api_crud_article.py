@@ -30,6 +30,12 @@ class TestCrudArticle(DoajTestCase):
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
+        # and one with an author email, which we have removed from the allowed fields recently.
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["author"][0]["email"] = "author@example.com"
+        with self.assertRaises(DataStructureException):
+            ia = IncomingArticleDO(data)
+
         # now progressively remove the conditionally required/advanced validation stuff
         #
         # missing identifiers

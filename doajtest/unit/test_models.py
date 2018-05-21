@@ -1044,3 +1044,19 @@ class TestClient(DoajTestCase):
         assert all[0].id == app1.id
         assert all[1].id == app2.id
 
+    def test_33_article_with_author_email(self):
+        """Check the system disallows articles with emails in the author field"""
+        a_source = ArticleFixtureFactory.make_article_source()
+
+        # Creating a model from a source with email is rejected by the DataObj
+        a_source['bibjson']['author'][0]['email'] = 'author@example.com'
+        with self.assertRaises(dataobj.DataStructureException):
+            a = models.Article(**a_source)
+
+        # Remove the email address again to create the model
+        del a_source['bibjson']['author'][0]['email']
+        a = models.Article(**a_source)
+
+        # We can't add an author with an email address any more.
+        with self.assertRaises(TypeError):
+            a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
