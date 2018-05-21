@@ -1052,6 +1052,7 @@ class TestClient(DoajTestCase):
         a_source['bibjson']['author'][0]['email'] = 'author@example.com'
         with self.assertRaises(dataobj.DataStructureException):
             a = models.Article(**a_source)
+            bj = a.bibjson()
 
         # Remove the email address again to create the model
         del a_source['bibjson']['author'][0]['email']

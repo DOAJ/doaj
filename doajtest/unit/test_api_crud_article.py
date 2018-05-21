@@ -24,15 +24,15 @@ class TestCrudArticle(DoajTestCase):
         data = ArticleFixtureFactory.make_article_source()
         ia = IncomingArticleDO(data)
 
+        # and one with an author email, which we have removed from the allowed fields recently. It should silently prune
+        data = ArticleFixtureFactory.make_article_source()
+        data["bibjson"]["author"][0]["email"] = "author@example.com"
+        ia = IncomingArticleDO(data)
+        assert "author@example.com" not in ia.json()
+
         # make another one that's broken
         data = ArticleFixtureFactory.make_article_source()
         del data["bibjson"]["title"]
-        with self.assertRaises(DataStructureException):
-            ia = IncomingArticleDO(data)
-
-        # and one with an author email, which we have removed from the allowed fields recently.
-        data = ArticleFixtureFactory.make_article_source()
-        data["bibjson"]["author"][0]["email"] = "author@example.com"
         with self.assertRaises(DataStructureException):
             ia = IncomingArticleDO(data)
 
