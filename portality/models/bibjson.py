@@ -19,7 +19,7 @@ class GenericBibJSON(dataobj.DataObj):
     # constructor
     def __init__(self, bibjson=None, **kwargs):
         self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
-        # construct_maintain_reference is already set, don't allow override
+        # construct_maintain_reference is enforced here, don't allow override with kwargs
         kwargs.pop('construct_maintain_reference', None)
         super(GenericBibJSON, self).__init__(raw=bibjson, construct_maintain_reference=True, **kwargs)
 
