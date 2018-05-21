@@ -416,3 +416,9 @@ def rights():
 @blueprint.route('/scoss')
 def scoss():
     return render_template('doaj/scoss.html')
+
+
+# A page about privacy information
+@blueprint.route('/privacy')
+def privacy():
+    return render_template('doaj/privacy.html')
