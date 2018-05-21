@@ -6,18 +6,17 @@ import esprit
 from portality.core import app
 from portality.models import Article
 from datetime import datetime
-from operator import delitem
 
 
 def wipe_emails(connection, batch_size=500):
 
     batch = []
 
-    for a in esprit.tasks.scroll(connection, 'article', limit=10):
+    for a in esprit.tasks.scroll(connection, 'article'):
         # Create the article model
         article = Article(**a)
-        authors = article.bibjson().author                  # FIXME: this causes a DataStructureException because I've disallowed email in the struct
-        [delitem(au, 'email') for au in authors if 'email' in au]
+        # Use the DataObj prune to remove emails
+        _ = article.bibjson(construct_silent_prune=True)
         batch.append(article.data)
 
         if len(batch) >= batch_size:

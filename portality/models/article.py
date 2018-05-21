@@ -119,10 +119,10 @@ class Article(DomainObject):
                 article.snapshot()
         return cls.delete_by_query(query)
 
-    def bibjson(self):
+    def bibjson(self, **kwargs):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
-        return ArticleBibJSON(self.data.get("bibjson"))
+        return ArticleBibJSON(self.data.get("bibjson"), **kwargs)
 
     def set_bibjson(self, bibjson):
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
@@ -525,10 +525,10 @@ class Article(DomainObject):
 
 class ArticleBibJSON(GenericBibJSON):
 
-    def __init__(self, bibjson=None):
+    def __init__(self, bibjson=None, **kwargs):
         self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
         self._add_struct(ARTICLE_BIBJSON_EXTENSION.get("structs", {}).get("bibjson"))
-        super(ArticleBibJSON, self).__init__(bibjson)
+        super(ArticleBibJSON, self).__init__(bibjson, **kwargs)
 
     # article-specific simple getters and setters
     @property

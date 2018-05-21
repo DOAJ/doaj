@@ -17,9 +17,11 @@ class GenericBibJSON(dataobj.DataObj):
     FULLTEXT = "fulltext"
 
     # constructor
-    def __init__(self, bibjson=None):
+    def __init__(self, bibjson=None, **kwargs):
         self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
-        super(GenericBibJSON, self).__init__(raw=bibjson, construct_maintain_reference=True)
+        # construct_maintain_reference is already set, don't allow override
+        kwargs.pop('construct_maintain_reference', None)
+        super(GenericBibJSON, self).__init__(raw=bibjson, construct_maintain_reference=True, **kwargs)
 
     ####################################################
     # shared simple property getter and setters
