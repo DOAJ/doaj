@@ -21,7 +21,6 @@
         <authors>
             <author>
                 <name>Papillon, Joëlle</name>
-                <email/>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>
@@ -63,7 +62,6 @@
         <authors>
             <author>
                 <name>Papillon, Joëlle</name>
-                <email/>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>
@@ -105,7 +103,6 @@
         <authors>
             <author>
                 <name>Papillon, Joëlle</name>
-                <email/>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>
@@ -113,6 +110,48 @@
             <affiliationName affiliationId="1"/>
         </affiliationsList>
         <fullTextUrl/>
+        <keywords>
+            <keyword>Introduction</keyword>
+            <keyword>Littérature amérindienne</keyword>
+            <keyword>Histoire</keyword>
+            <keyword>Identité</keyword>
+            <keyword>Amerindian Literature</keyword>
+            <keyword>History</keyword>
+            <keyword>Identity</keyword>
+            <keyword>Littérature contemporaine</keyword>
+            <keyword>Imaginaire</keyword>
+            <keyword>Contemporary Literature</keyword>
+            <keyword>Imaginary</keyword>
+        </keywords>
+    </record>
+
+    <!-- a record with an author email address -->
+    <record>
+        <language>fre</language>
+        <publisher>Codicille éditeur et CRILCQ</publisher>
+
+        <journalTitle>author email address</journalTitle>
+        <issn>1234-5678</issn>
+        <eissn>9876-5432</eissn>
+
+        <publicationDate>2013</publicationDate>
+        <volume/>
+        <issue>7</issue>
+        <startPage/>
+        <endPage/>
+        <documentType>article</documentType>
+        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <authors>
+            <author>
+                <name>Papillon, Joëlle</name>
+                <affiliationId>1</affiliationId>
+                <email>author@example.org</email>
+            </author>
+        </authors>
+        <affiliationsList>
+            <affiliationName affiliationId="1"/>
+        </affiliationsList>
+        <fullTextUrl>http://doaj.org/testing/url.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
@@ -147,7 +186,6 @@
         <authors>
             <author>
                 <name>Papillon, Joëlle</name>
-                <email/>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>
@@ -645,7 +683,6 @@
         <authors>
             <author>
                 <name>Papillon, Joëlle</name>
-                <email/>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>

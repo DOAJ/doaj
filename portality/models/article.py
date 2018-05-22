@@ -119,10 +119,10 @@ class Article(DomainObject):
                 article.snapshot()
         return cls.delete_by_query(query)
 
-    def bibjson(self):
+    def bibjson(self, **kwargs):
         if "bibjson" not in self.data:
             self.data["bibjson"] = {}
-        return ArticleBibJSON(self.data.get("bibjson"))
+        return ArticleBibJSON(self.data.get("bibjson"), **kwargs)
 
     def set_bibjson(self, bibjson):
         bibjson = bibjson.bibjson if isinstance(bibjson, ArticleBibJSON) else bibjson
@@ -525,10 +525,10 @@ class Article(DomainObject):
 
 class ArticleBibJSON(GenericBibJSON):
 
-    def __init__(self, bibjson=None):
+    def __init__(self, bibjson=None, **kwargs):
         self._add_struct(shared_structs.SHARED_BIBJSON.get("structs", {}).get("bibjson"))
         self._add_struct(ARTICLE_BIBJSON_EXTENSION.get("structs", {}).get("bibjson"))
-        super(ArticleBibJSON, self).__init__(bibjson)
+        super(ArticleBibJSON, self).__init__(bibjson, **kwargs)
 
     # article-specific simple getters and setters
     @property
@@ -637,10 +637,8 @@ class ArticleBibJSON(GenericBibJSON):
     def publisher(self, value):
         self._set_with_struct("journal.publisher", value)
 
-    def add_author(self, name, email=None, affiliation=None):
+    def add_author(self, name, affiliation=None):
         aobj = {"name": name}
-        if email is not None:
-            aobj["email"] = email
         if affiliation is not None:
             aobj["affiliation"] = affiliation
         self._add_to_list_with_struct("author", aobj)
@@ -648,6 +646,10 @@ class ArticleBibJSON(GenericBibJSON):
     @property
     def author(self):
         return self._get_list("author")
+
+    @author.setter
+    def author(self, authors):
+        self._set_with_struct("author", authors)
 
     def set_journal_license(self, licence_title, licence_type, url=None, version=None, open_access=None):
         lobj = {"title": licence_title, "type": licence_type}
@@ -774,7 +776,6 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "author" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "email" : {"coerce" : "unicode"},
                         "affiliation" : {"coerce" : "unicode"}
                     }
                 },
