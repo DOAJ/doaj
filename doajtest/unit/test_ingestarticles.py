@@ -998,6 +998,8 @@ class TestIngestArticles(DoajTestCase):
         assert "unowned" in fr
         assert "9876-5432" in fr["unowned"]
 
+# TODO: reinstate this test when author emails have been disallowed again
+'''
     def test_34_file_upload_author_email(self):
         handle = ArticleFixtureFactory.upload_author_email_address()
         f = MockFileUpload(stream=handle)
@@ -1024,3 +1026,4 @@ class TestIngestArticles(DoajTestCase):
         # and placed into the failed dir
         fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
         assert os.path.exists(fad)
+'''
