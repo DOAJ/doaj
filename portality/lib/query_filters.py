@@ -70,7 +70,10 @@ def prune_author_emails(results):
             if "bibjson" in hit["_source"]:
                 if "author" in hit["_source"]["bibjson"]:
                     for a in hit["_source"]["bibjson"]["author"]:
-                        del a["email"]
+                        if "email" in a:
+                            del a["email"]
+
+    return results
 
 
 def publisher_result_filter(results):
