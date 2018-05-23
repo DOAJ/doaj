@@ -4,15 +4,32 @@ Delete the author email field from article records for https://github.com/DOAJ/d
 
 import esprit
 from portality.core import app
+from portality import models
 from portality.models import Article
 from datetime import datetime
+
+bibjson_struct = models.article.ARTICLE_BIBJSON_EXTENSION
+del bibjson_struct['structs']['bibjson']['structs']['author']['fields']['email']
+
+HAS_EMAIL_QUERY = {
+    "query": {
+        "filtered": {
+            "filter": {
+                "exists": {"field": "bibjson.author.email"}
+            },
+            "query": {
+                "match_all": {}
+            }
+        }
+    }
+}
 
 
 def wipe_emails(connection, batch_size=500):
 
     batch = []
 
-    for a in esprit.tasks.scroll(connection, 'article'):
+    for a in esprit.tasks.scroll(connection, 'article', q=HAS_EMAIL_QUERY):
         # Create the article model
         article = Article(**a)
         # Use the DataObj prune to remove emails
