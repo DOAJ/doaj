@@ -776,7 +776,8 @@ ARTICLE_BIBJSON_EXTENSION = {
                 "author" : {
                     "fields" : {
                         "name" : {"coerce" : "unicode"},
-                        "affiliation" : {"coerce" : "unicode"}
+                        "affiliation" : {"coerce" : "unicode"},
+                        "email" : {"coerce": "unicode"}
                     }
                 },
 

@@ -1044,6 +1044,9 @@ class TestClient(DoajTestCase):
         assert all[0].id == app1.id
         assert all[1].id == app2.id
 
+
+# TODO: reinstate this test when author emails have been disallowed again
+'''
     def test_33_article_with_author_email(self):
         """Check the system disallows articles with emails in the author field"""
         a_source = ArticleFixtureFactory.make_article_source()
@@ -1061,3 +1064,4 @@ class TestClient(DoajTestCase):
         # We can't add an author with an email address any more.
         with self.assertRaises(TypeError):
             a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
+'''
