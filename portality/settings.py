@@ -307,14 +307,14 @@ QUERY_ROUTE = {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
+            "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.search.JournalArticle"
         },
         "article" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
+            "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Article"
         }
     },
@@ -323,14 +323,14 @@ QUERY_ROUTE = {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner"],
-            "result_filters" : ["publisher_result_filter"],
+            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Journal"
         },
         "suggestion" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "update_request"],
-            "result_filters" : ["publisher_result_filter"],
+            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Suggestion"
         }
     },
@@ -405,8 +405,9 @@ QUERY_FILTERS = {
     "editor" : "portality.lib.query_filters.editor",
 
     # result filters
-    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
-    "publisher_result_filter" : "portality.lib.query_filters.publisher_result_filter"
+    "public_result_filter": "portality.lib.query_filters.public_result_filter",
+    "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
+    "prune_author_emails": "portality.lib.query_filters.prune_author_emails"
 }
 
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"

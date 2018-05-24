@@ -59,7 +59,6 @@
         "author" : [
             {
                 "name" : "<author name>",
-                "email" : "<author email>",
                 "affiliation" : "<author affiliation>"
             },
         ],

@@ -108,3 +108,48 @@ class TestQueryFilters(DoajTestCase):
             for forbidden_k in forbidden:
                 assert forbidden_k not in r['_source']['admin'], \
                     '{} key was found in result {}, but it is forbidden and should have been stripped out by the filter'.format(forbidden_k, n)
+
+    def test_08_prune_author_emails(self):
+        """Check we don't let publisher emails through the query endpoint"""
+        res = {
+            "hits": {
+                "hits": [
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author",
+                                                                           'email': 'janet@example.com'}]}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author",
+                                                                           'email': 'janet@example.com'},
+                                                                          {'name': "Jimmy Author",
+                                                                          'email': 'jimmy@example.com'}]}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author"},
+                                                                          {'name': "Jimmy Author"}]}}},
+                ],
+                "total": 3
+            }
+        }
+
+        newres = query_filters.prune_author_emails(res)
+
+        assert newres == {
+            "hits": {
+                "hits": [
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author"}]}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author"},
+                                                                          {'name': "Jimmy Author"}]}}},
+                    {"_type": "article", "_source": {"admin": {"seal": False, "publisher_record_id": "some_identifier",
+                                                               "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson":
+                                                              {"author": [{'name': "Janet Author"},
+                                                                          {'name': "Jimmy Author"}]}}},
+                ],
+                "total": 3
+            }
+        }, newres

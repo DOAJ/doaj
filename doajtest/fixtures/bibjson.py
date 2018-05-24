@@ -171,7 +171,6 @@ ARTICLE = {
     "author" : [
         {
             "name" : "Test",
-            "email" : "test@test.com",
             "affiliation" : "University of Life"
         }
     ],

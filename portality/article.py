@@ -375,7 +375,6 @@ class DOAJXWalk(XWalk):
           <authors>
              <author>
                 <name>WIM Thiery</name>
-                <email>wim.thiery@ees.kuleuven.be</email>
                 <affiliationId>1</affiliationId>
             </author>
          </authors>
@@ -483,10 +482,9 @@ class DOAJXWalk(XWalk):
         if authorsel is not None:
             for ael in authorsel:
                 name = _element(ael, "name")
-                email = _element(ael, "email")
                 affid = _element(ael, "affiliationId")
                 aff = affiliations.get(affid)
-                bibjson.add_author(name, email=email, affiliation=aff)
+                bibjson.add_author(name, affiliation=aff)
         
         # abstract
         abstract = _element(record, "abstract")
