@@ -12,6 +12,7 @@ from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, Backgro
 from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
 from portality import lock
+from portality.crosswalks.article_form import ArticleFormXWalk
 
 from huey.exceptions import QueueWriteException
 
@@ -222,10 +223,11 @@ def metadata():
             if not enough_authors:
                 return render_template('publisher/metadata.html', form=form, author_error=True)
             else:
-                xwalk = article.FormXWalk()
+                # xwalk = article.FormXWalk()
+                xwalk = ArticleFormXWalk()
                 art = xwalk.crosswalk_form(form)
                 articleService = DOAJ.articleService()
-                articleService.create_article(article, current_user._get_current_object())
+                articleService.create_article(art, current_user._get_current_object())
                 # art.save()
                 flash("Article created/updated", "success")
                 form = ArticleForm()

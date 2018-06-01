@@ -6,27 +6,98 @@ from datetime import datetime
 
 class ArticleService(object):
 
-    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True):
+    def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
+        # 1. dedupe the batch
+        # 2. check legitimate ownership
+        success = 0
+        fail = 0
+        update = 0
+        new = 0
+        all_shared = set()
+        all_unowned = set()
+        all_unmatched = set()
+
+        # go through the articles and do all the relevant checks before saving
+        last_success = None
+        for article in article:
+            pass
+
+            # once we have an article from the record, determine if it belongs to
+            # the stated owner.  If not, we need to reject it
+            if limit_to_owner is not None:
+                legit = articleService.is_legitimate_owner(article, limit_to_owner)
+                if not legit:
+                    owned, shared, unowned, unmatched = articleService.issn_ownership_status(article, limit_to_owner)
+                    all_shared.update(shared)
+                    all_unowned.update(unowned)
+                    all_unmatched.update(unmatched)
+                    fail += 1
+                    if fail_callback:
+                        fail_callback(article)
+                    continue
+
+            # print "legit"
+
+            # before finalising, we need to determine whether this is a new article
+            # or an update
+            duplicate = articleService.get_duplicate(article, limit_to_owner)
+            # print duplicate
+            if duplicate is not None:
+                update += 1
+                article.merge(duplicate) # merge will take the old id, so this will overwrite
+            else:
+                new += 1
+
+            # if we get to here without failing, then we call the article callback
+            # (which can do something like save)
+            if article_callback is not None:
+                article_callback(article)
+                last_success = article
+            success += 1
+
+        # run the block so we are sure the records have saved
+        if last_success is not None:
+            models.Article.block(last_success.id, last_success.last_updated)
+
+        # return some stats on the import
+        return {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
+
+        for article in articles:
+            self.create_article(article, account, duplicate_check, merge_duplicate, limit_to_account)
+
+    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("is_legitimate_owner", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
             {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
-            {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"}
+            {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
+            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"}
         ], exceptions.ArgumentException)
+
+        if limit_to_account:
+            legit = self.is_legitimate_owner(article, account)
+            if not legit:
+                owned, shared, unowned, unmatched = self.issn_ownership_status(article, account)
+                return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}
 
         # before saving, we need to determine whether this is a new article
         # or an update
+        is_update = 0
         if duplicate_check:
             duplicate = self.get_duplicate(article, account.id)
             if duplicate is not None:
                 if merge_duplicate:
+                    is_update  = 1
                     article.merge(duplicate) # merge will take the old id, so this will overwrite
                 else:
                     raise exceptions.DuplicateArticleException()
 
         # finally, save the new article
         article.save()
+
+        return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : 0, "unowned" : 0, "unmatched" : 0}
+
 
 
     def is_legitimate_owner(self, article, owner):

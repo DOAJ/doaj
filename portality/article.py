@@ -12,7 +12,7 @@ from portality.core import app
 from datetime import datetime
 import sys, traceback, re
 
-
+'''
 class XWalk(object):
 
     def __init__(self):
@@ -172,8 +172,9 @@ class XWalk(object):
                 found = True
 
         return possible_articles if found else None
+'''
 
-
+'''
 class FormXWalk(object):
     format_name = "form"
     
@@ -264,9 +265,10 @@ class FormXWalk(object):
         """
 
         return article
+'''
 
-
-class DOAJXWalk(XWalk):
+'''
+class DOAJXWalk(object):
     format_name = "doaj"
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
     
@@ -542,12 +544,12 @@ class IngestException(Exception):
 
     def trace(self):
         return self.stack
-
+'''
 
 ###############################################################################
 ## some convenient utilities
 ###############################################################################
-
+'''
 def _year_month(date):
     try:
         stamp = datetime.strptime(date, "%Y-%m-%d")
@@ -572,7 +574,8 @@ def _element(xml, field):
     if el is not None and el.text is not None and el.text != "":
         return el.text.strip()
     return None
-    
+'''
+
 ################################################################################
 ## main entry point to this module
 ################################################################################

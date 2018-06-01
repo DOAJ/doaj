@@ -6,11 +6,11 @@ backup available, there should always be one anyway.
 """
 
 from portality.models import Article, Journal, Account
-from portality.article import XWalk
 from portality.core import app
 from datetime import datetime
 import time
 import esprit
+from portality.bll.doaj import DOAJ
 
 
 def duplicates_per_article(connection, delete, snapshot, owner=None, query_override=None):
@@ -26,13 +26,15 @@ def duplicates_per_article(connection, delete, snapshot, owner=None, query_overr
             "sort": [{"last_updated": {"order": "desc"}}]
         }
 
+    articleService = DOAJ.articleService()
+
     for a in esprit.tasks.scroll(connection, 'article', q=scroll_query):
         article = Article(_source=a)
 
         if article.id in deleted_ids:                               # only delete its duplicates if it isn't a duplicate
             continue
 
-        duplicates = XWalk.discover_duplicates(article, owner)
+        duplicates = articleService.discover_duplicates(article, owner)
         if duplicates:
             doi_dups = [d.id for d in duplicates.get('doi', [])]
             fulltext_dups = [d.id for d in duplicates.get('fulltext', [])]

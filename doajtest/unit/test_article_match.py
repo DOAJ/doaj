@@ -2,7 +2,7 @@ from doajtest.helpers import DoajTestCase
 from portality import article, models
 import uuid, time
 from random import randint
-
+from portality.bll.doaj import DOAJ
 
 class TestArticleMatch(DoajTestCase):
 
@@ -37,9 +37,9 @@ class TestArticleMatch(DoajTestCase):
             y.title = "Replacement article for fulltext url"
             y.add_url(ftu, urltype="fulltext")
 
-            # get the xwalk to determine if there is a duplicate
-            xwalk = article.XWalk()
-            d = xwalk.get_duplicate(z)
+            # determine if there's a duplicate
+            articleService = DOAJ.articleService()
+            d = articleService.get_duplicate(z)
 
             assert d is not None
             assert d.bibjson().title == "Example article with a fulltext url"
@@ -59,9 +59,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for fulltext url"
         y.add_url("http://this.is/a/different/url", urltype="fulltext")
         
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
         
         assert d is None
     
@@ -97,9 +97,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for fulltext url"
         y.add_url(ftu, urltype="fulltext")
         
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
 
         # Check when we ask for one duplicate we get the most recent duplicate.
         assert d is not None
@@ -109,8 +109,8 @@ class TestArticleMatch(DoajTestCase):
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
-        xwalk = article.XWalk()
-        l = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        l = articleService.get_duplicate(z)
         assert isinstance(l, list), l
         assert l
         l.sort()
@@ -147,9 +147,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for DOI"
         y.add_identifier('doi', "10.doi")
 
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
         assert len(xwalk.get_duplicates(z)) == 2
 
         # Check when we ask for one duplicate we get the most recent duplicate.
@@ -160,8 +160,8 @@ class TestArticleMatch(DoajTestCase):
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
-        xwalk = article.XWalk()
-        l = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        l = articleService.get_duplicate(z)
         assert isinstance(l, list)
         assert l
         assert len(l) == 2
@@ -199,9 +199,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for DOI"
         y.add_identifier('doi', "https://doi.org/10.doi")
 
-        # get the xwalk to determine if there is just one duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
         assert len(xwalk.get_duplicates(z)) == 2
 
         # Check when we ask for one duplicate we get the most recent duplicate.
@@ -271,9 +271,9 @@ class TestArticleMatch(DoajTestCase):
         y.add_url(ftu, urltype="fulltext")
         y.add_identifier('doi', doi)
 
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
 
         assert len(d) == 1
         print len(d)

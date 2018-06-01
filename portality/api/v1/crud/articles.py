@@ -3,7 +3,8 @@ from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
-from portality.article import XWalk
+# from portality.article import XWalk
+from portality.bll.doaj import DOAJ
 
 from copy import deepcopy
 
@@ -74,12 +75,13 @@ class ArticlesCrudApi(CrudApi):
         am = ia.to_article_model()
 
         # Check we are allowed to create an article for this journal
-        if not XWalk.is_legitimate_owner(am, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(am, account.id):
             raise Api403Error()
 
         # before finalising, we need to determine whether this is a new article
         # or an update
-        duplicate = XWalk.get_duplicate(am, account.id)
+        duplicate = articleService.get_duplicate(am, account.id)
         # print duplicate
         if duplicate is not None:
             am.merge(duplicate) # merge will take the old id, so this will overwrite
@@ -127,7 +129,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api401Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # Return the article
@@ -158,7 +161,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to edit this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
@@ -205,7 +209,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # issue the delete (no record of the delete required)
