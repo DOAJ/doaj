@@ -91,6 +91,7 @@ SPONSORS = {
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
         'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
+        'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -107,6 +108,7 @@ SPONSORS = {
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
         'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
+        'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
     },
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
