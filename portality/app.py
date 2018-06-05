@@ -92,7 +92,7 @@ SPONSORS = {
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
         'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
         'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
-        'norweigan-centre': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'norweigan-centre.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
+        'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
     },
     'bronze': {
