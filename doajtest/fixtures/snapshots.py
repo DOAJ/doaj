@@ -146,19 +146,34 @@ SNAPSHOTS_LIST = {
             u"duration_in_millis": 36901,
             u"end_time": u"2018-05-13T05:00:36.604Z",
             u"end_time_in_millis": 1526187636604,
-            u"failures": [],
+            u"failures": [
+                {
+                  u"index": u"doaj_v1",
+                  u"node_id": u"RTVV05UoToubyPr9ErBlKg",
+                  u"reason": u"node shutdown",
+                  u"shard_id": 1,
+                  u"status": u"INTERNAL_SERVER_ERROR"
+                },
+                {
+                  u"index": u"doaj_v1",
+                  u"node_id": u"RTVV05UoToubyPr9ErBlKg",
+                  u"reason": u"node shutdown",
+                  u"shard_id": 2,
+                  u"status": u"INTERNAL_SERVER_ERROR"
+                }
+            ],
             u"indices": [
                 u"doaj_v1"
             ],
             u"shards": {
-                u"failed": 0,
-                u"successful": 6,
-                u"total": 6
+                u"failed": 2,
+                u"successful": 0,
+                u"total": 2
             },
             u"snapshot": u"snapshot_2018-05-13_0600",
             u"start_time": u"2018-05-13T04:59:59.703Z",
             u"start_time_in_millis": 1526187599703,
-            u"state": u"SUCCESS",
+            u"state": u"PARTIAL",
             u"version": u"1.7.5",
             u"version_id": 1070599
         },

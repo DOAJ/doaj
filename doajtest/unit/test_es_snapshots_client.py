@@ -60,5 +60,18 @@ class TestSnapshotClient(DoajTestCase):
                 client = es_snapshots.ESSnapshotsClient()
                 client.check_today_snapshot()
 
+        # Make the failed snapshot our latest
+        LATEST_FAILED_SNAPS = deepcopy(SNAPSHOTS_LIST)
+        LATEST_FAILED_SNAPS['snapshots'].pop()
+        responses.reset()
+        responses.add(responses.GET, self.snapshot_url, json=LATEST_FAILED_SNAPS, status=200)
+
+        # Using the fixture with the failed snapshot, check we get an exception if that's the latest in the response
+        failed_fixture_date = datetime.utcfromtimestamp(LATEST_FAILED_SNAPS['snapshots'][-1]['start_time_in_millis'] / 1000)
+        with assert_raises(es_snapshots.FailedSnapshotException):
+            with freeze_time(failed_fixture_date):
+                client = es_snapshots.ESSnapshotsClient()
+                client.check_today_snapshot()
+
     def test_04_prune_snapshots(self):
         pass
