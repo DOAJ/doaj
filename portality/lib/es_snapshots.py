@@ -3,7 +3,7 @@ import requests
 from portality.core import app
 
 
-class BadSnapshotNameException(Exception):
+class BadSnapshotMetaException(Exception):
     pass
 
 
@@ -12,6 +12,10 @@ class TodaySnapshotMissingException(Exception):
 
 
 class FailedSnapshotException(Exception):
+    pass
+
+
+class SnapshotDeleteException(Exception):
     pass
 
 
@@ -46,10 +50,13 @@ class ESSnapshotsClient(object):
         # If we don't have the snapshots, ask ES for them
         if not self.snapshots:
             snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
-            resp = requests.get(snapshots_url)
+            resp = requests.get(snapshots_url + '/_all', timeout=600)
 
             if 'snapshots' in resp.json():
-                snap_objs = [ESSnapshot(s) for s in resp.json()['snapshots']]
+                try:
+                    snap_objs = [ESSnapshot(s) for s in resp.json()['snapshots']]
+                except Exception as e:
+                    raise BadSnapshotMetaException("Error creating snapshot object: " + e.message + ";")
                 self.snapshots = sorted(snap_objs, key=lambda x: x.datetime)
 
         return self.snapshots
@@ -63,8 +70,12 @@ class ESSnapshotsClient(object):
 
     def prune_snapshots(self, ttl_days, delete_callback=None):
         snapshots = self.list_snapshots()
+        results = []
         for snapshot in snapshots:
             if snapshot.datetime < datetime.utcnow() - timedelta(days=ttl_days):
-                snapshot.delete()
+                results.append(snapshot.delete())
                 if delete_callback:
                     delete_callback(snapshot.name)
+
+        if not all(results):
+            raise SnapshotDeleteException('Not all snapshots were deleted successfully.')

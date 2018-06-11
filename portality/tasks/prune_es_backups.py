@@ -1,12 +1,13 @@
 from portality import models
 from portality.core import app
-
 from portality.lib.es_snapshots import ESSnapshotsClient
+from portality.lib import dates
 
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
-
 from portality.background import BackgroundTask, BackgroundApi
+
+from datetime import datetime, timedelta
 
 
 class PruneESBackupsBackgroundTask(BackgroundTask):
@@ -20,8 +21,12 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         """
         job = self.background_job
 
+        snap_ttl = app.config.get('ELASTIC_SEARCH_SNAPSHOT_TTL', 366)
+        snap_thresh = datetime.utcnow() - timedelta(days=snap_ttl)
+        job.add_audit_message('Deleting backups older than {}'.format(dates.format(snap_thresh)))
+
         client = ESSnapshotsClient()
-        client.prune_snapshots()
+        client.prune_snapshots(snap_ttl, self.report_deleted_closure(job))
 
     def cleanup(self):
         """
@@ -30,12 +35,21 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         """
         pass
 
+    @staticmethod
+    def report_deleted_closure(job):
+
+        def _report_deleted_callback(snapshot_name):
+            job.add_audit_message('Deleted snapshot {}'.format(snapshot_name))
+
+        return _report_deleted_callback
+
     @classmethod
     def prepare(cls, username, **kwargs):
         """
         Take an arbitrary set of keyword arguments and return an instance of a BackgroundJob,
         or fail with a suitable exception
 
+        :param username: The user this job will run under
         :param kwargs: arbitrary keyword arguments pertaining to this task type
         :return: a BackgroundJob instance representing this task
         """
