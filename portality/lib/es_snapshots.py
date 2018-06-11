@@ -37,7 +37,7 @@ class ESSnapshot(object):
 
     def delete(self):
         snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
-        resp = requests.delete(snapshots_url + '/' + self.name)
+        resp = requests.delete(snapshots_url + '/' + self.name, timeout=120)
         return resp.status_code == 200
 
 
@@ -76,6 +76,9 @@ class ESSnapshotsClient(object):
                 results.append(snapshot.delete())
                 if delete_callback:
                     delete_callback(snapshot.name)
+
+        # Our snapshots list is outdated, invalidate it
+        self.snapshots = []
 
         if not all(results):
             raise SnapshotDeleteException('Not all snapshots were deleted successfully.')
