@@ -95,13 +95,13 @@ def do_upgrade(definition, verbose):
             # When we have enough, do some writing
             if len(batch) >= batch_size:
                 print "writing ", len(batch), "to", tdef.get("type")
-                esprit.raw.bulk(tconn, tdef.get("type"), batch)
+                esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
                 batch = []
 
         # Write the last part-batch to index
         if len(batch) > 0:
             print "writing ", len(batch), "to", tdef.get("type")
-            esprit.raw.bulk(tconn, tdef.get("type"), batch)
+            esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
 
 
 if __name__ == "__main__":
