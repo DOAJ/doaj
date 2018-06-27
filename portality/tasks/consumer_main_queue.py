@@ -22,3 +22,4 @@ from portality.tasks.read_news import scheduled_read_news, read_news
 from portality.tasks.journal_bulk_delete import journal_bulk_delete
 from portality.tasks.article_bulk_delete import article_bulk_delete
 from portality.tasks.async_workflow_notifications import async_workflow_notifications
+from portality.tasks.check_latest_es_backup import scheduled_check_latest_es_backup, check_latest_es_backup

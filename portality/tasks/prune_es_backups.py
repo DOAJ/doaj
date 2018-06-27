@@ -3,7 +3,7 @@ from portality.core import app
 from portality.lib.es_snapshots import ESSnapshotsClient
 from portality.lib import dates
 
-from portality.tasks.redis_huey import main_queue, schedule
+from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
 
@@ -72,7 +72,7 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         prune_es_backups.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("prune_es_backups"))
+@long_running.periodic_task(schedule("prune_es_backups"))
 @write_required(script=True)
 def scheduled_prune_es_backups():
     user = app.config.get("SYSTEM_USERNAME")
@@ -80,7 +80,7 @@ def scheduled_prune_es_backups():
     PruneESBackupsBackgroundTask.submit(job)
 
 
-@main_queue.task()
+@long_running.task()
 @write_required(script=True)
 def prune_es_backups(job_id):
     job = models.BackgroundJob.pull(job_id)
