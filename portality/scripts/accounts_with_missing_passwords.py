@@ -48,9 +48,7 @@ if __name__ == "__main__":
             account = models.Account(_source=a)
 
             has_reset = account.reset_token is not None
-
-            expires = account.reset_expires_timestamp
-            is_expired = expires < datetime.utcnow()
+            is_expired = account.is_reset_expired() if has_reset is True else ""
 
             updated_since_create = account.created_timestamp < account.last_updated_timestamp
 

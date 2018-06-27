@@ -129,6 +129,12 @@ class Account(DomainObject, UserMixin):
             return None
         return datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
 
+    def is_reset_expired(self):
+        expires = self.reset_expires_timestamp
+        if expires is None:
+            return True
+        return expires < datetime.utcnow()
+
     @property
     def is_super(self):
         # return not self.is_anonymous and self.id in app.config['SUPER_USER']
