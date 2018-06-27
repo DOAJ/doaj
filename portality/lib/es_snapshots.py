@@ -35,22 +35,17 @@ class ESSnapshot(object):
     def __eq__(self, other):
         return self.__dict__ == other.__dict__
 
-    def delete(self):
-        snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
-        resp = requests.delete(snapshots_url + '/' + self.name, timeout=120)
-        return resp.status_code == 200
-
 
 class ESSnapshotsClient(object):
 
     def __init__(self):
         self.snapshots = []
+        self.snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
 
     def list_snapshots(self):
         # If we don't have the snapshots, ask ES for them
         if not self.snapshots:
-            snapshots_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
-            resp = requests.get(snapshots_url + '/_all', timeout=600)
+            resp = requests.get(self.snapshots_url + '/_all', timeout=600)
 
             if 'snapshots' in resp.json():
                 try:
@@ -68,12 +63,16 @@ class ESSnapshotsClient(object):
         elif snapshots[-1].state != 'SUCCESS':
             raise FailedSnapshotException('Snapshot for {} has failed'.format(datetime.utcnow().date()))
 
+    def delete_snapshot(self, snapshot):
+        resp = requests.delete(self.snapshots_url + '/' + snapshot.name, timeout=120)
+        return resp.status_code == 200
+
     def prune_snapshots(self, ttl_days, delete_callback=None):
         snapshots = self.list_snapshots()
         results = []
         for snapshot in snapshots:
             if snapshot.datetime < datetime.utcnow() - timedelta(days=ttl_days):
-                results.append(snapshot.delete())
+                results.append(self.delete_snapshot(snapshot))
                 if delete_callback:
                     delete_callback(snapshot.name)
 
