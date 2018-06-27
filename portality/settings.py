@@ -322,7 +322,7 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner"],
+            "query_filters" : ["owner", "only_in_doaj"],
             "result_filters" : ["publisher_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Journal"
         },
