@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
     with codecs.open(args.out, "wb", "utf-8") as f:
         writer = UnicodeWriter(f)
-        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Rest Token Expired?"])
+        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Reset Token Expired?"])
 
         for a in esprit.tasks.scroll(conn, models.Account.__type__, q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
             account = models.Account(_source=a)
