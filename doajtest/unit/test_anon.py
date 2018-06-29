@@ -54,8 +54,8 @@ class TestAnon(DoajTestCase):
         }
         assert anon_export.anonymise_admin(record) == {
             'admin': {
-                'owner': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2',
-                'editor': '9b12b62c6b14f6f5afb8e52524624d5e72e67cc100ee1ddff8443530cc51aee1',
+                'owner': 'testuser',
+                'editor': 'testeditor',
                 'contact': {
                     'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
                     'name': 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6'
@@ -88,8 +88,8 @@ class TestAnon(DoajTestCase):
 
         assert anon_export.anonymise_admin(record) == {
             'admin': {
-                'owner': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2',
-                'editor': '9b12b62c6b14f6f5afb8e52524624d5e72e67cc100ee1ddff8443530cc51aee1',
+                'owner': 'testuser',
+                'editor': 'testeditor',
                 'contact': {
                     'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
                     'name': 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6'
@@ -112,14 +112,14 @@ class TestAnon(DoajTestCase):
         record = {'irrelevant': 'content', 'id': 'testuser', 'email': 'test@doaj.org'}
         assert anon_export.anonymise_account(record) == {
             'irrelevant': 'content',
-            'id': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2',
+            'id': 'testuser',
             'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com'
         }
 
-    def test_09_anonymise_journal(self):
+    def test_08_anonymise_journal(self):
         pass  # tests 5 and 6 cover this entirely
 
-    def test_10_anonymise_suggestion(self):
+    def test_09_anonymise_suggestion(self):
         record = {'irrelevant': 'content'}
         assert anon_export.anonymise_suggestion(record) == {'irrelevant': 'content'}
 
@@ -133,32 +133,7 @@ class TestAnon(DoajTestCase):
             }
         }
 
-    def test_11_anonymise_editor_groups(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_editor_groups(record) == {'irrelevant': 'content'}
-
-        record = {'associates': ['testassed1', 'testassed2', 'testassed3'], 'editor': 'testeditor'}
-        assert anon_export.anonymise_editor_groups(record) == {
-            'associates': [
-                '466a50e7f156d63a80232dc5a62651bebc13dd9bf6786d5df60f1e0aa20667f3',
-                '23ba0321c1fdb643509e021dfe41a2a539708d2a6eb8aed766d7d5f7765535b3',
-                'bd769d28534f2a70c7f2c8af1ae4729034652fadc271c868121db6bad665417d'
-            ],
-            'editor': '9b12b62c6b14f6f5afb8e52524624d5e72e67cc100ee1ddff8443530cc51aee1'
-        }
-
-    def test_12_anonymise_user(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_user(record) == {'irrelevant': 'content'}
-
-        record = {'owner': 'testuser', 'username': 'testuser', 'user': 'testuser'}
-        assert anon_export.anonymise_user(record) == {
-            'owner': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2',
-            'username': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2',
-            'user': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2'
-        }
-
-    def test_13_anonymise_background_job(self):
+    def test_10_anonymise_background_job(self):
         record = {'irrelevant': 'content'}
         assert anon_export.anonymise_background_job(record) == {'irrelevant': 'content'}
 

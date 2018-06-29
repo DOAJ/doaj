@@ -11,12 +11,6 @@ def anonymise_email(record):
 
 def anonymise_admin(record):
     if 'admin' in record:
-        if 'owner' in record['admin']:
-            record['admin']['owner'] = basic_hash(record['admin']['owner'])
-
-        if 'editor' in record['admin']:
-            record['admin']['editor'] = basic_hash(record['admin']['editor'])
-
         if 'contact' in record['admin']:
             if 'email' in record['admin']['contact']:
                 record['admin']['contact']['email'] = anon_email(record['admin']['contact']['email'])
@@ -30,14 +24,7 @@ def anonymise_admin(record):
     return record
 
 
-def anonymise_id(record):
-    if 'id' in record:
-        record['id'] = basic_hash(record['id'])
-    return record
-
-
 def anonymise_account(record):
-    anonymise_id(record)
     anonymise_email(record)
     return record
 
@@ -58,30 +45,6 @@ def anonymise_suggestion(record):
     return record
 
 
-def anonymise_editor_groups(record):
-    if 'associates' in record:
-        for (index, username) in enumerate(record['associates'][:]):
-            record['associates'][index] = basic_hash(username)
-
-    if 'editor' in record:
-        record['editor'] = basic_hash(record['editor'])
-
-    return record
-
-
-def anonymise_user(record):
-    if 'owner' in record:
-        record['owner'] = basic_hash(record['owner'])
-
-    if 'username' in record:
-        record['username'] = basic_hash(record['username'])
-        
-    if 'user' in record:
-        record['user'] = basic_hash(record['user'])
-
-    return record
-
-
 def anonymise_background_job(record):
     if 'params' in record:
         if 'suggestion_bulk_edit__note' in record['params']:
@@ -92,7 +55,6 @@ def anonymise_background_job(record):
 
 
 def anonymise_default(record):
-    anonymise_user(record)
     anonymise_email(record)
     anonymise_admin(record)
     return record
@@ -101,13 +63,8 @@ anonymisation_procedures = {
     '_default': anonymise_default,
     'account': anonymise_account,
     'background_job': anonymise_background_job,
-    'bulk_reapplication': anonymise_user,
-    'bulk_upload': anonymise_user,
     'journal': anonymise_journal,
-    'lock': anonymise_user,
-    'provenance': anonymise_user,
-    'suggestion': anonymise_suggestion,
-    'upload': anonymise_user,
+    'suggestion': anonymise_suggestion
 }
 
 if __name__ == '__main__':
