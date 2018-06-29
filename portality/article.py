@@ -105,7 +105,11 @@ class XWalk(object):
     @staticmethod
     def get_duplicate(article, owner=None):
         """Get the most recent duplicate article."""
-        return XWalk.get_duplicates(article, owner, max_results=1)
+        dup = XWalk.get_duplicates(article, owner, max_results=1)
+        if dup:
+            return dup.pop()
+        else:
+            return None
 
     @staticmethod
     def get_duplicates(article, owner=None, max_results=10):
