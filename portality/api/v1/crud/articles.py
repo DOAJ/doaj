@@ -59,23 +59,25 @@ class ArticlesCrudApi(CrudApi):
         return cls._build_swag_response(template)
 
     @classmethod
-    def create(cls, data, account, dry_run=False):
+    def create(cls, data, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
 
-        # first thing to do is a structural validation, by instantiating the data object
-        try:
-            ia = IncomingArticleDO(data)
-        except dataobj.DataStructureException as e:
-            raise Api400Error(e.message)
+        # convert the data into a suitable article model
+        am = cls.prep_article(data)
 
-        # if that works, convert it to an Article object
-        am = ia.to_article_model()
+        articleService = DOAJ.articleService()
+        result = articleService.create_article(am, account)
 
         # Check we are allowed to create an article for this journal
-        articleService = DOAJ.articleService()
+        if result.get("fail", 0) == 1:
+            raise Api403Error()
+
+        return am
+
+        """
         if not articleService.is_legitimate_owner(am, account.id):
             raise Api403Error()
 
@@ -99,6 +101,34 @@ class ArticlesCrudApi(CrudApi):
         if not dry_run:
             am.save()
         return am
+        """
+
+    @classmethod
+    def prep_article(cls, data):
+        # first thing to do is a structural validation, by instantiating the data object
+        try:
+            ia = IncomingArticleDO(data)
+        except dataobj.DataStructureException as e:
+            raise Api400Error(e.message)
+
+        # if that works, convert it to an Article object
+        am = ia.to_article_model()
+
+        # the user may have supplied metadata in the model for id and created_date
+        # and we want to can that data.  If this is a truly new article its fine for
+        # us to assign a new id here, and if it's a duplicate, it will get attached
+        # to its duplicate id anyway.
+        am.set_id()
+        am.set_created()
+
+        # not allowed to set subjects
+        am.bibjson().remove_subjects()
+
+        # get the journal information set straight
+        am = cls.__handle_journal_info(am)
+
+        return am
+
 
     @classmethod
     def retrieve_swag(cls):

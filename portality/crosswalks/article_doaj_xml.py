@@ -3,6 +3,7 @@ from lxml import etree
 import re
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
+from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
 from datetime import datetime
 
@@ -22,6 +23,27 @@ class DOAJXWalk(object):
         except Exception as e:
             raise exceptions.IngestException(message="There was an error attempting to load schema from " + self.schema_path, inner=e)
 
+    def validate_file(self, file_handle):
+        # first try to parse the file
+        try:
+            doc = etree.parse(file_handle)
+        except etree.XMLSyntaxError as e:   # although the treatment is the same, pulling this out so we remember what the primary kind of exception should be
+            raise CrosswalkException(message="Unable to parse XML file", inner=e)
+        except Exception as e:
+            raise CrosswalkException(message="Unable to parse XML file", inner=e)
+
+        # then pass the doc to the validator
+        valid = self.validate(doc)
+
+        if not valid:
+            msg = ""
+            for k, v in self.validation_log:
+                msg += "Validation messages from schema '{x}': \n".format(x=DOAJXWalk.format_name)
+                msg += v + "\n\n"
+            raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
+
+        return doc
+
     def validate(self, doc):
         valid = self.schema.validate(doc)
         if not valid:
@@ -34,63 +56,22 @@ class DOAJXWalk(object):
             self.validation_log = el
         return valid
 
-    def crosswalk_doc(self, doc, add_journal_info=True, article_callback=None, limit_to_owner=None, fail_callback=None):
-        success = 0
-        fail = 0
-        update = 0
-        new = 0
-        all_shared = set()
-        all_unowned = set()
-        all_unmatched = set()
 
-        articleService = DOAJ.articleService()
+    def crosswalk_file(self, file_handle, add_journal_info=True):
+        doc = self.validate_file(file_handle)
+        return self.crosswalk_doc(doc, add_journal_info=add_journal_info)
 
+
+    def crosswalk_doc(self, doc, add_journal_info=True):
         # go through the records in the doc and crosswalk each one individually
-        last_success = None
+        articles = []
         root = doc.getroot()
         for record in root.findall("record"):
             article = self.crosswalk_article(record, add_journal_info=add_journal_info)
-            # print "processing record", article.bibjson().title
+            articles.append(article)
 
-            # once we have an article from the record, determine if it belongs to
-            # the stated owner.  If not, we need to reject it
-            if limit_to_owner is not None:
-                legit = articleService.is_legitimate_owner(article, limit_to_owner)
-                if not legit:
-                    owned, shared, unowned, unmatched = articleService.issn_ownership_status(article, limit_to_owner)
-                    all_shared.update(shared)
-                    all_unowned.update(unowned)
-                    all_unmatched.update(unmatched)
-                    fail += 1
-                    if fail_callback:
-                        fail_callback(article)
-                    continue
+        return articles
 
-            # print "legit"
-
-            # before finalising, we need to determine whether this is a new article
-            # or an update
-            duplicate = articleService.get_duplicate(article, limit_to_owner)
-            # print duplicate
-            if duplicate is not None:
-                update += 1
-                article.merge(duplicate) # merge will take the old id, so this will overwrite
-            else:
-                new += 1
-
-            # if we get to here without failing, then we call the article callback
-            # (which can do something like save)
-            if article_callback is not None:
-                article_callback(article)
-                last_success = article
-            success += 1
-
-        # run the block so we are sure the records have saved
-        if last_success is not None:
-            models.Article.block(last_success.id, last_success.last_updated)
-
-        # return some stats on the import
-        return {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
 
     def crosswalk_article(self, record, add_journal_info=True):
         """

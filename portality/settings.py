@@ -528,6 +528,11 @@ SCHEMAS = {
     "doaj" : os.path.join(BASE_FILE_PATH, "static", "doaj", "doajArticles.xsd")
 }
 
+# mapping of format names to modules which implement the crosswalks
+ARTICLE_CROSSWALKS = {
+    "doaj" : "portality.crosswalk.article_doaj_xml.DOAJXWalk"
+}
+
 # maximum size of files that can be provided by-reference (the default value is 250Mb)
 MAX_REMOTE_SIZE = 262144000
 

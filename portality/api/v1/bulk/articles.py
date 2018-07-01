@@ -1,7 +1,10 @@
-from portality.api.v1.common import Api, Api404Error, Api400Error, Api403Error
+from portality.api.v1.common import Api, Api404Error, Api400Error, Api403Error, Api401Error
 from portality.api.v1.crud import ArticlesCrudApi
 
+from portality.bll import DOAJ
+
 from copy import deepcopy
+
 
 
 class ArticlesBulkApi(Api):
@@ -33,6 +36,20 @@ class ArticlesBulkApi(Api):
         # and deduplicating as we go. Then we .save() everything once
         # we know all incoming articles are valid.
 
+        # as long as authentication (in the layer above) has been successful, and the account exists, then
+        # we are good to proceed
+        if account is None:
+            raise Api401Error()
+
+        # convert the data into a suitable article models
+        articles = [ArticlesCrudApi.prep_article(data) for data in articles]
+
+        articleService = DOAJ.articleService()
+        result = articleService.batch_create_articles(articles, account)
+
+        return [a.id for a in articles]
+
+        """
         new_articles = []
 
         ids = []
@@ -71,6 +88,8 @@ class ArticlesBulkApi(Api):
             na.save()
 
         return ids
+        """
+
 
     @classmethod
     def delete_swag(cls):

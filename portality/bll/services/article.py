@@ -7,7 +7,21 @@ from datetime import datetime
 class ArticleService(object):
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
+        # first validate the incoming arguments to ensure that we've got the right thing
+        argvalidate("batch_create_article", [
+            {"arg": articles, "instance" : list, "allow_none" : False, "arg_name" : "articles"},
+            {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
+            {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
+            {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
+            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"}
+        ], exceptions.ArgumentException)
+
         # 1. dedupe the batch
+        if duplicate_check:
+            batch_duplicates = self._batch_contains_duplicates(articles)
+            if batch_duplicates:
+                raise exceptions.IngestException("One or more articles in this batch have duplicate identifiers")
+
         # 2. check legitimate ownership
         success = 0
         fail = 0
@@ -17,62 +31,61 @@ class ArticleService(object):
         all_unowned = set()
         all_unmatched = set()
 
-        # go through the articles and do all the relevant checks before saving
-        last_success = None
-        for article in article:
-            pass
+        for article in articles:
+            result = self.create_article(article, account, duplicate_check=duplicate_check, merge_duplicate=merge_duplicate, limit_to_account=limit_to_account, dry_run=True)
+            success += result.get("success", 0)
+            fail += result.get("fail", 0)
+            update += result.get("update", 0)
+            new += result.get("new", 0)
+            all_shared.update(result.get("shared", set()))
+            all_unowned.update(result.get("unowned", set()))
+            all_unmatched.update(result.get("unmatched", set()))
 
-            # once we have an article from the record, determine if it belongs to
-            # the stated owner.  If not, we need to reject it
-            if limit_to_owner is not None:
-                legit = articleService.is_legitimate_owner(article, limit_to_owner)
-                if not legit:
-                    owned, shared, unowned, unmatched = articleService.issn_ownership_status(article, limit_to_owner)
-                    all_shared.update(shared)
-                    all_unowned.update(unowned)
-                    all_unmatched.update(unmatched)
-                    fail += 1
-                    if fail_callback:
-                        fail_callback(article)
-                    continue
 
-            # print "legit"
+        # if there were no failures in the batch, then we can do the save
+        if fail == 0:
+            for i in xrange(len(articles)):
+                block = i == len(articles) - 1
+                # block on the final save, so that when this method returns, all articles are
+                # available in the index
+                articles[i].save(blocking=block)
 
-            # before finalising, we need to determine whether this is a new article
-            # or an update
-            duplicate = articleService.get_duplicate(article, limit_to_owner)
-            # print duplicate
-            if duplicate is not None:
-                update += 1
-                article.merge(duplicate) # merge will take the old id, so this will overwrite
-            else:
-                new += 1
-
-            # if we get to here without failing, then we call the article callback
-            # (which can do something like save)
-            if article_callback is not None:
-                article_callback(article)
-                last_success = article
-            success += 1
-
-        # run the block so we are sure the records have saved
-        if last_success is not None:
-            models.Article.block(last_success.id, last_success.last_updated)
-
-        # return some stats on the import
+        # return some stats on the import success or failure
         return {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
 
-        for article in articles:
-            self.create_article(article, account, duplicate_check, merge_duplicate, limit_to_account)
 
-    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
+    def _batch_contains_duplicates(self, articles):
+        dois = []
+        fulltexts = []
+
+        for article in articles:
+            doi_list = article.bibjson().get_identifiers("doi")
+            ft_list = article.bibjson().get_urls("fulltext")
+
+            doi_list = set(doi_list)
+            for doi in doi_list:
+                if doi in dois:
+                    return True
+                dois.append(doi)
+
+            ft_list = set(ft_list)
+            for ft in ft_list:
+                if ft in fulltexts:
+                    return True
+                fulltexts.append(ft)
+
+        return False
+
+
+    def create_article(self, article, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True, dry_run=False):
         # first validate the incoming arguments to ensure that we've got the right thing
-        argvalidate("is_legitimate_owner", [
+        argvalidate("create_article", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},
             {"arg": account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
             {"arg" : duplicate_check, "instance" : bool, "allow_none" : False, "arg_name" : "duplicate_check"},
             {"arg" : merge_duplicate, "instance" : bool, "allow_none" : False, "arg_name" : "merge_duplicate"},
-            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"}
+            {"arg" : limit_to_account, "instance" : bool, "allow_none" : False, "arg_name" : "limit_to_account"},
+            {"arg" : dry_run, "instance" : bool, "allow_none" : False, "arg_name" : "dry_run"}
         ], exceptions.ArgumentException)
 
         if limit_to_account:
@@ -94,10 +107,10 @@ class ArticleService(object):
                     raise exceptions.DuplicateArticleException()
 
         # finally, save the new article
-        article.save()
+        if not dry_run:
+            article.save()
 
-        return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : 0, "unowned" : 0, "unmatched" : 0}
-
+        return {"success" : 1, "fail" : 0, "update" : is_update, "new" : 1 - is_update, "shared" : set(), "unowned" : set(), "unmatched" : set()}
 
 
     def is_legitimate_owner(self, article, owner):

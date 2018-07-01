@@ -580,9 +580,11 @@ def _element(xml, field):
 ## main entry point to this module
 ################################################################################
 
+"""
 xwalk_map = {DOAJXWalk.format_name : DOAJXWalk}
+"""
 
-
+"""
 def article_upload_closure(upload_id):
     def article_callback(article):
         article.set_upload_id(upload_id)
@@ -604,8 +606,9 @@ def ingest_file(handle, format_name=None, owner=None, upload_id=None, article_fa
         return results
     except Exception as e:
         raise IngestException(message="Error occurred ingesting the records in the document", inner=e)
+"""
 
-
+"""
 def check_schema(handle, format_name=None):
     try:
         doc = etree.parse(handle)
@@ -652,3 +655,4 @@ def check_schema(handle, format_name=None):
         raise IngestException(message="Unable to validate document with any available ingesters", inner_message=msg)
 
     return actual_format, xwalk, doc
+"""
