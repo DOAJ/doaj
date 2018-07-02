@@ -1,6 +1,6 @@
 from urllib import urlopen, urlencode
 import md5
-import os, re, string
+import re, string
 from unicodedata import normalize
 from functools import wraps
 from flask import request, current_app, flash, make_response

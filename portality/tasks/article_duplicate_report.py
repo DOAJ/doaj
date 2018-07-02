@@ -1,7 +1,9 @@
 """Task to generate a report on duplicated articles in the index"""
 
-from portality.tasks.redis_huey import long_running, schedule
-from portality.tasks.bg_util import email
+from portality.tasks.redis_huey import long_running
+from portality.app_email import email
+from portality.decorators import write_required
+
 from portality.background import BackgroundTask, BackgroundApi
 
 import esprit
