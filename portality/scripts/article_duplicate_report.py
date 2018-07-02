@@ -1,12 +1,13 @@
 """
 This script allows you to manually (and synchronously) execute the article duplicate reporting task
 """
-import logging, sys
+import logging
+import sys
 
 from portality.background import BackgroundApi
 from portality.core import app
 from portality.lib import dates
-from portality.tasks import article_duplicates_report_remove
+from portality.tasks import article_duplicate_report
 
 if __name__ == "__main__":
 
@@ -41,8 +42,6 @@ if __name__ == "__main__":
         app.logger.setLevel(logging.DEBUG)
 
     user = app.config.get("SYSTEM_USERNAME")
-    job = article_duplicates_report_remove.ArticleDuplicateReportBackgroundTask.prepare(user,
-                                                                                        outdir=args.out,
-                                                                                        email=args.email)
-    task = article_duplicates_report_remove.ArticleDuplicateReportBackgroundTask(job)
+    job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=args.out, email=args.email)
+    task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
     BackgroundApi.execute(task)

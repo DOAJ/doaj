@@ -1,9 +1,7 @@
 """Task to generate a report on duplicated articles in the index"""
 
-from portality.tasks.redis_huey import long_running
+from portality.tasks.redis_huey import long_running, schedule
 from portality.tasks.bg_util import email
-from portality.decorators import write_required
-
 from portality.background import BackgroundTask, BackgroundApi
 
 import esprit
@@ -29,16 +27,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         job = self.background_job
         params = job.params
 
-        # Set up the files we need to run this task - a dir to place the 2 reports, and a place to write the article csv
+        # Set up the files we need to run this task - a dir to place the report, and a place to write the article csv
         outdir = self.get_param(params, "outdir", "article_duplicates_" + dates.today())
         job.add_audit_message("Saving reports to " + outdir)
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
         global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
-        owner_reportfile = 'duplicate_articles_per_owner_' + dates.today() + '.csv'
         global_reportpath = os.path.join(outdir, global_reportfile)
-        owner_reportpath = os.path.join(outdir, owner_reportfile)
 
         # Location for our interim CSV file of articles
         tmpdir = self.get_param(params, "tmpdir", 'tmp_article_duplicate_report')
@@ -49,7 +45,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
                                           app.config["ELASTIC_SEARCH_DB"])
 
-        tmp_csvfile = 'tmp_articles' + dates.today() + '.full.csv'
+        tmp_csvfile = 'tmp_articles_' + dates.today() + '.csv'
         tmp_csvpath = os.path.join(tmpdir, tmp_csvfile)
 
         with codecs.open(tmp_csvpath, 'wb', 'utf-8') as t:
@@ -58,18 +54,14 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         # Initialise our reports
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
-        #g = codecs.open(owner_reportpath, 'wb', 'utf-8')
-        #owner_report = UnicodeWriter(g)
         
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
-        #owner_report.writerow(header)
 
         # Record the sets of duplicated articles
         global_matches = []
-        owner_matches = {}
 
-        a_count = gd_count = od_count = 0
+        a_count = gd_count = 0
 
         # Read back in the article csv file we created earlier
         with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
@@ -98,27 +90,12 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                     if s not in global_matches:
                         self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                         global_matches.append(s)
-                '''
-                # Get the duplicates within the owner's records
-                if owner is not None:
-                    owner_duplicates = XWalk.discover_duplicates(article, owner, results_per_match_type=10000)
-                    if owner_duplicates:
-                        if owner not in owner_matches:
-                            owner_matches[owner] = []
-                        s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
-                        od_count += len(s) - 1
-                        if s not in owner_matches[owner]:
-                            self._write_rows_from_duplicates(article, owner, owner_duplicates, owner_report)
-                            owner_matches[owner].append(s)
-                '''
 
-        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found, '
-                              '{2} found within user accounts.'.format(a_count, gd_count, od_count))
+        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found.'.format(a_count, gd_count))
         f.close()
-        #g.close()
 
         # Delete the transient temporary files.
-        # shutil.rmtree(tmpdir) todo: reinstate
+        shutil.rmtree(tmpdir)
 
         # Email the reports if that parameter has been set.
         send_email = self.get_param(params, "email", False)
@@ -258,19 +235,15 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         background_job.save()
         article_duplicate_report.schedule(args=(background_job.id,), delay=10)
 
-
-"""
+'''
 @long_running.periodic_task(schedule("article_duplicate_report"))
-@write_required(script=True)
 def scheduled_article_cleanup_sync():
     user = app.config.get("SYSTEM_USERNAME")
     job = ArticleDuplicateReportBackgroundTask.prepare(user)
     ArticleDuplicateReportBackgroundTask.submit(job)
-"""
-
+'''
 
 @long_running.task()
-@write_required(script=True)
 def article_duplicate_report(job_id):
     job = models.BackgroundJob.pull(job_id)
     task = ArticleDuplicateReportBackgroundTask(job)
