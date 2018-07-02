@@ -98,14 +98,7 @@ class TestAnon(DoajTestCase):
             }
         }
 
-    def test_07_anonymise_id(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_id(record) == {'irrelevant': 'content'}
-
-        record = {'irrelevant': 'content', 'id': 'testuser'}
-        assert anon_export.anonymise_id(record) == {'irrelevant': 'content', 'id': 'a3ccf33b901b3f7ff9d005f37e734d0fe476c3ae73fcca362118a9ba84b94fd2'}
-
-    def test_08_anonymise_account(self):
+    def test_07_anonymise_account(self):
         record = {'irrelevant': 'content'}
         assert anon_export.anonymise_account(record) == {'irrelevant': 'content'}
 
