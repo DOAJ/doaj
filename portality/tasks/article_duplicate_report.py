@@ -1,8 +1,7 @@
 """Task to generate a report on duplicated articles in the index"""
 
 from portality.tasks.redis_huey import long_running
-from portality.app_email import email
-from portality.decorators import write_required
+from portality.app_email import email_archive
 
 from portality.background import BackgroundTask, BackgroundApi
 
@@ -103,7 +102,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         send_email = self.get_param(params, "email", False)
         if send_email:
             archive_name = "article_duplicates_" + dates.today()
-            email(outdir, archive_name)
+            email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")
