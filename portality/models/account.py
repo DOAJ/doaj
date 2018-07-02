@@ -119,6 +119,23 @@ class Account(DomainObject, UserMixin):
             del self.data["reset_expires"]
 
     @property
+    def reset_expires(self):
+        return self.data.get("reset_expires")
+
+    @property
+    def reset_expires_timestamp(self):
+        expires = self.reset_expires
+        if expires is None:
+            return None
+        return datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
+
+    def is_reset_expired(self):
+        expires = self.reset_expires_timestamp
+        if expires is None:
+            return True
+        return expires < datetime.utcnow()
+
+    @property
     def is_super(self):
         # return not self.is_anonymous and self.id in app.config['SUPER_USER']
         return Authorise.has_role(app.config["SUPER_USER_ROLE"], self.data.get("role", []))
