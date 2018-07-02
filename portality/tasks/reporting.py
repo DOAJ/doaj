@@ -6,7 +6,7 @@ from portality.core import app
 
 from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
-from portality.tasks.bg_util import email
+from portality.app_email import email_archive
 from portality.decorators import write_required
 
 import codecs, os, shutil
@@ -347,7 +347,7 @@ class ReportingBackgroundTask(BackgroundTask):
             ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
             ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
             archive_name = "reports_" + ref_fr + "_to_" + ref_to
-            email(outdir, archive_name)
+            email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")
