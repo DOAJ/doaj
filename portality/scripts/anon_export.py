@@ -1,57 +1,45 @@
 import esprit
+from portality import models
 from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
 
 
 def anonymise_email(record):
-    if 'email' in record:
-        record['email'] = anon_email(record['email'])
+    record.set_email(anon_email(record.email))
     return record
 
 
 def anonymise_admin(record):
-    if 'admin' in record:
-        if 'contact' in record['admin']:
-            if 'email' in record['admin']['contact']:
-                record['admin']['contact']['email'] = anon_email(record['admin']['contact']['email'])
-            if 'name' in record['admin']['contact']:
-                record['admin']['contact']['name'] = anon_name(record['admin']['contact']['name'])
-
-        if 'notes' in record['admin']:
-            for note in record['admin']['notes']:
-                note['note'] = basic_hash(note['note'])
+    new_email = anon_email(record.get_latest_contact_email())
+    record.remove_contacts()
+    record.add_contact(anon_name(), new_email)
+    for note in record.notes[:]:
+        record.remove_note(note)
+        record.add_note(basic_hash(note['note']))
 
     return record
 
 
 def anonymise_account(record):
-    anonymise_email(record)
-    return record
+    return anonymise_email(models.Account(**record))
 
 
 def anonymise_journal(record):
-    anonymise_admin(record)
+    anonymise_admin(models.Journal(**record))
     return record
 
 
 def anonymise_suggestion(record):
-    anonymise_admin(record)
-    if 'suggestion' in record:
-        if 'suggester' in record['suggestion']:
-            if 'email' in record['suggestion']['suggester']:
-                record['suggestion']['suggester']['email'] = anon_email(record['suggestion']['suggester']['email'])
-            if 'name' in record['suggestion']['suggester']:
-                record['suggestion']['suggester']['name'] = anon_name(record['suggestion']['suggester']['name'])
-    return record
+    sug = models.Suggestion(**record)
+    sug = anonymise_admin(sug)
+    sug.set_suggester(anon_name(), anon_email(sug.suggester['email']))
+    return sug
 
 
 def anonymise_background_job(record):
-    if 'params' in record:
-        if 'suggestion_bulk_edit__note' in record['params']:
-            record['params']['suggestion_bulk_edit__note'] =\
-                basic_hash(record['params']['suggestion_bulk_edit__note'])
-
-    return record
+    bgjob = models.BackgroundJob(**record)
+    bgjob.params['suggestion_bulk_edit__note'] = basic_hash(bgjob.params['suggestion_bulk_edit__note'])
+    return bgjob
 
 
 def anonymise_default(record):

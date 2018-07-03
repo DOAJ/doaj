@@ -1,7 +1,11 @@
 from doajtest.helpers import DoajTestCase
+from doajtest.fixtures import AccountFixtureFactory, JournalFixtureFactory, ApplicationFixtureFactory, BackgroundFixtureFactory
 from portality.core import app
+from portality import models
 from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.scripts import anon_export
+
+from freezegun import freeze_time
 
 
 class TestAnon(DoajTestCase):
@@ -16,119 +20,104 @@ class TestAnon(DoajTestCase):
         assert basic_hash('test content') == '259ea4fab4e03a26c25f2b55f37a2f571931797d67f033e8898e76481d2a8563', basic_hash('test content')
 
     def test_02_anon_name(self):
-        assert anon_name('Tester Tester') == 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6', anon_name('Tester Tester')
+        assert anon_name() == 'Ryan Gallagher', anon_name()
 
     def test_03_anon_email(self):
         assert anon_email('test@doaj.org') == '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com'
 
     def test_04_anonymise_email(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_email(record) == {'irrelevant': 'content'}
-
-        record = {'irrelevant': 'content', 'email': 'test@doaj.org'}
-        assert anon_export.anonymise_email(record) == {'irrelevant': 'content', 'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com'}
+        record = models.Account(**AccountFixtureFactory.make_publisher_source())
+        e = anon_export.anonymise_email(record).email
+        assert e == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', e
 
     def test_05_anonymise_admin_with_notes(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_admin(record) == {'irrelevant': 'content'}
+        journal_src = JournalFixtureFactory.make_journal_source()
 
-        record = {
-            'admin': {
-                'owner': 'testuser',
-                'editor': 'testeditor',
-                'contact': {
-                    'email': 'test@doaj.org',
-                    'name': 'Tester Tester'
+        journal_src['admin'] = {
+            'owner': 'testuser',
+            'editor': 'testeditor',
+            'contact': [{
+                'email': 'test@doaj.org',
+                'name': 'Tester Tester'
+            }],
+            'notes': [
+                {
+                    'note': 'Test note',
+                    'date': '2017-02-23T00:00:00Z'
                 },
-                'notes': [
-                    {
-                        'note': 'Test note',
-                        'date': '2017-02-23T14:05:34Z'
-                    },
-                    {
-                        'note': 'Test note 2',
-                        'date': '2017-02-23T14:05:34Z'
-                    }
-                ]
-            }
+                {
+                    'note': 'Test note 2',
+                    'date': '2017-02-23T00:00:00Z'
+                }
+            ]
         }
-        assert anon_export.anonymise_admin(record) == {
-            'admin': {
-                'owner': 'testuser',
-                'editor': 'testeditor',
-                'contact': {
-                    'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
-                    'name': 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6'
+
+        journal = models.Journal(**journal_src)
+
+        with freeze_time("2017-02-23"):
+            ar = anon_export.anonymise_admin(journal)
+
+        assert ar.data['admin'] == {
+            'owner': 'testuser',
+            'editor': 'testeditor',
+            'contact': [{
+                'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
+                'name': 'Jon Cole'
+            }],
+            'notes': [
+                {
+                    'note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895',
+                    'date': '2017-02-23T00:00:00Z'
                 },
-                'notes': [
-                    {
-                        'note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895',
-                        'date': '2017-02-23T14:05:34Z'
-                    },
-                    {
-                        'note': '772cf6f91219db969e4aa28e4fd606b92316948545ad528fd34feb1b9b12a3ad',
-                        'date': '2017-02-23T14:05:34Z'
-                    }
-                ]
-            }
-        }
+                {
+                    'note': '772cf6f91219db969e4aa28e4fd606b92316948545ad528fd34feb1b9b12a3ad',
+                    'date': '2017-02-23T00:00:00Z'
+                }
+            ]
+        }, ar['admin']
 
     def test_06_anonymise_admin_empty_notes(self):
-        record = {
-            'admin': {
-                'owner': 'testuser',
-                'editor': 'testeditor',
-                'contact': {
-                    'email': 'test@doaj.org',
-                    'name': 'Tester Tester'
-                },
-                'notes': []
-            }
+        journal_src = JournalFixtureFactory.make_journal_source()
+
+        journal_src['admin'] = {
+            'owner': 'testuser',
+            'editor': 'testeditor',
+            'contact': [{
+                'email': 'test@doaj.org',
+                'name': 'Tester Tester'
+            }],
+            'notes': []
         }
 
-        assert anon_export.anonymise_admin(record) == {
-            'admin': {
-                'owner': 'testuser',
-                'editor': 'testeditor',
-                'contact': {
-                    'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
-                    'name': 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6'
-                },
-                'notes': []
-            }
-        }
+        journal = models.Journal(**journal_src)
+
+        with freeze_time("2017-02-23"):
+            ar = anon_export.anonymise_admin(journal)
+
+        assert ar.data['admin'] == {
+            'owner': 'testuser',
+            'editor': 'testeditor',
+            'contact': [{
+                'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
+                'name': 'Rachel Davis'
+            }],
+            'notes': []
+        }, ar['admin']
 
     def test_07_anonymise_account(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_account(record) == {'irrelevant': 'content'}
-
-        record = {'irrelevant': 'content', 'id': 'testuser', 'email': 'test@doaj.org'}
-        assert anon_export.anonymise_account(record) == {
-            'irrelevant': 'content',
-            'id': 'testuser',
-            'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com'
-        }
+        anon_a = anon_export.anonymise_account(AccountFixtureFactory.make_publisher_source())
+        assert anon_a.id == 'publisher', anon_a.id
+        assert anon_a.email == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', anon_a.email
 
     def test_08_anonymise_journal(self):
         pass  # tests 5 and 6 cover this entirely
 
     def test_09_anonymise_suggestion(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_suggestion(record) == {'irrelevant': 'content'}
-
-        record = {'suggestion': {'suggester': {'email': 'test@doaj.org', 'name': 'Tester Tester'}}}
-        assert anon_export.anonymise_suggestion(record) == {
-            'suggestion': {
-                'suggester': {
-                    'email': '508dd70a7c888d9985c5ed37276d1138d73db171932b5866d48f581dc6119ac5@example.com',
-                    'name': 'Stacy f9b6e7b982b8fc5fa95fbc024e6df9fea1ac07ad195039416bb0001fff39dde6'
-                }
-            }
-        }
+        asug = anon_export.anonymise_suggestion(ApplicationFixtureFactory.make_application_source())
+        assert asug.suggester['name'] == 'April Griffin', asug.suggester['name']
+        assert asug.suggester['email'] == '5224a2ac2278eeb77400bf5d35e518a1627a7fb10bf0108171542c6af81988a7@example.com', asug.suggester['email']
 
     def test_10_anonymise_background_job(self):
-        record = {'irrelevant': 'content'}
-        assert anon_export.anonymise_background_job(record) == {'irrelevant': 'content'}
-
-        record = {'params': {'suggestion_bulk_edit__note': 'Test note'}}
-        assert anon_export.anonymise_background_job(record) == {'params': {'suggestion_bulk_edit__note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895'}}
+        bgjob = BackgroundFixtureFactory.example()
+        bgjob['params'].update({'suggestion_bulk_edit__note': 'Test note'})
+        assert anon_export.anonymise_background_job(bgjob).params == {'suggestion_bulk_edit__note': 'f4007b0953d4a9ecb7e31820b5d481d96ee5d74a0a059a54f07a326d357ed895'}

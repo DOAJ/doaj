@@ -32,6 +32,7 @@ setup(
         "rstr==2.2.5",
         "freezegun==0.3.10",
         "responses==0.9.0",
+        "Faker==0.8.16",
         "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",
