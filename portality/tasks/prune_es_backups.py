@@ -1,11 +1,13 @@
 from portality import models
 from portality.core import app
-from portality.lib.es_snapshots import ESSnapshotsClient
 from portality.lib import dates
 
 from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
+
+from esprit.raw import Connection
+from esprit.snapshot import ESSnapshotsClient
 
 from datetime import datetime, timedelta
 
@@ -21,11 +23,14 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         """
         job = self.background_job
 
+        # Connection to the ES index
+        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
+
         snap_ttl = app.config.get('ELASTIC_SEARCH_SNAPSHOT_TTL', 366)
         snap_thresh = datetime.utcnow() - timedelta(days=snap_ttl)
         job.add_audit_message('Deleting backups older than {}'.format(dates.format(snap_thresh)))
 
-        client = ESSnapshotsClient()
+        client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
         client.prune_snapshots(snap_ttl, self.report_deleted_closure(job))
 
     def cleanup(self):

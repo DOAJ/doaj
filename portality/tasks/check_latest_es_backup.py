@@ -1,11 +1,11 @@
 from portality import models, app_email
 from portality.core import app
 
-from portality.lib.es_snapshots import ESSnapshotsClient
+from esprit.raw import Connection
+from esprit.snapshot import ESSnapshotsClient
 
 from portality.tasks.redis_huey import main_queue, schedule
 from portality.decorators import write_required
-
 from portality.background import BackgroundTask, BackgroundApi
 
 
@@ -18,8 +18,12 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         Execute the task as specified by the background_job
         :return:
         """
+
+        # Connection to the ES index
+        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
+
         try:
-            client = ESSnapshotsClient()
+            client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
             client.check_today_snapshot()
         except Exception as e:
             app_email.send_mail(

@@ -20,7 +20,7 @@ setup(
         "tzlocal",
         "pytz",
         "futures==2.1.6",
-        "esprit==0.0.2",
+        "esprit==0.0.3",
         "nose",
         "unidecode",
         "Flask-Swagger==0.2.13",

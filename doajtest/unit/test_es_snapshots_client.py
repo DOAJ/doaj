@@ -1,6 +1,6 @@
 from doajtest.helpers import DoajTestCase
 from portality.core import app
-from portality.lib import es_snapshots
+from esprit import raw, snapshot
 from doajtest.fixtures.snapshots import SNAPSHOTS_LIST
 from copy import deepcopy
 from datetime import datetime, timedelta
@@ -13,6 +13,8 @@ class TestSnapshotClient(DoajTestCase):
 
     def setUp(self):
         self.snapshot_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
+        self.es_conn = raw.Connection(app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200'), index='_snapshot')
+        self.snap_repo = app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
         super(TestSnapshotClient, self).setUp()
 
     def tearDown(self):
@@ -25,9 +27,9 @@ class TestSnapshotClient(DoajTestCase):
         responses.add(responses.GET, self.snapshot_url + '/_all', json=SNAPSHOTS_LIST, status=200)
 
         # Ensure the client can list the snapshots correctly
-        client = es_snapshots.ESSnapshotsClient()
+        client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
         snaps = client.list_snapshots()
-        assert snaps == [es_snapshots.ESSnapshot(s) for s in SNAPSHOTS_LIST['snapshots']]
+        assert snaps == [snapshot.ESSnapshot(s) for s in SNAPSHOTS_LIST['snapshots']]
 
     @responses.activate
     def test_02_snapshots_are_sorted(self):
@@ -37,10 +39,10 @@ class TestSnapshotClient(DoajTestCase):
         responses.add(responses.GET, self.snapshot_url + '/_all', json=REVERSED_SNAPS, status=200)
 
         # Ensure the client can list the snapshots in the correct order
-        client = es_snapshots.ESSnapshotsClient()
+        client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
         snaps = client.list_snapshots()
-        assert snaps != [es_snapshots.ESSnapshot(s) for s in REVERSED_SNAPS['snapshots']]
-        assert snaps == [es_snapshots.ESSnapshot(s) for s in SNAPSHOTS_LIST['snapshots']]
+        assert snaps != [snapshot.ESSnapshot(s) for s in REVERSED_SNAPS['snapshots']]
+        assert snaps == [snapshot.ESSnapshot(s) for s in SNAPSHOTS_LIST['snapshots']]
 
     @responses.activate
     def test_03_todays_exists(self):
@@ -51,13 +53,13 @@ class TestSnapshotClient(DoajTestCase):
         latest_fixture_date = datetime.utcfromtimestamp(SNAPSHOTS_LIST['snapshots'][-1]['start_time_in_millis'] / 1000)
         with freeze_time(latest_fixture_date):
             # Ensure the client correctly identifies the last snapshot exists per the date set
-            client = es_snapshots.ESSnapshotsClient()
+            client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
             client.check_today_snapshot()
 
         # And a day later it raises an exception, because that snapshot is missing
-        with assert_raises(es_snapshots.TodaySnapshotMissingException):
+        with assert_raises(snapshot.TodaySnapshotMissingException):
             with freeze_time(latest_fixture_date + timedelta(days=1)):
-                client = es_snapshots.ESSnapshotsClient()
+                client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
                 client.check_today_snapshot()
 
         # Make the failed snapshot our latest
@@ -68,9 +70,9 @@ class TestSnapshotClient(DoajTestCase):
 
         # Using the fixture with the failed snapshot, check we get an exception if that's the latest in the response
         failed_fixture_date = datetime.utcfromtimestamp(LATEST_FAILED_SNAPS['snapshots'][-1]['start_time_in_millis'] / 1000)
-        with assert_raises(es_snapshots.FailedSnapshotException):
+        with assert_raises(snapshot.FailedSnapshotException):
             with freeze_time(failed_fixture_date):
-                client = es_snapshots.ESSnapshotsClient()
+                client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
                 client.check_today_snapshot()
 
     def test_04_prune_snapshots(self):
@@ -85,7 +87,7 @@ class TestSnapshotClient(DoajTestCase):
         latest_fixture_date = datetime.utcfromtimestamp(SNAPSHOTS_LIST['snapshots'][-1]['start_time_in_millis'] / 1000)
         with freeze_time(latest_fixture_date):
             # Ensure the client correctly deletes snapshots up to our specified threshold
-            client = es_snapshots.ESSnapshotsClient()
+            client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
             client.prune_snapshots(ttl_days=4)
             assert client.snapshots == []                     # This just checks we reached the end of the deletion code
 
