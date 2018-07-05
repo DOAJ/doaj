@@ -20,7 +20,7 @@ setup(
         "tzlocal",
         "pytz",
         "futures==2.1.6",
-        "esprit==0.0.2",
+        "esprit==0.0.3",
         "nose",
         "unidecode",
         "Flask-Swagger==0.2.13",
@@ -31,6 +31,7 @@ setup(
         "redis==2.10.5",
         "rstr==2.2.5",
         "freezegun==0.3.10",
+        "responses==0.9.0",
         "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",

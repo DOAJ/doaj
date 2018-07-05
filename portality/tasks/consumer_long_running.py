@@ -10,3 +10,4 @@ from portality.tasks.redis_huey import long_running
 
 # these are the ones that bind to the long_running queue
 from portality.tasks.article_cleanup_sync import scheduled_article_cleanup_sync, article_cleanup_sync
+from portality.tasks.prune_es_backups import scheduled_prune_es_backups, prune_es_backups
