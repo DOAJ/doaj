@@ -2,14 +2,15 @@ import esprit
 from portality import models
 from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
+from portality.lib.dataobj import DataStructureException
 
 
-def anonymise_email(record):
+def __anonymise_email(record):
     record.set_email(anon_email(record.email))
     return record
 
 
-def anonymise_admin(record):
+def __anonymise_admin(record):
     new_email = anon_email(record.get_latest_contact_email())
     record.remove_contacts()
     record.add_contact(anon_name(), new_email)
@@ -20,35 +21,50 @@ def anonymise_admin(record):
     return record
 
 
+# transform functions - return the JSON data source since
+# esprit doesn't understand our model classes
+
 def anonymise_account(record):
-    return anonymise_email(models.Account(**record))
+    try:
+        a = models.Account(**record)
+    except DataStructureException:
+        return record
+
+    return __anonymise_email(a).data
 
 
 def anonymise_journal(record):
-    anonymise_admin(models.Journal(**record))
-    return record
+    try:
+        j = models.Journal(**record)
+    except DataStructureException:
+        return record
+
+    return __anonymise_admin(j).data
 
 
 def anonymise_suggestion(record):
-    sug = models.Suggestion(**record)
-    sug = anonymise_admin(sug)
+    try:
+        sug = models.Suggestion(**record)
+    except DataStructureException:
+        return record
+
+    sug = __anonymise_admin(sug)
     sug.set_suggester(anon_name(), anon_email(sug.suggester['email']))
-    return sug
+    return sug.data
 
 
 def anonymise_background_job(record):
-    bgjob = models.BackgroundJob(**record)
-    bgjob.params['suggestion_bulk_edit__note'] = basic_hash(bgjob.params['suggestion_bulk_edit__note'])
-    return bgjob
+    try:
+        bgjob = models.BackgroundJob(**record)
+    except DataStructureException:
+        return record
 
+    if bgjob.params and 'suggestion_bulk_edit__note' in bgjob.params:
+        bgjob.params['suggestion_bulk_edit__note'] = basic_hash(bgjob.params['suggestion_bulk_edit__note'])
 
-def anonymise_default(record):
-    anonymise_email(record)
-    anonymise_admin(record)
-    return record
+    return bgjob.data
 
 anonymisation_procedures = {
-    '_default': anonymise_default,
     'account': anonymise_account,
     'background_job': anonymise_background_job,
     'journal': anonymise_journal,
@@ -69,6 +85,7 @@ if __name__ == '__main__':
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    for type_ in esprit.raw.list_types(connection=conn):
-        transform = anonymisation_procedures[type_] if type_ in anonymisation_procedures else anonymisation_procedures['_default']
-        esprit.tasks.dump(conn, type_, transform=transform, limit=limit)
+    for type_ in ['account']:# esprit.raw.list_types(connection=conn):
+        if type_ in anonymisation_procedures:
+            transform = anonymisation_procedures[type_]
+            esprit.tasks.dump(conn, type_, transform=transform, limit=limit)

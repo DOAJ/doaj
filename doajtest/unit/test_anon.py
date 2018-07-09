@@ -27,7 +27,7 @@ class TestAnon(DoajTestCase):
 
     def test_04_anonymise_email(self):
         record = models.Account(**AccountFixtureFactory.make_publisher_source())
-        e = anon_export.anonymise_email(record).email
+        e = anon_export.__anonymise_email(record).email
         assert e == '25011d8de5bfcb72ee529fcc38b518ea6a46f99a81a412c065fe7147272b8f2a@example.com', e
 
     def test_05_anonymise_admin_with_notes(self):
@@ -55,7 +55,7 @@ class TestAnon(DoajTestCase):
         journal = models.Journal(**journal_src)
 
         with freeze_time("2017-02-23"):
-            ar = anon_export.anonymise_admin(journal)
+            ar = anon_export.__anonymise_admin(journal)
 
         assert ar.data['admin'] == {
             'owner': 'testuser',
@@ -92,7 +92,7 @@ class TestAnon(DoajTestCase):
         journal = models.Journal(**journal_src)
 
         with freeze_time("2017-02-23"):
-            ar = anon_export.anonymise_admin(journal)
+            ar = anon_export.__anonymise_admin(journal)
 
         assert ar.data['admin'] == {
             'owner': 'testuser',
