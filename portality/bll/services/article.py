@@ -326,17 +326,22 @@ class ArticleService(object):
             doi = dois[0]
             if isinstance(doi, basestring) and doi != '':
                 articles = models.Article.duplicates(issns=issns, doi=doi)
-                possible_articles['doi'] = [a for a in articles if a.id != article.id]
-                if len(possible_articles['doi']) > 0:
-                    found = True
+                if len(articles) > 0:
+                    possible_articles['doi'] = [a for a in articles if a.id != article.id]
+                    if len(possible_articles['doi']) > 0:
+                        found = True
 
         # Second test is to look by fulltext url
         urls = b.get_urls(b.FULLTEXT)
         if len(urls) > 0:
             # there should be only one, but let's allow for multiple
             articles = models.Article.duplicates(issns=issns, fulltexts=urls)
-            possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
-            if possible_articles['fulltext']:
-                found = True
+            if len(articles) > 0:
+                possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
+                if possible_articles['fulltext']:
+                    found = True
+
+        if len(dois) == 0 and len(urls) == 0:
+            raise exceptions.DuplicateArticleException("The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated")
 
         return possible_articles if found else None

@@ -59,7 +59,7 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @property
     def id(self):
-        return self.data.get('id', None)
+        return unicode(self.data.get('id', None))
     
     def set_id(self, id=None):
         if id is None:

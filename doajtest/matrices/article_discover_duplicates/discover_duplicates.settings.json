@@ -1,0 +1,211 @@
+{
+  "parameters": [
+    {
+      "type": "index", 
+      "name": "test_id"
+    }, 
+    {
+      "values": {
+        "yes": {}, 
+        "no": {
+          "constraints": {
+            "doi_duplicate": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "article_doi": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "article_issn": {
+              "or": [
+                "not_matching"
+              ]
+            }, 
+            "owner": {
+              "or": [
+                "none"
+              ]
+            }, 
+            "article_fulltext": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      }, 
+      "type": "generated", 
+      "name": "article"
+    }, 
+    {
+      "values": {
+        "not_matching": {}, 
+        "matching": {}
+      }, 
+      "type": "generated", 
+      "name": "article_issn"
+    }, 
+    {
+      "values": {
+        "yes": {}, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "article_doi"
+    }, 
+    {
+      "values": {
+        "yes": {}, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "article_fulltext"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "article_doi": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        }, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "doi_duplicate"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "article_fulltext": {
+              "or": [
+                "yes"
+              ]
+            }
+          }
+        }, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "fulltext_duplicate"
+    }, 
+    {
+      "values": {
+        "articles": {}, 
+        "none": {
+          "constraints": {
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "doi_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }, 
+        "no_articles": {
+          "constraints": {
+            "fulltext_duplicate": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "doi_duplicate": {
+              "or": [
+                "no"
+              ]
+            }
+          }
+        }
+      }, 
+      "type": "generated", 
+      "name": "owner"
+    }, 
+    {
+      "default": "no", 
+      "values": {
+        "yes": {
+          "conditions": [
+            {
+              "owner": [
+                "articles"
+              ], 
+              "doi_duplicate": [
+                "yes"
+              ]
+            }
+          ]
+        }, 
+        "no": {}
+      }, 
+      "type": "conditional", 
+      "name": "articles_by_doi"
+    }, 
+    {
+      "default": "no", 
+      "values": {
+        "yes": {
+          "conditions": [
+            {
+              "owner": [
+                "articles"
+              ], 
+              "fulltext_duplicate": [
+                "yes"
+              ]
+            }
+          ]
+        }, 
+        "no": {}
+      }, 
+      "type": "conditional", 
+      "name": "articles_by_fulltext"
+    }, 
+    {
+      "default": "", 
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "article": [
+                "no"
+              ]
+            }
+          ]
+        }, 
+        "DuplicateArticleException": {
+          "conditions": [
+            {
+              "article_doi": [
+                "no"
+              ], 
+              "article": [
+                "yes"
+              ], 
+              "article_fulltext": [
+                "no"
+              ]
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "raises"
+    }
+  ]
+}
