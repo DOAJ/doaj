@@ -459,8 +459,8 @@ function associateApplicationNotFound() {
 
 function publisherJournalNotFound() {
     return "<tr class='facetview_not_found'>" +
-        "<td><p>You do not have any journals in the DOAJ that meet your search criteria</p>" +
-        "<p>If you have not set any search criteria, this means you do not currently have any journals in the DOAJ.</p>" +
+        "<td><p>This tab normally shows the journals which are indexed in DOAJ and in your account. It doesn't look like that you have any journals in DOAJ currently. " +
+        "Please <a href=" + document.location.origin + "/application/new>submit an application</a> for any open access, peer-reviewed journals which you would like to see in DOAJ.</p>" +
         "</tr>";
 }
 
