@@ -1,18 +1,33 @@
-field,test_id,article,article_issn,article_doi,article_fulltext,doi_duplicate,fulltext_duplicate,owner,articles_by_doi,articles_by_fulltext,raises
-type,index,generated,generated,generated,generated,generated,generated,generated,conditional,conditional,conditional
-default,,,,,,,,,no,no,
+field,test_id,article,article_doi,article_fulltext,doi_duplicate,fulltext_duplicate,owner,articles_by_doi,articles_by_fulltext,raises,notes
+type,index,generated,generated,generated,generated,generated,generated,conditional,conditional,conditional,comment
+default,,,,,,,,no,no,,
 ,,,,,,,,,,,
-values,,yes,matching,yes,yes,yes,yes,none,yes,yes,DuplicateArticleException
-values,,no,not_matching,no,no,no,no,no_articles,no,no,ArgumentException
-values,,,,,,,,articles,,,
+values,,yes,no,no,no,no,none,yes,yes,DuplicateArticleException,
+values,,no,yes,yes,yes,yes,no_articles,no,no,ArgumentException,
+values,,,padded,padded,padded,padded,articles,,,ValueError,
+values,,,invalid,https,,https,,,,,
+values,,,,invalid,,,,,,,
+values,,,,,,,,,,,
 ,,,,,,,,,,,
-constraint article,,no,not_matching,no,no,no,no,none,,,
-constraint doi_duplicate,,,,yes,,yes,,,,,
-constraint fulltext_duplicate,,,,,yes,,yes,,,,
-constraint owner,,,,,,no,no,none,,,
-constraint owner,,,,,,no,no,no_articles,,,
+constraint article,,no,no,no,no,no,none,,,,
+constraint article_doi,,,no,,no,,,,,,
+constraint article_doi,,,yes,no|yes,no|yes,no|yes,,,,,"In order to reduce the sheer volume of tests, we're constraining the variants of the doi and fulltext fields, where too much variance just leads to too many redundant tests.  Doing it this way will test all aspects without unecessarily exhaustively covering the parameter space"
+constraint article_doi,,,padded,no|padded,no|padded,no|padded,,,,,
+constraint article_doi,,,invalid,no|yes|invalid,yes,,,,,,
+constraint article_fulltext,,,,no,,no,,,,,
+constraint article_fulltext,,,no|yes,https,no|yes,no|https,,,,,
+constraint article_fulltext,,,no|yes|invalid,invalid,,yes,,,,,
+constraint doi_duplicate,,,!no,,yes,,,,,,
+constraint fulltext_duplicate,,,,!no,,yes,,,,,
+constraint owner,,,,,no,no,none,,,,
+constraint owner,,,,,no,no,no_articles,,,,
 ,,,,,,,,,,,
-conditional articles_by_doi,,,,,,yes,,articles,yes,,
-conditional articles_by_fulltext,,,,,,,yes,articles,,yes,
-conditional raises,,yes,,no,no,,,,,,DuplicateArticleException
-conditional raises,,no,,,,,,,,,ArgumentException
+conditional articles_by_doi,,,,,yes,,articles,yes,,,
+conditional articles_by_doi,,,,,padded,,articles,yes,,,
+conditional articles_by_fulltext,,,,,,yes,articles,,yes,,
+conditional articles_by_fulltext,,,,,,padded,articles,,yes,,
+conditional articles_by_fulltext,,,,,,https,articles,,yes,,
+conditional raises,,yes,no,no,,,,,,DuplicateArticleException,
+conditional raises,,no,,,,,,,,ArgumentException,
+conditional raises,,,invalid,,,,,,,ValueError,
+conditional raises,,,,invalid,,,,,,ValueError,

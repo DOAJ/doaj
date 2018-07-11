@@ -1,10 +1,38 @@
 from portality.lib.argvalidate import argvalidate
-from portality import models
+from portality.lib.dataobj import to_url
+from portality import models, constants, regex
 from portality.bll import exceptions
+import re
 
 from datetime import datetime
 
 class ArticleService(object):
+
+    '''
+    def normalise_article(self, article):
+        """
+        Take an article object and force key values to be correctly normalised and validated
+        so that the article is suitable for inclusion into DOAJ.
+
+        :param article:
+        :return:
+        """
+        b = article.bibjson()
+
+        idents = b.get_identifiers()
+        for ident in idents:
+            ident["id"] = ident["id"].strip()
+            if ident["type"] == constants.IDENT_TYPE_DOI:
+                if not regex.is_match(regex.DOI_COMPILED, ident["id"]):
+                    raise ValueError("DOI in article does not meet the regex")
+
+        links = b.get_urls()
+        for link in links:
+            link["url"] = link["url"].strip()
+            link["url"] = to_url(["url"])
+
+        return article
+    '''
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
         # first validate the incoming arguments to ensure that we've got the right thing
@@ -59,20 +87,15 @@ class ArticleService(object):
         fulltexts = []
 
         for article in articles:
-            doi_list = article.bibjson().get_identifiers("doi")
-            ft_list = article.bibjson().get_urls("fulltext")
+            doi = article.get_normalised_doi()
+            if doi in dois:
+                return True
+            dois.append(doi)
 
-            doi_list = set(doi_list)
-            for doi in doi_list:
-                if doi in dois:
-                    return True
-                dois.append(doi)
-
-            ft_list = set(ft_list)
-            for ft in ft_list:
-                if ft in fulltexts:
-                    return True
-                fulltexts.append(ft)
+            ft = article.get_normalised_fulltext()
+            if ft in fulltexts:
+                return True
+            fulltexts.append(ft)
 
         return False
 
@@ -321,10 +344,9 @@ class ArticleService(object):
         found = False
 
         # Checking by DOI is our first step
-        dois = b.get_identifiers(b.DOI)
-        if len(dois) > 0:
-            # there should only be the one
-            doi = dois[0]
+        # dois = b.get_identifiers(b.DOI)
+        doi = article.get_normalised_doi()
+        if doi is not None:
             if isinstance(doi, basestring) and doi != '':
                 articles = models.Article.duplicates(issns=issns, doi=doi)
                 if len(articles) > 0:
@@ -333,16 +355,15 @@ class ArticleService(object):
                         found = True
 
         # Second test is to look by fulltext url
-        urls = b.get_urls(b.FULLTEXT)
-        if len(urls) > 0:
-            # there should be only one, but let's allow for multiple
-            articles = models.Article.duplicates(issns=issns, fulltexts=urls)
+        fulltext = article.get_normalised_fulltext()
+        if fulltext is not None:
+            articles = models.Article.duplicates(issns=issns, fulltexts=fulltext)
             if len(articles) > 0:
                 possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
                 if possible_articles['fulltext']:
                     found = True
 
-        if len(dois) == 0 and len(urls) == 0:
+        if doi is None and fulltext is None:
             raise exceptions.DuplicateArticleException("The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated")
 
         return possible_articles if found else None

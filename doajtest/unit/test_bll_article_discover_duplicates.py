@@ -9,25 +9,27 @@ from portality.models import Article, Journal, Account
 from portality.lib.paths import rel2abs
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_discover_duplicates"), "discover_duplicates", "test_id", {"test_id" : []})
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_discover_duplicates"), "discover_duplicates", "test_id",
+                               {"test_id" : []})
 
 
 EXCEPTIONS = {
     "DuplicateArticleException" : exceptions.DuplicateArticleException,
-    "ArgumentException" : exceptions.ArgumentException
+    "ArgumentException" : exceptions.ArgumentException,
+    "ValueError" : ValueError
 }
 
 IDENTS = [
-    {"doi" : "10.1234/abc/1", "fulltext" : "http://example.com/1"},
-    {"doi" : "10.1234/abc/2", "fulltext" : "http://example.com/2"},
-    {"doi" : "10.1234/abc/3", "fulltext" : "http://example.com/3"},
-    {"doi" : "10.1234/abc/4", "fulltext" : "http://example.com/4"},
-    {"doi" : "10.1234/abc/5", "fulltext" : "http://example.com/5"},
-    {"doi" : "10.1234/abc/6", "fulltext" : "http://example.com/6"},
-    {"doi" : "10.1234/abc/7", "fulltext" : "http://example.com/7"},
-    {"doi" : "10.1234/abc/8", "fulltext" : "http://example.com/8"},
-    {"doi" : "10.1234/abc/9", "fulltext" : "http://example.com/9"},
-    {"doi" : "10.1234/abc/10", "fulltext" : "http://example.com/10"}
+    {"doi" : "10.1234/abc/1", "fulltext" : "//example.com/1"},
+    {"doi" : "10.1234/abc/2", "fulltext" : "//example.com/2"},
+    {"doi" : "10.1234/abc/3", "fulltext" : "//example.com/3"},
+    {"doi" : "10.1234/abc/4", "fulltext" : "//example.com/4"},
+    {"doi" : "10.1234/abc/5", "fulltext" : "//example.com/5"},
+    {"doi" : "10.1234/abc/6", "fulltext" : "//example.com/6"},
+    {"doi" : "10.1234/abc/7", "fulltext" : "//example.com/7"},
+    {"doi" : "10.1234/abc/8", "fulltext" : "//example.com/8"},
+    {"doi" : "10.1234/abc/9", "fulltext" : "//example.com/9"},
+    {"doi" : "10.1234/abc/10", "fulltext" : "//example.com/10"}
 ]
 
 class TestBLLArticleDiscoverDuplicates(DoajTestCase):
@@ -43,7 +45,6 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
 
         article_arg = kwargs.get("article")
         owner_arg = kwargs.get("owner")
-        article_issn_arg = kwargs.get("article_issn")
         article_doi_arg = kwargs.get("article_doi")
         doi_duplicate_arg = kwargs.get("doi_duplicate")
         article_fulltext_arg = kwargs.get("article_fulltext")
@@ -79,7 +80,23 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
         article_ids = []
         if owner_arg not in ["none", "no_articles"]:
             for i, ident in enumerate(IDENTS):
-                source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=ident["doi"], fulltext=ident["fulltext"])
+                the_doi = ident["doi"]
+                if doi_duplicate_arg == "whitespace":
+                    the_doi = "  " + the_doi + "  "
+                elif doi_duplicate_arg == "prefixed":
+                    the_doi = "https://dx.doi.org/" + the_doi
+
+                the_fulltext = ident["fulltext"]
+                if fulltext_duplicate_arg == "whitespace":
+                    the_fulltext = "  http:" + the_fulltext
+                elif fulltext_duplicate_arg == "http":
+                    the_fulltext = "http:" + the_fulltext
+                elif fulltext_duplicate_arg == "https":
+                    the_fulltext = "https:" + the_fulltext
+                else:
+                    the_fulltext = "http:" + the_fulltext
+
+                source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi=the_doi, fulltext=the_fulltext)
                 article = Article(**source)
                 article.set_id()
                 block = i == len(IDENTS) - 1
@@ -91,18 +108,30 @@ class TestBLLArticleDiscoverDuplicates(DoajTestCase):
         doi = None
         fulltext = None
         if article_arg == "yes":
-            eissn = "1234=5678" if article_issn_arg == "matching" else "4321-9876"
-            pissn = "9876-5432" if article_issn_arg == "matching" else "6789-1234"
+            eissn = "1234=5678" # one matching
+            pissn = "6789-1234" # the other not - issn matches are not relevant to this test
 
-            if article_doi_arg == "yes":
+            if article_doi_arg in ["yes", "padded"]:
                 doi = "10.1234/abc/11"
-                if doi_duplicate_arg == "yes":
+                if doi_duplicate_arg in ["yes", "padded"]:
                     doi = IDENTS[0]["doi"]
+                if article_doi_arg == "padded":
+                    doi = "  doi:" + doi + "  "
+            elif article_doi_arg in ["invalid"]:
+                doi = "this isn't a doi"
 
-            if article_fulltext_arg == "yes":
-                fulltext = "http://example.com/11"
-                if fulltext_duplicate_arg == "yes":
+            if article_fulltext_arg in ["yes", "padded", "https"]:
+                fulltext = "//example.com/11"
+                if fulltext_duplicate_arg in ["yes", "padded", "https"]:
                     fulltext = IDENTS[0]["fulltext"]
+                if fulltext_duplicate_arg == "padded":
+                    fulltext = "  http:" + fulltext + "  "
+                elif fulltext_duplicate_arg == "https":
+                    fulltext = "https:" + fulltext
+                else:
+                    fulltext = "http:" + fulltext
+            elif article_fulltext_arg == "invalid":
+                fulltext = "this isn't a fulltext url"
 
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
             article = Article(**source)

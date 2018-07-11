@@ -16,12 +16,13 @@ from portality.core import app
 from portality import models
 from portality.formcontext.validate import ThisOrThat, OptionalIf, MaxLen
 from portality.formcontext.fields import DOAJSelectField
+from portality import regex
 
 ##########################################################################
 ## Forms and related features for Article metadata
 ##########################################################################
 
-DOI_REGEX = re.compile(r"^((https?://)?((dx\.)?doi\.org/|hdl\.handle\.net/)|doi:|info:doi:)?(?P<id>10\.\S+/\S+)$", re.IGNORECASE)
+DOI_REGEX = regex.DOI_COMPILED
 DOI_ERROR = 'Invalid DOI.  A DOI can optionally start with a prefix (such as "doi:"), followed by "10." and the remainder of the identifier'
 
 # use the year choices in app.cfg or default to 15 years previous.
