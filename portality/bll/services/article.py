@@ -207,7 +207,8 @@ class ArticleService(object):
                 for j in journals:
                     if issn not in seen_issns:
                         seen_issns[issn] = set()
-                    seen_issns[issn].add(j.owner)
+                    if j.owner is not None:
+                        seen_issns[issn].add(j.owner)
 
         for issn in issns:
             if issn not in seen_issns.keys():
