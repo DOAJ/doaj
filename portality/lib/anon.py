@@ -4,8 +4,6 @@ from faker import Faker
 from portality.core import app
 
 fake = Faker()
-if app.config['FAKER_SEED'] is not None:
-    fake.seed(app.config['FAKER_SEED'])
 
 
 def anon_email(email):

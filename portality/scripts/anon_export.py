@@ -5,12 +5,12 @@ from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.lib.dataobj import DataStructureException
 
 
-def __anonymise_email(record):
+def _anonymise_email(record):
     record.set_email(anon_email(record.email))
     return record
 
 
-def __anonymise_admin(record):
+def _anonymise_admin(record):
     new_email = anon_email(record.get_latest_contact_email())
     record.remove_contacts()
     record.add_contact(anon_name(), new_email)
@@ -30,7 +30,7 @@ def anonymise_account(record):
     except DataStructureException:
         return record
 
-    return __anonymise_email(a).data
+    return _anonymise_email(a).data
 
 
 def anonymise_journal(record):
@@ -39,7 +39,7 @@ def anonymise_journal(record):
     except DataStructureException:
         return record
 
-    return __anonymise_admin(j).data
+    return _anonymise_admin(j).data
 
 
 def anonymise_suggestion(record):
@@ -48,7 +48,7 @@ def anonymise_suggestion(record):
     except DataStructureException:
         return record
 
-    sug = __anonymise_admin(sug)
+    sug = _anonymise_admin(sug)
     sug.set_suggester(anon_name(), anon_email(sug.suggester['email']))
     return sug.data
 
@@ -77,6 +77,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-l", "--limit", type=int, help="Number of records to export from each type. If you specify e.g. 100, then only the first 100 accounts, 100 journals, 100 articles etc. will be exported. The \"first\" 100 will be ordered by whatever the esprit iterate functionality uses as default ordering, usually alphabetically by record id.")
+    parser.add_argument("-o", "--output-file", required=True, help="Filename to output results to")
     args = parser.parse_args()
     if args.limit > 0:
         limit = args.limit
@@ -85,7 +86,8 @@ if __name__ == '__main__':
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    for type_ in ['account']:# esprit.raw.list_types(connection=conn):
+    for type_ in esprit.raw.list_types(connection=conn):
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            esprit.tasks.dump(conn, type_, transform=transform, limit=limit)
+            with open(args.output_file, 'wb') as o:
+                esprit.tasks.dump(conn, type_, transform=transform, limit=limit, out=o)
