@@ -10,7 +10,7 @@ from portality.lib.paths import rel2abs
 from doajtest.mocks.model_Journal import ModelJournalMockFactory
 
 def load_cases():
-    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_issn_ownership_status"), "issn_ownership_status", "test_id",
+    return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_is_legitimate_owner"), "is_legitimate_owner", "test_id",
                                {"test_id" : []})
 
 
@@ -18,18 +18,18 @@ EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException
 }
 
-class TestBLLArticleISSNOwnershipStatus(DoajTestCase):
+class TestBLLArticleIsLegitimateOwner(DoajTestCase):
 
     def setUp(self):
-        super(TestBLLArticleISSNOwnershipStatus, self).setUp()
+        super(TestBLLArticleIsLegitimateOwner, self).setUp()
         self._old_find_by_issn = Journal.find_by_issn
 
     def tearDown(self):
         Journal.find_by_issn = self._old_find_by_issn
-        super(TestBLLArticleISSNOwnershipStatus, self).tearDown()
+        super(TestBLLArticleIsLegitimateOwner, self).tearDown()
 
     @parameterized.expand(load_cases)
-    def test_01_issn_ownership_status(self, name, kwargs):
+    def test_01_is_legitimate_owner(self, name, kwargs):
 
         article_arg = kwargs.get("article")
         owner_arg = kwargs.get("owner")
@@ -40,6 +40,7 @@ class TestBLLArticleISSNOwnershipStatus(DoajTestCase):
         journal_owner_arg = kwargs.get("journal_owner")
 
         raises_arg = kwargs.get("raises")
+        legit_arg = kwargs.get("legit")
 
         raises = EXCEPTIONS.get(raises_arg)
 
@@ -105,69 +106,11 @@ class TestBLLArticleISSNOwnershipStatus(DoajTestCase):
 
         if raises is not None:
             with self.assertRaises(raises):
-                svc.issn_ownership_status(article, owner_id)
+                svc.is_legitimate_owner(article, owner_id)
         else:
-            owned, shared, unowned, unmatched = svc.issn_ownership_status(article, owner_id)
+            legit = svc.is_legitimate_owner(article, owner_id)
 
-            owned_count = 0
-            if seen_eissn_arg == "yes" and eissn is not None and journal_owner_arg in ["correct"]:
-                assert eissn in owned
-                owned_count += 1
-            elif eissn is not None:
-                assert eissn not in owned
-
-            if seen_pissn_arg == "yes" and pissn is not None and journal_owner_arg in ["correct"]:
-                assert pissn in owned
-                owned_count += 1
-            elif pissn is not None:
-                assert pissn not in owned
-
-            assert len(owned) == owned_count
-
-
-            shared_count = 0
-            if seen_eissn_arg == "yes" and eissn is not None and journal_owner_arg in ["mix"]:
-                assert eissn in shared
-                shared_count += 1
-            elif eissn is not None:
-                assert eissn not in shared
-
-            if seen_pissn_arg == "yes" and pissn is not None and journal_owner_arg in ["mix"]:
-                assert pissn in shared
-                shared_count += 1
-            elif pissn is not None:
-                assert pissn not in shared
-
-            assert len(shared) == shared_count
-
-
-            unowned_count = 0
-            if seen_eissn_arg == "yes" and eissn is not None and journal_owner_arg in ["incorrect", "none"]:
-                assert eissn in unowned
-                unowned_count += 1
-            elif eissn is not None:
-                assert eissn not in unowned
-
-            if seen_pissn_arg == "yes" and pissn is not None and journal_owner_arg in ["incorrect", "none"]:
-                assert pissn in unowned
-                unowned_count += 1
-            elif pissn is not None:
-                assert pissn not in unowned
-
-            assert len(unowned) == unowned_count
-
-
-            unmatched_count = 0
-            if seen_eissn_arg == "no" and eissn is not None:
-                assert eissn in unmatched
-                unmatched_count += 1
-            elif eissn is not None:
-                assert eissn not in unmatched
-
-            if seen_pissn_arg == "no" and pissn is not None:
-                assert pissn in unmatched
-                unmatched_count += 1
-            elif pissn is not None:
-                assert pissn not in unmatched
-
-            assert len(unmatched) == unmatched_count
+            if legit_arg == "no":
+                assert legit is False
+            elif legit_arg == "yes":
+                assert legit is True
