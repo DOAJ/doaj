@@ -1,18 +1,22 @@
-field,test_id,article,article_eissn,article_pissn,owner,seen_eissn,seen_pissn,journal_owner,raises
-type,index,generated,generated,generated,generated,generated,generated,generated,conditional
-default,,,,,,,,,
-,,,,,,,,,
-values,,none,-,-,none,-,-,none,ArgumentException
-values,,exists,yes,yes,exists,yes,yes,correct,
-values,,,no,no,,no,no,incorrect,
-values,,,,,,,,mix,
-,,,,,,,,,
-constraint article,,none,-,-,,-,-,,
-constraint article,,exists,!-,!-,,!-,!-,,
-constraint journal_owner,,,,,exists,,,correct,
-constraint journal_owner,,,,,exists,,,mix,
-constraint article_eissn,,,no,yes,,,,,
-constraint article_pissn,,,yes,no,,,,,
-,,,,,,,,,
-conditional raises,,none,,,,,,,ArgumentException
-conditional raises,,,,,none,,,,ArgumentException
+field,test_id,article,article_eissn,article_pissn,owner,seen_eissn,seen_pissn,journal_owner,raises,legit
+type,index,generated,generated,generated,generated,generated,generated,generated,conditional,conditional
+default,,,,,,,,,,no
+,,,,,,,,,,
+values,,none,-,-,none,-,-,none,ArgumentException,
+values,,exists,yes,yes,exists,yes,yes,correct,,
+values,,,no,no,,no,no,incorrect,,
+values,,,,,,,,mix,,
+,,,,,,,,,,
+constraint article,,none,-,-,,-,-,,,
+constraint article,,exists,!-,!-,,!-,!-,,,
+constraint journal_owner,,,,,exists,,,correct,,
+constraint journal_owner,,,,,exists,,,mix,,
+constraint article_eissn,,,no,yes,,no,,,,
+constraint article_pissn,,,yes,no,,,no,,,
+,,,,,,,,,,
+conditional raises,,none,,,,,,,ArgumentException,
+conditional raises,,,,,none,,,,ArgumentException,
+,,,,,,,,,,
+conditional legit,,,yes,no,,yes,no,correct,,yes
+conditional legit,,,yes,yes,,yes,yes,correct,,yes
+conditional legit,,,no,yes,,no,yes,correct,,yes

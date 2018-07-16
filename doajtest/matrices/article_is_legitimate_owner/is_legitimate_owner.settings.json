@@ -68,6 +68,11 @@
               "or": [
                 "yes"
               ]
+            }, 
+            "seen_eissn": {
+              "or": [
+                "no"
+              ]
             }
           }
         }
@@ -84,6 +89,11 @@
             "article_eissn": {
               "or": [
                 "yes"
+              ]
+            }, 
+            "seen_pissn": {
+              "or": [
+                "no"
               ]
             }
           }
@@ -164,6 +174,68 @@
       }, 
       "type": "conditional", 
       "name": "raises"
+    }, 
+    {
+      "default": "no", 
+      "values": {
+        "yes": {
+          "conditions": [
+            {
+              "article_eissn": [
+                "yes"
+              ], 
+              "article_pissn": [
+                "no"
+              ], 
+              "journal_owner": [
+                "correct"
+              ], 
+              "seen_eissn": [
+                "yes"
+              ], 
+              "seen_pissn": [
+                "no"
+              ]
+            }, 
+            {
+              "article_eissn": [
+                "yes"
+              ], 
+              "article_pissn": [
+                "yes"
+              ], 
+              "journal_owner": [
+                "correct"
+              ], 
+              "seen_eissn": [
+                "yes"
+              ], 
+              "seen_pissn": [
+                "yes"
+              ]
+            }, 
+            {
+              "article_eissn": [
+                "no"
+              ], 
+              "article_pissn": [
+                "yes"
+              ], 
+              "journal_owner": [
+                "correct"
+              ], 
+              "seen_eissn": [
+                "no"
+              ], 
+              "seen_pissn": [
+                "yes"
+              ]
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "legit"
     }
   ]
 }
