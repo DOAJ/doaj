@@ -1,6 +1,6 @@
 import re
 
-DOI = r"^((https?://)?((dx\.)?doi\.org/|hdl\.handle\.net/)|doi:|info:doi:)?(?P<id>10\.\S+/\S+)$"
+DOI = r"^((https?://)?((dx\.)?doi\.org/|hdl\.handle\.net/)|doi:|info:doi/|info:hdl/)?(?P<id>10\.\S+/\S+)$"
 DOI_COMPILED = re.compile(DOI, re.IGNORECASE)
 
 def is_match(pattern, string, *args, **kwargs):

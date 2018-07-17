@@ -8,32 +8,6 @@ from datetime import datetime
 
 class ArticleService(object):
 
-    '''
-    def normalise_article(self, article):
-        """
-        Take an article object and force key values to be correctly normalised and validated
-        so that the article is suitable for inclusion into DOAJ.
-
-        :param article:
-        :return:
-        """
-        b = article.bibjson()
-
-        idents = b.get_identifiers()
-        for ident in idents:
-            ident["id"] = ident["id"].strip()
-            if ident["type"] == constants.IDENT_TYPE_DOI:
-                if not regex.is_match(regex.DOI_COMPILED, ident["id"]):
-                    raise ValueError("DOI in article does not meet the regex")
-
-        links = b.get_urls()
-        for link in links:
-            link["url"] = link["url"].strip()
-            link["url"] = to_url(["url"])
-
-        return article
-    '''
-
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("batch_create_article", [

@@ -1,0 +1,18 @@
+field,test_id,url,scheme,whitespace,raises
+type,index,generated,generated,generated,conditional
+default,,,,,
+,,,,,
+values,,none,-,-,ValueError
+values,,exists,http,yes,
+values,,,https,no,
+values,,,ftp,,
+values,,,ftps,,
+values,,,invalid,,
+values,,,unknown,,
+values,,,none,,
+,,,,,
+constraint url,,none,-,-,
+constraint url,,exists,!-,!-,
+,,,,,
+conditional raises,,,invalid,,ValueError
+conditional raises,,,unknown,,ValueError
