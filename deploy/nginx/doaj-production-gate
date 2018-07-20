@@ -88,7 +88,7 @@ server {
 # different SSL cert, see further down
 
 limit_req_zone $binary_remote_addr zone=general:100m rate=2r/s;
-limit_req_zone $binary_remote_addr zone=api:100m rate=3r/s;
+limit_req_zone $binary_remote_addr zone=api:100m rate=2r/s;
 limit_req_status 429;
 server {
     listen          443 ssl;
