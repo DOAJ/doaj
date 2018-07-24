@@ -1,8 +1,6 @@
 from portality.lib.argvalidate import argvalidate
-from portality.lib.dataobj import to_url
-from portality import models, constants, regex
+from portality import models
 from portality.bll import exceptions
-import re
 
 from datetime import datetime
 

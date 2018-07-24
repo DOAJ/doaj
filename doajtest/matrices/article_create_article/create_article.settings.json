@@ -1,0 +1,238 @@
+{
+  "parameters": [
+    {
+      "type": "index", 
+      "name": "test_id"
+    }, 
+    {
+      "values": {
+        "none": {
+          "constraints": {
+            "duplicate_check": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            }, 
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "dry_run": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "merge_duplicate": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        }, 
+        "exists": {}
+      }, 
+      "type": "generated", 
+      "name": "article"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "article": {
+              "or": [
+                "exists"
+              ]
+            }
+          }
+        }, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "article_duplicate"
+    }, 
+    {
+      "values": {
+        "owner": {}, 
+        "none": {
+          "constraints": {
+            "limit_to_account": {
+              "or": [
+                "false"
+              ]
+            }
+          }
+        }, 
+        "not_owner": {}
+      }, 
+      "type": "generated", 
+      "name": "account"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "duplicate_check"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "merge_duplicate"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "limit_to_account"
+    }, 
+    {
+      "values": {
+        "false": {}, 
+        "none": {}, 
+        "true": {}
+      }, 
+      "type": "generated", 
+      "name": "dry_run"
+    }, 
+    {
+      "default": "", 
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "article": [
+                "none"
+              ]
+            }, 
+            {
+              "account": [
+                "none"
+              ]
+            }, 
+            {
+              "duplicate_check": [
+                "none"
+              ]
+            }, 
+            {
+              "merge_duplicate": [
+                "none"
+              ]
+            }, 
+            {
+              "limit_to_account": [
+                "none"
+              ]
+            }, 
+            {
+              "dry_run": [
+                "none"
+              ]
+            }
+          ]
+        }, 
+        "ArgumentExeption": {}, 
+        "DuplicateArticleException": {
+          "conditions": [
+            {
+              "duplicate_check": [
+                "true"
+              ], 
+              "article": [
+                "exists"
+              ], 
+              "account": [
+                "owner"
+              ], 
+              "merge_duplicate": [
+                "false"
+              ], 
+              "article_duplicate": [
+                "yes"
+              ]
+            }, 
+            {
+              "duplicate_check": [
+                "true"
+              ], 
+              "article": [
+                "exists"
+              ], 
+              "account": [
+                "not_owner"
+              ], 
+              "merge_duplicate": [
+                "false"
+              ], 
+              "article_duplicate": [
+                "yes"
+              ]
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "raises"
+    }, 
+    {
+      "default": "0", 
+      "values": {
+        "1": {
+          "conditions": [
+            {
+              "article": [
+                "exists"
+              ], 
+              "account": [
+                "not_owner"
+              ], 
+              "limit_to_account": [
+                "false"
+              ]
+            }, 
+            {
+              "article": [
+                "exists"
+              ], 
+              "account": [
+                "owner"
+              ]
+            }
+          ]
+        }, 
+        "0": {
+          "conditions": [
+            {
+              "article": [
+                "exists"
+              ], 
+              "account": [
+                "not_owner"
+              ], 
+              "limit_to_account": [
+                "true"
+              ]
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "success"
+    }
+  ]
+}

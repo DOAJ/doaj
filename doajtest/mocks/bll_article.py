@@ -44,3 +44,28 @@ class BLLArticleMockFactory(object):
             return possible_duplicates
 
         return mock
+
+    @classmethod
+    def is_legitimate_owner(cls, legit):
+        def mock(*arg, **kwarg):
+            return legit
+        return mock
+
+    @classmethod
+    def issn_ownership_status(cls, owned, shared, unowned, unmatched):
+
+        def mock(*arg, **kwarg):
+            return owned, shared, unowned, unmatched
+
+        return mock
+
+    @classmethod
+    def get_duplicate(cls, eissn, pissn, doi, fulltext):
+        source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
+        article = Article(**source)
+        article.set_id()
+
+        def mock(*args, **kwargs):
+            return article
+
+        return mock
