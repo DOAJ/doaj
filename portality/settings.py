@@ -312,14 +312,16 @@ QUERY_ROUTE = {
             "role" : None,
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.search.JournalArticle"
+            "dao" : "portality.models.search.JournalArticle",
+            "required_parameters" : {"ref" : ["fqw", "doaj"]}
         },
         "article" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
-            "dao" : "portality.models.Article"
+            "dao" : "portality.models.Article",
+            "required_parameters" : {"ref" : ["doaj"]}
         }
     },
     "publisher_query" : {
