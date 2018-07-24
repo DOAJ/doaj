@@ -38,7 +38,7 @@ def query(path=None):
         if current_user is not None and not current_user.is_anonymous:
             account = current_user._get_current_object()
         queryService = DOAJ.queryService()
-        res = queryService.search(domain, index_type, q, account)
+        res = queryService.search(domain, index_type, q, account, request.values)
     except exceptions.AuthoriseException as e:
         abort(403)
     except exceptions.NoSuchObjectException as e:
