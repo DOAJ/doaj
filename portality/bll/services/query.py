@@ -66,12 +66,20 @@ class QueryService(object):
 
         return res
 
-    def search(self, domain, index_type, raw_query, account):
+    def search(self, domain, index_type, raw_query, account, additional_parameters):
         query = Query()
         if raw_query is not None:
             query = Query(raw_query)
 
         cfg = self._get_config_for_search(domain, index_type, account)
+
+        # check that the request values permit a query to this endpoint
+        required_parameters = cfg.get("required_parameters")
+        if required_parameters is not None:
+            for k, vs in required_parameters.iteritems():
+                val = additional_parameters.get(k)
+                if val is None or val not in vs:
+                    raise exceptions.AuthoriseException()
 
         # get the name of the model that will handle this query, and then look up
         # the class that will handle it

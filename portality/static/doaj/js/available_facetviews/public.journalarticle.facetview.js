@@ -526,7 +526,7 @@ jQuery(document).ready(function($) {
 
 
     $('.facetview.journals_and_articles').facetview({
-        search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?',
+        search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?ref=doaj',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,
