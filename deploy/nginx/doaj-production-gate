@@ -124,6 +124,10 @@ server {
         expires max;
     }
 
+
+    location /oai { return 503; }
+    location /oai.article { return 503; }
+
     location /api {
         if ($block_ua) {return 403;}
         limit_req zone=api burst=5 nodelay;
