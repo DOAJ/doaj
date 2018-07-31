@@ -7,7 +7,7 @@
 -e git+https://github.com/CottageLabs/esprit.git@d64040cc66f39620e1add9118cc4016d001ae47a#egg=esprit
 -e git+https://github.com/CottageLabs/dictdiffer.git@cc86c1ca1a452169b1b2e4a0cb5fc9e6125bc572#egg=dictdiffer
 -e git+https://github.com/DOAJ/flask-swagger.git@f1dbf918d9903a588eed3cce2a87eeccc9f8cc0e#egg=flask-swagger
--e git+https://github.com/CottageLabs/combinatrix.git@a9d9bbb8eb2906726ca6aea670dbae67e83d602b#egg=combinatrix
+-e git+https://github.com/CottageLabs/combinatrix.git@a056925cd3490b04ed21136d12fcbe9236c6823e#egg=combinatrix
 
 # now run the normal setup.py and get all the normal PyPI dependencies from there
 -e .

@@ -60,12 +60,15 @@ class BLLArticleMockFactory(object):
         return mock
 
     @classmethod
-    def get_duplicate(cls, eissn, pissn, doi, fulltext):
-        source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
-        article = Article(**source)
-        article.set_id()
+    def get_duplicate(cls, return_none=False, eissn=None, pissn=None, doi=None, fulltext=None):
+        article = None
+        if not return_none:
+            source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
+            article = Article(**source)
+            article.set_id()
 
         def mock(*args, **kwargs):
             return article
 
         return mock
+

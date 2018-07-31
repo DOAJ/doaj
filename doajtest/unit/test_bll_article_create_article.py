@@ -5,14 +5,13 @@ from doajtest.fixtures import ArticleFixtureFactory, AccountFixtureFactory
 from doajtest.helpers import DoajTestCase
 from portality.bll import DOAJ
 from portality.bll import exceptions
-from portality.models import Article, Journal, Account
+from portality.models import Article, Account
 from portality.lib.paths import rel2abs
 from doajtest.mocks.bll_article import BLLArticleMockFactory
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_create_article"), "create_article", "test_id",
                                {"test_id" : []})
-
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,
@@ -97,7 +96,7 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         if article_duplicate_arg == "yes":
             gd_mock = BLLArticleMockFactory.get_duplicate(eissn="1234-5678", pissn="9876-5432", doi="10.123/abc/1", fulltext="http://example.com/1")
         else:
-            gd_mock = BLLArticleMockFactory.get_duplicate(eissn="6789-1234", pissn="4321-5678", doi="10.123/abc/2", fulltext="http://example.com/2")
+            gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
 
         ###########################################################

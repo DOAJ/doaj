@@ -16,8 +16,8 @@ conditional raises,,,,,none,,,,ArgumentException,
 conditional raises,,,,,,none,,,ArgumentException,
 conditional raises,,,,,,,none,,ArgumentException,
 conditional raises,,,,,,,,none,ArgumentException,
-conditional raises,,exists,yes,owner,true,false,,,DuplicateArticleException,
-conditional raises,,exists,yes,not_owner,true,false,,,DuplicateArticleException,
+conditional raises,,exists,yes,owner,true,false,!none,!none,DuplicateArticleException,
+conditional raises,,exists,yes,not_owner,true,false,false,!none,DuplicateArticleException,
 ,,,,,,,,,,
 conditional success,,exists,,not_owner,,,true,,,0
 conditional success,,exists,,not_owner,,,false,,,1

@@ -115,34 +115,46 @@
         "ArgumentException": {
           "conditions": [
             {
-              "article": [
-                "none"
-              ]
+              "article": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "account": [
-                "none"
-              ]
+              "account": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "duplicate_check": [
-                "none"
-              ]
+              "duplicate_check": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "merge_duplicate": [
-                "none"
-              ]
+              "merge_duplicate": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "limit_to_account": [
-                "none"
-              ]
+              "limit_to_account": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "dry_run": [
-                "none"
-              ]
+              "dry_run": {
+                "or": [
+                  "none"
+                ]
+              }
             }
           ]
         }, 
@@ -150,38 +162,78 @@
         "DuplicateArticleException": {
           "conditions": [
             {
-              "duplicate_check": [
-                "true"
-              ], 
-              "article": [
-                "exists"
-              ], 
-              "account": [
-                "owner"
-              ], 
-              "merge_duplicate": [
-                "false"
-              ], 
-              "article_duplicate": [
-                "yes"
-              ]
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }, 
+              "dry_run": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "article_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              }
             }, 
             {
-              "duplicate_check": [
-                "true"
-              ], 
-              "article": [
-                "exists"
-              ], 
-              "account": [
-                "not_owner"
-              ], 
-              "merge_duplicate": [
-                "false"
-              ], 
-              "article_duplicate": [
-                "yes"
-              ]
+              "duplicate_check": {
+                "or": [
+                  "true"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "not_owner"
+                ]
+              }, 
+              "dry_run": {
+                "nor": [
+                  "none"
+                ]
+              }, 
+              "merge_duplicate": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "false"
+                ]
+              }, 
+              "article_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              }
             }
           ]
         }
@@ -195,38 +247,54 @@
         "1": {
           "conditions": [
             {
-              "article": [
-                "exists"
-              ], 
-              "account": [
-                "not_owner"
-              ], 
-              "limit_to_account": [
-                "false"
-              ]
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "not_owner"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "false"
+                ]
+              }
             }, 
             {
-              "article": [
-                "exists"
-              ], 
-              "account": [
-                "owner"
-              ]
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "owner"
+                ]
+              }
             }
           ]
         }, 
         "0": {
           "conditions": [
             {
-              "article": [
-                "exists"
-              ], 
-              "account": [
-                "not_owner"
-              ], 
-              "limit_to_account": [
-                "true"
-              ]
+              "article": {
+                "or": [
+                  "exists"
+                ]
+              }, 
+              "account": {
+                "or": [
+                  "not_owner"
+                ]
+              }, 
+              "limit_to_account": {
+                "or": [
+                  "true"
+                ]
+              }
             }
           ]
         }
