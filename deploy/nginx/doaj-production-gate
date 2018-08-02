@@ -124,8 +124,14 @@ server {
         expires max;
     }
 
+    location /oainfo {
+        if ($block_ua) {return 403;}
+        limit_req zone=api burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
     location /oai { return 503; }
-    location /oai.article { return 503; }
 
     location /api {
         if ($block_ua) {return 403;}
