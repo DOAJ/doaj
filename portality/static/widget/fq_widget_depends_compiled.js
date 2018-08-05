@@ -4497,7 +4497,7 @@ jQuery(document).ready(function($) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "http://dx.doi.org/" + escapeHtml(doi.substring(tendot));
+                    var url = "https://doi.org/" + escapeHtml(doi.substring(tendot));
                     result += " DOI <a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
                 }
             }
