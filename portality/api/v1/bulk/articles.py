@@ -2,6 +2,7 @@ from portality.api.v1.common import Api, Api404Error, Api400Error, Api403Error, 
 from portality.api.v1.crud import ArticlesCrudApi
 
 from portality.bll import DOAJ
+from portality.bll import exceptions
 
 from copy import deepcopy
 
@@ -45,50 +46,11 @@ class ArticlesBulkApi(Api):
         articles = [ArticlesCrudApi.prep_article(data) for data in articles]
 
         articleService = DOAJ.articleService()
-        result = articleService.batch_create_articles(articles, account)
-
-        return [a.id for a in articles]
-
-        """
-        new_articles = []
-
-        ids = []
-        dois_seen = set()
-        fulltext_urls_seen = set()
-        for a in articles:
-            duplicate = False  # skip articles if their fulltext URL or DOI is the same
-
-            for i in a.get('bibjson', {}).get('identifier', []):
-                if i.get('type', '') == 'doi':
-                    if 'id' in i:
-                        if i['id'] in dois_seen:
-                            duplicate = True
-                            break
-                        dois_seen.add(i['id'])
-
-            if duplicate:
-                continue
-
-            for l in a.get('bibjson', {}).get('link', []):
-                if l.get('type', '') == 'fulltext':
-                    if 'url' in l:
-                        if l['url'] in fulltext_urls_seen:
-                            duplicate = True
-                            break
-                        fulltext_urls_seen.add(l['url'])
-
-            if duplicate:
-                continue
-
-            n = ArticlesCrudApi.create(a, account, dry_run=True)
-            new_articles.append(n)
-            ids.append(n.id)
-
-        for na in new_articles:
-            na.save()
-
-        return ids
-        """
+        try:
+            result = articleService.batch_create_articles(articles, account)
+            return [a.id for a in articles]
+        except exceptions.IngestException as e:
+            raise Api400Error(e.message)
 
 
     @classmethod

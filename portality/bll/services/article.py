@@ -7,6 +7,18 @@ from datetime import datetime
 class ArticleService(object):
 
     def batch_create_articles(self, articles, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True):
+        """
+        Create a batch of articles in a single operation.  Articles are either all created/updated or none of them are
+
+        This method checks for duplicates within the provided set and within the current database (if you set duplicate_check=True)
+
+        :param articles:  The list of article objects
+        :param account:     The account creating the articles
+        :param duplicate_check:     Whether to check for duplicates in the batch and in the index
+        :param merge_duplicate:     Should duplicates be merged.  If set to False, this may raise a DuplicateArticleException
+        :param limit_to_account:    Should the ingest be limited only to articles for journals owned by the account.  If set to True, may result in an IngestException
+        :return: a report on the state of the import: {success: x, fail: x, update: x, new: x, shared: [], unowned: [], unmatched: []}
+        """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("batch_create_article", [
             {"arg": articles, "instance" : list, "allow_none" : False, "arg_name" : "articles"},
@@ -77,6 +89,20 @@ class ArticleService(object):
 
 
     def create_article(self, article, account, duplicate_check=True, merge_duplicate=True, limit_to_account=True, dry_run=False):
+        """
+        Create an individual article in the database
+
+        This method will check and merge any duplicates, and report back on successes and failures in a manner consistent with
+        batch_create_articles.
+
+        :param article: The article to be created
+        :param account:     The account creating the article
+        :param duplicate_check:     Whether to check for duplicates in the database
+        :param merge_duplicate:     Whether to merge duplicate if found.  If set to False, may result in a DuplicateArticleException
+        :param limit_to_account:    Whether to limit create to when the account owns the journal to which the article belongs
+        :param dry_run:     Whether to actuall save, or if this is just to either see if it would work, or to prep for a batch ingest
+        :return:
+        """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("create_article", [
             {"arg": article, "instance" : models.Article, "allow_none" : False, "arg_name" : "article"},

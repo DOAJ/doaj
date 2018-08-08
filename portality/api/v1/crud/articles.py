@@ -77,31 +77,6 @@ class ArticlesCrudApi(CrudApi):
 
         return am
 
-        """
-        if not articleService.is_legitimate_owner(am, account.id):
-            raise Api403Error()
-
-        # before finalising, we need to determine whether this is a new article
-        # or an update
-        duplicate = articleService.get_duplicate(am, account.id)
-        # print duplicate
-        if duplicate is not None:
-            am.merge(duplicate) # merge will take the old id, so this will overwrite
-        else:
-            # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
-            # own values (note that last_updated will get overwritten anyway)
-            am.set_id()
-            am.set_created()
-
-        # not allowed to set subjects
-        am.bibjson().remove_subjects()
-        am = cls.__handle_journal_info(am)
-
-        # finally save the new article, and return to the caller
-        if not dry_run:
-            am.save()
-        return am
-        """
 
     @classmethod
     def prep_article(cls, data):

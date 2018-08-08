@@ -46,6 +46,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
 
         raises_arg = kwargs.get("raises")
         success_arg = kwargs.get("success")
+        original_saved_arg = kwargs.get("original_saved")
+        merge_saved_arg = kwargs.get("merge_saved")
 
         ###############################################
         ## set up
@@ -71,10 +73,12 @@ class TestBLLArticleCreateArticle(DoajTestCase):
         raises = EXCEPTIONS.get(raises_arg)
 
         article = None
+        original_id = None
         if article_arg == "exists":
             source = ArticleFixtureFactory.make_article_source(eissn="1234-5678", pissn="9876-5432", doi="10.123/abc/1", fulltext="http://example.com/1")
             article = Article(**source)
             article.set_id()
+            original_id = article.id
 
         account = None
         if account_arg != "none":
@@ -99,6 +103,8 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             gd_mock = BLLArticleMockFactory.get_duplicate(return_none=True)
         self.svc.get_duplicate = gd_mock
 
+        mock_article = self.svc.get_duplicate(article)
+
         ###########################################################
         # Execution
 
@@ -109,3 +115,21 @@ class TestBLLArticleCreateArticle(DoajTestCase):
             report = self.svc.create_article(article, account, duplicate_check, merge_duplicate, limit_to_account, dry_run)
 
             assert report["success"] == success
+
+            # check that the article was saved and if it was saved that it was suitably merged
+            if original_saved_arg == "yes":
+                original = Article.pull(original_id)
+                assert original is not None
+                assert report["update"] == 0
+            elif article is not None:
+                original = Article.pull(original_id)
+                assert original is None
+
+            if merge_saved_arg == "yes":
+                merged = Article.pull(mock_article.id)
+                assert merged is not None
+                assert report["update"] == 1
+            elif mock_article is not None:
+                merged = Article.pull(mock_article.id)
+                assert merged is None
+
