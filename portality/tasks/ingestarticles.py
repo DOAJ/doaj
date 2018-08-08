@@ -274,6 +274,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         except IngestException as e:
             job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
+            result = e.result
             try:
                 file_failed(path)
             except:
@@ -301,7 +302,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
             file_upload.partial(success, fail, update, new)
-            job.add_audit_message("Some articles in file failed to import")
+            job.add_audit_message("Some articles in file failed to import correctly, so no articles imported")
 
         file_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
         job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))

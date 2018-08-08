@@ -20,7 +20,8 @@ class ArticleService(object):
         if duplicate_check:
             batch_duplicates = self._batch_contains_duplicates(articles)
             if batch_duplicates:
-                raise exceptions.IngestException("One or more articles in this batch have duplicate identifiers")
+                report = {"success" : 0, "fail" : len(articles), "update" : 0, "new" : 0, "shared" : [], "unowned" : [], "unmatched" : []}
+                raise exceptions.IngestException("One or more articles in this batch have duplicate identifiers", result=report)
 
         # 2. check legitimate ownership
         success = 0
@@ -41,6 +42,7 @@ class ArticleService(object):
             all_unowned.update(result.get("unowned", set()))
             all_unmatched.update(result.get("unmatched", set()))
 
+        report = {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
@@ -50,8 +52,10 @@ class ArticleService(object):
                 # available in the index
                 articles[i].save(blocking=block)
 
-        # return some stats on the import success or failure
-        return {"success" : success, "fail" : fail, "update" : update, "new" : new, "shared" : all_shared, "unowned" : all_unowned, "unmatched" : all_unmatched}
+            # return some stats on the import
+            return report
+        else:
+            raise exceptions.IngestException("One or more articles failed to ingest; entire batch ingest halted", result=report)
 
 
     def _batch_contains_duplicates(self, articles):

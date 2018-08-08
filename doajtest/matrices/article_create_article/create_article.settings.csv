@@ -6,7 +6,7 @@ values,,none,no,none,none,none,none,none,ArgumentExeption,0
 values,,exists,yes,owner,true,true,true,true,DuplicateArticleException,1
 values,,,,not_owner,false,false,false,false,,
 ,,,,,,,,,,
-constraint article,,none,no,,false,false,false,false,,
+constraint article,,none,no,!owner,false,false,false,false,,
 constraint article_duplicate,,exists,yes,,,,,,,
 constraint account,,,,none,,,false,,,
 ,,,,,,,,,,

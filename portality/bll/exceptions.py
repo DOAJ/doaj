@@ -58,6 +58,7 @@ class IngestException(Exception):
         self.message = kwargs.get("message")
         self.inner_message = kwargs.get("inner_message")
         self.inner = kwargs.get("inner")
+        self.result = kwargs.get("result", {})
 
         tb = sys.exc_info()[2]
         if self.inner is not None:

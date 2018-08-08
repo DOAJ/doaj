@@ -13,14 +13,9 @@
                 "false"
               ]
             }, 
-            "article_duplicate": {
-              "or": [
-                "no"
-              ]
-            }, 
-            "limit_to_account": {
-              "or": [
-                "false"
+            "account": {
+              "nor": [
+                "owner"
               ]
             }, 
             "dry_run": {
@@ -28,7 +23,17 @@
                 "false"
               ]
             }, 
+            "article_duplicate": {
+              "or": [
+                "no"
+              ]
+            }, 
             "merge_duplicate": {
+              "or": [
+                "false"
+              ]
+            }, 
+            "limit_to_account": {
               "or": [
                 "false"
               ]

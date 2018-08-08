@@ -46,9 +46,20 @@ class BLLArticleMockFactory(object):
         return mock
 
     @classmethod
-    def is_legitimate_owner(cls, legit):
+    def is_legitimate_owner(cls, legit=None, legit_on_issn=None):
         def mock(*arg, **kwarg):
-            return legit
+            if legit is not None:
+                return legit
+
+            if legit_on_issn is not None:
+                article = arg[0]
+                issns = article.bibjson().issns()
+                for issn in issns:
+                    if issn in legit_on_issn:
+                        return True
+                return False
+
+            return False
         return mock
 
     @classmethod
@@ -60,7 +71,7 @@ class BLLArticleMockFactory(object):
         return mock
 
     @classmethod
-    def get_duplicate(cls, return_none=False, eissn=None, pissn=None, doi=None, fulltext=None):
+    def get_duplicate(cls, return_none=False, given_article_id=None, eissn=None, pissn=None, doi=None, fulltext=None):
         article = None
         if not return_none:
             source = ArticleFixtureFactory.make_article_source(eissn=eissn, pissn=pissn, doi=doi, fulltext=fulltext)
@@ -68,7 +79,12 @@ class BLLArticleMockFactory(object):
             article.set_id()
 
         def mock(*args, **kwargs):
-            return article
+            article = args[0]
+            if given_article_id is not None:
+                if given_article_id == article.id:
+                    return article
+            else:
+                return article
 
         return mock
 
