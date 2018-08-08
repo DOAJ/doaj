@@ -14,7 +14,7 @@ import time
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "article_batch_create_article"), "batch_create_article", "test_id",
-                               {"test_id" : ["47"]})
+                               {"test_id" : []})
 
 EXCEPTIONS = {
     "ArgumentException" : exceptions.ArgumentException,

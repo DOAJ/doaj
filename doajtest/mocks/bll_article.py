@@ -79,9 +79,9 @@ class BLLArticleMockFactory(object):
             article.set_id()
 
         def mock(*args, **kwargs):
-            article = args[0]
+            supplied_article = args[0]
             if given_article_id is not None:
-                if given_article_id == article.id:
+                if given_article_id == supplied_article.id:
                     return article
             else:
                 return article
