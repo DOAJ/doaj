@@ -3,6 +3,9 @@
 import sys
 import subprocess
 from datetime import datetime
+from time import sleep
+import logging
+import traceback
 
 from pid.decorator import pidfile
 import argparse
@@ -10,9 +13,12 @@ import requests
 
 from portality.core import app
 
+from requests import ReadTimeout
 
 DEFAULT_MAX_HEAP_ALLOWED_PERCENT = 90
 
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s')
+logger = logging.getLogger(__name__)
 
 class RollbackException(Exception):
     pass
@@ -20,21 +26,43 @@ class RollbackException(Exception):
 
 # TODO consider backoff/retrying operations via an error handler that's a decorator
 
+def retry_backoff(f):
+    max_retries = 6
+
+    def wrapper():
+        count = 0
+
+        while count < max_retries:
+            try:
+                f()
+                break  # don't run again if run successfully
+
+            # add exceptions here that we want to retry for - if not here the exception will bubble up on first try
+            except ReadTimeout:  # http timeout
+                pass
+            except ValueError:  # JSON decodes
+                pass
+
+            sleep(2**count) # 1s, 2s, 4s, 8s, 16s, 32s for 6 retries
+            count += 1
+
+    return wrapper
+
+@retry_backoff
 def get_nodes_available():
-    # TODO backoff / retry on failure
     r = requests.get("{}/_cluster/state/nodes".format(app.config['ELASTIC_SEARCH_HOST']))
     node_info = r.json()
     return node_info['nodes']
 
 
+@retry_backoff
 def get_mem_used(node_id):
-    # TODO backoff / retry on failure
     r = requests.get(
         "{es_target}/_nodes/{node_id}/stats/jvm".format(
             es_target=app.config['ELASTIC_SEARCH_HOST'], node_id=node_id
         )
     )
-    node_stats = r.json()  # TODO handle ValueError
+    node_stats = r.json()
     return node_stats['nodes'][node_id]['jvm']['mem']['heap_used_percent']
 
 
@@ -44,14 +72,20 @@ def get_mem_use_per_node(node_ids):
         mem_use_per_node[node_id] = get_mem_used(node_id)
     return mem_use_per_node
 
+nginx_control_fail_template = \
+"""Rolling back take_node_out_of_upstream_nginx_pool.
+Exception: {}
+
+Command return code: {}
+Command output: {}
+"""
 
 def take_node_out_of_upstream_nginx_pool(node_name):
     try:
         subprocess.check_call('cd /etc/nginx/includes && ln -sf index-servers-production-without-{}.conf upstream-index-production.conf'.format(node_name))
         subprocess.check_output('sudo nginx -t && sudo nginx -s reload')
     except subprocess.CalledProcessError as e:
-        # TODO log that we're rolling back, including the exception traceback, so that we know which of the above operations failed
-        # make sure to log e.returncode and e.output
+        logger.error( nginx_control_fail_template.format(traceback.format_exc(), e.returncode, e.output) )
         reinstate_all_nodes_in_upstream_nginx_pool()
         raise RollbackException
 
@@ -61,8 +95,7 @@ def reinstate_all_nodes_in_upstream_nginx_pool():
         subprocess.check_call('cd /etc/nginx/includes && ln -sf index-servers-production-all.conf upstream-index-production.conf')
         subprocess.check_output('sudo nginx -t && sudo nginx -s reload')
     except subprocess.CalledProcessError as e:
-        # TODO log that we're rolling back, including the exception traceback, so that we know which of the above operations failed
-        # make sure to log e.returncode and e.output
+        logger.error(nginx_control_fail_template.format(traceback.format_exc(), e.returncode, e.output))
         # at this point rollback of nginx configs would have failed - email doajdev@cottagelabs.com
         pass
 
