@@ -246,20 +246,28 @@
         "yes": {
           "conditions": [
             {
-              "owner": [
-                "articles"
-              ], 
-              "doi_duplicate": [
-                "yes"
-              ]
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              }, 
+              "doi_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }
             }, 
             {
-              "owner": [
-                "articles"
-              ], 
-              "doi_duplicate": [
-                "padded"
-              ]
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              }, 
+              "doi_duplicate": {
+                "or": [
+                  "padded"
+                ]
+              }
             }
           ]
         }, 
@@ -274,28 +282,40 @@
         "yes": {
           "conditions": [
             {
-              "owner": [
-                "articles"
-              ], 
-              "fulltext_duplicate": [
-                "yes"
-              ]
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              }, 
+              "fulltext_duplicate": {
+                "or": [
+                  "yes"
+                ]
+              }
             }, 
             {
-              "owner": [
-                "articles"
-              ], 
-              "fulltext_duplicate": [
-                "padded"
-              ]
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              }, 
+              "fulltext_duplicate": {
+                "or": [
+                  "padded"
+                ]
+              }
             }, 
             {
-              "owner": [
-                "articles"
-              ], 
-              "fulltext_duplicate": [
-                "https"
-              ]
+              "owner": {
+                "or": [
+                  "articles"
+                ]
+              }, 
+              "fulltext_duplicate": {
+                "or": [
+                  "https"
+                ]
+              }
             }
           ]
         }, 
@@ -310,38 +330,50 @@
         "ArgumentException": {
           "conditions": [
             {
-              "article": [
-                "no"
-              ]
+              "article": {
+                "or": [
+                  "no"
+                ]
+              }
             }
           ]
         }, 
         "DuplicateArticleException": {
           "conditions": [
             {
-              "article_doi": [
-                "no"
-              ], 
-              "article": [
-                "yes"
-              ], 
-              "article_fulltext": [
-                "no"
-              ]
+              "article_doi": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "article": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "article_fulltext": {
+                "or": [
+                  "no"
+                ]
+              }
             }
           ]
         }, 
         "ValueError": {
           "conditions": [
             {
-              "article_doi": [
-                "invalid"
-              ]
+              "article_doi": {
+                "or": [
+                  "invalid"
+                ]
+              }
             }, 
             {
-              "article_fulltext": [
-                "invalid"
-              ]
+              "article_fulltext": {
+                "or": [
+                  "invalid"
+                ]
+              }
             }
           ]
         }

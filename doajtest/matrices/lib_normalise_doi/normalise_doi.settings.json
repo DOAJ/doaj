@@ -71,9 +71,11 @@
         "ValueError": {
           "conditions": [
             {
-              "prefix": [
-                "invalid"
-              ]
+              "prefix": {
+                "or": [
+                  "invalid"
+                ]
+              }
             }
           ]
         }

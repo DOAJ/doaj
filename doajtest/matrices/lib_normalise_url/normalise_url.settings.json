@@ -67,14 +67,18 @@
         "ValueError": {
           "conditions": [
             {
-              "scheme": [
-                "invalid"
-              ]
+              "scheme": {
+                "or": [
+                  "invalid"
+                ]
+              }
             }, 
             {
-              "scheme": [
-                "unknown"
-              ]
+              "scheme": {
+                "or": [
+                  "unknown"
+                ]
+              }
             }
           ]
         }

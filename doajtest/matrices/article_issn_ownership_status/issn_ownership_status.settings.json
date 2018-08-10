@@ -150,14 +150,18 @@
         "ArgumentException": {
           "conditions": [
             {
-              "article": [
-                "none"
-              ]
+              "article": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "owner": [
-                "none"
-              ]
+              "owner": {
+                "or": [
+                  "none"
+                ]
+              }
             }
           ]
         }

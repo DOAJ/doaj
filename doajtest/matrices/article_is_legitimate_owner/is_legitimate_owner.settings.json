@@ -160,14 +160,18 @@
         "ArgumentException": {
           "conditions": [
             {
-              "article": [
-                "none"
-              ]
+              "article": {
+                "or": [
+                  "none"
+                ]
+              }
             }, 
             {
-              "owner": [
-                "none"
-              ]
+              "owner": {
+                "or": [
+                  "none"
+                ]
+              }
             }
           ]
         }
@@ -181,55 +185,85 @@
         "yes": {
           "conditions": [
             {
-              "article_eissn": [
-                "yes"
-              ], 
-              "article_pissn": [
-                "no"
-              ], 
-              "journal_owner": [
-                "correct"
-              ], 
-              "seen_eissn": [
-                "yes"
-              ], 
-              "seen_pissn": [
-                "no"
-              ]
+              "article_eissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "article_pissn": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "journal_owner": {
+                "or": [
+                  "correct"
+                ]
+              }, 
+              "seen_eissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "seen_pissn": {
+                "or": [
+                  "no"
+                ]
+              }
             }, 
             {
-              "article_eissn": [
-                "yes"
-              ], 
-              "article_pissn": [
-                "yes"
-              ], 
-              "journal_owner": [
-                "correct"
-              ], 
-              "seen_eissn": [
-                "yes"
-              ], 
-              "seen_pissn": [
-                "yes"
-              ]
+              "article_eissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "article_pissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "journal_owner": {
+                "or": [
+                  "correct"
+                ]
+              }, 
+              "seen_eissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "seen_pissn": {
+                "or": [
+                  "yes"
+                ]
+              }
             }, 
             {
-              "article_eissn": [
-                "no"
-              ], 
-              "article_pissn": [
-                "yes"
-              ], 
-              "journal_owner": [
-                "correct"
-              ], 
-              "seen_eissn": [
-                "no"
-              ], 
-              "seen_pissn": [
-                "yes"
-              ]
+              "article_eissn": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "article_pissn": {
+                "or": [
+                  "yes"
+                ]
+              }, 
+              "journal_owner": {
+                "or": [
+                  "correct"
+                ]
+              }, 
+              "seen_eissn": {
+                "or": [
+                  "no"
+                ]
+              }, 
+              "seen_pissn": {
+                "or": [
+                  "yes"
+                ]
+              }
             }
           ]
         }
