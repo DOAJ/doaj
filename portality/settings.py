@@ -310,6 +310,7 @@ QUERY_ROUTE = {
         "journal,article" : {
             "auth" : False,
             "role" : None,
+            "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.search.JournalArticle",
@@ -403,6 +404,9 @@ QUERY_ROUTE = {
 }
 
 QUERY_FILTERS = {
+    # sanitisers
+    "public_query_validator" : "portality.lib.query_filters.public_query_validator",
+
     # query filters
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
     "owner" : "portality.lib.query_filters.owner",

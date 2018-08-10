@@ -71,7 +71,7 @@ jQuery(document).ready(function($) {
 
         doElasticSearchQuery({
             success: subjectFound,
-            queryobj: query,
+            queryobj: count_query,
             search_url: es_scheme + '//' + es_domain + '/query/journal,article/_search?ref=please-stop-using-this-endpoint-directly-use-the-api',
             datatype: "jsonp"
         });
