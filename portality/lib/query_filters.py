@@ -2,6 +2,26 @@ from flask_login import current_user
 from portality.core import app
 from portality import models
 
+# query sanitisers
+##################
+
+def public_query_validator(q):
+    # no deep paging
+    if q.from_result() > 10000:
+        return False
+
+    if q.size() > 200:
+        return False
+
+    # if the query has facets, that's fine
+    # otherwise, if it has no facets, only allow "count" style
+    # queries with zero results returned
+    if q.has_facets():
+        return True
+    else:
+        return q.size() == 0
+
+
 # query filters
 ###############
 
