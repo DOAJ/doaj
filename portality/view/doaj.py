@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash
+from flask import Blueprint, request, flash, session
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib
@@ -12,10 +12,11 @@ from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
-from portality.lib import analytics
+from portality.lib import analytics, session_rate_limit
 
 import json
 import os
+from datetime import datetime
 
 import sys
 try:
@@ -68,6 +69,7 @@ def fqw_hit():
 
 
 @blueprint.route("/search", methods=['GET'])
+@session_rate_limit.set_session_var("qa")
 def search():
     return render_template('doaj/search.html', search_page=True, facetviews=['public.journalarticle.facetview'])
 
@@ -95,6 +97,7 @@ def search_post():
 
 
 @blueprint.route("/subjects")
+@session_rate_limit.set_session_var("qa")
 def subjects():
     return render_template("doaj/subjects.html", subject_page=True, lcc_jstree=json.dumps(lcc_jstree))
 
@@ -192,6 +195,7 @@ def list_journals():
 @blueprint.route("/toc/<identifier>")
 @blueprint.route("/toc/<identifier>/<volume>")
 @blueprint.route("/toc/<identifier>/<volume>/<issue>")
+@session_rate_limit.set_session_var("qa")
 def toc(identifier=None, volume=None, issue=None):
     # identifier may be the journal id or an issn
     journal = None
