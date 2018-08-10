@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.12.5"
+DOAJ_VERSION = "2.12.6"
 
 OFFLINE_MODE = False
 
@@ -313,7 +313,7 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.search.JournalArticle",
-            "required_parameters" : {"ref" : ["fqw", "please-use-our-api-instead"]}
+            "required_parameters" : {"ref" : ["fqw", "please-stop-using-this-endpoint-directly-use-the-api"]}
         },
         "article" : {
             "auth" : False,
@@ -321,7 +321,7 @@ QUERY_ROUTE = {
             "query_filters" : ["only_in_doaj"],
             "result_filters" : ["public_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Article",
-            "required_parameters" : {"ref" : ["doaj"]}
+            "required_parameters" : {"ref" : ["please-stop-using-this-endpoint-directly-use-the-api"]}
         }
     },
     "publisher_query" : {
