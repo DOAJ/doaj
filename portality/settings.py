@@ -759,3 +759,7 @@ GA_ACTIONS_API = {
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
+
+# ========================================
+# Anonymisation configuration
+ANON_SALT = 'changeme'

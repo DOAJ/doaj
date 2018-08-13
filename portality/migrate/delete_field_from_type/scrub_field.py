@@ -21,11 +21,11 @@ def scrub_field(connection, o_type, o_field, batch_size=500):
         batch.append(o_obj.data)
 
         if len(batch) >= batch_size:
-            esprit.raw.bulk(connection, o_type, batch, idkey='id')
+            esprit.raw.bulk(connection, batch, idkey='id', type_=o_type)
             batch = []
 
     # Finish saving the final batch
-    esprit.raw.bulk(connection, o_type, batch, idkey='id')
+    esprit.raw.bulk(connection, batch, idkey='id', type_=o_type)
 
 
 if __name__ == "__main__":
