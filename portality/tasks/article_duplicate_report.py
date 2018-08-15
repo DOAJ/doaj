@@ -56,7 +56,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
         
-        header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "owners_match", "titles_match", "article_title", "match_title"]
+        header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
 
         # Record the sets of duplicated articles
@@ -70,7 +70,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
             for a in article_reader:
                 a_count += 1
-                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}})
+                article = models.Article(_source={'id': a[0], 'created_date': a[1], 'bibjson': {'identifier': json.loads(a[2]), 'link': json.loads(a[3]), 'title': a[4]}, 'admin': {'in_doaj': json.loads(a[5])}})
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
@@ -120,7 +120,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 "created_date",
                 "bibjson.identifier",
                 "bibjson.link",
-                "bibjson.title"
+                "bibjson.title",
+                "admin.in_doaj"
             ],
             "query": {
                 "match_all": {}
@@ -136,7 +137,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 a['created_date'],
                 json.dumps(a['bibjson']['identifier']),
                 json.dumps(a['bibjson'].get('link', [])),
-                a['bibjson'].get('title', '')
+                a['bibjson'].get('title', ''),
+                json.dumps(a.get('admin', {}).get('in_doaj', ''))
             ]
             csv_writer.writerow(row)
 
@@ -157,7 +159,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             'fulltext': a_fulltext[0] if len(a_fulltext) > 0 else '',
             'owner': o if o is not None else '',
             'issns': ','.join(article.bibjson().issns()),
-            'title': article.bibjson().title
+            'title': article.bibjson().title,
+            'in_doaj': article.is_in_doaj()
         }
 
     def _write_rows_from_duplicates(self, article, owner, duplicates, report):
@@ -182,6 +185,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    a_summary['fulltext'],
                    a_summary['owner'],
                    a_summary['issns'],
+                   a_summary['in_doaj'],
                    str(len(dups)),
                    v['match_type'],
                    k,
@@ -190,6 +194,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                    v['fulltext'],
                    v['owner'],
                    v['issns'],
+                   v['in_doaj'],
                    str(a_summary['owner'] == v['owner']),
                    str(a_summary['title'] == v['title']),
                    a_summary['title'] if a_summary['title'] != v['title'] else '',
