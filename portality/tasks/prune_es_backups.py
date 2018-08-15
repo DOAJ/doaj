@@ -42,9 +42,9 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
 
     @staticmethod
     def report_deleted_closure(job):
-
-        def _report_deleted_callback(snapshot_name):
-            job.add_audit_message('Deleted snapshot {}'.format(snapshot_name))
+        """ Report the deletion to the background task audit log """
+        def _report_deleted_callback(snapshot, result):
+            job.add_audit_message('Deleted snapshot {0}, Successful: {1}'.format(snapshot.name, result))
 
         return _report_deleted_callback
 
