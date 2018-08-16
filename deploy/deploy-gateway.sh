@@ -54,6 +54,8 @@ else
 fi
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate
 ln -sf /home/cloo/repl/gateway/nginx/sites-available/doaj-$GATE_ENV-gate /home/cloo/repl/gateway/nginx/sites-enabled/doaj-$GATE_ENV-gate
+ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/gateway /home/cloo/repl/gateway/nginx/sites-available/gateway
+ln -sf /home/cloo/repl/gateway/nginx/sites-available/gateway /home/cloo/repl/gateway/nginx/sites-enabled/gateway
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/block_user_agents.conf /home/cloo/repl/gateway/nginx/conf.d/block_user_agents.conf
 ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/nginx/proxy_pass_settings /home/cloo/repl/gateway/nginx/includes/proxy_pass_settings
 sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/logrotate/doaj-duplicity /etc/logrotate.d/doaj-duplicity
