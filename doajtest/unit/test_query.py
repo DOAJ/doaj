@@ -205,7 +205,7 @@ class TestQuery(DoajTestCase):
         articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
 
-        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None)
+        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
         assert res['hits']['total'] == 3, res['hits']['total']
 
         for hit in res['hits']['hits']:
