@@ -337,7 +337,7 @@ class TestClient(DoajTestCase):
     def test_11_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
-            j.save()
+            j.save(blocking=True)
         time.sleep(1) # index all the journals
         journal_ids = []
         theqgen = models.JournalQuery()
