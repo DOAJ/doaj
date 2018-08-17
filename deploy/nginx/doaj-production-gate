@@ -67,6 +67,7 @@ server {
     }
 
     location ~ /.well-known {
+        auth_basic off;
         root /usr/share/nginx/html/;
         allow all;
     }
@@ -175,6 +176,7 @@ server {
     }
 
     location ~ /.well-known {
+        auth_basic off;
         root /usr/share/nginx/html/;
         allow all;
     }
