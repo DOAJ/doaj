@@ -126,7 +126,9 @@ server {
     }
 
     location /api {
-        if ($block_ua) {return 403;}
+        if ($http_user_agent ~* (bot|spider) ) {
+            return 403;
+        }
         limit_req zone=api burst=5 nodelay;
         proxy_pass http://apps;
         include includes/proxy_pass_settings;
