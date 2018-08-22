@@ -307,9 +307,9 @@ if 'api' in app.config['FEATURES']:
                 'api_versions': [
                     {
                         'version': '1.0.0',
-                        'base_url': url_for('api_v1.api_spec', _external=True),
+                        'base_url': url_for('api_v1.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                         'note': 'First version of the DOAJ API',
-                        'docs_url': url_for('api_v1.docs', _external=True)
+                        'docs_url': url_for('api_v1.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
                     }
                 ]
             }

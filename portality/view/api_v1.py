@@ -33,11 +33,11 @@ def api_spec():
     # Generate the swagger description from the Jinja template
     account_url = None
     if current_user.is_authenticated:
-        account_url = url_for('account.username', username=current_user.id, _external=True)
+        account_url = url_for('account.username', username=current_user.id, _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
 
     swag['info']['description'] = render_template('api/v1/swagger_description.html',
                                                   api_version=API_VERSION_NUMBER,
-                                                  base_url=url_for('.api_v1_root', _external=True),
+                                                  base_url=url_for('.api_v1_root', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                                                   contact_us_url=url_for('doaj.contact'),
                                                   account_url=account_url)
     swag['info']['version'] = API_VERSION_NUMBER
