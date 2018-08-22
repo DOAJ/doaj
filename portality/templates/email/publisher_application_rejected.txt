@@ -1,0 +1,13 @@
+Dear {{ publisher_name }},
+
+The application which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the information which you provided with the information stated on your website.
+
+If you wish to resubmit your application, you must wait 6 months before it will be considered again.
+
+{% if note %}The editors provided the following feedback on your rejected application: {{ note }} {% endif %}
+
+If you have any questions about this decision, please email feedback@doaj.org
+
+The DOAJ Team
+
+**This is an automated message. Please do not reply to this message.**

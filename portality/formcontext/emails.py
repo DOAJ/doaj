@@ -264,11 +264,19 @@ def send_publisher_reject_email(application, note=None, update_request=False):
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your " + app_type + " was rejected"
 
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_app_update_request_rejected.txt",
-                        publisher_name=publisher_name,
-                        journal_title=journal_title,
-                        app_type=app_type,
-                        note=note)
+    if update_request:
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/publisher_update_request_rejected.txt",
+                            publisher_name=publisher_name,
+                            journal_title=journal_title,
+                            note=note)
+    else:
+        app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/publisher_application_rejected.txt",
+                            publisher_name=publisher_name,
+                            journal_title=journal_title,
+                            note=note)
