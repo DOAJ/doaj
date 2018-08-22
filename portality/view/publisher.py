@@ -149,7 +149,7 @@ def upload_file():
     url = request.values.get("url")
     
     # file upload takes precedence over URL, in case the user has given us both
-    if f.filename != "" and url is not None and url != "":
+    if f is not None and f.filename != "" and url is not None and url != "":
         flash("You provided a file and a URL - the URL has been ignored")
 
     try:
@@ -161,7 +161,7 @@ def upload_file():
         app.logger.exception('File upload error. ' + magic)
         return render_template('publisher/uploadmetadata.html', previous=previous)
 
-    if f.filename != "":
+    if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
         return render_template('publisher/uploadmetadata.html', previous=previous)
     
