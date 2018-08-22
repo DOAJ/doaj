@@ -92,6 +92,7 @@ class TestBLRejectApplication(DoajTestCase):
             assert ap2 is not None
             assert ap2.application_status == constants.APPLICATION_STATUS_REJECTED
             assert ap2.current_journal is None
+            assert ap2.last_updated == ap2.last_manual_update
 
             if current_journal == "yes" and journal is not None:
                 j2 = Journal.pull(journal.id)

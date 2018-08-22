@@ -667,9 +667,6 @@ class ManEdApplicationReview(ApplicationContext):
         is_editor_group_changed = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
-        # Save the target
-        self.target.set_last_manual_update()
-
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
 
@@ -730,6 +727,7 @@ class ManEdApplicationReview(ApplicationContext):
 
         # the application was neither accepted or rejected, so just save it
         else:
+            self.target.set_last_manual_update()
             self.target.save()
 
         # if revisions were requested, email the publisher
