@@ -23,7 +23,7 @@ class Messages(object):
 
     DIFF_TABLE_NOT_PRESENT = """-- Not held in journal metadata --"""
 
-    REJECT_NOTE_WRAPPER = """This application was rejected with the reason '{note}'"""
+    REJECT_NOTE_WRAPPER = """{editor}: This application was rejected with the reason '{note}'"""
 
     @classmethod
     def flash(cls, tup):

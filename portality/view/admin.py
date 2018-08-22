@@ -333,7 +333,7 @@ def application_quick_reject(application_id):
     if len(reasons) == 0:
         abort(400)
     reason = " - ".join(reasons)
-    note = Messages.REJECT_NOTE_WRAPPER.format(note=reason)
+    note = Messages.REJECT_NOTE_WRAPPER.format(editor=current_user.id, note=reason)
 
     applicationService = DOAJ.applicationService()
 
