@@ -7,10 +7,15 @@ from portality import util
 from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
 
+from flask import session
+from datetime import datetime
+from portality.lib import session_rate_limit
+
 blueprint = Blueprint('query', __name__)
 
 # pass queries direct to index. POST only for receipt of complex query objects
 @blueprint.route('/<path:path>', methods=['GET','POST'])
+@session_rate_limit.rate_limit("qa", bypass_field="ref", bypass_val="fqw")
 @util.jsonp
 def query(path=None):
     """
