@@ -33,6 +33,9 @@ else:
     BASE_DOMAIN = BASE_URL
 API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
 
+# Used when generating external links, e.g. in the API docs
+PREFERRED_URL_SCHEME = 'https'
+
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
 
