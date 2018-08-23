@@ -11,7 +11,7 @@ from portality.models import Account, Suggestion, Provenance, Journal
 
 
 def load_test_cases():
-    return load_from_matrix("reject_application.csv", test_ids=[])
+    return load_from_matrix("reject_application.csv", test_ids=["77"])
 
 
 def mock_save_fail(*args, **kwargs):
@@ -92,7 +92,11 @@ class TestBLRejectApplication(DoajTestCase):
             assert ap2 is not None
             assert ap2.application_status == constants.APPLICATION_STATUS_REJECTED
             assert ap2.current_journal is None
-            assert ap2.last_updated == ap2.last_manual_update
+
+            # check the updated and manually updated date are essentially the same (they can theoretically differ
+            # by a small amount just based on when they are set)
+            updated_spread = abs((ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds())
+            assert updated_spread <= 1.0
 
             if current_journal == "yes" and journal is not None:
                 j2 = Journal.pull(journal.id)
