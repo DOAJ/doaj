@@ -201,7 +201,7 @@ class TestQuery(DoajTestCase):
         for i in range(0, 3):
             articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False)))
             assert articles[-1].publisher_record_id() == 'some_identifier'
-            articles[-1].save()
+            articles[-1].save(blocking=True)
         articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
 
