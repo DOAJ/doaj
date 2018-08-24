@@ -114,9 +114,9 @@ class ArticleService(object):
         ], exceptions.ArgumentException)
 
         if limit_to_account:
-            legit = self.is_legitimate_owner(article, account)
+            legit = self.is_legitimate_owner(article, account.id)
             if not legit:
-                owned, shared, unowned, unmatched = self.issn_ownership_status(article, account)
+                owned, shared, unowned, unmatched = self.issn_ownership_status(article, account.id)
                 return {"success" : 0, "fail" : 1, "update" : 0, "new" : 0, "shared" : shared, "unowned" : unowned, "unmatched" : unmatched}
 
         # before saving, we need to determine whether this is a new article

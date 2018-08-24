@@ -166,6 +166,10 @@ class TestCrudArticle(DoajTestCase):
     def test_05_delete_articles_fail(self):
         # set up all the bits we need
         data = ArticleFixtureFactory.make_incoming_api_article()
+        dataset = []
+        for i in range(10):
+            cdata = deepcopy(data)
+            # FIXME: put different dois and fulltexts in the articles
         dataset = [data] * 10
 
         # create the main account we're going to work as

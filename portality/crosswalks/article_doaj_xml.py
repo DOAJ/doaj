@@ -1,7 +1,6 @@
 from portality.core import app
 from lxml import etree
 import re
-from portality.bll.doaj import DOAJ
 from portality.bll import exceptions
 from portality.crosswalks.exceptions import CrosswalkException
 from portality import models
@@ -12,6 +11,8 @@ class DOAJXWalk(object):
     schema_path = app.config.get("SCHEMAS", {}).get("doaj")
 
     def __init__(self):
+        self.validation_log = ""
+
         # load the schema into memory for more efficient usage in repeat calls to the crosswalk
         if self.schema_path is None:
             raise exceptions.IngestException(message="Unable to validate for DOAJXWalk, as schema path is not set in config")
@@ -36,10 +37,7 @@ class DOAJXWalk(object):
         valid = self.validate(doc)
 
         if not valid:
-            msg = ""
-            for k, v in self.validation_log:
-                msg += "Validation messages from schema '{x}': \n".format(x=DOAJXWalk.format_name)
-                msg += v + "\n\n"
+            msg = "Validation message from schema '{x}': {y}\n".format(x=DOAJXWalk.format_name, y=self.validation_log)
             raise CrosswalkException(message="Unable to validate document with identified schema", inner_message=msg)
 
         return doc

@@ -3,7 +3,7 @@ from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from portality.core import app
-from portality import models, article
+from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.decorators import ssl_required, restrict_to_role, write_required
