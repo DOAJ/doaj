@@ -97,12 +97,34 @@ class ArticleFixtureFactory(object):
         return source
     
     @staticmethod
-    def make_incoming_api_article():
+    def make_incoming_api_article(doi=None, fulltext=None):
         template = deepcopy(ARTICLE_SOURCE)
         template['bibjson']['journal']['start_page'] = template['bibjson']['start_page']
         template['bibjson']['journal']['end_page'] = template['bibjson']['end_page']
         del template['bibjson']['start_page']
         del template['bibjson']['end_page']
+
+        if doi is not None:
+            set_doi = False
+            for i in range(len(template["bibjson"]["identifier"])):
+                ident = template["bibjson"]["identifier"][i]
+                if ident.get("type") == "doi":
+                    ident["id"] = doi
+                    set_doi = True
+            if not set_doi:
+                template["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+
+        if fulltext is not None:
+            set_fulltext = False
+            for i in range(len(template["bibjson"]["link"])):
+                ident = template["bibjson"]["link"][i]
+                if ident.get("type") == "fulltext":
+                    ident["url"] = fulltext
+                    set_fulltext = True
+            if not set_fulltext:
+                template["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+
+
         return deepcopy(template)
 
     @staticmethod
