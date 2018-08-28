@@ -88,22 +88,6 @@ jQuery(document).ready(function($) {
         }
     });
 
-    /*
-    if ($("#reject_reason").val() == "") {
-        showCustomRejectNote();
-    } else {
-        hideCustomRejectNote()
-    }
-
-    $("#reject_reason").bind("change", function() {
-        var note = $(this).val();
-        if (note === "") {
-            showCustomRejectNote()
-        } else {
-            hideCustomRejectNote()
-        }
-    });*/
-
     ///////////////////////////////////////////////////
 
 
