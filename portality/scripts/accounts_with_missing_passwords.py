@@ -10,20 +10,32 @@ import esprit, codecs
 from portality.core import app
 from portality.clcsv import UnicodeWriter
 from portality import models
-from datetime import datetime
 
 MISSING_PASSWORD = {
-    "query" : {
-        "filtered" : {
-            "query" : {
-                "match_all" : {}
+    "query": {
+        "filtered": {
+            "query": {
+                "match_all": {}
             },
-            "filter" : {
-                "missing" : {"field" : "password"}
+            "filter": {
+                "missing": {"field": "password"}
             }
         }
     }
 }
+
+
+def publishers_with_journals():
+    """ Get accounts for all publishers with journals in the DOAJ """
+    for acc in esprit.tasks.scroll(conn, 'account', q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
+        publisher_account = models.Account(**acc)
+        journal_ids = publisher_account.journal
+        if journal_ids is not None:
+            for j in journal_ids:
+                journal = models.Journal.pull(j)
+                if journal is not None and journal.is_in_doaj():
+                    yield publisher_account
+                    break
 
 
 if __name__ == "__main__":
@@ -44,8 +56,7 @@ if __name__ == "__main__":
         writer = UnicodeWriter(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?", "Has Reset Token", "Reset Token Expired?"])
 
-        for a in esprit.tasks.scroll(conn, models.Account.__type__, q=MISSING_PASSWORD, page_size=100, keepalive='1m'):
-            account = models.Account(_source=a)
+        for account in publishers_with_journals():
 
             has_reset = account.reset_token is not None
             is_expired = account.is_reset_expired() if has_reset is True else ""
