@@ -351,10 +351,10 @@ def oainfo():
     return render_template("doaj/oainfo.html")
 
 
-@blueprint.route("/bestpractice")
-@blueprint.route("/<cc>/bestpractice")
 @blueprint.route("/<cc>/mejorespracticas")
 @blueprint.route("/<cc>/boaspraticas")
+@blueprint.route("/<cc>/bestpractice")
+@blueprint.route("/bestpractice")
 def bestpractice(cc=None):
     # FIXME: if we go for full multilingual support, it would be better to put this in the template
     # loader and have it check for templates in the desired language, and provide fall-back
