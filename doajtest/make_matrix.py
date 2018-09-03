@@ -61,7 +61,7 @@ def _add_results(results, combo):
 
 out = "matrix.csv"
 
-order = ["application", "application_status", "account", "prov", "current_journal", "save"]
+order = ["application", "application_status", "account", "prov", "current_journal", "note", "save"]
 
 params = {
     "application" : ["none", "exists"],
@@ -69,6 +69,7 @@ params = {
     "account" : ["none", "publisher", "admin"],
     "prov" : ["none", "true", "false"],
     "current_journal" : ["-", "yes", "no"],
+    "note" : ["yes", "no"],
     "save" : ["success", "fail"]
 }
 

@@ -1,0 +1,11 @@
+Dear {{ publisher_name }},
+
+The application which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the information which you provided with the information stated on your website, or the journal does not meet our basic criteria. Please read <a href="https://doaj.org/publishers">our information for publishers</a>, and double check your website. You may submit a new application after 6 months and when you can show that you have made the necessary changes and that your site adheres to our information for publishers.
+
+{% if note %}The editors provided the following feedback on your rejected application: {{ note }} {% endif %}
+
+If you have any questions about this decision, please email feedback@doaj.org
+
+The DOAJ Team
+
+**This is an automated message. Please do not reply to this message.**
