@@ -29,6 +29,19 @@ MISSING_API_ROLE = {
 }
 
 
+def publishers_with_journals():
+    """ Get accounts for all publishers with journals in the DOAJ """
+    for acc in esprit.tasks.scroll(conn, 'account', q=MISSING_API_ROLE, page_size=100, keepalive='1m'):
+        publisher_account = models.Account(**acc)
+        journal_ids = publisher_account.journal
+        if journal_ids is not None:
+            for j in journal_ids:
+                journal = models.Journal.pull(j)
+                if journal is not None and journal.is_in_doaj():
+                    yield publisher_account
+                    break
+
+
 if __name__ == "__main__":
 
     import argparse
@@ -47,9 +60,7 @@ if __name__ == "__main__":
         writer = UnicodeWriter(f)
         writer.writerow(["ID", "Name", "Email", "Created", "Last Updated"])
 
-        for a in esprit.tasks.scroll(conn, models.Account.__type__, q=MISSING_API_ROLE, page_size=100, keepalive='1m'):
-            account = models.Account(_source=a)
-
+        for account in publishers_with_journals():
             writer.writerow([
                 account.id,
                 account.name,
