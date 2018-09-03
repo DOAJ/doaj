@@ -34,6 +34,8 @@ setup(
         "responses==0.9.0",
         "Faker==0.8.16",
         "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
+        "pid==2.1.1",
+        "Fabric==1.14.0",
         # for deployment
         "gunicorn",
         "newrelic",
