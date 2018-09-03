@@ -70,6 +70,26 @@ jQuery(document).ready(function($) {
 
     ///////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////
+    // quick reject
+
+    function showCustomRejectNote() {
+        $("#custom_reject_reason").show();
+    }
+
+    function hideCustomRejectNote() {
+        $("#custom_reject_reason").hide();
+    }
+
+    $("#submit_quick_reject").on("click", function(event) {
+        if ($("#reject_reason").val() == "" && $("#additional_reject_information").val() == "") {
+            alert("When selecting 'Other' as a reason for rejection, you must provide additional information");
+            event.preventDefault();
+        }
+    });
+
+    ///////////////////////////////////////////////////
+
 
     // define a new highlight function, letting us highlight any element
     // on a page
