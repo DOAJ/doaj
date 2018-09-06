@@ -1,8 +1,9 @@
-import esprit
+import esprit, os
 from portality import models
 from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.lib.dataobj import DataStructureException
+from portality.lib import dates
 
 
 def _anonymise_email(record):
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-l", "--limit", type=int, help="Number of records to export from each type. If you specify e.g. 100, then only the first 100 accounts, 100 journals, 100 articles etc. will be exported. The \"first\" 100 will be ordered by whatever the esprit iterate functionality uses as default ordering, usually alphabetically by record id.")
-    parser.add_argument("-o", "--output-file", required=True, help="Filename to output results to")
+    parser.add_argument("-o", "--outdir", required=True, help="Directory to output results to")
     args = parser.parse_args()
     if args.limit > 0:
         limit = args.limit
@@ -86,8 +87,17 @@ if __name__ == '__main__':
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
+    os.makedirs(args.outdir)
+
     for type_ in esprit.raw.list_types(connection=conn):
+        output_file = os.path.join(args.outdir, type_ + ".bulk")
+        print(dates.now() + " " + type_ + " => " + output_file)
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            with open(args.output_file, 'wb') as o:
+            with open(output_file, 'wb') as o:
                 esprit.tasks.dump(conn, type_, transform=transform, limit=limit, out=o)
+        else:
+            with open(output_file, 'wb') as o:
+                esprit.tasks.dump(conn, type_, limit=limit, out=o)
+        print(" " + dates.now() + "\n")
+
