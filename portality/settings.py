@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.12.7"
+DOAJ_VERSION = "2.13.0"
 
 OFFLINE_MODE = False
 
@@ -762,3 +762,30 @@ GA_ACTIONS_API = {
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
+
+# ========================================
+# Anonymisation configuration
+ANON_SALT = 'changeme'
+
+###################################
+## Quick Reject Feature Config
+
+QUICK_REJECT_REASONS = [
+    "All questions have same URL",
+    "Another application is already in progress",
+    "Answers in the application are incomplete or missing",
+    "Application is a duplicate",
+    "Contact details provided are not real names",
+    "ISSN is fake",
+    "ISSN is incorrect",
+    "ISSN not registered",
+    "Journal is not Open Access",
+    "Journal is already in DOAJ",
+    "Journal or publisher are banned",
+    "Journal title doesn't correspond with ISSN",
+    "Journal title on the web site doesn't match what is at ISSN",
+    "License type is 'Other' but no URL is provided",
+    "Nothing has been published in the last calendar year",
+    "Spam / junk",
+    "URL(s) or web site does not work"
+]

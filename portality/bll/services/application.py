@@ -9,7 +9,7 @@ from portality.bll.doaj import DOAJ
 
 class ApplicationService(object):
 
-    def reject_application(self, application, account, provenance=True):
+    def reject_application(self, application, account, provenance=True, note=None, manual_update=True):
         """
         Reject an application.  This will:
         * set the application status to "rejected" (if not already)
@@ -21,13 +21,16 @@ class ApplicationService(object):
         :param application:
         :param account:
         :param provenance:
+        :param manual_update:
         :return:
         """
         # first validate the incoming arguments to ensure that we've got the right thing
         argvalidate("reject_application", [
             {"arg": application, "instance" : models.Suggestion, "allow_none" : False, "arg_name" : "application"},
             {"arg" : account, "instance" : models.Account, "allow_none" : False, "arg_name" : "account"},
-            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"}
+            {"arg" : provenance, "instance" : bool, "allow_none" : False, "arg_name" : "provenance"},
+            {"arg" : note, "instance" : basestring, "allow_none" : True, "arg_name" : "note"},
+            {"arg" : manual_update, "instance" : bool, "allow_none" : False, "arg_name" : "manual_update"}
         ], exceptions.ArgumentException)
 
         if app.logger.isEnabledFor("debug"): app.logger.debug("Entering reject_application")
@@ -42,7 +45,11 @@ class ApplicationService(object):
         if application.application_status != constants.APPLICATION_STATUS_REJECTED:
             application.set_application_status(constants.APPLICATION_STATUS_REJECTED)
 
-        # retrieve the id of the current journal if there is one
+        # add the note to the application
+        if note is not None:
+            application.add_note(note)
+
+         # retrieve the id of the current journal if there is one
         cj_id = application.current_journal
         cj = None
 
@@ -61,6 +68,10 @@ class ApplicationService(object):
             saved = cj.save()
             if saved is None:
                 raise exceptions.SaveException("Save on current_journal in reject_application failed")
+
+        # if we were asked to record this as a manual update, record that on the application
+        if manual_update:
+            application.set_last_manual_update()
 
         saved = application.save()
         if saved is None:
