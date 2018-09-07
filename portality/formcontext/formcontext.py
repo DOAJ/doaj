@@ -706,24 +706,19 @@ class ManEdApplicationReview(ApplicationContext):
 
             applicationService.reject_application(self.target, current_user._get_current_object())
 
-            publisher_email = self.target.get_latest_contact_email()
-            sent = False
-            try:
-                emails.send_publisher_reject_email(self.target, update_request=had_current)
-                sent = True
-            except app_email.EmailException as e:
-                pass
-
             if had_current:
+                publisher_email = self.target.get_latest_contact_email()
+                sent = False
+                try:
+                    emails.send_publisher_reject_email(self.target, update_request=had_current)
+                    sent = True
+                except app_email.EmailException as e:
+                    pass
+
                 if sent:
                     self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
                 else:
                     self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
-            else:
-                if sent:
-                    self.add_alert(Messages.SENT_REJECTED_APPLICATION_EMAIL.format(email=publisher_email))
-                else:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_APPLICATION_EMAIL.format(email=publisher_email))
 
         # the application was neither accepted or rejected, so just save it
         else:
