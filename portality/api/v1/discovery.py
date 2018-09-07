@@ -222,13 +222,13 @@ class DiscoveryApi(Api):
         }
 
         if previous_page is not None:
-            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size)
+            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size, sort=sort)
 
         if next_page is not None:
-            result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size)
+            result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size, sort=sort)
 
         if last_page is not None:
-            result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size)
+            result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size, sort=sort)
 
         if sort is not None:
             result["sort"] = sort
