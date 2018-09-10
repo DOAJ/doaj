@@ -778,6 +778,7 @@ QUICK_REJECT_REASONS = [
     "Contact details provided are not real names",
     "ISSN is fake",
     "ISSN is incorrect",
+    "ISSN is provisional",
     "ISSN not registered",
     "Journal is not Open Access",
     "Journal is already in DOAJ",
