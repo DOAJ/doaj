@@ -63,7 +63,7 @@
                 </form>
             </div>
             {% endif %}
-            
+
             <div class="grey_bordered_div">
                 <h4>Edit your user roles</h4>
                 <form action="" method="POST">
@@ -77,7 +77,7 @@
                 </form>
             </div>
         </div>
-        
+
         <div class="span6">
             <div class="grey_bordered_div">
                 <h4>Change your password</h4>
@@ -87,7 +87,16 @@
                     <input type="submit" class="btn btn-success" name="submit" value="Update" style="float: right">
                 </form>
             </div>
-            
+
+            <div class="grey_bordered_div">
+                <h4>Marketing Consent</h4>
+                <form action="" method="POST">
+                    <input type="radio" name="marketing_consent" {% if account.marketing_consent %}checked="checked"{% endif %} value="true"> I consent to DOAJ using my email address for its own marketing purposes<br>
+                    <input type="radio" name="marketing_consent" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false"> I do not consent to DOAJ using my email address for its own marketing purposes<br>
+                    <input type="submit" class="btn btn-success" name="submit" value="Save Settings" style="float: right">
+                </form>
+            </div>
+
             {% if current_user.is_super %}
             <div class="grey_bordered_div">
                 <h4>Delete this account</h4>
@@ -103,9 +112,9 @@
             </div>
             {% endif %}
         </div>
-        
+
     </div>
-    
+
 {% else %}
 
     <div class="row-fluid">
@@ -118,7 +127,7 @@
             <p>You are not logged in as this user. Use the <a href="/account/login">login page</a> if you want to change this</p>
         </div>
     </div>
-    
+
 {% endif %}
 
 {% endblock %}

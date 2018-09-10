@@ -68,6 +68,13 @@ class Account(DomainObject, UserMixin):
         return cls(**obs[0])
 
     @property
+    def marketing_consent(self):
+        return self.data.get("marketing_consent")
+
+    def set_marketing_consent(self, consent):
+        self.data["marketing_consent"] = bool(consent)
+
+    @property
     def name(self):
         return self.data.get("name")
 

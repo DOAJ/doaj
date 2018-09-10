@@ -359,6 +359,7 @@ class TestClient(DoajTestCase):
         assert acc.has_role('api')
         assert acc.has_role('associate_editor')
         assert not acc.has_role('admin')
+        assert acc.marketing_consent is None
 
         # check the api key has been generated
         assert acc.api_key is not None
@@ -367,7 +368,7 @@ class TestClient(DoajTestCase):
         acc2 = models.Account.make_account(
             username='mrs_user2',
             email='user@example.com',
-            roles=['editor'],
+            roles=['editor']
         )
         assert not acc2.has_role('api')
 
@@ -378,6 +379,14 @@ class TestClient(DoajTestCase):
         # now add the api role and check we get a key generated
         acc2.add_role('api')
         assert acc2.api_key is not None
+
+        # Set marketing consent to True
+        acc2.set_marketing_consent(True)
+        assert acc2.marketing_consent is True
+
+        # Now set marketing consent to false
+        acc2.set_marketing_consent(False)
+        assert acc2.marketing_consent is False
 
         # remove the api_key from the object and ask for it again
         del acc2.data['api_key']
