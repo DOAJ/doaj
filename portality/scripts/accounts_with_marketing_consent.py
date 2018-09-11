@@ -1,7 +1,6 @@
 """
 This script can be run to generate a CSV output of accounts which have marketing consent, along
-with some useful account information
-
+with their name, email address and date account was created and last updated
 ```
 python accounts_with_marketing_consent.py -o accounts.csv
 ```
