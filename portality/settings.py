@@ -788,6 +788,5 @@ QUICK_REJECT_REASONS = [
     "License type is 'Other' but no information is provided",
     "No peer review or review process",
     "Nothing has been published in the last calendar year",
-    "Spam / junk",
     "URL(s) or web site does not work"
 ]
