@@ -785,7 +785,8 @@ QUICK_REJECT_REASONS = [
     "Journal or publisher are banned",
     "Journal title doesn't correspond with ISSN",
     "Journal title on the web site doesn't match what is at ISSN",
-    "License type is 'Other' but no URL is provided",
+    "License type is 'Other' but no information is provided",
+    "No peer review or review process",
     "Nothing has been published in the last calendar year",
     "Spam / junk",
     "URL(s) or web site does not work"
