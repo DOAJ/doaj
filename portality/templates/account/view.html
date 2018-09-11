@@ -91,8 +91,11 @@
             <div class="grey_bordered_div">
                 <h4>Marketing Consent</h4>
                 <form action="" method="POST">
-                    <input type="radio" name="marketing_consent" {% if account.marketing_consent %}checked="checked"{% endif %} value="true"> I consent to DOAJ using my email address for its own marketing purposes<br>
-                    <input type="radio" name="marketing_consent" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false"> I do not consent to DOAJ using my email address for its own marketing purposes<br>
+                    <p>As part of our duty to you, our members, your DOAJ account must have an email address because we will use it to contact you about important account and journal information such as: security updates; updates needed to your journal entries; problems with article metadata, etc. As a membership organisation, we have a legal obligation to do this and you cannot opt out of these emails.</p>
+                    <p>We also send out occasional marketing emails, such as publisher surveys, opinion polls, newsletters and new functionality alerts. For those emails, we need your consent to use your email address. (You may come back here and change your response at any time.)</p>
+                    <p><input type="radio" name="marketing_consent" {% if account.marketing_consent %}checked="checked"{% endif %} value="true"> I consent to DOAJ using my email address for its own marketing purposes</p>
+                    <p><input type="radio" name="marketing_consent" {% if account.marketing_consent == False %}checked="checked"{% endif %} value="false"> I do not consent to DOAJ using my email address for its own marketing purposes</p>
+                    <p>DOAJ does not share your name and email address with any other organisation. Please read our full privacy policy here. [link to https://doaj.org/privacy]</p>
                     <input type="submit" class="btn btn-success" name="submit" value="Save Settings" style="float: right">
                 </form>
             </div>
