@@ -19,11 +19,27 @@ WITH_CONSENT = {
 }
 
 
-def publishers_with_consent():
+def publishers_with_consent(output_file):
     """ Get accounts for all publishers with journals in the DOAJ """
-    for acc in esprit.tasks.scroll(conn, 'account', q=WITH_CONSENT, page_size=100, keepalive='1m'):
-        publisher_account = models.Account(**acc)
-        yield publisher_account
+
+    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+
+    with codecs.open(output_file, "wb", "utf-8") as f:
+        writer = UnicodeWriter(f)
+        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"])
+
+        for acc in esprit.tasks.scroll(conn, 'account', q=WITH_CONSENT, page_size=100, keepalive='1m'):
+            account = models.Account(**acc)
+            updated_since_create = account.created_timestamp < account.last_updated_timestamp
+
+            writer.writerow([
+                account.id,
+                account.name,
+                account.email,
+                account.created_date,
+                account.last_updated,
+                updated_since_create
+            ])
 
 
 if __name__ == "__main__":
@@ -38,21 +54,5 @@ if __name__ == "__main__":
         parser.print_help()
         exit()
 
-    conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
+    publishers_with_consent(args.out)
 
-    with codecs.open(args.out, "wb", "utf-8") as f:
-        writer = UnicodeWriter(f)
-        writer.writerow(["ID", "Name", "Email", "Created", "Last Updated", "Updated Since Create?"])
-
-        for account in publishers_with_consent():
-
-            updated_since_create = account.created_timestamp < account.last_updated_timestamp
-
-            writer.writerow([
-                account.id,
-                account.name,
-                account.email,
-                account.created_date,
-                account.last_updated,
-                updated_since_create
-            ])
