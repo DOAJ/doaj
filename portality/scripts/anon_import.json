@@ -1,0 +1,22 @@
+{
+
+	"types" : {
+		"account" : {"import" : true, "limit" : -1},
+		"bulk_upload" : {"import" : true, "limit" : -1},
+		"bulk_reapplication" : {"import" : true, "limit" : -1},
+		"background_job" : {"import" : true, "limit" : -1},
+		"lock" : {"import" : true, "limit" : -1},
+		"journal" : {"import" : true, "limit" : -1},
+		"provenance" : {"import" : true, "limit" : -1},
+		"toc" : {"import" : true, "limit" : -1},
+		"journal_history" : {"import" : true, "limit" : -1},
+		"cache" : {"import" : true, "limit" : -1},
+		"article_history" : {"import" : true, "limit" : -1},
+		"lcc" : {"import" : true, "limit" : -1},
+		"suggestion" : {"import" : true, "limit" : -1},
+		"article" : {"import" : true, "limit" : -1},
+		"news" : {"import" : true, "limit" : -1},
+		"editor_group" : {"import" : true, "limit" : -1},
+		"upload" : {"import" : true, "limit" : -1}
+	}
+}
