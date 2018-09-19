@@ -771,22 +771,20 @@ ANON_SALT = 'changeme'
 ## Quick Reject Feature Config
 
 QUICK_REJECT_REASONS = [
-    "All questions have same URL",
-    "Another application is already in progress",
-    "Answers in the application are incomplete or missing",
-    "Application is a duplicate",
-    "Contact details provided are not real names",
-    "ISSN is fake",
-    "ISSN is incorrect",
-    "ISSN is provisional",
-    "ISSN not registered",
-    "Journal is not Open Access",
-    "Journal is already in DOAJ",
-    "Journal or publisher are banned",
-    "Journal title doesn't correspond with ISSN",
-    "Journal title on the web site doesn't match what is at ISSN",
-    "License type is 'Other' but no information is provided",
-    "No peer review or review process",
-    "Nothing has been published in the last calendar year",
-    "URL(s) or web site does not work"
+    "No research content has been published in the journal in the last calendar year",
+    "The ISSN is incorrect and is not recognised by issn.org",
+    "The ISSN is listed as provisional by issn.org",
+    "The ISSN not yet registered at issn.org",
+    "The URL(s) or the web site does not work"
+    "The contact details provided are not real names of individuals",
+    "The journal is already in DOAJ",
+    "The journal is not Open Access",
+    "The journal title in the application doesn't correspond with title at issn.org",
+    "The journal title on the web site doesn't match what is registered at issn.org",
+    "The license type selected was 'Other' but no further information was provided",
+    "The same URL has been provided for all the questions which required a URL answer",
+    "There are answers in the application which are incomplete or missing",
+    "There is no mention of peer review or a review process being carried out",
+    "This application is a duplicate",
+    "You already have another application for the same journal in progress"
 ]
