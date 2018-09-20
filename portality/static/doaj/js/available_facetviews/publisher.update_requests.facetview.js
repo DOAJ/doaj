@@ -146,6 +146,7 @@ jQuery(document).ready(function ($) {
                     "field": "suggestion.suggester.name"
                 },
                 {
+                    "pre" : "<strong>Applicant email</strong>: ",
                     "field": "suggestion.suggester.email"
                 }
             ],

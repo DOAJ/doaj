@@ -127,11 +127,12 @@ jQuery(document).ready(function($) {
             ],
             [
                 {
-                    "pre" : "<strong>Application by</strong>: ",
-                    "field" : "suggestion.suggester.name"
+                    "pre": "<strong>Application by</strong>: ",
+                    "field": "suggestion.suggester.name"
                 },
                 {
-                    "field" : "suggestion.suggester.email"
+                    "pre" : "<strong>Applicant email</strong>: ",
+                    "field": "suggestion.suggester.email"
                 }
             ],
             [
