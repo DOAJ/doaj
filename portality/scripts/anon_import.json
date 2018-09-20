@@ -1,5 +1,7 @@
 {
-
+	"elastic_search_host" : null,
+	"elastic_search_db" : null,
+	"source" : "/home/richard/tmp/doaj_anon_data",
 	"types" : {
 		"account" : {"import" : true, "limit" : -1},
 		"bulk_upload" : {"import" : true, "limit" : -1},
