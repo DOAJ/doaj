@@ -596,6 +596,7 @@ class TestCrudApplication(DoajTestCase):
         account.set_name("Tester")
         account.set_email("test@test.com")
         account.add_role("publisher")
+        account.save(blocking=True)
 
         journal = models.Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
         journal.bibjson().remove_identifiers()
@@ -614,8 +615,8 @@ class TestCrudApplication(DoajTestCase):
         assert a.id != "ignore_me"
         assert a.created_date != "2001-01-01T00:00:00Z"
         assert a.last_updated != "2001-01-01T00:00:00Z"
-        assert a.suggester.get("name") == "Contact Name"
-        assert a.suggester.get("email") == "contact@email.com"
+        assert a.suggester.get("name") == "Tester"           # The suggester should be the owner of the existing journal
+        assert a.suggester.get("email") == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
         assert a.bibjson().issns() == ["9999-8888", "7777-6666"] or a.bibjson().issns() == ["7777-6666", "9999-8888"]
