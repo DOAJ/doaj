@@ -249,8 +249,7 @@ class TestClient(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
-        time.sleep(1)
+            time.sleep(0.66)
 
         # now hit the key methods involved in article deletes
         query = {
@@ -269,12 +268,12 @@ class TestClient(DoajTestCase):
         assert count == 2
 
         models.Article.delete_selected(query)
-        time.sleep(2)
+        time.sleep(1)
         assert len(models.Article.all()) == 4
         assert len(self.list_today_article_history_files()) == 1
 
         models.Article.delete_by_issns(["2000-0000", "3000-0000"])
-        time.sleep(2)
+        time.sleep(1)
         assert len(models.Article.all()) == 2
         assert len(self.list_today_article_history_files()) == 3
 
@@ -293,7 +292,7 @@ class TestClient(DoajTestCase):
             j.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            time.sleep(0.66)
 
         # populate the index with some articles
         for i in range(5):
@@ -306,7 +305,7 @@ class TestClient(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            time.sleep(0.66)
 
         # now hit the key methods involved in journal deletes
         query = {
@@ -326,7 +325,7 @@ class TestClient(DoajTestCase):
         assert "1000-0000" in issns
 
         models.Journal.delete_selected(query, articles=True)
-        time.sleep(2)
+        time.sleep(1)
 
         assert len(models.Article.all()) == 4
         assert len(self.list_today_article_history_files()) == 1
@@ -337,8 +336,8 @@ class TestClient(DoajTestCase):
     def test_11_iterate(self):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
-            j.save(blocking=True)
-        time.sleep(1) # index all the journals
+            j.save()
+        time.sleep(2) # index all the journals
         journal_ids = []
         theqgen = models.JournalQuery()
         for j in models.Journal.iterate(q=theqgen.all_in_doaj(), page_size=10):
