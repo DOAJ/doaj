@@ -779,6 +779,7 @@ QUICK_REJECT_REASONS = [
     "The contact details provided are not real names of individuals",
     "The journal is already in DOAJ",
     "The journal is not Open Access",
+    "The journal or publisher has been rejected or removed from DOAJ recently",
     "The journal title in the application doesn't correspond with title at issn.org",
     "The journal title on the web site doesn't match what is registered at issn.org",
     "The license type selected was 'Other' but no further information was provided",
