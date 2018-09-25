@@ -1,8 +1,7 @@
 {
 	"elastic_search_host" : null,
 	"elastic_search_db" : null,
-	"source" : "/home/richard/tmp/doaj_anon_data",
-	"confirm" : false,
+	"confirm" : true,
 	"max_content_length" : 100000000,
 	"types" : {
 		"account" : {"import" : true, "limit" : -1},
