@@ -33,7 +33,7 @@ def username(username):
 
     if acc is None:
         abort(404)
-    elif ( request.method == 'DELETE' or 
+    elif ( request.method == 'DELETE' or
             ( request.method == 'POST' and request.values.get('submit', False) == 'Delete' ) ):
         if current_user.id != acc.id and not current_user.is_super:
             abort(401)
@@ -55,7 +55,7 @@ def username(username):
         if request.values.get('submit', False) == 'Generate':
             acc.generate_api_key()
         for k, v in newdata.items():
-            if k not in ['submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
+            if k not in ['marketing_consent', 'submit','password', 'role', 'confirm', 'reset_token', 'reset_expires', 'last_updated', 'created_date', 'id']:
                 acc.data[k] = v
         if 'password' in newdata and not newdata['password'].startswith('sha1'):
             acc.set_password(newdata['password'])
@@ -63,13 +63,16 @@ def username(username):
         if "role" in newdata and current_user.is_super:
             new_roles = [r.strip() for r in newdata.get("role").split(",")]
             acc.set_role(new_roles)
-            
+
+        if "marketing_consent" in newdata:
+            acc.set_marketing_consent(newdata["marketing_consent"] == "true")
+
         acc.save()
         flash("Record updated")
         return render_template('account/view.html', account=acc)
     else:
         if util.request_wants_json():
-            resp = make_response( 
+            resp = make_response(
                 json.dumps(acc.data, sort_keys=True, indent=4) )
             resp.mimetype = "application/json"
             return resp
@@ -144,12 +147,12 @@ def forgot():
         # get hold of the user account
         un = request.form.get('un', "")
         account = models.Account.pull(un)
-        if account is None: 
+        if account is None:
             account = models.Account.pull_by_email(un)
         if account is None:
             util.flash_with_url('Hm, sorry, your account username / email address is not recognised.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
-        
+
         if not account.data.get('email'):
             util.flash_with_url('Hm, sorry, your account does not have an associated email address.' + CONTACT_INSTR, 'error')
             return render_template('account/forgot.html')
@@ -160,7 +163,7 @@ def forgot():
         reset_token = uuid.uuid4().hex
         account.set_reset_token(reset_token, app.config.get("PASSWORD_RESET_TIMEOUT", 86400))
         account.save()
-        
+
         sep = "/"
         if request.url_root.endswith("/"):
             sep = ""
@@ -197,10 +200,10 @@ def reset(reset_token):
     account = models.Account.get_by_reset_token(reset_token)
     if account is None:
         abort(404)
-    
+
     if request.method == "GET":
         return render_template("account/reset.html", account=account)
-        
+
     elif request.method == "POST":
         # check that the passwords match, and bounce if not
         pw = request.values.get("password")
@@ -208,13 +211,13 @@ def reset(reset_token):
         if pw != conf:
             flash("Passwords do not match - please try again", "error")
             return render_template("account/reset.html", account=account)
-            
+
         # update the user's account
         account.set_password(pw)
         account.remove_reset_token()
         account.save()
         flash("Password has been reset", "success")
-        
+
         # log the user in
         login_user(account, remember=True)
         return redirect(url_for('doaj.home'))
