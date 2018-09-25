@@ -4,6 +4,7 @@ from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
+from portality.store import StoreFactory
 
 
 def _anonymise_email(record):
@@ -78,8 +79,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-l", "--limit", type=int, help="Number of records to export from each type. If you specify e.g. 100, then only the first 100 accounts, 100 journals, 100 articles etc. will be exported. The \"first\" 100 will be ordered by whatever the esprit iterate functionality uses as default ordering, usually alphabetically by record id.")
-    parser.add_argument("-o", "--outdir", required=True, help="Directory to output results to")
-    parser.add_argument("-c", "--clean", action="store_true", required=True, help="Clean the output directory before continuing")
+    parser.add_argument("-c", "--clean", action="store_true", required=True, help="Clean any pre-existing output before continuing")
     args = parser.parse_args()
     if args.limit > 0:
         limit = args.limit
@@ -88,13 +88,16 @@ if __name__ == '__main__':
 
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
-    if args.clean and os.path.exists(args.outdir):
-        shutil.rmtree(args.outdir)
-    if not os.path.exists(args.outdir):
-        os.makedirs(args.outdir)
+    tmpStore = StoreFactory.tmp()
+    mainStore = StoreFactory.get()
+    container = "anon_export"
+
+    if args.clean:
+        mainStore.delete(container)
 
     for type_ in esprit.raw.list_types(connection=conn):
-        output_file = os.path.join(args.outdir, type_ + ".bulk")
+        filename = type_ + ".bulk"
+        output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
         print(dates.now() + " " + type_ + " => " + output_file)
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
@@ -103,5 +106,10 @@ if __name__ == '__main__':
         else:
             with open(output_file, 'wb') as o:
                 esprit.tasks.dump(conn, type_, limit=limit, out=o, es_bulk_fields=["_id"])
+
+        mainStore.store(container, filename, source_path=output_file)
+        tmpStore.delete(container, filename)
         print(dates.now() + " done\n")
+
+    tmpStore.delete(container)
 

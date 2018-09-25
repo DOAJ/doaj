@@ -1,5 +1,6 @@
 import esprit, os, codecs, json
 from portality.core import app, initialise_index
+from portality.store import StoreFactory
 
 
 def do_import(config):
@@ -12,11 +13,8 @@ def do_import(config):
         index = config.get("elastic_search_db")
         app.config["ELASTIC_SEARCH_DB"] = index
 
-    source = config.get("source")
-    if source is None:
-        raise Exception("Must provide a source directory for the import files")
-
-    print("Using host {x} and index {y}".format(x=host, y=index))
+    print("\n")
+    print("Using host {x} and index {y}\n".format(x=host, y=index))
     conn = esprit.raw.make_connection(None, host, None, index)
 
     # filter for the types we are going to work with
@@ -44,16 +42,27 @@ def do_import(config):
     print("==Initialising Index for Mappings==")
     initialise_index(app)
 
+    mainStore = StoreFactory.get()
+    tempStore = StoreFactory.tmp()
+    container = "anon_export"
+
     print("\n==Importing==")
     for import_type, cfg in import_types.iteritems():
+        print("Obtaining {x} from storage".format(x=import_type))
+        filename = import_type + ".bulk"
+        handle = mainStore.get(container, filename)
+        tempStore.store(container, filename, source_stream=handle)
+        handle.close()
+
         count = "all" if cfg.get("limit", -1) == -1 else cfg.get("limit")
         print("Importing {x} from {y}".format(x=count, y=import_type))
-
-        data_file = os.path.join(source, import_type + ".bulk")
+        data_file = tempStore.path(container, filename)
         limit = cfg.get("limit", -1)
         limit = None if limit == -1 else limit
         esprit.tasks.bulk_load(conn, import_type, data_file, limit=limit, max_content_length=config.get("max_content_length", 100000000))
+        tempStore.delete(container, filename)
 
+    tempStore.delete(container)
 
 if __name__ == '__main__':
 

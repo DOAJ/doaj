@@ -120,6 +120,17 @@ MAIL_PORT = 25              # default 25
 #MAIL_MAX_EMAILS            # default None
 #MAIL_SUPPRESS_SEND         # default app.testing
 
+# ================================
+# File store
+
+STORE_IMPL = "portality.store.StoreLocal"
+STORE_TMP_IMPL = "portality.store.TempStore"
+
+from portality.lib import paths
+STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
+STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+
+
 # ========================
 # workflow email notification settings
 MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
