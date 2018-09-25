@@ -99,9 +99,9 @@ if __name__ == '__main__':
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
             with open(output_file, 'wb') as o:
-                esprit.tasks.dump(conn, type_, transform=transform, limit=limit, out=o)
+                esprit.tasks.dump(conn, type_, transform=transform, limit=limit, out=o, es_bulk_fields=["_id"])
         else:
             with open(output_file, 'wb') as o:
-                esprit.tasks.dump(conn, type_, limit=limit, out=o)
-        print(dates.now() + " anonymised\n")
+                esprit.tasks.dump(conn, type_, limit=limit, out=o, es_bulk_fields=["_id"])
+        print(dates.now() + " done\n")
 
