@@ -109,7 +109,8 @@
     "email" : "<user's email address>",
     "role" : [<list of user roles>],
     "journal" : [<list of journal ids the user can administer>],
-    "api_key" : "<32 character-long hexadecimal key to access API>"
+    "api_key" : "<32 character-long hexadecimal key to access API>",
+    "marketing_consent" : true|false
 }
 ```
 
