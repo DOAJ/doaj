@@ -73,6 +73,7 @@ then
     zip upload.zip *
     # Credentials are already in ~/.aws/
     aws --profile doaj-production-lambda lambda update-function-code --function-name alertS3BackupsFailure --zip-file fileb://upload.zip --region=eu-west-1 --publish
+    rm upload.zip
 fi
 
 # replicate across servers

@@ -7,7 +7,7 @@ import json
 from datetime import datetime, timezone, timedelta
 
 s3 = boto3.client('s3')
-# todo: reinstate full list. doaj-es-backups is too slow currently due to its size (and is already covered by another check)
+# doaj-es-backups is too slow currently, so not good value on Lambda (and is already covered by another check)
 # buckets = ["doaj-duplicity", "doaj-es-backups", "doaj-letsencrypt"]
 buckets = ["doaj-duplicity", "doaj-letsencrypt"]
 
