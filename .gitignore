@@ -6,6 +6,7 @@ src*
 build/*
 dist/*
 tmp/*
+*.zip
 
 # PyCharm and other IntelliJ-based IDE-s and editors' folder:
 .idea
