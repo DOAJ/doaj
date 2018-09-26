@@ -70,9 +70,9 @@ if [ "$ENV" = 'test' ]              # fixme: 'production' when this is ready
 then
     aws --version
     cd deploy/lambda
-    zip –Xr ./upload.zip *
+    zip upload.zip *
     # Credentials are already in ~/.aws/
-    aws --profile doaj-production-lambda lambda update-function-code --function-name alertS3BackupsFailure --zip-file fileb:///upload.zip --publish
+    aws --profile doaj-production-lambda lambda update-function-code --function-name alertS3BackupsFailure --zip-file fileb://upload.zip --publish
 fi
 
 # replicate across servers
