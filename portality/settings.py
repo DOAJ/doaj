@@ -775,7 +775,7 @@ QUICK_REJECT_REASONS = [
     "The ISSN is incorrect and is not recognised by issn.org",
     "The ISSN is listed as provisional by issn.org",
     "The ISSN not yet registered at issn.org",
-    "The URL(s) or the web site does not work"
+    "The URL(s) or the web site does not work",
     "The contact details provided are not real names of individuals",
     "The journal is already in DOAJ",
     "The journal is not Open Access",
