@@ -37,7 +37,8 @@ setup(
         # for deployment
         "gunicorn",
         "newrelic",
-        "parameterized==0.6.1"
+        "parameterized==0.6.1",
+        "boto3==1.9.10"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
 
     url = 'http://cottagelabs.com/',

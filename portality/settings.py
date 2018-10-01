@@ -123,12 +123,22 @@ MAIL_PORT = 25              # default 25
 # ================================
 # File store
 
-STORE_IMPL = "portality.store.StoreLocal"
+STORE_IMPL = "portality.store.StoreS3"
+# put this in your dev.cfg, go store locally:
+# STORE_IMPL = "portality.store.StoreLocal"
 STORE_TMP_IMPL = "portality.store.TempStore"
 
 from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+
+# S3 credentials for relevant scopes
+STORE_S3_SCOPES = {
+    "anon_data" : {
+        "aws_access_key_id" : "put this in your dev.cfg",
+        "aws_secret_access_key" : "put this in your dev.cfg"
+    }
+}
 
 
 # ========================

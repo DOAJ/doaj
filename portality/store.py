@@ -1,7 +1,7 @@
 from portality.core import app
 from portality.lib import plugin
 
-import os, shutil, codecs, requests
+import os, shutil, codecs, boto3
 
 class StoreException(Exception):
     pass
@@ -9,13 +9,13 @@ class StoreException(Exception):
 class StoreFactory(object):
 
     @classmethod
-    def get(cls):
+    def get(cls, scope):
         """
         Returns an implementation of the base Store class
         """
         si = app.config.get("STORE_IMPL")
         sm = plugin.load_class(si)
-        return sm()
+        return sm(scope)
 
     @classmethod
     def tmp(cls):
@@ -30,6 +30,9 @@ class StoreFactory(object):
         return sm()
 
 class Store(object):
+
+    def __init__(self, scope):
+        pass
 
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         pass
@@ -46,11 +49,48 @@ class Store(object):
     def delete(self, container_id, target_name=None):
         pass
 
-class StoreLocal(Store):
+class StoreS3(Store):
     """
     Primitive local storage system.  Use this for testing in place of remote store
     """
-    def __init__(self):
+    def __init__(self, scope):
+        cfg = app.config.get("STORE_S3_SCOPES", {}).get(scope)
+        access_key = cfg.get("aws_access_key_id")
+        secret = cfg.get("aws_secret_access_key")
+        if access_key is None or secret is None:
+            raise StoreException("'aws_access_key_id' and 'aws_secret_access_key' must be set in STORE_S3_SCOPE for scope '{x}'".format(x=scope))
+
+        self.client = boto3.client(
+            's3',
+            aws_access_key_id=access_key,
+            aws_secret_access_key=secret
+        )
+
+    def store(self, container_id, target_name, source_path=None, source_stream=None):
+        # Note that this assumes the container (bucket) exists
+        if source_path is not None:
+            with codecs.open(source_path, "rb", "utf-8") as f:
+                self.client.put_object(Bucket=container_id, Body=f, Key=target_name)
+        elif source_stream is not None:
+            self.client.put_object(Bucket=container_id, Body=source_stream, Key=target_name)
+
+    def exists(self, container_id):
+        pass
+
+    def list(self, container_id):
+        pass
+
+    def get(self, container_id, target_name):
+        obj = self.client.get_object(Bucket=container_id, Key=target_name)
+        body = obj["Body"]
+        return body
+
+    def delete(self, container_id, target_name=None):
+        pass
+
+
+class StoreLocal(Store):
+    def __init__(self, scope):
         self.dir = app.config.get("STORE_LOCAL_DIR")
         if self.dir is None:
             raise StoreException("STORE_LOCAL_DIR is not defined in config")
@@ -90,7 +130,6 @@ class StoreLocal(Store):
                 os.remove(cpath)
             else:
                 shutil.rmtree(cpath)
-
 
 
 class TempStore(StoreLocal):

@@ -1,6 +1,7 @@
-import esprit, os, codecs, json
+import esprit, codecs, json
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
+from portality import constants
 
 
 def do_import(config):
@@ -31,7 +32,7 @@ def do_import(config):
 
     if config.get("confirm", True):
         text = raw_input("Continue? [y/n]")
-        if text.lower() != "Y":
+        if text.lower() != "y":
             exit()
 
     # remove all the types that we are going to import
@@ -42,9 +43,9 @@ def do_import(config):
     print("==Initialising Index for Mappings==")
     initialise_index(app)
 
-    mainStore = StoreFactory.get()
+    mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()
-    container = "anon_export"
+    container = constants.STORE_ANON_DATA
 
     print("\n==Importing==")
     for import_type, cfg in import_types.iteritems():

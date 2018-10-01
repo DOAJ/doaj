@@ -5,6 +5,7 @@ from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
+from portality import constants
 
 
 def _anonymise_email(record):
@@ -89,8 +90,8 @@ if __name__ == '__main__':
     conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
 
     tmpStore = StoreFactory.tmp()
-    mainStore = StoreFactory.get()
-    container = "anon_export"
+    mainStore = StoreFactory.get("anon_data")
+    container = container = constants.STORE_ANON_DATA
 
     if args.clean:
         mainStore.delete(container)
