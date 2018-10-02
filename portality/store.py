@@ -78,15 +78,37 @@ class StoreS3(Store):
         pass
 
     def list(self, container_id):
-        pass
+        all_keys = []
+        r = self.client.list_objects_v2(Bucket=container_id)
+        while r.get('Contents', None):
+            all_keys += [key["Key"] for key in r['Contents']]
+
+            if r.get('NextContinuationToken', None):
+                r = self.client.list_objects_v2(Bucket=container_id, ContinuationToken=r['NextContinuationToken'])
+            else:
+                break
+        return all_keys
 
     def get(self, container_id, target_name):
         obj = self.client.get_object(Bucket=container_id, Key=target_name)
+        if obj is None:
+            return None
         body = obj["Body"]
         return body
 
     def delete(self, container_id, target_name=None):
-        pass
+        # we are not allowed to delete the bucket, so we just delete the contents
+        keys = self.list(container_id)
+
+        # FIXME: this has a limit of 1000 keys, which will need to be dealt with at some point soon
+        delete_info = {
+            "Objects" : [{"Key" : key} for key in keys]
+        }
+
+        self.client.delete_objects(
+            Bucket=container_id,
+            Delete=delete_info
+        )
 
 
 class StoreLocal(Store):

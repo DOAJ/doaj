@@ -74,6 +74,12 @@ anonymisation_procedures = {
     'suggestion': anonymise_suggestion
 }
 
+def _copy_on_complete(path):
+    print("Storing from temporary file {x}".format(x=path))
+    name = os.path.basename(path)
+    mainStore.store(container, name, source_path=path)
+    tmpStore.delete(container, name)
+
 if __name__ == '__main__':
 
     import argparse
@@ -81,6 +87,7 @@ if __name__ == '__main__':
 
     parser.add_argument("-l", "--limit", type=int, help="Number of records to export from each type. If you specify e.g. 100, then only the first 100 accounts, 100 journals, 100 articles etc. will be exported. The \"first\" 100 will be ordered by whatever the esprit iterate functionality uses as default ordering, usually alphabetically by record id.")
     parser.add_argument("-c", "--clean", action="store_true", required=True, help="Clean any pre-existing output before continuing")
+    parser.add_argument("-b", "--batch", default=100000, type=int, help="Output batch sizes")
     args = parser.parse_args()
     if args.limit > 0:
         limit = args.limit
@@ -99,17 +106,17 @@ if __name__ == '__main__':
     for type_ in esprit.raw.list_types(connection=conn):
         filename = type_ + ".bulk"
         output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-        print(dates.now() + " " + type_ + " => " + output_file)
+        print(dates.now() + " " + type_ + " => " + output_file + ".*")
         if type_ in anonymisation_procedures:
             transform = anonymisation_procedures[type_]
-            with open(output_file, 'wb') as o:
-                esprit.tasks.dump(conn, type_, transform=transform, limit=limit, out=o, es_bulk_fields=["_id"])
+            filenames = esprit.tasks.dump(conn, type_, limit=limit, transform=transform,
+                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
+                                          es_bulk_fields=["_id"])
         else:
-            with open(output_file, 'wb') as o:
-                esprit.tasks.dump(conn, type_, limit=limit, out=o, es_bulk_fields=["_id"])
+            filenames = esprit.tasks.dump(conn, type_, limit=limit,
+                                          out_template=output_file, out_batch_sizes=args.batch, out_rollover_callback=_copy_on_complete,
+                                          es_bulk_fields=["_id"])
 
-        mainStore.store(container, filename, source_path=output_file)
-        tmpStore.delete(container, filename)
         print(dates.now() + " done\n")
 
     tmpStore.delete(container)

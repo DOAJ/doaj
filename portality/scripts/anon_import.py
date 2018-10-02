@@ -49,19 +49,34 @@ def do_import(config):
 
     print("\n==Importing==")
     for import_type, cfg in import_types.iteritems():
-        print("Obtaining {x} from storage".format(x=import_type))
-        filename = import_type + ".bulk"
-        handle = mainStore.get(container, filename)
-        tempStore.store(container, filename, source_stream=handle)
-        handle.close()
-
         count = "all" if cfg.get("limit", -1) == -1 else cfg.get("limit")
         print("Importing {x} from {y}".format(x=count, y=import_type))
-        data_file = tempStore.path(container, filename)
+        print("Obtaining {x} from storage".format(x=import_type))
+
         limit = cfg.get("limit", -1)
         limit = None if limit == -1 else limit
-        esprit.tasks.bulk_load(conn, import_type, data_file, limit=limit, max_content_length=config.get("max_content_length", 100000000))
-        tempStore.delete(container, filename)
+
+        n = 1
+        while True:
+            filename = import_type + ".bulk" + "." + str(n)
+            handle = mainStore.get(container, filename)
+            if handle is None:
+                break
+            print("Retrieved {x} from storage".format(x=filename))
+            tempStore.store(container, filename, source_stream=handle)
+            handle.close()
+
+            data_file = tempStore.path(container, filename)
+            imported_count = esprit.tasks.bulk_load(conn, import_type, data_file,
+                                                    limit=limit, max_content_length=config.get("max_content_length", 100000000))
+            tempStore.delete(container, filename)
+
+            if limit is not None and imported_count != -1:
+                limit -= imported_count
+            if limit <= 0:
+                break
+
+            n += 1
 
     tempStore.delete(container)
 
