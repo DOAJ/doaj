@@ -132,6 +132,8 @@ from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 
+STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
+
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
     "anon_data" : {

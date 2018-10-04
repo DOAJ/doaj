@@ -86,7 +86,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument("-l", "--limit", type=int, help="Number of records to export from each type. If you specify e.g. 100, then only the first 100 accounts, 100 journals, 100 articles etc. will be exported. The \"first\" 100 will be ordered by whatever the esprit iterate functionality uses as default ordering, usually alphabetically by record id.")
-    parser.add_argument("-c", "--clean", action="store_true", required=True, help="Clean any pre-existing output before continuing")
+    parser.add_argument("-c", "--clean", action="store_true", help="Clean any pre-existing output before continuing")
     parser.add_argument("-b", "--batch", default=100000, type=int, help="Output batch sizes")
     args = parser.parse_args()
     if args.limit > 0:
@@ -98,7 +98,7 @@ if __name__ == '__main__':
 
     tmpStore = StoreFactory.tmp()
     mainStore = StoreFactory.get("anon_data")
-    container = container = constants.STORE_ANON_DATA
+    container = app.config.get("STORE_ANON_DATA_CONTAINER")
 
     if args.clean:
         mainStore.delete(container)

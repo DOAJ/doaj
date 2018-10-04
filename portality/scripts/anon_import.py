@@ -31,7 +31,7 @@ def do_import(config):
     print("\n")
 
     if config.get("confirm", True):
-        text = raw_input("Continue? [y/n]")
+        text = raw_input("Continue? [y/N] ")
         if text.lower() != "y":
             exit()
 
@@ -45,7 +45,7 @@ def do_import(config):
 
     mainStore = StoreFactory.get("anon_data")
     tempStore = StoreFactory.tmp()
-    container = constants.STORE_ANON_DATA
+    container = app.config.get("STORE_ANON_DATA_CONTAINER")
 
     print("\n==Importing==")
     for import_type, cfg in import_types.iteritems():
@@ -73,7 +73,7 @@ def do_import(config):
 
             if limit is not None and imported_count != -1:
                 limit -= imported_count
-            if limit <= 0:
+            if limit is not None and limit <= 0:
                 break
 
             n += 1
