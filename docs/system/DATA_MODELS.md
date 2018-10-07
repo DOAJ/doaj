@@ -24,7 +24,6 @@
             {"type" : "doi", "id" : "<doi>"},
             {"type" : "pissn", "id" : "<print issn>"},
             {"type" : "eissn", "id" : "<electronic issn>"}
-            {"type" : "eissn", "id" : "<electronic issn>"}
         ],
         "journal" : {
             "volume" : "journal volume number",
