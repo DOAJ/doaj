@@ -124,7 +124,7 @@
 
             <p><strong>Date added to DOAJ</strong>:&nbsp;{{journal.created_timestamp.strftime("%e %b %Y")}}</p>
 
-            {% if journal.last_manual_update_timestamp %}
+            {% if journal.last_manual_update_timestamp and journal.last_manual_update_timestamp.strftime(app.config.get('DEFAULT_DATE_FORMAT', '%Y-%m-%dT%H:%M:%SZ')) != app.config.get('DEFAULT_TIMESTAMP','1970-01-01T00:00:00Z')%}
             <p><strong>Record Last Updated</strong>:&nbsp;{{journal.last_manual_update_timestamp.strftime("%e %b %Y")}}</p>
             {% endif %}
 
