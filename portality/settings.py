@@ -661,6 +661,8 @@ DATE_FORMATS = [
     "%Y"                    # e.g. 1978
 ]
 
+# The last_manual_update field was initialised to this value. Used to label as 'never'.
+DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 
 # ========================================
 # API configuration
