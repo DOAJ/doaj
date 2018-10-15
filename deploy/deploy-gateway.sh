@@ -33,7 +33,7 @@ git submodule update --recursive
 
 # install app on gate
 sudo apt-get update -q -y
-sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev
+sudo apt-get -q -y install libxml2-dev libxslt-dev python-dev lib32z1-dev zip
 pip install -r requirements.txt
 
 # prep sym links for the app server
@@ -63,6 +63,20 @@ sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/logrotate/doaj-duplic
 # gateway crons
 sudo ln -sf /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/anacrontab-$GATE_ENV-gate /etc/anacrontab
 crontab /home/cloo/repl/$GATE_ENV/doaj/src/doaj/deploy/crontab-$GATE_ENV-gate
+
+# Upload AWS Lambda functions
+# todo: this could actually be better using an S3 client library and Lambda from S3 filesystem
+# todo: populating .aws/credentials is a bit tricky at the moment. Again solved with S3 library above. (sort of)
+# todo: when we have more than one function, they should each be in their own subdirectories named function-name.
+if [ "$ENV" = 'production' ]
+then
+    aws --version
+    cd deploy/lambda
+    zip upload.zip *
+    # Credentials must already be in ~/.aws/
+    aws --profile doaj-production-lambda lambda update-function-code --function-name alertS3BackupsFailure --zip-file fileb://upload.zip --region=eu-west-1 --publish
+    rm upload.zip
+fi
 
 # replicate across servers
 /home/cloo/repl/replicate.sh
