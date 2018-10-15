@@ -37,7 +37,8 @@ setup(
         # for deployment
         "gunicorn",
         "newrelic",
-        "parameterized==0.6.1"
+        "parameterized==0.6.1",
+        "awscli"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
 
     url = 'http://cottagelabs.com/',
