@@ -1,7 +1,6 @@
-import esprit, codecs, json
+import esprit, codecs, json, gzip
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
-from portality import constants
 
 
 def do_import(config):
@@ -63,7 +62,9 @@ def do_import(config):
             if handle is None:
                 break
             print("Retrieved {x} from storage".format(x=filename))
-            tempStore.store(container, filename, source_stream=handle)
+            ziphandle = gzip.GzipFile(fileobj=handle)
+            tempStore.store(container, filename, source_stream=ziphandle)
+            ziphandle.close()
             handle.close()
 
             data_file = tempStore.path(container, filename)

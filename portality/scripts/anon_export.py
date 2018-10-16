@@ -1,11 +1,10 @@
-import esprit, os, shutil
+import esprit, os, shutil, gzip
 from portality import models
 from portality.core import app
 from portality.lib.anon import basic_hash, anon_name, anon_email
 from portality.lib.dataobj import DataStructureException
 from portality.lib import dates
 from portality.store import StoreFactory
-from portality import constants
 
 
 def _anonymise_email(record):
@@ -75,10 +74,19 @@ anonymisation_procedures = {
 }
 
 def _copy_on_complete(path):
-    print("Storing from temporary file {x}".format(x=path))
     name = os.path.basename(path)
-    mainStore.store(container, name, source_path=path)
+    raw_size = os.path.getsize(path)
+    print("Compressing temporary file {x} (from {y} bytes)".format(x=path, y=raw_size))
+    zipped_name = name + ".gz"
+    dir = os.path.dirname(path)
+    zipped_path = os.path.join(dir, zipped_name)
+    with open(path, "rb") as f_in, gzip.open(zipped_path, "wb") as f_out:
+        shutil.copyfileobj(f_in, f_out)
+    zipped_size = os.path.getsize(zipped_path)
+    print("Storing from temporary file {x} ({y} bytes)".format(x=zipped_name, y=zipped_size))
+    mainStore.store(container, name, source_path=zipped_path)
     tmpStore.delete(container, name)
+    tmpStore.delete(container, zipped_name)
 
 if __name__ == '__main__':
 
