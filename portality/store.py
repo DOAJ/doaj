@@ -90,7 +90,10 @@ class StoreS3(Store):
         return all_keys
 
     def get(self, container_id, target_name):
-        obj = self.client.get_object(Bucket=container_id, Key=target_name)
+        try:
+            obj = self.client.get_object(Bucket=container_id, Key=target_name)
+        except self.client.exceptions.NoSuchKey:
+            return None
         if obj is None:
             return None
         body = obj["Body"]

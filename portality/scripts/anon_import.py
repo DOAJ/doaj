@@ -1,6 +1,7 @@
 import esprit, codecs, json, gzip
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
+from botocore.exceptions import ClientError
 
 
 def do_import(config):
