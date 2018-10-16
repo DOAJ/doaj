@@ -123,9 +123,10 @@ MAIL_PORT = 25              # default 25
 # ================================
 # File store
 
-STORE_IMPL = "portality.store.StoreS3"
-# put this in your dev.cfg, go store locally:
-# STORE_IMPL = "portality.store.StoreLocal"
+# put this in your production.cfg, to store on S3:
+# STORE_IMPL = "portality.store.StoreS3"
+
+STORE_IMPL = "portality.store.StoreLocal"
 STORE_TMP_IMPL = "portality.store.TempStore"
 
 from portality.lib import paths
@@ -137,8 +138,8 @@ STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
     "anon_data" : {
-        "aws_access_key_id" : "put this in your dev.cfg",
-        "aws_secret_access_key" : "put this in your dev.cfg"
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
 
