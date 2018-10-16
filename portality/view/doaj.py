@@ -354,11 +354,12 @@ def oainfo():
 @blueprint.route("/<cc>/mejorespracticas")
 @blueprint.route("/<cc>/boaspraticas")
 @blueprint.route("/<cc>/bestpractice")
+@blueprint.route("/<cc>/editionsavante")
 @blueprint.route("/bestpractice")
 def bestpractice(cc=None):
     # FIXME: if we go for full multilingual support, it would be better to put this in the template
     # loader and have it check for templates in the desired language, and provide fall-back
-    if cc is not None and cc in ["es", "pt"]:
+    if cc is not None and cc in ["es", "pt", "fa", "fr", "kr"]:
         return render_template("doaj/i18n/" + cc + "/bestpractice.html")
     return render_template("doaj/bestpractice.html")
 
