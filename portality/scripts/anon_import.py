@@ -2,6 +2,7 @@ import esprit, codecs, json
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
 from portality import constants
+from botocore.exceptions import ClientError
 
 
 def do_import(config):
@@ -59,7 +60,12 @@ def do_import(config):
         n = 1
         while True:
             filename = import_type + ".bulk" + "." + str(n)
-            handle = mainStore.get(container, filename)
+            try:
+                handle = mainStore.get(container, filename)
+            except ClientError as e:
+                print("Error fetching #{f}".format(f=filename))
+                print(e)
+                handle = None
             if handle is None:
                 break
             print("Retrieved {x} from storage".format(x=filename))
