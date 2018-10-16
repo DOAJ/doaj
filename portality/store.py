@@ -69,7 +69,7 @@ class StoreS3(Store):
     def store(self, container_id, target_name, source_path=None, source_stream=None):
         # Note that this assumes the container (bucket) exists
         if source_path is not None:
-            with codecs.open(source_path, "rb", "utf-8") as f:
+            with open(source_path, "rb") as f:
                 self.client.put_object(Bucket=container_id, Body=f, Key=target_name)
         elif source_stream is not None:
             self.client.put_object(Bucket=container_id, Body=source_stream, Key=target_name)
