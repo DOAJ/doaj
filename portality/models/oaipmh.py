@@ -51,7 +51,7 @@ class OAIPMHRecord(object):
 
     set_limit = {"term" : { "index.schema_subject.exact" : "<set name>" }}
     range_limit = { "range" : { "last_updated" : {"gte" : "<from date>", "lte" : "<until date>"} } }
-    created_sort = {"last_updated" : {"order" : "desc"}}
+    created_sort = [{"last_updated" : {"order" : "desc"}}, {"id" : "desc"}]
 
     def earliest_datestamp(self):
         result = self.query(q=self.earliest)
@@ -66,19 +66,21 @@ class OAIPMHRecord(object):
         sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
         return sets
 
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
         q = deepcopy(self.records)
-        if from_date is not None or until_date is not None or oai_set is not None:
+        if start_after is not None or from_date is not None or until_date is not None or oai_set is not None:
 
             if oai_set is not None:
                 s = deepcopy(self.set_limit)
                 s["term"]["index.schema_subject.exact"] = oai_set
                 q["query"]["bool"]["must"].append(s)
 
-            if until_date is not None or from_date is not None:
+            if until_date is not None or from_date is not None or start_after is not None:
                 d = deepcopy(self.range_limit)
 
-                if until_date is not None:
+                if start_after is not None:
+                    d["range"]["last_updated"]["lte"] = start_after[0]
+                elif until_date is not None:
                     d["range"]["last_updated"]["lte"] = until_date
                 else:
                     del d["range"]["last_updated"]["lte"]
@@ -93,13 +95,16 @@ class OAIPMHRecord(object):
         if list_size is not None:
             q["size"] = list_size
 
-        if start_number is not None:
-            q["from"] = start_number
+        if start_after is not None:
+            q["from"] = start_after[1]
+        else:
+            q["from"] = 0
 
-        q["sort"] = [deepcopy(self.created_sort)]
+        q["sort"] = deepcopy(self.created_sort)
 
         # do the query
         # print json.dumps(q)
+
         results = self.query(q=q)
 
         total = results.get("hits", {}).get("total", 0)
@@ -107,9 +112,9 @@ class OAIPMHRecord(object):
 
 
 class OAIPMHArticle(OAIPMHRecord, Article):
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
         total, results = super(OAIPMHArticle, self).list_records(from_date=from_date,
-            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number, start_after=start_after)
         return total, [Article(**r) for r in results]
 
     def pull(self, identifier):
@@ -120,9 +125,9 @@ class OAIPMHArticle(OAIPMHRecord, Article):
         return None
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
         total, results = super(OAIPMHJournal, self).list_records(from_date=from_date,
-            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number)
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number, start_after=start_after)
         return total, [Journal(**r) for r in results]
 
     def pull(self, identifier):
