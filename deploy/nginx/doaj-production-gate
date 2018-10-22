@@ -195,11 +195,13 @@ server {
 
 # Metrics for metricsbeat
 server {
+    listen [::]:80;
     listen 80;
-    server_name localhost;
-    location /server-status/ {
+    server_name localhost 127.0.0.1;
+    location /server-status {
         stub_status on;
         access_log off;
+        allow ::1;
         allow 127.0.0.1;
         deny all;
     }
