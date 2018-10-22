@@ -1,4 +1,4 @@
-import esprit, codecs, json, gzip
+import esprit, codecs, json, gzip, shutil
 from portality.core import app, initialise_index
 from portality.store import StoreFactory
 from botocore.exceptions import ClientError
@@ -62,14 +62,19 @@ def do_import(config):
             handle = mainStore.get(container, filename)
             if handle is None:
                 break
+            tempStore.store(container, filename + ".gz", source_stream=handle)
             print("Retrieved {x} from storage".format(x=filename))
-            ziphandle = gzip.GzipFile(fileobj=handle)
-            tempStore.store(container, filename, source_stream=ziphandle)
-            ziphandle.close()
             handle.close()
 
-            data_file = tempStore.path(container, filename)
-            imported_count = esprit.tasks.bulk_load(conn, import_type, data_file,
+            print("Unzipping {x} in temporary store".format(x=filename))
+            compressed_file = tempStore.path(container, filename + ".gz")
+            uncompressed_file = tempStore.path(container, filename, must_exist=False)
+            with gzip.open(compressed_file, "rb") as f_in, open(uncompressed_file, "wb") as f_out:
+                shutil.copyfileobj(f_in, f_out)
+            tempStore.delete(container, filename + ".gz")
+
+            print("Importing from {x}".format(x=filename))
+            imported_count = esprit.tasks.bulk_load(conn, import_type, uncompressed_file,
                                                     limit=limit, max_content_length=config.get("max_content_length", 100000000))
             tempStore.delete(container, filename)
 
