@@ -192,3 +192,12 @@ server {
         include includes/proxy_pass_settings;
     }
 }
+
+# Metrics for metricsbeat
+server {
+    listen 80;
+    server_name localhost;
+    location /server-status/ {
+        stub_status;
+    }
+}
