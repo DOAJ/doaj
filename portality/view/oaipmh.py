@@ -152,6 +152,9 @@ def get_start_after(docs, current_start_after, list_size):
         if doc.get("last_updated") == last_date:
             count += 1
     if count == list_size and current_start_after is not None and last_date == current_start_after[0]:
+        # If the current set of rcords have the same date as last record served previously,
+        #   the count has to be greater than the list of records
+        #   and include the previous count
         count += current_start_after[1]
     return (last_date, count)
 
@@ -568,7 +571,11 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
             if len(results) == 0:
                 return NoRecordsMatch(base_url)
 
-            # get the full total
+            # Get the full total
+            # Each search with a resumption token is a new search,
+            #   so the total is not the same as the first search
+            #   but is reduced by number of records already served.
+            # This full_total is the total as in the first search
             full_total = total
             if start_after is not None:
                 full_total = total + start_number - start_after[1]
