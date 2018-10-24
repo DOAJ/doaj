@@ -145,12 +145,14 @@ def decode_set_spec(setspec):
     return decoded
 
 
-def get_start_after(docs):
+def get_start_after(docs, current_start_after, list_size):
     last_date = docs[-1].get("last_updated")
     count = 0
     for doc in docs:
         if doc.get("last_updated") == last_date:
             count += 1
+    if count == list_size and current_start_after is not None and last_date == current_start_after[0]:
+        count += current_start_after[1]
     return (last_date, count)
 
 def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None, start_after=None):
@@ -450,17 +452,17 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
             # - the empty string = include in the response
             resumption_token = None
             if total > len(results):
-                start_after = get_start_after(results)
+                new_start_after = get_start_after(results, start_after, list_size)
                 new_start = start_number + len(results)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                      until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=start_after)
+                      until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
             else:
                 resumption_token = ""
 
             li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
                 expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                li.set_resumption(resumption_token, complete_list_size=full_total, cursor=start_number, expiry=expiry)
+                li.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
 
             for r in results:
                 # do the crosswalk (header only in this operation)
@@ -577,17 +579,17 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
             # - the empty string = include in the response
             resumption_token = None
             if total > len(results):
-                start_after = get_start_after(results)
+                new_start_after = get_start_after(results, start_after, list_size)
                 new_start = start_number + len(results)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                    until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=start_after)
+                    until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
             else:
                 resumption_token = ""
 
             lr = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
                 expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                lr.set_resumption(resumption_token, complete_list_size=full_total, cursor=start_number, expiry=expiry)
+                lr.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
 
             for r in results:
                 # do the crosswalk
