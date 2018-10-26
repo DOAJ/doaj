@@ -197,7 +197,6 @@ server {
 server {
     listen [::]:80;
     listen 80;
-    server_name localhost 127.0.0.1;
     location /server-status {
         stub_status on;
         access_log off;
