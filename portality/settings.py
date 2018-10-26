@@ -120,6 +120,30 @@ MAIL_PORT = 25              # default 25
 #MAIL_MAX_EMAILS            # default None
 #MAIL_SUPPRESS_SEND         # default app.testing
 
+# ================================
+# File store
+
+# put this in your production.cfg, to store on S3:
+# STORE_IMPL = "portality.store.StoreS3"
+
+STORE_IMPL = "portality.store.StoreLocal"
+STORE_TMP_IMPL = "portality.store.TempStore"
+
+from portality.lib import paths
+STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
+STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+
+STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
+
+# S3 credentials for relevant scopes
+STORE_S3_SCOPES = {
+    "anon_data" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    }
+}
+
+
 # ========================
 # workflow email notification settings
 MAN_ED_IDLE_WEEKS = 4      # weeks before an application is considered reminder-worthy
