@@ -153,3 +153,21 @@
 }
 ```
 
+## Background Job Data Model
+```python
+{
+    "id" : "<opaque id for this background job>",
+    "status" : "queued|processing|complete|error|cancelled",
+    "action" : "<the type of background task>",
+    "params" : {<key, value pairs of action-specific parameters>},
+    "user" : "<user account ID that initiated this job>",
+    "audit" : [
+        {
+            "timestamp" : "<timestamp for when this message was added>",
+            "message" : "<log message relating to job run>"
+        }
+     ],
+    "created_date" : "<timestamp for when this job was created>",
+    "last_updated" : "<timestamp for when this job was last modified>"
+}
+```
