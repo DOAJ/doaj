@@ -3,7 +3,7 @@ import sys
 
 setup(
     name = 'doaj',
-    version = '2.13.2',
+    version = '2.14.0',
     packages = find_packages(),
     install_requires = [
         "werkzeug==0.14.1",
@@ -38,7 +38,8 @@ setup(
         "gunicorn",
         "newrelic",
         "parameterized==0.6.1",
-        "awscli"
+        "awscli",
+        "boto3==1.9.10"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
 
     url = 'http://cottagelabs.com/',
