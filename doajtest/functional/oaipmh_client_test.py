@@ -21,6 +21,7 @@ else:
     req_period = timedelta()
 last_req = datetime.min
 
+IDENTS = []
 
 def harvest(base_url, res_token=None):
     url = base_url + "?verb=ListRecords"
@@ -41,10 +42,20 @@ def harvest(base_url, res_token=None):
     assert resp.status_code == 200, resp.text
 
     xml = etree.fromstring(resp.text[39:])
+
+    records = xml.findall(".//" + NS + "record")
+    for record in records:
+        oai_id = record.find(".//" + NS + "identifier").text
+        if oai_id in IDENTS:
+            print "DUPLICATE ID: " + oai_id
+            return None
+        IDENTS.append(oai_id)
+
     rtel = xml.find(".//" + NS + "resumptionToken")
     if rtel is not None:
         if rtel.text is not None and rtel.text != "":
             print "\tresumption token", rtel.text, "cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
+            print "\tresults received: ", len(IDENTS)
             return rtel.text
         else:
             print "\tno resumption token, complete. cursor", rtel.get("cursor") + "/" + rtel.get("completeListSize")
@@ -59,6 +70,8 @@ while True:
     rt = harvest(JOURNAL_BASE_URL, rt)
     if rt is None:
         break
+
+IDENTS = []
 
 # articles
 rt = None
