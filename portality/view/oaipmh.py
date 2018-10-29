@@ -438,7 +438,7 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number, start_after)
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_after)
 
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:
@@ -565,7 +565,7 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number, start_after)
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_after)
 
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:

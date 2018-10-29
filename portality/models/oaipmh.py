@@ -66,7 +66,7 @@ class OAIPMHRecord(object):
         sets = [t.get("term") for t in result.get("facets", {}).get("sets", {}).get("terms", [])]
         return sets
 
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         q = deepcopy(self.records)
         if start_after is not None or from_date is not None or until_date is not None or oai_set is not None:
 
@@ -112,9 +112,9 @@ class OAIPMHRecord(object):
 
 
 class OAIPMHArticle(OAIPMHRecord, Article):
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         total, results = super(OAIPMHArticle, self).list_records(from_date=from_date,
-            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number, start_after=start_after)
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
         return total, [Article(**r) for r in results]
 
     def pull(self, identifier):
@@ -125,9 +125,9 @@ class OAIPMHArticle(OAIPMHRecord, Article):
         return None
 
 class OAIPMHJournal(OAIPMHRecord, Journal):
-    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_number=None, start_after=None):
+    def list_records(self, from_date=None, until_date=None, oai_set=None, list_size=None, start_after=None):
         total, results = super(OAIPMHJournal, self).list_records(from_date=from_date,
-            until_date=until_date, oai_set=oai_set, list_size=list_size, start_number=start_number, start_after=start_after)
+            until_date=until_date, oai_set=oai_set, list_size=list_size, start_after=start_after)
         return total, [Journal(**r) for r in results]
 
     def pull(self, identifier):
