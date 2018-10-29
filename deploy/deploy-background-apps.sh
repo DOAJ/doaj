@@ -10,6 +10,8 @@ mkdir -p /home/cloo/appdata/doaj/history
 mkdir -p /home/cloo/appdata/doaj/history/article
 mkdir -p /home/cloo/appdata/doaj/history/journal
 mkdir -p /home/cloo/appdata/doaj/local_store
+mkdir -p /home/cloo/appdata/doaj/local_store/main
+mkdir -p /home/cloo/appdata/doaj/local_store/tmp
 
 sudo apt-get update -q -y
 sudo apt-get install -q -y redis-tools
