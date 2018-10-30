@@ -69,6 +69,9 @@ class BackgroundJob(dataobj.DataObj, dao.DomainObject):
     def fail(self):
         self._set_with_struct("status", u"error")
 
+    def cancel(self):
+        self._set_with_struct("status", u"cancelled")
+
     def is_failed(self):
         return self._get_single("status") == u"error"
 
@@ -87,7 +90,7 @@ BACKGROUND_STRUCT = {
         "id" :{"coerce" : "unicode"},
         "created_date" : {"coerce" : "utcdatetime"},
         "last_updated" : {"coerce" : "utcdatetime"},
-        "status" : {"coerce" : "unicode", "allowed_values" : [u"queued", u"processing", u"complete", u"error"]},
+        "status" : {"coerce" : "unicode", "allowed_values" : [u"queued", u"processing", u"complete", u"error", u"cancelled"]},
         "user" : {"coerce" : "unicode"},
         "action" : {"coerce" : "unicode"},
         "queue_id" : {"coerce" : "unicode"}
