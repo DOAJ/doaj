@@ -59,7 +59,8 @@ def manage_jobs(verb, action, status, from_date, to_date):
                 print('This script is not set up to {0} task type {1}. Skipping.'.format(verb, job.action))
                 continue
 
-            job.add_audit_message(u"Job {verb}ed from job management script.".format(verb=verb))
+            job.add_audit_message(u"Job {pp} from job management script.".format(
+                pp={'requeue': 'requeued', 'cancel': 'cancelled'}[verb]))
 
             if verb == 're-queue':                                                    # Re-queue and execute immediately
                 job.queue()
@@ -129,7 +130,7 @@ if __name__ == '__main__':
                         default=dates.now())
     args = parser.parse_args()
 
-    if (args.requeue and args.cancel):
+    if args.requeue and args.cancel:
         print('Use only --requeue OR --cancel, not both.')
         exit(1)
     elif args.requeue:
