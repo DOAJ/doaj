@@ -1,9 +1,11 @@
 Dear {{ publisher_name }},
 
-The update which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update when you are ready.
+The update request which you submitted for "{{ journal_title }}" has been rejected. This is because we were unable to verify the information which you provided with the information stated on your website. Please double check your website and submit a new update request when you are ready.
+
+{% if note %}The editors provided the following feedback on your rejected update request: {{ note }} {% endif %}
 
 If you have any questions about this decision, please email feedback@doaj.org
 
-The DOAJ Team
+The DOAJ Editorial Team
 
 **This is an automated message. Please do not reply to this message.**

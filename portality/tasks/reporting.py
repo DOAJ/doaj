@@ -6,6 +6,7 @@ from portality.core import app
 
 from portality.background import BackgroundApi, BackgroundTask
 from portality.tasks.redis_huey import main_queue, schedule
+from portality.app_email import email_archive
 from portality.decorators import write_required
 
 import codecs, os, shutil
@@ -308,34 +309,6 @@ class ContentByDate(object):
         }
 
 
-def email(data_dir, archv_name):
-    """
-    Compress and email the reports to the specified email address.
-    :param data_dir: Directory containing the reports
-    :param archv_name: Filename for the archive and resulting email attachment
-    """
-    import shutil
-    from portality import app_email
-    from portality.core import app
-
-    email_to = app.config.get('REPORTS_EMAIL_TO', ['feedback@doaj.org'])
-    email_from = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
-    email_sub = app.config.get('SERVICE_NAME', '') + ' - generated {0}'.format(archv_name)
-    msg = "Attached: {0}.zip\n".format(archv_name)
-
-    # Create an archive of the reports
-    archv = shutil.make_archive(archv_name, "zip", root_dir=data_dir)
-
-    # Read the archive to create an attachment, send it with the app email
-    with open(archv) as f:
-        dat = f.read()
-        attach = [app_email.make_attachment(filename=archv_name, content_type='application/zip', data=dat)]
-        app_email.send_mail(to=email_to, fro=email_from, subject=email_sub, msg_body=msg, files=attach)
-
-    # Clean up the archive
-    os.remove(archv)
-
-
 #########################################################
 # Background task implementation
 
@@ -374,7 +347,7 @@ class ReportingBackgroundTask(BackgroundTask):
             ref_fr = dates.reformat(fr, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
             ref_to = dates.reformat(to, app.config.get("DEFAULT_DATE_FORMAT"), "%Y-%m-%d")
             archive_name = "reports_" + ref_fr + "_to_" + ref_to
-            email(outdir, archive_name)
+            email_archive(outdir, archive_name)
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")

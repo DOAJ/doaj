@@ -95,6 +95,10 @@ class DomainObject(UserDict.IterableUserDict, object):
     def last_updated(self):
         return self.data.get("last_updated")
 
+    @property
+    def last_updated_timestamp(self):
+        return datetime.strptime(self.last_updated, "%Y-%m-%dT%H:%M:%SZ")
+
     def save(self, retries=0, back_off_factor=1, differentiate=False, blocking=False):
 
         if app.config.get("READ_ONLY_MODE", False) and app.config.get("SCRIPTS_READ_ONLY_MODE", False):

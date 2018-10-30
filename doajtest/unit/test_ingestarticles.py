@@ -1739,3 +1739,33 @@ class TestIngestArticles(DoajTestCase):
         cpaths = found[0].data["index"]["classification_paths"]
         assert len(cpaths) == 1
         assert cpaths[0] == "Agriculture: Aquaculture. Fisheries. Angling"
+
+# TODO: reinstate this test when author emails have been disallowed again
+'''
+    def test_34_file_upload_author_email(self):
+        handle = ArticleFixtureFactory.upload_author_email_address()
+        f = MockFileUpload(stream=handle)
+
+        previous = []
+        with self.assertRaises(BackgroundException):
+            id = ingestarticles.IngestArticlesBackgroundTask._file_upload("testuser", f, "doaj", previous)
+
+        assert len(previous) == 1
+        id = previous[0].id
+        self.cleanup_ids.append(id)
+
+        fu = models.FileUpload.pull(id)
+        assert fu is not None
+        assert fu.status == "failed"
+        assert fu.error is not None and fu.error != ""
+        assert fu.error_details is not None and fu.error != ""
+        assert fu.failure_reasons.keys() == []
+
+        # file should have been removed from upload dir
+        path = os.path.join(app.config.get("UPLOAD_DIR", "."), id + ".xml")
+        assert not os.path.exists(path)
+
+        # and placed into the failed dir
+        fad = os.path.join(app.config.get("FAILED_ARTICLE_DIR", "."), id + ".xml")
+        assert os.path.exists(fad)
+'''

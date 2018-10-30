@@ -71,10 +71,16 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert re.search(confirm_contact_email_rx, html)
 
         # now construct it from form data (with a known source)
+        source = models.Suggestion(**UPDATE_REQUEST_SOURCE)
+        acc = models.Account()
+        acc.set_id(source.owner)
+        acc.set_name("Test Owner")
+        acc.set_email("test@example.com")
+        acc.save(blocking=True)
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="publisher",
             form_data=MultiDict(UPDATE_REQUEST_FORM) ,
-            source=models.Suggestion(**UPDATE_REQUEST_SOURCE))
+            source=source)
 
         assert isinstance(fc, formcontext.PublisherUpdateRequest)
         assert fc.form is not None
@@ -107,8 +113,8 @@ class TestPublisherUpdateRequestFormContext(DoajTestCase):
         assert fc.target.editor_group == "editorgroup"
         assert fc.target.editor == "associate"
         assert fc.target.application_status == constants.APPLICATION_STATUS_UPDATE_REQUEST # because it hasn't been finalised yet
-        assert fc.target.suggester['name'] == fc.source.suggester["name"]
-        assert fc.target.suggester['email'] == fc.source.suggester["email"]
+        assert fc.target.suggester['name'] == "Test Owner"
+        assert fc.target.suggester['email'] == "test@example.com"
         assert fc.target.bibjson().replaces == ["1111-1111"]
         assert fc.target.bibjson().is_replaced_by == ["2222-2222"]
         assert fc.target.bibjson().discontinued_date == "2001-01-01"

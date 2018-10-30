@@ -39,7 +39,7 @@ class TestTaskJournalBulkEdit(DoajTestCase):
             self.journals.append(models.Journal(**j_src))
             self.journals[-1].set_editor_group("1234567890")
             self.journals[-1].set_editor("0987654321")
-            self.journals[-1].save()
+            self.journals[-1].save(blocking=True)
 
         self.forbidden_accounts = [
             AccountFixtureFactory.make_editor_source()['id'],

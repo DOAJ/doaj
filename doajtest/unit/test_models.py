@@ -249,8 +249,7 @@ class TestClient(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
-        time.sleep(1)
+            time.sleep(0.66)
 
         # now hit the key methods involved in article deletes
         query = {
@@ -269,12 +268,12 @@ class TestClient(DoajTestCase):
         assert count == 2
 
         models.Article.delete_selected(query)
-        time.sleep(2)
+        time.sleep(1)
         assert len(models.Article.all()) == 4
         assert len(self.list_today_article_history_files()) == 1
 
         models.Article.delete_by_issns(["2000-0000", "3000-0000"])
-        time.sleep(2)
+        time.sleep(1)
         assert len(models.Article.all()) == 2
         assert len(self.list_today_article_history_files()) == 3
 
@@ -293,7 +292,7 @@ class TestClient(DoajTestCase):
             j.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            time.sleep(0.66)
 
         # populate the index with some articles
         for i in range(5):
@@ -306,7 +305,7 @@ class TestClient(DoajTestCase):
             a.save()
 
             # make sure the last updated dates are suitably different
-            time.sleep(1)
+            time.sleep(0.66)
 
         # now hit the key methods involved in journal deletes
         query = {
@@ -326,7 +325,7 @@ class TestClient(DoajTestCase):
         assert "1000-0000" in issns
 
         models.Journal.delete_selected(query, articles=True)
-        time.sleep(2)
+        time.sleep(1)
 
         assert len(models.Article.all()) == 4
         assert len(self.list_today_article_history_files()) == 1
@@ -338,7 +337,7 @@ class TestClient(DoajTestCase):
         for jsrc in JournalFixtureFactory.make_many_journal_sources(count=99, in_doaj=True):
             j = models.Journal(**jsrc)
             j.save()
-        time.sleep(1) # index all the journals
+        time.sleep(2) # index all the journals
         journal_ids = []
         theqgen = models.JournalQuery()
         for j in models.Journal.iterate(q=theqgen.all_in_doaj(), page_size=10):
@@ -359,6 +358,7 @@ class TestClient(DoajTestCase):
         assert acc.has_role('api')
         assert acc.has_role('associate_editor')
         assert not acc.has_role('admin')
+        assert acc.marketing_consent is None
 
         # check the api key has been generated
         assert acc.api_key is not None
@@ -367,7 +367,7 @@ class TestClient(DoajTestCase):
         acc2 = models.Account.make_account(
             username='mrs_user2',
             email='user@example.com',
-            roles=['editor'],
+            roles=['editor']
         )
         assert not acc2.has_role('api')
 
@@ -378,6 +378,14 @@ class TestClient(DoajTestCase):
         # now add the api role and check we get a key generated
         acc2.add_role('api')
         assert acc2.api_key is not None
+
+        # Set marketing consent to True
+        acc2.set_marketing_consent(True)
+        assert acc2.marketing_consent is True
+
+        # Now set marketing consent to false
+        acc2.set_marketing_consent(False)
+        assert acc2.marketing_consent is False
 
         # remove the api_key from the object and ask for it again
         del acc2.data['api_key']
@@ -659,7 +667,7 @@ class TestClient(DoajTestCase):
         bj.journal_country = "FR"
         bj.journal_issns = ["1111-1111", "9999-9999"]
         bj.publisher = "Elsevier"
-        bj.add_author("Testing", "email@email.com", "School of Hard Knocks")
+        bj.add_author("Testing", "School of Hard Knocks")
         bj.set_journal_license("CC NC", "CC NC", "http://cc.nc", False)
         assert bj.get_publication_date() is not None
         assert bj.vancouver_citation() is not None
@@ -1044,3 +1052,24 @@ class TestClient(DoajTestCase):
         assert all[0].id == app1.id
         assert all[1].id == app2.id
 
+
+# TODO: reinstate this test when author emails have been disallowed again
+'''
+    def test_33_article_with_author_email(self):
+        """Check the system disallows articles with emails in the author field"""
+        a_source = ArticleFixtureFactory.make_article_source()
+
+        # Creating a model from a source with email is rejected by the DataObj
+        a_source['bibjson']['author'][0]['email'] = 'author@example.com'
+        with self.assertRaises(dataobj.DataStructureException):
+            a = models.Article(**a_source)
+            bj = a.bibjson()
+
+        # Remove the email address again to create the model
+        del a_source['bibjson']['author'][0]['email']
+        a = models.Article(**a_source)
+
+        # We can't add an author with an email address any more.
+        with self.assertRaises(TypeError):
+            a.bibjson().add_author(name='Ms Test', affiliation='School of Rock', email='author@example.com')
+'''

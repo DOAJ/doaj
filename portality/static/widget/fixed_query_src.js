@@ -339,7 +339,7 @@ jQuery(document).ready(function($) {
                 if (ids[i].type === "doi") {
                     var doi = ids[i].id;
                     var tendot = doi.indexOf("10.");
-                    var url = "http://dx.doi.org/" + escapeHtml(doi.substring(tendot));
+                    var url = "https://doi.org/" + escapeHtml(doi.substring(tendot));
                     result += " DOI <a href='" + url + "'>" + escapeHtml(doi.substring(tendot)) + "</a>";
                 }
             }
@@ -388,7 +388,7 @@ jQuery(document).ready(function($) {
     }
 
     $('.facetview.journals_and_articles').facetview($.extend({
-        search_url: doaj_url + '/query/journal,article/_search?',
+        search_url: doaj_url + '/query/journal,article/_search?ref=fqw',
         pushstate: false,                      // Do not use the url state, this may interfere with the host website
         render_results_metadata: doajPager,
         render_result_record: publicSearchResult,

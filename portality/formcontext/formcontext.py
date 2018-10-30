@@ -667,9 +667,6 @@ class ManEdApplicationReview(ApplicationContext):
         is_editor_group_changed = xwalk.SuggestionFormXWalk.is_new_editor_group(self.form, self.source)
         is_associate_editor_changed = xwalk.SuggestionFormXWalk.is_new_editor(self.form, self.source)
 
-        # Save the target
-        self.target.set_last_manual_update()
-
         # record the event in the provenance tracker
         models.Provenance.make(current_user, "edit", self.target)
 
@@ -706,17 +703,26 @@ class ManEdApplicationReview(ApplicationContext):
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
             had_current = self.target.current_journal is not None
+
             applicationService.reject_application(self.target, current_user._get_current_object())
+
             if had_current:
                 publisher_email = self.target.get_latest_contact_email()
+                sent = False
                 try:
-                    emails.send_publisher_update_request_rejected(self.target)
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+                    emails.send_publisher_reject_email(self.target, update_request=had_current)
+                    sent = True
                 except app_email.EmailException as e:
+                    pass
+
+                if sent:
+                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+                else:
                     self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
 
         # the application was neither accepted or rejected, so just save it
         else:
+            self.target.set_last_manual_update()
             self.target.save()
 
         # if revisions were requested, email the publisher
@@ -798,7 +804,6 @@ class ManEdApplicationReview(ApplicationContext):
         return super(ManEdApplicationReview, self).render_template(
             lcc_jstree=json.dumps(lcc_jstree),
             subjectstr=self._subjects2str(self.source.bibjson().subjects()),
-            # form_diff=diff,
             **kwargs)
 
     def _set_choices(self):
@@ -1156,13 +1161,10 @@ class PublisherUpdateRequest(ApplicationContext):
         self.target.set_editor(self.source.editor)
         self._carry_continuations()
 
-        # If the source object has the suggester set, it must have been edited via the UI
-        # - do not override that information.
-        if self.source.suggester.get("name") or self.source.suggester.get("email"):
-            self.target.set_suggester(self.source.suggester.get("name"), self.source.suggester.get("email"))
-        else:
-            # but if the source object has no suggester set, then copy over the contact info
-            self.target.set_suggester(self.target.get_latest_contact_name(), self.target.get_latest_contact_email())
+        # set the suggester to the account owner
+        acc = models.Account.pull(self.target.owner)
+        if acc is not None:
+            self.target.set_suggester(acc.name, acc.email)
 
         # we carry this over for completeness, although it will be overwritten in the finalise() method
         self.target.set_application_status(self.source.application_status)

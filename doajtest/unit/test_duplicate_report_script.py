@@ -2,24 +2,35 @@
 
 from portality.core import app
 from doajtest.helpers import DoajTestCase
-from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory, AccountFixtureFactory
-from portality.scripts import article_duplicates_report_remove as a_dedupe
+from doajtest.fixtures import ArticleFixtureFactory
+from portality.tasks import article_duplicate_report
+from portality.lib import paths
 from portality import models
+from portality.lib import dates
+from portality.clcsv import UnicodeReader
 
-from esprit.raw import make_connection
+from collections import OrderedDict
 
 import time
+import os
+import shutil
+
+TMP_DIR = paths.rel2abs(__file__, "resources/article_duplicates_report")
 
 
 class TestArticleMatch(DoajTestCase):
 
     def setUp(self):
         super(TestArticleMatch, self).setUp()
+        if os.path.exists(TMP_DIR):
+            shutil.rmtree(TMP_DIR)
+        os.mkdir(TMP_DIR)
 
     def tearDown(self):
         super(TestArticleMatch, self).tearDown()
+        shutil.rmtree(TMP_DIR)
 
-    def test_01_duplicates_global_delete_flag(self):
+    def test_01_duplicates_report(self):
         """Check duplication reporting across all articles in the index"""
 
         # Create 2 identical articles, a duplicate pair
@@ -34,6 +45,8 @@ class TestArticleMatch(DoajTestCase):
         assert a1_doi is not None
         article1.save(blocking=True)
 
+        time.sleep(1)
+
         article2 = models.Article(**ArticleFixtureFactory.make_article_source(
             eissn='1111-1111',
             pissn='2222-2222',
@@ -45,33 +58,40 @@ class TestArticleMatch(DoajTestCase):
         assert a2_doi == a1_doi
         article2.save(blocking=True)
 
-        # Connect to ES with esprit and run the dedupe function without deletes
-        conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=False, snapshot=False)
+        # Run the reporting task
+        user = app.config.get("SYSTEM_USERNAME")
+        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=TMP_DIR)
+        task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
+        task.run()
 
-        assert dupcount == 2
-        assert delcount == 1                                                  # Script reports how many would be deleted
-        time.sleep(0.5)
-        # Check no deletes occurred
-        assert len(models.Article.all()) == 2
+        # The audit log should show we saved the reports to the TMP_DIR defined above
+        audit_1 = job.audit.pop(0)
+        assert audit_1.get('message', '').endswith(TMP_DIR)
+        assert os.path.exists(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv')
 
-        # Run with deletes
-        dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=True, snapshot=False)
-        assert dupcount == 2
-        assert delcount == 1
+        # It should also clean up its interim article csv
+        assert not os.path.exists(paths.rel2abs(__file__, 'tmp_article_duplicate_report'))
 
-        time.sleep(0.5)
-        # Check it's gone from index
-        assert len(models.Article.all()) == 1
+        # The duplicates should be detected and appear in the report and audit summary count
+        with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
+            csvlines = f.readlines()
+            # We expect one result line + headings: our newest article has 1 duplicate
+            res = csvlines.pop()
+            assert res.startswith(article2.id)            # The newest comes first, so article1 is article2's duplicate.
+            assert article1.id in res
+            assert 'doi+fulltext' in res
+
+        audit_2 = job.audit.pop(0)
+        assert audit_2.get('message', '') == '2 articles processed for duplicates. 2 global duplicates found.'
 
     def test_02_duplicates_global_criteria(self):
         """ Check we match only the actual duplicates, amongst other articles in the index. """
 
-        dup_doi = '10.xxx/xxx/bla'
-        dup_fulltext = 'http://fulltext.url/article'
+        dup_doi = '10.xxx/xxx/duplicate'
+        dup_fulltext = 'http://fulltext.url/article/duplicate'
 
-        # Create 12 duplicate articles with varying creation times and duplication criteria
-        for i in range(1, 13):
+        # Create 6 duplicate articles with varying creation times and duplication criteria
+        for i in range(1, 7):
             src_minus_identifiers = ArticleFixtureFactory.make_article_source(
                 with_id=False,
                 in_doaj=True,
@@ -93,172 +113,74 @@ class TestArticleMatch(DoajTestCase):
                 article.bibjson().add_url('http://not_duplicate/fulltext/' + str(i), 'fulltext', 'html')
             article.save(blocking=True)
 
-        # Connect to ES with esprit and run the dedupe function
-        conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=True, snapshot=False)
+        # So we have the following fixtures:
+        # +---------------------------------------------------------+
+        # |                Generated Articles                       |
+        # +---------------------------------------------------------+
+        # |   | DOI match | Fulltext match | Expected Report Result |
+        # +---+-----------+----------------+------------------------+
+        # | 1 | X         | X              | doi+fulltext           |
+        # +---+-----------+----------------+------------------------+
+        # | 2 | 0         | X              | fulltext               |
+        # +---+-----------+----------------+------------------------+
+        # | 3 | X         | 0              | doi                    |
+        # +---+-----------+----------------+------------------------+
+        # | 4 | 0         | X              | fulltext               |
+        # +---+-----------+----------------+------------------------+
+        # | 5 | X         | X              | doi+fulltext           |
+        # +---+-----------+----------------+------------------------+
+        # | 6 | 0         | 0              | none                   |
+        # +---+-----------+----------------+------------------------+
 
-        # 12 articles duplicated, minus i=(6,12), which was false for both criteria. So 10 duplicates.
-        assert dupcount == 10
+        # If a criteria is hit, it is duplicated with all other articles i.e. not just pairwise. Going newest to oldest,
+        # we expect: 5 is duplicated to 4, 3, 2, 1
+        #            4 is duplicated to 5, 2, 1
+        #            3 is duplicated to 5, 1
+        #            2 is duplicated to 5, 4, 1
+        #        and 1 is duplicated to 5, 4, 3, 2
+        #
+        # So the task will report that there are 16 duplicates.
+        #
+        # However, once a pair has been detected it'll only be reported once. Therefore, we expect:
+        # 5 is duplicated to 4, 3, 2, 1
+        # 4 is duplicated to 5, 2, 1
+        # 3 is duplicated to 5, 1
+        #
+        # So the report will have 9 match pairs, totalling 10 lines including the headings.
 
-        # We should delete 3 of these duplicates, the 3 that fully overlap with the original (i=1, i=5, i=7, i=11)
-        # because we only delete those that feature in both categories.
-        assert delcount == 3, delcount
-        time.sleep(1.5)
+        # Run the reporting task
+        user = app.config.get("SYSTEM_USERNAME")
+        job = article_duplicate_report.ArticleDuplicateReportBackgroundTask.prepare(user, outdir=TMP_DIR)
+        task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
+        task.run()
 
-        # Check how many deletes we actually had. There should be 9 left.
-        assert len(models.Article.all()) == 9
+        assert job.audit.pop(1).get('message', '') == '6 articles processed for duplicates. 16 global duplicates found.'
 
-    def test_03_duplicates_per_account(self):
-        """ Check duplication reporting only within a publisher's account. """
+        table = []
+        with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
+            reader = UnicodeReader(f)
+            for row in reader:
+                table.append(row)
 
-        # A publisher account
-        pub_account = models.Account(**AccountFixtureFactory.make_publisher_source())
-        pub_account.save()
+        # We expect there to be 10 rows.
+        assert len(table) == 10
+        headings = table.pop(0)
 
-        # The publisher has 2 journals, one in, one out of DOAJ
-        [j1, j2] = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
-        in_journal = models.Journal(**j1)
-        in_journal.set_owner(pub_account.id)
-        in_journal.save()
-        out_journal = models.Journal(**j2)
-        out_journal.set_owner(pub_account.id)
-        out_journal.set_in_doaj(False)
-        out_journal.save(blocking=True)
+        # We expect there to be one ID with 4 duplicates, one with 3, and one with 2 (in that order)
+        article_ids = [row[0] for row in table]
+        [a, b, c] = list(OrderedDict.fromkeys(article_ids))                                       # Dedupe keeping order
+        expected = {a: 4, b: 3, c: 2}
+        assert article_ids.count(a) == expected[a]
+        assert article_ids.count(b) == expected[b]
+        assert article_ids.count(c) == expected[c]
 
-        # Add some articles to the journals. First, 3 duplicates for the in_doaj journal
-        for i in range(0, 3):
-            article = models.Article(**ArticleFixtureFactory.make_article_source(
-                with_id=False,
-                in_doaj=True,
-                with_journal_info=False
-            ))
-            article.add_journal_metadata(in_journal)                                           # Copies the ISSNs across
-            article.save(differentiate=True)
+        # These counts should equal the number counted in the report itself
+        for r in table:
+            assert int(r[headings.index('n_matches')]) == expected[r[0]]
 
-        # and a not-duplicate in the in_doaj journal which should not be deleted
-        art_src = ArticleFixtureFactory.make_article_source(
-            with_id=False,
-            in_doaj=True,
-            with_journal_info=False
-        )
-        del art_src['bibjson']['link']
-        del art_src['bibjson']['identifier']
-        article_diff = models.Article(**art_src)
-        article_diff.bibjson().add_url('http://not_duplicate/fulltext/_DIFFERENT', 'fulltext', 'html')
-        article_diff.add_journal_metadata(in_journal)                                          # Copies the ISSNs across
-        article_diff.save(blocking=True)
-
-        # Next, 2 duplicates for the not-in_doaj journals which we also expect to be taken out.
-        for i in range(0, 2):
-            src = ArticleFixtureFactory.make_article_source(
-                with_id=False,
-                in_doaj=False,
-                with_journal_info=False
-            )
-            article = models.Article(**src)
-            article.add_journal_metadata(out_journal)
-            article.save(blocking=True)
-
-        # Connect to ES with esprit and run the dedupe function
-        conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=False, snapshot=False)
-
-        assert dupcount == 5, dupcount                              # The 5 duplicates we have created across 2 journals
-        assert delcount == 4, delcount                              # delete 2 from in_journal, 2 from out_journal
-
-    def test_04_duplicates_per_account_more_publishers(self):
-        """ Check duplication reporting only within a publisher's account. """
-        publisher_src = AccountFixtureFactory.make_publisher_source()
-
-        pub_account1 = models.Account(**publisher_src)
-        pub_account1.save()
-
-        publisher_src['id'] = "different_publisher"
-        pub_account2 = models.Account(**publisher_src)
-        pub_account2.save()
-
-        publisher_src['id'] = "another_different_publisher"
-        pub_account3 = models.Account(**publisher_src)
-        pub_account3.save()
-
-        pubs = [pub_account1, pub_account2, pub_account3]
-        journs = JournalFixtureFactory.make_many_journal_sources(3, True)
-
-        # Add a journal and a pair of duplicate articles per account
-        for i in range(0, 3):
-            journal = models.Journal(**journs[i])
-            journal.set_owner(pubs[i].id)
-            journal.save()
-
-            for i in range(0, 2):
-                article = models.Article(**ArticleFixtureFactory.make_article_source(
-                    eissn=journal.known_issns()[0],
-                    pissn=journal.known_issns()[1],
-                    with_id=False,
-                    in_doaj=False,
-                    with_journal_info=True
-                ))
-                article.save(blocking=True)
-
-        # Connect to ES with esprit and run the dedupe function
-        conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=True, snapshot=False)
-
-        assert dupcount == 6, dupcount                                            # 3 accounts, 2 duplicates per account
-        assert delcount == 3, delcount
-
-    def test_05_duplicates_per_account_check_separation(self):
-        """ When a duplicate is across accounts, we shouldn't detect them """
-
-        publisher_src = AccountFixtureFactory.make_publisher_source()
-
-        pub_account1 = models.Account(**publisher_src)
-        pub_account1.save()
-
-        publisher_src['id'] = "different_publisher"
-        pub_account2 = models.Account(**publisher_src)
-        pub_account2.save()
-
-        [journal1_src, journal2_src] = JournalFixtureFactory.make_many_journal_sources(2, in_doaj=True)
-
-        journal1 = models.Journal(**journal1_src)
-        journal1.set_owner(pub_account1.id)
-        journal1.save()
-
-        journal2 = models.Journal(**journal2_src)
-        journal2.set_owner(pub_account2.id)
-        journal2.save(blocking=True)
-
-        assert journal1.owner != journal2.owner
-        assert journal1.known_issns() != journal2.known_issns()
-
-        # Assign duplicate articles to 2 separate journals in 2 accounts.
-        article1 = models.Article(**ArticleFixtureFactory.make_article_source(
-            with_id=False,
-            in_doaj=False,
-            with_journal_info=True
-        ))
-        article1.add_journal_metadata(journal1)
-        article1.save(blocking=True)
-
-        article2 = models.Article(**ArticleFixtureFactory.make_article_source(
-            with_id=False,
-            in_doaj=False,
-            with_journal_info=True
-        ))
-        article2.add_journal_metadata(journal2)
-        article2.save(blocking=True)
-
-        # Connect to ES with esprit and run the dedupe function
-        conn = make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None, app.config["ELASTIC_SEARCH_DB"])
-        dupcount, delcount = a_dedupe.duplicates_per_account(conn, delete=False, snapshot=False)
-
-        # We expect no duplicates, since they are checked per account.
-        assert dupcount == 0, dupcount
-        assert delcount == 0, delcount
-
-        # Verify we find them using the global search
-        dupcount, delcount = a_dedupe.duplicates_per_article(conn, delete=False, snapshot=False)
-
-        assert dupcount == 2, dupcount
-        assert delcount == 1, delcount
+        # Article a should have one doi+fulltext match, one doi match, and 2 fulltext matches.
+        a_duplicates = [row for row in table if row[0] == a]
+        a_match_types = [row[headings.index('match_type')] for row in a_duplicates]
+        assert a_match_types.count('doi+fulltext') == 1
+        assert a_match_types.count('doi') == 1
+        assert a_match_types.count('fulltext') == 2

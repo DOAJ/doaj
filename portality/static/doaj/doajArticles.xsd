@@ -92,15 +92,12 @@
    <xs:element name="authors" minOccurs="0" maxOccurs="1">
     <xs:complexType>
      <xs:sequence>
-      <xs:element name="author" 
-                  minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="author" minOccurs="0" maxOccurs="unbounded">
        <xs:complexType>
         <xs:sequence>
          <xs:element name="name" type="xs:string" />
-         <xs:element name="email" type="xs:string"
-                     minOccurs="0" />
-         <xs:element name="affiliationId" 
-                     minOccurs="0" maxOccurs="unbounded"/>
+         <xs:element name="email" type="xs:string" minOccurs="0" />
+         <xs:element name="affiliationId" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
        </xs:complexType>
       </xs:element>

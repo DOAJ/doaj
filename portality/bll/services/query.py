@@ -35,6 +35,20 @@ class QueryService(object):
 
         return cfg
 
+    def _validate_query(self, cfg, query):
+        validator = cfg.get("query_validator")
+        if validator is None:
+            return True
+
+        filters = app.config.get("QUERY_FILTERS", {})
+        validator_path = filters.get(validator)
+        fn = plugin.load_function(validator_path)
+        if fn is None:
+            msg = "Unable to load query validator for {x}".format(x=validator)
+            raise exceptions.ConfigurationException(msg)
+
+        return fn(query)
+
     def _pre_filter_search_query(self, cfg, query):
         # now run the query through the filters
         filters = app.config.get("QUERY_FILTERS", {})
@@ -66,12 +80,24 @@ class QueryService(object):
 
         return res
 
-    def search(self, domain, index_type, raw_query, account):
+    def search(self, domain, index_type, raw_query, account, additional_parameters):
         query = Query()
         if raw_query is not None:
             query = Query(raw_query)
 
         cfg = self._get_config_for_search(domain, index_type, account)
+
+        # check that the request values permit a query to this endpoint
+        required_parameters = cfg.get("required_parameters")
+        if required_parameters is not None:
+            for k, vs in required_parameters.iteritems():
+                val = additional_parameters.get(k)
+                if val is None or val not in vs:
+                    raise exceptions.AuthoriseException()
+
+        # validate the query, to make sure it is of a permitted form
+        if not self._validate_query(cfg, query):
+            raise exceptions.AuthoriseException()
 
         # get the name of the model that will handle this query, and then look up
         # the class that will handle it
@@ -132,6 +158,19 @@ class Query(object):
     def clear_match_all(self):
         if "match_all" in self.q["query"]:
             del self.q["query"]["match_all"]
+
+    def has_facets(self):
+        return "facets" in self.q
+
+    def size(self):
+        if "size" in self.q:
+            return self.q["size"]
+        return 10
+
+    def from_result(self):
+        if "from" in self.q:
+            return self.q["from"]
+        return 0
 
     def as_dict(self):
         return self.q

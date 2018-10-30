@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.12.0"
+DOAJ_VERSION = "2.13.2"
 
 OFFLINE_MODE = False
 
@@ -32,6 +32,9 @@ elif BASE_URL.startswith('http://'):
 else:
     BASE_DOMAIN = BASE_URL
 API_BLUEPRINT_NAME = "api_v1"  # change if upgrading API to new version and creating new view for that
+
+# Used when generating external links, e.g. in the API docs
+PREFERRED_URL_SCHEME = 'https'
 
 # make this something secret in your overriding app.cfg
 SECRET_KEY = "default-key"
@@ -69,6 +72,8 @@ ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
+ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = 'doaj_s3'
+ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
 
@@ -83,7 +88,9 @@ HUEY_SCHEDULE = {
     "journal_csv": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
-    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"}
+    "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
+    "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"}
 }
 
 HUEY_TASKS = {
@@ -112,6 +119,30 @@ MAIL_PORT = 25              # default 25
 #MAIL_DEFAULT_SENDER        # default None
 #MAIL_MAX_EMAILS            # default None
 #MAIL_SUPPRESS_SEND         # default app.testing
+
+# ================================
+# File store
+
+# put this in your production.cfg, to store on S3:
+# STORE_IMPL = "portality.store.StoreS3"
+
+STORE_IMPL = "portality.store.StoreLocal"
+STORE_TMP_IMPL = "portality.store.TempStore"
+
+from portality.lib import paths
+STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
+STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+
+STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
+
+# S3 credentials for relevant scopes
+STORE_S3_SCOPES = {
+    "anon_data" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    }
+}
+
 
 # ========================
 # workflow email notification settings
@@ -306,31 +337,34 @@ QUERY_ROUTE = {
         "journal,article" : {
             "auth" : False,
             "role" : None,
+            "query_validator" : "public_query_validator",
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.search.JournalArticle"
+            "result_filters" : ["public_result_filter", "prune_author_emails"],
+            "dao" : "portality.models.search.JournalArticle",
+            "required_parameters" : {"ref" : ["fqw", "please-stop-using-this-endpoint-directly-use-the-api"]}
         },
         "article" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj"],
-            "result_filters" : ["public_result_filter"],
-            "dao" : "portality.models.Article"
+            "result_filters" : ["public_result_filter", "prune_author_emails"],
+            "dao" : "portality.models.Article",
+            "required_parameters" : {"ref" : ["please-stop-using-this-endpoint-directly-use-the-api"]}
         }
     },
     "publisher_query" : {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner"],
-            "result_filters" : ["publisher_result_filter"],
+            "query_filters" : ["owner", "only_in_doaj"],
+            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Journal"
         },
         "suggestion" : {
             "auth" : True,
             "role" : "publisher",
             "query_filters" : ["owner", "update_request"],
-            "result_filters" : ["publisher_result_filter"],
+            "result_filters" : ["publisher_result_filter", "prune_author_emails"],
             "dao" : "portality.models.Suggestion"
         }
     },
@@ -397,6 +431,9 @@ QUERY_ROUTE = {
 }
 
 QUERY_FILTERS = {
+    # sanitisers
+    "public_query_validator" : "portality.lib.query_filters.public_query_validator",
+
     # query filters
     "only_in_doaj" : "portality.lib.query_filters.only_in_doaj",
     "owner" : "portality.lib.query_filters.owner",
@@ -405,8 +442,9 @@ QUERY_FILTERS = {
     "editor" : "portality.lib.query_filters.editor",
 
     # result filters
-    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
-    "publisher_result_filter" : "portality.lib.query_filters.publisher_result_filter"
+    "public_result_filter": "portality.lib.query_filters.public_result_filter",
+    "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
+    "prune_author_emails": "portality.lib.query_filters.prune_author_emails"
 }
 
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
@@ -652,6 +690,8 @@ DATE_FORMATS = [
     "%Y"                    # e.g. 1978
 ]
 
+# The last_manual_update field was initialised to this value. Used to label as 'never'.
+DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 
 # ========================================
 # API configuration
@@ -753,3 +793,30 @@ GA_ACTIONS_API = {
 # GA for fixed query widget
 GA_CATEGORY_FQW = 'FQW'
 GA_ACTION_FQW = 'Hit'
+
+# ========================================
+# Anonymisation configuration
+ANON_SALT = 'changeme'
+
+###################################
+## Quick Reject Feature Config
+
+QUICK_REJECT_REASONS = [
+    "No research content has been published in the journal in the last calendar year",
+    "The ISSN is incorrect and is not recognised by issn.org",
+    "The ISSN is listed as provisional by issn.org",
+    "The ISSN not yet registered at issn.org",
+    "The URL(s) or the web site does not work",
+    "The contact details provided are not real names of individuals",
+    "The journal is already in DOAJ",
+    "The journal is not Open Access",
+    "The journal or publisher has been rejected or removed from DOAJ recently",
+    "The journal title in the application doesn't correspond with title at issn.org",
+    "The journal title on the web site doesn't match what is registered at issn.org",
+    "The license type selected was 'Other' but no further information was provided",
+    "The same URL has been provided for all the questions which required a URL answer",
+    "There are answers in the application which are incomplete or missing",
+    "There is no mention of peer review or a review process being carried out",
+    "This application is a duplicate",
+    "You already have another application for the same journal in progress"
+]

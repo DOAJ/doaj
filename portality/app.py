@@ -91,6 +91,10 @@ SPONSORS = {
         'springer-nature': {'name': 'Springer Nature', 'logo': 'springer-nature.svg', 'url': 'https://www.springernature.com/gp/group/aboutus'},
         'ufm': {'name': 'Danish Agency for Science and Higher Education', 'logo': 'ufm.svg', 'url': 'https://ufm.dk/'},
         'kbse': {'name': 'National Library of Sweden', 'logo': 'kbse.svg', 'url': 'https://www.kb.se/'},
+        'finnish-learned-soc': {'name': 'Federation of Finnish Learned Societies', 'logo': 'finnish-tsvlogo.svg', 'url': 'https://tsv.fi/en/frontpage'},
+        'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
+        'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
+        'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
@@ -107,6 +111,9 @@ SPONSORS = {
         'emerald': {'name': 'Emerald Publishing', 'logo': 'emerald.svg', 'url': 'http://emeraldpublishing.com/'},
         'thieme': {'name': 'Thieme Medical Publishers', 'logo': 'thieme.svg', 'url': 'https://www.thieme.com'},
         'tec-mx': {'name': u'Tecnológico de Monterrey', 'logo': 'tec-mx.png', 'url': 'https://tec.mx/es'},
+        'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
+        'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
+        'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
     },
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},
@@ -301,9 +308,9 @@ if 'api' in app.config['FEATURES']:
                 'api_versions': [
                     {
                         'version': '1.0.0',
-                        'base_url': url_for('api_v1.api_spec', _external=True),
+                        'base_url': url_for('api_v1.api_spec', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https')),
                         'note': 'First version of the DOAJ API',
-                        'docs_url': url_for('api_v1.docs', _external=True)
+                        'docs_url': url_for('api_v1.docs', _external=True, _scheme=app.config.get('PREFERRED_URL_SCHEME', 'https'))
                     }
                 ]
             }

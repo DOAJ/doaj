@@ -272,11 +272,14 @@ class ArticleService(object):
             {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        d = self.get_duplicates(article, owner)
-        return d[0] if d else None
+        dup = self.get_duplicates(article, owner, max_results=1)
+        if dup:
+            return dup.pop()
+        else:
+            return None
 
 
-    def get_duplicates(self, article, owner=None):
+    def get_duplicates(self, article, owner=None, max_results=10):
         """
         Get all known duplicates of an article
 
@@ -292,7 +295,7 @@ class ArticleService(object):
             {"arg" : owner, "instance" : unicode, "allow_none" : True, "arg_name" : "owner"}
         ], exceptions.ArgumentException)
 
-        possible_articles_dict = self.discover_duplicates(article, owner)
+        possible_articles_dict = self.discover_duplicates(article, owner, max_results)
         if not possible_articles_dict:
             return []
 
@@ -310,10 +313,10 @@ class ArticleService(object):
         # Sort the articles newest -> oldest by last_updated so we can get the most recent at [0]
         possible_articles.sort(key=lambda x: datetime.strptime(x.last_updated, "%Y-%m-%dT%H:%M:%SZ"), reverse=True)
 
-        return possible_articles
+        return possible_articles[:max_results]
 
 
-    def discover_duplicates(self, article, owner=None):
+    def discover_duplicates(self, article, owner=None, results_per_match_type=10):
         """
         Identify duplicates, separated by duplication criteria
 
@@ -350,7 +353,7 @@ class ArticleService(object):
         doi = article.get_normalised_doi()
         if doi is not None:
             if isinstance(doi, basestring) and doi != '':
-                articles = models.Article.duplicates(issns=issns, doi=doi)
+                articles = models.Article.duplicates(issns=issns, doi=doi, size=results_per_match_type)
                 if len(articles) > 0:
                     possible_articles['doi'] = [a for a in articles if a.id != article.id]
                     if len(possible_articles['doi']) > 0:
@@ -359,7 +362,7 @@ class ArticleService(object):
         # Second test is to look by fulltext url
         fulltext = article.get_normalised_fulltext()
         if fulltext is not None:
-            articles = models.Article.duplicates(issns=issns, fulltexts=fulltext)
+            articles = models.Article.duplicates(issns=issns, fulltexts=fulltext, size=results_per_match_type)
             if len(articles) > 0:
                 possible_articles['fulltext'] = [a for a in articles if a.id != article.id]
                 if possible_articles['fulltext']:

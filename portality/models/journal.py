@@ -1,7 +1,7 @@
 from portality.dao import DomainObject
 from portality.core import app
 from portality.models import GenericBibJSON, shared_structs
-from portality.lib import dataobj, es_data_mapping
+from portality.lib import dataobj, es_data_mapping, dates
 
 from copy import deepcopy
 from datetime import datetime
@@ -53,7 +53,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_created(self, date=None):
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = dates.now()
         self._set_with_struct("created_date", date)
 
     @property
@@ -66,7 +66,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_updated(self, date=None):
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = dates.now()
         self._set_with_struct("last_updated", date)
 
     @property
@@ -90,7 +90,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def set_last_manual_update(self, date=None):
         if date is None:
-            date = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+            date = dates.now()
         self._set_with_struct("last_manual_update", date)
 
     @property
@@ -129,7 +129,7 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
 
     def add_note(self, note, date=None):
         if date is None:
-            date = datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+            date = dates.now()
         obj = {"date" : date, "note" : note}
         self._delete_from_list("admin.notes", matchsub=obj)
         self._add_to_list_with_struct("admin.notes", obj)
@@ -633,7 +633,7 @@ class Journal(JournalLikeObject):
             # we haven't even saved the record yet.  All we need to do is check that the tick
             # threshold is in the past (which I suppose theoretically it could not be), then
             # set it
-            if datetime.now() >= threshold:
+            if datetime.utcnow() >= threshold:
                 self.set_ticked(True)
             else:
                 self.set_ticked(False)

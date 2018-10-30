@@ -1,4 +1,4 @@
-Dear Publisher,
+Dear Journal Contact for:
 
 {{journal_name}}
 

@@ -3,7 +3,7 @@ import sys
 
 setup(
     name = 'doaj',
-    version = '2.12.0',
+    version = '2.14.0',
     packages = find_packages(),
     install_requires = [
         "werkzeug==0.14.1",
@@ -20,7 +20,7 @@ setup(
         "tzlocal",
         "pytz",
         "futures==2.1.6",
-        "esprit==0.0.2",
+        "esprit==0.0.3",
         "nose",
         "unidecode",
         "Flask-Swagger==0.2.13",
@@ -31,11 +31,15 @@ setup(
         "redis==2.10.5",
         "rstr==2.2.5",
         "freezegun==0.3.10",
+        "responses==0.9.0",
+        "Faker==0.8.16",
         "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",
         "newrelic",
-        "parameterized==0.6.1"
+        "parameterized==0.6.1",
+        "awscli",
+        "boto3==1.9.10"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
 
     url = 'http://cottagelabs.com/',

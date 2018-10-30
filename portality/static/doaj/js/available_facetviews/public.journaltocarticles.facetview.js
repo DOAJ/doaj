@@ -262,7 +262,7 @@ jQuery(document).ready(function($) {
     }
 
     $('.facetview.journal_toc_articles').facetview({
-        search_url: es_scheme + '//' + es_domain + '/query/article/_search?',
+        search_url: es_scheme + '//' + es_domain + '/query/article/_search?ref=please-stop-using-this-endpoint-directly-use-the-api',
 
         render_results_metadata: doajPager,
         render_active_terms_filter: doajRenderActiveTermsFilter,

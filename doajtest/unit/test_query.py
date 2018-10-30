@@ -20,7 +20,7 @@ QUERY_ROUTE = {
         "journal" : {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner"],
+            "query_filters" : ["owner", "only_in_doaj"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"
         }
@@ -135,7 +135,7 @@ class TestQuery(DoajTestCase):
         assert cfg == {
             "auth" : True,
             "role" : "publisher",
-            "query_filters" : ["owner"],
+            "query_filters" : ["owner", "only_in_doaj"],
             "result_filters" : ["publisher_result_filter"],
             "dao" : "portality.models.Journal"
         }
@@ -201,11 +201,11 @@ class TestQuery(DoajTestCase):
         for i in range(0, 3):
             articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False)))
             assert articles[-1].publisher_record_id() == 'some_identifier'
-            articles[-1].save()
+            articles[-1].save(blocking=True)
         articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
 
-        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None)
+        res = qsvc.search('query', 'article', {"query": {"match_all": {}}}, account=None, additional_parameters={})
         assert res['hits']['total'] == 3, res['hits']['total']
 
         for hit in res['hits']['hits']:

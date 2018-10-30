@@ -34,6 +34,10 @@ class ArticleFixtureFactory(object):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct']")
 
     @classmethod
+    def upload_author_email_address(cls):
+        return cls._response_from_xpath("//record[journalTitle='author email address']")
+
+    @classmethod
     def upload_1_issn_superlong_should_not_clip(cls):
         return cls._response_from_xpath("//record[journalTitle='PISSN Correct Superlong Abstract Expected to Not be Clipped']")
 
@@ -184,7 +188,6 @@ ARTICLE_SOURCE = {
         "author" : [
             {
                 "name" : "The Author",
-                "email" : "author@example.com",
                 "affiliation" : "University Cottage Labs"
             },
         ],
@@ -262,7 +265,6 @@ ARTICLE_STRUCT = {
                 "author": {
                     "fields": {
                         "name": {"coerce": "unicode"},
-                        "email": {"coerce": "unicode"},
                         "affiliation": {"coerce": "unicode"}
                     }
                 },

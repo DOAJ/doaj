@@ -36,7 +36,7 @@ class TestBLRejectApplication(DoajTestCase):
         Suggestion.save = self.old_save
 
     @parameterized.expand(load_test_cases)
-    def test_01_reject_application(self, name, application, application_status, account, prov, current_journal, save, raises=None):
+    def test_01_reject_application(self, name, application, application_status, account, prov, current_journal, note, save, raises=None):
 
         #######################################
         ## set up
@@ -50,6 +50,7 @@ class TestBLRejectApplication(DoajTestCase):
             ap = Suggestion(**ApplicationFixtureFactory.make_application_source())
             ap.set_application_status(application_status)
             ap.set_id(ap.makeid())
+            ap.remove_notes()
             if current_journal == "yes":
                 journal = Journal(**JournalFixtureFactory.make_journal_source(in_doaj=True))
                 journal.set_id(journal.makeid())
@@ -69,15 +70,19 @@ class TestBLRejectApplication(DoajTestCase):
         if prov != "none":
             provenance = prov == "true"
 
+        thenote = None
+        if note == "yes":
+            thenote = "abcdefg"
+
         ########################################
         ## execute
 
         svc = DOAJ.applicationService()
         if raises is not None and raises != "":
             with self.assertRaises(EXCEPTIONS[raises]):
-                svc.reject_application(ap, acc, provenance)
+                svc.reject_application(ap, acc, provenance, note=thenote)
         else:
-            svc.reject_application(ap, acc, provenance)
+            svc.reject_application(ap, acc, provenance, note=thenote)
             time.sleep(1)
 
             #######################################
@@ -88,6 +93,11 @@ class TestBLRejectApplication(DoajTestCase):
             assert ap2.application_status == constants.APPLICATION_STATUS_REJECTED
             assert ap2.current_journal is None
 
+            # check the updated and manually updated date are essentially the same (they can theoretically differ
+            # by a small amount just based on when they are set)
+            updated_spread = abs((ap2.last_updated_timestamp - ap2.last_manual_update_timestamp).total_seconds())
+            assert updated_spread <= 1.0
+
             if current_journal == "yes" and journal is not None:
                 j2 = Journal.pull(journal.id)
                 assert j2 is not None
@@ -97,3 +107,9 @@ class TestBLRejectApplication(DoajTestCase):
             if prov == "true":
                 pr = Provenance.get_latest_by_resource_id(ap.id)
                 assert pr is not None
+
+            if note == "yes":
+                assert len(ap2.notes) == 1
+                assert ap2.notes[0].get("note") == "abcdefg"
+            elif note == "no":
+                assert len(ap2.notes) == 0

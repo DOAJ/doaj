@@ -68,6 +68,13 @@ class Account(DomainObject, UserMixin):
         return cls(**obs[0])
 
     @property
+    def marketing_consent(self):
+        return self.data.get("marketing_consent")
+
+    def set_marketing_consent(self, consent):
+        self.data["marketing_consent"] = bool(consent)
+
+    @property
     def name(self):
         return self.data.get("name")
 
@@ -117,6 +124,23 @@ class Account(DomainObject, UserMixin):
             del self.data["reset_token"]
         if "reset_expires" in self.data:
             del self.data["reset_expires"]
+
+    @property
+    def reset_expires(self):
+        return self.data.get("reset_expires")
+
+    @property
+    def reset_expires_timestamp(self):
+        expires = self.reset_expires
+        if expires is None:
+            return None
+        return datetime.strptime(expires, "%Y-%m-%dT%H:%M:%SZ")
+
+    def is_reset_expired(self):
+        expires = self.reset_expires_timestamp
+        if expires is None:
+            return True
+        return expires < datetime.utcnow()
 
     @property
     def is_super(self):

@@ -5,6 +5,7 @@ from portality.tasks.redis_huey import main_queue, long_running
 import logging
 logging.getLogger("requests").setLevel(logging.WARNING)
 
+
 def prepare_for_test():
     core.app.config['ELASTIC_SEARCH_DB'] = core.app.config['ELASTIC_SEARCH_TEST_DB']
 
@@ -16,6 +17,8 @@ def prepare_for_test():
 
     main_queue.always_eager = True
     long_running.always_eager = True
+
+    core.app.config['FAKER_SEED'] = 1
 
     # if a test on a previous run has totally failed and tearDown has not run, then make sure the index is gone first
     dao.DomainObject.destroy_index()
