@@ -33,52 +33,52 @@ def oaipmh(specified=None):
     ident = request.values.get('identifier', None)
     if ident is not None:
         event.fieldsobject = {app.config.get('GA_DIMENSIONS')['oai_res_id']: ident}
-    
+
     # work out the verb and associated parameters
     verb = request.values.get("verb")
     event.action = verb
 
     # Now we have enough information about the request to send to analytics.
     event.submit()
-    
+
     # call the appropriate protocol operation:
     # if no verb supplied
     if verb is None:
         result = BadVerb(request.base_url)
-    
+
     # Identify
     elif verb.lower() == "identify":
         result = identify(dao, request.base_url)
-    
+
     # ListMetadataFormats
     elif verb.lower() == "listmetadataformats":
         params = list_metadata_formats_params(request)
         result = list_metadata_formats(dao, request.base_url, specified, **params)
-    
+
     # GetRecord
     elif verb.lower() == "getrecord":
         params = get_record_params(request)
         result = get_record(dao, request.base_url, specified, **params)
-    
+
     # ListSets
     elif verb.lower() == "listsets":
         params = list_sets_params(request)
         result = list_sets(dao, request.base_url, **params)
-    
+
     # ListRecords
     elif verb.lower() == "listrecords":
         params = list_records_params(request)
         result = list_records(dao, request.base_url, specified, **params)
-    
+
     # ListIdentifiers
     elif verb.lower() == "listidentifiers":
         params = list_identifiers_params(request)
         result = list_identifiers(dao, request.base_url, specified, **params)
-    
+
     # A verb we didn't understand
     else:
         result = BadVerb(request.base_url)
-    
+
     # serialise and return
     resp = make_response(result.serialise())
     resp.mimetype = "text/xml"
@@ -145,7 +145,20 @@ def decode_set_spec(setspec):
     return decoded
 
 
-def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None):
+def get_start_after(docs, current_start_after, list_size):
+    last_date = docs[-1].get("last_updated")
+    count = 0
+    for doc in docs:
+        if doc.get("last_updated") == last_date:
+            count += 1
+    if count == list_size and current_start_after is not None and last_date == current_start_after[0]:
+        # If the current set of rcords have the same date as last record served previously,
+        #   the count has to be greater than the list of records
+        #   and include the previous count
+        count += current_start_after[1]
+    return (last_date, count)
+
+def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=None, start_after=None):
     d = {}
     if metadata_prefix is not None:
         d["m"] = metadata_prefix
@@ -157,6 +170,8 @@ def make_resumption_token(metadata_prefix=None, from_date=None, until_date=None,
         d["s"] = oai_set
     if start_number is not None:
         d["n"] = start_number
+    if start_after is not None:
+        d["a"] = start_after
     j = json.dumps(d)
     b = base64.urlsafe_b64encode(j)
     return b
@@ -188,6 +203,7 @@ def decode_resumption_token(resumption_token):
     if "u" in d: params["until_date"] = d.get("u")
     if "s" in d: params["oai_set"] = d.get("s")
     if "n" in d: params["start_number"] = d.get("n")
+    if "a" in d: params["start_after"] = tuple(d.get("a"))
     return params
 
 
@@ -329,12 +345,12 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
     # check that we have both identifier and prefix - they are both required
     if identifier is None or metadata_prefix is None:
         return BadArgument(base_url)
-    
+
     # get the formats and check that we have formats that we can disseminate
     formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
-    
+
     # look for our record of the format we've been asked for
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
@@ -352,7 +368,7 @@ def get_record(dao, base_url, specified_oai_endpoint, identifier=None, metadata_
             gr.metadata = metadata
             gr.header = header
             return gr
-    
+
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
@@ -381,16 +397,16 @@ def list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None
         return _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
 
-def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
     # metadata prefix is required
     if metadata_prefix is None:
         return BadArgument(base_url)
-    
+
     # get the formats and check that we have formats that we can disseminate
     formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return CannotDisseminateFormat(base_url)
-    
+
     # check that the dates are formatted correctly
     fl = True
     ul = True
@@ -409,51 +425,57 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
         #    datetime.strptime(until_date, "%Y-%m-%d")
     #except:
     #    return BadArgument(base_url)
-    
+
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE", 25)
-    
+
     # decode the oai_set to something we can query with
     try:
         decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
     except SetSpecException:
         return BadArgument(base_url)
-    
+
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number)
-            
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_after)
+
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:
                 return NoRecordsMatch(base_url)
-            
+
+            # get the full total
+            full_total = total
+            if start_after is not None:
+                full_total = total + start_number - start_after[1]
+
             # work out if we need a resumption token.  It can have one of 3 values:
             # - None = do not include the rt in the response
             # - some value = include in the response
             # - the empty string = include in the response
             resumption_token = None
-            if total > start_number + len(results):
+            if total > len(results):
+                new_start_after = get_start_after(results, start_after, list_size)
                 new_start = start_number + len(results)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                                        until_date=until_date, oai_set=oai_set, start_number=new_start)
+                      until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
             else:
                 resumption_token = ""
-            
+
             li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
                 expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                li.set_resumption(resumption_token, complete_list_size=total, cursor=start_number, expiry=expiry)
-            
+                li.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
+
             for r in results:
                 # do the crosswalk (header only in this operation)
                 xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
                 header = xwalk.header(r)
-                
+
                 # add to the response
                 li.add_record(header)
             return li
-    
+
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
@@ -471,13 +493,13 @@ def list_metadata_formats(dao, base_url, specified_oai_endpoint, identifier=None
     if identifier is not None:
         if not dao.identifier_exists(identifier):
             return IdDoesNotExist(base_url)
-    
+
     # get the configured formats - there should always be some, but just in case
     # the service is mis-configured, this will throw the correct error
     formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
         return NoMetadataFormats(base_url)
-    
+
     # create and return the list metadata formats response
     oai_id = None
     if identifier is not None:
@@ -489,7 +511,7 @@ def list_metadata_formats(dao, base_url, specified_oai_endpoint, identifier=None
 
 
 def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, resumption_token=None):
-    
+
     if resumption_token is None:
         # do an initial list records
         return _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=metadata_prefix, from_date=from_date, until_date=until_date, oai_set=oai_set)
@@ -501,11 +523,11 @@ def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, fr
         return _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
 
-def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0):
+def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
     # metadata prefix is required
     if metadata_prefix is None:
         return BadArgument(base_url)
-    
+
     # get the formats and check that we have formats that we can disseminate
     formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
     if formats is None or len(formats) == 0:
@@ -530,52 +552,62 @@ def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_
     #        datetime.strptime(until_date, "%Y-%m-%d")
     #except:
     #    return BadArgument(base_url)
-    
+
     # get the result set size
     list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
-    
+
     # decode the oai_set to something we can query with
     try:
         decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
     except SetSpecException:
         return BadArgument(base_url)
-    
+
     for f in formats:
         if f.get("metadataPrefix") == metadata_prefix:
             # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_number)
-            
+            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_after)
+
             # if there are no results, PMH requires us to throw an error
             if len(results) == 0:
                 return NoRecordsMatch(base_url)
-            
+
+            # Get the full total
+            # Each search with a resumption token is a new search,
+            #   so the total is not the same as the first search
+            #   but is reduced by number of records already served.
+            # This full_total is the total as in the first search
+            full_total = total
+            if start_after is not None:
+                full_total = total + start_number - start_after[1]
+
             # work out if we need a resumption token.  It can have one of 3 values:
             # - None = do not include the rt in the response
             # - some value = include in the response
             # - the empty string = include in the response
             resumption_token = None
-            if total > start_number + len(results):
+            if total > len(results):
+                new_start_after = get_start_after(results, start_after, list_size)
                 new_start = start_number + len(results)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                                        until_date=until_date, oai_set=oai_set, start_number=new_start)
+                    until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
             else:
                 resumption_token = ""
-            
+
             lr = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
                 expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                lr.set_resumption(resumption_token, complete_list_size=total, cursor=start_number, expiry=expiry)
-            
+                lr.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
+
             for r in results:
                 # do the crosswalk
                 xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
                 metadata = xwalk.crosswalk(r)
                 header = xwalk.header(r)
-                
+
                 # add to the response
                 lr.add_record(metadata, header)
             return lr
-    
+
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
 
@@ -592,7 +624,7 @@ def list_sets(dao, base_url, resumption_token=None):
     # This implementation does not support resumption tokens for this operation
     if resumption_token is not None:
         return BadResumptionToken(base_url)
-    
+
     # just ask the DAO to get a list of all the sets for us, then we
     # give the set spec and set name as the same string
     ls = ListSets(base_url)
@@ -608,45 +640,45 @@ def list_sets(dao, base_url, resumption_token=None):
 
 class OAI_PMH(object):
     VERSION = "2.0"
-    
+
     PMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/"
     PMH = "{%s}" % PMH_NAMESPACE
-    
+
     XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
     XSI = "{%s}" % XSI_NAMESPACE
-    
+
     NSMAP = {None : PMH_NAMESPACE, "xsi" : XSI_NAMESPACE}
-    
+
     def __init__(self, base_url):
         self.base_url = base_url
         self.verb = None
-    
+
     def _to_xml(self):
         oai = etree.Element(self.PMH + "OAI-PMH", nsmap=self.NSMAP)
-        oai.set(self.XSI + "schemaLocation", 
+        oai.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
-        
+
         respdate = etree.SubElement(oai, self.PMH + "responseDate")
         respdate.text = get_response_date()
-        
+
         req = etree.SubElement(oai, self.PMH + "request")
         if self.verb is not None:
             req.set("verb", self.verb)
         req.text = self.base_url
         self.add_request_attributes(req)
-        
+
         element = self.get_element()
         oai.append(element)
-        
+
         return oai
-    
+
     def serialise(self):
         xml = self._to_xml()
         return etree.tostring(xml, xml_declaration=True, encoding="UTF-8")
-        
+
     def get_element(self):
         raise NotImplementedError()
-        
+
     def add_request_attributes(self, element):
         return
 
@@ -659,16 +691,16 @@ class GetRecord(OAI_PMH):
         self.metadata_prefix = metadata_prefix
         self.metadata = None
         self.header = None
-    
+
     def get_element(self):
         gr = etree.Element(self.PMH + "GetRecord", nsmap=self.NSMAP)
         record = etree.SubElement(gr, self.PMH + "record")
-        
+
         record.append(self.header)
         record.append(self.metadata)
-        
+
         return gr
-        
+
     def add_request_attributes(self, element):
         if self.identifier is not None:
             element.set("identifier", self.identifier)
@@ -683,36 +715,36 @@ class Identify(OAI_PMH):
         self.repo_name = repo_name
         self.admin_email = admin_email
         self.earliest_datestamp = None
-    
+
     def get_element(self):
         identify = etree.Element(self.PMH + "Identify", nsmap=self.NSMAP)
-        
+
         repo_name = etree.SubElement(identify, self.PMH + "repositoryName")
         repo_name.text = self.repo_name
-        
+
         base = etree.SubElement(identify, self.PMH + "baseURL")
         base.text = self.base_url
-        
+
         protocol = etree.SubElement(identify, self.PMH + "protocolVersion")
         protocol.text = self.VERSION
-        
+
         admin_email = etree.SubElement(identify, self.PMH + "adminEmail")
         admin_email.text = self.admin_email
-        
+
         earliest = etree.SubElement(identify, self.PMH + "earliestDatestamp")
         if self.earliest_datestamp is not None:
             earliest.text = self.earliest_datestamp
         else:
             # earliest.text = "1970-01-01T00:00:00Z" # beginning of the unix epoch
             DateFormat.default_earliest()
-        
+
         deletes = etree.SubElement(identify, self.PMH + "deletedRecord")
         deletes.text = "transient" # keep the door open
-        
+
         granularity = etree.SubElement(identify, self.PMH + "granularity")
         # granularity.text = "YYYY-MM-DD"
         granularity.text = DateFormat.granularity()
-        
+
         return identify
 
 
@@ -746,13 +778,13 @@ class ListIdentifiers(OAI_PMH):
             element.set("set", self.oai_set)
         if self.metadata_prefix is not None:
             element.set("metadataPrefix", self.metadata_prefix)
-        
+
     def get_element(self):
         lr = etree.Element(self.PMH + "ListIdentifiers", nsmap=self.NSMAP)
-        
+
         for header in self.records:
             lr.append(header)
-        
+
         if self.resumption is not None:
             rt = etree.SubElement(lr, self.PMH + "resumptionToken")
             if "complete_list_size" in self.resumption:
@@ -766,7 +798,7 @@ class ListIdentifiers(OAI_PMH):
                 expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
-        
+
         return lr
 
 
@@ -776,7 +808,7 @@ class ListMetadataFormats(OAI_PMH):
         self.verb = "ListMetadataFormats"
         self.identifier = identifier
         self.formats = []
-    
+
     def add_format(self, metadata_prefix, schema, metadata_namespace):
         self.formats.append(
             {
@@ -785,26 +817,26 @@ class ListMetadataFormats(OAI_PMH):
                 "metadataNamespace": metadata_namespace
             }
         )
-    
+
     def add_request_attributes(self, element):
         if self.identifier is not None:
             element.set("identifier", self.identifier)
-        
+
     def get_element(self):
         lmf = etree.Element(self.PMH + "ListMetadataFormats", nsmap=self.NSMAP)
-        
+
         for f in self.formats:
             mdf = etree.SubElement(lmf, self.PMH + "metadataFormat")
-            
+
             mdp = etree.SubElement(mdf, self.PMH + "metadataPrefix")
             mdp.text = f.get("metadataPrefix")
-            
+
             sch = etree.SubElement(mdf, self.PMH + "schema")
             sch.text = f.get("schema")
-            
+
             mdn = etree.SubElement(mdf, self.PMH + "metadataNamespace")
             mdn.text = f.get("metadataNamespace")
-        
+
         return lmf
 
 
@@ -839,15 +871,15 @@ class ListRecords(OAI_PMH):
             element.set("set", self.oai_set)
         if self.metadata_prefix is not None:
             element.set("metadataPrefix", self.metadata_prefix)
-        
+
     def get_element(self):
         lr = etree.Element(self.PMH + "ListRecords", nsmap=self.NSMAP)
-        
+
         for metadata, header in self.records:
             r = etree.SubElement(lr, self.PMH + "record")
             r.append(header)
             r.append(metadata)
-        
+
         if self.resumption is not None:
             rt = etree.SubElement(lr, self.PMH + "resumptionToken")
             if "complete_list_size" in self.resumption:
@@ -861,7 +893,7 @@ class ListRecords(OAI_PMH):
                 expire_date = DateFormat.format(datetime.now() + timedelta(0, expiry))
                 rt.set("expirationDate", expire_date)
             rt.text = self.resumption.get("resumption_token")
-        
+
         return lr
 
 
@@ -870,22 +902,22 @@ class ListSets(OAI_PMH):
         super(ListSets, self).__init__(base_url)
         self.verb = "ListSets"
         self.sets = []
-    
+
     def add_set(self, spec, name):
         self.sets.append((spec, name))
-    
+
     def get_element(self):
         ls = etree.Element(self.PMH + "ListSets", nsmap=self.NSMAP)
-        
+
         for spec, name in self.sets:
             s = etree.SubElement(ls, self.PMH + "set")
             specel = etree.SubElement(s, self.PMH + "setSpec")
             specel.text = spec
             nameel = etree.SubElement(s, self.PMH + "setName")
             nameel.text = name
-        
+
         return ls
-        
+
 
 #####################################################################
 # Error Handling
@@ -896,16 +928,16 @@ class OAIPMHError(OAI_PMH):
         super(OAIPMHError, self).__init__(base_url)
         self.code = None
         self.description = None
-    
+
     def get_element(self):
         error = etree.Element(self.PMH + "error", nsmap=self.NSMAP)
-        
+
         if self.code is not None:
             error.set("code", self.code)
-        
+
         if self.description is not None:
             error.text = self.description
-        
+
         return error
 
 
@@ -987,11 +1019,11 @@ class OAI_Crosswalk(object):
     def _generate_header_subjects(self, parent_element, subjects):
         if subjects is None:
             subjects = []
-        
+
         for subs in subjects:
             scheme = subs.get("scheme", '')
             term = subs.get("term", '')
-            
+
             if term:
                 prefix = ''
                 if scheme:
@@ -1004,10 +1036,10 @@ class OAI_Crosswalk(object):
 class OAI_DC(OAI_Crosswalk):
     OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/"
     OAIDC = "{%s}" % OAIDC_NAMESPACE
-    
+
     DC_NAMESPACE = "http://purl.org/dc/elements/1.1/"
     DC = "{%s}" % DC_NAMESPACE
-    
+
     NSMAP = deepcopy(OAI_Crosswalk.NSMAP)
     NSMAP.update({"oai_dc": OAIDC_NAMESPACE, "dc": DC_NAMESPACE})
 
@@ -1047,12 +1079,12 @@ class OAI_DC(OAI_Crosswalk):
 class OAI_DC_Article(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
-        
+
         metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
         oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
-        oai_dc.set(self.XSI + "schemaLocation", 
+        oai_dc.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
-        
+
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
@@ -1066,7 +1098,7 @@ class OAI_DC_Article(OAI_DC):
         url = app.config['BASE_URL'] + "/article/" + record.id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
-        
+
         # work out the date of publication
         date = bibjson.get_publication_date()
         if date != "":
@@ -1080,23 +1112,23 @@ class OAI_DC_Article(OAI_DC):
         for identifier in bibjson.get_identifiers(idtype=bibjson.P_ISSN) + bibjson.get_identifiers(idtype=bibjson.E_ISSN):
             journallink = etree.SubElement(oai_dc, self.DC + "relation")
             set_text(journallink, app.config['BASE_URL'] + "/toc/" + identifier)
-        
+
         if bibjson.abstract is not None:
             abstract = etree.SubElement(oai_dc, self.DC + "description")
             set_text(abstract, bibjson.abstract)
-        
+
         if len(bibjson.author) > 0:
             for author in bibjson.author:
                 ael = etree.SubElement(oai_dc, self.DC + "creator")
                 set_text(ael, author.get("name"))
-        
+
         if bibjson.publisher is not None:
             pubel = etree.SubElement(oai_dc, self.DC + "publisher")
             set_text(pubel, bibjson.publisher)
-        
+
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "article")
-        
+
         self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
 
         jlangs = bibjson.journal_language
@@ -1104,7 +1136,7 @@ class OAI_DC_Article(OAI_DC):
             for language in jlangs:
                 langel = etree.SubElement(oai_dc, self.DC + "language")
                 set_text(langel, language)
-        
+
         if bibjson.get_journal_license() is not None:
             prov = etree.SubElement(oai_dc, self.DC + "provenance")
             set_text(prov, "Journal Licence: " + bibjson.get_journal_license().get("title"))
@@ -1115,17 +1147,17 @@ class OAI_DC_Article(OAI_DC):
             set_text(cite, citation)
 
         return metadata
-        
+
     def header(self, record):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
-        
+
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "article"))
-        
+
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
-        
+
         self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
@@ -1177,16 +1209,16 @@ class OAI_DC_Article(OAI_DC):
 class OAI_DC_Journal(OAI_DC):
     def crosswalk(self, record):
         bibjson = record.bibjson()
-        
+
         metadata = etree.Element(self.PMH + "metadata", nsmap=self.NSMAP)
         oai_dc = etree.SubElement(metadata, self.OAIDC + "dc")
-        oai_dc.set(self.XSI + "schemaLocation", 
+        oai_dc.set(self.XSI + "schemaLocation",
             "http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd")
-        
+
         if bibjson.title is not None:
             title = etree.SubElement(oai_dc, self.DC + "title")
             set_text(title, bibjson.title)
-        
+
         # external identifiers (ISSNs, etc)
         for identifier in bibjson.get_identifiers():
             idel = etree.SubElement(oai_dc, self.DC + "identifier")
@@ -1196,53 +1228,53 @@ class OAI_DC_Journal(OAI_DC):
         url = app.config["BASE_URL"] + "/toc/" + record.toc_id
         idel = etree.SubElement(oai_dc, self.DC + "identifier")
         set_text(idel, url)
-        
+
         if bibjson.language is not None and len(bibjson.language) > 0:
             for language in bibjson.language:
                 lang = etree.SubElement(oai_dc, self.DC + "language")
                 set_text(lang, language)
-        
+
         if bibjson.author_pays_url is not None:
             relation = etree.SubElement(oai_dc, self.DC + "relation")
             set_text(relation, bibjson.author_pays_url)
-        
+
         if bibjson.get_license() is not None:
             rights = etree.SubElement(oai_dc, self.DC + "rights")
             set_text(rights, bibjson.get_license().get("title"))
-        
+
         if bibjson.publisher is not None:
             pub = etree.SubElement(oai_dc, self.DC + "publisher")
             set_text(pub, bibjson.publisher)
-        
+
         if len(bibjson.get_urls()) > 0:
             for url in bibjson.get_urls():
                 urlel = etree.SubElement(oai_dc, self.DC + "relation")
                 set_text(urlel, url.get("url"))
-        
+
         if bibjson.provider is not None:
             prov = etree.SubElement(oai_dc, self.DC + "publisher")
             set_text(prov, bibjson.provider)
-        
+
         created = etree.SubElement(oai_dc, self.DC + "date")
         set_text(created, normalise_date(record.created_date))
-        
+
         objecttype = etree.SubElement(oai_dc, self.DC + "type")
         set_text(objecttype, "journal")
 
         self._generate_subjects(parent_element=oai_dc, subjects=bibjson.subjects(), keywords=bibjson.keywords)
-            
+
         return metadata
-    
+
     def header(self, record):
         bibjson = record.bibjson()
         head = etree.Element(self.PMH + "header", nsmap=self.NSMAP)
-        
+
         identifier = etree.SubElement(head, self.PMH + "identifier")
         set_text(identifier, make_oai_identifier(record.id, "journal"))
-        
+
         datestamp = etree.SubElement(head, self.PMH + "datestamp")
         set_text(datestamp, normalise_date(record.last_updated))
-        
+
         self._generate_header_subjects(parent_element=head, subjects=bibjson.subjects())
         return head
 
@@ -1321,15 +1353,15 @@ class OAI_DOAJ_Article(OAI_Crosswalk):
         if bibjson.volume:
             volume = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "volume")
             set_text(volume, bibjson.volume)
-            
+
         if bibjson.number:
             issue = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "issue")
             set_text(issue, bibjson.number)
-            
+
         if bibjson.start_page:
             start_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "startPage")
             set_text(start_page, bibjson.start_page)
-            
+
         if bibjson.end_page:
             end_page = etree.SubElement(oai_doaj_article, self.OAI_DOAJ + "endPage")
             set_text(end_page, bibjson.end_page)
