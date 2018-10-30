@@ -26,6 +26,8 @@ jQuery(document).ready(function($) {
                 color = "#008800"
             } else if (resultobj.status === "error") {
                 color = "#880000";
+            } else if (resultobj.status === "cancelled") {
+                color = "#b47e18";
             }
             firstRow += " status: <strong style='color: " + color + "'>" + resultobj.status + "</strong>";
         }

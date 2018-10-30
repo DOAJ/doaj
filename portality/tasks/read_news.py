@@ -51,6 +51,8 @@ class ReadNewsBackgroundTask(BackgroundTask):
         """
         background_job.save()
         read_news.schedule(args=(background_job.id,), delay=10)
+        # fixme: schedule() could raise a huey.exceptions.QueueWriteException and not reach redis- would that be logged?
+
 
 @main_queue.periodic_task(schedule("read_news"))
 @write_required(script=True)
