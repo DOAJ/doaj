@@ -99,17 +99,17 @@ class DiscoveryApi(Api):
     @staticmethod
     def get_application_swag():
         return deepcopy(DISCOVERY_API_SWAG['application'])
-    
+
     @staticmethod
     def get_journal_swag():
         return deepcopy(DISCOVERY_API_SWAG['journal'])
-    
+
     @staticmethod
     def get_article_swag():
         return deepcopy(DISCOVERY_API_SWAG['article'])
 
     @classmethod
-    def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs):
+    def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs, bulk):
         if not allowed(q):
             raise DiscoveryException("Query contains disallowed Lucene features")
 
@@ -128,6 +128,14 @@ class DiscoveryApi(Api):
 
         # calculate the position of the from cursor in the document set
         fro = (page - 1) * page_size
+        # If fro is greater than the max allowed, throw error
+        # using bulk to provide an override when needed
+        max_records = app.config.get("DISCOVERY_MAX_RECORDS_SIZE", 1000)
+        if not bulk and fro >= max_records:
+            message = """Looks like you want to view results beyond {x}. \
+If you would like to see more results, you can download all of our results \
+from link""".format(x=max_records)
+            raise DiscoveryException(message)
 
         # interpret the sort field into the form required by the query
         sortby = None
@@ -154,9 +162,9 @@ class DiscoveryApi(Api):
         return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
-    def _make_search_query(cls, q, page, page_size, sort, search_subs, sort_subs):
+    def _make_search_query(cls, q, page, page_size, sort, search_subs, sort_subs, bulk):
         # sanitise and prep the inputs
-        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
+        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs, bulk)
 
         # assemble the query
         query = SearchQuery(q, fro, page_size, sortby, sortdir)
@@ -190,7 +198,7 @@ class DiscoveryApi(Api):
 
         page_count = ((total - 1) // page_size) + 1
         last_page = FISRT_PAGE + page_count - 1
-        
+
         # Links to previous and next page
         if requested_page > FISRT_PAGE:
             previous_page = requested_page - 1
@@ -205,8 +213,7 @@ class DiscoveryApi(Api):
         return page_count, previous_page, next_page, last_page
 
     @classmethod
-    def _make_response(cls, endpoint, res, q, page, page_size, sort,
-                       obs):
+    def _make_response(cls, endpoint, res, q, page, page_size, sort, obs):
         total = res.get("hits", {}).get("total", 0)
 
         page_count, previous_page, next_page, last_page = cls._calc_pagination(total, page_size, page)
@@ -236,10 +243,10 @@ class DiscoveryApi(Api):
         return SearchResult(result)
 
     @classmethod
-    def search_articles(cls, q, page, page_size, sort=None):
+    def search_articles(cls, q, page, page_size, sort=None, bulk=False):
         search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
         sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
+        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs, bulk)
 
         # execute the query against the articles
         res = models.Article.query(q=query.query(), consistent_order=False)
@@ -254,10 +261,10 @@ class DiscoveryApi(Api):
         return cls._make_response('search_articles', res, q, page, page_size, sort, obs)
 
     @classmethod
-    def search_journals(cls, q, page, page_size, sort=None):
+    def search_journals(cls, q, page, page_size, sort=None, bulk=False):
         search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
         sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
+        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs, bulk)
 
         # execute the query against the articles
         res = models.Journal.query(q=query.query(), consistent_order=False)

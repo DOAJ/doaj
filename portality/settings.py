@@ -103,7 +103,7 @@ DEBUG_PYCHARM_SERVER = 'localhost'
 DEBUG_PYCHARM_PORT = 6000
 
 # can anonymous users get raw JSON records via the query endpoint?
-PUBLIC_ACCESSIBLE_JSON = True 
+PUBLIC_ACCESSIBLE_JSON = True
 
 # =======================
 # email settings
@@ -474,7 +474,7 @@ CONTENT_FOLDER = "content"
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
 
-# when a page is deleted from the index should it also be removed from 
+# when a page is deleted from the index should it also be removed from
 # filesystem and etherpad (if they are available in the first place)
 DELETE_REMOVES_FS = False # True / False
 DELETE_REMOVES_EP = False # MUST BE THE ETHERPAD API-KEY OR DELETES WILL FAIL
@@ -692,6 +692,8 @@ DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 # API configuration
 
 DISCOVERY_MAX_PAGE_SIZE = 100
+
+DISCOVERY_MAX_RECORDS_SIZE = 1000
 
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",
