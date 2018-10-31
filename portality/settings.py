@@ -140,6 +140,11 @@ STORE_S3_SCOPES = {
     "anon_data" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used by the api_export script to dump data from the api
+    "api_data" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
 
@@ -694,6 +699,8 @@ DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 DISCOVERY_MAX_PAGE_SIZE = 100
 
 DISCOVERY_MAX_RECORDS_SIZE = 1000
+
+DISCOVERY_BULK_PAGE_SIZE = 1000
 
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",

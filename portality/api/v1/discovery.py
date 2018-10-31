@@ -121,11 +121,14 @@ class DiscoveryApi(Api):
         if page < 1:
             page = 1
 
-        if page_size > app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100):
+        if bulk :
+            max_pag_size = app.config.get("DISCOVERY_BULK_PAGE_SIZE", 1000)
+        else:
+            max_pag_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 1000)
+        if page_size > max_pag_size:
             page_size = app.config.get("DISCOVERY_MAX_PAGE_SIZE", 100)
         elif page_size < 1:
             page_size = 10
-
         # calculate the position of the from cursor in the document set
         fro = (page - 1) * page_size
         # If fro is greater than the max allowed, throw error
@@ -228,14 +231,28 @@ from link""".format(x=max_records)
             "results" : obs
         }
 
+        # FIXME: URLs constructed without helper if exception is thrown
+        #       as application context is not available
+        s = sort
+        if s == None:
+            s = ''
         if previous_page is not None:
-            result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size, sort=sort)
+            try:
+                result["prev"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=previous_page, pageSize=page_size, sort=sort)
+            except:
+                result["prev"] = app.config['BASE_URL'] + '/'.join((app.config['API_BLUEPRINT_NAME'] + '_' + endpoint).split('_')) + "/{a}?page={b}&pageSize={c}&sort={d}".format(a=q, b=previous_page, c=page_size, d=s)
 
         if next_page is not None:
-            result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size, sort=sort)
+            try:
+                result["next"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=next_page, pageSize=page_size, sort=sort)
+            except:
+                result["next"] = app.config['BASE_URL'] + '/'.join((app.config['API_BLUEPRINT_NAME'] + '_' + endpoint).split('_')) + "/{a}?page={b}&pageSize={c}&sort={d}".format(a=q, b=next_page, c=page_size, d=s)
 
         if last_page is not None:
-            result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size, sort=sort)
+            try:
+                result["last"] = app.config['BASE_URL'] + url_for(app.config['API_BLUEPRINT_NAME'] + '.' + endpoint, search_query=q, page=last_page, pageSize=page_size, sort=sort)
+            except:
+                result["last"] = app.config['BASE_URL'] + '/'.join((app.config['API_BLUEPRINT_NAME'] + '_' + endpoint).split('_')) + "/{a}?page={b}&pageSize={c}&sort={d}".format(a=q, b=last_page, c=page_size, d=s)
 
         if sort is not None:
             result["sort"] = sort
