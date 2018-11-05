@@ -35,6 +35,8 @@ from portality.tasks.read_news import ReadNewsBackgroundTask
 from portality.tasks.journal_csv import JournalCSVBackgroundTask
 from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
 from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
+from portality.tasks.check_latest_es_backup import CheckLatestESBackupBackgroundTask
+from portality.tasks.prune_es_backups import PruneESBackupsBackgroundTask
 
 
 HANDLERS = {
@@ -45,6 +47,8 @@ HANDLERS = {
     'journal_csv': JournalCSVBackgroundTask,
     'article_cleanup_sync':ArticleCleanupSyncBackgroundTask,
     'set_in_doaj': SetInDOAJBackgroundTask,
+    'check_latest_es_backup': CheckLatestESBackupBackgroundTask,
+    'prune_es_backups': PruneESBackupsBackgroundTask,
 }
 
 
