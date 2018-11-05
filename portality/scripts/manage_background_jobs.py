@@ -33,6 +33,8 @@ from portality.tasks.suggestion_bulk_edit import SuggestionBulkEditBackgroundTas
 from portality.tasks.sitemap import SitemapBackgroundTask
 from portality.tasks.read_news import ReadNewsBackgroundTask
 from portality.tasks.journal_csv import JournalCSVBackgroundTask
+from portality.tasks.article_cleanup_sync import ArticleCleanupSyncBackgroundTask
+from portality.tasks.journal_in_out_doaj import SetInDOAJBackgroundTask
 
 
 HANDLERS = {
@@ -40,7 +42,9 @@ HANDLERS = {
     'suggestion_bulk_edit': SuggestionBulkEditBackgroundTask,
     'sitemap': SitemapBackgroundTask,
     'read_news': ReadNewsBackgroundTask,
-    'journal_csv': JournalCSVBackgroundTask
+    'journal_csv': JournalCSVBackgroundTask,
+    'article_cleanup_sync':ArticleCleanupSyncBackgroundTask,
+    'set_in_doaj': SetInDOAJBackgroundTask,
 }
 
 
@@ -62,7 +66,7 @@ def manage_jobs(verb, action, status, from_date, to_date):
             job.add_audit_message(u"Job {pp} from job management script.".format(
                 pp={'requeue': 'requeued', 'cancel': 'cancelled'}[verb]))
 
-            if verb == 're-queue':                                                    # Re-queue and execute immediately
+            if verb == 'requeue':                                                     # Re-queue and execute immediately
                 job.queue()
                 HANDLERS[job.action].submit(job)
             elif verb == 'cancel':                                                         # Just apply cancelled status
@@ -75,7 +79,7 @@ def manage_jobs(verb, action, status, from_date, to_date):
 
 
 def requeue_jobs(action, status, from_date, to_date):
-    manage_jobs('re-queue', action, status, from_date, to_date)
+    manage_jobs('requeue', action, status, from_date, to_date)
 
 
 def cancel_jobs(action, status, from_date, to_date):
