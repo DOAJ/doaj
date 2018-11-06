@@ -468,8 +468,9 @@ def editor_group(group_id=None):
             if associates is not None:
                 for a in associates:
                     ae = models.Account.pull(a)
-                    ae.add_role("associate_editor")
-                    ae.save()
+                    if ae is not None:                                     # If the account has been deleted, pull fails
+                        ae.add_role("associate_editor")
+                        ae.save()
 
             eg.set_name(form.name.data)
             eg.set_editor(form.editor.data)
