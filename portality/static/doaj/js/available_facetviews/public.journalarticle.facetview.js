@@ -268,7 +268,7 @@ jQuery(document).ready(function($) {
 
         if (resultobj.last_manual_update) {
             result += "<strong>Record Last Updated</strong>:&nbsp;";
-            result += humanDate(resultobj.last_manual_update);
+            result += resultobj.last_manual_update === '1970-01-01T00:00:00Z' ? "Never" : humanDate(resultobj.last_manual_update);
         }
 
         // close the main details box
