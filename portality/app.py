@@ -24,7 +24,6 @@ from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
 from portality.view.publisher import blueprint as publisher
 from portality.view.query import blueprint as query
-from portality.view.stream import blueprint as stream
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
 from portality.view.openurl import blueprint as openurl
