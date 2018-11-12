@@ -72,7 +72,7 @@
             {% for file in previous %}
                 <tr>
                     <td>{{ file.created_timestamp | utc_timestamp("%d %b %Y %H:%M:%S %Z") }}</td>
-                    <td>
+                    <td style="word-wrap: break-word">
                         {% if file.filename.startswith("http") %}
                             <a href="{{file.filename}}">{{file.filename}}</a>
                         {% else %}
