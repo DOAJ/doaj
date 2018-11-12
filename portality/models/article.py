@@ -508,7 +508,12 @@ class Article(DomainObject):
 
         # create a normalised version of the DOI for deduplication
         source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
-        doi = normalise.normalise_doi(source_doi)
+        try:
+            doi = normalise.normalise_doi(source_doi)
+        except ValueError as e:
+            print e.message
+            doi = source_doi
+
 
         # create a normalised version of the fulltext URL for deduplication
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)

@@ -28,10 +28,10 @@ def normalise_url(url):
     u = urlparse.urlparse(url)
 
     if u.netloc is None or u.netloc == "":
-        raise ValueError("Could not extract a normalised URL from {x}".format(x=url))
+        raise ValueError("Could not extract a normalised URL from '{x}'".format(x=url))
 
     if u.scheme not in schemes:
-        raise ValueError("URL must be at http(s) or ftp(s), found {x}".format(x=u.netloc))
+        raise ValueError("URL must be at http(s) or ftp(s), found '{x}'".format(x=u.netloc))
 
     n = urlparse.ParseResult(None, u.netloc, u.path, u.params, u.query, u.fragment)
     return urlparse.urlunparse(n)
@@ -55,5 +55,5 @@ def normalise_doi(doi):
     doi = doi.strip()
     norm = regex.group_match(regex.DOI_COMPILED, doi, "id")
     if norm is None:
-        raise ValueError("Could not extract a normalised DOI from {x}".format(x=doi))
+        raise ValueError("Could not extract a normalised DOI from '{x}'".format(x=doi))
     return norm
