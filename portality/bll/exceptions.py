@@ -73,7 +73,7 @@ class IngestException(Exception):
             if tb is not None:
                 self.stack = "".join(traceback.format_tb(tb))
             else:
-                self.stack = traceback.format_exc()
+                self.stack = "".join(traceback.format_stack())
 
     def trace(self):
         return self.stack
