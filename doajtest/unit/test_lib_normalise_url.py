@@ -34,15 +34,17 @@ class TestLibNormaliseURL(TestCase):
         ###############################################
         ## set up
 
-        rawUrl = None
+        canonicalUrl = None
         if url_arg != "none":
-            rawUrl = "//example.com/path;p=1?query=one&two=three#frag"
+            canonicalUrl = "//example.com/path;p=1?query=one&two=three#frag"
 
-        url = rawUrl
-        if scheme_arg not in ["-", "invalid", "none"]:
+        url = canonicalUrl
+        if scheme_arg == "none" and url is not None:
+            url = url[2:]
+        if scheme_arg not in ["-", "invalid", "none", "//"]:
             url = scheme_arg + ":" + url
         elif scheme_arg == "invalid":
-            url = "somerubbish" + url
+            url = "somerubbish:" + url
         elif scheme_arg == "unknown":
             url = "unknown:" + url
 
@@ -57,4 +59,4 @@ class TestLibNormaliseURL(TestCase):
                 norm = normalise_url(url)
         else:
             norm = normalise_url(url)
-            assert norm == rawUrl
+            assert norm == canonicalUrl

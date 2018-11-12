@@ -14,3 +14,5 @@ test_id,url,scheme,whitespace,raises
 13,exists,unknown,no,ValueError
 14,exists,none,yes,
 15,exists,none,no,
+16,exists,//,yes,
+17,exists,//,no,
