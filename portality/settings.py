@@ -313,25 +313,6 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 # ========================
 # QUERY SETTINGS
 
-# list index types that should not be queryable via the query endpoint
-NO_QUERY = []
-SU_ONLY = ["account"]
-
-# list additional terms to impose on anonymous users of query endpoint
-# for each index type that you wish to have some
-# must be a list of objects that can be appended to an ES query.bool.must
-# for example [{'term':{'visible':True}},{'term':{'accessible':True}}]
-ANONYMOUS_SEARCH_TERMS = {
-    # "pages": [{'term':{'visible':True}},{'term':{'accessible':True}}]
-}
-
-# a default sort to apply to query endpoint searches
-# for each index type that you wish to have one
-# for example {'created_date' + FACET_FIELD : {"order":"desc"}}
-DEFAULT_SORT = {
-    # "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
-}
-
 QUERY_ROUTE = {
     "query" : {
         "journal,article" : {
