@@ -11,11 +11,11 @@ import os
 import shutil
 import json
 from portality import models
-from portality.article import XWalk
 from portality.lib import dates
 from portality.core import app
 from portality.clcsv import UnicodeWriter, UnicodeReader
 import csv
+from portality.bll.doaj import DOAJ
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -64,6 +64,8 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         a_count = gd_count = 0
 
+        articleService = DOAJ.articleService()
+
         # Read back in the article csv file we created earlier
         with codecs.open(tmp_csvpath, 'rb', 'utf-8') as t:
             article_reader = UnicodeReader(t)
@@ -74,7 +76,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
-                global_duplicates = XWalk.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
                 if global_duplicates:
                     # Look up an article's owner
                     journal = article.get_journal()
