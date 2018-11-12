@@ -40,7 +40,7 @@ class BLLArticleMockFactory(object):
             del possible_duplicates["fulltext"]
 
 
-        def mock(article, owner=None):
+        def mock(article, owner=None, results_per_match_type=10):
             return possible_duplicates
 
         return mock
