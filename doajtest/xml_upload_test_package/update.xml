@@ -3,13 +3,13 @@
 <records>
 
     <record>
-
         <language>fre</language>
         <publisher>Codicille éditeur et CRILCQ</publisher>
 
         <journalTitle>Successful</journalTitle>
         <issn>1111-1111</issn>
-        <eissn>5555-5555</eissn>
+        <eissn>2222-2222</eissn>
+
 
         <publicationDate>2013</publicationDate>
         <volume/>
@@ -17,7 +17,7 @@
         <startPage/>
         <endPage/>
         <documentType>article</documentType>
-        <title language="fre">An article with an unmatched ISSN</title>
+        <title language="fre">Updated!</title>
         <authors>
             <author>
                 <name>AN Author</name>
@@ -27,7 +27,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-        <fullTextUrl>http://doaj.org/testing/2.pdf</fullTextUrl>
+        <fullTextUrl>http://doaj.org/testing/100.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>

@@ -26,6 +26,10 @@ class Messages(object):
 
     REJECT_NOTE_WRAPPER = u"""{editor}: This application was rejected with the reason '{note}'"""
 
+    EXCEPTION_ARTICLE_BATCH_DUPLICATE = u"One or more articles in this batch have duplicate identifiers"
+    EXCEPTION_ARTICLE_BATCH_FAIL = u"One or more articles failed to ingest; entire batch ingest halted"
+    EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):

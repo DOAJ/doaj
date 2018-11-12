@@ -1,6 +1,7 @@
 from portality.lib.argvalidate import argvalidate
 from portality import models
 from portality.bll import exceptions
+from portality.ui.messages import Messages
 
 from datetime import datetime
 
@@ -33,7 +34,7 @@ class ArticleService(object):
             batch_duplicates = self._batch_contains_duplicates(articles)
             if batch_duplicates:
                 report = {"success" : 0, "fail" : len(articles), "update" : 0, "new" : 0, "shared" : [], "unowned" : [], "unmatched" : []}
-                raise exceptions.IngestException("One or more articles in this batch have duplicate identifiers", result=report)
+                raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_DUPLICATE, result=report)
 
         # 2. check legitimate ownership
         success = 0
@@ -67,7 +68,7 @@ class ArticleService(object):
             # return some stats on the import
             return report
         else:
-            raise exceptions.IngestException("One or more articles failed to ingest; entire batch ingest halted", result=report)
+            raise exceptions.IngestException(message=Messages.EXCEPTION_ARTICLE_BATCH_FAIL, result=report)
 
 
     def _batch_contains_duplicates(self, articles):
@@ -369,6 +370,6 @@ class ArticleService(object):
                     found = True
 
         if doi is None and fulltext is None:
-            raise exceptions.DuplicateArticleException("The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated")
+            raise exceptions.DuplicateArticleException(Messages.EXCEPTION_DETECT_DUPLICATE_NO_ID)
 
         return possible_articles if found else None

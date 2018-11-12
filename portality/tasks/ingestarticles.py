@@ -264,6 +264,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
         xwalk = plugin.load_class(xwalk_name)()
 
+        ingest_exception = False
         result = {}
         try:
             with open(path) as handle:
@@ -272,11 +273,12 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                     article.set_upload_id(file_upload.id)
                 result = articleService.batch_create_articles(articles, account)
         except IngestException as e:
-            job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
+            job.add_audit_message(u"IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             result = e.result
             try:
                 file_failed(path)
+                ingest_exception = True
             except:
                 job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
         except DuplicateArticleException as e:
@@ -286,6 +288,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                return
         except Exception as e:
             job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("File system error when reading file")
@@ -293,6 +296,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                return
 
         success = result.get("success", 0)
         fail = result.get("fail", 0)
@@ -302,7 +306,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         unowned = result.get("unowned", [])
         unmatched = result.get("unmatched", [])
 
-        if success == 0 and fail > 0:
+        if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
             job.add_audit_message("All articles in file failed to import")
         if success > 0 and fail == 0:
@@ -316,10 +320,11 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
         job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
-        try:
-            os.remove(path) # just remove the file, no need to keep it
-        except Exception as e:
-            job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
+        if not ingest_exception:
+            try:
+                os.remove(path) # just remove the file, no need to keep it
+            except Exception as e:
+                job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
 
     def cleanup(self):
         """
