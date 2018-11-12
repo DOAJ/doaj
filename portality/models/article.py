@@ -519,7 +519,11 @@ class Article(DomainObject):
         fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)
         if len(fulltexts) > 0:
             source_fulltext = fulltexts[0]
-            fulltext = normalise.normalise_url(source_fulltext)
+            try:
+                fulltext = normalise.normalise_url(source_fulltext)
+            except ValueError as e:
+                print e.message
+                fulltext = source_fulltext
 
         # build the index part of the object
         self.data["index"] = {}
