@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 s3 = boto3.client('s3')
 # doaj-es-backups is too slow currently, so not good value on Lambda (and is already covered by another check)
 # buckets = ["doaj-duplicity", "doaj-es-backups", "doaj-letsencrypt"]
-buckets = ["doaj-duplicity", "doaj-letsencrypt"]
+buckets = ["doaj-duplicity"]                                                    # 2018-11-13 stop backing up letsencrypt
 
 
 def lambda_handler(event, context):
