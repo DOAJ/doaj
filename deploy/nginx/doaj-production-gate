@@ -55,8 +55,9 @@ server {
     listen          80;
     server_name     testdoaj.cottagelabs.com;
 
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/htpasswd;
+    # password restrict the test server (disabled 2018-11-15 since server data is anonymous)
+    #auth_basic "Restricted";
+    #auth_basic_user_file /etc/nginx/htpasswd;
 
     proxy_read_timeout 600s;
     client_max_body_size 50M;
@@ -67,7 +68,7 @@ server {
     }
 
     location ~ /.well-known {
-        auth_basic off;
+        #auth_basic off;
         root /usr/share/nginx/html/;
         allow all;
     }
@@ -166,8 +167,9 @@ server {
 
     include includes/cl-letsencrypt-doaj.conf;
 
-    auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/htpasswd;
+    # password restrict the test server (disabled 2018-11-15 since server data is anonymous)
+    #auth_basic "Restricted";
+    #auth_basic_user_file /etc/nginx/htpasswd;
 
     proxy_read_timeout 600s;
     client_max_body_size 50M;
@@ -178,7 +180,7 @@ server {
     }
 
     location ~ /.well-known {
-        auth_basic off;
+        #auth_basic off;
         root /usr/share/nginx/html/;
         allow all;
     }
