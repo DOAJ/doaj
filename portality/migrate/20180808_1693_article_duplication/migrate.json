@@ -1,7 +1,9 @@
 {
+	"batch" : 5000,
 	"types": [
 		{
-			"type" : "article"
+			"type" : "article",
+			"scroll_size" : 5000
 		}
 	]
 }

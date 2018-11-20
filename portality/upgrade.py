@@ -1,5 +1,5 @@
 import json, os, esprit
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import OrderedDict
 from portality.core import app
 from portality import models
@@ -51,7 +51,11 @@ def do_upgrade(definition, verbose):
     for tdef in definition.get("types", []):
         print "Upgrading", tdef.get("type")
         batch = []
-        for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m")):
+        total = 0
+        first_page = esprit.raw.search(sconn, tdef.get("type"))
+        max = first_page.json().get("hits", {}).get("total", 0)
+        type_start = datetime.now()
+        for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000)):
             # learn what kind of model we've got
             model_class = MODELS.get(tdef.get("type"))
 
@@ -94,13 +98,24 @@ def do_upgrade(definition, verbose):
 
             # When we have enough, do some writing
             if len(batch) >= batch_size:
-                print "writing ", len(batch), "to", tdef.get("type")
+                total += len(batch)
+                print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
                 esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
                 batch = []
+                # do some timing predictions
+                batch_tick = datetime.now()
+                time_so_far = batch_tick - type_start
+                seconds_so_far = time_so_far.total_seconds()
+                estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
+                estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
+                print 'Estimated finish time for this type {0}.'.format(estimated_finish)
+
+
 
         # Write the last part-batch to index
         if len(batch) > 0:
-            print "writing ", len(batch), "to", tdef.get("type")
+            total += len(batch)
+            print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
             esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
 
 
