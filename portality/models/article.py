@@ -511,7 +511,7 @@ class Article(DomainObject):
         try:
             doi = normalise.normalise_doi(source_doi)
         except ValueError as e:
-            print e.message
+            # if we can't normalise the DOI, just store it as-is.
             doi = source_doi
 
 
@@ -522,7 +522,7 @@ class Article(DomainObject):
             try:
                 fulltext = normalise.normalise_url(source_fulltext)
             except ValueError as e:
-                print e.message
+                # if we can't normalise the fulltext store it as-is
                 fulltext = source_fulltext
 
         # build the index part of the object
