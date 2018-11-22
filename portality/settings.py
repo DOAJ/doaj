@@ -774,9 +774,8 @@ GA_ACTION_FQW = 'Hit'
 # Anonymisation configuration
 ANON_SALT = 'changeme'
 
-###################################
-## Quick Reject Feature Config
-
+# ========================================
+# Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
     "No research content has been published in the journal in the last calendar year",
     "The ISSN is incorrect and is not recognised by issn.org",
@@ -796,3 +795,17 @@ QUICK_REJECT_REASONS = [
     "This application is a duplicate",
     "You already have another application for the same journal in progress"
 ]
+
+# ========================================
+# Elastic APM config  (MUST be configured in env file)
+ELASTIC_APM = {
+  # Set required service name. Allowed characters:
+  # a-z, A-Z, 0-9, -, _, and space
+  'SERVICE_NAME': '',
+
+  # Use if APM Server requires a token
+  'SECRET_TOKEN': '',
+
+  # Set custom APM Server URL (default: http://localhost:8200)
+  'SERVER_URL': '',
+}

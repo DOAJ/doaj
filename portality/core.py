@@ -27,6 +27,7 @@ def create_app():
     setup_jinja(app)
     login_manager.init_app(app)
     CORS(app)
+    initialise_apm(app)
     return app
 
 
@@ -109,6 +110,12 @@ def initialise_index(app):
     put_mappings(app, mappings)
 
 
+def initialise_apm(app):
+    from elasticapm.contrib.flask import ElasticAPM
+    #if app.config['DOAJENV'] in ['production', 'test']:
+    apm = ElasticAPM(app)
+
+
 def setup_jinja(app):
     '''Add jinja extensions and other init-time config as needed.'''
 
@@ -123,5 +130,5 @@ def setup_jinja(app):
         return ''
     app.jinja_env.filters['debug']=jinja_debug
 
-app = create_app()
 
+app = create_app()
