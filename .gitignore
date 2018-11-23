@@ -16,14 +16,14 @@ tmp/*
 *.cfg
 
 media/*
-portality/default_templates/pagemanager/content/*
 upload/*
+!upload/README.md
+failed_articles/*
+!failed_articles/README.md
 cache/csv/*.csv
 cache/sitemap/*.xml
 portality/migrate/p1p2/*.csv
 portality/migrate/p1p2/*.csv.bak
-
-deploy/newrelic.ini
 
 # test detritous
 doajtest/unit/*.csv
