@@ -798,6 +798,8 @@ QUICK_REJECT_REASONS = [
 
 # ========================================
 # Elastic APM config  (MUST be configured in env file)
+ENABLE_APM = False
+
 ELASTIC_APM = {
   # Set required service name. Allowed characters:
   # a-z, A-Z, 0-9, -, _, and space

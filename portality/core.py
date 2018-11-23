@@ -112,8 +112,9 @@ def initialise_index(app):
 
 def initialise_apm(app):
     from elasticapm.contrib.flask import ElasticAPM
-    #if app.config['DOAJENV'] in ['production', 'test']:
-    apm = ElasticAPM(app)
+    if app.config.get('ENABLE_APM', False):
+        app.logger.info("Configuring Elastic APM")
+        apm = ElasticAPM(app, logging=True)
 
 
 def setup_jinja(app):
