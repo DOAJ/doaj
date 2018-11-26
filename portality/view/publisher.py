@@ -160,18 +160,19 @@ def upload_file():
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
 
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
     
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
     
     flash("No file or URL provided", "error")
-    return render_template('publisher/uploadmetadata.html', previous=previous)
+    return redirect(url_for("publisher.upload_file"))
+
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
