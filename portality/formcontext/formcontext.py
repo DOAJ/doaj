@@ -462,6 +462,7 @@ class ApplicationContext(PrivateContext):
         to = [email]
         fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
         subject = app.config.get("SERVICE_NAME", "") + " - journal accepted"
+        publisher_name = publisher_name if publisher_name is not None else "Journal Owner"
 
         try:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
@@ -676,13 +677,14 @@ class ManEdApplicationReview(ApplicationContext):
 
         # if this application is being accepted, then do the conversion to a journal
         if self.target.application_status == constants.APPLICATION_STATUS_ACCEPTED:
+            # remember whether this was an update request or not
+            is_update_request = self.target.current_journal is not None
+
             j = applicationService.accept_application(self.target, current_user._get_current_object())
             # record the url the journal is available at in the admin are and alert the user
             jurl = url_for("doaj.toc", identifier=j.toc_id)
             if self.source.current_journal is not None:
                 self.add_alert('<a href="{url}" target="_blank">Existing journal updated</a>.'.format(url=jurl))
-                #self.source.remove_current_journal()
-                #self.source.save()
             else:
                 self.add_alert('<a href="{url}" target="_blank">New journal created</a>.'.format(url=jurl))
 
@@ -693,32 +695,39 @@ class ManEdApplicationReview(ApplicationContext):
                 for contact in j.contacts():
                     names.append(contact.get("name"))
                 journal_contacts = ", ".join(names)
+
+                # for all acceptances, send an email to the owner of the journal
                 self._send_application_approved_email(j.bibjson().title, owner.name, owner.email, journal_contacts, self.source.current_journal is not None)
-                for contact in j.contacts():
-                    self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), owner.name, self.source.current_journal is not None)
+
+                # in the case of a new application, also send emails to the journal contacts
+                if not is_update_request:
+                    for contact in j.contacts():
+                        self._send_contact_approved_email(j.bibjson().title, contact.get("name"), contact.get("email"), owner.name, self.source.current_journal is not None)
             except app_email.EmailException:
                 self.add_alert("Problem sending email to suggester - probably address is invalid")
                 app.logger.exception("Acceptance email to owner failed.")
 
         # if the application was instead rejected, carry out the rejection actions
         elif self.source.application_status != constants.APPLICATION_STATUS_REJECTED and self.target.application_status == constants.APPLICATION_STATUS_REJECTED:
-            had_current = self.target.current_journal is not None
+            # remember whether this was an update request or not
+            is_update_request = self.target.current_journal is not None
 
+            # reject the application
             applicationService.reject_application(self.target, current_user._get_current_object())
 
-            if had_current:
-                publisher_email = self.target.get_latest_contact_email()
+            # if this was an update request, send an email to the owner
+            if is_update_request:
                 sent = False
                 try:
-                    emails.send_publisher_reject_email(self.target, update_request=had_current)
+                    emails.send_publisher_reject_email(self.target, update_request=is_update_request)
                     sent = True
                 except app_email.EmailException as e:
                     pass
 
                 if sent:
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
                 else:
-                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(email=publisher_email))
+                    self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
 
         # the application was neither accepted or rejected, so just save it
         else:
@@ -727,12 +736,11 @@ class ManEdApplicationReview(ApplicationContext):
 
         # if revisions were requested, email the publisher
         if self.source.application_status != constants.APPLICATION_STATUS_REVISIONS_REQUIRED and self.target.application_status == constants.APPLICATION_STATUS_REVISIONS_REQUIRED:
-            publisher_email = self.target.get_latest_contact_email()
             try:
                 emails.send_publisher_update_request_revisions_required(self.target)
-                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
+                self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
             except app_email.EmailException as e:
-                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(email=publisher_email))
+                self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL.format(user=self.target.owner))
 
         # if we need to email the editor and/or the associate, handle those here
         if is_editor_group_changed:
