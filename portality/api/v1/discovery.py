@@ -161,7 +161,7 @@ class DiscoveryApi(Api):
         # assemble the query
         search_query = SearchQuery(index_type, account, q, fro, page_size, sortby, sortdir)
         query, dao_klass = search_query.query()
-        print json.dumps(query)
+        # print json.dumps(query)
 
         return dao_klass, query, page, page_size
 
