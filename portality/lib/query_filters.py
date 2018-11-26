@@ -32,7 +32,7 @@ def only_in_doaj(q):
     return q
 
 
-def owner(q):
+def owner(q, user=current_user):
     q.clear_match_all()
     q.add_must({"term" : {"admin.owner.exact" : current_user.id}})
     return q
@@ -57,6 +57,16 @@ def editor(q):
         gnames.append(g.name)
     q.clear_match_all()
     q.add_must({"terms" : {"admin.editor_group.exact" : gnames}})
+    return q
+
+def private_source(q):
+    q.add_include(["admin.application_status", "suggestion", "admin.ticked",
+        "admin.seal", "last_updated", "created_date", "id", "bibjson"])
+    return q
+
+def public_source(q):
+    q.add_include(["admin.ticked", "admin.seal", "last_updated",
+        "created_date", "id", "bibjson"])
     return q
 
 

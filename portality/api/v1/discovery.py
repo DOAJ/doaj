@@ -1,5 +1,4 @@
 from portality.api.v1.common import Api
-from portality import models
 from portality import util
 from portality.core import app
 from datetime import datetime
@@ -7,6 +6,7 @@ import esprit
 import re, json, uuid, os
 from copy import deepcopy
 from flask import url_for
+from portality.bll.doaj import DOAJ
 
 class DiscoveryException(Exception):
     pass
@@ -99,11 +99,11 @@ class DiscoveryApi(Api):
     @staticmethod
     def get_application_swag():
         return deepcopy(DISCOVERY_API_SWAG['application'])
-    
+
     @staticmethod
     def get_journal_swag():
         return deepcopy(DISCOVERY_API_SWAG['journal'])
-    
+
     @staticmethod
     def get_article_swag():
         return deepcopy(DISCOVERY_API_SWAG['article'])
@@ -154,26 +154,17 @@ class DiscoveryApi(Api):
         return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
-    def _make_search_query(cls, q, page, page_size, sort, search_subs, sort_subs):
+    def _make_query(cls, index_type, account, q, page, page_size, sort, search_subs, sort_subs):
         # sanitise and prep the inputs
         q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
 
         # assemble the query
-        query = SearchQuery(q, fro, page_size, sortby, sortdir)
-        # print json.dumps(query.query())
+        search_query = SearchQuery(index_type, account, q, fro, page_size, sortby, sortdir)
+        query, dao_klass = search_query.query()
+        print json.dumps(query)
 
-        return query, page, page_size
+        return dao_klass, query, page, page_size
 
-    @classmethod
-    def _make_application_query(cls, account, q, page, page_size, sort, search_subs, sort_subs):
-        # sanitise and prep the inputs
-        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
-
-        # assemble the query
-        query = ApplicationQuery(account.id, q, fro, page_size, sortby, sortdir)
-        # print json.dumps(query.query())
-
-        return query, page, page_size
 
     @staticmethod
     def _calc_pagination(total, page_size, requested_page):
@@ -190,7 +181,7 @@ class DiscoveryApi(Api):
 
         page_count = ((total - 1) // page_size) + 1
         last_page = FISRT_PAGE + page_count - 1
-        
+
         # Links to previous and next page
         if requested_page > FISRT_PAGE:
             previous_page = requested_page - 1
@@ -239,10 +230,10 @@ class DiscoveryApi(Api):
     def search_articles(cls, q, page, page_size, sort=None):
         search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
         sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
+        dao_klass, query, page, page_size = cls._make_query('article', None, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = models.Article.query(q=query.query(), consistent_order=False)
+        res = dao_klass.query(q=query, consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
@@ -250,17 +241,17 @@ class DiscoveryApi(Api):
             app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [models.Article(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response('search_articles', res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_journals(cls, q, page, page_size, sort=None):
         search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
         sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
+        dao_klass, query, page, page_size = cls._make_query('journal', None, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = models.Journal.query(q=query.query(), consistent_order=False)
+        res = dao_klass.query(q=query, consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
@@ -268,17 +259,17 @@ class DiscoveryApi(Api):
             app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [models.Journal(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response('search_journals', res, q, page, page_size, sort, obs)
 
     @classmethod
     def search_applications(cls, account, q, page, page_size, sort=None):
         search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
         sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
-        query, page, page_size = cls._make_application_query(account, q, page, page_size, sort, search_subs, sort_subs)
+        dao_klass, query, page, page_size = cls._make_query('suggestion', account, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = models.Suggestion.query(q=query.query(), consistent_order=False)
+        res = dao_klass.query(q=query, consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
@@ -286,12 +277,14 @@ class DiscoveryApi(Api):
             app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [models.Suggestion(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response('search_applications', res, q, page, page_size, sort, obs)
 
 
 class SearchQuery(object):
-    def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
+    def __init__(self, index_type, account, qs, fro, psize, sortby=None, sortdir=None):
+        self.index_type = index_type
+        self.account = account
         self.qs = qs
         self.fro = fro
         self.psize = psize
@@ -301,72 +294,17 @@ class SearchQuery(object):
     def query(self):
         q = {
             "query" : {
-                "filtered" : {
-                    "filter" : {
-                        "bool" : {
-                            "must" : [
-                                {"term" : {"admin.in_doaj": True}}
-                            ]
-                        }
-                    },
-                    "query" : {
-                        "query_string" : {
-                            "query" : self.qs,
-                            "default_operator": "AND"
-                        }
-                    }
+                "query_string" : {
+                    "query" : self.qs,
+                    "default_operator": "AND"
                 }
-            },
-            "_source": {
-                "include": ["last_updated", "created_date", "id", "bibjson"],
-                "exclude": [],
             },
             "from" : self.fro,
             "size" : self.psize
         }
-
         if self.sortby is not None:
             q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
 
-        return q
-
-class ApplicationQuery(object):
-    def __init__(self, owner, qs, fro, psize, sortby=None, sortdir=None):
-        self.owner = owner
-        self.qs = qs
-        self.fro = fro
-        self.psize = psize
-        self.sortby = sortby
-        self.sortdir = sortdir if sortdir is not None else "asc"
-
-    def query(self):
-        q = {
-            "query" : {
-                "filtered" : {
-                    "filter" : {
-                        "bool" : {
-                            "must" : [
-                                {"term" : {"admin.owner.exact": self.owner}}
-                            ]
-                        }
-                    },
-                    "query" : {
-                        "query_string" : {
-                            "query" : self.qs,
-                            "default_operator": "AND"
-                        }
-                    }
-                }
-            },
-            "_source": {
-                "include": ["admin.application_status", "suggestion", "last_updated", "created_date", "id", "bibjson"],
-                "exclude": [],
-            },
-            "from" : self.fro,
-            "size" : self.psize
-        }
-
-        if self.sortby is not None:
-            q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
-
-        return q
+        query_service = DOAJ.queryService()
+        query, dao_klass = query_service.prepare_query('api_query', self.index_type, q, self.account)
+        return query, dao_klass

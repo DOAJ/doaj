@@ -153,3 +153,16 @@ class TestQueryFilters(DoajTestCase):
                 "total": 3
             }
         }, newres
+
+
+    def test_09_private_source(self):
+        newq = query_filters.private_source(self.q)
+        fields = ["admin.application_status", "suggestion", "admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
+        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()
+
+    def test_09_public_source(self):
+        newq = query_filters.public_source(self.q)
+        fields = ["admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
+        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()

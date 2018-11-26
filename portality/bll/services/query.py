@@ -80,11 +80,29 @@ class QueryService(object):
 
         return res
 
-    def search(self, domain, index_type, raw_query, account, additional_parameters):
+    def _get_query(self, cfg, raw_query):
         query = Query()
         if raw_query is not None:
             query = Query(raw_query)
 
+        # validate the query, to make sure it is of a permitted form
+        if not self._validate_query(cfg, query):
+            raise exceptions.AuthoriseException()
+
+        # add any required filters to the query
+        query = self._pre_filter_search_query(cfg, query)
+        return query
+
+    def _get_dao_klass(self, cfg):
+        # get the name of the model that will handle this query, and then look up
+        # the class that will handle it
+        dao_name = cfg.get("dao")
+        dao_klass = plugin.load_class(dao_name)
+        if dao_klass is None:
+            raise exceptions.NoSuchObjectException(dao_name)
+        return dao_klass
+
+    def search(self, domain, index_type, raw_query, account, additional_parameters):
         cfg = self._get_config_for_search(domain, index_type, account)
 
         # check that the request values permit a query to this endpoint
@@ -95,19 +113,10 @@ class QueryService(object):
                 if val is None or val not in vs:
                     raise exceptions.AuthoriseException()
 
-        # validate the query, to make sure it is of a permitted form
-        if not self._validate_query(cfg, query):
-            raise exceptions.AuthoriseException()
+        dao_klass = self._get_dao_klass(cfg)
 
-        # get the name of the model that will handle this query, and then look up
-        # the class that will handle it
-        dao_name = cfg.get("dao")
-        dao_klass = plugin.load_class(dao_name)
-        if dao_klass is None:
-            raise exceptions.NoSuchObjectException(dao_name)
-
-        # add any required filters to the query
-        query = self._pre_filter_search_query(cfg, query)
+        # get the query
+        query = self._get_query(cfg, raw_query)
 
         # send the query
         res = dao_klass.query(q=query.as_dict())
@@ -116,6 +125,15 @@ class QueryService(object):
         res = self._post_filter_search_results(cfg, res)
 
         return res
+
+    def prepare_query(self, domain, index_type, raw_query, account):
+        cfg = self._get_config_for_search(domain, index_type, account)
+
+        dao_klass = self._get_dao_klass(cfg)
+
+        # get the query
+        query = self._get_query(cfg, raw_query)
+        return query, dao_klass
 
 
 class Query(object):
@@ -174,6 +192,16 @@ class Query(object):
 
     def as_dict(self):
         return self.q
+
+    def add_include(self, fields):
+        if "_source" not in self.q:
+            self.q["_source"] = {}
+        if "include" not in self.q["_source"]:
+            self.q["_source"]["include"] = []
+        if not isinstance(fields, list):
+            fields = [fields]
+        self.q["_source"]["include"] = list(set(self.q["_source"]["include"] + fields))
+
 
 class QueryFilterException(Exception):
     pass

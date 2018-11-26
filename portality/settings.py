@@ -408,6 +408,26 @@ QUERY_ROUTE = {
             "query_filters" : ["editor"],
             "dao" : "portality.models.Suggestion"
         }
+    },
+    "api_query" : {
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Article"
+        },
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : None,
+            "query_filters" : ["owner", "private_source"],
+            "dao" : "portality.models.Suggestion"
+        }
     }
 }
 
@@ -425,7 +445,11 @@ QUERY_FILTERS = {
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails"
+    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
+
+    # source filters
+    "private_source": "portality.lib.query_filters.private_source",
+    "public_source": "portality.lib.query_filters.public_source",
 }
 
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"

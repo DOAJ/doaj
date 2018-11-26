@@ -110,6 +110,15 @@ class TestQuery(DoajTestCase):
         q.clear_match_all()
         assert q.as_dict() == {'query': {}}, q.as_dict()
 
+        q = Query()
+        q.add_include("last_updated")
+        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated"]}}, q.as_dict()
+
+        q = Query()
+        q.add_include(["last_updated", "id"])
+        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
+
+
     def test_03_query_svc_get_config(self):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
