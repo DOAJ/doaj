@@ -16,6 +16,7 @@
         <issue>7</issue>
         <startPage/>
         <endPage/>
+        <doi>10.1234/2</doi>
         <documentType>article</documentType>
         <title language="fre">An article with an unmatched ISSN</title>
         <authors>
