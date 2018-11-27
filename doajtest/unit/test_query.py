@@ -38,6 +38,12 @@ QUERY_ROUTE = {
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
             "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : None,
+            "query_filters" : ["owner", "private_source"],
+            "dao" : "portality.models.Suggestion"
         }
     }
 }
@@ -248,7 +254,7 @@ class TestQuery(DoajTestCase):
         qsvc = QueryService()
         cfg = qsvc._get_config_for_search('query', 'article', account=None)
         dao_klass = qsvc._get_dao_klass(cfg)
-        assert isinstance(dao_klass, models.Article) == True
+        self.assertIs(dao_klass, models.Article)
 
     def test_08_search(self):
         # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
@@ -270,3 +276,34 @@ class TestQuery(DoajTestCase):
         for hit in res['hits']['hits']:
             am = models.Article(**hit)
             assert am.publisher_record_id() is None, am.publisher_record_id()
+
+
+    def test_09_prepare_query(self):
+        raw_query = {
+            "query" : {
+                "query_string" : {
+                    "query" : '*',
+                    "default_operator": "AND"
+                }
+            },
+            "from" : 0,
+            "size" : 100
+        }
+        qsvc = QueryService()
+        with self.assertRaises(exceptions.AuthoriseException):
+            query, dao_klass = qsvc.prepare_query('api_query', 'suggestion', raw_query, None)
+
+        query, dao_klass = qsvc.prepare_query('api_query', 'journal', raw_query, None)
+        expected_result = {'query':
+                    {'filtered': {
+                        'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}},
+                        'query': {'query_string': {'query': '*', 'default_operator': 'AND'}}}
+                    },
+                    '_source': {'include': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+                    'from': 0, 'size': 100}
+        q_but_source = without_keys(query.as_dict(), ['_source'])
+        r_but_source = without_keys(expected_result, ['_source'])
+        assert q_but_source == r_but_source, q_but_source
+        assert len(query.as_dict().get('_source', {}).get('include',[])) == len(expected_result['_source']['include'])
+        assert query.as_dict().get('_source', []).get('include',[]).sort() == expected_result['_source']['include'].sort()
+        self.assertIs(dao_klass, models.Journal)
