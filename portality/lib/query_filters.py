@@ -32,7 +32,7 @@ def only_in_doaj(q):
     return q
 
 
-def owner(q, user=current_user):
+def owner(q):
     q.clear_match_all()
     q.add_must({"term" : {"admin.owner.exact" : current_user.id}})
     return q
