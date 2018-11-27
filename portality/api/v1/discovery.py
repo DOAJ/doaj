@@ -233,7 +233,7 @@ class DiscoveryApi(Api):
         dao_klass, query, page, page_size = cls._make_query('article', None, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = dao_klass.query(q=query, consistent_order=False)
+        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
@@ -251,7 +251,7 @@ class DiscoveryApi(Api):
         dao_klass, query, page, page_size = cls._make_query('journal', None, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = dao_klass.query(q=query, consistent_order=False)
+        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
@@ -269,7 +269,7 @@ class DiscoveryApi(Api):
         dao_klass, query, page, page_size = cls._make_query('suggestion', account, q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = dao_klass.query(q=query, consistent_order=False)
+        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
 
         # check to see if there was a search error
         if res.get("error") is not None:
