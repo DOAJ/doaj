@@ -31,6 +31,14 @@ QUERY_ROUTE = {
             "role" : "admin",
             "dao" : "portality.models.Journal"
         }
+    },
+    "api_query" : {
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Journal"
+        }
     }
 }
 
@@ -40,8 +48,14 @@ QUERY_FILTERS = {
     "owner" : "portality.lib.query_filters.owner",
 
     # result filters
-    "public_result_filter" : "portality.lib.query_filters.public_result_filter"
+    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
+
+    # source filter
+    "public_source": "portality.lib.query_filters.public_source"
 }
+
+def without_keys(d, keys):
+    return {x: d[x] for x in d if x not in keys}
 
 
 class TestQuery(DoajTestCase):
@@ -200,7 +214,43 @@ class TestQuery(DoajTestCase):
           }
         }
 
-    def test_06_search(self):
+    def test_06_get_query(self):
+        # q = Query()
+        raw_query = {
+            "query" : {
+                "query_string" : {
+                    "query" : '*',
+                    "default_operator": "AND"
+                }
+            },
+            "from" : 0,
+            "size" : 100
+        }
+        qsvc = QueryService()
+        cfg = qsvc._get_config_for_search('api_query', 'journal', account=None)
+
+        # assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
+        query = qsvc._get_query(cfg, raw_query)
+        expected_result = {'query':
+                    {'filtered': {
+                        'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}},
+                        'query': {'query_string': {'query': '*', 'default_operator': 'AND'}}}
+                    },
+                    '_source': {'include': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+                    'from': 0, 'size': 100}
+        q_but_source = without_keys(query.as_dict(), ['_source'])
+        r_but_source = without_keys(expected_result, ['_source'])
+        assert q_but_source == r_but_source, q_but_source
+        assert len(query.as_dict().get('_source', {}).get('include',[])) == len(expected_result['_source']['include'])
+        assert query.as_dict().get('_source', []).get('include',[]).sort() == expected_result['_source']['include'].sort()
+
+    def test_07_get_dao_klass(self):
+        qsvc = QueryService()
+        cfg = qsvc._get_config_for_search('query', 'article', account=None)
+        dao_klass = qsvc._get_dao_klass(cfg)
+        assert isinstance(dao_klass, models.Article) == True
+
+    def test_08_search(self):
         # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
         # We then expect pre-filters to run on the query, ensuring we only get the 3 in DOAJ articles.
         # We also expect the post-filters to run on the results, ensuring non-public data is deleted from the admin section.
