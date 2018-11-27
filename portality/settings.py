@@ -141,6 +141,11 @@ STORE_S3_SCOPES = {
     "anon_data" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
+    },
+    # Used by the api_export script to dump data from the api
+    "api_data" : {
+        "aws_access_key_id" : "put this in your dev/test/production.cfg",
+        "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }
 }
 
