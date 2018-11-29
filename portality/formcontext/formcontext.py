@@ -507,7 +507,7 @@ class ApplicationContext(PrivateContext):
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
                 template = "email/contact_application_accepted.txt"
                 alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL.format(email=to[0])
-                if update_request:
+                if update_request:  # NOTE: right now, the way this is called, update request is always False.  Should deprecate and remove this code.
                     template = "email/contact_update_request_accepted.txt"
                     alert = Messages.SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL.format(email=to[0])
                 jn = journal_title #.encode('utf-8', 'replace')
