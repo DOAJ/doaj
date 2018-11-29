@@ -375,16 +375,24 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             re.DOTALL)
         assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
 
+        """
+        # Current setup means that this third email is no longer sent.  Keeping this code for the
+        # moment, as a review of email sending is probably necessary
         publisher_template = 'contact_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
         publisher_subject = 'journal accepted'
+
+        print(email_log_regex)
+        print(publisher_to)
+        print (info_stream_contents)
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
+        """
 
-        assert len(re.findall(email_count_string, info_stream_contents)) == 3
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         ctx.pop()
 
