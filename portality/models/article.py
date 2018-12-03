@@ -24,8 +24,21 @@ class Article(DomainObject):
         urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
 
         # make sure that we're dealing with the normal form of the identifiers
-        urls = [normalise.normalise_url(url) for url in urls]
-        doi = normalise.normalise_doi(doi)
+        norm_urls = []
+        for url in urls:
+            try:
+                norm = normalise.normalise_url(url)
+                norm_urls.append(norm)
+            except ValueError:
+                # use the non-normal form
+                norm_urls.append(url)
+        urls = norm_urls
+
+        try:
+            doi = normalise.normalise_doi(doi)
+        except ValueError:
+            # leave the doi as it is
+            pass
 
         # in order to make sure we don't send too many terms to the ES query, break the issn list down into chunks
         terms_limit = app.config.get("ES_TERMS_LIMIT", 1024)
@@ -207,7 +220,11 @@ class Article(DomainObject):
         doi = self.bibjson().get_one_identifier(constants.IDENT_TYPE_DOI)
         if doi is None:
             return None
-        return normalise.normalise_doi(doi)
+        try:
+            return normalise.normalise_doi(doi)
+        except ValueError:
+            # can't be normalised, so we just return the doi as-is
+            return doi
 
     def get_normalised_fulltext(self):
         if self.data.get("index", {}).get("fulltext") is not None:
@@ -215,7 +232,11 @@ class Article(DomainObject):
         fulltexts = self.bibjson().get_urls(constants.LINK_TYPE_FULLTEXT)
         if len(fulltexts) == 0:
             return None
-        return normalise.normalise_url(fulltexts[0])
+        try:
+            return normalise.normalise_url(fulltexts[0])
+        except ValueError:
+            # can't be normalised, so we just return the url as-is
+            return fulltexts[0]
 
     def get_journal(self):
         """
