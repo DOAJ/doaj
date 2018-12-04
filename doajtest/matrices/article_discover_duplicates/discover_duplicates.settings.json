@@ -359,24 +359,7 @@
             }
           ]
         }, 
-        "ValueError": {
-          "conditions": [
-            {
-              "article_doi": {
-                "or": [
-                  "invalid"
-                ]
-              }
-            }, 
-            {
-              "article_fulltext": {
-                "or": [
-                  "invalid"
-                ]
-              }
-            }
-          ]
-        }
+        "ValueError": {}
       }, 
       "type": "conditional", 
       "name": "raises"

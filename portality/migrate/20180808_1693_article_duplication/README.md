@@ -1,7 +1,7 @@
 # 2018-08-08; Issue 1693 - Article Duplication
 
 This migration covers the deployment of code to bring the article objects in the datastore up to standard
-with the structure required for consistend deduplication.
+with the structure required for consistent deduplication.
 
 This migration will carry out the following actions:
 

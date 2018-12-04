@@ -59,7 +59,7 @@ class ArticleService(object):
 
         # if there were no failures in the batch, then we can do the save
         if fail == 0:
-            for i in xrange(len(articles)):
+            for i in range(len(articles)):
                 block = i == len(articles) - 1
                 # block on the final save, so that when this method returns, all articles are
                 # available in the index

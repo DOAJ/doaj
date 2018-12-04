@@ -80,8 +80,7 @@ class ArticleFixtureFactory(object):
 
         if doi is not None:
             set_doi = False
-            for i in range(len(source["bibjson"]["identifier"])):
-                ident = source["bibjson"]["identifier"][i]
+            for ident in source["bibjson"]["identifier"]:
                 if ident.get("type") == "doi":
                     ident["id"] = doi
                     set_doi = True
@@ -90,8 +89,7 @@ class ArticleFixtureFactory(object):
 
         if fulltext is not None:
             set_fulltext = False
-            for i in range(len(source["bibjson"]["link"])):
-                ident = source["bibjson"]["link"][i]
+            for ident in source["bibjson"]["link"]:
                 if ident.get("type") == "fulltext":
                     ident["url"] = fulltext
                     set_fulltext = True

@@ -224,12 +224,10 @@ def metadata():
             if not enough_authors:
                 return render_template('publisher/metadata.html', form=form, author_error=True)
             else:
-                # xwalk = article.FormXWalk()
                 xwalk = ArticleFormXWalk()
                 art = xwalk.crosswalk_form(form)
                 articleService = DOAJ.articleService()
                 articleService.create_article(art, current_user._get_current_object())
-                # art.save()
                 flash("Article created/updated", "success")
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)
