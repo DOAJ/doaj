@@ -154,16 +154,13 @@ class DiscoveryApi(Api):
         return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
-    def _make_query(cls, index_type, account, q, page, page_size, sort, search_subs, sort_subs):
+    def _make_query(cls, q, page, page_size, sort, search_subs, sort_subs):
         # sanitise and prep the inputs
         q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
 
-        # assemble the query
-        search_query = SearchQuery(index_type, account, q, fro, page_size, sortby, sortdir)
-        query, dao_klass = search_query.query()
-        # print json.dumps(query)
-
-        return dao_klass, query, page, page_size
+        search_query = SearchQuery(q, fro, page_size, sortby, sortdir)
+        raw_query = search_query.query()
+        return raw_query, page, page_size
 
 
     @staticmethod
@@ -196,8 +193,7 @@ class DiscoveryApi(Api):
         return page_count, previous_page, next_page, last_page
 
     @classmethod
-    def _make_response(cls, endpoint, res, q, page, page_size, sort,
-                       obs):
+    def _make_response(cls, endpoint, res, q, page, page_size, sort, obs):
         total = res.get("hits", {}).get("total", 0)
 
         page_count, previous_page, next_page, last_page = cls._calc_pagination(total, page_size, page)
@@ -227,64 +223,41 @@ class DiscoveryApi(Api):
         return SearchResult(result)
 
     @classmethod
-    def search_articles(cls, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
-        dao_klass, query, page, page_size = cls._make_query('article', None, q, page, page_size, sort, search_subs, sort_subs)
+    def search(cls, index_type, account, q, page, page_size, sort=None):
+        if not index_type in ['article', 'journal', 'application']:
+            raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
+
+        if index_type == 'article':
+            search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
+            endpoint = 'search_articles'
+        elif index_type == 'journal':
+            search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
+            endpoint = 'search_journals'
+        else:
+            search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
+            endpoint = 'search_applications'
+
+        raw_query, page, page_size = cls._make_query(q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
+        query_service = DOAJ.queryService()
+        res = query_service.search('api_query', index_type, raw_query, account, None)
 
         # check to see if there was a search error
         if res.get("error") is not None:
             magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
+            app.logger.error("Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
         obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_articles', res, q, page, page_size, sort, obs)
-
-    @classmethod
-    def search_journals(cls, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
-        dao_klass, query, page, page_size = cls._make_query('journal', None, q, page, page_size, sort, search_subs, sort_subs)
-
-        # execute the query against the articles
-        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
-
-        # check to see if there was a search error
-        if res.get("error") is not None:
-            magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
-            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
-
-        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_journals', res, q, page, page_size, sort, obs)
-
-    @classmethod
-    def search_applications(cls, account, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
-        dao_klass, query, page, page_size = cls._make_query('suggestion', account, q, page, page_size, sort, search_subs, sort_subs)
-
-        # execute the query against the articles
-        res = dao_klass.query(q=query.as_dict(), consistent_order=False)
-
-        # check to see if there was a search error
-        if res.get("error") is not None:
-            magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
-            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
-
-        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_applications', res, q, page, page_size, sort, obs)
+        return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
 
 class SearchQuery(object):
-    def __init__(self, index_type, account, qs, fro, psize, sortby=None, sortdir=None):
-        self.index_type = index_type
-        self.account = account
+    def __init__(self, qs, fro, psize, sortby=None, sortdir=None):
         self.qs = qs
         self.fro = fro
         self.psize = psize
@@ -302,9 +275,8 @@ class SearchQuery(object):
             "from" : self.fro,
             "size" : self.psize
         }
+
         if self.sortby is not None:
             q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
 
-        query_service = DOAJ.queryService()
-        query, dao_klass = query_service.prepare_query('api_query', self.index_type, q, self.account)
-        return query, dao_klass
+        return q

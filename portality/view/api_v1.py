@@ -81,7 +81,7 @@ def search_applications(search_query):
         raise Api400Error("Page size was not an integer")
 
     try:
-        results = DiscoveryApi.search_applications(current_user, search_query, page, psize, sort)
+        results = DiscoveryApi.search('application', current_user, search_query, page, psize, sort)
     except DiscoveryException as e:
         raise Api400Error(e.message)
 
@@ -110,7 +110,7 @@ def search_journals(search_query):
         raise Api400Error("Page size was not an integer")
 
     try:
-        results = DiscoveryApi.search_journals(search_query, page, psize, sort)
+        results = DiscoveryApi.search('journal', None, search_query, page, psize, sort)
     except DiscoveryException as e:
         raise Api400Error(e.message)
 
@@ -140,7 +140,7 @@ def search_articles(search_query):
 
     results = None
     try:
-        results = DiscoveryApi.search_articles(search_query, page, psize, sort)
+        results = DiscoveryApi.search('article', None, search_query, page, psize, sort)
     except DiscoveryException as e:
         raise Api400Error(e.message)
 

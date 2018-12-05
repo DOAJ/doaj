@@ -2,6 +2,7 @@ from portality.core import app
 from portality.bll import exceptions
 from portality.lib import plugin
 from copy import deepcopy
+import esprit
 
 class QueryService(object):
 
@@ -66,7 +67,7 @@ class QueryService(object):
 
         return query
 
-    def _post_filter_search_results(self, cfg, res):
+    def _post_filter_search_results(self, cfg, res, unpacked=False):
         filters = app.config.get("QUERY_FILTERS", {})
         result_filter_names = cfg.get("result_filters", [])
         for result_filter_name in result_filter_names:
@@ -76,7 +77,7 @@ class QueryService(object):
                 raise exceptions.ConfigurationException(msg)
 
             # apply the result filter
-            res = fn(res)
+            res = fn(res, unpacked=unpacked)
 
         return res
 
@@ -126,14 +127,31 @@ class QueryService(object):
 
         return res
 
-    def prepare_query(self, domain, index_type, raw_query, account):
+    def scroll(self, domain, index_type, raw_query, account):
         cfg = self._get_config_for_search(domain, index_type, account)
 
         dao_klass = self._get_dao_klass(cfg)
+        dao_name = cfg.get("dao")
 
         # get the query
         query = self._get_query(cfg, raw_query)
-        return query, dao_klass
+
+        # get the scroll parameters
+        page_size = cfg.get("page_size", 1000)
+        limit = cfg.get("limit", None)
+        keepalive = cfg.get("keepalive", "1m")
+
+        # Initialize esprit
+        source = {
+            "host": app.config.get("ELASTIC_SEARCH_HOST"),
+            "index": app.config.get("ELASTIC_SEARCH_DB")
+        }
+        conn = esprit.raw.Connection(source.get("host"), source.get("index"))
+
+        for result in esprit.tasks.scroll(conn, dao_name, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive):
+            res = dao_klass(**result)
+            res = self._post_filter_search_results(cfg, res, unpacked=True)
+            yield res
 
 
 class Query(object):

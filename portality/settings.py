@@ -414,19 +414,22 @@ QUERY_ROUTE = {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Article"
+            "dao" : "portality.models.Article",
+            "required_parameters" : None
         },
         "journal" : {
             "auth" : False,
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
-            "dao" : "portality.models.Journal"
+            "dao" : "portality.models.Journal",
+            "required_parameters" : None
         },
-        "suggestion" : {
+        "application" : {
             "auth" : True,
             "role" : None,
             "query_filters" : ["owner", "private_source"],
-            "dao" : "portality.models.Suggestion"
+            "dao" : "portality.models.Suggestion",
+            "required_parameters" : None
         }
     }
 }
