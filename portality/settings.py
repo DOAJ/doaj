@@ -300,7 +300,6 @@ MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['toc'] = {'toc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
