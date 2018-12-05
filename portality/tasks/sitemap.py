@@ -68,17 +68,6 @@ class SitemapBackgroundTask(BackgroundTask):
             cf.text = toc_changefreq
             counter += 1
 
-            # now create an entry for each volume in the journal
-            volumes = models.JournalVolumeToC.list_volumes(j.id)
-            for v in volumes:
-                vol_loc = base_url + "toc/" + j.toc_id + "/" + v
-                vurl = etree.SubElement(urlset, NS + "url")
-                vloc = etree.SubElement(vurl, NS + "loc")
-                vloc.text = vol_loc
-                cf = etree.SubElement(vurl, NS + "changefreq")
-                cf.text = toc_changefreq
-                counter += 1
-
         # log to the screen
         job.add_audit_message(u"{x} urls written to sitemap".format(x=counter))
 
