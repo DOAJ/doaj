@@ -16,6 +16,7 @@ from portality.core import app
 from portality.clcsv import UnicodeWriter, UnicodeReader
 import csv
 from portality.bll.doaj import DOAJ
+from portality.bll import exceptions
 
 
 class ArticleDuplicateReportBackgroundTask(BackgroundTask):
@@ -34,9 +35,6 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         if not os.path.exists(outdir):
             os.makedirs(outdir)
 
-        global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
-        global_reportpath = os.path.join(outdir, global_reportfile)
-
         # Location for our interim CSV file of articles
         tmpdir = self.get_param(params, "tmpdir", 'tmp_article_duplicate_report')
         if not os.path.exists(tmpdir):
@@ -53,11 +51,19 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             self._create_article_csv(conn, t)
 
         # Initialise our reports
+        global_reportfile = 'duplicate_articles_global_' + dates.today() + '.csv'
+        global_reportpath = os.path.join(outdir, global_reportfile)
         f = codecs.open(global_reportpath, "wb", "utf-8")
         global_report = UnicodeWriter(f)
-        
         header = ["article_id", "article_created", "article_doi", "article_fulltext", "article_owner", "article_issns", "article_in_doaj", "n_matches", "match_type", "match_id", "match_created", "match_doi", "match_fulltext", "match_owner", "match_issns", "match_in_doaj", "owners_match", "titles_match", "article_title", "match_title"]
         global_report.writerow(header)
+
+        noids_reportfile = 'noids_' + dates.today() + '.csv'
+        noids_reportpath = os.path.join(outdir, noids_reportfile)
+        g = codecs.open(noids_reportpath, "wb", "utf-8")
+        noids_report = UnicodeWriter(g)
+        header = ["article_id", "article_created", "article_owner", "article_issns", "article_in_doaj"]
+        noids_report.writerow(header)
 
         # Record the sets of duplicated articles
         global_matches = []
@@ -76,16 +82,17 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                 app.logger.debug('{0} {1}'.format(a_count, article.id))
 
                 # Get the global duplicates
-                global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                try:
+                    global_duplicates = articleService.discover_duplicates(article, owner=None, results_per_match_type=10000)
+                except exceptions.DuplicateArticleException:
+                    # this means the article did not have any ids that could be used for deduplication
+                    owner = self._lookup_owner(article)
+                    noids_report.writerow([article.id, article.created_date, owner, ','.join(article.bibjson().issns()), article.is_in_doaj()])
+                    continue
+
                 if global_duplicates:
                     # Look up an article's owner
-                    journal = article.get_journal()
-                    owner = None
-                    if journal:
-                        owner = journal.owner
-                        for issn in journal.bibjson().issns():
-                            if issn not in self.owner_cache:
-                                self.owner_cache[issn] = owner
+                    owner = self._lookup_owner(article)
 
                     # Deduplicate the DOI and fulltext duplicate lists
                     s = set([article.id] + [d.id for d in global_duplicates.get('doi', []) + global_duplicates.get('fulltext', [])])
@@ -96,6 +103,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
 
         job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found.'.format(a_count, gd_count))
         f.close()
+        g.close()
 
         # Delete the transient temporary files.
         shutil.rmtree(tmpdir)
@@ -108,6 +116,18 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
             job.add_audit_message("email alert sent")
         else:
             job.add_audit_message("no email alert sent")
+
+    @classmethod
+    def _lookup_owner(self, article):
+        # Look up an article's owner
+        journal = article.get_journal()
+        owner = None
+        if journal:
+            owner = journal.owner
+            for issn in journal.bibjson().issns():
+                if issn not in self.owner_cache:
+                    self.owner_cache[issn] = owner
+        return owner
 
     @staticmethod
     def _create_article_csv(connection, file_object):
