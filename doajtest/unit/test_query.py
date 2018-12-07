@@ -320,14 +320,7 @@ class TestQuery(DoajTestCase):
         articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
         articles[-1].save(blocking=True)
         q = {"query": {"match_all": {}}}
-        # q = {
-        #     "query" : {
-        #         "query_string" : {
-        #             "query" : "some_identifier",
-        #             "default_operator": "AND"
-        #         }
-        #     }
-        # }
         for res in qsvc.scroll('api_query', 'article', q, None):
-            assert res.publisher_record_id() is None, res.publisher_record_id()
+            am = models.Article(**res)
+            assert am.publisher_record_id() is None, am.publisher_record_id()
 

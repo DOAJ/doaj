@@ -1,6 +1,7 @@
 from portality.api.v1.common import Api
 from portality import util
 from portality.core import app
+from portality import models
 from datetime import datetime
 import esprit
 import re, json, uuid, os
@@ -231,14 +232,17 @@ class DiscoveryApi(Api):
             search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
             sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
             endpoint = 'search_articles'
+            klass = models.Article
         elif index_type == 'journal':
             search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
             sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
             endpoint = 'search_journals'
+            klass = models.Journal
         else:
             search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
             sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
             endpoint = 'search_applications'
+            klass = models.Suggestion
 
         raw_query, page, page_size = cls._make_query(q, page, page_size, sort, search_subs, sort_subs)
 
@@ -252,7 +256,7 @@ class DiscoveryApi(Api):
             app.logger.error("Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [dao_klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
         return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
 

@@ -131,7 +131,6 @@ class QueryService(object):
         cfg = self._get_config_for_search(domain, index_type, account)
 
         dao_klass = self._get_dao_klass(cfg)
-        dao_name = cfg.get("dao")
 
         # get the query
         query = self._get_query(cfg, raw_query)
@@ -148,9 +147,8 @@ class QueryService(object):
         }
         conn = esprit.raw.Connection(source.get("host"), source.get("index"))
 
-        for result in esprit.tasks.scroll(conn, dao_name, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive):
-            res = dao_klass(**result)
-            res = self._post_filter_search_results(cfg, res, unpacked=True)
+        for result in esprit.tasks.scroll(conn, dao_klass.__type__, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive):
+            res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 
 
