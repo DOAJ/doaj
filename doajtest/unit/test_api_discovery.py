@@ -341,18 +341,19 @@ class TestArticleMatch(DoajTestCase):
             with self.assertRaises(DiscoveryException):
                 res = DiscoveryApi.search("application", acc, "Test", 1, 10, "some.missing.field:asc")
 
-            # 12. A search with an account that isn't either of the ones in the dataset
-            other = models.Account()
-            other.set_id("other")
-            res = DiscoveryApi.search("application", other, "Test", 1, 10, "created_date:desc")
-            assert res.data.get("total") == 0
-
-            # 13. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
+            # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
             res = DiscoveryApi.search("application", acc, '"http\://homepage.com/1"', 1, 10)
             assert res.data.get("total") == 1
 
             res = DiscoveryApi.search("application", acc, '"http\:\/\/homepage.com\/1"', 1, 10)
             assert res.data.get("total") == 1
+
+        # 13. A search with an account that isn't either of the ones in the dataset
+        other = models.Account()
+        other.set_id("other")
+        with self._make_and_push_test_context(acc=other):
+            res = DiscoveryApi.search("application", other, "Test", 1, 10, "created_date:desc")
+            assert res.data.get("total") == 0
 
     def test_04_paging_for_link_headers(self):
         # calc_pagination takes total, page_size, requested_page
