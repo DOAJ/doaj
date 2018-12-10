@@ -3,6 +3,7 @@ from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
 import time
+from doajtest.fixtures import AccountFixtureFactory
 
 class TestArticleMatch(DoajTestCase):
 
@@ -263,7 +264,7 @@ class TestArticleMatch(DoajTestCase):
         time.sleep(1)
 
         # now run some queries
-        with self.app_test.test_request_context():
+        with self._make_and_push_test_context(acc=acc):
             # 1. a general query that should hit everything
             res = DiscoveryApi.search("application", acc, "Test", 1, 2)
             assert res.data.get("total") == 5
