@@ -234,6 +234,8 @@ def send_publisher_update_request_revisions_required(application):
     journal_title = application.bibjson().title
 
     owner = models.Account.pull(application.owner)
+    if owner is None:
+        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
 
     # This is to the publisher contact on the application
     publisher_name = owner.name
@@ -256,6 +258,8 @@ def send_publisher_reject_email(application, note=None, update_request=False):
     journal_title = application.bibjson().title
 
     owner = models.Account.pull(application.owner)
+    if owner is None:
+        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
 
     # This is to the publisher contact on the application
     publisher_name = owner.name
