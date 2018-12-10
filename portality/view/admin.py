@@ -344,8 +344,10 @@ def application_quick_reject(application_id):
     except lock.Locked as e:
         abort(409)
 
-    # determine if this was a new application or an update request, for use later
+    # determine if this was a new application or an update request
     update_request = application.current_journal is not None
+    if update_request:
+        abort(400)
 
     # reject the application
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
@@ -363,15 +365,10 @@ def application_quick_reject(application_id):
 
     if sent:
         msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
-        if update_request:
-            msg = Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL
     else:
         msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAIL
-        if update_request:
-            msg = Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL
 
-    publisher_email = application.get_latest_contact_email()
-    msg = msg.format(email=publisher_email)
+    msg = msg.format(user=application.owner)
     flash(msg, "success")
 
     # redirect the user back to the edit page
