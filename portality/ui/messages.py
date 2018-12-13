@@ -8,15 +8,16 @@ class Messages(object):
         """, 'success')
 
     SENT_ACCEPTED_APPLICATION_EMAIL = u"""Sent email to '{email}' to tell them that their journal was accepted."""
-    SENT_REJECTED_APPLICATION_EMAIL = u"""Sent email to user '{user}' to tell them that their journal application was rejected."""
+    SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER = u"""Sent email to user '{user}' ({name}, {email}) to tell them that their journal application was rejected."""
+    SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER = u"""Sent email to suggester {name} ({email}) to tell them that their journal application was rejected."""
     SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = u"""Sent email to '{email}' to tell them that their journal update was accepted."""
-    SENT_REJECTED_UPDATE_REQUEST_EMAIL = u"""Sent email to user '{user}' to tell them that their journal update was rejected."""
+    SENT_REJECTED_UPDATE_REQUEST_EMAIL = u"""Sent email to user '{user}' ({name}, {email}) to tell them that their journal update was rejected."""
     SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = u"""Sent email to user '{user}' to tell them that their journal update requires revisions.  You will need to contact them separately with details."""
     SENT_JOURNAL_CONTACT_ACCEPTED_APPLICATION_EMAIL = u"""Sent email to journal contact '{email}' to tell them their journal was accepted."""
     SENT_JOURNAL_CONTACT_ACCEPTED_UPDATE_REQUEST_EMAIL = u"""Sent email to journal contact '{email}' to tell that an update to their journal was accepted."""
 
     NOT_SENT_ACCEPTED_APPLICATION_EMAIL = u"""Did not send email to '{email}' to tell them that their journal was accepted.  Email may be disabled, or there is a problem with the email address."""
-    NOT_SENT_REJECTED_APPLICATION_EMAIL = u"""Did not send email to user '{user}' to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
+    NOT_SENT_REJECTED_APPLICATION_EMAILS = u"""Did not send email to user '{user}' or application suggester to tell them that their journal was rejected  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_ACCEPTED_UPDATE_REQUEST_EMAIL = u"""Did not send email to '{email}' to tell them that their update was accepted  Email may be disabled, or there is a problem with the email address."""
     NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL = u"""Did not send email to user '{user}' to tell them that their update was rejected. Email may be disabled, or there is a problem with the email address"""
     NOT_SENT_REJECTED_UPDATE_REQUEST_REVISIONS_REQUIRED_EMAIL = u"""Did not send email to user '{user}' to tell them that their update required revisions. Email may be disabled, or there is a problem with the email address"""
