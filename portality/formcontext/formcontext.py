@@ -718,14 +718,15 @@ class ManEdApplicationReview(ApplicationContext):
             # if this was an update request, send an email to the owner
             if is_update_request:
                 sent = False
+                send_report = []
                 try:
-                    emails.send_publisher_reject_email(self.target, update_request=is_update_request)
+                    send_report = emails.send_publisher_reject_email(self.target, update_request=is_update_request, send_to_owner=True, send_to_suggester=False)
                     sent = True
                 except app_email.EmailException as e:
                     pass
 
                 if sent:
-                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
+                    self.add_alert(Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner, email=send_report[0].get("email"), name=send_report[0].get("name")))
                 else:
                     self.add_alert(Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL.format(user=self.target.owner))
 

@@ -354,8 +354,9 @@ def application_quick_reject(application_id):
 
     # send the notification email to the user
     sent = False
+    send_report = []
     try:
-        emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request, send_to_owner=True, send_to_suggester=True)
         sent = True
     except app_email.EmailException as e:
         pass
@@ -363,13 +364,19 @@ def application_quick_reject(application_id):
     # sort out some flash messages for the user
     flash(note, "success")
 
-    if sent:
-        msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
-    else:
-        msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAIL
+    for instructions in send_report:
+        msg = ""
+        flash_type = "success"
+        if sent:
+            if instructions["type"] == "owner":
+                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner, email=instructions["email"], name=instructions["name"])
+            elif instructions["type"]  == "suggester":
+                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER.format(email=instructions["email"], name=instructions["name"])
+        else:
+            msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAILS.format(user=application.owner)
+            flash_type = "error"
 
-    msg = msg.format(user=application.owner)
-    flash(msg, "success")
+        flash(msg, flash_type)
 
     # redirect the user back to the edit page
     return redirect(url_for('.suggestion_page', suggestion_id=application_id))
