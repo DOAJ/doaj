@@ -69,6 +69,12 @@
 
 <body>
 
+{% if not request.cookies.get("doaj-consent") %}
+    AGREE TO OUR TERMS!
+
+    <a href="{{ url_for('doaj.cookie_consent') }}">OK</a>
+{% endif %}
+
 {% include 'header.html' %}
 
 <div class="container">

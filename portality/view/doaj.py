@@ -1,4 +1,4 @@
-from flask import Blueprint, request, flash
+from flask import Blueprint, request, flash, make_response
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib
@@ -7,7 +7,7 @@ from portality import dao
 from portality import models
 from portality import blog
 from portality.core import app
-from portality.decorators import ssl_required, write_required
+from portality.decorators import ssl_required, write_required, cookie_consent
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
@@ -36,6 +36,12 @@ blueprint = Blueprint('doaj', __name__)
 def home():
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
+
+@blueprint.route("/cookie_consent")
+def cookie_consent():
+    resp = make_response()
+    resp.set_cookie("doaj-consent", "Delete this cookie to revoke your consent")
+    return resp
 
 
 @blueprint.route("/news")
