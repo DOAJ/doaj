@@ -99,3 +99,23 @@ def load_from_matrix(filename, test_ids):
                 row[0] = "row_id_" + row[0]
                 cases.append(tuple(row))
         return cases
+
+def deep_sort(obj):
+    """
+    Recursively sort list or dict nested lists
+    """
+    if isinstance(obj, dict):
+        _sorted = {}
+        for key in sorted(obj):
+            _sorted[key] = deep_sort(obj[key])
+
+    elif isinstance(obj, list):
+        new_list = []
+        for val in obj:
+            new_list.append(deep_sort(val))
+        _sorted = sorted(new_list)
+
+    else:
+        _sorted = obj
+
+    return _sorted
