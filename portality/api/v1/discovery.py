@@ -113,6 +113,10 @@ class DiscoveryApi(Api):
         if not allowed(q):
             raise DiscoveryException("Query contains disallowed Lucene features")
 
+        # FIXME: replace this with Anusha's proper solution as soon as possible
+        if page > 100:
+            raise DiscoveryException("You cannot request more than 100 pages of search results at this time. A full data-dump of the DOAJ data is due soon.  If you require access to a larger dataset in the mean time, please either use the OAI-PMH endpoint or contact us via https://doaj.org/contact")
+
         q = query_substitute(q, search_subs)
         q = escape(q)
         # print q
