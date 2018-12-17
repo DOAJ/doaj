@@ -59,11 +59,30 @@ def editor(q):
     q.add_must({"terms" : {"admin.editor_group.exact" : gnames}})
     return q
 
+def private_source(q):
+    q.add_include(["admin.application_status", "suggestion", "admin.ticked",
+        "admin.seal", "last_updated", "created_date", "id", "bibjson"])
+    return q
+
+def public_source(q):
+    q.add_include(["admin.ticked", "admin.seal", "last_updated",
+        "created_date", "id", "bibjson"])
+    return q
+
 
 # results filters
 #################
 
-def public_result_filter(results):
+def public_result_filter(results, unpacked=False):
+    # Dealing with single unpacked result
+    if unpacked:
+        if "admin" in results:
+            for k in results["admin"].keys():
+                if k not in ["ticked", "seal"]:
+                    del results["admin"][k]
+        return results
+
+    # Dealing with a list of es results
     if "hits" not in results:
         return results
     if "hits" not in results["hits"]:
@@ -79,7 +98,17 @@ def public_result_filter(results):
     return results
 
 
-def prune_author_emails(results):
+def prune_author_emails(results, unpacked=False):
+    # Dealing with single unpacked ES result
+    if unpacked:
+        if "bibjson" in results:
+            if "author" in results["bibjson"]:
+                for a in results["bibjson"]["author"]:
+                    if "email" in a:
+                        del a["email"]
+        return results
+
+    # Dealing with a list of ES results
     if "hits" not in results:
         return results
     if "hits" not in results["hits"]:
@@ -96,7 +125,16 @@ def prune_author_emails(results):
     return results
 
 
-def publisher_result_filter(results):
+def publisher_result_filter(results, unpacked=False):
+    # Dealing with single unpacked ES result
+    if unpacked:
+        if "admin" in results:
+            for k in results["admin"].keys():
+                if k not in ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]:
+                    del results["admin"][k]
+        return results
+
+    # Dealing with a list of ES results
     if "hits" not in results:
         return results
     if "hits" not in results["hits"]:
