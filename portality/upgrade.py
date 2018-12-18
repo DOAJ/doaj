@@ -1,5 +1,6 @@
-import json, os, esprit
+import json, os, esprit, dictdiffer
 from datetime import datetime, timedelta
+from copy import deepcopy
 from collections import OrderedDict
 from portality.core import app
 from portality import models
@@ -55,10 +56,11 @@ def do_upgrade(definition, verbose):
         first_page = esprit.raw.search(sconn, tdef.get("type"))
         max = first_page.json().get("hits", {}).get("total", 0)
         type_start = datetime.now()
-        for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000)):
+        for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
             # learn what kind of model we've got
             model_class = MODELS.get(tdef.get("type"))
 
+            original = deepcopy(result)
             if tdef.get("init_with_model", True):
                 # instantiate an object with the data
                 try:
@@ -92,6 +94,8 @@ def do_upgrade(definition, verbose):
                 _id = result.id
 
             # add the data to the batch
+            data = _diff(original, data)
+
             batch.append(data)
             if verbose:
                 print "added", tdef.get("type"), _id, "to batch update"
@@ -118,6 +122,9 @@ def do_upgrade(definition, verbose):
             print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
             esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
 
+
+def _diff(original, current):
+    diff = dictdiffer.DictDiffer(current, original)
 
 if __name__ == "__main__":
     import argparse
