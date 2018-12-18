@@ -1,5 +1,6 @@
+import json
 from functools import wraps
-from flask import request, abort, redirect, flash, url_for, render_template
+from flask import request, abort, redirect, flash, url_for, render_template, make_response
 from flask_login import login_user, current_user
 
 from portality.api.v1.common import Api401Error
@@ -78,7 +79,7 @@ def restrict_to_role(role):
         return redirect(url_for('doaj.home'))
 
 
-def write_required(script=False):
+def write_required(script=False, api=False):
     def decorator(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
@@ -87,6 +88,10 @@ def write_required(script=False):
                 # Should be possible to detect if this is run in a web context or not.
                 if script:
                     raise RuntimeError('This task cannot run since the system is in read-only mode.')
+                elif api:
+                    resp = make_response(json.dumps({"message" : "We are currently carrying out essential maintenance, and this route is temporarily unavailable"}), 503)
+                    resp.mimetype = "application/json"
+                    return resp
                 else:
                     return render_template("doaj/readonly.html")
 

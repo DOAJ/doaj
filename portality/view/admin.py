@@ -213,6 +213,7 @@ def journal_deactivate(journal_id):
 @blueprint.route("/journals/bulk/withdraw", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def journals_bulk_withdraw():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
@@ -224,6 +225,7 @@ def journals_bulk_withdraw():
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def journals_bulk_reinstate():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
@@ -552,6 +554,7 @@ def get_query_from_request(payload):
 @blueprint.route("/<doaj_type>/bulk/assign_editor_group", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_assign_editor_group(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
@@ -570,6 +573,7 @@ def bulk_assign_editor_group(doaj_type):
 @blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_add_note(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
@@ -587,6 +591,7 @@ def bulk_add_note(doaj_type):
 @blueprint.route("/journals/bulk/edit_metadata", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_edit_journal_metadata():
     task = get_bulk_edit_background_task_manager("journals")
 
@@ -618,6 +623,7 @@ def bulk_edit_journal_metadata():
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def applications_bulk_change_status():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
@@ -633,6 +639,7 @@ def applications_bulk_change_status():
 
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
+@write_required()
 def bulk_journals_delete():
     if not current_user.has_role("ultra_bulk_delete"):
         abort(403)
@@ -648,6 +655,7 @@ def bulk_journals_delete():
 
 
 @blueprint.route("/articles/bulk/delete", methods=['POST'])
+@write_required()
 def bulk_articles_delete():
     if not current_user.has_role("ultra_bulk_delete"):
         abort(403)
