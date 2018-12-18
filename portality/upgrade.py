@@ -95,6 +95,9 @@ def do_upgrade(definition, verbose):
 
             # add the data to the batch
             data = _diff(original, data)
+            if "id" not in data:
+                data["id"] = _id
+            data = {"doc" : data}
 
             batch.append(data)
             if verbose:
@@ -104,7 +107,7 @@ def do_upgrade(definition, verbose):
             if len(batch) >= batch_size:
                 total += len(batch)
                 print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-                esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
+                esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
                 batch = []
                 # do some timing predictions
                 batch_tick = datetime.now()
@@ -120,11 +123,32 @@ def do_upgrade(definition, verbose):
         if len(batch) > 0:
             total += len(batch)
             print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-            esprit.raw.bulk(tconn, batch, type_=tdef.get("type"))
+            esprit.raw.bulk(tconn, batch, type_=tdef.get("type"), bulk_type="update")
 
 
 def _diff(original, current):
-    diff = dictdiffer.DictDiffer(current, original)
+    thediff = {}
+    context = thediff
+
+    def recurse(context, c, o):
+        dd = dictdiffer.DictDiffer(c, o)
+        changed = dd.changed()
+        added = dd.added()
+
+        for a in added:
+            context[a] = c[a]
+
+        for change in changed:
+            sub = c[change]
+            if isinstance(c[change], dict):
+                context[change] = {}
+                recurse(context[change], c[change], o[change])
+            else:
+                context[change] = sub
+
+    recurse(context, current, original)
+    return thediff
+
 
 if __name__ == "__main__":
     import argparse
