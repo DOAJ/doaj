@@ -1,0 +1,163 @@
+# Metrics for metricsbeat
+server {
+    listen [::]:80;
+    listen 80;
+    server_name 127.0.0.1;
+    location /server-status {
+        stub_status on;
+        access_log off;
+        allow ::1;
+        allow 127.0.0.1;
+        deny all;
+    }
+}
+
+limit_req_zone $binary_remote_addr zone=general:100m rate=2r/s;
+limit_req_zone $binary_remote_addr zone=api:100m rate=2r/s;
+limit_req_status 429;
+
+map $http_user_agent $block_ua {
+    default             0;
+    ~*bot               1;
+    ~*spider            1;
+    ~*Go-http-client    1;
+    ~*python-requests   1;
+    ~*mechanize         1;
+    ~*wget              1;
+    ~*curl              1;
+}
+
+upstream doaj_apps {
+    server 10.131.100.180:5050; # TODO open the port on the DO firewall group
+}
+upstream doaj_bg_apps {
+    server 10.131.100.180:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
+}
+upstream doaj_index {
+    server 10.131.99.251;
+}
+
+# redirect to non-www version # TODO this may not be needed with cloudflare handling it
+server {
+    listen          80;
+    listen          443;
+    server_name     www.doaj.org; # SSL handled by cloudflare
+
+    return 301 https://doaj.org$request_uri;
+}
+
+# redirect to SSL version but serve some crucial xml schemas via plain http as well
+server {
+    listen          80;
+    server_name     doaj.org doajes.cottagelabs.com ix0.org;
+    
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    location =/static/doaj/doajArticle(.*) { # this is for doajArticles.xsd, but is often accessed missing the "s", so use wildcard
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+    }
+    location =/robots.txt {
+        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
+    }
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen          443;
+    server_name     doaj.org ix0.org; # SSL handled by cloudflare
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    location /api {
+        if ($http_user_agent ~* (bot|spider) ) {
+            return 403;
+        }
+        limit_req zone=api burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /search {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /query {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location ~* ^/publisher/uploadfile { # uploadFile is defined in the app as well for some reason, so use a query match here
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location / {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location =/robots.txt {
+        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
+    }
+    location /static/ {
+        alias /home/cloo/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+        add_header 'Access-Control-Allow-Origin' '*'; # why are these cors settings needed?
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+    }
+}
+
+
+server {
+    listen          443;
+    server_name     doajes.cottagelabs.com;
+
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/htpasswd;
+
+    location / {
+        proxy_pass http://doaj_index;
+    }
+}
+
+

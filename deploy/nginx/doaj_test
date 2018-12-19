@@ -1,0 +1,47 @@
+# redirect to SSL version but serve some crucial xml schemas via plain http as well
+server {
+    listen          80;
+    server_name     testdoaj.cottagelabs.com testdoajes.cottagelabs.com;
+    return 301 https://$host$request_uri;
+}
+server {
+    listen          443 ssl;
+    server_name     testdoaj.cottagelabs.com;
+
+    ssl_certificate /etc/letsencrypt/live/testdoaj.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/testdoaj.cottagelabs.com/privkey.pem;
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    location / {
+        proxy_pass http://localhost:5050/;
+    }
+    location =/robots.txt {
+        alias /home/cloo/doaj/src/doaj/deploy/robots-test.txt;
+    }
+    location /static/ {
+        alias /home/cloo/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+    }
+}
+server {
+    listen          443 ssl;
+    server_name     testdoajes.cottagelabs.com;
+
+    auth_basic "Restricted";
+    auth_basic_user_file /etc/nginx/test_doaj_es_htpasswd;
+
+    ssl_certificate /etc/letsencrypt/live/testdoajes.cottagelabs.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/testdoajes.cottagelabs.com/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:9200;
+    }
+}
+
+
