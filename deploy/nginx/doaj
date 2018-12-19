@@ -65,17 +65,86 @@ server {
 
 server {
     listen          443 ssl;
-    server_name     ix0.org; # change to doaj.org SSL handled by cloudflare
+    server_name     doaj.org ix0.org; # change to doaj.org SSL handled by cloudflare
 
     ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ix0.org/privkey.pem;
 
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
 
-    root /home/cloo/test;
-    location / {
+
+    location /api {
+        if ($http_user_agent ~* (bot|spider) ) {
+            return 403;
+        }
+        limit_req zone=api burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
     }
+    location /search {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /query {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location ~* ^/publisher/uploadfile { # uploadFile is defined in the app as well for some reason, so use a query match here
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location / {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location =/robots.txt {
+        alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
+    }
+    location /static/ {
+        alias /home/cloo/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+        add_header 'Access-Control-Allow-Origin' '*'; # why are these cors settings needed?
+        add_header 'Access-Control-Allow-Credentials' 'true';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+    }
+
 }
 
 
