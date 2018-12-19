@@ -32,7 +32,7 @@ map $http_user_agent $block_ua {
 }
 
 upstream doaj_apps {
-    server 10.131.100.180:5050; # TODO open the port on the DO firewall group
+    server 127.0.0.1:5050; # TODO open the port on the DO firewall group
 }
 upstream doaj_bg_apps {
     server 10.131.100.180:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
@@ -131,15 +131,14 @@ server {
         proxy_buffering off;
     }
     location / {
-        root /home/cloo/test/;
-        #limit_req zone=general burst=5 nodelay;
-        #proxy_pass http://doaj_apps;
-        #proxy_redirect off;
-        #proxy_set_header Host $host;
-        #proxy_set_header X-Real-IP $remote_addr;
-        #proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        #proxy_set_header X-Forwarded-Proto $scheme;
-        #proxy_buffering off;
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
     }
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
