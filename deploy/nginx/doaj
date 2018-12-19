@@ -32,7 +32,7 @@ map $http_user_agent $block_ua {
 }
 
 upstream doaj_apps {
-    server 127.0.0.1:5050; # TODO open the port on the DO firewall group
+    server 10.131.100.180:5050; # TODO open the port on the DO firewall group
 }
 upstream doaj_bg_apps {
     server 10.131.100.180:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
