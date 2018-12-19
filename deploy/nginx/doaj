@@ -41,19 +41,10 @@ upstream doaj_index {
     server 10.131.99.251;
 }
 
-# redirect to non-www version # TODO this may not be needed with cloudflare handling it
-server {
-    listen          80;
-    listen          443;
-    server_name     www.doaj.org; # SSL handled by cloudflare
-
-    return 301 https://doaj.org$request_uri;
-}
-
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
 server {
     listen          80;
-    server_name     doaj.org doajes.cottagelabs.com ix0.org;
+    server_name     .doaj.org doajes.cottagelabs.com ix0.org;
     
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
