@@ -76,6 +76,9 @@ server {
     listen          443;
     server_name     doaj.org ix0.org; # SSL handled by cloudflare
 
+    ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/ix0.org/privkey.pem;
+
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
 
