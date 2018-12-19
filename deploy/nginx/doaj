@@ -73,7 +73,7 @@ server {
 }
 
 server {
-    listen          443;
+    listen          443 ssl;
     server_name     ix0.org; # change to doaj.org SSL handled by cloudflare
 
     ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
