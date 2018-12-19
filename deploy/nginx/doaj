@@ -78,8 +78,8 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ix0.org/privkey.pem;
-    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
-    ssl_stapling on;
+    #ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
+    #ssl_stapling on;
 
     access_log /var/log/nginx/doaj.access.log;
     error_log /var/log/nginx/doaj.error.log;
