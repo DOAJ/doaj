@@ -74,12 +74,12 @@ server {
 
 server {
     listen          443;
-    server_name     doaj.org ix0.org; # SSL handled by cloudflare
+    server_name     ix0.org; # change to doaj.org SSL handled by cloudflare
 
     ssl_certificate /etc/letsencrypt/live/ix0.org/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/ix0.org/privkey.pem;
     ssl on;
-    ssl_ciphers 'HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES';
+    ssl_ciphers "HIGH:!aNULL:!MD5 or HIGH:!aNULL:!MD5:!3DES";
     ssl_stapling on;
 
     access_log /var/log/nginx/doaj.access.log;
