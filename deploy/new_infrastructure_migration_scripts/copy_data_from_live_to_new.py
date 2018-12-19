@@ -5,19 +5,12 @@ import json, requests
 
 save_to_file = True
 index_name = 'doaj'
-types = []
-old_index = ''
+types = ['account','article','suggestion','upload','cache','lcc','editor_group','news','lock','provenance','background_job']
+old_index = 'http://10.131.168.182:9200'
 new_index = 'http://localhost:9200'
 scroll_minutes = '5m'
 size = 5000
 bulk_size = 50000 # this is rough, as the scan may not get exact sizes
-
-# need to query across absolutely everything in the live index
-# probably needs to be a scan scroll
-
-# then upload them in batches to the new index
-
-# worth copying them to disk as we get them?
 
 processed = {}
 
@@ -36,7 +29,7 @@ for tp in types:
                 out.close()
             bn = ''
             for record in records:
-                bn += json.dumps({'index':{'_index':index_name, '_type': tp, '_id': record['_id']}}) + '\n'
+                bn += json.dumps({'index':{'_index':index_name, '_type': tp, '_id': record['id']}}) + '\n'
                 bn += json.dumps(record) + '\n'
             s = requests.post(new_index + '/_bulk', data=bn)
             print tp
