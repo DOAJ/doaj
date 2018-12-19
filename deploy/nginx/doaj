@@ -131,7 +131,7 @@ server {
         proxy_buffering off;
     }
     location / {
-        root /home/cloo/;
+        root /home/cloo/test/;
         #limit_req zone=general burst=5 nodelay;
         #proxy_pass http://doaj_apps;
         #proxy_redirect off;
