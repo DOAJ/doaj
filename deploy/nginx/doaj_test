@@ -34,7 +34,7 @@ server {
     server_name     testdoajes.cottagelabs.com;
 
     auth_basic "Restricted";
-    auth_basic_user_file /etc/nginx/test_doaj_es_htpasswd;
+    auth_basic_user_file /etc/nginx/htpasswd;
 
     ssl_certificate /etc/letsencrypt/live/testdoajes.cottagelabs.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/testdoajes.cottagelabs.com/privkey.pem;
