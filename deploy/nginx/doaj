@@ -38,7 +38,7 @@ upstream doaj_bg_apps {
     server 10.131.100.180:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
 }
 upstream doaj_index {
-    server 10.131.99.251;
+    server 10.131.99.251:9200;
 }
 
 # redirect to SSL version but serve some crucial xml schemas via plain http as well
