@@ -17,6 +17,7 @@ pip install -r requirements.txt
 # Get the app configuration secrets from AWS  - NOTE: mac base64 needs -D
 aws --profile doaj-app secretsmanager get-secret-value --secret-id doaj/app-credentials | cut -f4 | base64 -d > app.cfg
 
-# Restart the app and web server with SIGHUP, the hangup signal to reload the configs.
-kill -HUP $(sudo supervisorctl pid doaj) || sudo supervisorctl start doaj
+# Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
+sudo supervisorctl reread
+sudo supervisorctl restart all || sudo supervisorctl start all
 sudo nginx -t && sudo nginx -s reload
