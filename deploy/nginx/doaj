@@ -112,7 +112,11 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-    location /publisher/uploadFile {
+
+    # for now we are going to send all login functions to the bg machine
+    # technically ONLY the routes that require file upload need to go to the bg machine
+    # but we think it is handy to separate them out, and later we could send them to other machines
+    location /account {
         limit_req zone=general burst=5 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -122,7 +126,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
-    location /publisher/uploadfile {
+    location /admin { # there are admin bulk actions that MUST go to bg machine
         limit_req zone=general burst=5 nodelay;
         proxy_pass http://doaj_bg_apps;
         proxy_redirect off;
@@ -132,6 +136,47 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+    location /editor {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /journal/readonly {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /publisher { # only /publisher/uploadfile MUST go to bg, and /publisher/uploadFile
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    location /service {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://doaj_bg_apps;
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_buffering off;
+    }
+    
     location / {
         limit_req zone=general burst=5 nodelay;
         proxy_pass http://doaj_apps;
@@ -142,6 +187,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_buffering off;
     }
+    
     location =/robots.txt {
         alias /home/cloo/doaj/src/doaj/deploy/robots-production.txt;
     }
