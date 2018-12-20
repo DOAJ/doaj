@@ -35,7 +35,7 @@ upstream doaj_apps {
     server 10.131.100.180:5050; # TODO open the port on the DO firewall group
 }
 upstream doaj_bg_apps {
-    server 10.131.100.180:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
+    server 10.131.56.133:5050; # TODO change this to IP address of bg app machine - and open the port on the DO firewall group
 }
 upstream doaj_index {
     server 10.131.99.251:9200;
