@@ -749,6 +749,10 @@ DISCOVERY_APPLICATION_SORT_SUBS = {
     "issn" :  "index.issn.exact"
 }
 
+# API data dump settings
+DISCOVERY_BULK_PAGE_SIZE = 1000
+DISCOVERY_RECORDS_PER_FILE = 100000
+
 # =========================================
 # scheduled reports configuration
 REPORTS_BASE_DIR = "/home/cloo/reports/"

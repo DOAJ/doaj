@@ -127,7 +127,7 @@ class QueryService(object):
 
         return res
 
-    def scroll(self, domain, index_type, raw_query, account):
+    def scroll(self, domain, index_type, raw_query, account, page_size):
         cfg = self._get_config_for_search(domain, index_type, account)
 
         dao_klass = self._get_dao_klass(cfg)
@@ -136,7 +136,8 @@ class QueryService(object):
         query = self._get_query(cfg, raw_query)
 
         # get the scroll parameters
-        page_size = cfg.get("page_size", 1000)
+        if page_size is None:
+            page_size = cfg.get("page_size", 1000)
         limit = cfg.get("limit", None)
         keepalive = cfg.get("keepalive", "1m")
 

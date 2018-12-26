@@ -8,17 +8,23 @@ from portality.api.v1 import Api400Error
 from urlparse import parse_qs, urlparse
 from datetime import datetime
 
-def _save_file(typ, today, results):
+def _save_file(typ, day_at_start, results, record_count):
     # Create a dir for today and save all files in there
+    file_count = 1
+    records_per_file = app.config.get('DISCOVERY_RECORDS_PER_FILE', 100000)
+    if (record_count % records_per_file) == 0:
+        file_count = (record_count / records_per_file) + 1
+
     data = json.dumps(results, cls=ModelJsonEncoder)
-    filename = os.path.join(today, "{typ}_{page}.json".format(typ=typ, page=page))
+
+    filename = os.path.join(day_at_start, "{typ}_{file_count}.json".format(typ=typ, file_count=file_count))
     output_file = tmpStore.path(container, filename, create_container=True, must_exist=False)
-    dir = os.path.dirname(output_file)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+    dn = os.path.dirname(output_file)
+    if not os.path.exists(dn):
+        os.makedirs(dn)
     print("Saving file {filename}".format(filename=filename))
-    with codecs.open(output_file, "wb", "utf-8") as out_file:
-        out_file.write(data)
+    with codecs.open(output_file, "ab", "utf-8") as out_file:
+        out_file.write(data + '\n')
 
 
 def _get_last_page(results):
@@ -30,6 +36,7 @@ def _get_last_page(results):
         return int(last_page[0])
     return None
 
+
 def _get_dir_size(path):
     total_size = 0
     for dirpath, dirnames, filenames in os.walk(path):
@@ -39,12 +46,17 @@ def _get_dir_size(path):
     return total_size
 
 
-def _prune_container(today):
-    # TODO: Check dir has today's file before deleting others
+def _prune_container(day_at_start):
     # Delete all files and dirs in the container that does not contain today's date
-    for dir in mainStore.list(container):
-        if today not in dir:
-            mainStore.delete(target_name=dir)
+    file_for_today = day_at_start + ".gz"
+    container_files = mainStore.list(container)
+    # only delete if today's file exists
+    if file_for_today not in container_files:
+        print("Files not pruned. File {0} is missing".format(file_for_today))
+        return
+    for container_file in container_files:
+        if container_file != file_for_today:
+            mainStore.delete(target_name=fn)
 
 
 def _copy_on_complete(path):
@@ -54,9 +66,8 @@ def _copy_on_complete(path):
     zipped_name = name + ".gz"
     zip_dir = os.path.dirname(path)
     zipped_path = os.path.join(zip_dir, zipped_name)
-    tar = tarfile.open(zipped_path, "w:gz")
-    tar.add(path)
-    tar.close()
+    with tarfile.open(zipped_path, "w:gz") as tar_fo:
+        tar_fo.add(path)
     zipped_size = os.path.getsize(zipped_path)
     print("Storing from temporary file {0} ({1} bytes)".format(zipped_name, zipped_size))
     mainStore.store(container, zipped_name, source_path=zipped_path)
@@ -67,7 +78,7 @@ def _copy_on_complete(path):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("-t", "--type", choices=['articles','journals', 'all'], help="type of data to export. ")
+    parser.add_argument("-t", "--type", choices=['article','journal', 'all'], help="type of data to export. ")
     parser.add_argument("-c", "--clean", action="store_false", help="Clean any pre-existing output before continuing")
     parser.add_argument("-p", "--prune", action="store_true", help="Delete previous backups if anyafter running current backup")
     args = parser.parse_args()
@@ -84,44 +95,20 @@ if __name__ == '__main__':
 
     # Do the search and save it
     query = '*'
-    sort = None
     page_size = app.config.get("DISCOVERY_BULK_PAGE_SIZE", 1000)
 
-    # Search articles
-    if args.type == 'all' or args.type == 'articles':
-        print("\n" + dates.now() + ": Starting download of articles")
-        page = 1
-        last_page = 1
-        while page <= last_page:
-            print("articles page {p} of {l}".format(p=page, l=last_page))
-            # ctx = app.test_request_context()
-            # ctx.push()
-            try:
-                results = DiscoveryApi.search_articles(query, page, page_size, sort, bulk=True)
-            except DiscoveryException as e:
-                raise Api400Error(e.message)
-            _save_file('articles', day_at_start, results)
-            new_last_page = _get_last_page(results)
-            if new_last_page is not None:
-                last_page = new_last_page
-            page = page + 1
+    if args.type == 'all':
+        types = ['article', 'journal']
+    else:
+        types = [args.type]
 
-    # Search journals
-    if args.type == 'all' or args.type == 'journals':
-        print("\n" + dates.now() + ": Starting download of journals")
-        page = 1
-        last_page = 1
-        while page <= last_page:
-            print("journals page {p} of {l}".format(p=page, l=last_page))
-            try:
-                results = DiscoveryApi.search_journals(query, page, page_size, sort, bulk=True)
-            except DiscoveryException as e:
-                raise Api400Error(e.message)
-            _save_file('journals', day_at_start, results)
-            new_last_page = _get_last_page(results)
-            if new_last_page is not None:
-                last_page = new_last_page
-            page += 1
+    # Scroll for article and/or journal
+    for typ in types:
+        print("\n" + dates.now() + ": Starting download of " + typ)
+        count = 0
+        for result in DiscoveryApi.scroll(typ, None, query, page_size)
+            count += 1
+            _save_file(typ, day_at_start, result, count)
 
     print(dates.now() + ": done\n")
 
