@@ -7,6 +7,7 @@ import esprit
 import re, json, uuid, os
 from copy import deepcopy
 from flask import url_for
+from portality.ui.messages import Messages
 from portality.bll.doaj import DOAJ
 
 class DiscoveryException(Exception):
@@ -114,10 +115,6 @@ class DiscoveryApi(Api):
         if not allowed(q):
             raise DiscoveryException("Query contains disallowed Lucene features")
 
-        # FIXME: replace this with Anusha's proper solution as soon as possible
-        if page > 100:
-            raise DiscoveryException("You cannot request more than 100 pages of search results at this time. A full data-dump of the DOAJ data is due soon.  If you require access to a larger dataset in the mean time, please either use the OAI-PMH endpoint or contact us via https://doaj.org/contact")
-
         q = query_substitute(q, search_subs)
         q = escape(q)
         # print q
@@ -137,6 +134,12 @@ class DiscoveryApi(Api):
 
         # calculate the position of the from cursor in the document set
         fro = (page - 1) * page_size
+        # If fro is greater than the max allowed, throw error
+        # using bulk to provide an override when needed
+        max_records = app.config.get("DISCOVERY_MAX_RECORDS_SIZE", 1000)
+        if fro >= max_records:
+            message = Messages.PREVENT_DEEP_PAGING_IN_API.format(max_records=max_records)
+            raise DiscoveryException(message)
 
         # interpret the sort field into the form required by the query
         sortby = None

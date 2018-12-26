@@ -41,6 +41,8 @@ class Messages(object):
     EXCEPTION_ARTICLE_BATCH_FAIL = u"One or more articles failed to ingest; entire batch ingest halted"
     EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
 
+    PREVENT_DEEP_PAGING_IN_API = u"""Looks like you want to view results beyond {max_records}. If you would like to see more results, you can download all of our results from ADD_LINK_HERE"""
+
     @classmethod
     def flash(cls, tup):
         if isinstance(tup, tuple):
