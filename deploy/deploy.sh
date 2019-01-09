@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Apt dependencies for the DOAJ app
+# apt dependencies for the DOAJ app
 sudo apt-get update
 sudo apt-get install -q -y libxml2-dev libxslt-dev python-dev lib32z1-dev awscli
 
@@ -14,7 +14,7 @@ cd /home/cloo/doaj/src/doaj
 git submodule update --init --recursive
 pip install -r requirements.txt
 
-# Get the app configuration secrets from AWS  - NOTE: mac base64 needs -D
+# Get the app configuration secrets from AWS  - NOTE: on a mac, base64 needs -D rather than -d
 aws --profile doaj-app secretsmanager get-secret-value --secret-id doaj/app-credentials | cut -f4 | base64 -d > app.cfg
 
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
