@@ -265,6 +265,11 @@ class TestManEdAppReview(DoajTestCase):
         acc.add_role("admin")
         ctx = self._make_and_push_test_context(acc=acc)
 
+        owner = models.Account()
+        owner.set_id("Owner")
+        owner.add_role("publisher")
+        owner.save(blocking=True)
+
         # construct a context from a form submission
         source = deepcopy(APPLICATION_FORM)
         source["application_status"] = constants.APPLICATION_STATUS_REJECTED

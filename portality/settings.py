@@ -103,7 +103,7 @@ DEBUG_PYCHARM_SERVER = 'localhost'
 DEBUG_PYCHARM_PORT = 6000
 
 # can anonymous users get raw JSON records via the query endpoint?
-PUBLIC_ACCESSIBLE_JSON = True 
+PUBLIC_ACCESSIBLE_JSON = True
 
 # =======================
 # email settings
@@ -300,7 +300,6 @@ MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['toc'] = {'toc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
@@ -408,6 +407,29 @@ QUERY_ROUTE = {
             "query_filters" : ["editor"],
             "dao" : "portality.models.Suggestion"
         }
+    },
+    "api_query" : {
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Article",
+            "required_parameters" : None
+        },
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Journal",
+            "required_parameters" : None
+        },
+        "application" : {
+            "auth" : True,
+            "role" : None,
+            "query_filters" : ["owner", "private_source"],
+            "dao" : "portality.models.Suggestion",
+            "required_parameters" : None
+        }
     }
 }
 
@@ -425,7 +447,11 @@ QUERY_FILTERS = {
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails"
+    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
+
+    # source filters
+    "private_source": "portality.lib.query_filters.private_source",
+    "public_source": "portality.lib.query_filters.public_source",
 }
 
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
@@ -455,7 +481,7 @@ CONTENT_FOLDER = "content"
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
 
-# when a page is deleted from the index should it also be removed from 
+# when a page is deleted from the index should it also be removed from
 # filesystem and etherpad (if they are available in the first place)
 DELETE_REMOVES_FS = False # True / False
 DELETE_REMOVES_EP = False # MUST BE THE ETHERPAD API-KEY OR DELETES WILL FAIL

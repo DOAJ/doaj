@@ -1,8 +1,8 @@
 import multiprocessing
 
-bind = "0.0.0.0:5050"
-workers = multiprocessing.cpu_count() * 3 + 1
-proc_name = 'doaj (test)'
+bind = "127.0.0.1:5050"
+workers = multiprocessing.cpu_count() * 8 + 1
+proc_name = 'doaj'
 max_requests = 1000
 
 # The maximum jitter to add to the max_requests setting.

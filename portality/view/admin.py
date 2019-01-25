@@ -213,6 +213,7 @@ def journal_deactivate(journal_id):
 @blueprint.route("/journals/bulk/withdraw", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def journals_bulk_withdraw():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
@@ -224,6 +225,7 @@ def journals_bulk_withdraw():
 @blueprint.route("/journals/bulk/reinstate", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def journals_bulk_reinstate():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query'], error_to_raise=BulkAdminEndpointException)
@@ -344,16 +346,19 @@ def application_quick_reject(application_id):
     except lock.Locked as e:
         abort(409)
 
-    # determine if this was a new application or an update request, for use later
+    # determine if this was a new application or an update request
     update_request = application.current_journal is not None
+    if update_request:
+        abort(400)
 
     # reject the application
     applicationService.reject_application(application, current_user._get_current_object(), note=note)
 
     # send the notification email to the user
     sent = False
+    send_report = []
     try:
-        emails.send_publisher_reject_email(application, note=reason, update_request=update_request)
+        send_report = emails.send_publisher_reject_email(application, note=reason, update_request=update_request, send_to_owner=True, send_to_suggester=True)
         sent = True
     except app_email.EmailException as e:
         pass
@@ -361,18 +366,19 @@ def application_quick_reject(application_id):
     # sort out some flash messages for the user
     flash(note, "success")
 
-    if sent:
-        msg = Messages.SENT_REJECTED_APPLICATION_EMAIL
-        if update_request:
-            msg = Messages.SENT_REJECTED_UPDATE_REQUEST_EMAIL
-    else:
-        msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAIL
-        if update_request:
-            msg = Messages.NOT_SENT_REJECTED_UPDATE_REQUEST_EMAIL
+    for instructions in send_report:
+        msg = ""
+        flash_type = "success"
+        if sent:
+            if instructions["type"] == "owner":
+                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_OWNER.format(user=application.owner, email=instructions["email"], name=instructions["name"])
+            elif instructions["type"]  == "suggester":
+                msg = Messages.SENT_REJECTED_APPLICATION_EMAIL_TO_SUGGESTER.format(email=instructions["email"], name=instructions["name"])
+        else:
+            msg = Messages.NOT_SENT_REJECTED_APPLICATION_EMAILS.format(user=application.owner)
+            flash_type = "error"
 
-    publisher_email = application.get_latest_contact_email()
-    msg = msg.format(email=publisher_email)
-    flash(msg, "success")
+        flash(msg, flash_type)
 
     # redirect the user back to the edit page
     return redirect(url_for('.suggestion_page', suggestion_id=application_id))
@@ -548,6 +554,7 @@ def get_query_from_request(payload):
 @blueprint.route("/<doaj_type>/bulk/assign_editor_group", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_assign_editor_group(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
@@ -566,6 +573,7 @@ def bulk_assign_editor_group(doaj_type):
 @blueprint.route("/<doaj_type>/bulk/add_note", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_add_note(doaj_type):
     task = get_bulk_edit_background_task_manager(doaj_type)
 
@@ -583,6 +591,7 @@ def bulk_add_note(doaj_type):
 @blueprint.route("/journals/bulk/edit_metadata", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def bulk_edit_journal_metadata():
     task = get_bulk_edit_background_task_manager("journals")
 
@@ -614,6 +623,7 @@ def bulk_edit_journal_metadata():
 @blueprint.route("/applications/bulk/change_status", methods=["POST"])
 @login_required
 @ssl_required
+@write_required()
 def applications_bulk_change_status():
     payload = get_web_json_payload()
     validate_json(payload, fields_must_be_present=['selection_query', 'application_status'], error_to_raise=BulkAdminEndpointException)
@@ -629,6 +639,7 @@ def applications_bulk_change_status():
 
 
 @blueprint.route("/journals/bulk/delete", methods=['POST'])
+@write_required()
 def bulk_journals_delete():
     if not current_user.has_role("ultra_bulk_delete"):
         abort(403)
@@ -644,6 +655,7 @@ def bulk_journals_delete():
 
 
 @blueprint.route("/articles/bulk/delete", methods=['POST'])
+@write_required()
 def bulk_articles_delete():
     if not current_user.has_role("ultra_bulk_delete"):
         abort(403)

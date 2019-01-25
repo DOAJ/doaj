@@ -28,6 +28,9 @@ class JournalCSVBackgroundTask(BackgroundTask):
             raise BackgroundException("You must set CACHE_DIR in the config")
         csvdir = os.path.join(cdir, "csv")
 
+        if not os.path.exists(csvdir):
+            os.makedirs(csvdir)
+
         # save it into the cache directory
         attachment_name = 'doaj_' + datetime.strftime(datetime.now(), '%Y%m%d_%H%M') + '_utf8.csv'
         out = os.path.join(csvdir, attachment_name)

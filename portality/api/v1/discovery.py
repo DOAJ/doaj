@@ -1,12 +1,13 @@
 from portality.api.v1.common import Api
-from portality import models
 from portality import util
 from portality.core import app
+from portality import models
 from datetime import datetime
 import esprit
 import re, json, uuid, os
 from copy import deepcopy
 from flask import url_for
+from portality.bll.doaj import DOAJ
 
 class DiscoveryException(Exception):
     pass
@@ -99,11 +100,11 @@ class DiscoveryApi(Api):
     @staticmethod
     def get_application_swag():
         return deepcopy(DISCOVERY_API_SWAG['application'])
-    
+
     @staticmethod
     def get_journal_swag():
         return deepcopy(DISCOVERY_API_SWAG['journal'])
-    
+
     @staticmethod
     def get_article_swag():
         return deepcopy(DISCOVERY_API_SWAG['article'])
@@ -112,6 +113,10 @@ class DiscoveryApi(Api):
     def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs):
         if not allowed(q):
             raise DiscoveryException("Query contains disallowed Lucene features")
+
+        # FIXME: replace this with Anusha's proper solution as soon as possible
+        if page > 100:
+            raise DiscoveryException("You cannot request more than 100 pages of search results at this time. A full data-dump of the DOAJ data is due soon.  If you require access to a larger dataset in the mean time, please either use the OAI-PMH endpoint or contact us via https://doaj.org/contact")
 
         q = query_substitute(q, search_subs)
         q = escape(q)
@@ -154,26 +159,14 @@ class DiscoveryApi(Api):
         return q, page, fro, page_size, sortby, sortdir
 
     @classmethod
-    def _make_search_query(cls, q, page, page_size, sort, search_subs, sort_subs):
+    def _make_query(cls, q, page, page_size, sort, search_subs, sort_subs):
         # sanitise and prep the inputs
         q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
 
-        # assemble the query
-        query = SearchQuery(q, fro, page_size, sortby, sortdir)
-        # print json.dumps(query.query())
+        search_query = SearchQuery(q, fro, page_size, sortby, sortdir)
+        raw_query = search_query.query()
+        return raw_query, page, page_size
 
-        return query, page, page_size
-
-    @classmethod
-    def _make_application_query(cls, account, q, page, page_size, sort, search_subs, sort_subs):
-        # sanitise and prep the inputs
-        q, page, fro, page_size, sortby, sortdir = cls._sanitise(q, page, page_size, sort, search_subs, sort_subs)
-
-        # assemble the query
-        query = ApplicationQuery(account.id, q, fro, page_size, sortby, sortdir)
-        # print json.dumps(query.query())
-
-        return query, page, page_size
 
     @staticmethod
     def _calc_pagination(total, page_size, requested_page):
@@ -190,7 +183,7 @@ class DiscoveryApi(Api):
 
         page_count = ((total - 1) // page_size) + 1
         last_page = FISRT_PAGE + page_count - 1
-        
+
         # Links to previous and next page
         if requested_page > FISRT_PAGE:
             previous_page = requested_page - 1
@@ -205,8 +198,7 @@ class DiscoveryApi(Api):
         return page_count, previous_page, next_page, last_page
 
     @classmethod
-    def _make_response(cls, endpoint, res, q, page, page_size, sort,
-                       obs):
+    def _make_response(cls, endpoint, res, q, page, page_size, sort, obs):
         total = res.get("hits", {}).get("total", 0)
 
         page_count, previous_page, next_page, last_page = cls._calc_pagination(total, page_size, page)
@@ -236,58 +228,40 @@ class DiscoveryApi(Api):
         return SearchResult(result)
 
     @classmethod
-    def search_articles(cls, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
+    def search(cls, index_type, account, q, page, page_size, sort=None):
+        if not index_type in ['article', 'journal', 'application']:
+            raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
+
+        if index_type == 'article':
+            search_subs = app.config.get("DISCOVERY_ARTICLE_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_ARTICLE_SORT_SUBS", {})
+            endpoint = 'search_articles'
+            klass = models.Article
+        elif index_type == 'journal':
+            search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
+            endpoint = 'search_journals'
+            klass = models.Journal
+        else:
+            search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
+            sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
+            endpoint = 'search_applications'
+            klass = models.Suggestion
+
+        raw_query, page, page_size = cls._make_query(q, page, page_size, sort, search_subs, sort_subs)
 
         # execute the query against the articles
-        res = models.Article.query(q=query.query(), consistent_order=False)
+        query_service = DOAJ.queryService()
+        res = query_service.search('api_query', index_type, raw_query, account, None)
 
         # check to see if there was a search error
         if res.get("error") is not None:
             magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
+            app.logger.error("Error executing discovery query search for {i}: {x} (ref: {y})".format(i=index_type, x=res.get("error"), y=magic))
             raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
 
-        obs = [models.Article(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_articles', res, q, page, page_size, sort, obs)
-
-    @classmethod
-    def search_journals(cls, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_JOURNAL_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_JOURNAL_SORT_SUBS", {})
-        query, page, page_size = cls._make_search_query(q, page, page_size, sort, search_subs, sort_subs)
-
-        # execute the query against the articles
-        res = models.Journal.query(q=query.query(), consistent_order=False)
-
-        # check to see if there was a search error
-        if res.get("error") is not None:
-            magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
-            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
-
-        obs = [models.Journal(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_journals', res, q, page, page_size, sort, obs)
-
-    @classmethod
-    def search_applications(cls, account, q, page, page_size, sort=None):
-        search_subs = app.config.get("DISCOVERY_APPLICATION_SEARCH_SUBS", {})
-        sort_subs = app.config.get("DISCOVERY_APPLICATION_SORT_SUBS", {})
-        query, page, page_size = cls._make_application_query(account, q, page, page_size, sort, search_subs, sort_subs)
-
-        # execute the query against the articles
-        res = models.Suggestion.query(q=query.query(), consistent_order=False)
-
-        # check to see if there was a search error
-        if res.get("error") is not None:
-            magic = uuid.uuid1()
-            app.logger.error("Error executing discovery query search: {x} (ref: {y})".format(x=res.get("error"), y=magic))
-            raise DiscoveryException("There was an error executing your query (ref: {y})".format(y=magic))
-
-        obs = [models.Suggestion(**raw) for raw in esprit.raw.unpack_json_result(res)]
-        return cls._make_response('search_applications', res, q, page, page_size, sort, obs)
+        obs = [klass(**raw) for raw in esprit.raw.unpack_json_result(res)]
+        return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
 
 class SearchQuery(object):
@@ -301,66 +275,10 @@ class SearchQuery(object):
     def query(self):
         q = {
             "query" : {
-                "filtered" : {
-                    "filter" : {
-                        "bool" : {
-                            "must" : [
-                                {"term" : {"admin.in_doaj": True}}
-                            ]
-                        }
-                    },
-                    "query" : {
-                        "query_string" : {
-                            "query" : self.qs,
-                            "default_operator": "AND"
-                        }
-                    }
+                "query_string" : {
+                    "query" : self.qs,
+                    "default_operator": "AND"
                 }
-            },
-            "_source": {
-                "include": ["last_updated", "created_date", "id", "bibjson"],
-                "exclude": [],
-            },
-            "from" : self.fro,
-            "size" : self.psize
-        }
-
-        if self.sortby is not None:
-            q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
-
-        return q
-
-class ApplicationQuery(object):
-    def __init__(self, owner, qs, fro, psize, sortby=None, sortdir=None):
-        self.owner = owner
-        self.qs = qs
-        self.fro = fro
-        self.psize = psize
-        self.sortby = sortby
-        self.sortdir = sortdir if sortdir is not None else "asc"
-
-    def query(self):
-        q = {
-            "query" : {
-                "filtered" : {
-                    "filter" : {
-                        "bool" : {
-                            "must" : [
-                                {"term" : {"admin.owner.exact": self.owner}}
-                            ]
-                        }
-                    },
-                    "query" : {
-                        "query_string" : {
-                            "query" : self.qs,
-                            "default_operator": "AND"
-                        }
-                    }
-                }
-            },
-            "_source": {
-                "include": ["admin.application_status", "suggestion", "last_updated", "created_date", "id", "bibjson"],
-                "exclude": [],
             },
             "from" : self.fro,
             "size" : self.psize

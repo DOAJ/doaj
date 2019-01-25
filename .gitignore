@@ -13,7 +13,9 @@ tmp/*
 # vim swap files
 .*.swp
 
-*.cfg
+# Don't push our dev configs or the secret app configs.
+dev.cfg
+app.cfg
 
 media/*
 upload/*
