@@ -27,7 +27,7 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
             client.check_today_snapshot()
         except Exception as e:
             app_email.send_mail(
-                to=app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com'),
+                to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
                 msg_body="Today's ES snapshot has not been found by the checking task. Error: \n" + e.message

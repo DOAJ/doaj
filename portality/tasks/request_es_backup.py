@@ -24,12 +24,16 @@ class RequestESBackupBackgroundTask(BackgroundTask):
 
         try:
             client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
-            resp_code = client.request_snapshot()
-            if resp_code != 200:
-                raise Exception("Status code {0} received from snapshots plugin.".format(resp_code))
+            resp = client.request_snapshot()
+            if resp.status_code == 200:
+                job = self.background_job
+                job.add_audit_message("ElasticSearch backup requested. Response: " + resp.text)
+            else:
+                raise Exception("Status code {0} received from snapshots plugin.".format(resp.text))
+
         except Exception as e:
             app_email.send_mail(
-                to=app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com'),
+                to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
                 msg_body="The ElasticSearch snapshot could not requested. Error: \n" + e.message
