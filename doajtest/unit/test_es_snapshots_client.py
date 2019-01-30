@@ -12,9 +12,9 @@ from freezegun import freeze_time
 class TestSnapshotClient(DoajTestCase):
 
     def setUp(self):
-        self.snapshot_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
+        self.snapshot_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY']
         self.es_conn = raw.Connection(app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200'), index='_snapshot')
-        self.snap_repo = app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3')
+        self.snap_repo = app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY']
         super(TestSnapshotClient, self).setUp()
 
     def tearDown(self):

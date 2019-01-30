@@ -23,7 +23,7 @@ class RequestESBackupBackgroundTask(BackgroundTask):
         conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
 
         try:
-            client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
+            client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
             resp = client.request_snapshot()
             if resp.status_code == 200:
                 job = self.background_job

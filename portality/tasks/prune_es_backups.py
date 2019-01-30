@@ -30,7 +30,7 @@ class PruneESBackupsBackgroundTask(BackgroundTask):
         snap_thresh = datetime.utcnow() - timedelta(days=snap_ttl)
         job.add_audit_message('Deleting backups older than {}'.format(dates.format(snap_thresh)))
 
-        client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
+        client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
         client.prune_snapshots(snap_ttl, self.report_deleted_closure(job))
 
     def cleanup(self):
