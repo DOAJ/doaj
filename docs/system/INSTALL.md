@@ -29,7 +29,7 @@ Install pip using [pip's very robust instructions](http://www.pip-installer.org/
     git submodule update --recursive
     sudo apt-get install libxml2-dev libxslt-dev python-dev lib32z1-dev # install LXML dependencies on Linux. Windows users: grab a precompiled LXML from http://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml (go for version 3.x) - make sure the virtual environment can see it!
     pip install -r requirements.txt  # install all the app's dependencies
-    python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
+    DOAJENV=dev python portality/app.py  # the output of this will tell you which port it's running on and whether it's in debug mode
 
 ## Scheduled tasks
 
@@ -54,3 +54,5 @@ This will generate the latest version of the sitemap to serve on request.  It sh
     portality/scripts/news.py
 
 This will import the latest news from the DOAJ wordpress blog.  It should be run daily.
+
+todo: more tasks
