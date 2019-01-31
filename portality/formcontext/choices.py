@@ -225,7 +225,7 @@ class Choices(object):
         if type is None:
             return [v[0] for v in cls._digital_archiving_policy]
         elif type == "named":
-            return [v[0] for v in cls._digital_archiving_policy if v not in [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]]
+            return [v[0] for v in cls._digital_archiving_policy if v[0] not in [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]]
         elif type == "optional":
             return [cls.digital_archiving_policy_val("library"), cls.digital_archiving_policy_val("other")]
 

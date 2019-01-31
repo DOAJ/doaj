@@ -114,6 +114,8 @@ class ApplicationsCrudApi(CrudApi):
         else:
             # convert the incoming application into the web form
             form = MultiDict(xwalk.SuggestionFormXWalk.obj2form(ap))
+            #interimFC = formcontext.ApplicationFormFactory.get_form_context(source=ap)
+            #form = interimFC.form_data
 
             # create a template that will hold all the values we want to persist across the form submission
             template = models.Suggestion()
@@ -320,6 +322,7 @@ class ApplicationsCrudApi(CrudApi):
         errors = fc.errors
         msg = "The following validation errors were received:\n"
         for fieldName, errorMessages in errors.iteritems():
-            msg += fieldName + ":" + "; ".join(errorMessages) + "\n"
+            fieldName = xwalk.SuggestionFormXWalk.formField2objectField(fieldName)
+            msg += fieldName + " : " + "; ".join(errorMessages) + "\n"
         return msg
 

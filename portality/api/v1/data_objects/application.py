@@ -350,12 +350,15 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
             raise dataobj.DataStructureException("You must specify at least one of P-ISSN or E-ISSN in bibjson.identifier")
 
         # normalise the ids
-        pissn.id = self._normalise_issn(pissn.id)
-        eissn.id = self._normalise_issn(eissn.id)
+        if pissn is not None:
+            pissn.id = self._normalise_issn(pissn.id)
+        if eissn is not None:
+            eissn.id = self._normalise_issn(eissn.id)
 
         # check they are not the same
-        if pissn.id == eissn.id:
-            raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
+        if pissn is not None and eissn is not None:
+            if pissn.id == eissn.id:
+                raise dataobj.DataStructureException("P-ISSN and E-ISSN should be different")
 
         # A link to the journal homepage is required
         #
@@ -393,7 +396,7 @@ class IncomingApplication(dataobj.DataObj, swagger.SwaggerSupport):
         # if the author does not hold the publishing rights the url is optional, otherwise it is required
         if self.bibjson.author_publishing_rights.publishing_rights is not False:
             if self.bibjson.author_publishing_rights.url is None:
-                raise dataobj.DataStructureException("In this context bibjson.author_copyright.url is required")
+                raise dataobj.DataStructureException("In this context bibjson.author_publishing_rights.url is required")
 
         # if the archiving policy has no "domain" set, then the policy must be from one of an allowed list
         # if the archiving policy does have "domain" set, then the domain must be from one of an allowed list
