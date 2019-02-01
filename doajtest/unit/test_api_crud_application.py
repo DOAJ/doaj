@@ -131,6 +131,7 @@ class TestCrudApplication(DoajTestCase):
         assert a.suggester.get("email") == "test@test.com"
         assert a.owner == "test"
         assert a.suggested_on is not None
+        assert len(a.bibjson().keywords) > 1
 
         # also, because it's a special case, check the archiving_policy
         archiving_policy = a.bibjson().archiving_policy
@@ -153,6 +154,35 @@ class TestCrudApplication(DoajTestCase):
 
         s = models.Suggestion.pull(a.id)
         assert s is not None
+
+    def test_02a_create_application_success_variations(self):
+        # set up all the bits we need
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
+        account = models.Account()
+        account.set_id("test")
+        account.set_name("Tester")
+        account.set_email("test@test.com")
+
+        # try with only one issn
+        data["bibjson"]["identifier"] = [
+            {
+                "type" : "pissn",
+                "id": "1234-5678"
+            }
+        ]
+
+        # call create on the object (which will save it to the index)
+        a = ApplicationsCrudApi.create(data, account)
+
+        # check that it got created successfully
+        assert isinstance(a, models.Suggestion)
+
+        time.sleep(2)
+
+        s = models.Suggestion.pull(a.id)
+        assert s is not None
+
 
     def test_03_create_application_fail(self):
         # if the account is dud
@@ -194,7 +224,27 @@ class TestCrudApplication(DoajTestCase):
                 a = ApplicationsCrudApi.create(data, publisher)
             except Api400Error as e:
                 raise
+        IncomingApplication.custom_validate = self.old_custom_validate
 
+        # issns are the same
+        data = ApplicationFixtureFactory.incoming_application()
+        del data["admin"]["current_journal"]
+        data["bibjson"]["identifier"] = [
+            {
+                "type" : "pissn",
+                "id": "1234-5678"
+            },
+            {
+                "type" : "eissn",
+                "id": "1234-5678"
+            }
+        ]
+        with self.assertRaises(Api400Error):
+            publisher = models.Account(**AccountFixtureFactory.make_publisher_source())
+            try:
+                a = ApplicationsCrudApi.create(data, publisher)
+            except Api400Error as e:
+                raise
 
     def test_03b_create_update_request_fail(self):
         # update request target not found
