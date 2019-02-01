@@ -72,7 +72,7 @@ ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
-ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = 'doaj_s3'
+ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
@@ -89,6 +89,7 @@ HUEY_SCHEDULE = {
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"}
 }
@@ -800,9 +801,8 @@ GA_ACTION_FQW = 'Hit'
 # Anonymisation configuration
 ANON_SALT = 'changeme'
 
-###################################
-## Quick Reject Feature Config
-
+# ========================================
+# Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
     "No research content has been published in the journal in the last calendar year",
     "The ISSN is incorrect and is not recognised by issn.org",
@@ -822,3 +822,19 @@ QUICK_REJECT_REASONS = [
     "This application is a duplicate",
     "You already have another application for the same journal in progress"
 ]
+
+# ========================================
+# Elastic APM config  (MUST be configured in env file)
+ENABLE_APM = False
+
+ELASTIC_APM = {
+  # Set required service name. Allowed characters:
+  # a-z, A-Z, 0-9, -, _, and space
+  'SERVICE_NAME': '',
+
+  # Use if APM Server requires a token
+  'SECRET_TOKEN': '',
+
+  # Set custom APM Server URL (default: http://localhost:8200)
+  'SERVER_URL': '',
+}

@@ -25,6 +25,7 @@ virtualenv -p python2.7 doaj
 cd doaj
 . bin/activate
 pip install --upgrade pip==10.0.1
+pip install --upgrade setuptools-40.6.2
 mv /home/cloo/tmp_deploy_workspace_$ENV/doaj_src src
 cd src/doaj
 

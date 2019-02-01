@@ -9,9 +9,9 @@ from portality.decorators import write_required
 from portality.background import BackgroundTask, BackgroundApi
 
 
-class CheckLatestESBackupBackgroundTask(BackgroundTask):
+class RequestESBackupBackgroundTask(BackgroundTask):
 
-    __action__ = "check_latest_es_backup"
+    __action__ = "request_es_backup"
 
     def run(self):
         """
@@ -20,17 +20,23 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         """
 
         # Connection to the ES index
-        conn = Connection(app.config["ELASTIC_SEARCH_HOST"], index='_snapshot')
+        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
 
         try:
             client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
-            client.check_today_snapshot()
+            resp = client.request_snapshot()
+            if resp.status_code == 200:
+                job = self.background_job
+                job.add_audit_message("ElasticSearch backup requested. Response: " + resp.text)
+            else:
+                raise Exception("Status code {0} received from snapshots plugin.".format(resp.text))
+
         except Exception as e:
             app_email.send_mail(
                 to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
-                msg_body="Today's ES snapshot has not been found by the checking task. Error: \n" + e.message
+                msg_body="The ElasticSearch snapshot could not requested. Error: \n" + e.message
             )
             raise e
 
@@ -66,20 +72,20 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         :return:
         """
         background_job.save()
-        check_latest_es_backup.schedule(args=(background_job.id,), delay=10)
+        request_es_backup.schedule(args=(background_job.id,), delay=10)
 
 
-@main_queue.periodic_task(schedule("check_latest_es_backup"))
+@main_queue.periodic_task(schedule("request_es_backup"))
 @write_required(script=True)
-def scheduled_check_latest_es_backup():
+def scheduled_request_es_backup():
     user = app.config.get("SYSTEM_USERNAME")
-    job = CheckLatestESBackupBackgroundTask.prepare(user)
-    CheckLatestESBackupBackgroundTask.submit(job)
+    job = RequestESBackupBackgroundTask.prepare(user)
+    RequestESBackupBackgroundTask.submit(job)
 
 
 @main_queue.task()
 @write_required(script=True)
-def check_latest_es_backup(job_id):
+def request_es_backup(job_id):
     job = models.BackgroundJob.pull(job_id)
-    task = CheckLatestESBackupBackgroundTask(job)
+    task = RequestESBackupBackgroundTask(job)
     BackgroundApi.execute(task)

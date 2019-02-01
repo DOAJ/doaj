@@ -34,9 +34,6 @@ blueprint = Blueprint('doaj', __name__)
 
 @blueprint.route("/")
 def home():
-    flash('Notice: the DOAJ will be read-only from 1900 to 2100 UTC on Wednesday 30th January. '
-          'Search functions will work as normal, but API writes, new applications, and publisher metadata upload pages will be offline. '
-          'There may also be a brief interruption for all users while we make DNS changes during this time.', 'info')
     news = blog.News.latest(app.config.get("FRONT_PAGE_NEWS_ITEMS", 5))
     return render_template('doaj/index.html', news=news)
 
