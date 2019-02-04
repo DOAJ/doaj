@@ -75,6 +75,7 @@ class TestSnapshotClient(DoajTestCase):
                 client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
                 client.check_today_snapshot()
 
+    @responses.activate
     def test_04_prune_snapshots(self):
         # Mock response for listing the snapshots
         responses.add(responses.GET, self.snapshot_url + '/_all', json=SNAPSHOTS_LIST, status=200)
@@ -94,6 +95,7 @@ class TestSnapshotClient(DoajTestCase):
         # We can't really test anything more here - we don't have a remote system that will actually respond to deletes,
         # so if I mock the next list_snapshots call I'd just be testing how good the fixtures are.
 
+    @responses.activate
     def test_05_request_snapshot(self):
         # Mock response for initiating a snapshot
         right_now = datetime.utcnow()
@@ -105,4 +107,5 @@ class TestSnapshotClient(DoajTestCase):
             # Ensure the client correctly deletes snapshots up to our specified threshold
             client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
             resp = client.request_snapshot()
+            assert resp.status_code == 200
             assert resp.url == self.snapshot_url + slashtimestamp
