@@ -32,19 +32,32 @@ def create_app():
 
 
 def configure_app(app):
-    app.config.from_object(settings)
-    # parent directory
-    here = os.path.dirname(os.path.abspath( __file__ ))
-    config_path = os.path.join(os.path.dirname(here), 'app.cfg')
-    if os.path.exists(config_path):
-        app.config.from_pyfile(config_path)
+    """
+    Configure the DOAJ from:
+     a) the settings.py file
+     b) the <env>.cfg file
+     c) the local secrets config in app.cfg
 
+    Later imports have precedence, so e.g. app.cfg will override the same setting in production.cfg and settings.py.
+    """
+
+    # import for settings.py
+    app.config.from_object(settings)
+
+    # import from <env>.cfg
+    here = os.path.dirname(os.path.abspath(__file__))
     app.config['DOAJENV'] = get_app_env(app)
     config_path = os.path.join(os.path.dirname(here), app.config['DOAJENV'] + '.cfg')
     print 'Running in ' + app.config['DOAJENV']  # the app.logger is not set up yet (?)
     if os.path.exists(config_path):
         app.config.from_pyfile(config_path)
-        print 'Loaded final config from ' + config_path
+        print 'Loaded environment config from ' + config_path
+
+    # import from app.cfg
+    config_path = os.path.join(os.path.dirname(here), 'app.cfg')
+    if os.path.exists(config_path):
+        app.config.from_pyfile(config_path)
+        print 'Loaded secrets config from ' + config_path
 
 
 def get_app_env(app):
@@ -53,18 +66,21 @@ def get_app_env(app):
 
     env = os.getenv('DOAJENV')
     if not env:
-        env = app.config.get('DOAJENV')
+        envpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../.env')
+        if os.path.exists(envpath):
+            with open(envpath, 'r') as f:
+                env = f.readline().strip()
 
-    if not env:
+    if not env or env not in app.config['VALID_ENVIRONMENTS']:
         raise Exception(
 """
-Set the DOAJENV environment variable when running the app please, guessing is futile and fraught with peril.
+Set the DOAJENV environment variable when running the app, guessing is futile and fraught with peril.
 DOAJENV=test python portality/app.py
 to run the app will do.
 Or use the supervisord options - put this in the config: environment= DOAJENV="test" .
 
-Finally, the least preferred approach is to put DOAJENV="dev" in app.cfg in the root of the repo.
-Only do this for dev environments so you don't have to bother specifying it each time.
+Finally, you can create a file called .env with the text e.g. 'dev' in the root of the repo.
+Recommended only for dev environments so you don't have to bother specifying it each time you run a script or test.
 
 Valid values are: {valid_doajenv_vals}
 
@@ -74,7 +90,6 @@ The environment specified in the DOAJENV environment variable will override that
 application configuration (settings.py or app.cfg).
 """.format(valid_doajenv_vals=', '.join(app.config['VALID_ENVIRONMENTS']))
         )
-
     return env
 
 

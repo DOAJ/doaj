@@ -12,9 +12,9 @@ from freezegun import freeze_time
 class TestSnapshotClient(DoajTestCase):
 
     def setUp(self):
-        self.snap_repo = app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'mock-repo')
-        self.snapshot_url = app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200') + '/_snapshot/' + self.snap_repo
-        self.es_conn = raw.Connection(app.config.get('ELASTIC_SEARCH_HOST', 'http://localhost:9200'), index='_snapshot')
+        self.snap_repo = 'mock-repo'
+        self.snapshot_url = 'http://localhost:9200' + '/_snapshot/' + self.snap_repo
+        self.es_conn = raw.Connection('http://localhost:9200', index='_snapshot')
         super(TestSnapshotClient, self).setUp()
 
     def tearDown(self):
@@ -94,3 +94,15 @@ class TestSnapshotClient(DoajTestCase):
         # We can't really test anything more here - we don't have a remote system that will actually respond to deletes,
         # so if I mock the next list_snapshots call I'd just be testing how good the fixtures are.
 
+    def test_05_request_snapshot(self):
+        # Mock response for initiating a snapshot
+        right_now = datetime.utcnow()
+        slashtimestamp = datetime.strftime(right_now, "/%Y-%m-%d_%H%Mz")
+        responses.add(responses.PUT, self.snapshot_url + slashtimestamp, json={u"acknowledged": True}, status=200)
+
+        # Request a new backup, check it has the right timestamp
+        with freeze_time(right_now):
+            # Ensure the client correctly deletes snapshots up to our specified threshold
+            client = snapshot.ESSnapshotsClient(self.es_conn, self.snap_repo)
+            resp = client.request_snapshot()
+            assert resp.url == self.snapshot_url + slashtimestamp
