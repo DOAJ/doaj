@@ -93,12 +93,12 @@ SPONSORS = {
         'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
+        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://www.publications.copernicus.org'},
         'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
         'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
         'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
