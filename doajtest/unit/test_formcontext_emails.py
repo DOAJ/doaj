@@ -145,6 +145,12 @@ class TestApplicationReviewEmails(DoajTestCase):
         ready_application = models.Suggestion(**APPLICATION_SOURCE_TEST_1)
         ready_application.set_application_status(constants.APPLICATION_STATUS_READY)
 
+        owner = models.Account()
+        owner.set_id(ready_application.owner)
+        owner.set_name("Test Name")
+        owner.set_email("test@example.com")
+        owner.save(blocking=True)
+
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="admin",
@@ -268,7 +274,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert bool(assEd_email_matched)
 
         publisher_template = 'publisher_application_editor_assigned.txt'
-        publisher_to = re.escape(no_ed.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
@@ -346,6 +352,9 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # Finally, a Managing Editor will also trigger emails to the publisher when they accept an Application
 
+        # remove the owner so it can be created again
+        owner.delete()
+
         # Refresh the application form
         fc = formcontext.ApplicationFormFactory.get_form_context(role="admin", source=ready_application)
         fc.form.application_status.data = constants.APPLICATION_STATUS_ACCEPTED
@@ -364,7 +373,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert bool(publisher_email_matched), (publisher_template, publisher_to, publisher_subject, info_stream_contents)
 
         publisher_template = 'publisher_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())
@@ -374,24 +383,6 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched), (publisher_email_matched, info_stream_contents)
-
-        """
-        # Current setup means that this third email is no longer sent.  Keeping this code for the
-        # moment, as a review of email sending is probably necessary
-        publisher_template = 'contact_update_request_accepted.txt'
-        publisher_to = re.escape(ready_application.get_latest_contact_email())
-        publisher_subject = 'journal accepted'
-
-        print(email_log_regex)
-        print(publisher_to)
-        print (info_stream_contents)
-
-        publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
-                                            info_stream_contents,
-                                            re.DOTALL)
-        assert bool(publisher_email_matched)
-        """
-
         assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         ctx.pop()
@@ -405,6 +396,12 @@ class TestApplicationReviewEmails(DoajTestCase):
 
         # If an application has been set to 'ready' from another status, the ManEds are notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_2)
+
+        owner = models.Account()
+        owner.set_id(pending_application.owner)
+        owner.set_name("Test Name")
+        owner.set_email("test@example.com")
+        owner.save(blocking=True)
 
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
@@ -463,7 +460,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         assert bool(assEd_email_matched)
 
         publisher_template = 'publisher_application_editor_assigned.txt'
-        publisher_to = re.escape(no_ed.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'your application has been assigned an editor for review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
@@ -551,6 +548,12 @@ class TestApplicationReviewEmails(DoajTestCase):
         # If an application has been set to 'in progress' from 'pending', the publisher is notified
         pending_application = models.Suggestion(**APPLICATION_SOURCE_TEST_3)
 
+        owner = models.Account()
+        owner.set_id(pending_application.owner)
+        owner.set_name("Test Name")
+        owner.set_email("test@example.com")
+        owner.save(blocking=True)
+
         # Construct an application form
         fc = formcontext.ApplicationFormFactory.get_form_context(
             role="associate_editor",
@@ -567,7 +570,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         # We expect one email to be sent here:
         #   * to the publisher, notifying that an editor is viewing their application
         publisher_template = re.escape('publisher_application_inprogress.txt')
-        publisher_to = re.escape(pending_application.get_latest_contact_email())
+        publisher_to = re.escape(owner.email)
         publisher_subject = 'your application is under review'
 
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),

@@ -1,3 +1,5 @@
+Dear {{ publisher_name }},
+
 {{ title }}
 {{ url }}
 

@@ -763,7 +763,7 @@ class ManEdApplicationReview(ApplicationContext):
             try:
                 emails.send_publisher_editor_assigned_email(self.target)
             except app_email.EmailException:
-                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
+                self.add_alert("Problem sending email to publisher regarding editor assignment - owner is not set, or email address is not valid")
                 app.logger.exception("Publisher notification failed")
 
         # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
@@ -913,7 +913,7 @@ class EditorApplicationReview(ApplicationContext):
             try:
                 emails.send_publisher_editor_assigned_email(self.target)
             except app_email.EmailException:
-                self.add_alert("Problem sending email to publisher regarding editor assignment - probably address is invalid")
+                self.add_alert("Problem sending email to publisher regarding editor assignment - owner is not set, or email address is not valid")
                 app.logger.exception('Error sending editor assigned email to publisher.')
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
