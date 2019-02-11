@@ -62,7 +62,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         # Record the sets of duplicated articles
         global_matches = []
 
-        a_count = gd_count = 0
+        a_count = 0
 
         articleService = DOAJ.articleService()
 
@@ -103,11 +103,10 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
                     if s not in global_matches:
                         self._write_rows_from_duplicates(article, owner, global_duplicates, global_report)
                         global_matches.append(s)
-                        gd_count += len(s) - 1
 
-                app.logger.debug('{0}/{1} {2} {3} {4} {5} {6}'.format(a_count, total, article.id, dupcount, gd_count, len(global_matches), estimated_finish))
+                app.logger.debug('{0}/{1} {2} {3} {4} {5}'.format(a_count, total, article.id, dupcount, len(global_matches), estimated_finish))
 
-        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicates found.'.format(a_count, gd_count))
+        job.add_audit_message('{0} articles processed for duplicates. {1} global duplicate sets found.'.format(a_count, len(global_matches)))
         f.close()
         g.close()
 
