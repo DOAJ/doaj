@@ -29,9 +29,9 @@ def create_logfile(log_dir=None):
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
         filepath = os.path.join(log_dir, filepath)
-    fh = logging.FileHandler(filepath)
-    fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-    logger.addHandler(fh)
+        fh = logging.FileHandler(filepath)
+        fh.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+        logger.addHandler(fh)
 
 
 class GAEvent(object):
