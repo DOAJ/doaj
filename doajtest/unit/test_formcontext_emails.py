@@ -122,6 +122,9 @@ class TestApplicationReviewEmails(DoajTestCase):
         self.read_info.setLevel(logging.INFO)
         self.app_test.logger.addHandler(self.read_info)
 
+        self.enable_publisher_email = self.app_test.config["ENABLE_PUBLISHER_EMAIL"]
+        self.app_test.config["ENABLE_PUBLISHER_EMAIL"] = True
+
     def tearDown(self):
         super(TestApplicationReviewEmails, self).tearDown()
 
@@ -132,6 +135,8 @@ class TestApplicationReviewEmails(DoajTestCase):
         # Blank the info_stream and remove the error handler from the app
         self.info_stream.truncate(0)
         self.app_test.logger.removeHandler(self.read_info)
+
+        self.app_test.config["ENABLE_PUBLISHER_EMAIL"] = self.enable_publisher_email
 
     def test_01_maned_review_emails(self):
         """ Ensure the Managing Editor's application review form sends the right emails"""
@@ -364,7 +369,7 @@ class TestApplicationReviewEmails(DoajTestCase):
         publisher_email_matched = re.search(email_log_regex % (publisher_template, publisher_to, publisher_subject),
                                             info_stream_contents,
                                             re.DOTALL)
-        assert bool(publisher_email_matched)
+        assert bool(publisher_email_matched), (publisher_template, publisher_to, publisher_subject, info_stream_contents)
 
         publisher_template = 'publisher_update_request_accepted.txt'
         publisher_to = re.escape(ready_application.get_latest_contact_email())

@@ -41,7 +41,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         if not os.path.exists(tmpdir):
             os.makedirs(tmpdir)
 
-        tmp_csvname = self.get_param(params, "article_csv", None)
+        tmp_csvname = self.get_param(params, "article_csv", False)
         tmp_csvpath, total = self._make_csv_dump(tmpdir, tmp_csvname)
 
         # Initialise our reports
@@ -129,7 +129,7 @@ class ArticleDuplicateReportBackgroundTask(BackgroundTask):
         conn = esprit.raw.make_connection(None, app.config["ELASTIC_SEARCH_HOST"], None,
                                           app.config["ELASTIC_SEARCH_DB"])
 
-        if filename is None:
+        if not filename:
             filename = 'tmp_articles_' + dates.today() + '.csv'
         filename = os.path.join(tmpdir, filename)
 
