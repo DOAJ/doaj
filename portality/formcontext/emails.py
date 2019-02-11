@@ -88,9 +88,13 @@ def send_assoc_editor_email(obj):
 
 def send_publisher_editor_assigned_email(application):
     """ Send email to publisher informing them an editor has been assigned """
+    owner = models.Account.pull(application.owner)
+    if owner is None:
+        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
+
     # This is to the publisher contact on the application
-    publisher_name = application.get_latest_contact_name()
-    publisher_email = application.get_latest_contact_email()
+    publisher_name = owner.name
+    publisher_email = owner.email
 
     to = [publisher_email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -196,9 +200,13 @@ def send_publisher_inprogress_email(application):
     """Tell the publisher the application is underway"""
     journal_title = application.bibjson().title
 
+    owner = models.Account.pull(application.owner)
+    if owner is None:
+        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
+
     # This is to the publisher contact on the application
-    publisher_name = application.get_latest_contact_name()
-    publisher_email = application.get_latest_contact_email()
+    publisher_name = owner.name
+    publisher_email = owner.email
 
     to = [publisher_email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
@@ -224,7 +232,7 @@ def send_received_email(application):
                         fro=fro,
                         subject=subject,
                         template_name="email/publisher_application_received.txt",
-                        # suggestion=self.target,
+                        publisher_name=suggester.get("name", "Applicant"),
                         title=application.bibjson().title,
                         url=application.bibjson().get_single_url(urltype="homepage"))
 
