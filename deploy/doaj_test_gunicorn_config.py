@@ -1,6 +1,6 @@
 import multiprocessing
 
-bind = "127.0.0.1:5050"
+bind = "0.0.0.0:5050"
 workers = multiprocessing.cpu_count() * 3 + 1
 proc_name = 'doaj (test)'
 max_requests = 1000

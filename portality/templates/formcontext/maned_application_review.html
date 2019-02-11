@@ -12,7 +12,11 @@
 {# include the table for comparing applications with journals that have changed #}
 {% include 'formcontext/_application_diff.html' %}
 
-{% if form_context.source.application_status != "rejected" and form_context.source.application_status != 'accepted' %}
+{% if form_context.source.application_status != "rejected"
+    and form_context.source.application_status != 'accepted'
+    and form_context.source.current_journal == None
+    %}
+
 <div class="row-fluid">
   <div class="span12 with-borders form-section centre-text-container" style="margin-left: 0; padding: 0.5em 1.5em;">
 

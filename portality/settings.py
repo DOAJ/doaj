@@ -10,7 +10,7 @@ READ_ONLY_MODE = False
 # This puts the cron jobs into READ_ONLY mode
 SCRIPTS_READ_ONLY_MODE = False
 
-DOAJ_VERSION = "2.13.2"
+DOAJ_VERSION = "2.14.4"
 
 OFFLINE_MODE = False
 
@@ -72,7 +72,7 @@ ELASTIC_SEARCH_DB = "doaj"
 ELASTIC_SEARCH_TEST_DB = "doajtest"
 INITIALISE_INDEX = True # whether or not to try creating the index and required index types on startup
 ELASTIC_SEARCH_VERSION = "1.7.5"
-ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = 'doaj_s3'
+ELASTIC_SEARCH_SNAPSHOT_REPOSITORY = None
 ELASTIC_SEARCH_SNAPSHOT_TTL = 366
 
 ES_TERMS_LIMIT = 1024
@@ -89,6 +89,7 @@ HUEY_SCHEDULE = {
     "read_news": {"month": "*", "day": "*", "day_of_week": "*", "hour": "*", "minute": "30"},
     "article_cleanup_sync": {"month": "*", "day": "2", "day_of_week": "*", "hour": "0", "minute": "0"},
     "async_workflow_notifications": {"month": "*", "day": "*", "day_of_week": "1", "hour": "5", "minute": "0"},
+    "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"}
 }
@@ -103,7 +104,7 @@ DEBUG_PYCHARM_SERVER = 'localhost'
 DEBUG_PYCHARM_PORT = 6000
 
 # can anonymous users get raw JSON records via the query endpoint?
-PUBLIC_ACCESSIBLE_JSON = True 
+PUBLIC_ACCESSIBLE_JSON = True
 
 # =======================
 # email settings
@@ -300,7 +301,6 @@ MAPPINGS['article'] = {'article': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['suggestion'] = {'suggestion': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['upload'] = {'upload': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['cache'] = {'cache': DEFAULT_DYNAMIC_MAPPING}
-MAPPINGS['toc'] = {'toc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['lcc'] = {'lcc': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['article_history'] = {'article_history': DEFAULT_DYNAMIC_MAPPING}
 MAPPINGS['editor_group'] = {'editor_group': DEFAULT_DYNAMIC_MAPPING}
@@ -312,25 +312,6 @@ MAPPINGS['background_job'] = {'background_job': DEFAULT_DYNAMIC_MAPPING}
 
 # ========================
 # QUERY SETTINGS
-
-# list index types that should not be queryable via the query endpoint
-NO_QUERY = []
-SU_ONLY = ["account"]
-
-# list additional terms to impose on anonymous users of query endpoint
-# for each index type that you wish to have some
-# must be a list of objects that can be appended to an ES query.bool.must
-# for example [{'term':{'visible':True}},{'term':{'accessible':True}}]
-ANONYMOUS_SEARCH_TERMS = {
-    # "pages": [{'term':{'visible':True}},{'term':{'accessible':True}}]
-}
-
-# a default sort to apply to query endpoint searches
-# for each index type that you wish to have one
-# for example {'created_date' + FACET_FIELD : {"order":"desc"}}
-DEFAULT_SORT = {
-    # "pages": {'created_date' + FACET_FIELD : {"order":"desc"}}
-}
 
 QUERY_ROUTE = {
     "query" : {
@@ -427,6 +408,29 @@ QUERY_ROUTE = {
             "query_filters" : ["editor"],
             "dao" : "portality.models.Suggestion"
         }
+    },
+    "api_query" : {
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Article",
+            "required_parameters" : None
+        },
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Journal",
+            "required_parameters" : None
+        },
+        "application" : {
+            "auth" : True,
+            "role" : None,
+            "query_filters" : ["owner", "private_source"],
+            "dao" : "portality.models.Suggestion",
+            "required_parameters" : None
+        }
     }
 }
 
@@ -444,7 +448,11 @@ QUERY_FILTERS = {
     # result filters
     "public_result_filter": "portality.lib.query_filters.public_result_filter",
     "publisher_result_filter": "portality.lib.query_filters.publisher_result_filter",
-    "prune_author_emails": "portality.lib.query_filters.prune_author_emails"
+    "prune_author_emails": "portality.lib.query_filters.prune_author_emails",
+
+    # source filters
+    "private_source": "portality.lib.query_filters.private_source",
+    "public_source": "portality.lib.query_filters.public_source",
 }
 
 UPDATE_REQUESTS_SHOW_OLDEST = "2018-01-01T00:00:00Z"
@@ -474,7 +482,7 @@ CONTENT_FOLDER = "content"
 # etherpad endpoint if available for collaborative editing
 COLLABORATIVE = 'http://localhost:9001'
 
-# when a page is deleted from the index should it also be removed from 
+# when a page is deleted from the index should it also be removed from
 # filesystem and etherpad (if they are available in the first place)
 DELETE_REMOVES_FS = False # True / False
 DELETE_REMOVES_EP = False # MUST BE THE ETHERPAD API-KEY OR DELETES WILL FAIL
@@ -798,9 +806,8 @@ GA_ACTION_FQW = 'Hit'
 # Anonymisation configuration
 ANON_SALT = 'changeme'
 
-###################################
-## Quick Reject Feature Config
-
+# ========================================
+# Quick Reject Feature Config
 QUICK_REJECT_REASONS = [
     "No research content has been published in the journal in the last calendar year",
     "The ISSN is incorrect and is not recognised by issn.org",
@@ -820,3 +827,19 @@ QUICK_REJECT_REASONS = [
     "This application is a duplicate",
     "You already have another application for the same journal in progress"
 ]
+
+# ========================================
+# Elastic APM config  (MUST be configured in env file)
+ENABLE_APM = False
+
+ELASTIC_APM = {
+  # Set required service name. Allowed characters:
+  # a-z, A-Z, 0-9, -, _, and space
+  'SERVICE_NAME': '',
+
+  # Use if APM Server requires a token
+  'SECRET_TOKEN': '',
+
+  # Set custom APM Server URL (default: http://localhost:8200)
+  'SERVER_URL': '',
+}

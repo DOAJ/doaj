@@ -107,7 +107,9 @@ class NotRole(object):
         fails = []
         for a in accounts:
             acc = models.Account.pull(a)
-            if acc.has_role(self.role) and not acc.is_super:
+            if acc is None:                                              # If the account has been deleted we can't pull
+                continue
+            elif acc.has_role(self.role) and not acc.is_super:
                 fails.append(acc.id)
         if len(fails) == 0:
             return

@@ -359,7 +359,7 @@ def oainfo():
 def bestpractice(cc=None):
     # FIXME: if we go for full multilingual support, it would be better to put this in the template
     # loader and have it check for templates in the desired language, and provide fall-back
-    if cc is not None and cc in ["es", "pt", "fa", "fr", "kr"]:
+    if cc is not None and cc in ["es", "pt", "fa", "fr", "kr", "uk", "ca", "tr", "hi"]:
         return render_template("doaj/i18n/" + cc + "/bestpractice.html")
     return render_template("doaj/bestpractice.html")
 

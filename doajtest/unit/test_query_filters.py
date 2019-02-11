@@ -75,7 +75,13 @@ class TestQueryFilters(DoajTestCase):
           }
         }, newres
 
-    def test_07_publisher_result_filter(self):
+    def test_07_public_result_filter_unpacked(self):
+        res = { "admin": { "seal": False, "publisher_record_id" : "some_identifier", "upload_id" : "zyxwvutsrqpo_upload_id"}, "bibjson": {}}
+
+        newres = query_filters.public_result_filter(res, unpacked=True)
+        assert newres == { "admin": { "seal": False }, "bibjson": {}}, newres
+
+    def test_08_publisher_result_filter(self):
         apsrc_admin = ApplicationFixtureFactory.make_application_source()['admin']
         # Not all of these properties are applicable to applications, but these test objects are not applications:
         # they are made-up admin sections designed solely to test whether the filter lets the right keys through.
@@ -109,7 +115,32 @@ class TestQueryFilters(DoajTestCase):
                 assert forbidden_k not in r['_source']['admin'], \
                     '{} key was found in result {}, but it is forbidden and should have been stripped out by the filter'.format(forbidden_k, n)
 
-    def test_08_prune_author_emails(self):
+    def test_09_publisher_result_filter_unpacked(self):
+        apsrc_admin = ApplicationFixtureFactory.make_application_source()['admin']
+        # Not all of these properties are applicable to applications, but these test objects are not applications:
+        # they are made-up admin sections designed solely to test whether the filter lets the right keys through.
+        # We just use applications as a base to construct them.
+        apsrc_admin['ticked'] = True
+        apsrc_admin['in_doaj'] = True
+        apsrc_admin['related_applications'] = [1,2,3]
+        apsrc_admin['current_application'] = 'abcde'
+
+        allowed = ["ticked", "seal", "in_doaj", "related_applications", "current_application", "current_journal", "application_status"]
+        forbidden = ['notes', 'contact', 'editor_group', 'editor', 'related_journal']
+
+        res = { "admin": deepcopy(apsrc_admin), "bibjson": {}}
+
+        newres = query_filters.publisher_result_filter(res, unpacked=True)
+
+        for allowed_k in allowed:
+            assert allowed_k in newres['admin'], \
+                '{} key not found in result {}, but it is allowed and should have been left intact by the filter'.format(allowed_k, newres)
+        for forbidden_k in forbidden:
+            assert forbidden_k not in newres['admin'], \
+                '{} key was found in result {}, but it is forbidden and should have been stripped out by the filter'.format(forbidden_k, newres)
+
+
+    def test_10_prune_author_emails(self):
         """Check we don't let publisher emails through the query endpoint"""
         res = {
             "hits": {
@@ -153,3 +184,33 @@ class TestQueryFilters(DoajTestCase):
                 "total": 3
             }
         }, newres
+
+    def test_11_prune_author_emails_unpacked(self):
+        """Check we don't let publisher emails through the query endpoint"""
+        res1 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author", 'email': 'janet@example.com'}]}}
+        res2 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author", 'email': 'janet@example.com'}, {'name': "Jimmy Author", 'email': 'jimmy@example.com'}]}}
+        res3 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
+
+        newres1 = query_filters.prune_author_emails(res1, unpacked=True)
+        expres1 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author"}]}}
+        assert newres1 == expres1, newres1
+
+        newres2 = query_filters.prune_author_emails(res2, unpacked=True)
+        expres2 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
+        assert newres2 == expres2, newres2
+
+        newres3 = query_filters.prune_author_emails(res3, unpacked=True)
+        expres3 = {"admin": {"seal": False, "publisher_record_id": "some_identifier", "upload_id": "zyxwvutsrqpo_upload_id"}, "bibjson": {"author": [{'name': "Janet Author"}, {'name': "Jimmy Author"}]}}
+        assert newres3 == expres3, newres3
+
+    def test_12_private_source(self):
+        newq = query_filters.private_source(self.q)
+        fields = ["admin.application_status", "suggestion", "admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
+        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()
+
+    def test_13_public_source(self):
+        newq = query_filters.public_source(self.q)
+        fields = ["admin.ticked", "admin.seal", "last_updated", "created_date", "id", "bibjson"]
+        assert len(newq.as_dict()["_source"]["include"]) == len(fields), newq.as_dict()
+        assert sorted(newq.as_dict()["_source"]["include"]) == sorted(fields), newq.as_dict()

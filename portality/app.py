@@ -24,7 +24,6 @@ from portality.view.account import blueprint as account
 from portality.view.admin import blueprint as admin
 from portality.view.publisher import blueprint as publisher
 from portality.view.query import blueprint as query
-from portality.view.stream import blueprint as stream
 from portality.view.doaj import blueprint as doaj
 from portality.view.oaipmh import blueprint as oaipmh
 from portality.view.openurl import blueprint as openurl
@@ -42,7 +41,6 @@ app.register_blueprint(query, url_prefix="/admin_query")
 app.register_blueprint(query, url_prefix="/publisher_query")
 app.register_blueprint(query, url_prefix="/editor_query")
 app.register_blueprint(query, url_prefix="/associate_query")
-app.register_blueprint(stream, url_prefix='/stream')
 app.register_blueprint(editor, url_prefix='/editor')
 app.register_blueprint(services, url_prefix='/service')
 if 'api' in app.config['FEATURES']:
@@ -95,12 +93,12 @@ SPONSORS = {
         'nsd': {'name': 'NSD (Norwegian Centre for Research Data)', 'logo': 'nsd.svg', 'url': 'http://www.nsd.uib.no/nsd/english/index.html'},
         'swedish-research': {'name': 'Swedish Research Council', 'logo': 'swedish-research.svg', 'url': 'https://vr.se/english.html'},
         'digital-science': {'name': 'Digital Science', 'logo': 'digital-science.svg', 'url': 'https://www.digital-science.com'},
+        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://publications.copernicus.org/'},
     },
     'bronze': {
         '1science': {'name': '1science', 'logo': '1science.svg', 'url': 'https://1science.com/'},
         'aps': {'name': 'American Physical Society', 'logo': 'aps.gif', 'url': 'https://journals.aps.org/'},
         'chaoxing': {'name': 'Chaoxing', 'logo': 'chaoxing.jpg', 'url': 'https://www.chaoxing.com'},
-        'copernicus': {'name': 'Copernicus Publications', 'logo': 'copernicus.svg', 'url': 'https://www.publications.copernicus.org'},
         'cottage-labs': {'name': 'Cottage Labs LLP', 'logo': 'cottagelabs.svg', 'url': 'https://cottagelabs.com'},
         'issn': {'name': 'ISSN (International Standard Serial Number)', 'logo': 'issn.jpg', 'url': 'http://www.issn.org/'},
         'lund': {'name': 'Lund University', 'logo': 'lund-university.jpg', 'url': 'https://www.lunduniversity.lu.se/'},
@@ -114,6 +112,8 @@ SPONSORS = {
         'brill': {'name': 'BRILL', 'logo': 'brill.jpg', 'url': 'https://brill.com/'},
         'ubiquity': {'name': 'Ubiquity Press', 'logo': 'ubiquity_press.svg', 'url': 'https://www.ubiquitypress.com/'},
         'openedition': {'name': 'Open Edition', 'logo': 'open_edition.svg', 'url': 'https://www.openedition.org'},
+        'iop': {"name": "IOP Publishing", "logo": "iop.jpg", "url": "http://ioppublishing.org/"},
+        'degruyter': {'name': 'De Gruyter', 'logo': 'degruyter.jpg', 'url': 'https://www.degruyter.com/dg/page/open-access'},
     },
     'patron': {
         'elife': {'name': 'eLife Sciences Publications', 'logo': 'elife.jpg', 'url': 'https://elifesciences.org'},

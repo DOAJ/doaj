@@ -1,0 +1,210 @@
+# redirect to non-www version
+server {
+    listen          80;
+    listen          443 ssl;
+    server_name     www.doaj.org;
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    include includes/cl-letsencrypt-doaj.conf;
+
+    return 301 $scheme://doaj.org$request_uri;
+}
+
+# redirect to SSL version
+server {
+    listen          80;
+    server_name     doaj.org;
+
+    # Serve some crucial XML schemas via plain HTTP as well
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/doajArticles.xsd {
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location =/static/doaj/iso_639-2b.xsd {
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/iso_639-2b.xsd;
+    }
+
+    location ~ /.well-known {
+        root /usr/share/nginx/html/;
+        allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/production/doaj/src/doaj/deploy/robots-production.txt;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+}
+
+# separate section for test app due to paths to the XML schemas
+# being different to the live app
+server {
+    listen          80;
+    server_name     testdoaj.cottagelabs.com;
+
+    # password restrict the test server (disabled 2018-11-15 since server data is anonymous)
+    #auth_basic "Restricted";
+    #auth_basic_user_file /etc/nginx/htpasswd;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location ~ /.well-known {
+        #auth_basic off;
+        root /usr/share/nginx/html/;
+        allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/test/doaj/src/doaj/deploy/robots-test.txt;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+}
+
+# actually serve the app on doaj.org via SSL
+# there's 2 server sections since *.cottagelabs.com is covered by a
+# different SSL cert, see further down
+
+limit_req_zone $binary_remote_addr zone=general:100m rate=2r/s;
+limit_req_zone $binary_remote_addr zone=api:100m rate=2r/s;
+limit_req_status 429;
+server {
+    listen          443 ssl;
+    server_name     doaj.org;
+
+    access_log /var/log/nginx/doaj.access.log;
+    error_log /var/log/nginx/doaj.error.log;
+
+    include includes/cl-letsencrypt-doaj.conf;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location ~ /.well-known {
+        root /usr/share/nginx/html/;
+        allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/production/doaj/src/doaj/deploy/robots-production.txt;
+    }
+
+    location  /static/ {
+        include /home/cloo/repl/production/doaj/src/doaj/deploy/nginx/enable-cors;
+
+        alias /home/cloo/repl/production/doaj/src/doaj/portality/static/;
+        autoindex off;
+        expires max;
+    }
+
+    location /api {
+        if ($http_user_agent ~* (bot|spider) ) {
+            return 403;
+        }
+        limit_req zone=api burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
+    location /search {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
+    location /query {
+        if ($block_ua) {return 403;}
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
+    location / {
+        limit_req zone=general burst=5 nodelay;
+        proxy_pass http://apps;
+        include includes/proxy_pass_settings;
+    }
+
+}
+
+# the test app
+server {
+    listen          443 ssl;
+    server_name     testdoaj.cottagelabs.com;
+
+    access_log /var/log/nginx/doaj-test.access.log;
+    error_log /var/log/nginx/doaj-test.error.log;
+
+    include includes/cl-letsencrypt-doaj.conf;
+
+    # password restrict the test server (disabled 2018-11-15 since server data is anonymous)
+    #auth_basic "Restricted";
+    #auth_basic_user_file /etc/nginx/htpasswd;
+
+    proxy_read_timeout 600s;
+    client_max_body_size 50M;
+
+    # Common misspelling of doajArticle**s**.xsd
+    location =/static/doaj/doajArticle.xsd {
+        alias /home/cloo/repl/test/doaj/src/doaj/portality/static/doaj/doajArticles.xsd;
+    }
+
+    location ~ /.well-known {
+        #auth_basic off;
+        root /usr/share/nginx/html/;
+        allow all;
+    }
+
+    location =/robots.txt {
+        alias /home/cloo/repl/test/doaj/src/doaj/deploy/robots-test.txt;
+    }
+
+    location / {
+        proxy_pass http://testapps;
+        include includes/proxy_pass_settings;
+    }
+}
+
+# Metrics for metricsbeat
+server {
+    listen [::]:80;
+    listen 80;
+    server_name 127.0.0.1;
+    location /server-status {
+        stub_status on;
+        access_log off;
+        allow ::1;
+        allow 127.0.0.1;
+        deny all;
+    }
+}

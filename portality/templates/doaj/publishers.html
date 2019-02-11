@@ -472,15 +472,16 @@ eventual number of repeated incidents.</p>
 <!-- SECTION UPLOADING XML -->
 
 <h3><a name="upload"></a>9) How to get your journal content / article metadata indexed in DOAJ. Uploading content.</h3>
+
 <p>It is the publisher's responsibility to upload article metadata to DOAJ. DOAJ does not actively collect article
 metadata for journals it indexes.</p>
 
-<p>PLEASE NOTE that DOAJ does not display or have any need for author email addresses. Publishers should not send email addresses to us in the XML. Recent restrictions on <a href="/privacy">the use of personal data</a>, as laid out by the GDPR, mean that it is your responsibility to ask authors' consent before you distribute their email addresses. DOAJ kindly requests that you DO NOT send any email addresses to us at all. Thank you.</p>
+<p>PLEASE NOTE that DOAJ does not want author email addresses. We kindly request that you DO NOT send any email addresses to us in metadata uploaded to us. These should be stripped out before upload as XML or via the API. Recent guidelines on <a href="/privacy">the use of personal data</a> restrict what you can send us.</p>
 
-<p>You must log in to <a href="{{ url_for('publisher.index') }}">your Publisher Area</a> before you can begin to
-upload metadata to us. You may only upload metadata for those journals in your account. You should ensure that 
-your journal record is up-to-date in DOAJ before you upload metadata to us. Discrepancies in the ISSN information 
-will cause the upload to fail. If you need to update a journal record please contact us: feedback[at]doaj[.]org.</p>
+<p>TO UPLOAD CONTENT TO US log in to <a href="{{ url_for('publisher.index') }}">your Publisher Area</a> and choose '<a href="https://doaj.org/publisher/uploadfile">Upload Article XML</a>' (automated) or '<a href="https://doaj.org/publisher/metadata">Enter Article Metadata</a>' (manual).</p>
+
+<p>You may only upload metadata for those journals in your account. Uploads only work if the ISSN information you provide matches the ISSNs we have on file for <a href="https://doaj.org/publisher/">your journals</a>. Discrepancies in ISSN information 
+will cause the upload to fail. If you need to update a journal record, you can submit an update to us.</p>
 
 <p>Every article you upload to DOAJ must have a unique URL. If you use the same URL for all articles, the upload will
 fail. Each article uploaded will overwrite the last so you will end up with only the last article you uploaded appearing online.</p>
@@ -517,9 +518,8 @@ the XML has processed successfully, the articles are published to the site. The 
 overnight.</li>
 
 <li><b>Use <a href="{{ url_for('api_v1.docs')  }}">the DOAJ API</a></b>. This is highly automated and 
-the least labour intensive. This option is only available for journal indexed in DOAJ. You will need an API key which you can 
-get by contacting us. <a href="https://doaj.org/api/v1/docs#intro_help">Sign up to our 
-API groups</a> or follow us on <a href="#news">our news channels</a> to find out more about our full API offering.</li>
+the least labour intensive. You will need the API key from your account page. If you do not see an API key there, please contact us. You should also <a href="https://doaj.org/api/v1/docs#intro_help">sign up to our 
+API groups</a> for API support.</li>
 </ul>
 </p>
 

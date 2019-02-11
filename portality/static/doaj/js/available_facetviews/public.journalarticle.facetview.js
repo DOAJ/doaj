@@ -266,7 +266,7 @@ jQuery(document).ready(function($) {
             result += humanDate(resultobj.created_date) + "<br>";
         }
 
-        if (resultobj.last_manual_update) {
+        if (resultobj.last_manual_update && resultobj.last_manual_update !== '1970-01-01T00:00:00Z') {
             result += "<strong>Record Last Updated</strong>:&nbsp;";
             result += humanDate(resultobj.last_manual_update);
         }

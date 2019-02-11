@@ -3,6 +3,7 @@ from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
 import time
+from doajtest.fixtures import AccountFixtureFactory
 
 class TestArticleMatch(DoajTestCase):
 
@@ -42,7 +43,7 @@ class TestArticleMatch(DoajTestCase):
         # now run some queries
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything (except number 6)
-            res = DiscoveryApi.search_journals("Test", 1, 2)
+            res = DiscoveryApi.search("journal", None, "Test", 1, 2)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
@@ -50,7 +51,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 2. a specific field query that should hit just one
-            res = DiscoveryApi.search_journals("title:\"Test Journal 2\"", 1, 5)
+            res = DiscoveryApi.search("journal", None, "title:\"Test Journal 2\"", 1, 5)
             assert res.data.get("total") == 1
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
@@ -58,7 +59,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "title:\"Test Journal 2\""
 
             # 3.paging out of range of results
-            res = DiscoveryApi.search_journals("Test", 2, 10)
+            res = DiscoveryApi.search("journal", None, "Test", 2, 10)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
@@ -66,7 +67,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 4. paging outside the allowed bounds (lower)
-            res = DiscoveryApi.search_journals("Test", 0, 0)
+            res = DiscoveryApi.search("journal", None, "Test", 0, 0)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -74,7 +75,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 5. page size above upper limit
-            res = DiscoveryApi.search_journals("Test", 1, 100000)
+            res = DiscoveryApi.search("journal", None, "Test", 1, 100000)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -83,14 +84,14 @@ class TestArticleMatch(DoajTestCase):
 
             # 6. Failed attempt at wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_journals("Te*t", 1, 10)
+                res = DiscoveryApi.search("journal", None, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_journals("title:Test~0.8", 1, 10)
+                res = DiscoveryApi.search("journal", None, "title:Test~0.8", 1, 10)
 
             # 8. sort on a specific field, expect a default to "asc"
-            res = DiscoveryApi.search_journals("Test", 1, 10, "created_date")
+            res = DiscoveryApi.search("journal", None, "Test", 1, 10, "created_date")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -100,7 +101,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("sort") == "created_date"
 
             # 9. sort on a specific field in a specified direction
-            res = DiscoveryApi.search_journals("Test", 1, 10, "created_date:desc")
+            res = DiscoveryApi.search("journal", None, "Test", 1, 10, "created_date:desc")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -111,17 +112,17 @@ class TestArticleMatch(DoajTestCase):
 
             # 10. Malformed sort direction
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_journals("Test", 1, 10, "created_date:whatever")
+                res = DiscoveryApi.search("journal", None, "Test", 1, 10, "created_date:whatever")
 
             # 11. non-existant sort field
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_journals("Test", 1, 10, "some.missing.field:asc")
+                res = DiscoveryApi.search("journal", None, "Test", 1, 10, "some.missing.field:asc")
 
             # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
-            res = DiscoveryApi.search_journals('"http\://homepage.com/1"', 1, 10)
+            res = DiscoveryApi.search("journal", None, '"http\://homepage.com/1"', 1, 10)
             assert res.data.get("total") == 1
 
-            res = DiscoveryApi.search_journals('"http\:\/\/homepage.com\/1"', 1, 10)
+            res = DiscoveryApi.search("journal", None, '"http\:\/\/homepage.com\/1"', 1, 10)
             assert res.data.get("total") == 1
 
     def test_02_articles(self):
@@ -145,7 +146,7 @@ class TestArticleMatch(DoajTestCase):
 
         with self.app_test.test_request_context():
             # 1. a general query that should hit everything
-            res = DiscoveryApi.search_articles("Test", 1, 2)
+            res = DiscoveryApi.search("article", None, "Test", 1, 2)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
@@ -153,7 +154,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 2. a specific field query that should hit just one
-            res = DiscoveryApi.search_articles("title:\"Test Article 2\"", 1, 5)
+            res = DiscoveryApi.search("article", None, "title:\"Test Article 2\"", 1, 5)
             assert res.data.get("total") == 1
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
@@ -161,7 +162,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "title:\"Test Article 2\""
 
             # 3.paging out of range of results
-            res = DiscoveryApi.search_articles("Test", 2, 10)
+            res = DiscoveryApi.search("article", None, "Test", 2, 10)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
@@ -169,7 +170,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 4. paging outside the allowed bounds (lower)
-            res = DiscoveryApi.search_articles("Test", 0, 0)
+            res = DiscoveryApi.search("article", None, "Test", 0, 0)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -177,7 +178,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 5. page size above upper limit
-            res = DiscoveryApi.search_articles("Test", 1, 100000)
+            res = DiscoveryApi.search("article", None, "Test", 1, 100000)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -186,14 +187,14 @@ class TestArticleMatch(DoajTestCase):
 
             # 6. Failed attempt at wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_articles("Te*t", 1, 10)
+                res = DiscoveryApi.search("article", None, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_articles("title:Test~0.8", 1, 10)
+                res = DiscoveryApi.search("article", None, "title:Test~0.8", 1, 10)
 
             # 8. sort on a specific field, expect a default to "asc"
-            res = DiscoveryApi.search_articles("Test", 1, 10, "created_date")
+            res = DiscoveryApi.search("article", None, "Test", 1, 10, "created_date")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -203,7 +204,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("sort") == "created_date"
 
             # 9. sort on a specific field in a specified direction
-            res = DiscoveryApi.search_articles("Test", 1, 10, "created_date:desc")
+            res = DiscoveryApi.search("article", None, "Test", 1, 10, "created_date:desc")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -214,17 +215,17 @@ class TestArticleMatch(DoajTestCase):
 
             # 10. Malformed sort direction
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_articles("Test", 1, 10, "created_date:whatever")
+                res = DiscoveryApi.search("article", None, "Test", 1, 10, "created_date:whatever")
 
             # 11. non-existant sort field
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_articles("Test", 1, 10, "some.missing.field:asc")
+                res = DiscoveryApi.search("article", None, "Test", 1, 10, "some.missing.field:asc")
 
             # 12. with a forward slash, with and without escaping
-            res = DiscoveryApi.search_articles('"10.test/1"', 1, 10)
+            res = DiscoveryApi.search("article", None, '"10.test/1"', 1, 10)
             assert res.data.get("total") == 1
 
-            res = DiscoveryApi.search_articles('"10.test\/1"', 1, 10)
+            res = DiscoveryApi.search("article", None, '"10.test\/1"', 1, 10)
             assert res.data.get("total") == 1
 
     def test_03_applications(self):
@@ -263,9 +264,9 @@ class TestArticleMatch(DoajTestCase):
         time.sleep(1)
 
         # now run some queries
-        with self.app_test.test_request_context():
+        with self._make_and_push_test_context(acc=acc):
             # 1. a general query that should hit everything
-            res = DiscoveryApi.search_applications(acc, "Test", 1, 2)
+            res = DiscoveryApi.search("application", acc, "Test", 1, 2)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 2
             assert res.data.get("page") == 1
@@ -273,7 +274,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 2. a specific field query that should hit just one
-            res = DiscoveryApi.search_applications(acc, "title:\"Test Suggestion 2\"", 1, 5)
+            res = DiscoveryApi.search("application", acc, "title:\"Test Suggestion 2\"", 1, 5)
             assert res.data.get("total") == 1
             assert len(res.data.get("results")) == 1
             assert res.data.get("page") == 1
@@ -281,7 +282,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "title:\"Test Suggestion 2\""
 
             # 3.paging out of range of results
-            res = DiscoveryApi.search_applications(acc, "Test", 2, 10)
+            res = DiscoveryApi.search("application", acc, "Test", 2, 10)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 0
             assert res.data.get("page") == 2
@@ -289,7 +290,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 4. paging outside the allowed bounds (lower)
-            res = DiscoveryApi.search_applications(acc, "Test", 0, 0)
+            res = DiscoveryApi.search("application", acc, "Test", 0, 0)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -297,7 +298,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("query") == "Test"
 
             # 5. page size above upper limit
-            res = DiscoveryApi.search_applications(acc, "Test", 1, 100000)
+            res = DiscoveryApi.search("application", acc, "Test", 1, 100000)
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -306,14 +307,14 @@ class TestArticleMatch(DoajTestCase):
 
             # 6. Failed attempt at wildcard search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_applications(acc, "Te*t", 1, 10)
+                res = DiscoveryApi.search("application", acc, "Te*t", 1, 10)
 
             # 7. Failed attempt at fuzzy search
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_applications(acc, "title:Test~0.8", 1, 10)
+                res = DiscoveryApi.search("application", acc, "title:Test~0.8", 1, 10)
 
             # 8. sort on a specific field, expect a default to "asc"
-            res = DiscoveryApi.search_applications(acc, "Test", 1, 10, "created_date")
+            res = DiscoveryApi.search("application", acc, "Test", 1, 10, "created_date")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -323,7 +324,7 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("sort") == "created_date"
 
             # 9. sort on a specific field in a specified direction
-            res = DiscoveryApi.search_applications(acc, "Test", 1, 10, "created_date:desc")
+            res = DiscoveryApi.search("application", acc, "Test", 1, 10, "created_date:desc")
             assert res.data.get("total") == 5
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
@@ -334,24 +335,25 @@ class TestArticleMatch(DoajTestCase):
 
             # 10. Malformed sort direction
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_applications(acc, "Test", 1, 10, "created_date:whatever")
+                res = DiscoveryApi.search("application", acc, "Test", 1, 10, "created_date:whatever")
 
             # 11. non-existant sort field
             with self.assertRaises(DiscoveryException):
-                res = DiscoveryApi.search_applications(acc, "Test", 1, 10, "some.missing.field:asc")
+                res = DiscoveryApi.search("application", acc, "Test", 1, 10, "some.missing.field:asc")
 
-            # 12. A search with an account that isn't either of the ones in the dataset
-            other = models.Account()
-            other.set_id("other")
-            res = DiscoveryApi.search_applications(other, "Test", 1, 10, "created_date:desc")
+            # 12. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
+            res = DiscoveryApi.search("application", acc, '"http\://homepage.com/1"', 1, 10)
+            assert res.data.get("total") == 1
+
+            res = DiscoveryApi.search("application", acc, '"http\:\/\/homepage.com\/1"', 1, 10)
+            assert res.data.get("total") == 1
+
+        # 13. A search with an account that isn't either of the ones in the dataset
+        other = models.Account()
+        other.set_id("other")
+        with self._make_and_push_test_context(acc=other):
+            res = DiscoveryApi.search("application", other, "Test", 1, 10, "created_date:desc")
             assert res.data.get("total") == 0
-
-            # 13. with a forward slash, with and without escaping (note that we have to escape the : as it has meaning for lucene)
-            res = DiscoveryApi.search_applications(acc, '"http\://homepage.com/1"', 1, 10)
-            assert res.data.get("total") == 1
-
-            res = DiscoveryApi.search_applications(acc, '"http\:\/\/homepage.com\/1"', 1, 10)
-            assert res.data.get("total") == 1
 
     def test_04_paging_for_link_headers(self):
         # calc_pagination takes total, page_size, requested_page

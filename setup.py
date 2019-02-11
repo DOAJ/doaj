@@ -3,7 +3,7 @@ import sys
 
 setup(
     name = 'doaj',
-    version = '2.14.0',
+    version = '2.14.4',
     packages = find_packages(),
     install_requires = [
         "werkzeug==0.14.1",
@@ -36,12 +36,11 @@ setup(
         "python-dateutil",  # something else already installs this, so just note we need it without an explicit version freeze
         # for deployment
         "gunicorn",
-        "newrelic",
+        "elastic-apm[flask]",
         "parameterized==0.6.1",
         "awscli",
         "boto3==1.9.10"
     ] + (["setproctitle"] if "linux" in sys.platform else []),
-
     url = 'http://cottagelabs.com/',
     author = 'Cottage Labs',
     author_email = 'us@cottagelabs.com',

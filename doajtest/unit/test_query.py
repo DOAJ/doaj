@@ -1,7 +1,7 @@
 from portality import models
 
 from doajtest.fixtures import AccountFixtureFactory, ArticleFixtureFactory
-from doajtest.helpers import DoajTestCase
+from doajtest.helpers import DoajTestCase, deep_sort
 
 from portality.bll.services.query import QueryService, Query
 from portality.bll import exceptions
@@ -31,6 +31,28 @@ QUERY_ROUTE = {
             "role" : "admin",
             "dao" : "portality.models.Journal"
         }
+    },
+    "api_query" : {
+        "article" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "result_filters" : ["public_result_filter"],
+            "dao" : "portality.models.Article",
+            "page_size" : 1
+        },
+        "journal" : {
+            "auth" : False,
+            "role" : None,
+            "query_filters" : ["only_in_doaj", "public_source"],
+            "dao" : "portality.models.Journal"
+        },
+        "suggestion" : {
+            "auth" : True,
+            "role" : None,
+            "query_filters" : ["owner", "private_source"],
+            "dao" : "portality.models.Suggestion"
+        }
     }
 }
 
@@ -40,8 +62,14 @@ QUERY_FILTERS = {
     "owner" : "portality.lib.query_filters.owner",
 
     # result filters
-    "public_result_filter" : "portality.lib.query_filters.public_result_filter"
+    "public_result_filter" : "portality.lib.query_filters.public_result_filter",
+
+    # source filter
+    "public_source": "portality.lib.query_filters.public_source"
 }
+
+def without_keys(d, keys):
+    return {x: d[x] for x in d if x not in keys}
 
 
 class TestQuery(DoajTestCase):
@@ -109,6 +137,15 @@ class TestQuery(DoajTestCase):
         q = Query()
         q.clear_match_all()
         assert q.as_dict() == {'query': {}}, q.as_dict()
+
+        q = Query()
+        q.add_include("last_updated")
+        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated"]}}, q.as_dict()
+
+        q = Query()
+        q.add_include(["last_updated", "id"])
+        assert q.as_dict() == {"query": {"match_all": {}},"_source": {"include": ["last_updated", "id"]}}, q.as_dict()
+
 
     def test_03_query_svc_get_config(self):
         qsvc = QueryService()
@@ -191,7 +228,63 @@ class TestQuery(DoajTestCase):
           }
         }
 
-    def test_06_search(self):
+    def test_06_post_filter_search_results_unpacked(self):
+        # The config above says that the public_result_filter should run on the results. That should delete admin.publisher_record_id.
+        # We take a fake result set with the secret info in, run the results filters and expect to have the data cleaned.
+        # We are testing that the mechanism that runs post filters works, the idea is not to test public_result_filter specifically.
+        qsvc = QueryService()
+        cfg = qsvc._get_config_for_search('query', 'article', account=None)
+
+        res1 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res2 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+        res3 = { "admin": { "seal": False, "publisher_record_id" : "some_identifier"}, "bibjson": {}}
+
+        res1 = qsvc._post_filter_search_results(cfg, res1, unpacked=True)
+        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+
+        res2 = qsvc._post_filter_search_results(cfg, res2, unpacked=True)
+        assert res2 == { "admin": { "seal": False }, "bibjson": {}}
+
+        res3 = qsvc._post_filter_search_results(cfg, res3, unpacked=True)
+        assert res1 == { "admin": { "seal": False }, "bibjson": {}}
+
+    def test_07_get_query(self):
+        # q = Query()
+        raw_query = {
+            "query" : {
+                "query_string" : {
+                    "query" : '*',
+                    "default_operator": "AND"
+                }
+            },
+            "from" : 0,
+            "size" : 100
+        }
+        qsvc = QueryService()
+        cfg = qsvc._get_config_for_search('api_query', 'journal', account=None)
+
+        # assert q.as_dict() == {"query": {"match_all": {}}}, q.as_dict()
+        query = qsvc._get_query(cfg, raw_query)
+        expected_result = {'query':
+                    {'filtered': {
+                        'filter': {'bool': {'must': [{'term': {'admin.in_doaj': True}}]}},
+                        'query': {'query_string': {'query': '*', 'default_operator': 'AND'}}}
+                    },
+                    '_source': {'include': ['last_updated', 'admin.ticked', 'created_date', 'admin.seal', 'id', 'bibjson']},
+                    'from': 0, 'size': 100}
+        q_but_source = without_keys(query.as_dict(), ['_source'])
+        r_but_source = without_keys(expected_result, ['_source'])
+        query_sorted = deep_sort(query.as_dict())
+        expected_result_sorted = deep_sort(expected_result)
+        assert query_sorted == expected_result_sorted, query_sorted
+
+    def test_08_get_dao_klass(self):
+        qsvc = QueryService()
+        cfg = qsvc._get_config_for_search('query', 'article', account=None)
+        dao_klass = qsvc._get_dao_klass(cfg)
+        self.assertIs(dao_klass, models.Article)
+
+    def test_09_search(self):
         # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
         # We then expect pre-filters to run on the query, ensuring we only get the 3 in DOAJ articles.
         # We also expect the post-filters to run on the results, ensuring non-public data is deleted from the admin section.
@@ -211,3 +304,23 @@ class TestQuery(DoajTestCase):
         for hit in res['hits']['hits']:
             am = models.Article(**hit)
             assert am.publisher_record_id() is None, am.publisher_record_id()
+
+
+    def test_10_scroll(self):
+        # Just bringing it all together. Make 4 articles: 3 in DOAJ, 1 not in DOAJ
+        # We then expect pre-filters to run on the query, ensuring we only get the 3 in DOAJ articles.
+        # We also expect the post-filters to run on the results, ensuring non-public data is deleted from the admin section.
+        qsvc = QueryService()
+
+        articles = []
+        for i in range(0, 3):
+            articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False)))
+            assert articles[-1].publisher_record_id() == 'some_identifier'
+            articles[-1].save(blocking=True)
+        articles.append(models.Article(**ArticleFixtureFactory.make_article_source(with_id=False, in_doaj=False)))
+        articles[-1].save(blocking=True)
+        q = {"query": {"match_all": {}}}
+        for res in qsvc.scroll('api_query', 'article', q, None):
+            am = models.Article(**res)
+            assert am.publisher_record_id() is None, am.publisher_record_id()
+

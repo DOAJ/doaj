@@ -20,14 +20,14 @@ class CheckLatestESBackupBackgroundTask(BackgroundTask):
         """
 
         # Connection to the ES index
-        conn = Connection(app.config.get("ELASTIC_SEARCH_HOST"), index='_snapshot')
+        conn = Connection(app.config["ELASTIC_SEARCH_HOST"], index='_snapshot')
 
         try:
-            client = ESSnapshotsClient(conn, app.config.get('ELASTIC_SEARCH_SNAPSHOT_REPOSITORY', 'doaj_s3'))
+            client = ESSnapshotsClient(conn, app.config['ELASTIC_SEARCH_SNAPSHOT_REPOSITORY'])
             client.check_today_snapshot()
         except Exception as e:
             app_email.send_mail(
-                to=app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com'),
+                to=[app.config.get('ADMIN_EMAIL', 'sysadmin@cottagelabs.com')],
                 fro=app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org'),
                 subject='Alert: DOAJ ElasticSearch backup failure',
                 msg_body="Today's ES snapshot has not been found by the checking task. Error: \n" + e.message
