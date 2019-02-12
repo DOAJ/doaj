@@ -1,9 +1,9 @@
 {
-	"batch" : 1000,
+	"batch" : 10000,
 	"types": [
 		{
 			"type" : "article",
-			"scroll_size" : 500,
+			"scroll_size" : 1000,
 			"keepalive" : "20m"
 		}
 	]

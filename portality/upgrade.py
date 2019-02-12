@@ -56,74 +56,81 @@ def do_upgrade(definition, verbose):
         first_page = esprit.raw.search(sconn, tdef.get("type"))
         max = first_page.json().get("hits", {}).get("total", 0)
         type_start = datetime.now()
-        for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
-            # learn what kind of model we've got
-            model_class = MODELS.get(tdef.get("type"))
 
-            original = deepcopy(result)
-            if tdef.get("init_with_model", True):
-                # instantiate an object with the data
-                try:
-                    result = model_class(**result)
-                except DataStructureException as e:
-                    print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
-                    continue
+        try:
+            for result in esprit.tasks.scroll(sconn, tdef.get("type"), keepalive=tdef.get("keepalive", "1m"), page_size=tdef.get("scroll_size", 1000), scan=True):
+                # learn what kind of model we've got
+                model_class = MODELS.get(tdef.get("type"))
 
-            for function_path in tdef.get("functions", []):
-                fn = plugin.load_function(function_path)
-                result = fn(result)
+                original = deepcopy(result)
+                if tdef.get("init_with_model", True):
+                    # instantiate an object with the data
+                    try:
+                        result = model_class(**result)
+                    except DataStructureException as e:
+                        print "Could not create model for {0}, Error: {1}".format(result['id'], e.message)
+                        continue
 
-            data = result
-            _id = result.get("id", "id not specified")
-            if isinstance(result, model_class):
-                # run the tasks specified with this object type
-                tasks = tdef.get("tasks", None)
-                if tasks:
-                    for func_call, kwargs in tasks.iteritems():
-                        getattr(result, func_call)(**kwargs)
+                for function_path in tdef.get("functions", []):
+                    fn = plugin.load_function(function_path)
+                    result = fn(result)
 
-                # run the prep routine for the record
-                try:
-                    result.prep()
-                except AttributeError:
-                    if verbose:
-                        print tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done"
-                    pass
+                data = result
+                _id = result.get("id", "id not specified")
+                if isinstance(result, model_class):
+                    # run the tasks specified with this object type
+                    tasks = tdef.get("tasks", None)
+                    if tasks:
+                        for func_call, kwargs in tasks.iteritems():
+                            getattr(result, func_call)(**kwargs)
 
-                data = result.data
-                _id = result.id
+                    # run the prep routine for the record
+                    try:
+                        result.prep()
+                    except AttributeError:
+                        if verbose:
+                            print tdef.get("type"), result.id, "has no prep method - no, pre-save preparation being done"
+                        pass
 
-            # add the data to the batch
-            data = _diff(original, data)
-            if "id" not in data:
-                data["id"] = _id
-            data = {"doc" : data}
+                    data = result.data
+                    _id = result.id
 
-            batch.append(data)
-            if verbose:
-                print "added", tdef.get("type"), _id, "to batch update"
+                # add the data to the batch
+                data = _diff(original, data)
+                if "id" not in data:
+                    data["id"] = _id
+                data = {"doc" : data}
 
-            # When we have enough, do some writing
-            if len(batch) >= batch_size:
+                batch.append(data)
+                if verbose:
+                    print "added", tdef.get("type"), _id, "to batch update"
+
+                # When we have enough, do some writing
+                if len(batch) >= batch_size:
+                    total += len(batch)
+                    print datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+                    esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
+                    batch = []
+                    # do some timing predictions
+                    batch_tick = datetime.now()
+                    time_so_far = batch_tick - type_start
+                    seconds_so_far = time_so_far.total_seconds()
+                    estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
+                    estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
+                    print 'Estimated finish time for this type {0}.'.format(estimated_finish)
+        except esprit.tasks.ScrollTimeoutException:
+            # Try to write the part-batch to index
+            if len(batch) > 0:
                 total += len(batch)
-                print datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+                print datetime.now(), "scroll timed out / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
                 esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
                 batch = []
-                # do some timing predictions
-                batch_tick = datetime.now()
-                time_so_far = batch_tick - type_start
-                seconds_so_far = time_so_far.total_seconds()
-                estimated_seconds_remaining = ((seconds_so_far * max) / total) - seconds_so_far
-                estimated_finish = batch_tick + timedelta(seconds=estimated_seconds_remaining)
-                print 'Estimated finish time for this type {0}.'.format(estimated_finish)
-
-
 
         # Write the last part-batch to index
         if len(batch) > 0:
             total += len(batch)
-            print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
-            esprit.raw.bulk(tconn, batch, type_=tdef.get("type"), bulk_type="update")
+            print datetime.now(), "final result set / writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+            esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
 
 
 def _diff(original, current):
