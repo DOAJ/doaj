@@ -106,7 +106,7 @@ def do_upgrade(definition, verbose):
             # When we have enough, do some writing
             if len(batch) >= batch_size:
                 total += len(batch)
-                print "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
+                print datetime.now(), "writing ", len(batch), "to", tdef.get("type"), ";", total, "of", max
                 esprit.raw.bulk(tconn, batch, idkey="doc.id", type_=tdef.get("type"), bulk_type="update")
                 batch = []
                 # do some timing predictions

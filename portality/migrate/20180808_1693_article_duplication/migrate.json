@@ -1,5 +1,5 @@
 {
-	"batch" : 10000,
+	"batch" : 1000,
 	"types": [
 		{
 			"type" : "article",
