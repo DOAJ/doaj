@@ -112,6 +112,15 @@ class TestClient(DoajTestCase):
         bj2 = j.bibjson()
         assert bj2.publication_time == 7
 
+        # check over ordered note reading
+        j.add_note("another note", "2010-01-01T00:00:00Z")
+        j.add_note("an old note", "2001-01-01T00:00:00Z")
+        ons = j.ordered_notes
+        assert len(ons) == 3
+        assert ons[2]["note"] == "an old note"
+        assert ons[1]["note"] == "testing"
+        assert ons[0]["note"] == "another note"
+
         # now construct from a fixture
         source = JournalFixtureFactory.make_journal_source(include_obsolete_fields=True)
         j = models.Journal(**source)
@@ -161,6 +170,14 @@ class TestClient(DoajTestCase):
         assert s.article_metadata is True
         assert s.suggester.get("name") == "test"
         assert s.suggester.get("email") == "test@test.com"
+
+        # check over ordered note reading
+        s.add_note("another note", "2010-01-01T00:00:00Z")
+        s.add_note("an old note", "2001-01-01T00:00:00Z")
+        ons = s.ordered_notes
+        assert len(ons) == 2
+        assert ons[1]["note"] == "an old note"
+        assert ons[0]["note"] == "another note"
 
         s.prep()
         assert 'index' in s, s
