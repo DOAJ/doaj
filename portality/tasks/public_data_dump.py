@@ -31,8 +31,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         types = self.get_param(params, 'types')
 
         tmpStore = StoreFactory.tmp()
-        mainStore = StoreFactory.get("api_data")
-        container = app.config.get("STORE_API_DATA_CONTAINER")
+        mainStore = StoreFactory.get("public_data_dump")
+        container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
 
         if clean:
             mainStore.delete(container)
@@ -50,15 +50,17 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         else:
             types = [types]
 
-        out_dir = tmpStore.path(container, "doaj_data_" + day_at_start, create_container=True, must_exist=False)
-        out_name = os.path.basename(out_dir)
-        zipped_name = out_name + ".tar.gz"
-        zip_dir = os.path.dirname(out_dir)
-        zipped_path = os.path.join(zip_dir, zipped_name)
-        tarball = tarfile.open(zipped_path, "w:gz")
+        urls = {"article" : None, "journal" : None}
 
         # Scroll for article and/or journal
         for typ in types:
+            out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
+            out_name = os.path.basename(out_dir)
+            zipped_name = out_name + ".tar.gz"
+            zip_dir = os.path.dirname(out_dir)
+            zipped_path = os.path.join(zip_dir, zipped_name)
+            tarball = tarfile.open(zipped_path, "w:gz")
+
             batch = []
             file_num = 1
             job.add_audit_message(dates.now() + u": Starting download of " + typ)
@@ -74,24 +76,27 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             if len(batch) > 0:
                 self._save_file(tmpStore, container, typ, day_at_start, batch, file_num, tarball)
 
-        tarball.close()
-        job.add_audit_message(dates.now() + u": done")
+            tarball.close()
 
-        # Copy the source directory to main store
-        try:
-            self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
-        except Exception as e:
-            tmpStore.delete(container)
-            raise BackgroundException("Error copying data on complete\n" + e.message)
+            # Copy the source directory to main store
+            try:
+                self._copy_on_complete(mainStore, tmpStore, container, zipped_path)
+            except Exception as e:
+                tmpStore.delete(container)
+                raise BackgroundException("Error copying {0} data on complete {1}\n".format(typ, e.message))
+
+            store_url = mainStore.url(container, zipped_name)
+            urls[typ] = store_url
 
         if prune:
-            self._prune_container(mainStore, container, day_at_start)
+            self._prune_container(mainStore, container, day_at_start, types)
 
         tmpStore.delete(container)
 
         # finally update the cache
-        store_url = mainStore.url(container, zipped_name)
-        cache.Cache.cache_public_data_dump(store_url)
+        cache.Cache.cache_public_data_dump(urls["article"], urls["journal"])
+
+        job.add_audit_message(dates.now() + u": done")
 
 
     def _save_file(self, storage, container, typ, day_at_start, results, file_num, tarball):
@@ -119,16 +124,29 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         mainStore.store(container, zipped_name, source_path=zipped_path)
         tmpStore.delete(container, zipped_name)
 
-    def _prune_container(self, mainStore, container, day_at_start):
+    def _prune_container(self, mainStore, container, day_at_start, types):
         # Delete all files and dirs in the container that does not contain today's date
-        file_for_today = "doaj_data_" + day_at_start + ".tar.gz"
+        files_for_today = []
+        for typ in types:
+            files_for_today.append("doaj_" + typ + "_data_" + day_at_start + ".tar.gz")
+
+        # get the files in storage
         container_files = mainStore.list(container)
-        # only delete if today's file exists
-        if file_for_today not in container_files:
-            self.background_job.add_audit_message(u"Files not pruned. File {0} is missing".format(file_for_today))
+
+        # only delete if today's files exist
+        found = 0
+        for files_for_today in files_for_today:
+            if files_for_today in container_files:
+                found += 1
+
+        # only proceed if the files for today are present
+        if found != len(files_for_today):
+            self.background_job.add_audit_message(u"Files not pruned. One of {0} is missing".format(",".join(files_for_today)))
             return
+
+        # go through the container files and remove any that are not today's files
         for container_file in container_files:
-            if container_file != file_for_today:
+            if container_file not in files_for_today:
                 mainStore.delete(target_name=container_file)
 
     def cleanup(self):
@@ -152,9 +170,9 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         cls.set_param(params, "prune", kwargs.get("prune", False))
         cls.set_param(params, "types", kwargs.get("types", "all"))
 
-        container = app.config.get("STORE_API_DATA_CONTAINER")
+        container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
         if container is None:
-            raise BackgroundException("You must set STORE_API_DATA_CONTAINER in the config")
+            raise BackgroundException("You must set STORE_PUBLIC_DATA_DUMP_CONTAINER in the config")
 
         # first prepare a job record
         job = models.BackgroundJob()

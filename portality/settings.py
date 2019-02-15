@@ -136,7 +136,7 @@ STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
 
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
-STORE_API_DATA_CONTAINER = "doaj-data-dump"
+STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump"
 
 # S3 credentials for relevant scopes
 STORE_S3_SCOPES = {
@@ -145,7 +145,7 @@ STORE_S3_SCOPES = {
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     },
     # Used by the api_export script to dump data from the api
-    "api_data" : {
+    "public_data_dump" : {
         "aws_access_key_id" : "put this in your dev/test/production.cfg",
         "aws_secret_access_key" : "put this in your dev/test/production.cfg"
     }

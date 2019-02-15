@@ -64,9 +64,10 @@ class Cache(DomainObject):
         return rec.get("filename")
 
     @classmethod
-    def cache_public_data_dump(cls, url):
+    def cache_public_data_dump(cls, article_url, journal_url):
         cobj = cls(**{
-            "filename": url
+            "article": article_url,
+            "journal": journal_url
         })
         cobj.set_id("public_data_dump")
         cobj.save()
