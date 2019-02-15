@@ -166,7 +166,20 @@ def public_data_dump_redirect(record_type):
     store_url = models.Cache.get_public_data_dump(record_type)
     if store_url is None:
         abort(404)
+    if store_url.startswith("/"):
+        store_url = "/store" + store_url
     return redirect(store_url, code=307)
+
+@blueprint.route("/store/<container>/<filename>")
+def get_from_local_store(container, filename):
+    if not app.config.get("STORE_LOCAL_EXPOSE", False):
+        abort(404)
+
+    from portality import store
+    localStore = store.StoreFactory.get(None)
+    file_handle = localStore.get(container, filename)
+    return send_file(file_handle, mimetype="application/octet-stream", as_attachment=True, attachment_filename=filename)
+
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):

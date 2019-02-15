@@ -134,6 +134,7 @@ STORE_TMP_IMPL = "portality.store.TempStore"
 from portality.lib import paths
 STORE_LOCAL_DIR = paths.rel2abs(__file__, "..", "local_store", "main")
 STORE_TMP_DIR = paths.rel2abs(__file__, "..", "local_store", "tmp")
+STORE_LOCAL_EXPOSE = False  # if you want to allow files in the local store to be exposed under /store/<path> urls.  For dev only.
 
 STORE_ANON_DATA_CONTAINER = "doaj-anon-data"
 STORE_PUBLIC_DATA_DUMP_CONTAINER = "doaj-data-dump"
