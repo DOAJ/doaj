@@ -103,7 +103,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # Create a dir for today and save all files in there
         data = json.dumps(results, cls=ModelJsonEncoder)
 
-        filename = os.path.join("doaj_data_" + day_at_start, "{typ}_{file_num}.json".format(typ=typ, file_num=file_num))
+        filename = os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_{file_num}.json".format(typ=typ, file_num=file_num))
         output_file = storage.path(container, filename, create_container=True, must_exist=False)
         dn = os.path.dirname(output_file)
         if not os.path.exists(dn):

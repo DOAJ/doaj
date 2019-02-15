@@ -73,11 +73,11 @@ class Cache(DomainObject):
         cobj.save()
 
     @classmethod
-    def get_public_data_dump(cls):
+    def get_public_data_dump(cls, record_type):
         rec = cls.pull("public_data_dump")
         if rec is None:
             return None
-        return rec.get("filename")
+        return rec.get(record_type)
 
     def mark_for_regen(self):
         self.update({"regen" : True})

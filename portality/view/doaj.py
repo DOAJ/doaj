@@ -159,11 +159,14 @@ def sitemap():
 
 @blueprint.route("/public_data_dump")
 def public_data_dump():
-    store_url = models.Cache.get_public_data_dump()
+    return render_template("doaj/public_data_dump.html")
+
+@blueprint.route("/public_data_dump/<record_type>")
+def public_data_dump_redirect(record_type):
+    store_url = models.Cache.get_public_data_dump(record_type)
     if store_url is None:
         abort(404)
     return redirect(store_url, code=307)
-
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):
