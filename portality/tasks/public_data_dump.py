@@ -1,6 +1,7 @@
 from portality import models
 from portality.core import app
 from portality.lib import dates
+from portality.models import cache
 
 from portality.tasks.redis_huey import long_running, schedule
 from portality.decorators import write_required
@@ -87,6 +88,11 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             self._prune_container(mainStore, container, day_at_start)
 
         tmpStore.delete(container)
+
+        # finally update the cache
+        store_url = mainStore.url(container, zipped_name)
+        cache.Cache.cache_public_data_dump(store_url)
+
 
     def _save_file(self, storage, container, typ, day_at_start, results, file_num, tarball):
         # Create a dir for today and save all files in there

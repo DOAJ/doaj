@@ -157,6 +157,13 @@ def sitemap():
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
+@blueprint.route("/public_data_dump")
+def public_data_dump():
+    store_url = models.Cache.get_public_data_dump()
+    if store_url is None:
+        abort(404)
+    return redirect(store_url, code=307)
+
 
 @blueprint.route('/autocomplete/<doc_type>/<field_name>', methods=["GET", "POST"])
 def autocomplete(doc_type, field_name):

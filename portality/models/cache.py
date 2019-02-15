@@ -63,6 +63,21 @@ class Cache(DomainObject):
             return None
         return rec.get("filename")
 
+    @classmethod
+    def cache_public_data_dump(cls, url):
+        cobj = cls(**{
+            "filename": url
+        })
+        cobj.set_id("public_data_dump")
+        cobj.save()
+
+    @classmethod
+    def get_public_data_dump(cls):
+        rec = cls.pull("public_data_dump")
+        if rec is None:
+            return None
+        return rec.get("filename")
+
     def mark_for_regen(self):
         self.update({"regen" : True})
 

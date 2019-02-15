@@ -2,6 +2,7 @@ from portality.core import app
 from portality.lib import plugin
 
 import os, shutil, codecs, boto3
+from urllib import quote_plus
 
 class StoreException(Exception):
     pass
@@ -45,6 +46,9 @@ class Store(object):
 
     def get(self, container_id, target_name):
         return None
+
+    def url(self, container_id, target_name):
+        pass
 
     def delete(self, container_id, target_name=None):
         pass
@@ -99,6 +103,11 @@ class StoreS3(Store):
         body = obj["Body"]
         return body
 
+    def url(self, container_id, target_name):
+        bucket_location = self.client.get_bucket_location(Bucket=container_id)
+        location = bucket_location['LocationConstraint']
+        return "https://s3.{0}.amazonaws.com/{1}/{2}".format(location, container_id, quote_plus(target_name))
+
     def delete(self, container_id, target_name=None):
         # we are not allowed to delete the bucket, so we just delete the contents
         keys = self.list(container_id)
@@ -145,6 +154,9 @@ class StoreLocal(Store):
         if os.path.exists(cpath) and os.path.isfile(cpath):
             f = codecs.open(cpath, "r")
             return f
+
+    def url(self, container_id, target_name):
+        return "/" + container_id + "/" + target_name
 
     def delete(self, container_id, target_name=None):
         cpath = os.path.join(self.dir, container_id)
