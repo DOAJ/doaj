@@ -712,7 +712,11 @@ DEFAULT_TIMESTAMP = "1970-01-01T00:00:00Z"
 # ========================================
 # API configuration
 
+# maximum number of records to return per page
 DISCOVERY_MAX_PAGE_SIZE = 100
+
+# maximum number of records to return in total (a request for a page starting beyond this number will fail)
+DISCOVERY_MAX_RECORDS_SIZE = 1000
 
 DISCOVERY_ARTICLE_SEARCH_SUBS = {
     "title" : "bibjson.title",

@@ -3,15 +3,16 @@ from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
 import time
-from doajtest.fixtures import AccountFixtureFactory
 
 class TestArticleMatch(DoajTestCase):
 
     def setUp(self):
         super(TestArticleMatch, self).setUp()
+        self.max = self.app_test.config.get("DISCOVERY_MAX_RECORDS_SIZE")
 
     def tearDown(self):
         super(TestArticleMatch, self).tearDown()
+        self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = self.max
 
     def test_01_journals(self):
         # populate the index with some journals
@@ -398,3 +399,28 @@ class TestArticleMatch(DoajTestCase):
         }
 
         assert generate_link_headers(metadata) == '<https://example.org/api/v1/search/articles/%2A?page=1&pageSize=10>; rel=prev, <https://example.org/api/v1/search/articles/%2A?page=5&pageSize=10>; rel=last, <https://example.org/api/v1/search/articles/%2A?page=3&pageSize=10>; rel=next', generate_link_headers(metadata)
+
+    def test_06_deep_paging_limit(self):
+        # populate the index with some journals
+        for i in range(10):
+            j = models.Journal()
+            j.set_in_doaj(True)
+            bj = j.bibjson()
+            bj.title = "Test Journal {x}".format(x=i)
+            bj.add_identifier(bj.P_ISSN, "{x}000-0000".format(x=i))
+            bj.publisher = "Test Publisher {x}".format(x=i)
+            bj.add_url("http://homepage.com/{x}".format(x=i), "homepage")
+            j.save(blocking=i == 9)
+
+        self.app_test.config["DISCOVERY_MAX_RECORDS_SIZE"] = 5
+
+        # now run some queries
+        with self.app_test.test_request_context():
+            # check that the first page still works
+            res = DiscoveryApi.search("journal", None, "*", 1, 5)
+            assert res.data.get("total") == 10
+            assert len(res.data.get("results")) == 5
+            assert res.data.get("page") == 1
+            assert res.data.get("pageSize") == 2
+
+            res = DiscoveryApi.search("journal", None, "*", 2, 5)
