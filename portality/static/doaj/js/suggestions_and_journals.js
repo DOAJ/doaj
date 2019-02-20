@@ -283,8 +283,8 @@ function setup_add_buttons() {
         if (customisations[id]['id']) {
             thebtn += ' id="' + customisations[id]['id'] + '"';
         }
-        thebtn += '>' + value + '</button>';
-        e.append(thebtn);
+        thebtn += ' style="margin-bottom: 20px;">' + value + '</button>';
+        e.prepend(thebtn);
     });
     setup_add_button_handlers();
 }
@@ -312,7 +312,7 @@ function setup_add_button_handlers() {
         if (notes_deletable) { // global variable set by template
             delclass = " deletable "
         }
-        thefield = [
+        var thefield = [
             '<div class="control-group row-fluid' + delclass + '" id="notes-' + cur_number_of_notes + '-container">',
             '    <div class="span8 nested-field-container">',
             '        <label class="control-label" for="note">',
@@ -335,7 +335,7 @@ function setup_add_button_handlers() {
 
         cur_number_of_notes += 1;  // this doesn't get decremented in the remove button because there's no point, WTForms will understand it
             // even if the ID-s go 0, 2, 7, 13 etc.
-        $(this).before(thefield);
+        $(this).after(thefield);
         if (notes_deletable) {
             setup_remove_buttons();
         }
@@ -356,7 +356,7 @@ function setup_remove_buttons() {
         e = $(this);
         id = e.attr('id');
         if(e.find('button[id="remove_'+id+'"]').length == 0) {
-            e.append('<button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="icon icon-remove-sign"></i></button>');
+            e.append('<button id="remove_'+id+'" target="'+id+'" class="btn btn-danger remove_button"><i class="icon-white icon-remove-sign"></i></button>');
         }
         setup_remove_button_handler();
     });

@@ -148,6 +148,11 @@ class JournalLikeObject(dataobj.DataObj, DomainObject):
         return self._get_list("admin.notes")
 
     @property
+    def ordered_notes(self):
+        notes = self.notes
+        return sorted(notes, key=lambda x: x["date"], reverse=True)
+
+    @property
     def owner(self):
         return self._get_single("admin.owner")
 
