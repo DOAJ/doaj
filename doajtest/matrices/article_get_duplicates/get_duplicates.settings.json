@@ -1,0 +1,139 @@
+{
+  "parameters": [
+    {
+      "type": "index", 
+      "name": "test_id"
+    }, 
+    {
+      "values": {
+        "yes": {
+          "constraints": {
+            "doi_duplicates": {
+              "nor": [
+                "-"
+              ]
+            }, 
+            "fulltext_duplicates": {
+              "nor": [
+                "-"
+              ]
+            }, 
+            "overlap": {
+              "nor": [
+                "-"
+              ]
+            }
+          }
+        }, 
+        "no": {
+          "constraints": {
+            "doi_duplicates": {
+              "or": [
+                "-"
+              ]
+            }, 
+            "fulltext_duplicates": {
+              "or": [
+                "-"
+              ]
+            }, 
+            "overlap": {
+              "or": [
+                "-"
+              ]
+            }
+          }
+        }
+      }, 
+      "type": "generated", 
+      "name": "article"
+    }, 
+    {
+      "values": {
+        "yes": {}, 
+        "no": {}
+      }, 
+      "type": "generated", 
+      "name": "owner"
+    }, 
+    {
+      "values": {
+        "1": {
+          "constraints": {
+            "overlap": {
+              "nor": [
+                "3"
+              ]
+            }
+          }
+        }, 
+        "0": {
+          "constraints": {
+            "overlap": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }, 
+        "3": {}, 
+        "-": {}
+      }, 
+      "type": "generated", 
+      "name": "doi_duplicates"
+    }, 
+    {
+      "values": {
+        "1": {
+          "constraints": {
+            "overlap": {
+              "nor": [
+                "3"
+              ]
+            }
+          }
+        }, 
+        "0": {
+          "constraints": {
+            "overlap": {
+              "or": [
+                "0"
+              ]
+            }
+          }
+        }, 
+        "3": {}, 
+        "-": {}
+      }, 
+      "type": "generated", 
+      "name": "fulltext_duplicates"
+    }, 
+    {
+      "values": {
+        "1": {}, 
+        "0": {}, 
+        "3": {}, 
+        "-": {}
+      }, 
+      "type": "generated", 
+      "name": "overlap"
+    }, 
+    {
+      "values": {
+        "ArgumentException": {
+          "conditions": [
+            {
+              "article": {
+                "or": [
+                  "no"
+                ]
+              }
+            }
+          ]
+        }
+      }, 
+      "type": "conditional", 
+      "name": "raises"
+    }
+  ]
+}

@@ -59,12 +59,15 @@ class DomainObject(UserDict.IterableUserDict, object):
 
     @property
     def id(self):
-        return self.data.get('id', None)
+        rawid = self.data.get("id", None)
+        if rawid is not None:
+            return unicode(rawid)
+        return None
     
     def set_id(self, id=None):
         if id is None:
             id = self.makeid()
-        self.data["id"] = id
+        self.data["id"] = unicode(id)
     
     @property
     def version(self):

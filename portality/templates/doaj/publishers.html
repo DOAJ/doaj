@@ -628,7 +628,7 @@ on Wikipedia</a>.</p>
 
 <p>See <a href="#Unable to parse file">"Unable to parse file"</a></p>
 
-<h4><a name="Unable to validate document with any available ingesters"></a>Unable to validate document with any available ingesters</h4>
+<h4><a name="Unable to validate document with identified schema"></a>Unable to validate document with identified schema</h4>
 
 <p><strong>Reason</strong>: No XML schema could be found which would read the provided XML document (in particular, the DOAJ standard schema)</p>
 
@@ -677,6 +677,12 @@ update the record accordingly.</p>
 <p><strong>Resolution</strong>: Check that all the Article ISSNs in the file are correct</p>
 
 <p>If you believe all the ISSNs for the articles are correct, please <a href="{{ url_for('doaj.contact') }}">contact us</a> with the relevant details.</p>
+
+<h4><a name="One or more articles in this batch have duplicate identifiers"></a>One or more articles in this batch have duplicate identifiers</h4>
+
+<p><strong>Reason</strong>: At least two of the articles in the uploaded file contain the same DOI and/or the same fulltext url</p>
+
+<p><strong>Resolution</strong>: Ensure that there are no duplicated articles in the file.  Ensure that you are using the correct DOIs and URLs for all the articles.</p>
 
 <br><br>
 

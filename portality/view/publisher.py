@@ -3,7 +3,7 @@ from flask import render_template, abort, redirect, url_for, flash
 from flask_login import current_user, login_required
 
 from portality.core import app
-from portality import models, article
+from portality import models
 from portality.bll import DOAJ
 from portality.bll.exceptions import AuthoriseException
 from portality.decorators import ssl_required, restrict_to_role, write_required
@@ -12,6 +12,7 @@ from portality.tasks.ingestarticles import IngestArticlesBackgroundTask, Backgro
 from portality.view.forms import ArticleForm
 from portality.ui.messages import Messages
 from portality import lock
+from portality.crosswalks.article_form import ArticleFormXWalk
 
 from huey.exceptions import QueueWriteException
 
@@ -159,18 +160,19 @@ def upload_file():
         magic = str(uuid.uuid1())
         flash("An error has occurred and your upload may not have succeeded. If the problem persists please report the issue with the ID " + magic)
         app.logger.exception('File upload error. ' + magic)
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
 
     if f is not None and f.filename != "":
         flash("File uploaded and waiting to be processed. Check back here for updates.", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
     
     if url is not None and url != "":
         flash("File reference successfully received - it will be processed shortly", "success")
-        return render_template('publisher/uploadmetadata.html', previous=previous)
+        return redirect(url_for("publisher.upload_file"))
     
     flash("No file or URL provided", "error")
-    return render_template('publisher/uploadmetadata.html', previous=previous)
+    return redirect(url_for("publisher.upload_file"))
+
 
 @blueprint.route("/metadata", methods=["GET", "POST"])
 @login_required
@@ -222,9 +224,10 @@ def metadata():
             if not enough_authors:
                 return render_template('publisher/metadata.html', form=form, author_error=True)
             else:
-                xwalk = article.FormXWalk()
+                xwalk = ArticleFormXWalk()
                 art = xwalk.crosswalk_form(form)
-                art.save()
+                articleService = DOAJ.articleService()
+                articleService.create_article(art, current_user._get_current_object())
                 flash("Article created/updated", "success")
                 form = ArticleForm()
                 return render_template('publisher/metadata.html', form=form)
