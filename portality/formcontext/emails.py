@@ -4,7 +4,7 @@ import json
 from portality import models, app_email
 from portality.core import app
 from portality.dao import Facetview2
-
+from portality.ui.messages import Messages
 
 def send_admin_ready_email(application, editor_id):
     """ send email to the managing editors when an application is ready """
@@ -88,24 +88,37 @@ def send_assoc_editor_email(obj):
 
 def send_publisher_editor_assigned_email(application):
     """ Send email to publisher informing them an editor has been assigned """
+
+    contact_name = application.get_latest_contact_name()
+    contact_email = application.get_latest_contact_email()
+    send_list = [(contact_name, contact_email,
+                  Messages.SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL,
+                  Messages.NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL)]
+
     owner = models.Account.pull(application.owner)
-    if owner is None:
-        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
+    if owner is not None:
+        send_list.append((owner.name, owner.email,
+                          Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
+                          Messages.NOT_SENT_PUBLISHER_ASSIGNED_EMAIL))
 
-    # This is to the publisher contact on the application
-    publisher_name = owner.name
-    publisher_email = owner.email
-
-    to = [publisher_email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
 
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_application_editor_assigned.txt",
-                        application_title=application.bibjson().title,
-                        publisher_name=publisher_name)
+    alerts = []
+    for recipient_name, recipient_email, sent_alert, not_sent_alert in send_list:
+        to = [recipient_email]
+        try:
+            app_email.send_mail(to=to,
+                            fro=fro,
+                            subject=subject,
+                            template_name="email/publisher_application_editor_assigned.txt",
+                            application_title=application.bibjson().title,
+                            publisher_name=recipient_name)
+            alerts.append(sent_alert)
+        except app_email.EmailException:
+            alerts.append(not_sent_alert)
+
+    return alerts
 
 
 def send_editor_inprogress_email(application):
@@ -200,25 +213,36 @@ def send_publisher_inprogress_email(application):
     """Tell the publisher the application is underway"""
     journal_title = application.bibjson().title
 
+    contact_name = application.get_latest_contact_name()
+    contact_email = application.get_latest_contact_email()
+    send_list = [(contact_name, contact_email,
+                  Messages.SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL,
+                  Messages.NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL)]
+
     owner = models.Account.pull(application.owner)
-    if owner is None:
-        raise app_email.EmailException("Application {x} does not have an owner, cannot send email".format(x=application.id))
+    if owner is not None:
+        send_list.append((owner.name, owner.email,
+                          Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
+                          Messages.NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL))
 
-    # This is to the publisher contact on the application
-    publisher_name = owner.name
-    publisher_email = owner.email
-
-    to = [publisher_email]
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
 
-    app_email.send_mail(to=to,
-                        fro=fro,
-                        subject=subject,
-                        template_name="email/publisher_application_inprogress.txt",
-                        publisher_name=publisher_name,
-                        journal_title=journal_title)
+    alerts = []
+    for recipient_name, recipient_email, sent_alert, not_sent_alert in send_list:
+        to = [recipient_email]
+        try:
+            app_email.send_mail(to=to,
+                                fro=fro,
+                                subject=subject,
+                                template_name="email/publisher_application_inprogress.txt",
+                                publisher_name=recipient_name,
+                                journal_title=journal_title)
+            alerts.append(sent_alert)
+        except app_email.EmailException:
+            alerts.append(not_sent_alert)
 
+    return alerts
 
 def send_received_email(application):
     """ Email the publisher when an application is received """
