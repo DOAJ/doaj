@@ -124,8 +124,8 @@ APPLICATION_SOURCE = {
     "admin" : {
         "application_status" : constants.APPLICATION_STATUS_PENDING,
         "notes" : [
-            {"note" : "First Note", "date" : "2014-05-21T14:02:45Z"},
-            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"}
+            {"note" : "Second Note", "date" : "2014-05-22T00:00:00Z"},
+            {"note": "First Note", "date": "2014-05-21T14:02:45Z"}
         ],
         "contact" : [
             {
