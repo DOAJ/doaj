@@ -20,6 +20,7 @@ tmp/*
 dev.cfg
 app.cfg
 
+# directories of transient stuff that gets created locally
 media/*
 upload/*
 !upload/README.md
@@ -29,6 +30,10 @@ cache/csv/*.csv
 cache/sitemap/*.xml
 portality/migrate/p1p2/*.csv
 portality/migrate/p1p2/*.csv.bak
+local_store/main/*
+!local_store/main/README.md
+local_store/tmp/*
+!local_store/tmp/README.md
 
 # test detritous
 doajtest/unit/*.csv
