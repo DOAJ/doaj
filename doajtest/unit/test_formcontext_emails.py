@@ -281,7 +281,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 3
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -467,7 +467,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 2
+        assert len(re.findall(email_count_string, info_stream_contents)) == 3
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
@@ -577,7 +577,7 @@ class TestApplicationReviewEmails(DoajTestCase):
                                             info_stream_contents,
                                             re.DOTALL)
         assert bool(publisher_email_matched)
-        assert len(re.findall(email_count_string, info_stream_contents)) == 1
+        assert len(re.findall(email_count_string, info_stream_contents)) == 2
 
         # Clear the stream for the next part
         self.info_stream.truncate(0)
