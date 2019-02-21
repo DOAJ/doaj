@@ -30,7 +30,8 @@ fi
 
 # Restart all supervisor tasks, which will cover the app, and huey on the background server. Then reload nginx.
 sudo supervisorctl reread
-sudo supervisorctl restart all || sudo supervisorctl start all
+#sudo supervisorctl restart all || sudo supervisorctl start all             # fixme: disabled for article dedupe release
+sudo supervisorctl restart doaj
 
 # todo: we might want to move this to ansible so we don't run on the background server unnecessarily
 sudo nginx -t && sudo nginx -s reload
