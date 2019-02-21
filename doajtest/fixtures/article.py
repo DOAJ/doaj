@@ -50,7 +50,7 @@ class ArticleFixtureFactory(object):
         return StringIO("<this><isnot my='schema'></isnot></this>")
 
     @staticmethod
-    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True):
+    def make_article_source(eissn=None, pissn=None, with_id=True, in_doaj=True, with_journal_info=True, doi=None, fulltext=None):
         source = deepcopy(ARTICLE_SOURCE)
         if not with_id:
             del source["id"]
@@ -78,15 +78,55 @@ class ArticleFixtureFactory(object):
         for idx in delete:
             del source["bibjson"]["identifier"][idx]
 
+        if doi is not None:
+            set_doi = False
+            for ident in source["bibjson"]["identifier"]:
+                if ident.get("type") == "doi":
+                    ident["id"] = doi
+                    set_doi = True
+            if not set_doi:
+                source["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+
+        if fulltext is not None:
+            set_fulltext = False
+            for ident in source["bibjson"]["link"]:
+                if ident.get("type") == "fulltext":
+                    ident["url"] = fulltext
+                    set_fulltext = True
+            if not set_fulltext:
+                source["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+
         return source
     
     @staticmethod
-    def make_incoming_api_article():
+    def make_incoming_api_article(doi=None, fulltext=None):
         template = deepcopy(ARTICLE_SOURCE)
         template['bibjson']['journal']['start_page'] = template['bibjson']['start_page']
         template['bibjson']['journal']['end_page'] = template['bibjson']['end_page']
         del template['bibjson']['start_page']
         del template['bibjson']['end_page']
+
+        if doi is not None:
+            set_doi = False
+            for i in range(len(template["bibjson"]["identifier"])):
+                ident = template["bibjson"]["identifier"][i]
+                if ident.get("type") == "doi":
+                    ident["id"] = doi
+                    set_doi = True
+            if not set_doi:
+                template["bibjson"]["identifier"].append({"type" : "doi", "id" : doi})
+
+        if fulltext is not None:
+            set_fulltext = False
+            for i in range(len(template["bibjson"]["link"])):
+                ident = template["bibjson"]["link"][i]
+                if ident.get("type") == "fulltext":
+                    ident["url"] = fulltext
+                    set_fulltext = True
+            if not set_fulltext:
+                template["bibjson"]["link"].append({"type" : "fulltext", "url" : fulltext})
+
+
         return deepcopy(template)
 
     @staticmethod

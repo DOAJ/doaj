@@ -58,3 +58,15 @@ class DOAJ(object):
         from portality.bll.services import query
         return query.QueryService()
 
+    @classmethod
+    def articleService(cls):
+        """
+        Obtain an instance of the article service
+
+        :return: ArticleService
+        """
+        # Note the use of delayed imports to minimise code pre-loading, and to allow services loaded
+        # via this factory to also use the factory to load other services.
+        from portality.bll.services import article
+        return article.ArticleService()
+

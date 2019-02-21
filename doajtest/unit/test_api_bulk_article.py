@@ -4,6 +4,7 @@ from portality import models
 from doajtest.fixtures import ArticleFixtureFactory, JournalFixtureFactory
 import time
 from copy import deepcopy
+from portality.dao import ESMappingMissingError
 
 class TestCrudArticle(DoajTestCase):
 
@@ -66,7 +67,7 @@ class TestCrudArticle(DoajTestCase):
             s = models.Article.pull(id)
             assert s is not None
 
-    def test_02_create_duplicate_articles_success(self):
+    def test_02_create_duplicate_articles(self):
         # set up all the bits we need - 10 articles
         data = ArticleFixtureFactory.make_incoming_api_article()
         dataset = [data] * 10
@@ -85,18 +86,13 @@ class TestCrudArticle(DoajTestCase):
         time.sleep(2)
 
         # call create on the object (which will save it to the index)
-        ids = ArticlesBulkApi.create(dataset, account)
+        with self.assertRaises(Api400Error):
+            ids = ArticlesBulkApi.create(dataset, account)
 
-        # check that we got the right number of ids back
-        assert len(ids) == 1
-
-        # let the index catch up
         time.sleep(2)
 
-        # check that each id was actually created
-        for id in ids:
-            s = models.Article.pull(id)
-            assert s is not None
+        with self.assertRaises(ESMappingMissingError):
+            all_articles = models.Article.all()
 
     def test_03_create_articles_fail(self):
         # if the account is dud
@@ -129,8 +125,10 @@ class TestCrudArticle(DoajTestCase):
 
     def test_04_delete_article_success(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.make_incoming_api_article()
-        dataset = [data] * 10
+        dataset = []
+        for i in range(10):
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            dataset.append(data)
 
         # create the account we're going to work as
         account = models.Account()
@@ -165,8 +163,10 @@ class TestCrudArticle(DoajTestCase):
 
     def test_05_delete_articles_fail(self):
         # set up all the bits we need
-        data = ArticleFixtureFactory.make_incoming_api_article()
-        dataset = [data] * 10
+        dataset = []
+        for i in range(10):
+            data = ArticleFixtureFactory.make_incoming_api_article(doi="10.123/test/" + str(i), fulltext="http://example.com/" + str(i))
+            dataset.append(data)
 
         # create the main account we're going to work as
         article_owner = models.Account()

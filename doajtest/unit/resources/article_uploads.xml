@@ -70,7 +70,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-        <fullTextUrl/>
+        <fullTextUrl>http://doaj.org/testing/url2.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
@@ -112,7 +112,7 @@
         <affiliationsList>
             <affiliationName affiliationId="1"/>
         </affiliationsList>
-        <fullTextUrl/>
+        <fullTextUrl>http://doaj.org/testing/url3.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
@@ -652,7 +652,7 @@
   &lt;w:LsdException Locked="false" Priority="73" Name="Colorful Grid Accent 6"/&gt;&#13;
   &lt;w:LsdException Locked="false" Priority="19" QFormat="tr"&#13;
 </abstract>
-        <fullTextUrl/>
+        <fullTextUrl>http://doaj.org/testing/url4.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>
@@ -1304,7 +1304,7 @@
  &lt;/w:LatentStyles&gt;&#13;
 &lt;/xml&gt;&lt;![endif]--&gt;
 </abstract>
-        <fullTextUrl/>
+        <fullTextUrl>http://doaj.org/testing/url5.pdf</fullTextUrl>
         <keywords>
             <keyword>Introduction</keyword>
             <keyword>Littérature amérindienne</keyword>

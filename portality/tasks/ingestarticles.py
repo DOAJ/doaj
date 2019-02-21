@@ -1,11 +1,15 @@
-from flask_login import current_user
-from portality import models, article
+from portality import models
 from portality.core import app
 
 from portality.tasks.redis_huey import main_queue, configure
 from portality.decorators import write_required
 
 from portality.background import BackgroundTask, BackgroundApi, BackgroundException, RetryException
+from portality.bll.exceptions import IngestException, DuplicateArticleException
+from portality.bll import DOAJ
+
+from portality.lib import plugin
+
 import ftplib, os, requests, traceback, shutil
 from urlparse import urlparse
 
@@ -204,13 +208,15 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         job.add_audit_message(u"Downloaded {x} as {y}".format(x=file_upload.filename, y=file_upload.local_filename))
 
+        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
+        xwalk = plugin.load_class(xwalk_name)()
+
         # now we have the record in the index and on disk, we can attempt to
         # validate it
-        actual_schema = None
         try:
             with open(path) as handle:
-                actual_schema, xwalk, doc = article.check_schema(handle, file_upload.schema)
-        except article.IngestException as e:
+                xwalk.validate_file(handle)
+        except IngestException as e:
             job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
             try:
@@ -229,8 +235,8 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         # if we get to here then we have a successfully downloaded and validated
         # document, so we can write it to the index
-        job.add_audit_message(u"Validated file as schema {x}".format(x=actual_schema))
-        file_upload.validated(actual_schema)
+        job.add_audit_message(u"Validated file as schema {x}".format(x=file_upload.schema))
+        file_upload.validated(file_upload.schema)
         return True
 
     def _process(self, file_upload):
@@ -252,17 +258,37 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
         job.add_audit_message(u"Importing from {x}".format(x=path))
 
+        articleService = DOAJ.articleService()
+        account = models.Account.pull(file_upload.owner)
+
+        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(file_upload.schema)
+        xwalk = plugin.load_class(xwalk_name)()
+
+        ingest_exception = False
         result = {}
         try:
             with open(path) as handle:
-                result = article.ingest_file(handle, format_name=file_upload.schema, owner=file_upload.owner, upload_id=file_upload.id)
-        except article.IngestException as e:
-            job.add_audit_message(u"IngestException: {x}".format(x=e.trace()))
+                articles = xwalk.crosswalk_file(handle)
+                for article in articles:
+                    article.set_upload_id(file_upload.id)
+                result = articleService.batch_create_articles(articles, account)
+        except IngestException as e:
+            job.add_audit_message(u"IngestException: {msg}. Inner message: {inner}.  Stack: {x}".format(msg=e.message, inner=e.inner_message, x=e.trace()))
             file_upload.failed(e.message, e.inner_message)
+            result = e.result
+            try:
+                file_failed(path)
+                ingest_exception = True
+            except:
+                job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
+        except DuplicateArticleException as e:
+            job.add_audit_message(u"One or more articles did not contain either a DOI or a Fulltext URL")
+            file_upload.failed(u"One or more articles did not contain either a DOI or a Fulltext URL")
             try:
                 file_failed(path)
             except:
-                job.add_audit_message(u"Error cleaning up file which caused IngestException: {x}".format(x=traceback.format_exc()))
+                job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                return
         except Exception as e:
             job.add_audit_message(u"File system error while reading file: {x}".format(x=traceback.format_exc()))
             file_upload.failed("File system error when reading file")
@@ -270,6 +296,7 @@ class IngestArticlesBackgroundTask(BackgroundTask):
                 file_failed(path)
             except:
                 job.add_audit_message(u"Error cleaning up file which caused Exception: {x}".format(x=traceback.format_exc()))
+                return
 
         success = result.get("success", 0)
         fail = result.get("fail", 0)
@@ -279,24 +306,25 @@ class IngestArticlesBackgroundTask(BackgroundTask):
         unowned = result.get("unowned", [])
         unmatched = result.get("unmatched", [])
 
-        if success == 0 and fail > 0:
+        if success == 0 and fail > 0 and not ingest_exception:
             file_upload.failed("All articles in file failed to import")
             job.add_audit_message("All articles in file failed to import")
         if success > 0 and fail == 0:
             file_upload.processed(success, update, new)
         if success > 0 and fail > 0:
             file_upload.partial(success, fail, update, new)
-            job.add_audit_message("Some articles in file failed to import")
+            job.add_audit_message("Some articles in file failed to import correctly, so no articles imported")
 
         file_upload.set_failure_reasons(list(shared), list(unowned), list(unmatched))
         job.add_audit_message("Shared ISSNs: " + ", ".join(list(shared)))
         job.add_audit_message("Unowned ISSNs: " + ", ".join(list(unowned)))
         job.add_audit_message("Unmatched ISSNs: " + ", ".join(list(unmatched)))
 
-        try:
-            os.remove(path) # just remove the file, no need to keep it
-        except Exception as e:
-            job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
+        if not ingest_exception:
+            try:
+                os.remove(path) # just remove the file, no need to keep it
+            except Exception as e:
+                job.add_audit_message(u"Error while deleting file {x}: {y}".format(x=path, y=e.message))
 
     def cleanup(self):
         """
@@ -392,13 +420,20 @@ class IngestArticlesBackgroundTask(BackgroundTask):
 
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
+        xwalk_name = app.config.get("ARTICLE_CROSSWALKS", {}).get(schema)
+        xwalk = plugin.load_class(xwalk_name)()
+
         # now we have the record in the index and on disk, we can attempt to
         # validate it
         try:
-            actual_schema = None
             with open(xml) as handle:
-                actual_schema, xwalk, doc = article.check_schema(handle, schema)
-        except article.IngestException as e:
+                xwalk.validate_file(handle)
+            record.validated(schema)
+            record.save()
+            previous.insert(0, record)
+            return record.id
+
+        except IngestException as e:
             record.failed(e.message, e.inner_message)
             try:
                 file_failed(xml)
@@ -417,22 +452,6 @@ class IngestArticlesBackgroundTask(BackgroundTask):
             previous.insert(0, record)
             raise BackgroundException("Failed to upload file - please contact an administrator")
 
-        if actual_schema is not None:
-            record.validated(actual_schema)
-            record.save()
-            previous.insert(0, record)
-        else:
-            # This code should never get executed
-            record.failed("File could not be validated against a known schema")
-            record.save()
-            try:
-                file_failed(xml)
-            except:
-                pass
-            previous.insert(0, record)
-            raise BackgroundException("File could not be validated against a known schema; please fix this before attempting to upload again")
-
-        return record.id
 
     @classmethod
     def _url_upload(cls, username, url, schema, previous):

@@ -17,3 +17,7 @@ PROVENANCE_STATUS_ACCEPTED = "status:accepted"
 
 LOCK_APPLICATION = "suggestion"
 LOCK_JOURNAL = "journal"
+
+IDENT_TYPE_DOI = "doi"
+
+LINK_TYPE_FULLTEXT = "fulltext"
