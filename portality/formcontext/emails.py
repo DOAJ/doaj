@@ -91,32 +91,42 @@ def send_publisher_editor_assigned_email(application):
 
     contact_name = application.get_latest_contact_name()
     contact_email = application.get_latest_contact_email()
-    send_list = [(contact_name, contact_email,
-                  Messages.SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL,
-                  Messages.NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL)]
+    send_list = [
+        {
+            "name" : contact_name,
+            "email" : contact_email,
+            "sent_alert" : Messages.SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL,
+            "not_sent_alert" : Messages.NOT_SENT_JOURNAL_CONTACT_ASSIGNED_EMAIL
+        }
+    ]
 
     owner = models.Account.pull(application.owner)
     if owner is not None:
-        send_list.append((owner.name, owner.email,
-                          Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
-                          Messages.NOT_SENT_PUBLISHER_ASSIGNED_EMAIL))
+        send_list.append(
+            {
+                "name" : owner.name,
+                "email" : owner.email,
+                "sent_alert" : Messages.SENT_PUBLISHER_ASSIGNED_EMAIL,
+                "not_sent_alert" : Messages.NOT_SENT_PUBLISHER_ASSIGNED_EMAIL
+            }
+        )
 
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME","") + " - your application has been assigned an editor for review"
 
     alerts = []
-    for recipient_name, recipient_email, sent_alert, not_sent_alert in send_list:
-        to = [recipient_email]
+    for instructions in send_list:
+        to = [instructions["email"]]
         try:
             app_email.send_mail(to=to,
                             fro=fro,
                             subject=subject,
                             template_name="email/publisher_application_editor_assigned.txt",
                             application_title=application.bibjson().title,
-                            publisher_name=recipient_name)
-            alerts.append(sent_alert)
+                            publisher_name=instructions["name"])
+            alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
-            alerts.append(not_sent_alert)
+            alerts.append(instructions["not_sent_alert"])
 
     return alerts
 
@@ -215,32 +225,42 @@ def send_publisher_inprogress_email(application):
 
     contact_name = application.get_latest_contact_name()
     contact_email = application.get_latest_contact_email()
-    send_list = [(contact_name, contact_email,
-                  Messages.SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL,
-                  Messages.NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL)]
+    send_list = [
+        {
+            "name" : contact_name,
+            "email" : contact_email,
+            "sent_alert" : Messages.SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL,
+            "not_sent_alert" : Messages.NOT_SENT_JOURNAL_CONTACT_IN_PROGRESS_EMAIL
+        }
+    ]
 
     owner = models.Account.pull(application.owner)
     if owner is not None:
-        send_list.append((owner.name, owner.email,
-                          Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
-                          Messages.NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL))
+        send_list.append(
+            {
+                "name" : owner.name,
+                "email" : owner.email,
+                "sent_alert" : Messages.SENT_PUBLISHER_IN_PROGRESS_EMAIL,
+                "not_sent_alert" : Messages.NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL
+            }
+        )
 
     fro = app.config.get('SYSTEM_EMAIL_FROM', 'feedback@doaj.org')
     subject = app.config.get("SERVICE_NAME", "") + " - your application is under review"
 
     alerts = []
-    for recipient_name, recipient_email, sent_alert, not_sent_alert in send_list:
-        to = [recipient_email]
+    for instructions in send_list:
+        to = [instructions["email"]]
         try:
             app_email.send_mail(to=to,
                                 fro=fro,
                                 subject=subject,
                                 template_name="email/publisher_application_inprogress.txt",
-                                publisher_name=recipient_name,
+                                publisher_name=instructions["name"],
                                 journal_title=journal_title)
-            alerts.append(sent_alert)
+            alerts.append(instructions["sent_alert"])
         except app_email.EmailException:
-            alerts.append(not_sent_alert)
+            alerts.append(instructions["not_sent_alert"])
 
     return alerts
 

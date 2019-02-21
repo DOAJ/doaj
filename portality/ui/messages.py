@@ -31,6 +31,8 @@ class Messages(object):
     NOT_SENT_PUBLISHER_IN_PROGRESS_EMAIL = u"""An email could not be sent to the Owner alerting them that you are working on their application. Email may be disabled, or there is a problem with the email address. """
     NOT_SENT_PUBLISHER_ASSIGNED_EMAIL = u"""An email could not be sent to the Owner alerting them that an editor has been assigned to their application. Email may be disabled, or there is a problem with the email address"""
 
+    IN_PROGRESS_NOT_SENT_EMAIL_DISABLED = u"""Did not send email to Owner or Journal Contact about the status change, as publisher emails are disabled."""
+
     DIFF_TABLE_NOT_PRESENT = """-- Not held in journal metadata --"""
 
     REJECT_NOTE_WRAPPER = u"""{editor}: This application was rejected with the reason '{note}'"""

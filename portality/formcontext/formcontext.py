@@ -1056,7 +1056,7 @@ class AssEdApplicationReview(ApplicationContext):
                 for alert in alerts:
                     self.add_alert(alert)
             else:
-                self.add_alert('Did not send email to Owner or Journal Contact about the status change, as publisher emails are disabled.')
+                self.add_alert(Messages.IN_PROGRESS_NOT_SENT_EMAIL_DISABLED)
 
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:
