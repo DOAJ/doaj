@@ -152,7 +152,7 @@ def get_start_after(docs, current_start_after, list_size):
         if doc.get("last_updated") == last_date:
             count += 1
     if count == list_size and current_start_after is not None and last_date == current_start_after[0]:
-        # If the current set of rcords have the same date as last record served previously,
+        # If the current set of records have the same date as last record served previously,
         #   the count has to be greater than the list of records
         #   and include the previous count
         count += current_start_after[1]
@@ -449,18 +449,21 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
             if start_after is not None:
                 full_total = total + start_number - start_after[1]
 
-            # work out if we need a resumption token.  It can have one of 3 values:
-            # - None = do not include the rt in the response
-            # - some value = include in the response
-            # - the empty string = include in the response
-            resumption_token = None
-            if total > len(results):
+            # Determine where our next starting index will be
+            new_start = start_number + len(results)
+
+            # Work out if we need a resumption token.  It can have one of 3 values:
+            # - None -> do not include the rt in the response if we have a full result set
+            # - some value -> include in the response if there are more values to retrieve
+            # - the empty string -> include in the response if this is the last set of results from an incomplete list
+            if len(results) == full_total:
+                resumption_token = None
+            elif total > len(results):
                 new_start_after = get_start_after(results, start_after, list_size)
-                new_start = start_number + len(results)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
                       until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
             else:
-                resumption_token = ""
+                resumption_token = ''
 
             li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
             if resumption_token is not None:
