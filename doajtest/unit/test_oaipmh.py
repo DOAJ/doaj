@@ -5,7 +5,8 @@ from doajtest.fixtures import JournalFixtureFactory
 from portality import models
 from portality.app import app
 from lxml import etree
-
+from datetime import datetime, timedelta
+from freezegun import freeze_time
 
 class TestClient(DoajTestCase):
     @classmethod
@@ -80,7 +81,7 @@ class TestClient(DoajTestCase):
         with app.test_client() as t_client:
             resp = t_client.get('/oai?verb=ListIdentifiers&metadataPrefix=oai_dc')
             t = etree.fromstring(resp.data)
-            print etree.tostring(t, pretty_print=True)
+            #print etree.tostring(t, pretty_print=True)
             rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
             assert rt.get('completeListSize') == '5'
             assert rt.get('cursor') == '2'
@@ -88,7 +89,7 @@ class TestClient(DoajTestCase):
             # Get the next result
             resp2 = t_client.get('/oai?verb=ListIdentifiers&resumptionToken={0}'.format(rt.text))
             t = etree.fromstring(resp2.data)
-            print etree.tostring(t, pretty_print=True)
+            #print etree.tostring(t, pretty_print=True)
             rt2 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
             assert rt2.get('completeListSize') == '5'
             assert rt2.get('cursor') == '4'
@@ -96,7 +97,7 @@ class TestClient(DoajTestCase):
             # And the final result - check we get an empty resumptionToken
             resp3 = t_client.get('/oai?verb=ListIdentifiers&resumptionToken={0}'.format(rt2.text))
             t = etree.fromstring(resp3.data)
-            print etree.tostring(t, pretty_print=True)
+            #print etree.tostring(t, pretty_print=True)
             rt3 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
             assert rt3.get('completeListSize') == '5'
             assert rt3.get('cursor') == '5'
@@ -106,8 +107,100 @@ class TestClient(DoajTestCase):
             resp4 = t_client.get('/oai?verb=ListIdentifiers&resumptionToken={0}'.format(rt3.text))
             assert resp4.status_code == 200                                   # fixme: should this be a real error code?
             t = etree.fromstring(resp4.data)
-            print etree.tostring(t, pretty_print=True)
+            #print etree.tostring(t, pretty_print=True)
 
             err = t.xpath('//oai:error', namespaces=self.oai_ns)[0]
             assert 'the resumptionToken argument is invalid or expired' in err.text
 
+    def test_04_oai_changing_index(self):
+        """ Check that changes to the index don't appear in in-progress requests """
+
+        # Set the OAI interface to only return two identifiers at a time
+        app.config['OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE'] = 2
+
+        journals = JournalFixtureFactory.make_many_journal_sources(4, in_doaj=True)
+
+        # Save our journals to the index
+        for j in journals[:3]:
+            jm = models.Journal(**j)
+            jm.save(blocking=True)
+
+        # ListRecords - we expect 3 total results and a resumptionToken to fetch the rest
+        yesterday = (datetime.utcnow() - timedelta(days=1)).strftime('%Y-%m-%d')
+        with app.test_client() as t_client:
+            resp = t_client.get('/oai?verb=ListRecords&metadataPrefix=oai_dc&from={0}'.format(yesterday))
+            t = etree.fromstring(resp.data)
+            #print etree.tostring(t, pretty_print=True)
+            rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
+            assert rt.get('completeListSize') == '3'
+            assert rt.get('cursor') == '2'
+
+            # Save another journal to the index
+            [j] = journals[3:]
+            jm = models.Journal(**j)
+            jm.save(blocking=True)
+
+            # Get the next result - the new journal shouldn't be added to the results
+            resp2 = t_client.get('/oai?verb=ListRecords&resumptionToken={0}'.format(rt.text))
+            t = etree.fromstring(resp2.data)
+            #print etree.tostring(t, pretty_print=True)
+            rt2 = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
+            assert rt2.get('completeListSize') == '3'
+            assert rt2.get('cursor') == '3'
+
+            # Start a new request - we should see the new journal
+            resp3 = t_client.get('/oai?verb=ListRecords&metadataPrefix=oai_dc&from={0}'.format(yesterday))
+            t = etree.fromstring(resp3.data)
+            #print etree.tostring(t, pretty_print=True)
+            rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
+            assert rt.get('completeListSize') == '4'
+
+    def test_05_date_ranges(self):
+        """ Check that the interface adheres to the dates that records were added """
+
+        # Set the OAI interface to only return one identifier at a time
+        app.config['OAIPMH_LIST_IDENTIFIERS_PAGE_SIZE'] = 1
+
+        journals = JournalFixtureFactory.make_many_journal_sources(4, in_doaj=True)
+
+        now = datetime.utcnow()
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        day_before_yesterday = datetime.utcnow() - timedelta(days=2)
+        two_days_before_yesterday = datetime.utcnow() - timedelta(days=3)
+
+        # Save half of our journals 2 days ago
+        with freeze_time(day_before_yesterday):
+            for j in journals[:2]:
+                jm = models.Journal(**j)
+                jm.save(blocking=True)
+
+        # Save the other half of our journals today
+        with freeze_time(now):
+            for j in journals[2:]:
+                jm = models.Journal(**j)
+                jm.save(blocking=True)
+
+        # Request OAI journals since yesterday (looking for today's results only)
+        with app.test_client() as t_client:
+            resp = t_client.get('/oai?verb=ListRecords&metadataPrefix=oai_dc&from={0}'.format(yesterday.strftime('%Y-%m-%d')))
+            t = etree.fromstring(resp.data)
+            #print etree.tostring(t, pretty_print=True)
+            rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
+            assert rt.get('completeListSize') == '2'
+            assert rt.get('cursor') == '1'
+
+            for title in t.xpath('//dc:title', namespaces=self.oai_ns):
+                assert title.text in [journals[2]['bibjson']['title'], journals[3]['bibjson']['title']]
+
+        # Request OAI journals from 3 days ago to yesterday (expecting the 2 days ago results)
+        with app.test_client() as t_client:
+            resp = t_client.get('/oai?verb=ListRecords&metadataPrefix=oai_dc&from={0}&until={1}'.format(
+                two_days_before_yesterday.strftime('%Y-%m-%d'), yesterday.strftime('%Y-%m-%d')))
+            t = etree.fromstring(resp.data)
+            #print etree.tostring(t, pretty_print=True)
+            rt = t.xpath('//oai:resumptionToken', namespaces=self.oai_ns)[0]
+            assert rt.get('completeListSize') == '2'
+            assert rt.get('cursor') == '1'
+
+            for title in t.xpath('//dc:title', namespaces=self.oai_ns):
+                assert title.text in [journals[0]['bibjson']['title'], journals[1]['bibjson']['title']]
