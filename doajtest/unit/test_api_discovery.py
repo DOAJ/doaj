@@ -3,6 +3,7 @@ from portality import models
 from portality.api.v1 import DiscoveryApi, DiscoveryException
 from portality.api.v1.common import generate_link_headers
 import time
+from flask import url_for
 
 class TestArticleMatch(DoajTestCase):
 
@@ -421,6 +422,17 @@ class TestArticleMatch(DoajTestCase):
             assert res.data.get("total") == 10
             assert len(res.data.get("results")) == 5
             assert res.data.get("page") == 1
-            assert res.data.get("pageSize") == 2
+            assert res.data.get("pageSize") == 5
 
-            res = DiscoveryApi.search("journal", None, "*", 2, 5)
+            # but that the second page fails
+            with self.assertRaises(DiscoveryException):
+                try:
+                    res = DiscoveryApi.search("journal", None, "*", 2, 5)
+                except DiscoveryException as e:
+                    data_dump_url = url_for("doaj.public_data_dump")
+                    oai_article_url = url_for("oaipmh.oaipmh", specified="article")
+                    oai_journal_url = url_for("oaipmh.oaipmh")
+                    assert data_dump_url in e.message
+                    assert oai_article_url in e.message
+                    assert oai_journal_url in e.message
+                    raise

@@ -41,9 +41,9 @@ class Messages(object):
     EXCEPTION_ARTICLE_BATCH_FAIL = u"One or more articles failed to ingest; entire batch ingest halted"
     EXCEPTION_DETECT_DUPLICATE_NO_ID = u"The article you provided has neither doi nor fulltext url, and as a result cannot be deduplicated"
 
-    PREVENT_DEEP_PAGING_IN_API = u"""Looks like you want to view results beyond {max_records}.
+    PREVENT_DEEP_PAGING_IN_API = u"""You cannot access results beyond {max_records} records via this API.
     If you would like to see more results, you can download all of our data from
-    {data_dump_url}"""
+    {data_dump_url}. You can also harvest from our OAI-PMH endpoints; articles: {oai_article_url}, journals: {oai_journal_url}"""
 
     @classmethod
     def flash(cls, tup):

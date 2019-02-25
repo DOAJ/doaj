@@ -138,7 +138,12 @@ class DiscoveryApi(Api):
         # using bulk to provide an override when needed
         max_records = app.config.get("DISCOVERY_MAX_RECORDS_SIZE", 1000)
         if fro >= max_records:
-            message = Messages.PREVENT_DEEP_PAGING_IN_API.format(max_records=max_records, data_dump_url=app.config.get("BASE_URL") + url_for("doaj.public_data_dump"))
+            message = Messages.PREVENT_DEEP_PAGING_IN_API.format(
+                max_records=max_records,
+                data_dump_url=app.config.get("BASE_URL") + url_for("doaj.public_data_dump"),
+                oai_journal_url=app.config.get("BASE_URL") + url_for("oaipmh.oaipmh"),
+                oai_article_url=app.config.get("BASE_URL") + url_for("oaipmh.oaipmh", specified="article")
+            )
             raise DiscoveryException(message)
 
         # interpret the sort field into the form required by the query
