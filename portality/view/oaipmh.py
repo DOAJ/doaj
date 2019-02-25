@@ -458,18 +458,19 @@ def _parameterised_list(identifiers_or_records, dao, base_url, specified_oai_end
 
             # Work out if we need a resumption token.  It can have one of 3 values:
             # - None -> do not include the rt in the response if we have a full result set
-            # - some value -> include in the response if there are more values to retrieve
             # - the empty string -> include in the response if this is the last set of results from an incomplete list
+            # - some value -> include in the response if there are more values to retrieve
             if len(results) == full_total:
                 resumption_token = None
-            elif total > len(results):
+            elif new_start == full_total:
+                resumption_token = ''
+            else:
                 new_start_after = get_start_after(results, start_after, list_size)
                 resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
                                                          until_date=until_date, oai_set=oai_set, start_number=new_start,
                                                          start_after=new_start_after)
-            else:
-                resumption_token = ''
 
+            # Get our list of results for this request
             if identifiers_or_records == 'identifiers':
                 lst = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set,
                                       metadata_prefix=metadata_prefix)
