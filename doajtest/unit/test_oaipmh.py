@@ -38,7 +38,9 @@ class TestClient(DoajTestCase):
         j_private.save(blocking=True)
 
         with app.test_client() as t_client:
-            resp = t_client.get('/oai?verb=ListRecords')
+            resp = t_client.get('/oai?verb=ListRecords&metadataPrefix=oai_dc')
             assert resp.status_code == 200
 
-            # todo
+            t = etree.fromstring(resp.data)
+            print etree.tostring(t, pretty_print=True)
+
