@@ -77,14 +77,16 @@ class ArticleService(object):
 
         for article in articles:
             doi = article.get_normalised_doi()
-            if doi in dois:
-                return True
-            dois.append(doi)
+            if doi is not None:
+                if doi in dois:
+                    return True
+                dois.append(doi)
 
             ft = article.get_normalised_fulltext()
-            if ft in fulltexts:
-                return True
-            fulltexts.append(ft)
+            if ft is not None:
+                if ft in fulltexts:
+                    return True
+                fulltexts.append(ft)
 
         return False
 
