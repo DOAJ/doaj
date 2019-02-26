@@ -135,8 +135,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # only delete if today's files exist
         found = 0
-        for files_for_today in files_for_today:
-            if files_for_today in container_files:
+        for fn in files_for_today:
+            if fn in container_files:
                 found += 1
 
         # only proceed if the files for today are present
@@ -166,9 +166,9 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         :return: a BackgroundJob instance representing this task
         """
         params = {}
-        cls.set_param(params, 'clean', kwargs.get("clean", False))
-        cls.set_param(params, "prune", kwargs.get("prune", False))
-        cls.set_param(params, "types", kwargs.get("types", "all"))
+        cls.set_param(params, 'clean', False if "clean" not in kwargs else kwargs["clean"] if kwargs["clean"] is not None else False)
+        cls.set_param(params, "prune", False if "prune" not in kwargs else kwargs["prune"] if kwargs["prune"] is not None else False)
+        cls.set_param(params, "types", "all" if "types" not in kwargs else kwargs["types"] if kwargs["types"] in ["all", "journal", "article"] else "all")
 
         container = app.config.get("STORE_PUBLIC_DATA_DUMP_CONTAINER")
         if container is None:
