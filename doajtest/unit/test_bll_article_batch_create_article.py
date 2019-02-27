@@ -90,21 +90,95 @@ class TestBLLArticleBatchCreateArticle(DoajTestCase):
         articles = None
         if articles_arg != "none":
             articles = []
-            article_count = int(articles_arg)
-            for i in range(article_count):
-                idx = str(i)
-                if duplicate_in_batch:
-                    if i < 2:
-                        idx = "duplicate"
-                last_issn = str(i) * 4 + "-" + str(i) * 4
-                last_doi = "10.123/abc/" + idx
-                last_ft = "http://example.com/" + idx
-                source = ArticleFixtureFactory.make_article_source(eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
+            if articles_arg == "yes":
+                # one with a DOI and no fulltext
+                source = ArticleFixtureFactory.make_article_source(
+                    eissn="0000-0000",
+                    pissn="0000-0000",
+                    doi="10.123/abc/0",
+                    fulltext=False
+                )
                 article = Article(**source)
                 article.set_id()
-                last_id = article.id
                 articles.append(article)
 
+                # another with a DOI and no fulltext
+                source = ArticleFixtureFactory.make_article_source(
+                    eissn="1111-1111",
+                    pissn="1111-1111",
+                    doi="10.123/abc/1",
+                    fulltext=False
+                )
+                article = Article(**source)
+                article.set_id()
+                articles.append(article)
+
+                # one with a fulltext and no DOI
+                source = ArticleFixtureFactory.make_article_source(
+                    eissn="2222-2222",
+                    pissn="2222-2222",
+                    fulltext="http://example.com/2",
+                    doi=False
+                )
+                article = Article(**source)
+                article.set_id()
+                articles.append(article)
+
+                # another one with a fulltext and no DOI
+                source = ArticleFixtureFactory.make_article_source(
+                    eissn="3333-3333",
+                    pissn="3333-3333",
+                    fulltext="http://example.com/3",
+                    doi=False
+                )
+                article = Article(**source)
+                article.set_id()
+                articles.append(article)
+
+                last_issn = "3333-3333"
+                last_doi = "10.123/abc/1"
+                last_ft = "http://example.com/3"
+                last_id = articles[-1].id
+
+                if duplicate_in_batch:
+                    # one with a duplicated DOI
+                    source = ArticleFixtureFactory.make_article_source(
+                        eissn="4444-4444",
+                        pissn="4444-4444",
+                        doi="10.123/abc/0",
+                        fulltext="http://example.com/4"
+                    )
+                    article = Article(**source)
+                    article.set_id()
+                    articles.append(article)
+
+                    # one with a duplicated Fulltext
+                    source = ArticleFixtureFactory.make_article_source(
+                        eissn="5555-5555",
+                        pissn="5555-5555",
+                        doi="10.123/abc/5",
+                        fulltext="http://example.com/1"
+                    )
+                    article = Article(**source)
+                    article.set_id()
+                    articles.append(article)
+
+                """
+                article_count = int(articles_arg)
+                for i in range(article_count):
+                    idx = str(i)
+                    if duplicate_in_batch:
+                        if i < 2:
+                            idx = "duplicate"
+                    last_issn = str(i) * 4 + "-" + str(i) * 4
+                    last_doi = "10.123/abc/" + idx
+                    last_ft = "http://example.com/" + idx
+                    source = ArticleFixtureFactory.make_article_source(eissn=last_issn, pissn=last_issn, doi=last_doi, fulltext=last_ft)
+                    article = Article(**source)
+                    article.set_id()
+                    last_id = article.id
+                    articles.append(article)
+                """
 
         ilo_mock = None
         if account_arg == "owner":
