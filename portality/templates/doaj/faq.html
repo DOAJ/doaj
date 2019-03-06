@@ -28,6 +28,7 @@
 
 <h3>API</h3>
 <ul>
+  <li><a href="#limit">Is there an upload limit for uploading articles, or a rate limit?</a></li>  
 <li><a href="#post">When making a POST request, do we need to include any of the fields in the admin hash (e.g. in_doaj or upload_id)?</a></li>
 <li><a href="#language">Should language and country be spelled out or use codes?</a></li>
 <li><a href="#lastupdated">Do we need the last_updated or created_date to be included?</a></li>
@@ -233,6 +234,20 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 <!-- API FAQS -->
 
 <a name="apifaq"></a>
+<h3><b><a name="limit"></a>Is there an upload limit for uploading articles, or a rate limit?</b></h3>
+<p>Regarding uploading articles via the API, you have two options:
+<ol>
+  <li>One by one via the Article CRUD API</li>
+  <li>In batches using the Article Bulk API</li>
+</ol>
+Neither of these routes have a daily limit of 500 uploads. There is a rate limit on all API routes include these, currently set at 2 requests per second. ‘Bursts' are permitted, which means up to five requests per user are queued by the system, and are fulfilled in turn so long as they average out to 2 requests per second overall.</p>
+
+<p>When using the bulk API (only for authenticated publishers), there are no limits to how many articles are uploaded in a batch. Eventually, however, you may reach the maximum upload size of 50MB, so we recommend keeping batches fairly small, in the region of 100-1000 articles. The processing happens synchronously, so another limit you may encounter is a timeout based on how long the articles take to process by our system. Our response timeout is currently set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Again, keeping the batch sizes low should help mitigate this.</p>
+
+<p>Since the CRUD API allows one article at a time, it should be possible to upload 1-2 per second, or more if you have multiple IP addresses sending them at once.</p>
+<a href="#top">Back to top</a>
+<br><br>
+
 <h3><b><a name="post"></a>When making a POST request, do we need to include any of the fields in the admin hash (e.g. in_doaj or upload_id)?</b></h3>
 <p>In applications only the contact subfield is required in the admin section. The full list is handled in 
   <a href="https://github.com/DOAJ/doaj/blob/2018-10-09_static_pages/portality/api/v1/data_objects/application.py#L217">our 
