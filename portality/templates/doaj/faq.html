@@ -235,14 +235,17 @@ sub-category of 'Philosophy. Psychology. Religion' and this journal has been cat
 
 <a name="apifaq"></a>
 <h3><b><a name="limit"></a>Is there an upload limit for uploading articles, or a rate limit?</b></h3>
-<p>Regarding uploading articles via the API, you have two options:
+    <p>Regarding uploading articles via the API, you have two options:</p>
 <ol>
   <li>One by one via the Article CRUD API</li>
   <li>In batches using the Article Bulk API</li>
 </ol>
-Neither of these routes have a daily limit of 500 uploads. There is a rate limit on all API routes include these, currently set at 2 requests per second. ‘Bursts' are permitted, which means up to five requests per user are queued by the system, and are fulfilled in turn so long as they average out to 2 requests per second overall.</p>
+<p>There is a rate limit on all API routes include these, currently set at 2 requests per second. ‘Bursts' are permitted, which means up to five requests per user are queued by the system and are fulfilled in turn so long as they average out to 2 requests per second overall.
+There is no limit set on how many articles you can upload to the DOAJ.</p>
 
-<p>When using the bulk API (only for authenticated publishers), there are no limits to how many articles are uploaded in a batch. Eventually, however, you may reach the maximum upload size of 50MB, so we recommend keeping batches fairly small, in the region of 100-1000 articles. The processing happens synchronously, so another limit you may encounter is a timeout based on how long the articles take to process by our system. Our response timeout is currently set very high: our server has 10 minutes to respond before the web server closes the connection. Your client may drop the connection sooner, however. Again, keeping the batch sizes low should help mitigate this.</p>
+<p>When using the bulk API (only for authenticated publishers), there are no limits to how many articles are uploaded in a batch. Eventually, however, you may reach the maximum upload size of 50MB, so we recommend keeping batches fairly small, in the region of 100-1000 articles.
+The processing happens synchronously, so another limit you may encounter is a timeout based on how long the articles take to process by our system. Our response timeout is currently set very high: our server has 10 minutes to respond before the web server closes the connection.
+Your client may drop the connection sooner, however. Again, keeping the batch sizes low should help mitigate this.</p>
 
 <p>Since the CRUD API allows one article at a time, it should be possible to upload 1-2 per second, or more if you have multiple IP addresses sending them at once.</p>
 <a href="#top">Back to top</a>
@@ -340,7 +343,7 @@ confidence, is anonymous and is never published. We thank you for your contribut
 <h3><b><a name="api1"></a>Does DOAJ have an API?</b></h3>
 <p>Yes! The <a href="{{ url_for('api_v1.docs')  }}">API is live and is available now</a>. Have a play with it and let us know what you think. We would welcome feedback.</p>
 
-<p>We also have 3 groups that you might like to join for API announcements or discussion:
+<p>We also have 3 groups that you might like to join for API announcements or discussion:</p>
 
 <ul>
 <li><a href="https://groups.google.com/forum/#!forum/doaj-api-announcements">an announcement-only group</a> (e.g. we 
@@ -351,7 +354,6 @@ so people can benefit from a public archive</li>
 publishers api. This group is ONLY for publishers and others who have journals indexed in DOAJ and who are authorised to submit applications automatically or modify article 
 metadata directly</li>
 </ul>
-</p>
 
 <p>Sign up to the announcement group or follow us on <a href="#news">our news channels</a> to find out more about our 
 full API offering, and release dates.</p>
@@ -417,7 +419,7 @@ New ways of applying licenses are being created all the time: some journals have
 
 <h3><b><a name="thetick"></a>What does the green tick symbol mean?</b></h3>
 <p>In March 2014, DOAJ started to implemented its new criteria for journals being accepted into the directory. All
-journals accepted after this date display a green tick symbol:</br>
+journals accepted after this date display a green tick symbol:<br>
 <img src='/static/doaj/images/tick_short.png' title='Accepted after March 2014'
 alt='Tick icon: journal was accepted after March 2014'> appears next to the journal title in search results; and on a journal's Table of Contents page.</p>
 <p>Since the our reapplication project, which invited all journals in DOAJ to reapply, came to an end, most of the journals in DOAJ now have the Tick.</p>
@@ -477,7 +479,7 @@ and includes the latest 100 items.</p>
 <p>Yes! Our <a href="{{ url_for('api_v1.docs')  }}">search API</a> is available now. Have a play with it and let us know what
 you think. We would welcome feedback.</p>
 
-<p>We have 3 groups that you might like to join for API announcements or discussion:
+<p>We have 3 groups that you might like to join for API announcements or discussion:</p>
 
 <ul>
 <li><a href="https://groups.google.com/forum/#!forum/doaj-api-announcements">an announcement-only group</a> (e.g. we 
@@ -488,7 +490,6 @@ so people can benefit from a public archive</li>
 publishers api, for publishers and others who are authorised to submit applications automatically or modify article 
 metadata directly</li>
 </ul>
-</p>
 
 <p>Sign up to the announcement group or follow us on <a href="#news">our news channels</a> to find out more about our 
 full API offering.</p>
