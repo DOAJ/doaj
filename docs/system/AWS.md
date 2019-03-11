@@ -40,8 +40,8 @@ This shows we have the `doaj-index-backups` snapshot repository configured, as t
 # S3 credentials for backups
 cloud:
     aws:
-        access_key: AKIAJFVR4N6VUGY3D3WA
-        secret_key: 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
+        access_key: <ACCESS_KEY>
+        secret_key: <SECRET_KEY>
 ```
 
 This corresponds to IAM user `doaj-index-backups`, which has read and write access to the bucket `s3://doaj-index-backups` only.
@@ -60,8 +60,8 @@ For development work and the test server the DOAJ has a script to export all of 
 
     STORE_S3_SCOPES = {
         "anon_data" : {
-            "aws_access_key_id" : "AKIAJO5EUB7ZKUG6O5HQ",
-            "aws_secret_access_key" : "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"
+            "aws_access_key_id" : "<ACCESS_KEY>",
+            "aws_secret_access_key" : "<SECRET_KEY>"
         }
     }
 
@@ -93,10 +93,10 @@ These require the IAM users **doaj-apps* and **doaj-test** - these just have per
 **~/.aws/credentials**
 
     [doaj-app]
-    aws_access_key_id = AKIAI3RKHXJPCT5FSS3Q
-    aws_secret_access_key = h7ruJJ3Nn9pIneV1OBDvwF5BJf13LNU2e9Hv++sf
+    aws_access_key_id = <ACCESS_KEY>
+    aws_secret_access_key = <SECRET_KEY>
 
-In order to **update** the files (e.g. if you've downloaded it to a local file called `app.cfg`), you need to use the **doaj-apps-upload** profile at the end of this document.
+In order to **update** the files (e.g. if you've downloaded it to a local file called `app.cfg`), you need to use the **doaj-apps-upload** profile.
 
     aws --profile doaj-app-upload secretsmanager put-secret-value --secret-id doaj/app-credentials --secret-binary file://app.cfg
 
