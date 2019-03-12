@@ -127,7 +127,7 @@ class QueryService(object):
 
         return res
 
-    def scroll(self, domain, index_type, raw_query, account, page_size):
+    def scroll(self, domain, index_type, raw_query, account, page_size, scan=False):
         cfg = self._get_config_for_search(domain, index_type, account)
 
         dao_klass = self._get_dao_klass(cfg)
@@ -148,7 +148,7 @@ class QueryService(object):
         }
         conn = esprit.raw.Connection(source.get("host"), source.get("index"))
 
-        for result in esprit.tasks.scroll(conn, dao_klass.__type__, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive):
+        for result in esprit.tasks.scroll(conn, dao_klass.__type__, q=query.as_dict(), page_size=page_size, limit=limit, keepalive=keepalive, scan=scan):
             res = self._post_filter_search_results(cfg, result, unpacked=True)
             yield res
 

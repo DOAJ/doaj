@@ -82,7 +82,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             file_num = 1
             job.add_audit_message(dates.now() + u": Starting download of " + typ)
 
-            for result in DiscoveryApi.scroll(typ, None, query, page_size):
+            for result in DiscoveryApi.scroll(typ, None, query, page_size, scan=True):
                 batch.append(result)
 
                 if len(batch) >= records_per_file:

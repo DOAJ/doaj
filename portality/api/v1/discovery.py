@@ -280,7 +280,7 @@ class DiscoveryApi(Api):
         return cls._make_response(endpoint, res, q, page, page_size, sort, obs)
 
     @classmethod
-    def scroll(cls, index_type, account, q, page_size, sort=None):
+    def scroll(cls, index_type, account, q, page_size, sort=None, scan=False):
         if not index_type in ['article', 'journal', 'application']:
             raise DiscoveryException("There was an error executing your query for {0}. Unknown type.)".format(index_type))
 
@@ -289,7 +289,7 @@ class DiscoveryApi(Api):
 
         # execute the query against the articles
         query_service = DOAJ.queryService()
-        for result in query_service.scroll('api_query', index_type, raw_query, account, page_size):
+        for result in query_service.scroll('api_query', index_type, raw_query, account, page_size, scan=scan):
             yield result
 
 class SearchQuery(object):
