@@ -15,6 +15,23 @@ import os, codecs, tarfile, json
 
 
 class PublicDataDumpBackgroundTask(BackgroundTask):
+    """
+    This task allows us to generate the public data dumps for the system.  It provides a number of
+    configuration options, and it is IMPORTANT to note that in production it MUST only be run with the
+    following settings:
+
+
+         types: all
+         clean: False
+         prune: True
+
+    If you run this in production with either `journal` or `article` as type,
+    then any existing link to the other data type will be no longer available.
+
+    If you run this with clean set True, there is a chance that in the event of an error the live
+    data will be deleted, and not replaced with new data.  Better to prune after the
+    new data has been generated instead.
+    """
 
     __action__ = "public_data_dump"
 
@@ -147,7 +164,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         # go through the container files and remove any that are not today's files
         for container_file in container_files:
             if container_file not in files_for_today:
-                mainStore.delete(target_name=container_file)
+                mainStore.delete(container, target_name=container_file)
 
     def cleanup(self):
         """

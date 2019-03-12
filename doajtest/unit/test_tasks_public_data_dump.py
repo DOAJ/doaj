@@ -18,7 +18,7 @@ from StringIO import StringIO
 
 def load_cases():
     return load_parameter_sets(rel2abs(__file__, "..", "matrices", "tasks.public_data_dump"), "data_dump", "test_id",
-                               {"test_id" : ["1"]})
+                               {"test_id" : []})
 
 
 class TestPublicDataDumpTask(DoajTestCase):
@@ -39,7 +39,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         os.makedirs(app.config["STORE_LOCAL_DIR"])
         os.makedirs(app.config["STORE_TMP_DIR"])
 
-        models.Cache = ModelCacheMockFactory.in_memory()
+        models.cache.Cache = ModelCacheMockFactory.in_memory()
 
     def tearDown(self):
         app.config["STORE_TMP_IMPL"] = self.store_tmp_imp
@@ -50,7 +50,7 @@ class TestPublicDataDumpTask(DoajTestCase):
         app.config["STORE_LOCAL_DIR"] = self.store_local_dir
         app.config["STORE_TMP_DIR"] = self.store_tmp_dir
 
-        models.Cache = self.cache
+        models.cache.Cache = self.cache
 
         super(TestPublicDataDumpTask, self).tearDown()
 
@@ -77,12 +77,14 @@ class TestPublicDataDumpTask(DoajTestCase):
 
         container_id = app.config["STORE_PUBLIC_DATA_DUMP_CONTAINER"]
         localStore = store.StoreLocal(None)
+        localStoreFiles = []
         if clean or prune:
             for i in range(5):
                 localStore.store(container_id, "doaj_article_data_2018-01-0" + str(i) + ".tar.gz",
                                  source_stream=StringIO("test"))
                 localStore.store(container_id, "doaj_journal_data_2018-01-0" + str(i) + ".tar.gz",
                                  source_stream=StringIO("test"))
+            localStoreFiles = localStore.list(container_id)
 
         journal_count = int(journals_arg)
         article_count = int(articles_arg)
@@ -125,21 +127,45 @@ class TestPublicDataDumpTask(DoajTestCase):
         assert job.status == status_arg
 
         if job.status != "error":
-            article_url = models.Cache.get_public_data_dump("article")
-            journal_url = models.Cache.get_public_data_dump("journal")
+            article_url = models.cache.Cache.get_public_data_dump("article")
+            if types_arg in ["-", "all", "article"]:
+                assert article_url is not None
+            else:
+                assert article_url is None
 
-            assert article_url is not None
-            assert journal_url is not None
+            journal_url = models.cache.Cache.get_public_data_dump("journal")
+            if types_arg in ["-", "all", "journal"]:
+                assert journal_url is not None
+            else:
+                assert journal_url is None
 
             assert localStore.exists(container_id)
-
             files = localStore.list(container_id)
-            assert len(files) == 2
+
+            if types_arg in ["-", "all"]:
+                assert len(files) == 2
+            else:
+                assert len(files) == 1
 
             day_at_start = dates.today()
-            article_file = "doaj_article_data_" + day_at_start + ".tar.gz"
-            journal_file = "doaj_journal_data_" + day_at_start + ".tar.gz"
-            assert article_file in files
-            assert journal_file in files
 
+            if types_arg in ["-", "all", "article"]:
+                article_file = "doaj_article_data_" + day_at_start + ".tar.gz"
+                assert article_file in files
 
+            if types_arg in ["-", "all", "journal"]:
+                journal_file = "doaj_journal_data_" + day_at_start + ".tar.gz"
+                assert journal_file in files
+
+        else:
+            # in the case of an error, we expect the tmp store to have been cleaned up
+            tmpStore = store.TempStore()
+            assert not tmpStore.exists(container_id)
+
+            # in the case of an error, we expect the main store not to have been touched
+            # (for the errors that we are checking for)
+            if prune or clean:
+                survived = localStore.list(container_id)
+                assert localStoreFiles == survived
+            else:
+                assert not localStore.exists(container_id)

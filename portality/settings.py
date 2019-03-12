@@ -92,7 +92,7 @@ HUEY_SCHEDULE = {
     "request_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "6", "minute": "0"},
     "check_latest_es_backup": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
     "prune_es_backups": {"month": "*", "day": "*", "day_of_week": "*", "hour": "9", "minute": "0"},
-    "public_data_dump" : {"month" : "1", "day" : "1", "day_of_week" : "*", "hour" : "10", "minute" : "0"}
+    "public_data_dump" : {"month" : "*", "day" : "*", "day_of_week" : "1", "hour" : "10", "minute" : "0"}
 }
 
 HUEY_TASKS = {

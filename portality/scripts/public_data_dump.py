@@ -1,3 +1,19 @@
+"""
+This script allows us to generate the public data dumps for the system.  It provides a number of
+command line options, and it is IMPORTANT to note that in production it MUST only be run with the
+following arguments:
+
+
+     public_data_dump.py all -p
+
+If you run this in production with either `journal` or `article` as the first positional argument,
+then any existing link to the other data type will be no longer available.
+
+If you run this with the `-c` option, there is a chance that in the event of an error the live
+data will be deleted, and not replaced with new data.  Better to prune with `-p` after the
+new data has been generated instead.
+"""
+
 from portality.core import app
 from portality.tasks import public_data_dump
 from portality.background import BackgroundApi
