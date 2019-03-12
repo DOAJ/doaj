@@ -157,11 +157,11 @@ def sitemap():
     sitemap_path = os.path.join(app.config.get("CACHE_DIR"), "sitemap", sitemap_file)
     return send_file(sitemap_path, mimetype="application/xml", as_attachment=False, attachment_filename="sitemap.xml")
 
-@blueprint.route("/public_data_dump")
+@blueprint.route("/public-data-dump")
 def public_data_dump():
     return render_template("doaj/public_data_dump.html")
 
-@blueprint.route("/public_data_dump/<record_type>")
+@blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
     store_url = models.Cache.get_public_data_dump(record_type)
     if store_url is None:
