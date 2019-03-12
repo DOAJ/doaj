@@ -58,7 +58,6 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
         day_at_start = dates.today()
 
         # Do the search and save it
-        query = '*'
         page_size = app.config.get("DISCOVERY_BULK_PAGE_SIZE", 1000)
         records_per_file = app.config.get('DISCOVERY_RECORDS_PER_FILE', 100000)
 
@@ -82,7 +81,7 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             file_num = 1
             job.add_audit_message(dates.now() + u": Starting download of " + typ)
 
-            for result in DiscoveryApi.scroll(typ, None, query, page_size, scan=True):
+            for result in DiscoveryApi.scroll(typ, None, None, page_size, scan=True):
                 batch.append(result)
 
                 if len(batch) >= records_per_file:

@@ -112,12 +112,12 @@ class DiscoveryApi(Api):
 
     @classmethod
     def _sanitise(cls, q, page, page_size, sort, search_subs, sort_subs, bulk):
-        if not allowed(q):
-            raise DiscoveryException("Query contains disallowed Lucene features")
+        if q is not None:
+            if not allowed(q):
+                raise DiscoveryException("Query contains disallowed Lucene features")
 
-        q = query_substitute(q, search_subs)
-        q = escape(q)
-        # print q
+            q = query_substitute(q, search_subs)
+            q = escape(q)
 
         # sanitise the page size information
         if page < 1:
@@ -302,15 +302,18 @@ class SearchQuery(object):
 
     def query(self):
         q = {
-            "query" : {
+            "from" : self.fro,
+            "size" : self.psize
+        }
+        if self.qs is not None:
+            q["query"] = {
                 "query_string" : {
                     "query" : self.qs,
                     "default_operator": "AND"
                 }
-            },
-            "from" : self.fro,
-            "size" : self.psize
-        }
+            }
+        else:
+            q["query"] = {"match_all" : {}}
 
         if self.sortby is not None:
             q["sort"] = [{self.sortby : {"order" : self.sortdir, "mode" : "min"}}]
