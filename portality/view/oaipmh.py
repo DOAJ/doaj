@@ -152,7 +152,7 @@ def get_start_after(docs, current_start_after, list_size):
         if doc.get("last_updated") == last_date:
             count += 1
     if count == list_size and current_start_after is not None and last_date == current_start_after[0]:
-        # If the current set of rcords have the same date as last record served previously,
+        # If the current set of records have the same date as last record served previously,
         #   the count has to be greater than the list of records
         #   and include the previous count
         count += current_start_after[1]
@@ -397,7 +397,7 @@ def list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None
         return _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=resumption_token)
 
 
-def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
+def _parameterised_list(identifiers_or_records, dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
     # metadata prefix is required
     if metadata_prefix is None:
         return BadArgument(base_url)
@@ -418,12 +418,12 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
     if not fl or not ul:
         return BadArgument(base_url)
 
-    #try:
-        #if from_date is not None:
-        #    datetime.strptime(from_date, "%Y-%m-%d")
-        #if until_date is not None:
-        #    datetime.strptime(until_date, "%Y-%m-%d")
-    #except:
+    # try:
+    # if from_date is not None:
+    #    datetime.strptime(from_date, "%Y-%m-%d")
+    # if until_date is not None:
+    #    datetime.strptime(until_date, "%Y-%m-%d")
+    # except:
     #    return BadArgument(base_url)
 
     # get the result set size
@@ -444,40 +444,64 @@ def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metad
             if len(results) == 0:
                 return NoRecordsMatch(base_url)
 
-            # get the full total
+            # Get the full total
+            # Each search with a resumption token is a new search,
+            #   so the total is not the same as the first search
+            #   but is reduced by number of records already served.
+            # This full_total is the total as in the first search
             full_total = total
             if start_after is not None:
                 full_total = total + start_number - start_after[1]
 
-            # work out if we need a resumption token.  It can have one of 3 values:
-            # - None = do not include the rt in the response
-            # - some value = include in the response
-            # - the empty string = include in the response
-            resumption_token = None
-            if total > len(results):
-                new_start_after = get_start_after(results, start_after, list_size)
-                new_start = start_number + len(results)
-                resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                      until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
-            else:
-                resumption_token = ""
+            # Determine where our next starting index will be
+            new_start = start_number + len(results)
 
-            li = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
+            # Work out if we need a resumption token.  It can have one of 3 values:
+            # - None -> do not include the rt in the response if we have a full result set
+            # - the empty string -> include in the response if this is the last set of results from an incomplete list
+            # - some value -> include in the response if there are more values to retrieve
+            if len(results) == full_total:
+                resumption_token = None
+            elif new_start == full_total:
+                resumption_token = ''
+            else:
+                new_start_after = get_start_after(results, start_after, list_size)
+                resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
+                                                         until_date=until_date, oai_set=oai_set, start_number=new_start,
+                                                         start_after=new_start_after)
+
+            # Get our list of results for this request
+            if identifiers_or_records == 'identifiers':
+                lst = ListIdentifiers(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set,
+                                      metadata_prefix=metadata_prefix)
+            else:  # ListRecords
+                lst = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set,
+                                  metadata_prefix=metadata_prefix)
+
             if resumption_token is not None:
                 expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                li.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
+                lst.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
 
             for r in results:
-                # do the crosswalk (header only in this operation)
+                # do the crosswalk
                 xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
                 header = xwalk.header(r)
 
-                # add to the response
-                li.add_record(header)
-            return li
+                if identifiers_or_records == 'identifiers':
+                    # add to the response (header only)
+                    lst.add_record(header)
+                else:  # ListRecords
+                    metadata = xwalk.crosswalk(r)
+                    # add to the response (metadata and
+                    lst.add_record(metadata, header)
+            return lst
 
     # if we have not returned already, this means we can't disseminate this format
     return CannotDisseminateFormat(base_url)
+
+
+def _parameterised_list_identifiers(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
+    return _parameterised_list('identifiers', dao, base_url, specified_oai_endpoint, metadata_prefix, from_date, until_date, oai_set, start_number, start_after)
 
 
 def _resume_list_identifiers(dao, base_url, specified_oai_endpoint, resumption_token=None):
@@ -524,92 +548,7 @@ def list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, fr
 
 
 def _parameterised_list_records(dao, base_url, specified_oai_endpoint, metadata_prefix=None, from_date=None, until_date=None, oai_set=None, start_number=0, start_after=None):
-    # metadata prefix is required
-    if metadata_prefix is None:
-        return BadArgument(base_url)
-
-    # get the formats and check that we have formats that we can disseminate
-    formats = app.config.get("OAIPMH_METADATA_FORMATS", {}).get(specified_oai_endpoint)
-    if formats is None or len(formats) == 0:
-        return CannotDisseminateFormat(base_url)
-
-    # check that the dates are formatted correctly
-    fl = True
-    ul = True
-    if from_date is not None:
-        fl = DateFormat.legitimate_granularity(from_date)
-    if until_date is not None:
-        ul = DateFormat.legitimate_granularity(until_date)
-
-    if not fl or not ul:
-        return BadArgument(base_url)
-
-    # check that the dates are formatted correctly
-    #try:
-    #    if from_date is not None:
-    #        datetime.strptime(from_date, "%Y-%m-%d")
-    #    if until_date is not None:
-    #        datetime.strptime(until_date, "%Y-%m-%d")
-    #except:
-    #    return BadArgument(base_url)
-
-    # get the result set size
-    list_size = app.config.get("OAIPMH_LIST_RECORDS_PAGE_SIZE", 25)
-
-    # decode the oai_set to something we can query with
-    try:
-        decoded_set = decode_set_spec(oai_set) if oai_set is not None else None
-    except SetSpecException:
-        return BadArgument(base_url)
-
-    for f in formats:
-        if f.get("metadataPrefix") == metadata_prefix:
-            # do the query and set up the response object
-            total, results = dao.list_records(from_date, until_date, decoded_set, list_size, start_after)
-
-            # if there are no results, PMH requires us to throw an error
-            if len(results) == 0:
-                return NoRecordsMatch(base_url)
-
-            # Get the full total
-            # Each search with a resumption token is a new search,
-            #   so the total is not the same as the first search
-            #   but is reduced by number of records already served.
-            # This full_total is the total as in the first search
-            full_total = total
-            if start_after is not None:
-                full_total = total + start_number - start_after[1]
-
-            # work out if we need a resumption token.  It can have one of 3 values:
-            # - None = do not include the rt in the response
-            # - some value = include in the response
-            # - the empty string = include in the response
-            resumption_token = None
-            if total > len(results):
-                new_start_after = get_start_after(results, start_after, list_size)
-                new_start = start_number + len(results)
-                resumption_token = make_resumption_token(metadata_prefix=metadata_prefix, from_date=from_date,
-                    until_date=until_date, oai_set=oai_set, start_number=new_start, start_after=new_start_after)
-            else:
-                resumption_token = ""
-
-            lr = ListRecords(base_url, from_date=from_date, until_date=until_date, oai_set=oai_set, metadata_prefix=metadata_prefix)
-            if resumption_token is not None:
-                expiry = app.config.get("OAIPMH_RESUMPTION_TOKEN_EXPIRY", -1)
-                lr.set_resumption(resumption_token, complete_list_size=full_total, cursor=new_start, expiry=expiry)
-
-            for r in results:
-                # do the crosswalk
-                xwalk = get_crosswalk(f.get("metadataPrefix"), dao.__type__)
-                metadata = xwalk.crosswalk(r)
-                header = xwalk.header(r)
-
-                # add to the response
-                lr.add_record(metadata, header)
-            return lr
-
-    # if we have not returned already, this means we can't disseminate this format
-    return CannotDisseminateFormat(base_url)
+    return _parameterised_list('records', dao, base_url, specified_oai_endpoint, metadata_prefix, from_date, until_date, oai_set, start_number, start_after)
 
 
 def _resume_list_records(dao, base_url, specified_oai_endpoint, resumption_token=None):
