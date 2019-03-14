@@ -8,7 +8,7 @@
         <publisher>Codicille éditeur et CRILCQ</publisher>
 
         <journalTitle>Successful</journalTitle>
-        <issn>0001-5113</issn>
+        <issn>1111-1111</issn>
         <eissn>5555-5555</eissn>
 
         <publicationDate>2013</publicationDate>
@@ -16,11 +16,12 @@
         <issue>7</issue>
         <startPage/>
         <endPage/>
+        <doi>10.1234/2</doi>
         <documentType>article</documentType>
-        <title language="fre">Imaginaires autochtones contemporains. Introduction</title>
+        <title language="fre">An article with an unmatched ISSN</title>
         <authors>
             <author>
-                <name>Papillon, Joëlle</name>
+                <name>AN Author</name>
                 <affiliationId>1</affiliationId>
             </author>
         </authors>

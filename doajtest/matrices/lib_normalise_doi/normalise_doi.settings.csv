@@ -1,0 +1,21 @@
+field,test_id,doi,prefix,whitespace,raises
+type,index,generated,generated,generated,conditional
+default,,,,,
+,,,,,
+values,,none,-,-,ValueError
+values,,exists,none,yes,
+values,,,doi:,no,
+values,,,info:doi/,,
+values,,,https://dx.doi.org/,,
+values,,,http://dx.doi.org/,,
+values,,,https://doi.org/,,
+values,,,http://doi.org/,,
+values,,,http://hdl.handle.net/,,
+values,,,https://hdl.handle.net/,,
+values,,,info:hdl/,,
+values,,,invalid,,
+,,,,,
+constraint doi,,none,-,-,
+constraint doi,,exists,!-,!-,
+,,,,,
+conditional raises,,,invalid,,ValueError

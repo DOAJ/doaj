@@ -1,0 +1,44 @@
+field,test_id,articles,duplicate_in_batch,duplicate_in_index,account,duplicate_check,merge_duplicate,limit_to_account,raises,success,fail,update,notes
+type,index,generated,generated,generated,generated,generated,generated,generated,conditional,conditional,conditional,conditional,comment
+default,,,,,,,,,,0,0,0,
+,,,,,,,,,,,,,
+values,,none,no,no,none,none,none,none,ArgumentExeption,0,0,0,
+values,,0,yes,yes,owner,true,true,true,DuplicateArticleException,1,2,1,
+values,,yes,,,own_1,false,false,false,IngestException,4,5,,
+,,,,,,,,,,6,6,,
+,,,,,,,,,,,,,
+constraint articles,,none,no,no,,false,false,false,,,,,
+constraint articles,,0,no,no,,false,false,false,,,,,
+constraint duplicate_in_batch,,yes,yes,,,,,,,,,,
+constraint duplicate_in_index,,yes,,yes,,,,,,,,,
+,,,,,,,,,,,,,
+conditional raises,,none,,,,,,,ArgumentException,,,,
+conditional raises,,,,,none,,,,ArgumentException,,,,
+conditional raises,,,,,,none,,,ArgumentException,,,,
+conditional raises,,,,,,,none,,ArgumentException,,,,
+conditional raises,,,,,,,,none,ArgumentException,,,,
+conditional raises,,yes,no,yes,owner|own_1,true,false,!none,DuplicateArticleException,,,,
+conditional raises,,yes,yes,,owner|own_1,true,!none,!none,IngestException,,,,This happens because there's a duplicate in the batch
+conditional raises,,yes,yes,,own_1,false,!none,true,IngestException,,,,This happens because there's a duplicate in the batch
+conditional raises,,yes,no,yes,own_1,!none,true,true,IngestException,,,,This happens because there's a legit owner failure
+conditional raises,,yes,no,yes,own_1,false,false,true,IngestException,,,,This happens because there's a legit owner failure
+conditional raises,,yes,no,no,own_1,!none,!none,true,IngestException,,,,This happens because there's a legit owner failure
+,,,,,,,,,,,,,
+conditional success,,yes,no,no,owner,!none,!none,!none,,4,,,
+conditional success,,yes,no,yes,owner,false,!none,!none,,4,,,
+conditional success,,yes,no,yes,owner,true,true,!none,,4,,,
+conditional success,,yes,no,,own_1,!none,!none,false,,4,,,
+conditional success,,yes,yes,,owner,false,!none,!none,,6,,,
+conditional success,,yes,yes,,own_1,false,!none,false,,6,,,
+conditional success,,yes,yes,,own_1,false,!none,true,,1,,,
+conditional success,,yes,no,yes,own_1,!none,true,true,,1,,,
+conditional success,,yes,no,yes,own_1,false,false,true,,1,,,
+conditional success,,yes,no,no,own_1,!none,!none,true,,1,,,
+,,,,,,,,,,,,,
+conditional update,,yes,no,yes,owner|own_1,true,true,!none,,,,1,
+,,,,,,,,,,,,,
+conditional fail,,yes,yes,,owner|own_1,true,!none,!none,,,6,,This happens because there's a duplicate in the batch
+conditional fail,,yes,yes,,own_1,false,!none,true,,,5,,This happens because there's a duplicate in the batch
+conditional fail,,yes,no,yes,own_1,!none,true,true,,,3,,This happens because there's a legit owner failure
+conditional fail,,yes,no,yes,own_1,false,false,true,,,3,,This happens because there's a legit owner failure
+conditional fail,,yes,no,no,own_1,!none,!none,true,,,3,,This happens because there's a legit owner failure

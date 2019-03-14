@@ -1,0 +1,25 @@
+{
+	"elastic_search_host" : null,
+	"elastic_search_db" : null,
+	"confirm" : true,
+	"max_content_length" : 100000000,
+	"types" : {
+		"account" : {"import" : false, "limit" : -1},
+		"bulk_upload" : {"import" : false, "limit" : -1},
+		"bulk_reapplication" : {"import" : false, "limit" : -1},
+		"background_job" : {"import" : false, "limit" : -1},
+		"lock" : {"import" : false, "limit" : -1},
+		"journal" : {"import" : false, "limit" : -1},
+		"provenance" : {"import" : false, "limit" : -1},
+		"toc" : {"import" : false, "limit" : -1},
+		"journal_history" : {"import" : false, "limit" : -1},
+		"cache" : {"import" : false, "limit" : -1},
+		"article_history" : {"import" : false, "limit" : -1},
+		"lcc" : {"import" : false, "limit" : -1},
+		"suggestion" : {"import" : false, "limit" : -1},
+		"article" : {"import" : true, "limit" : 100000},
+		"news" : {"import" : false, "limit" : -1},
+		"editor_group" : {"import" : false, "limit" : -1},
+		"upload" : {"import" : false, "limit" : -1}
+	}
+}

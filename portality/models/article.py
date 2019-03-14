@@ -3,12 +3,12 @@ from portality.models import Journal, shared_structs
 from portality.models.bibjson import GenericBibJSON
 from copy import deepcopy
 from datetime import datetime
-from portality import xwalk
+from portality import xwalk, regex, constants
 from portality.core import app
+from portality.lib import normalise
 
 import string
 from unidecode import unidecode
-
 
 class NoJournalException(Exception):
     pass
@@ -22,6 +22,23 @@ class Article(DomainObject):
         # some input sanitisation
         issns = issns if isinstance(issns, list) else []
         urls = fulltexts if isinstance(fulltexts, list) else [fulltexts] if isinstance(fulltexts, str) or isinstance(fulltexts, unicode) else []
+
+        # make sure that we're dealing with the normal form of the identifiers
+        norm_urls = []
+        for url in urls:
+            try:
+                norm = normalise.normalise_url(url)
+                norm_urls.append(norm)
+            except ValueError:
+                # use the non-normal form
+                norm_urls.append(url)
+        urls = norm_urls
+
+        try:
+            doi = normalise.normalise_doi(doi)
+        except ValueError:
+            # leave the doi as it is
+            pass
 
         # in order to make sure we don't send too many terms to the ES query, break the issn list down into chunks
         terms_limit = app.config.get("ES_TERMS_LIMIT", 1024)
@@ -196,6 +213,30 @@ class Article(DomainObject):
         if "admin" not in self.data:
             self.data["admin"] = {}
         self.data["admin"]["upload_id"] = uid
+
+    def get_normalised_doi(self):
+        if self.data.get("index", {}).get("doi") is not None:
+            return self.data["index"]["doi"]
+        doi = self.bibjson().get_one_identifier(constants.IDENT_TYPE_DOI)
+        if doi is None:
+            return None
+        try:
+            return normalise.normalise_doi(doi)
+        except ValueError:
+            # can't be normalised, so we just return the doi as-is
+            return doi
+
+    def get_normalised_fulltext(self):
+        if self.data.get("index", {}).get("fulltext") is not None:
+            return self.data["index"]["fulltext"]
+        fulltexts = self.bibjson().get_urls(constants.LINK_TYPE_FULLTEXT)
+        if len(fulltexts) == 0:
+            return None
+        try:
+            return normalise.normalise_url(fulltexts[0])
+        except ValueError:
+            # can't be normalised, so we just return the url as-is
+            return fulltexts[0]
 
     def get_journal(self):
         """
@@ -394,6 +435,8 @@ class Article(DomainObject):
         classification_paths = []
         unpunctitle = None
         asciiunpunctitle = None
+        doi = None
+        fulltext = None
 
         # the places we're going to get those fields from
         cbib = self.bibjson()
@@ -484,6 +527,25 @@ class Article(DomainObject):
         # determine if the seal is applied
         has_seal = "Yes" if self.has_seal() else "No"
 
+        # create a normalised version of the DOI for deduplication
+        source_doi = cbib.get_one_identifier(constants.IDENT_TYPE_DOI)
+        try:
+            doi = normalise.normalise_doi(source_doi)
+        except ValueError as e:
+            # if we can't normalise the DOI, just store it as-is.
+            doi = source_doi
+
+
+        # create a normalised version of the fulltext URL for deduplication
+        fulltexts = cbib.get_urls(constants.LINK_TYPE_FULLTEXT)
+        if len(fulltexts) > 0:
+            source_fulltext = fulltexts[0]
+            try:
+                fulltext = normalise.normalise_url(source_fulltext)
+            except ValueError as e:
+                # if we can't normalise the fulltext store it as-is
+                fulltext = source_fulltext
+
         # build the index part of the object
         self.data["index"] = {}
         if len(issns) > 0:
@@ -515,6 +577,10 @@ class Article(DomainObject):
             self.data["index"]["asciiunpunctitle"] = unpunctitle
         if has_seal:
             self.data["index"]["has_seal"] = has_seal
+        if doi is not None:
+            self.data["index"]["doi"] = doi
+        if fulltext is not None:
+            self.data["index"]["fulltext"] = fulltext
 
     def prep(self):
         self._generate_index()
@@ -1001,8 +1067,9 @@ class DuplicateArticleQuery(object):
     _start_term = {"term" : {"bibjson.start_page.exact" : "<start page>"}}
     _issn_terms = {"terms" : { "index.issn.exact" : ["<list of issns>"] }}
     _pubrec_term = {"term" : {"admin.publisher_record_id.exact" : "<publisher record id>"}}
-    _identifier_term = {"term" : {"bibjson.identifier.id.exact" : "<doi or issn here>"}}
-    _url_terms = {"terms" : {"bibjson.link.url.exact" : ["<urls here>"]}}
+    _identifier_term = {"term" : {"bibjson.identifier.id.exact" : "<issn here>"}}
+    _doi_term = {"term" : {"index.doi.exact" : "<doi here>"}}
+    _fulltext_terms = {"terms" : {"index.fulltext.exact" : ["<fulltext here>"]}}
     _fuzzy_title = {"fuzzy" : {"bibjson.title.exact" : "<title here>"}}
 
     def __init__(self, issns=None, publisher_record_id=None, doi=None, urls=None, title=None, volume=None, number=None, start=None, should_match=None, size=10):
@@ -1037,13 +1104,15 @@ class DuplicateArticleQuery(object):
             q["query"]["bool"]["must"].append(pr)
 
         if self.doi is not None and self.should_match is None:
-            idt = deepcopy(self._identifier_term)
-            idt["term"]["bibjson.identifier.id.exact"] = self.doi
+            idt = deepcopy(self._doi_term)
+            # idt["term"]["bibjson.identifier.id.exact"] = self.doi
+            idt["term"]["index.doi.exact"] = self.doi
             q["query"]["bool"]["must"].append(idt)
 
         if len(self.urls) > 0 and self.should_match is None:
-            uq = deepcopy(self._url_terms)
-            uq["terms"]["bibjson.link.url.exact"] = self.urls
+            uq = deepcopy(self._fulltext_terms)
+            # uq["terms"]["bibjson.link.url.exact"] = self.urls
+            uq["terms"]["index.fulltext.exact"] = self.urls
             q["query"]["bool"]["must"].append(uq)
 
         if self.title is not None:

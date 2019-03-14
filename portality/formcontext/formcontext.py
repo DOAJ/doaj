@@ -760,11 +760,9 @@ class ManEdApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            try:
-                emails.send_publisher_editor_assigned_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to publisher regarding editor assignment - owner is not set, or email address is not valid")
-                app.logger.exception("Publisher notification failed")
+            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            for alert in alerts:
+                self.add_alert(alert)
 
         # Inform editor and associate editor if this application was 'ready' or 'completed', but has been changed to 'in progress'
         if (self.source.application_status == constants.APPLICATION_STATUS_READY or self.source.application_status == constants.APPLICATION_STATUS_COMPLETED) and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -910,11 +908,9 @@ class EditorApplicationReview(ApplicationContext):
         # If this is the first time this application has been assigned to an editor, notify the publisher.
         old_ed = self.source.editor
         if (old_ed is None or old_ed == '') and self.target.editor is not None:
-            try:
-                emails.send_publisher_editor_assigned_email(self.target)
-            except app_email.EmailException:
-                self.add_alert("Problem sending email to publisher regarding editor assignment - owner is not set, or email address is not valid")
-                app.logger.exception('Error sending editor assigned email to publisher.')
+            alerts = emails.send_publisher_editor_assigned_email(self.target)
+            for alert in alerts:
+                self.add_alert(alert)
 
         # Email the assigned associate if the application was reverted from 'completed' to 'in progress' (failed review)
         if self.source.application_status == constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
@@ -1056,15 +1052,11 @@ class AssEdApplicationReview(ApplicationContext):
         # inform publisher if this was set to 'in progress' from 'pending'
         if self.source.application_status == constants.APPLICATION_STATUS_PENDING and self.target.application_status == constants.APPLICATION_STATUS_IN_PROGRESS:
             if app.config.get("ENABLE_PUBLISHER_EMAIL", False):
-                try:
-                    emails.send_publisher_inprogress_email(self.target)
-                    self.add_alert('An email has been sent to the Journal Contact alerting them that you are working on their application.')
-                except app_email.EmailException:
-                    magic = str(uuid.uuid1())
-                    self.add_alert('Hm, sending the ready status to publisher email didn\'t work. Please quote this magic number when reporting the issue: ' + magic + ' . Thank you!')
-                    app.logger.exception('Error sending ready status email to publisher - ' + magic)
+                alerts = emails.send_publisher_inprogress_email(self.target)
+                for alert in alerts:
+                    self.add_alert(alert)
             else:
-                self.add_alert('Did not send email to Journal Contact about the status change, as publisher emails are disabled.')
+                self.add_alert(Messages.IN_PROGRESS_NOT_SENT_EMAIL_DISABLED)
 
         # inform editor if this was newly set to 'completed'
         if self.source.application_status != constants.APPLICATION_STATUS_COMPLETED and self.target.application_status == constants.APPLICATION_STATUS_COMPLETED:

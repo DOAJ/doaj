@@ -1,8 +1,8 @@
 from doajtest.helpers import DoajTestCase
-from portality import article, models
+from portality import models
 import uuid, time
 from random import randint
-
+from portality.bll.doaj import DOAJ
 
 class TestArticleMatch(DoajTestCase):
 
@@ -37,9 +37,9 @@ class TestArticleMatch(DoajTestCase):
             y.title = "Replacement article for fulltext url"
             y.add_url(ftu, urltype="fulltext")
 
-            # get the xwalk to determine if there is a duplicate
-            xwalk = article.XWalk()
-            d = xwalk.get_duplicate(z)
+            # determine if there's a duplicate
+            articleService = DOAJ.articleService()
+            d = articleService.get_duplicate(z)
 
             assert d is not None
             assert d.bibjson().title == "Example article with a fulltext url"
@@ -59,9 +59,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for fulltext url"
         y.add_url("http://this.is/a/different/url", urltype="fulltext")
         
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
         
         assert d is None
     
@@ -97,9 +97,9 @@ class TestArticleMatch(DoajTestCase):
         y.title = "Replacement article for fulltext url"
         y.add_url(ftu, urltype="fulltext")
         
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicate(z)
 
         # Check when we ask for one duplicate we get the most recent duplicate.
         assert d is not None
@@ -109,10 +109,10 @@ class TestArticleMatch(DoajTestCase):
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
-        xwalk = article.XWalk()
-        l = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        l = articleService.get_duplicates(z)
         assert isinstance(l, list), l
-        assert l
+        assert l is not None
         l.sort()
         assert expected == l
 
@@ -122,7 +122,7 @@ class TestArticleMatch(DoajTestCase):
         a = models.Article()
         b = a.bibjson()
         b.title = "Example A article with a DOI"
-        b.add_identifier('doi', "10.doi")
+        b.add_identifier('doi', "10.doi/123")
         a.save(blocking=True)
 
         # Wait a second to ensure the timestamps are different
@@ -131,28 +131,29 @@ class TestArticleMatch(DoajTestCase):
         a2 = models.Article()
         b2 = a2.bibjson()
         b2.title = "Example B article with a DOI"
-        b2.add_identifier('doi', "10.doi")
+        b2.add_identifier('doi', "10.doi/123")
         a2.save(blocking=True)
 
         # create an article which should not be caught by the duplicate detection
         not_duplicate = models.Article()
         not_duplicate_bibjson = not_duplicate.bibjson()
         not_duplicate_bibjson.title = "Example C article with a DOI"
-        not_duplicate_bibjson.add_identifier('doi', "10.doi.DIFFERENT")
+        not_duplicate_bibjson.add_identifier('doi', "10.doi/DIFFERENT")
         not_duplicate.save(blocking=True)
 
         # create a replacement article
         z = models.Article()
         y = z.bibjson()
         y.title = "Replacement article for DOI"
-        y.add_identifier('doi', "10.doi")
+        y.add_identifier('doi', "10.doi/123")
 
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
-        assert len(xwalk.get_duplicates(z)) == 2
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        dups = articleService.get_duplicates(z)
+        assert len(dups) == 2
 
         # Check when we ask for one duplicate we get the most recent duplicate.
+        d = articleService.get_duplicate(z)
         assert d is not None
         assert d.bibjson().title == "Example B article with a DOI", d.bibjson().title
 
@@ -160,8 +161,8 @@ class TestArticleMatch(DoajTestCase):
         # sort both results and expectations here to avoid false alarm
         # we don't care about the order of duplicates
         expected = sorted([a, a2])
-        xwalk = article.XWalk()
-        l = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        l = articleService.get_duplicates(z)
         assert isinstance(l, list)
         assert l
         assert len(l) == 2
@@ -174,7 +175,7 @@ class TestArticleMatch(DoajTestCase):
         a = models.Article()
         b = a.bibjson()
         b.title = "Example A article with a DOI"
-        b.add_identifier('doi', "https://doi.org/10.doi")
+        b.add_identifier('doi', "https://doi.org/10.doi/123")
         a.save(blocking=True)
 
         # Wait a second to ensure the timestamps are different
@@ -183,28 +184,29 @@ class TestArticleMatch(DoajTestCase):
         a2 = models.Article()
         b2 = a2.bibjson()
         b2.title = "Example B article with a DOI"
-        b2.add_identifier('doi', "https://doi.org/10.doi")
+        b2.add_identifier('doi', "https://doi.org/10.doi/123")
         a2.save(blocking=True)
 
         # create an article which should not be caught by the duplicate detection
         not_duplicate = models.Article()
         not_duplicate_bibjson = not_duplicate.bibjson()
         not_duplicate_bibjson.title = "Example C article with a DOI"
-        not_duplicate_bibjson.add_identifier('doi', "https://doi.org/10.doi.DIFFERENT")
+        not_duplicate_bibjson.add_identifier('doi', "https://doi.org/10.doi/DIFFERENT")
         not_duplicate.save(blocking=True)
 
         # create a replacement article
         z = models.Article()
         y = z.bibjson()
         y.title = "Replacement article for DOI"
-        y.add_identifier('doi', "https://doi.org/10.doi")
+        y.add_identifier('doi', "https://doi.org/10.doi/123")
 
-        # get the xwalk to determine if there is just one duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicate(z)
-        assert len(xwalk.get_duplicates(z)) == 2
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        dups = articleService.get_duplicates(z)
+        assert len(dups) == 2
 
         # Check when we ask for one duplicate we get the most recent duplicate.
+        d = articleService.get_duplicate(z)
         assert d is not None
         assert d.bibjson().title == "Example B article with a DOI", d.bibjson().title
     
@@ -255,7 +257,7 @@ class TestArticleMatch(DoajTestCase):
         """Check that an article is only reported once if it is duplicated by both DOI and fulltext URL"""
         # make ourselves an example article
         ftu = "http://www.sbe.deu.edu.tr/dergi/cilt15.say%C4%B12/06%20AKALIN.pdf"
-        doi = "10.doi"
+        doi = "10.doi/123"
 
         a = models.Article()
         b = a.bibjson()
@@ -271,9 +273,9 @@ class TestArticleMatch(DoajTestCase):
         y.add_url(ftu, urltype="fulltext")
         y.add_identifier('doi', doi)
 
-        # get the xwalk to determine if there is a duplicate
-        xwalk = article.XWalk()
-        d = xwalk.get_duplicates(z)
+        # determine if there's a duplicate
+        articleService = DOAJ.articleService()
+        d = articleService.get_duplicates(z)
 
         assert len(d) == 1
         print len(d)

@@ -3,7 +3,8 @@ from portality.api.v1 import Api400Error, Api401Error, Api403Error, Api404Error
 from portality.api.v1.data_objects import IncomingArticleDO, OutgoingArticleDO
 from portality.lib import dataobj
 from portality import models
-from portality.article import XWalk
+# from portality.article import XWalk
+from portality.bll.doaj import DOAJ
 
 from copy import deepcopy
 
@@ -58,12 +59,27 @@ class ArticlesCrudApi(CrudApi):
         return cls._build_swag_response(template)
 
     @classmethod
-    def create(cls, data, account, dry_run=False):
+    def create(cls, data, account):
         # as long as authentication (in the layer above) has been successful, and the account exists, then
         # we are good to proceed
         if account is None:
             raise Api401Error()
 
+        # convert the data into a suitable article model
+        am = cls.prep_article(data)
+
+        articleService = DOAJ.articleService()
+        result = articleService.create_article(am, account)
+
+        # Check we are allowed to create an article for this journal
+        if result.get("fail", 0) == 1:
+            raise Api403Error()
+
+        return am
+
+
+    @classmethod
+    def prep_article(cls, data):
         # first thing to do is a structural validation, by instantiating the data object
         try:
             ia = IncomingArticleDO(data)
@@ -73,30 +89,21 @@ class ArticlesCrudApi(CrudApi):
         # if that works, convert it to an Article object
         am = ia.to_article_model()
 
-        # Check we are allowed to create an article for this journal
-        if not XWalk.is_legitimate_owner(am, account.id):
-            raise Api403Error()
-
-        # before finalising, we need to determine whether this is a new article
-        # or an update
-        duplicate = XWalk.get_duplicate(am, account.id)
-        # print duplicate
-        if duplicate is not None:
-            am.merge(duplicate) # merge will take the old id, so this will overwrite
-        else:
-            # if the caller set the id, created_date, or last_updated, then we discard the data and apply our
-            # own values (note that last_updated will get overwritten anyway)
-            am.set_id()
-            am.set_created()
+        # the user may have supplied metadata in the model for id and created_date
+        # and we want to can that data.  If this is a truly new article its fine for
+        # us to assign a new id here, and if it's a duplicate, it will get attached
+        # to its duplicate id anyway.
+        am.set_id()
+        am.set_created()
 
         # not allowed to set subjects
         am.bibjson().remove_subjects()
+
+        # get the journal information set straight
         am = cls.__handle_journal_info(am)
 
-        # finally save the new article, and return to the caller
-        if not dry_run:
-            am.save()
         return am
+
 
     @classmethod
     def retrieve_swag(cls):
@@ -127,7 +134,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api401Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # Return the article
@@ -158,7 +166,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to edit this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # next thing to do is a structural validation of the replacement data, by instantiating the object
@@ -205,7 +214,8 @@ class ArticlesCrudApi(CrudApi):
             raise Api404Error()
 
         # Check we're allowed to retrieve this article
-        if not XWalk.is_legitimate_owner(ar, account.id):
+        articleService = DOAJ.articleService()
+        if not articleService.is_legitimate_owner(ar, account.id):
             raise Api404Error()  # not found for this account
 
         # issue the delete (no record of the delete required)

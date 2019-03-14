@@ -211,7 +211,7 @@ def create_article():
         raise Api400Error("Supplied data was not valid JSON")
 
     # delegate to the API implementation
-    a = ArticlesCrudApi.create(data, current_user)
+    a = ArticlesCrudApi.create(data, current_user._get_current_object())
 
     # respond with a suitable Created response
     return created(a, url_for("api_v1.retrieve_article", article_id=a.id))

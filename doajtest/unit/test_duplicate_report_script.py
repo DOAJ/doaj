@@ -82,7 +82,7 @@ class TestArticleMatch(DoajTestCase):
             assert 'doi+fulltext' in res
 
         audit_2 = job.audit.pop(0)
-        assert audit_2.get('message', '') == '2 articles processed for duplicates. 2 global duplicates found.'
+        assert audit_2.get('message', '') == '2 articles processed for duplicates. 1 global duplicate sets found.'
 
     def test_02_duplicates_global_criteria(self):
         """ Check we match only the actual duplicates, amongst other articles in the index. """
@@ -154,7 +154,7 @@ class TestArticleMatch(DoajTestCase):
         task = article_duplicate_report.ArticleDuplicateReportBackgroundTask(job)
         task.run()
 
-        assert job.audit.pop(1).get('message', '') == '6 articles processed for duplicates. 16 global duplicates found.'
+        assert job.audit.pop(1).get('message', '') == '6 articles processed for duplicates. 3 global duplicate sets found.'
 
         table = []
         with open(TMP_DIR + '/duplicate_articles_global_' + dates.today() + '.csv') as f:
