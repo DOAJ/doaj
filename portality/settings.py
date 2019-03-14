@@ -843,3 +843,9 @@ ELASTIC_APM = {
   # Set custom APM Server URL (default: http://localhost:8200)
   'SERVER_URL': '',
 }
+
+########################################
+## Consent Cookie
+
+CONSENT_COOKIE_KEY = "doaj-cookie-consent"
+

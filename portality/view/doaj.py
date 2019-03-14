@@ -7,12 +7,13 @@ from portality import dao
 from portality import models
 from portality import blog
 from portality.core import app
-from portality.decorators import ssl_required, write_required, cookie_consent
+from portality.decorators import ssl_required, write_required
 from portality.formcontext import formcontext
 from portality.lcc import lcc_jstree
 from portality.view.forms import ContactUs
 from portality.app_email import send_contact_form
 from portality.lib import analytics
+from portality.ui.messages import Messages
 
 import json
 import os
@@ -39,8 +40,12 @@ def home():
 
 @blueprint.route("/cookie_consent")
 def cookie_consent():
-    resp = make_response()
-    resp.set_cookie("doaj-consent", "Delete this cookie to revoke your consent")
+    cont = request.values.get("continue")
+    if cont is not None:
+        resp = redirect(cont)
+    else:
+        resp = make_response()
+    resp.set_cookie(app.config.get("CONSENT_COOKIE_KEY"), Messages.CONSENT_COOKIE_VALUE)
     return resp
 
 
