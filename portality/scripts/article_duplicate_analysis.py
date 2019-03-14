@@ -3,10 +3,10 @@ from copy import deepcopy
 from datetime import datetime
 from portality import clcsv
 
-duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-12/duplicate_articles_global_2019-02-12.csv"
-noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-12/noids_2019-02-12.csv"
-log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-12/log.txt"
-out = "/home/richard/tmp/doaj/article_duplicates_2019-02-12/out.csv"
+duplicate_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/duplicate_articles_global_2019-02-27.csv"
+noids_report = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/noids_2019-02-27.csv"
+log =  "/home/richard/tmp/doaj/article_duplicates_2019-02-27/log.txt"
+out = "/home/richard/tmp/doaj/article_duplicates_2019-02-27/out.csv"
 
 INVALID_DOIS = ["undefined", "-"]
 
