@@ -2,6 +2,7 @@ from flask import Blueprint, request, flash
 from flask import render_template, abort, redirect, url_for, send_file, jsonify
 from flask_login import current_user, login_required
 import urllib
+from jinja2.exceptions import TemplateNotFound
 
 from portality import dao
 from portality import models
@@ -359,8 +360,11 @@ def oainfo():
 def bestpractice(cc=None):
     # FIXME: if we go for full multilingual support, it would be better to put this in the template
     # loader and have it check for templates in the desired language, and provide fall-back
-    if cc is not None and cc in ["es", "pt", "fa", "fr", "kr", "uk", "ca", "tr", "hi", "ar"]:
-        return render_template("doaj/i18n/" + cc + "/bestpractice.html")
+    if cc is not None:
+        try:
+            return render_template("doaj/i18n/" + cc + "/bestpractice.html")
+        except TemplateNotFound:
+            pass
     return render_template("doaj/bestpractice.html")
 
 
