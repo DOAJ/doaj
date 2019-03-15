@@ -13,7 +13,7 @@ from portality.tasks.public_data_dump import PublicDataDumpBackgroundTask
 from portality import models, store
 from portality.core import app
 
-import os, shutil
+import os, shutil, tarfile, json
 from StringIO import StringIO
 
 def load_cases():
@@ -89,6 +89,10 @@ class TestPublicDataDumpTask(DoajTestCase):
         journal_count = int(journals_arg)
         article_count = int(articles_arg)
         batch_size = int(batch_size_arg)
+        journal_file_count = 0 if journal_count == 0 else (journal_count / batch_size) + 1
+        article_file_count = 0 if article_count == 0 else (article_count / batch_size) + 1
+        first_article_file_records = 0 if article_count == 0 else batch_size if article_count > batch_size else article_count
+        first_journal_file_records = 0 if journal_count == 0 else batch_size if journal_count > batch_size else journal_count
 
         sources = JournalFixtureFactory.make_many_journal_sources(journal_count, in_doaj=True)
         for i in range(len(sources)):
@@ -153,9 +157,43 @@ class TestPublicDataDumpTask(DoajTestCase):
                 article_file = "doaj_article_data_" + day_at_start + ".tar.gz"
                 assert article_file in files
 
+                stream = localStore.get(container_id, article_file)
+                tarball = tarfile.open(fileobj=stream, mode="r:gz")
+                members = tarball.getmembers()
+                assert len(members) == article_file_count
+
+                if len(members) > 0:
+                    f = tarball.extractfile(members[0])
+                    data = json.loads(f.read())
+                    assert len(data) == first_article_file_records
+
+                    record = data[0]
+                    for key in record.keys():
+                        assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
+                    if "admin" in record:
+                        for key in record["admin"].keys():
+                            assert key in ["ticked", "seal"]
+
             if types_arg in ["-", "all", "journal"]:
                 journal_file = "doaj_journal_data_" + day_at_start + ".tar.gz"
                 assert journal_file in files
+
+                stream = localStore.get(container_id, journal_file)
+                tarball = tarfile.open(fileobj=stream, mode="r:gz")
+                members = tarball.getmembers()
+                assert len(members) == journal_file_count
+
+                if len(members) > 0:
+                    f = tarball.extractfile(members[0])
+                    data = json.loads(f.read())
+                    assert len(data) == first_journal_file_records
+
+                    record = data[0]
+                    for key in record.keys():
+                        assert key in ["admin", "bibjson", "id", "last_updated", "created_date"]
+                    if "admin" in record:
+                        for key in record["admin"].keys():
+                            assert key in ["ticked", "seal"]
 
         else:
             # in the case of an error, we expect the tmp store to have been cleaned up

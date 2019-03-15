@@ -70,6 +70,8 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         # Scroll for article and/or journal
         for typ in types:
+            job.add_audit_message(dates.now() + u": Starting download of " + typ)
+
             out_dir = tmpStore.path(container, "doaj_" + typ + "_data_" + day_at_start, create_container=True, must_exist=False)
             out_name = os.path.basename(out_dir)
             zipped_name = out_name + ".tar.gz"
@@ -77,20 +79,28 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
             zipped_path = os.path.join(zip_dir, zipped_name)
             tarball = tarfile.open(zipped_path, "w:gz")
 
-            batch = []
             file_num = 1
-            job.add_audit_message(dates.now() + u": Starting download of " + typ)
+            out_file, path, filename = self._start_new_file(tmpStore, container, typ, day_at_start, file_num)
 
+            first_in_file = True
+            count = 0
             for result in DiscoveryApi.scroll(typ, None, None, page_size, scan=True):
-                batch.append(result)
+                if not first_in_file:
+                    out_file.write(",\n")
+                else:
+                    first_in_file = False
+                out_file.write(json.dumps(result))
+                count += 1
 
-                if len(batch) >= records_per_file:
-                    self._save_file(tmpStore, container, typ, day_at_start, batch, file_num, tarball)
-                    batch = []
+                if count >= records_per_file:
                     file_num += 1
+                    self._finish_file(tmpStore, container, filename, path, out_file, tarball)
+                    out_file, path, filename = self._start_new_file(tmpStore, container, typ, day_at_start, file_num)
+                    first_in_file = True
+                    count = 0
 
-            if len(batch) > 0:
-                self._save_file(tmpStore, container, typ, day_at_start, batch, file_num, tarball)
+            if count > 0:
+                self._finish_file(tmpStore, container, filename, path, out_file, tarball)
 
             tarball.close()
 
@@ -114,6 +124,26 @@ class PublicDataDumpBackgroundTask(BackgroundTask):
 
         job.add_audit_message(dates.now() + u": done")
 
+
+    def _finish_file(self, storage, container, filename, path, out_file, tarball):
+        out_file.write("]")
+        out_file.close()
+
+        self.background_job.add_audit_message(u"Adding file {filename} to compressed tar".format(filename=filename))
+        tarball.add(path, arcname=filename)
+        storage.delete(container, filename)
+
+    def _start_new_file(self, storage, container, typ, day_at_start, file_num):
+        filename = os.path.join("doaj_" + typ + "_data_" + day_at_start, "{typ}_{file_num}.json".format(typ=typ, file_num=file_num))
+        output_file = storage.path(container, filename, create_container=True, must_exist=False)
+        dn = os.path.dirname(output_file)
+        if not os.path.exists(dn):
+            os.makedirs(dn)
+        self.background_job.add_audit_message(u"Saving to file {filename}".format(filename=filename))
+
+        out_file = codecs.open(output_file, "wb", "utf-8")
+        out_file.write("[")
+        return out_file, output_file, filename
 
     def _save_file(self, storage, container, typ, day_at_start, results, file_num, tarball):
         # Create a dir for today and save all files in there
