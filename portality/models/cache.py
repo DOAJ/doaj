@@ -79,6 +79,13 @@ class Cache(DomainObject):
             return None
         return rec.get(record_type)
 
+    @classmethod
+    def get_public_data_dumps(cls):
+        rec = cls.pull("public_data_dump")
+        if rec is None:
+            return None, None
+        return rec.get("article"), rec.get("journal")
+
     def mark_for_regen(self):
         self.update({"regen" : True})
 

@@ -8,8 +8,17 @@
     complete sets of articles and journals, in the form that they would also be retrieved via the API.</p>
 
     <ul>
-        <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="journal") }}">Download all Journals</a></li>
-        <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="article") }}">Download all Articles</a></li>
+        {% if show_journal %}
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="journal") }}">Download all Journals</a></li>
+        {% else %}
+            <li>Journal data dump is not currently available; please check back later</li>
+        {% endif %}
+
+        {% if show_article %}
+            <li><a href="{{ url_for("doaj.public_data_dump_redirect", record_type="article") }}">Download all Articles</a></li>
+        {% else %}
+            <li>Article data dump is not currently available; please check back later</li>
+        {% endif %}
     </ul>
 
     <p>Each file is a <code>tar.gz</code>. The data dumps are structured as follows:</p>

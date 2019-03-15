@@ -159,7 +159,8 @@ def sitemap():
 
 @blueprint.route("/public-data-dump")
 def public_data_dump():
-    return render_template("doaj/public_data_dump.html")
+    article_url, journal_url = models.Cache.get_public_data_dumps()
+    return render_template("doaj/public_data_dump.html", show_article=article_url is not None, show_journal=journal_url is not None)
 
 @blueprint.route("/public-data-dump/<record_type>")
 def public_data_dump_redirect(record_type):
