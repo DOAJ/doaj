@@ -423,7 +423,8 @@ QUERY_ROUTE = {
             "role" : None,
             "query_filters" : ["only_in_doaj", "public_source"],
             "dao" : "portality.models.Article",
-            "required_parameters" : None
+            "required_parameters" : None,
+            "keepalive" : "10m"
         },
         "journal" : {
             "auth" : False,
