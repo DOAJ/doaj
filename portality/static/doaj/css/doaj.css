@@ -414,30 +414,29 @@ label[for='doaj_seal'] {
 
 #cookie-consent-banner {
     padding: 15px;
-    background: brown;
+    background: #eeeeee;
+    border-bottom: 1px solid #cccccc;
+    border-right: 1px solid #cccccc;
+    border-left: 1px solid #cccccc;
     margin-bottom: 1em;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     margin-left: 10px;
     margin-right: 10px;
     font-weight: bold;
-    color: #ffffff;
     text-align: center;
 }
 
 #cookie-consent-banner a {
-    color:#ffffff;
     text-decoration: underline;
 }
 
 #cookie-consent-banner a:hover {
     text-decoration: none;
-    color: #ffffff
 }
 
 #cookie-consent-banner a:focus {
     text-decoration: none;
-    color: #ffffff
 }
 
 @media (min-width: 768px) {
